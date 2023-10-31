@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GovukAccordionComponent, GovukButtonComponent } from 'src/app/components';
+import { GovukAccordionComponent, GovukButtonComponent } from '@components/index';
 
 @Component({
   selector: 'app-test-page',
