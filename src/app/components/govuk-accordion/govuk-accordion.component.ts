@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { initAll } from 'govuk-frontend';
 
@@ -8,6 +8,7 @@ import { initAll } from 'govuk-frontend';
   imports: [CommonModule],
   templateUrl: './govuk-accordion.component.html',
   styleUrls: ['./govuk-accordion.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukAccordionComponent implements OnInit {
   public ngOnInit(): void {
