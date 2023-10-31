@@ -36,7 +36,6 @@ export class GovukButtonComponent implements OnInit {
     this.buttonClass.update(
       (buttonClass) => `${buttonClass} ${ButtonClasses[this.buttonStyle]} govuk-!-margin-bottom-0`
     );
-    console.log('After', this.buttonClass());
   }
 
   public ngOnInit(): void {
