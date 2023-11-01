@@ -1,21 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-enum ButtonStyles {
-  default,
-  secondary,
-  warning,
-  inverse,
-  start,
-}
-
-enum ButtonClasses {
-  default = '',
-  secondary = 'govuk-button--secondary',
-  warning = 'govuk-button--warning',
-  inverse = 'govuk-button--inverse',
-  start = 'govuk-button--start',
-}
+import { GovukButtonClasses } from '@enums';
 
 @Component({
   selector: 'app-govuk-button',
@@ -25,20 +10,12 @@ enum ButtonClasses {
   styleUrls: ['./govuk-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GovukButtonComponent implements OnInit {
+export class GovukButtonComponent {
+  public buttonClassSig = signal('govuk-button');
+
   @Input({ required: true }) id!: string;
   @Input() type = 'button';
-  @Input() buttonStyle: keyof typeof ButtonStyles = 'default';
-
-  public buttonClass = signal('govuk-button');
-
-  private setButtonClass(): void {
-    this.buttonClass.update(
-      (buttonClass) => `${buttonClass} ${ButtonClasses[this.buttonStyle]} govuk-!-margin-bottom-0`
-    );
-  }
-
-  public ngOnInit(): void {
-    this.setButtonClass();
+  @Input() set buttonStyle(val: keyof typeof GovukButtonClasses) {
+    this.buttonClassSig.update((buttonClass) => `${buttonClass} ${GovukButtonClasses[val]} govuk-!-margin-bottom-0`);
   }
 }

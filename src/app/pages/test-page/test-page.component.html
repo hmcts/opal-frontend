@@ -26,5 +26,13 @@
   </svg>
 </app-govuk-button>
 
+<h3>Disabled</h3>
+<app-govuk-button id="test-btn-dsiabked" buttonStyle="disabled"> Disabled</app-govuk-button>
+
+<h3>Change class</h3>
+<app-govuk-button id="test-btn-secondary" [buttonStyle]="testButtonStyleSig()"> Hello World</app-govuk-button>
+
+<button (click)="handleClassChangeClick()">Change class</button>
+
 <h2>Demo Gov Accordion Component</h2>
 <app-govuk-accordion></app-govuk-accordion>
