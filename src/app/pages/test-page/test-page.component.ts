@@ -12,7 +12,7 @@ import { GovukButtonClasses } from '@enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TestPageComponent {
-  public testButtonStyleSig: WritableSignal<keyof typeof GovukButtonClasses> = signal('secondary');
+  public testButtonStyleSig: WritableSignal<keyof typeof GovukButtonClasses> = signal('default');
 
   public handleClassChangeClick(): void {
     this.testButtonStyleSig.set('warning');

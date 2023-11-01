@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, WritableSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GovukButtonClasses } from '@enums';
 
@@ -11,11 +11,16 @@ import { GovukButtonClasses } from '@enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukButtonComponent {
-  public buttonClassSig = signal('govuk-button');
+  public buttonClassSig: WritableSignal<string> = signal(GovukButtonClasses.default);
 
   @Input({ required: true }) id!: string;
   @Input() type = 'button';
-  @Input() set buttonStyle(val: keyof typeof GovukButtonClasses) {
-    this.buttonClassSig.update((buttonClass) => `${buttonClass} ${GovukButtonClasses[val]} govuk-!-margin-bottom-0`);
+  @Input({ required: true }) set buttonStyle(style: keyof typeof GovukButtonClasses) {
+    const classToSet =
+      style === 'default'
+        ? `${GovukButtonClasses[style]}`
+        : `${GovukButtonClasses.default} ${GovukButtonClasses[style]}`;
+
+    this.buttonClassSig.set(`${classToSet} govuk-!-margin-bottom-0`);
   }
 }
