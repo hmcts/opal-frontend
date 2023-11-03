@@ -3,9 +3,7 @@ const domino = require('domino-ext');
 const fs = require('fs');
 const path = require('path');
 const distFolder = join(process.cwd(), 'dist/opal-frontend/browser');
-const template = fs
-.readFileSync(path.join(distFolder, 'index.html'))
-.toString();
+const template = fs.readFileSync(path.join(distFolder, 'index.html')).toString();
 
 const win = domino.createWindow(template.toString());
 
@@ -13,7 +11,6 @@ const win = domino.createWindow(template.toString());
 global['window'] = win;
 global['document'] = win.document;
 global['self'] = win;
-
 
 import 'zone.js/node';
 
@@ -23,6 +20,15 @@ import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { AppServerModule } from './src/main.server';
 
+import { AppInsights } from './modules/appinsights';
+import { Helmet } from './modules/helmet';
+import { PropertiesVolume } from './modules/properties-volume';
+
+const { Logger } = require('@hmcts/nodejs-logging');
+
+const env = process.env['NODE_ENV'] || 'development';
+const developmentMode = env === 'development';
+
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
@@ -30,9 +36,12 @@ export function app(): express.Express {
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/main/modules/express-engine)
-  server.engine('html', ngExpressEngine({
-    bootstrap: AppServerModule
-  }));
+  server.engine(
+    'html',
+    ngExpressEngine({
+      bootstrap: AppServerModule,
+    })
+  );
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
@@ -40,9 +49,12 @@ export function app(): express.Express {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
-  server.get('*.*', express.static(distFolder, {
-    maxAge: '1y'
-  }));
+  server.get(
+    '*.*',
+    express.static(distFolder, {
+      maxAge: '1y',
+    })
+  );
 
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
@@ -54,11 +66,19 @@ export function app(): express.Express {
 
 function run(): void {
   const port = process.env['PORT'] || 4000;
+  const logger = Logger.getLogger('server');
 
   // Start up the Node server
   const server = app();
+
+  new PropertiesVolume().enableFor(server);
+
+  new AppInsights().enable();
+  // secure the application by adding various HTTP headers to its responses
+  new Helmet(developmentMode).enableFor(server);
+
   server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    logger.info(`Application started: https://localhost:${port}`);
   });
 }
 
@@ -67,7 +87,7 @@ function run(): void {
 // The below code is to ensure that the server is run only when not requiring the bundle.
 declare const __non_webpack_require__: NodeRequire;
 const mainModule = __non_webpack_require__.main;
-const moduleFilename = mainModule && mainModule.filename || '';
+const moduleFilename = (mainModule && mainModule.filename) || '';
 if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
   run();
 }
