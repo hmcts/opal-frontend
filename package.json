@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:coverage": "ng test --no-watch --code-coverage",
     "dev:ssr": "ng run opal-frontend:serve-ssr",
     "serve:ssr": "node dist/opal-frontend/server/main.js",
     "build:ssr": "ng build && ng run opal-frontend:server",
