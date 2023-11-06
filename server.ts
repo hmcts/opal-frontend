@@ -78,7 +78,7 @@ function run(): void {
   new Helmet(developmentMode).enableFor(server);
 
   server.listen(port, () => {
-    logger.info(`Application started: https://localhost:${port}`);
+    logger.info(`Application started: http://localhost:${port}`);
   });
 }
 
