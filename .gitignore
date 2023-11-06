@@ -40,3 +40,10 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+#  Testing
+cypress/videos
+cypress/screenshots
+cypress/downloads
+functional-output
+smoke-output
