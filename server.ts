@@ -19,12 +19,9 @@ import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { AppServerModule } from './src/main.server';
+import { AppInsights, Helmet, PropertiesVolume } from 'server/modules';
 
-import { AppInsights } from './modules/appinsights';
-import { Helmet } from './modules/helmet';
-import { PropertiesVolume } from './modules/properties-volume';
-
-const { Logger } = require('@hmcts/nodejs-logging');
+import { Logger } from '@hmcts/nodejs-logging';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
