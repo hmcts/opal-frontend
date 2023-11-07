@@ -1,0 +1,5 @@
+{
+  "appInsights": {
+    "instrumentationKey": "APP_INISIGHTS_KEY"
+  }
+}

@@ -9,6 +9,7 @@ const appInsights = require('applicationinsights');
 
 export class AppInsights {
   enable(): void {
+    console.log('AIK', config.get('appInsights.instrumentationKey'));
     if (config.get('appInsights.instrumentationKey')) {
       appInsights.setup(config.get('appInsights.instrumentationKey')).setSendLiveMetrics(true).start();
 
