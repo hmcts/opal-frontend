@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --browsers ChromeHeadless",
     "test:coverage": "ng test --no-watch --code-coverage --browsers ChromeHeadless",
@@ -20,7 +20,7 @@
     "test:dev:functional:combine:reports": "jrm functional-output/dev/test-result.xml \"functional-output/dev/*.xml\"",
     "dev:ssr": "ng run opal-frontend:serve-ssr",
     "serve:ssr": "node dist/opal-frontend/server/main.js",
-    "build:ssr": "ng build && ng run opal-frontend:server",
+    "build:ssr": "ng build --configuration production && ng run opal-frontend:server",
     "build:serve:ssr": "yarn run build:ssr && yarn run serve:ssr",
     "prerender": "ng run opal-frontend:prerender",
     "pa11y": "yarn ts-node -P ./pa11y/tsconfig.json ./pa11y/pa11y.ts"
