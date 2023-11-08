@@ -1,8 +1,8 @@
 nodejs:
   applicationPort: 3100
   aadIdentityName: rpe
-  ingressHost: rpe-expressjs-template.{{ .Values.global.environment }}.platform.hmcts.net
-  image: 'hmctspublic.azurecr.io/rpe/expressjs-template:latest'
+  ingressHost: opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
+  image: 'hmctspublic.azurecr.io/rpe/opal-frontend:latest'
   #  Uncomment once the vault containing the app insights key has been set up
   #  keyVaults:
   #    rpe:
