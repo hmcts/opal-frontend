@@ -1,0 +1,11 @@
+nodejs:
+  applicationPort: 3100
+  aadIdentityName: rpe
+  ingressHost: rpe-expressjs-template.{{ .Values.global.environment }}.platform.hmcts.net
+  image: 'hmctspublic.azurecr.io/rpe/expressjs-template:latest'
+  #  Uncomment once the vault containing the app insights key has been set up
+  #  keyVaults:
+  #    rpe:
+  #      secrets:
+  #        - AppInsightsInstrumentationKey
+  environment:
