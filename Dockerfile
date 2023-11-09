@@ -4,10 +4,6 @@ COPY --chown=hmcts:hmcts . .
 
 USER root
 
-# Set the yarn version we want to use
-ENV YARN_VERSION 4.0.1
-RUN yarn policies set-version $YARN_VERSION
-
 # Puppeteer config 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
