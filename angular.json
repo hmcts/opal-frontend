@@ -41,10 +41,7 @@
               }
             ],
 
-            "styles": [
-              "./node_modules/govuk-frontend/govuk/all.scss",
-              "src/styles.scss"
-            ],
+            "styles": ["./node_modules/govuk-frontend/govuk/all.scss", "src/styles.scss"],
 
             "scripts": ["./node_modules/govuk-frontend/govuk/all.js"]
           },
@@ -110,7 +107,8 @@
             "outputPath": "dist/opal-frontend/server",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
-            "inlineStyleLanguage": "scss"
+            "inlineStyleLanguage": "scss",
+            "externalDependencies": ["@hmcts/nodejs-healthcheck"]
           },
           "configurations": {
             "production": {

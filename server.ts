@@ -22,7 +22,7 @@ import { AppServerModule } from './src/main.server';
 import { AppInsights, Helmet, PropertiesVolume } from 'server/modules';
 
 import { Logger } from '@hmcts/nodejs-logging';
-// import healthCheck from '@hmcts/nodejs-healthcheck';
+import healthCheck from '@hmcts/nodejs-healthcheck';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -33,12 +33,12 @@ export function app(): express.Express {
   const distFolder = join(process.cwd(), 'dist/opal-frontend/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
-  // const healthConfig = {
-  //   checks: {},
-  //   buildInfo: {},
-  // };
+  const healthConfig = {
+    checks: {},
+    buildInfo: {},
+  };
 
-  // healthCheck.addTo(server, healthConfig);
+  healthCheck.addTo(server, healthConfig);
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/main/modules/express-engine)
   server.engine(
