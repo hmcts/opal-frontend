@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "ts-node": {
+    "files": true
+  },
+  //   "include": ["../server/types/*.d.ts"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "lib": ["esnext"]
+  }
+}

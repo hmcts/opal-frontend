@@ -1,0 +1,6 @@
+{
+  "useCSRFProtection": true,
+  "appInsights": {
+    "instrumentationKey": false
+  }
+}
