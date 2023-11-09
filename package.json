@@ -23,7 +23,8 @@
     "build:ssr": "ng build --configuration production && ng run opal-frontend:server",
     "build:serve:ssr": "yarn run build:ssr && yarn run serve:ssr",
     "prerender": "ng run opal-frontend:prerender",
-    "pa11y": "yarn ts-node -P ./pa11y/tsconfig.json ./pa11y/pa11y.ts"
+    "pa11y": "yarn ts-node -P ./pa11y/tsconfig.json ./pa11y/pa11y.ts",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -58,13 +59,21 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.0",
+    "@angular-eslint/builder": "17.0.1",
+    "@angular-eslint/eslint-plugin": "17.0.1",
+    "@angular-eslint/eslint-plugin-template": "17.0.1",
+    "@angular-eslint/schematics": "17.0.1",
+    "@angular-eslint/template-parser": "17.0.1",
     "@angular/cli": "^17.0.0",
     "@angular/compiler-cli": "^17.0.1",
     "@types/express": "^4.17.0",
     "@types/jasmine": "~4.3.0",
     "@types/node": "^20.8.10",
     "@types/pa11y": "^5.3.6",
+    "@typescript-eslint/eslint-plugin": "6.10.0",
+    "@typescript-eslint/parser": "6.10.0",
     "cypress": "^13.4.0",
+    "eslint": "^8.53.0",
     "jasmine-core": "~4.6.0",
     "junit-report-merger": "^6.0.2",
     "karma": "~6.4.0",
