@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --browsers ChromeHeadless",
+    "test": "ng test --watch=false --browsers ChromeHeadless",
     "test:coverage": "ng test --no-watch --code-coverage --browsers ChromeHeadless",
     "test:dev:a11y": "TEST_URL=http://localhost:4200 yarn run pa11y",
     "test:a11y": "TEST_URL=http://localhost:4000 yarn run pa11y",
