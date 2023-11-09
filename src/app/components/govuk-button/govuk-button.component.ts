@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, WritableSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, WritableSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GovukButtonClasses } from '@enums';
 
