@@ -15,11 +15,10 @@ global['self'] = win;
 import 'zone.js/node';
 
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr';
+import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { AppServerModule } from './src/main.server';
-
 import { AppInsights, Helmet, PropertiesVolume } from 'server/modules';
 
 import { Logger } from '@hmcts/nodejs-logging';
@@ -32,11 +31,7 @@ const developmentMode = env === 'development';
 export function app(): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/opal-frontend/browser');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
-    ? join(distFolder, 'index.original.html')
-    : join(distFolder, 'index.html');
-
-  const commonEngine = new CommonEngine();
+  const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
   const healthConfig = {
     checks: {},
@@ -44,6 +39,14 @@ export function app(): express.Express {
   };
 
   healthCheck.addTo(server, healthConfig);
+
+  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/main/modules/express-engine)
+  server.engine(
+    'html',
+    ngExpressEngine({
+      bootstrap: AppServerModule,
+    })
+  );
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
@@ -58,20 +61,9 @@ export function app(): express.Express {
     })
   );
 
-  // All regular routes use the Angular engine
-  server.get('*', (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers } = req;
-
-    commonEngine
-      .render({
-        bootstrap: AppServerModule,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: distFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-      })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+  // All regular routes use the Universal engine
+  server.get('*', (req, res) => {
+    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
   });
 
   return server;
@@ -91,7 +83,7 @@ function run(): void {
   new Helmet(developmentMode).enableFor(server);
 
   server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    logger.info(`Application started: http://localhost:${port}`);
   });
 }
 
@@ -105,4 +97,4 @@ if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
   run();
 }
 
-export default AppServerModule;
+export * from './src/main.server';
