@@ -45,7 +45,7 @@ export function app(): express.Express {
     'html',
     ngExpressEngine({
       bootstrap: AppServerModule,
-    })
+    }),
   );
 
   server.set('view engine', 'html');
@@ -58,7 +58,7 @@ export function app(): express.Express {
     '*.*',
     express.static(distFolder, {
       maxAge: '1y',
-    })
+    }),
   );
 
   // All regular routes use the Universal engine

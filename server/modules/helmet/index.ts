@@ -39,7 +39,7 @@ export class Helmet {
           },
         },
         referrerPolicy: { policy: 'origin' },
-      })
+      }),
     );
   }
 }

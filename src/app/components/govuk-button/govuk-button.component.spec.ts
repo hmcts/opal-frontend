@@ -25,7 +25,7 @@ describe('GovukButtonComponent', () => {
     fixture.detectChanges();
 
     expect(component.buttonClassSig()).toBe(
-      `${GovukButtonClasses.default} ${GovukButtonClasses.warning} govuk-!-margin-bottom-0`
+      `${GovukButtonClasses.default} ${GovukButtonClasses.warning} govuk-!-margin-bottom-0`,
     );
   });
 
@@ -41,7 +41,7 @@ describe('GovukButtonComponent', () => {
     fixture.detectChanges();
 
     expect(component.buttonClassSig()).toBe(
-      `${GovukButtonClasses.default} ${GovukButtonClasses.secondary} govuk-!-margin-bottom-0`
+      `${GovukButtonClasses.default} ${GovukButtonClasses.secondary} govuk-!-margin-bottom-0`,
     );
   });
 
@@ -50,7 +50,7 @@ describe('GovukButtonComponent', () => {
     fixture.detectChanges();
 
     expect(component.buttonClassSig()).toBe(
-      `${GovukButtonClasses.default} ${GovukButtonClasses.inverse} govuk-!-margin-bottom-0`
+      `${GovukButtonClasses.default} ${GovukButtonClasses.inverse} govuk-!-margin-bottom-0`,
     );
   });
 
@@ -59,7 +59,7 @@ describe('GovukButtonComponent', () => {
     fixture.detectChanges();
 
     expect(component.buttonClassSig()).toBe(
-      `${GovukButtonClasses.default} ${GovukButtonClasses.start} govuk-!-margin-bottom-0`
+      `${GovukButtonClasses.default} ${GovukButtonClasses.start} govuk-!-margin-bottom-0`,
     );
   });
 
@@ -68,7 +68,7 @@ describe('GovukButtonComponent', () => {
     fixture.detectChanges();
 
     expect(component.buttonClassSig()).toBe(
-      `${GovukButtonClasses.default} ${GovukButtonClasses.disabled} govuk-!-margin-bottom-0`
+      `${GovukButtonClasses.default} ${GovukButtonClasses.disabled} govuk-!-margin-bottom-0`,
     );
   });
 });

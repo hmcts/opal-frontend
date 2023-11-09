@@ -20,30 +20,32 @@
             "outputPath": "dist/opal-frontend/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-
               "src/assets",
-
               {
                 "glob": "**/*",
                 "input": "./node_modules/govuk-frontend/govuk/assets/images",
                 "output": "./assets/images"
               },
-
               {
                 "glob": "**/*",
                 "input": "./node_modules/govuk-frontend/govuk/assets/fonts",
                 "output": "./assets/fonts"
               }
             ],
-
-            "styles": ["./node_modules/govuk-frontend/govuk/all.scss", "src/styles.scss"],
-
-            "scripts": ["./node_modules/govuk-frontend/govuk/all.js"]
+            "styles": [
+              "./node_modules/govuk-frontend/govuk/all.scss",
+              "src/styles.scss"
+            ],
+            "scripts": [
+              "./node_modules/govuk-frontend/govuk/all.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -93,11 +95,19 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": []
           }
         },
@@ -108,7 +118,9 @@
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
             "inlineStyleLanguage": "scss",
-            "externalDependencies": ["@hmcts/nodejs-healthcheck"]
+            "externalDependencies": [
+              "@hmcts/nodejs-healthcheck"
+            ]
           },
           "configurations": {
             "production": {
@@ -141,7 +153,9 @@
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
-            "routes": ["/"]
+            "routes": [
+              "/"
+            ]
           },
           "configurations": {
             "production": {
@@ -154,8 +168,22 @@
             }
           },
           "defaultConfiguration": "production"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

@@ -1,0 +1,12 @@
+# third party
+dist
+.angular
+yarn.lock
+.yarn/
+
+.vscode
+coverage
+charts
+
+server/assets/*
+server/views/azuread-b2c-login.html
