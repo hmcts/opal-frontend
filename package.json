@@ -24,7 +24,10 @@
     "build:serve:ssr": "yarn run build:ssr && yarn run serve:ssr",
     "prerender": "ng run opal-frontend:prerender",
     "pa11y": "yarn ts-node -P ./pa11y/tsconfig.json ./pa11y/pa11y.ts",
-    "lint": "ng lint"
+    "lint": "yarn prettier && yarn lint:ng",
+    "lint:ng": "ng lint",
+    "prettier": "prettier --check \"./**/*.{ts,js,html,scss}\"",
+    "prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\""
   },
   "private": true,
   "dependencies": {
@@ -52,6 +55,8 @@
     "govuk-frontend": "^4.7.0",
     "helmet": "^7.0.0",
     "lodash": "^4.17.21",
+    "ng": "^0.0.0",
+    "prettier": "^3.0.3",
     "rxjs": "~7.8.0",
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
