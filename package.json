@@ -24,10 +24,10 @@
     "build:serve:ssr": "yarn run build:ssr && yarn run serve:ssr",
     "prerender": "ng run opal-frontend:prerender",
     "pa11y": "yarn ts-node -P ./pa11y/tsconfig.json ./pa11y/pa11y.ts",
-	"lint": "yarn prettier && yarn lint:ng",
-	"lint:ng": "ng lint",
-	"prettier": "prettier --check \"./**/*.{ts,js,html,scss}\"",
-	"prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\""
+    "lint": "yarn prettier && yarn lint:ng",
+    "lint:ng": "ng lint",
+    "prettier": "prettier --check \"./**/*.{ts,js,html,scss}\"",
+    "prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\""
   },
   "private": true,
   "dependencies": {
