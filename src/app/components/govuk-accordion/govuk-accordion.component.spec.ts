@@ -8,7 +8,7 @@ describe('GovukAccordionComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [GovukAccordionComponent]
+      imports: [GovukAccordionComponent],
     });
     fixture = TestBed.createComponent(GovukAccordionComponent);
     component = fixture.componentInstance;
