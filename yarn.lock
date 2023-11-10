@@ -7359,7 +7359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:2.0.6, http-proxy-middleware@npm:^2.0.3":
+"http-proxy-middleware@npm:2.0.6, http-proxy-middleware@npm:^2.0.3, http-proxy-middleware@npm:^2.0.6":
   version: 2.0.6
   resolution: "http-proxy-middleware@npm:2.0.6"
   dependencies:
@@ -9571,6 +9571,7 @@ __metadata:
     express: ^4.15.2
     govuk-frontend: ^4.7.0
     helmet: ^7.0.0
+    http-proxy-middleware: ^2.0.6
     jasmine-core: ~4.6.0
     junit-report-merger: ^6.0.2
     karma: ~6.4.0
