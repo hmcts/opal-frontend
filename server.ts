@@ -91,7 +91,7 @@ function run(): void {
   new Helmet(developmentMode).enableFor(server);
 
   server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    logger.info(`Server listening on http://localhost:${port}`);
   });
 }
 
