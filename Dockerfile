@@ -1,4 +1,4 @@
-FROM hmctspublic.azurecr.io/base/node:18-alpine AS base
+FROM hmctspublic.azurecr.io/base/node:20-alpine AS base
 
 COPY --chown=hmcts:hmcts . .
 
