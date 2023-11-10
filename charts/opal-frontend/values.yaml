@@ -1,5 +1,5 @@
 nodejs:
-  applicationPort: 3100
+  applicationPort: 4000
   aadIdentityName: opal
   ingressHost: opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'sdshmctspublic.azurecr.io/opal/frontend:latest'
