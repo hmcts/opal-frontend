@@ -3318,11 +3318,11 @@ __metadata:
   linkType: hard
 
 "@types/pa11y@npm:^5.3.6":
-  version: 5.3.6
-  resolution: "@types/pa11y@npm:5.3.6"
+  version: 5.3.7
+  resolution: "@types/pa11y@npm:5.3.7"
   dependencies:
-    "@types/puppeteer": "npm:^5.4.0"
-  checksum: 8e107958329e3dc5f590f74990fd97cc2457bdf79abceeacaf0f90de7c7ad6be3192837e95c1edbce746c5c2efc3982046d9d5eac4b31fc6440075f3867d687c
+    "@types/puppeteer": ^5.4.0
+  checksum: bcaa8b895d849b1a0877d5ed99bd8cc8643d6331450d9b9625d1658f68490fe49e2dae07d40af222eef445cd4a889e7cd9ff153c47c0126db73cd8306d3effa6
   languageName: node
   linkType: hard
 
