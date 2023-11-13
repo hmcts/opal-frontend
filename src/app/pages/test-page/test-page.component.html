@@ -14,6 +14,8 @@
       </p>
 
       @if (data$ | async; as data) {
+      <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible" />
+      <h3 class="govuk-heading-s">API Response</h3>
       <p class="govuk-body">
         {{ data.title }}
       </p>
