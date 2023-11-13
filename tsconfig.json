@@ -22,7 +22,8 @@
     "lib": ["ES2022", "dom"],
     "paths": {
       "@components": ["./src/app/components/index.ts"],
-      "@enums": ["./src/app/enums/index.ts"]
+      "@enums": ["./src/app/enums/index.ts"],
+      "@services": ["./src/app/services/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },

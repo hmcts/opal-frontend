@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, WritableSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, WritableSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GovukButtonClasses } from '@enums';
 
@@ -22,5 +22,11 @@ export class GovukButtonComponent {
         : `${GovukButtonClasses.default} ${GovukButtonClasses[style]}`;
 
     this.buttonClassSig.set(`${classToSet} govuk-!-margin-bottom-0`);
+  }
+
+  @Output() buttonClickEvent = new EventEmitter<boolean>();
+
+  public handleButtonClick(): void {
+    this.buttonClickEvent.emit(true);
   }
 }
