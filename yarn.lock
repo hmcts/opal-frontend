@@ -3248,10 +3248,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:~4.3.0":
-  version: 4.3.6
-  resolution: "@types/jasmine@npm:4.3.6"
-  checksum: 1dd9cc3633db98a0fc7149184cc3916c5158cfdfd65d437b81502d55e5e147305aac3bbce65ed144253b2406e47821629a18d1111b102fdc4f0c6867735a2c91
+"@types/jasmine@npm:~4.6.0":
+  version: 4.6.2
+  resolution: "@types/jasmine@npm:4.6.2"
+  checksum: c9f6ae520dbdc30c07219298df333cd9ecbf463b8afc074d277065bcd62053ff54ce1fcb9e10486a1d94517ab09c283f36a45bd1ccd14e666b92027938da09ab
   languageName: node
   linkType: hard
 
@@ -9544,7 +9544,7 @@ __metadata:
     "@types/config": ^3.3.2
     "@types/express": ^4.17.0
     "@types/helmet": ^4.0.0
-    "@types/jasmine": ~4.3.0
+    "@types/jasmine": ~4.6.0
     "@types/lodash": ^4.14.200
     "@types/node": ^20.8.10
     "@types/pa11y": ^5.3.6
