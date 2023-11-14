@@ -3248,10 +3248,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:~4.3.0":
-  version: 4.3.6
-  resolution: "@types/jasmine@npm:4.3.6"
-  checksum: 1dd9cc3633db98a0fc7149184cc3916c5158cfdfd65d437b81502d55e5e147305aac3bbce65ed144253b2406e47821629a18d1111b102fdc4f0c6867735a2c91
+"@types/jasmine@npm:~4.6.0":
+  version: 4.6.2
+  resolution: "@types/jasmine@npm:4.6.2"
+  checksum: c9f6ae520dbdc30c07219298df333cd9ecbf463b8afc074d277065bcd62053ff54ce1fcb9e10486a1d94517ab09c283f36a45bd1ccd14e666b92027938da09ab
   languageName: node
   linkType: hard
 
@@ -3300,29 +3300,29 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20.8.10":
-  version: 20.8.10
-  resolution: "@types/node@npm:20.8.10"
+  version: 20.9.0
+  resolution: "@types/node@npm:20.9.0"
   dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 7c61190e43e8074a1b571e52ff14c880bc67a0447f2fe5ed0e1a023eb8a23d5f815658edb98890f7578afe0f090433c4a635c7c87311762544e20dd78723e515
+    undici-types: ~5.26.4
+  checksum: bfd927da6bff8a32051fa44bb47ca32a56d2c8bc8ba0170770f181cc1fa3c0b05863c9b930f0ba8604a48d5eb0d319166601709ca53bf2deae0025d8b6c6b8a3
   languageName: node
   linkType: hard
 
 "@types/node@npm:^18.17.5":
-  version: 18.18.8
-  resolution: "@types/node@npm:18.18.8"
+  version: 18.18.9
+  resolution: "@types/node@npm:18.18.9"
   dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: d6a82bfc28bca8e4e32ffc9526798d1aea62f6993ea3a535cd3f47ac3f725a48efe3f484d68168dd154af0001c89935e4e1d77e7b1809c3824c6382bf99b86f6
+    undici-types: ~5.26.4
+  checksum: 629ce20357586144031cb43d601617eef45e59460dea6b1e123f708e6885664f44d54f65e5b72b2614af5b8613f3652ced832649c0b991accbc6a85139befa51
   languageName: node
   linkType: hard
 
 "@types/pa11y@npm:^5.3.6":
-  version: 5.3.6
-  resolution: "@types/pa11y@npm:5.3.6"
+  version: 5.3.7
+  resolution: "@types/pa11y@npm:5.3.7"
   dependencies:
-    "@types/puppeteer": "npm:^5.4.0"
-  checksum: 8e107958329e3dc5f590f74990fd97cc2457bdf79abceeacaf0f90de7c7ad6be3192837e95c1edbce746c5c2efc3982046d9d5eac4b31fc6440075f3867d687c
+    "@types/puppeteer": ^5.4.0
+  checksum: bcaa8b895d849b1a0877d5ed99bd8cc8643d6331450d9b9625d1658f68490fe49e2dae07d40af222eef445cd4a889e7cd9ff153c47c0126db73cd8306d3effa6
   languageName: node
   linkType: hard
 
@@ -4008,28 +4008,28 @@ __metadata:
   linkType: hard
 
 "applicationinsights@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "applicationinsights@npm:2.9.0"
+  version: 2.9.1
+  resolution: "applicationinsights@npm:2.9.1"
   dependencies:
-    "@azure/core-auth": "npm:^1.5.0"
-    "@azure/core-rest-pipeline": "npm:1.10.1"
-    "@azure/core-util": "npm:1.2.0"
-    "@azure/opentelemetry-instrumentation-azure-sdk": "npm:^1.0.0-beta.5"
-    "@microsoft/applicationinsights-web-snippet": "npm:^1.0.1"
-    "@opentelemetry/api": "npm:^1.4.1"
-    "@opentelemetry/core": "npm:^1.15.2"
-    "@opentelemetry/sdk-trace-base": "npm:^1.15.2"
-    "@opentelemetry/semantic-conventions": "npm:^1.15.2"
-    cls-hooked: "npm:^4.2.2"
-    continuation-local-storage: "npm:^3.2.1"
-    diagnostic-channel: "npm:1.1.1"
-    diagnostic-channel-publishers: "npm:1.0.7"
+    "@azure/core-auth": ^1.5.0
+    "@azure/core-rest-pipeline": 1.10.1
+    "@azure/core-util": 1.2.0
+    "@azure/opentelemetry-instrumentation-azure-sdk": ^1.0.0-beta.5
+    "@microsoft/applicationinsights-web-snippet": ^1.0.1
+    "@opentelemetry/api": ^1.4.1
+    "@opentelemetry/core": ^1.15.2
+    "@opentelemetry/sdk-trace-base": ^1.15.2
+    "@opentelemetry/semantic-conventions": ^1.15.2
+    cls-hooked: ^4.2.2
+    continuation-local-storage: ^3.2.1
+    diagnostic-channel: 1.1.1
+    diagnostic-channel-publishers: 1.0.7
   peerDependencies:
     applicationinsights-native-metrics: "*"
   peerDependenciesMeta:
     applicationinsights-native-metrics:
       optional: true
-  checksum: ff044bd70355c059960c2e1d47e8a32ce4df5d0ed5338bf1399663cb251b3010c1ef96cad65d062be9b7e073fa3a2fea05b24043f996b1314cc72fba7c36836f
+  checksum: c10be2a9b55dec985af044f74847a6035b00120dc3474d4851cbaa9422d454ac18fb9e243068111836b7be8767dd19d34790acce1e59887b11601a4477974fad
   languageName: node
   linkType: hard
 
@@ -4980,10 +4980,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:~10.0.0":
-  version: 10.0.1
-  resolution: "commander@npm:10.0.1"
-  checksum: 436901d64a818295803c1996cd856621a74f30b9f9e28a588e726b2b1670665bccd7c1a77007ebf328729f0139838a88a19265858a0fa7a8728c4656796db948
+"commander@npm:~11.1.0":
+  version: 11.1.0
+  resolution: "commander@npm:11.1.0"
+  checksum: fd1a8557c6b5b622c89ecdfde703242ab7db3b628ea5d1755784c79b8e7cb0d74d65b4a262289b533359cd58e1bfc0bf50245dfbcd2954682a6f367c828b79ef
   languageName: node
   linkType: hard
 
@@ -5331,55 +5331,55 @@ __metadata:
   linkType: hard
 
 "cypress@npm:^13.4.0":
-  version: 13.4.0
-  resolution: "cypress@npm:13.4.0"
+  version: 13.5.0
+  resolution: "cypress@npm:13.5.0"
   dependencies:
-    "@cypress/request": "npm:^3.0.0"
-    "@cypress/xvfb": "npm:^1.2.4"
-    "@types/node": "npm:^18.17.5"
-    "@types/sinonjs__fake-timers": "npm:8.1.1"
-    "@types/sizzle": "npm:^2.3.2"
-    arch: "npm:^2.2.0"
-    blob-util: "npm:^2.0.2"
-    bluebird: "npm:^3.7.2"
-    buffer: "npm:^5.6.0"
-    cachedir: "npm:^2.3.0"
-    chalk: "npm:^4.1.0"
-    check-more-types: "npm:^2.24.0"
-    cli-cursor: "npm:^3.1.0"
-    cli-table3: "npm:~0.6.1"
-    commander: "npm:^6.2.1"
-    common-tags: "npm:^1.8.0"
-    dayjs: "npm:^1.10.4"
-    debug: "npm:^4.3.4"
-    enquirer: "npm:^2.3.6"
-    eventemitter2: "npm:6.4.7"
-    execa: "npm:4.1.0"
-    executable: "npm:^4.1.1"
-    extract-zip: "npm:2.0.1"
-    figures: "npm:^3.2.0"
-    fs-extra: "npm:^9.1.0"
-    getos: "npm:^3.2.1"
-    is-ci: "npm:^3.0.0"
-    is-installed-globally: "npm:~0.4.0"
-    lazy-ass: "npm:^1.6.0"
-    listr2: "npm:^3.8.3"
-    lodash: "npm:^4.17.21"
-    log-symbols: "npm:^4.0.0"
-    minimist: "npm:^1.2.8"
-    ospath: "npm:^1.2.2"
-    pretty-bytes: "npm:^5.6.0"
-    process: "npm:^0.11.10"
-    proxy-from-env: "npm:1.0.0"
-    request-progress: "npm:^3.0.0"
-    semver: "npm:^7.5.3"
-    supports-color: "npm:^8.1.1"
-    tmp: "npm:~0.2.1"
-    untildify: "npm:^4.0.0"
-    yauzl: "npm:^2.10.0"
+    "@cypress/request": ^3.0.0
+    "@cypress/xvfb": ^1.2.4
+    "@types/node": ^18.17.5
+    "@types/sinonjs__fake-timers": 8.1.1
+    "@types/sizzle": ^2.3.2
+    arch: ^2.2.0
+    blob-util: ^2.0.2
+    bluebird: ^3.7.2
+    buffer: ^5.6.0
+    cachedir: ^2.3.0
+    chalk: ^4.1.0
+    check-more-types: ^2.24.0
+    cli-cursor: ^3.1.0
+    cli-table3: ~0.6.1
+    commander: ^6.2.1
+    common-tags: ^1.8.0
+    dayjs: ^1.10.4
+    debug: ^4.3.4
+    enquirer: ^2.3.6
+    eventemitter2: 6.4.7
+    execa: 4.1.0
+    executable: ^4.1.1
+    extract-zip: 2.0.1
+    figures: ^3.2.0
+    fs-extra: ^9.1.0
+    getos: ^3.2.1
+    is-ci: ^3.0.0
+    is-installed-globally: ~0.4.0
+    lazy-ass: ^1.6.0
+    listr2: ^3.8.3
+    lodash: ^4.17.21
+    log-symbols: ^4.0.0
+    minimist: ^1.2.8
+    ospath: ^1.2.2
+    pretty-bytes: ^5.6.0
+    process: ^0.11.10
+    proxy-from-env: 1.0.0
+    request-progress: ^3.0.0
+    semver: ^7.5.3
+    supports-color: ^8.1.1
+    tmp: ~0.2.1
+    untildify: ^4.0.0
+    yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: d64495105a61ed1fb41a5189d5015cfa80314c84d1004595e9c4019eedd394f83509409b6f8489a18e92ea96c6b66ffbb918f41ab97c3eaed34abe107c0846aa
+  checksum: e8692e94a9c43aa954bfdf9b96556edc5aeb20e91a303263488d8f515a1095c9dd4585205e797e081da0e3e61709e28416a9cf7cfe9bdee68eea656823a9d107
   languageName: node
   linkType: hard
 
@@ -6505,7 +6505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.9":
+"fast-glob@npm:^3.2.9, fast-glob@npm:~3.3.0":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -6515,19 +6515,6 @@ __metadata:
     merge2: "npm:^1.3.0"
     micromatch: "npm:^4.0.4"
   checksum: 900e4979f4dbc3313840078419245621259f349950411ca2fa445a2f9a1a6d98c3b5e7e0660c5ccd563aa61abe133a21765c6c0dec8e57da1ba71d8000b05ec1
-  languageName: node
-  linkType: hard
-
-"fast-glob@npm:~3.2.11":
-  version: 3.2.12
-  resolution: "fast-glob@npm:3.2.12"
-  dependencies:
-    "@nodelib/fs.stat": "npm:^2.0.2"
-    "@nodelib/fs.walk": "npm:^1.2.3"
-    glob-parent: "npm:^5.1.2"
-    merge2: "npm:^1.3.0"
-    micromatch: "npm:^4.0.4"
-  checksum: 0b1990f6ce831c7e28c4d505edcdaad8e27e88ab9fa65eedadb730438cfc7cde4910d6c975d6b7b8dc8a73da4773702ebcfcd6e3518e73938bb1383badfe01c2
   languageName: node
   linkType: hard
 
@@ -8182,16 +8169,16 @@ __metadata:
   linkType: hard
 
 "junit-report-merger@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "junit-report-merger@npm:6.0.2"
+  version: 6.0.3
+  resolution: "junit-report-merger@npm:6.0.3"
   dependencies:
-    commander: "npm:~10.0.0"
-    fast-glob: "npm:~3.2.11"
-    xmlbuilder2: "npm:3.1.1"
+    commander: ~11.1.0
+    fast-glob: ~3.3.0
+    xmlbuilder2: 3.1.1
   bin:
     jrm: cli.js
     junit-report-merger: cli.js
-  checksum: 7495db2c8b5d731b26e5b571edf1d7711df05cfa2d92f8593e34bb7b50b488879f1aa37676091edf71b35ab4a06559d79296e6afa591364fd89b28faabb3a573
+  checksum: f3c713f4e644887a05f60d2d324b9452b0210cb47ef21e0c55c65f84c2cf0e325738794f0bf3fcf5f0b70a9698449a9333171f953fb78d550212ddb1740fbfaa
   languageName: node
   linkType: hard
 
@@ -9557,7 +9544,7 @@ __metadata:
     "@types/config": ^3.3.2
     "@types/express": ^4.17.0
     "@types/helmet": ^4.0.0
-    "@types/jasmine": ~4.3.0
+    "@types/jasmine": ~4.6.0
     "@types/lodash": ^4.14.200
     "@types/node": ^20.8.10
     "@types/pa11y": ^5.3.6
