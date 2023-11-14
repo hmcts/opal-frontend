@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
+import { GovukHeader } from '@enums';
 @Component({
   selector: 'app-govuk-header',
   standalone: true,
@@ -10,7 +10,5 @@ import { RouterLink } from '@angular/router';
   styleUrl: './govuk-header.component.scss',
 })
 export class GovukHeaderComponent {
-  @Input() serviceName = '';
-  @Input() serviceLink = '';
-  @Input() headerLink = '';
+  public readonly header = GovukHeader;
 }

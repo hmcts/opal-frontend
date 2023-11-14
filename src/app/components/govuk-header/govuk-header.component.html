@@ -1,7 +1,7 @@
 <header class="govuk-header" role="banner" data-module="govuk-header">
   <div class="govuk-header__container govuk-width-container">
     <div class="govuk-header__logo">
-      <a [href]="headerLink" class="govuk-header__link govuk-header__link--homepage">
+      <a [href]="header.headerLink" class="govuk-header__link govuk-header__link--homepage">
         <span class="govuk-header__logotype">
           <!--[if gt IE 8]><!-->
           <svg
@@ -33,13 +33,15 @@
         </span>
       </a>
     </div>
-    @if (serviceName) {
+    @if (header.serviceName) {
     <div class="govuk-header__content">
-      @if (serviceLink) {
-      <a [routerLink]="serviceLink" class="govuk-header__link govuk-header__service-name"> {{ serviceName }} </a>
+      @if (header.serviceLink) {
+      <a [href]="header.serviceLink" class="govuk-header__link govuk-header__service-name">
+        {{ header.serviceName }}
+      </a>
 
       } @else {
-      <span class="govuk-header__service-name"> {{ serviceName }} </span>
+      <span class="govuk-header__service-name"> {{ header.serviceName }} </span>
       }
     </div>
     }
