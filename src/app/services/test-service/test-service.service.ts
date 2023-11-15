@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
 @Injectable({
@@ -9,6 +9,7 @@ export class TestServiceService {
   private readonly baseUrl = '/api/';
 
   public fetchTodo(id: number) {
-    return this.http.get(`${this.baseUrl}/todos/${id}`);
+    const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
+    return this.http.get(`${this.baseUrl}`, { headers, responseType: 'text' });
   }
 }

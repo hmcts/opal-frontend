@@ -4,6 +4,6 @@
     "instrumentationKey": false
   },
   "opal-api": {
-    "url": "https://jsonplaceholder.typicode.com/"
+    "url": "http://localhost:4550"
   }
 }
