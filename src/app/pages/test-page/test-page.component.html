@@ -2,23 +2,23 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">API Test Page</h2>
-      <p class="govuk-body">Click the button below to make an API request.</p>
+      <p class="govuk-body">Click the button below to fetch a defendants account details</p>
       <p class="govuk-body">
         <app-govuk-button
           id="fetch-api-data"
           buttonStyle="default"
           (buttonClickEvent)="handleFetchApiButtonClick($event)"
         >
-          Fetch API Data</app-govuk-button
+          Fetch</app-govuk-button
         >
       </p>
 
       @if (data$ | async; as data) {
       <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible" />
       <h3 class="govuk-heading-s">API Response</h3>
-      <p class="govuk-body">
-        {{ data }}
-      </p>
+      <span class="govuk-body">
+        <pre>{{ data | json }}</pre>
+      </span>
       }
     </div>
   </div>
