@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { initAll } from 'govuk-frontend';
-
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-govuk-accordion',
   standalone: true,
@@ -11,7 +11,15 @@ import { initAll } from 'govuk-frontend';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukAccordionComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+
   public ngOnInit(): void {
-    initAll();
+    // This is to load the govuk lib in dev mode.
+    // There is a polyfill in the server.ts to handle missing windo objects.
+    if (isPlatformBrowser(this.platformId)) {
+      import('govuk-frontend').then((govuk) => {
+        govuk.initAll();
+      });
+    }
   }
 }
