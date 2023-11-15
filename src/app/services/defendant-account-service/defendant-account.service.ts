@@ -1,10 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-
-interface IGetDefendantAccountParams {
-  businessUnitId: number;
-  accountNumber: string;
-}
+import { IGetDefendantAccountParams } from '@interfaces';
 
 @Injectable({
   providedIn: 'root',

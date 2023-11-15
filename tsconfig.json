@@ -23,7 +23,8 @@
     "paths": {
       "@components": ["./src/app/components/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
-      "@services": ["./src/app/services/index.ts"]
+      "@services": ["./src/app/services/index.ts"],
+      "@interfaces": ["./src/app/interfaces/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
@@ -38,5 +39,6 @@
 }
 
 // include + exclude - Issue with cypress + jasmine
+
 
 // https://github.com/cypress-io/cypress/issues/7552#issuecomment-717329891
