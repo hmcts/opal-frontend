@@ -1,3 +1,3 @@
-import { TestServiceService } from './test-service/test-service.service';
+import { DefendantAccountService } from './defendant-account-service/defendant-account.service';
 
-export { TestServiceService };
+export { DefendantAccountService };

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, WritableSignal, inject, signal } fr
 import { CommonModule } from '@angular/common';
 import { GovukAccordionComponent, GovukButtonComponent } from '@components';
 import { GovukButtonClasses } from '@enums';
-import { TestServiceService } from '@services';
+import { DefendantAccountService } from '@services';
 import { EMPTY, Observable } from 'rxjs';
 
 @Component({
@@ -14,7 +14,7 @@ import { EMPTY, Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TestPageComponent {
-  private testService = inject(TestServiceService);
+  private defendantAccountService = inject(DefendantAccountService);
   public data$: Observable<any> = EMPTY;
   public testButtonStyleSig: WritableSignal<keyof typeof GovukButtonClasses> = signal('default');
 
@@ -23,6 +23,9 @@ export class TestPageComponent {
   }
 
   public handleFetchApiButtonClick(event: boolean): void {
-    this.data$ = this.testService.fetchTodo(1);
+    this.data$ = this.defendantAccountService.getDefendantAccount({
+      businessUnitId: 1,
+      accountNumber: '1212',
+    });
   }
 }
