@@ -1,27 +1,131 @@
-# OpalFrontend
+# OPAL Frontend portal
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.8.
+This is an [Angular SSR](https://angular.io/guide/ssr) application. There are two main reasons for this:
 
-## Development server
+- the web server for when the app is deployed in Kubernetes.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- to proxy API requests to internally-facing backend API services, such as the [opal-fines-service](https://github.com/hmcts/opal-fines-service).
 
-## Code scaffolding
+## Getting Started
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Prerequisites
+
+Running the application requires the following tools to be installed in your environment:
+
+- [Node.js](https://nodejs.org/) v20.9.0 or later
+
+- [yarn](https://yarnpkg.com/) v3
+
+- [Docker](https://www.docker.com)
+
+### Install Dependencies
+
+Install dependencies by executing the following command:
+
+```bash
+
+yarn
+
+```
+
+### Local Development Strategy
+
+#### 1. Clone opal-fines-service api
+
+Clone the [opal-fines-service](https://github.com/hmcts/opal-fines-service) repository and follow the instructions in there to get it up and running. This is required by the front end to make local API requests.
+
+#### 2. Development server
+
+To run the [Angular SSR](https://angular.io/guide/ssr) application in development mode with hot reloading run the following command.
+
+```bash
+
+yarn dev:ssr
+
+```
+
+The applications's home page will be available at http://localhost:4200.
+
+**Note** this is running the [Angular SSR](https://angular.io/guide/ssr) application and expects the [opal-fines-service](https://github.com/hmcts/opal-fines-service) to also be running locally to function correctly.
+
+#### 3. Production server
+
+The following command builds the [Angular SSR](https://angular.io/guide/ssr) application for production and serves it. You will **not** have hot reloading in this mode.
+
+```bash
+
+yarn dev:build:serve:ssr
+
+```
+
+The applications's home page will be available at http://localhost:4000.
+
+**Note** this is running [Angular SSR](https://angular.io/guide/ssr) application and expects the [opal-fines-service](https://github.com/hmcts/opal-fines-service) to also be running locally to function correctly.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `yarn:build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-front` directory. This compiles both the node.js server-side code and angular code.
+
+## Code style
+
+We use [ESLint](https://github.com/typescript-eslint/typescript-eslint) and [Prettier](https://prettier.io/)
+
+Running the linting:
+
+```bash
+
+yarn lint
+
+```
+
+You can fix prettier formatting issues using:
+
+```bash
+
+yarn  prettier:fix
+
+```
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `yarn test` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html).
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+We are using [cypress](https://www.cypress.io/) for our end to end tests.
 
-## Further help
+Run `yarn test:smoke` to execute the end-to-end smoke tests.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Run `yarn test:functional` to execute the end-to-end functional tests.
+
+Run `yarn cypress` to open the cypress console, very useful for debugging tests.
+
+## Running accessbility testing
+
+We are using [pa11y](https://pa11y.org/) for our accessbility tests. There are a couple of steps required to run the tests.
+
+#### 1. Development server
+
+The development server is required to be running. You can start it by running the following command.
+
+```bash
+
+yarn dev:ssr
+
+```
+
+#### 1. pa11y
+
+Once the development server is running you can run the pa11y test by running the following command
+
+```bash
+
+yarn pa11y
+
+```
+
+## Angular code scaffolding
+
+Run `yarn ng generate component component-name` to generate a new component. You can also use `yarn ng generate directive|pipe|service|class|guard|interface|enum|module`.
+
+Note the requirement for prefixing the `ng` commands with `yarn`
