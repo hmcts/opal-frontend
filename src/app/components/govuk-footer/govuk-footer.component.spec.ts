@@ -8,10 +8,9 @@ describe('GovukFooterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukFooterComponent]
-    })
-    .compileComponents();
-    
+      imports: [GovukFooterComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(GovukFooterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
