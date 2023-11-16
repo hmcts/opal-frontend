@@ -13,4 +13,6 @@ describe('DefendantAccountService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should GET the defendant account', () => {});
 });

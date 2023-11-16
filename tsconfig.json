@@ -35,7 +35,7 @@
     "strictTemplates": true
   },
   "include": ["src", "node_modules/cypress"],
-  "exclude": ["node_modules/cypress"]
+  "exclude": ["node_modules/cypress", "**/*.mock.ts"]
 }
 
 // include + exclude - Issue with cypress + jasmine

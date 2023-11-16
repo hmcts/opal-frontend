@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { IGetDefendantAccountParams } from '@interfaces';
+import { IDefendantAccount, IGetDefendantAccountParams } from '@interfaces';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +10,8 @@ export class DefendantAccountService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/';
 
-  public getDefendantAccount(params: IGetDefendantAccountParams) {
-    return this.http.get(
+  public getDefendantAccount(params: IGetDefendantAccountParams): Observable<IDefendantAccount> {
+    return this.http.get<IDefendantAccount>(
       `${this.baseUrl}defendant-account?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`,
     );
   }
