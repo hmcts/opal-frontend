@@ -1,6 +1,6 @@
 # OPAL Frontend portal
 
-This is an [Angular SSR](https://angular.io/guide/ssr) application. There are two main reasons for this:
+This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are two main reasons for this:
 
 - the web server for when the app is deployed in Kubernetes.
 
@@ -36,7 +36,7 @@ Clone the [opal-fines-service](https://github.com/hmcts/opal-fines-service) repo
 
 #### 2. Development server
 
-To run the [Angular SSR](https://angular.io/guide/ssr) application in development mode with hot reloading run the following command.
+To run the [Angular SSR](https://angular.dev/guide/ssr) application in development mode with hot reloading run the following command.
 
 ```bash
 
@@ -46,11 +46,11 @@ yarn dev:ssr
 
 The applications's home page will be available at http://localhost:4200.
 
-**Note** this is running the [Angular SSR](https://angular.io/guide/ssr) application and expects the [opal-fines-service](https://github.com/hmcts/opal-fines-service) to also be running locally to function correctly.
+**Note** this is running the [Angular SSR](https://angular.dev/guide/ssr) application and expects the [opal-fines-service](https://github.com/hmcts/opal-fines-service) to also be running locally to function correctly.
 
 #### 3. Production server
 
-The following command builds the [Angular SSR](https://angular.io/guide/ssr) application for production and serves it. You will **not** have hot reloading in this mode.
+The following command builds the [Angular SSR](https://angular.dev/guide/ssr) application for production and serves it. You will **not** have hot reloading in this mode.
 
 ```bash
 
@@ -60,7 +60,7 @@ yarn dev:build:serve:ssr
 
 The applications's home page will be available at http://localhost:4000.
 
-**Note** this is running [Angular SSR](https://angular.io/guide/ssr) application and expects the [opal-fines-service](https://github.com/hmcts/opal-fines-service) to also be running locally to function correctly.
+**Note** this is running [Angular SSR](https://angular.dev/guide/ssr) application and expects the [opal-fines-service](https://github.com/hmcts/opal-fines-service) to also be running locally to function correctly.
 
 ## Build
 
