@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestPageComponent } from './test-page.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { EMPTY } from 'rxjs';
 
 describe('TestPageComponent', () => {
   let component: TestPageComponent;
@@ -18,5 +19,13 @@ describe('TestPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should populate the observable', () => {
+    expect(component.data$).toBe(EMPTY);
+
+    component.handleFetchApiButtonClick();
+
+    expect(component.data$).not.toBe(EMPTY);
   });
 });

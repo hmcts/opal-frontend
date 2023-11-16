@@ -20,7 +20,7 @@ export class TestPageComponent {
   public data$: Observable<IDefendantAccount> = EMPTY;
   public testButtonStyleSig: WritableSignal<keyof typeof GovukButtonClasses> = signal('default');
 
-  public handleFetchApiButtonClick(event: boolean): void {
+  public handleFetchApiButtonClick(): void {
     this.data$ = this.defendantAccountService.getDefendantAccount({
       businessUnitId: 1,
       accountNumber: '1212',
