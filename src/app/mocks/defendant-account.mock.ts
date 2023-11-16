@@ -1,4 +1,4 @@
-export const defendantAccount = {
+export const defendantAccountMock = {
   defendantAccountId: 1,
   businessUnitId: 1,
   accountNumber: '1212',

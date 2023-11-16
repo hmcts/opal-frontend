@@ -24,7 +24,8 @@
       "@components": ["./src/app/components/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
-      "@interfaces": ["./src/app/interfaces/index.ts"]
+      "@interfaces": ["./src/app/interfaces/index.ts"],
+      "@mocks": ["./src/app/mocks/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
