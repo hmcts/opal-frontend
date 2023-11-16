@@ -64,7 +64,7 @@ The applications's home page will be available at http://localhost:4000.
 
 ## Build
 
-Run `yarn:build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-front` directory. This compiles both the node.js server-side code and angular code.
+Run `yarn:build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.
 
 ## Code style
 
