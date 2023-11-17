@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, WritableSignal, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EMPTY, Observable } from 'rxjs';
 
 import { GovukAccordionComponent, GovukButtonComponent } from '@components';
-import { GovukButtonClasses } from '@enums';
 import { DefendantAccountService } from '@services';
 import { IDefendantAccount } from '@interfaces';
 
