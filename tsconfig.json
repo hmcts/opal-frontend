@@ -22,7 +22,10 @@
     "lib": ["ES2022", "dom"],
     "paths": {
       "@components": ["./src/app/components/index.ts"],
-      "@enums": ["./src/app/enums/index.ts"]
+      "@enums": ["./src/app/enums/index.ts"],
+      "@services": ["./src/app/services/index.ts"],
+      "@interfaces": ["./src/app/interfaces/index.ts"],
+      "@mocks": ["./src/app/mocks/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
@@ -31,5 +34,12 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "include": ["src", "node_modules/cypress"],
+  "exclude": ["node_modules/cypress", "**/*.mock.ts"]
 }
+
+// include + exclude - Issue with cypress + jasmine
+
+
+// https://github.com/cypress-io/cypress/issues/7552#issuecomment-717329891

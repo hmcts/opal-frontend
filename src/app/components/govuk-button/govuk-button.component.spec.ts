@@ -71,4 +71,14 @@ describe('GovukButtonComponent', () => {
       `${GovukButtonClasses.default} ${GovukButtonClasses.disabled} govuk-!-margin-bottom-0`,
     );
   });
+
+  it('should handle the button click', () => {
+    spyOn(component.buttonClickEvent, 'emit');
+
+    component.handleButtonClick();
+
+    fixture.detectChanges();
+
+    expect(component.buttonClickEvent.emit).toHaveBeenCalledWith(true);
+  });
 });

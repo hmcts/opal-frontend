@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component, WritableSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, WritableSignal, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { EMPTY, Observable } from 'rxjs';
+
 import { GovukAccordionComponent, GovukButtonComponent } from '@components';
 import { GovukButtonClasses } from '@enums';
+import { DefendantAccountService } from '@services';
+import { IDefendantAccount } from '@interfaces';
 
 @Component({
   selector: 'app-test-page',
@@ -12,9 +16,13 @@ import { GovukButtonClasses } from '@enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TestPageComponent {
-  public testButtonStyleSig: WritableSignal<keyof typeof GovukButtonClasses> = signal('default');
+  private defendantAccountService = inject(DefendantAccountService);
+  public data$: Observable<IDefendantAccount> = EMPTY;
 
-  public handleClassChangeClick(): void {
-    this.testButtonStyleSig.set('warning');
+  public handleFetchApiButtonClick(): void {
+    this.data$ = this.defendantAccountService.getDefendantAccount({
+      businessUnitId: 1,
+      accountNumber: '1212',
+    });
   }
 }

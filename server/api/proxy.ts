@@ -5,5 +5,6 @@ export default () => {
   return createProxyMiddleware({
     target: config.get('opal-api.url'),
     changeOrigin: true,
+    logLevel: 'debug',
   });
 };

@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { GovukHeaderComponent } from './components/govuk-header/govuk-header.component';
+import { GovukFooterComponent } from './components/govuk-footer/govuk-footer.component';
 
 describe('AppComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, GovukHeaderComponent, GovukFooterComponent],
       declarations: [AppComponent],
     }),
   );
