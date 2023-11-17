@@ -18,7 +18,6 @@ import { IDefendantAccount } from '@interfaces';
 export class TestPageComponent {
   private defendantAccountService = inject(DefendantAccountService);
   public data$: Observable<IDefendantAccount> = EMPTY;
-  public testButtonStyleSig: WritableSignal<keyof typeof GovukButtonClasses> = signal('default');
 
   public handleFetchApiButtonClick(): void {
     this.data$ = this.defendantAccountService.getDefendantAccount({
