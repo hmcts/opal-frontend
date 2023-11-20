@@ -10,11 +10,11 @@
       </p>
 
       @if (data$ | async; as data) {
-      <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible" />
-      <h3 class="govuk-heading-s">API Response</h3>
-      <span class="govuk-body">
-        <pre>{{ data | json }}</pre>
-      </span>
+        <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible" />
+        <h3 class="govuk-heading-s">API Response</h3>
+        <span class="govuk-body">
+          <pre>{{ data | json }}</pre>
+        </span>
       }
     </div>
   </div>
