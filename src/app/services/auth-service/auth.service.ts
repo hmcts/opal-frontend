@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Injector, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map, tap } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { tap } from 'rxjs';
+
 import { SsoEndpoints } from 'src/app/enums/sso-endpoints';
 
 @Injectable({
@@ -9,9 +9,9 @@ import { SsoEndpoints } from 'src/app/enums/sso-endpoints';
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly authenticated = signal<boolean>(false);
+  public readonly authenticated = signal<boolean>(false);
 
-  public checkAuthenticated(injector: Injector) {
-    return toSignal(this.http.get(SsoEndpoints.authenticated).pipe(map((res) => res)), { injector });
+  public checkAuthenticated() {
+    return this.http.get<boolean>(`${SsoEndpoints.authenticated}`).pipe(tap((resp) => this.authenticated.set(resp)));
   }
 }
