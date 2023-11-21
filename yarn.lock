@@ -4238,6 +4238,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.6.2":
+  version: 1.6.2
+  resolution: "axios@npm:1.6.2"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 4a7429e2b784be0f2902ca2680964391eae7236faa3967715f30ea45464b98ae3f1c6f631303b13dfe721b17126b01f486c7644b9ef276bfc63112db9fd379f8
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:4.0.0":
   version: 4.0.0
   resolution: "axobject-query@npm:4.0.0"
@@ -9551,6 +9562,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 6.11.0
     "@typescript-eslint/parser": 6.11.0
     applicationinsights: ^2.9.0
+    axios: ^1.6.2
     config: ^3.3.9
     cypress: ^13.4.0
     domino-ext: ^2.1.4

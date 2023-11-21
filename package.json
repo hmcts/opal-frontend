@@ -50,6 +50,7 @@
     "@types/helmet": "^4.0.0",
     "@types/lodash": "^4.14.200",
     "applicationinsights": "^2.9.0",
+    "axios": "^1.6.2",
     "config": "^3.3.9",
     "domino-ext": "^2.1.4",
     "express": "^4.15.2",
