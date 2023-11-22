@@ -11,7 +11,7 @@ export default (): Router => {
   // Handle our authentication
   router.get('/sso/login', (req, res, next) => ssoLogin(req, res, next));
   router.get('/sso/logout', (req, res) => ssoLogout(req, res));
-  router.get('/sso/callback', (req, res) => ssoCallback(req, res));
+  router.get('/sso/callback', (req, res, next) => ssoCallback(req, res, next));
   router.get('/sso/authenticated', (req, res) => ssoAuthenticated(req, res));
 
   return router;

@@ -5,5 +5,12 @@
   },
   "opal-api": {
     "url": "http://localhost:4550"
+  },
+  "secrets": {
+    "opal": {
+      "AppInsightsInstrumentationKey": "00000000-0000-0000-0000-000000000000",
+      "redis-connection-string": "",
+      "opal-frontend-session-secret": "supersecret"
+    }
   }
 }
