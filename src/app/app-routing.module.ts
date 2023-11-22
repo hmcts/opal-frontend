@@ -9,6 +9,10 @@ const routes: Routes = [
     loadComponent: () => import('./pages/test-page/test-page.component').then((c) => c.TestPageComponent),
     canActivate: [authGuard],
   },
+  {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login.component').then((c) => c.LoginComponent),
+  },
 ];
 
 @NgModule({

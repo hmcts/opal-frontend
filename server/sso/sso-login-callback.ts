@@ -8,7 +8,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
   // req.session.userType = type;
   req.session.securityToken = mockSecurityToken;
-  console.log('SET', req.session);
+
   req.session.save((err) => {
     if (err) {
       return next(err);
