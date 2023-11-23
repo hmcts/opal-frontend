@@ -1,4 +1,5 @@
 {
+  "node-env": "development",
   "appInsights": {
     "instrumentationKey": "APP_INISIGHTS_KEY"
   }

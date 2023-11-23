@@ -3,13 +3,13 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { GovukButtonComponent } from '@components';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-sign-in',
   standalone: true,
   imports: [CommonModule, GovukButtonComponent],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  templateUrl: './sign-in.component.html',
+  styleUrl: './sign-in.component.scss',
 })
-export class LoginComponent {
+export class SignInComponent {
   private readonly document = inject(DOCUMENT);
 
   public handleLoginButtonClick(): void {

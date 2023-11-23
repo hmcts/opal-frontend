@@ -10,8 +10,8 @@ const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'login',
-    loadComponent: () => import('./pages/login/login.component').then((c) => c.LoginComponent),
+    path: 'sign-in',
+    loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
   },
 ];
 

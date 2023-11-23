@@ -1,4 +1,5 @@
 {
+  "node-env": "development",
   "useCSRFProtection": true,
   "appInsights": {
     "instrumentationKey": false
