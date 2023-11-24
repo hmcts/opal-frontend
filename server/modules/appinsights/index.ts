@@ -9,8 +9,8 @@ const appInsights = require('applicationinsights');
 
 export class AppInsights {
   enable(): void {
-    if (config.get('appInsights.instrumentationKey')) {
-      appInsights.setup(config.get('appInsights.instrumentationKey')).setSendLiveMetrics(true).start();
+    if (config.get('secrets.opal.AppInsightsInstrumentationKey')) {
+      appInsights.setup(config.get('secrets.opal.AppInsightsInstrumentationKey')).setSendLiveMetrics(true).start();
 
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = 'opal-frontend';
       appInsights.defaultClient.trackTrace({
