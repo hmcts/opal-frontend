@@ -8,16 +8,22 @@ describe('SignInComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignInComponent]
-    })
-    .compileComponents();
-    
+      imports: [SignInComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(SignInComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should handleLoginButtonClick', () => {
+    const spy = spyOn(component, 'handleLoginButtonClick');
+    component.handleLoginButtonClick();
+    expect(spy).toHaveBeenCalled();
   });
 });
