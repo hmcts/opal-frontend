@@ -81,14 +81,20 @@ export function app(): express.Express {
       .catch((err) => next(err));
   });
 
+  testRedis();
+
+  return server;
+}
+
+async function testRedis() {
   console.log('redis feature enabled: ' + config.get('features.redis.enabled'));
   if (config.get('features.redis.enabled')) {
     const redisClient = createClient({ url: config.get('secrets.opal.redis-connection-string') });
     redisClient.connect().catch(console.error);
     redisClient.set('test-key', 'test-val');
+    const returnVal = await redisClient.get('test-key');
+    console.log(`returned value: ${returnVal}`);
   }
-
-  return server;
 }
 
 function run(): void {
