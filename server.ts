@@ -85,6 +85,7 @@ export function app(): express.Express {
   if (config.get('features.redis.enabled')) {
     const redisClient = createClient({ url: config.get('secrets.opal.redis-connection-string') });
     redisClient.connect().catch(console.error);
+    redisClient.set('test-key', 'test-val');
   }
 
   return server;
