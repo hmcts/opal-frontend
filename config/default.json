@@ -1,4 +1,5 @@
 {
+  "node-env": "development",
   "useCSRFProtection": true,
   "opal-api": {
     "url": "http://localhost:4550"

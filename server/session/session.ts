@@ -11,7 +11,7 @@ export default () => {
     cookie: {},
   };
 
-  if (config.get('node-env') === 'production') {
+  if (config.get('features.redis.enabled')) {
     const redisClient = createClient({ url: config.get('secrets.opal.redis-connection-string') });
     redisClient.connect().catch(console.error);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
