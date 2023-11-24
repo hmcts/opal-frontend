@@ -62,6 +62,18 @@ The applications's home page will be available at http://localhost:4000.
 
 **Note** this is running [Angular SSR](https://angular.dev/guide/ssr) application and expects the [opal-fines-service](https://github.com/hmcts/opal-fines-service) to also be running locally to function correctly.
 
+#### Redis (Optional)
+
+By default Redis is disabled for local development. If desired, start up a Redis instance locally:
+
+```bash
+
+docker run -p 6379:6379 -it redis/redis-stack-server:latest
+
+```
+
+And enable Redis integration within the application by setting the environment variable `FEATURES_REDIS_ENABLED` to `true`. The application will connect to Redis on the next startup.
+
 ## Build
 
 Run `yarn:build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.

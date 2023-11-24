@@ -3,9 +3,14 @@ nodejs:
   aadIdentityName: opal
   ingressHost: opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
   image: 'sdshmctspublic.azurecr.io/opal/frontend:latest'
-  #  Uncomment once the vault containing the app insights key has been set up
-  #  keyVaults:
-  #    opal:
-  #      secrets:
-  #        - AppInsightsInstrumentationKey
+  keyVaults:
+    opal:
+      secrets:
+        - AppInsightsInstrumentationKey
+        - redis-connection-string
   environment:
+    ALLOW_CONFIG_MUTATIONS: true
+    FEATURES_REDIS_ENABLED: true
+
+redis:
+  enabled: false
