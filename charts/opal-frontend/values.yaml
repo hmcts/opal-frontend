@@ -9,6 +9,7 @@ nodejs:
         - AppInsightsInstrumentationKey
         - redis-connection-string
   environment:
+    ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: true
 
 redis:
