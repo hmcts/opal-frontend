@@ -1,5 +1,16 @@
 {
-  "appInsights": {
-    "instrumentationKey": "APP_INISIGHTS_KEY"
+  "features": {
+    "redis": {
+      "enabled": {
+        "__name": "FEATURES_REDIS_ENABLED",
+        "__format": "json"
+      }
+    }
+  },
+  "secrets": {
+    "opal": {
+      "AppInsightsInstrumentationKey": "APP_INSIGHTS_KEY",
+      "redis-connection-string": "REDIS_CONNECTION_STRING"
+    }
   }
 }

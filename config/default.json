@@ -1,9 +1,17 @@
 {
   "useCSRFProtection": true,
-  "appInsights": {
-    "instrumentationKey": false
-  },
   "opal-api": {
     "url": "http://localhost:4550"
+  },
+  "features": {
+    "redis": {
+      "enabled": false
+    }
+  },
+  "secrets": {
+    "opal": {
+      "AppInsightsInstrumentationKey": "00000000-0000-0000-0000-000000000000",
+      "redis-connection-string": "redis://localhost:6379"
+    }
   }
 }

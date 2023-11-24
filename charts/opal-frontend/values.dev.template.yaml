@@ -2,3 +2,18 @@ nodejs:
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  keyVaults:
+    opal:
+      secrets:
+        - AppInsightsInstrumentationKey
+  environment:
+    REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-redis-master:6379
+
+redis:
+  enabled: true
+  architecture: standalone
+  master:
+    persistence:
+      enabled: false
+  auth:
+    enabled: false
