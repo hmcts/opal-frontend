@@ -26,6 +26,8 @@ import { Logger } from '@hmcts/nodejs-logging';
 import healthCheck from '@hmcts/nodejs-healthcheck';
 
 import routes from 'server/routes';
+import { createClient } from 'redis';
+import config from 'config';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -78,6 +80,12 @@ export function app(): express.Express {
       .then((html) => res.send(html))
       .catch((err) => next(err));
   });
+
+  console.log('redis feature enabled: ' + config.get('features.redis.enabled'));
+  if (config.get('features.redis.enabled')) {
+    const redisClient = createClient({ url: config.get('secrets.opal.redis-connection-string') });
+    redisClient.connect().catch(console.error);
+  }
 
   return server;
 }
