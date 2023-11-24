@@ -1,5 +1,4 @@
 {
-  "node-env": "development",
   "useCSRFProtection": true,
   "opal-api": {
     "url": "http://localhost:4550"
@@ -8,6 +7,10 @@
     "redis": {
       "enabled": false
     }
+  },
+  "session": {
+    "prefix": "opal-session",
+    "ttlInSeconds": 1200
   },
   "secrets": {
     "opal": {
