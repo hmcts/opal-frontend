@@ -64,7 +64,7 @@ describe('authGuard', () => {
     expect(authenticated).toBeTruthy();
   }));
 
-  it('should redirect to login with originalUrl and loggedOut url parameters if catches an error ', fakeAsync(async () => {
+  it('should redirect to login with originalUrl and loggedOut url if catches an error ', fakeAsync(async () => {
     mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
     const authenticated = await runAuthGuardWithContext(getAuthGuardWithDummyUrl(urlPath));
     expect(mockRouter.navigate).toHaveBeenCalledOnceWith([expectedUrl]);
