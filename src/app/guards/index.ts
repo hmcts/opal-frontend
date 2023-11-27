@@ -1,3 +1,3 @@
 import { authGuard } from './auth/auth.guard';
-import { signinedInGuard } from './signed-in/signined-in.guard';
-export { authGuard, signinedInGuard };
+import { signedInGuard } from './signed-in/signed-in.guard';
+export { authGuard, signedInGuard };

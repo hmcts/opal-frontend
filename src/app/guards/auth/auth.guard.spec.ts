@@ -1,19 +1,11 @@
 import { TestBed, fakeAsync } from '@angular/core/testing';
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  RouterStateSnapshot,
-  UrlSegment,
-  UrlSegmentGroup,
-  UrlTree,
-} from '@angular/router';
+import { CanActivateFn, Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 
 import { AuthService } from '@services';
 
 import { authGuard } from './auth.guard';
-import { Observable, of, throwError } from 'rxjs';
-import { runAuthGuardWithContext } from '../utils';
+import { of, throwError } from 'rxjs';
+import { getGuardWithDummyUrl, runAuthGuardWithContext } from '../utils';
 
 describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
@@ -55,25 +47,16 @@ describe('authGuard', () => {
 
   it('should return true if the user is logged in ', fakeAsync(async () => {
     mockIsLoggedInTrue();
-    const authenticated = await runAuthGuardWithContext(getAuthGuardWithDummyUrl(urlPath));
+    const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(authGuard, urlPath));
     expect(authenticated).toBeTruthy();
   }));
 
   it('should redirect to login with originalUrl and loggedOut url if catches an error ', fakeAsync(async () => {
     mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
-    const authenticated = await runAuthGuardWithContext(getAuthGuardWithDummyUrl(urlPath));
+    const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(authGuard, urlPath));
     expect(mockRouter.navigate).toHaveBeenCalledOnceWith([expectedUrl]);
     expect(authenticated).toBeFalsy();
   }));
-
-  function getAuthGuardWithDummyUrl(
-    urlPath: string,
-  ): () => boolean | UrlTree | Promise<boolean | UrlTree> | Observable<boolean | UrlTree> {
-    const dummyRoute = new ActivatedRouteSnapshot();
-    dummyRoute.url = [new UrlSegment(urlPath, {})];
-    const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
-    return () => authGuard(dummyRoute, dummyState);
-  }
 
   const mockIsLoggedInTrue = () => {
     mockAuthService.checkAuthenticated.and.returnValue(of(true));
