@@ -9,25 +9,24 @@ import {
   UrlTree,
 } from '@angular/router';
 
+import { signinedInGuard } from './signined-in.guard';
 import { AuthService } from '@services';
-
-import { authGuard } from './auth.guard';
-import { Observable, of, throwError } from 'rxjs';
+import { throwError, Observable, of } from 'rxjs';
 import { runAuthGuardWithContext } from '../utils';
 
-describe('authGuard', () => {
+describe('signinedInGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => authGuard(...guardParameters));
+    TestBed.runInInjectionContext(() => signinedInGuard(...guardParameters));
 
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
-  const urlPath = '/test-page';
-  const expectedUrl = 'sign-in';
+  const urlPath = '/sign-in';
+  const expectedUrl = '/';
 
   beforeEach(() => {
-    mockAuthService = jasmine.createSpyObj(authGuard, ['checkAuthenticated']);
-    mockRouter = jasmine.createSpyObj(authGuard, ['navigate', 'createUrlTree', 'parseUrl']);
+    mockAuthService = jasmine.createSpyObj(signinedInGuard, ['checkAuthenticated']);
+    mockRouter = jasmine.createSpyObj(signinedInGuard, ['navigate', 'createUrlTree', 'parseUrl']);
     mockRouter.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
       const urlSegment = new UrlSegment(url, {});
@@ -53,29 +52,29 @@ describe('authGuard', () => {
     expect(executeGuard).toBeTruthy();
   });
 
-  it('should return true if the user is logged in ', fakeAsync(async () => {
-    mockIsLoggedInTrue();
-    const authenticated = await runAuthGuardWithContext(getAuthGuardWithDummyUrl(urlPath));
-    expect(authenticated).toBeTruthy();
-  }));
-
-  it('should redirect to login with originalUrl and loggedOut url if catches an error ', fakeAsync(async () => {
-    mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
-    const authenticated = await runAuthGuardWithContext(getAuthGuardWithDummyUrl(urlPath));
+  it('should return false if the user is logged in and redirect to the default route', fakeAsync(async () => {
+    mockIsLoggedInFalse();
+    const authenticated = await runAuthGuardWithContext(getSignedInGuardWithDummyUrl(urlPath));
     expect(mockRouter.navigate).toHaveBeenCalledOnceWith([expectedUrl]);
     expect(authenticated).toBeFalsy();
   }));
 
-  function getAuthGuardWithDummyUrl(
+  it('should allow access to login if catches an error ', fakeAsync(async () => {
+    mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
+    const authenticated = await runAuthGuardWithContext(getSignedInGuardWithDummyUrl(urlPath));
+    expect(authenticated).toBeTruthy();
+  }));
+
+  function getSignedInGuardWithDummyUrl(
     urlPath: string,
   ): () => boolean | UrlTree | Promise<boolean | UrlTree> | Observable<boolean | UrlTree> {
     const dummyRoute = new ActivatedRouteSnapshot();
     dummyRoute.url = [new UrlSegment(urlPath, {})];
     const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
-    return () => authGuard(dummyRoute, dummyState);
+    return () => signinedInGuard(dummyRoute, dummyState);
   }
 
-  const mockIsLoggedInTrue = () => {
-    mockAuthService.checkAuthenticated.and.returnValue(of(true));
+  const mockIsLoggedInFalse = () => {
+    mockAuthService.checkAuthenticated.and.returnValue(of(false));
   };
 });
