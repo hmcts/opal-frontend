@@ -23,7 +23,7 @@ export async function runAuthGuardWithContext(
   return authenticated;
 }
 
-export function handleObservableResult(result: Observable<boolean | UrlTree>): Promise<boolean | UrlTree> {
+function handleObservableResult(result: Observable<boolean | UrlTree>): Promise<boolean | UrlTree> {
   return new Promise<boolean | UrlTree>((resolve) => {
     result.subscribe((value) => {
       resolve(value);
