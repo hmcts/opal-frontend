@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { GovukHeader } from '@enums';
 import { AuthService } from '@services';
