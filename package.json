@@ -96,5 +96,8 @@
     "pa11y": "^6.2.3",
     "typescript": "~5.2.2"
   },
-  "packageManager": "yarn@3.7.0"
+  "packageManager": "yarn@3.7.0",
+  "resolutions": {
+    "axios": "^1.6.2"
+  }
 }
