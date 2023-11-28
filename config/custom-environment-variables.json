@@ -1,4 +1,7 @@
 {
+  "opal-api": {
+    "url": "OPAL_API_URL"
+  },
   "features": {
     "redis": {
       "enabled": {
