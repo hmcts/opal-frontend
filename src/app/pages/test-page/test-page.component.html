@@ -2,6 +2,12 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">API Test Page</h2>
+      <p class="govuk-body">Click the button below to test sign out</p>
+      <p class="govuk-body">
+        <app-govuk-button [id]="'sign-out'" buttonStyle="warning" (buttonClickEvent)="handleLogoutApiButtonClick()">
+          Sign out</app-govuk-button
+        >
+      </p>
       <p class="govuk-body">Click the button below to fetch a defendants account details</p>
       <p class="govuk-body">
         <app-govuk-button id="fetch-api-data" buttonStyle="default" (buttonClickEvent)="handleFetchApiButtonClick()">

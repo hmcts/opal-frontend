@@ -1,4 +1,5 @@
 {
+  "node-env": "development",
   "useCSRFProtection": true,
   "opal-api": {
     "url": "http://localhost:4550"
@@ -8,10 +9,15 @@
       "enabled": false
     }
   },
+  "session": {
+    "prefix": "opal-session",
+    "ttlInSeconds": 1200
+  },
   "secrets": {
     "opal": {
       "AppInsightsInstrumentationKey": "00000000-0000-0000-0000-000000000000",
-      "redis-connection-string": "redis://localhost:6379"
+      "redis-connection-string": "redis://localhost:6379",
+      "opal-frontend-session-secret": "supersecret"
     }
   }
 }
