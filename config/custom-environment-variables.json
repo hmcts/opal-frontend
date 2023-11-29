@@ -1,4 +1,5 @@
 {
+  "node-env": "NODE_ENV",
   "opal-api": {
     "url": "OPAL_API_URL"
   },
