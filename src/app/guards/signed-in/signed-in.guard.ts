@@ -8,6 +8,7 @@ export const signedInGuard: CanActivateFn = () => {
   const router = inject(Router);
   return authService.checkAuthenticated().pipe(
     map(() => {
+      // Redirect to default route if signed in...
       router.navigate(['/']);
       return false;
     }),
