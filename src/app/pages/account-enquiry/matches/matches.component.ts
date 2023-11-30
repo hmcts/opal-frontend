@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { StateService } from 'src/app/services/state-service/state.service';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -9,4 +10,10 @@ import { RouterModule } from '@angular/router';
   templateUrl: './matches.component.html',
   styleUrl: './matches.component.scss',
 })
-export class MatchesComponent {}
+export class MatchesComponent implements OnInit {
+  private readonly stateService = inject(StateService);
+
+  ngOnInit(): void {
+    console.log(this.stateService.accountEnquiry());
+  }
+}

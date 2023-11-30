@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { StateService } from 'src/app/services/state-service/state.service';
 
 @Component({
   selector: 'app-account-enquiry',
@@ -9,4 +10,11 @@ import { RouterModule } from '@angular/router';
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
 })
-export class SearchComponent {}
+export class SearchComponent implements OnInit {
+  private readonly stateService = inject(StateService);
+
+  ngOnInit(): void {
+    console.log(this.stateService.accountEnquiry());
+    this.stateService.accountEnquiry.update((val) => ({ ...val, age: 32 }));
+  }
+}
