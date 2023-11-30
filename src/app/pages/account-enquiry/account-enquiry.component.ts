@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { StateService } from '@services';
@@ -9,17 +9,11 @@ import { StateService } from '@services';
   templateUrl: './account-enquiry.component.html',
   styleUrl: './account-enquiry.component.scss',
 })
-export class AccountEnquiryComponent implements OnInit, OnDestroy {
+export class AccountEnquiryComponent implements OnDestroy {
   private readonly stateService = inject(StateService);
 
-  ngOnInit(): void {
-    console.log('INIT');
-    this.stateService.accountEnquiry.set({
-      name: 'max',
-    });
-  }
   ngOnDestroy(): void {
-    console.log('DESTROYED');
+    // Cleanup our state when the route unloads...
     this.stateService.accountEnquiry.set({});
   }
 }
