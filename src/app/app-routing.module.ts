@@ -10,6 +10,18 @@ const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'account-enquiry',
+    loadComponent: () =>
+      import('./pages/account-enquiry/account-enquiry.component').then((c) => c.AccountEnquiryComponent),
+    children: [
+      {
+        path: 'search', // child route path
+        loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent), // child route component that the router renders
+      },
+    ],
+    canActivate: [authGuard],
+  },
+  {
     path: 'sign-in',
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
     canActivate: [signedInGuard],
