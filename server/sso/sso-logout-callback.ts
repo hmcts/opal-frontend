@@ -5,6 +5,9 @@ export default (req: Request, res: Response, next: NextFunction) => {
     if (err) {
       return next(err);
     }
-    res.redirect('/sign-in');
+
+    setTimeout(() => {
+      res.redirect('/');
+    }, 500);
   });
 };
