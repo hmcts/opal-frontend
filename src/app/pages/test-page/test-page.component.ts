@@ -3,10 +3,9 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { EMPTY, Observable } from 'rxjs';
 
 import { GovukButtonComponent } from '@components';
-import { DefendantAccountService } from '@services';
+import { DefendantAccountService, StateService } from '@services';
 import { IDefendantAccount } from '@interfaces';
 import { RouterModule } from '@angular/router';
-import { StateService } from 'src/app/services/state-service/state.service';
 
 @Component({
   selector: 'app-test-page',

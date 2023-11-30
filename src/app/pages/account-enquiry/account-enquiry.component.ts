@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { StateService } from 'src/app/services/state-service/state.service';
+import { StateService } from '@services';
 
 @Component({
   standalone: true,

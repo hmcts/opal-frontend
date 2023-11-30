@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { StateService } from 'src/app/services/state-service/state.service';
+import { StateService } from '@services';
 
 @Component({
   selector: 'app-account-enquiry',
