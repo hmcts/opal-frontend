@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
@@ -8,4 +8,11 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './account-enquiry.component.html',
   styleUrl: './account-enquiry.component.scss',
 })
-export class AccountEnquiryComponent {}
+export class AccountEnquiryComponent implements OnInit, OnDestroy {
+  ngOnInit(): void {
+    console.log('INIT');
+  }
+  ngOnDestroy(): void {
+    console.log('DESTROYED');
+  }
+}

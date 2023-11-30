@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-account-enquiry',
+  selector: 'app-account-enquiry-matches',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './search.component.html',
-  styleUrl: './search.component.scss',
+  templateUrl: './matches.component.html',
+  styleUrl: './matches.component.scss',
 })
-export class SearchComponent {}
+export class MatchesComponent {}

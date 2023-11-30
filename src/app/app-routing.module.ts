@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard, signedInGuard } from '@guards';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'test-page', pathMatch: 'full' },
+  { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
   {
     path: 'test-page',
     loadComponent: () => import('./pages/test-page/test-page.component').then((c) => c.TestPageComponent),
@@ -15,8 +15,20 @@ const routes: Routes = [
       import('./pages/account-enquiry/account-enquiry.component').then((c) => c.AccountEnquiryComponent),
     children: [
       {
-        path: 'search', // child route path
-        loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent), // child route component that the router renders
+        path: 'search',
+        loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent),
+      },
+
+      {
+        path: 'matches',
+        loadComponent: () =>
+          import('./pages/account-enquiry/matches/matches.component').then((c) => c.MatchesComponent),
+      },
+
+      {
+        path: 'details',
+        loadComponent: () =>
+          import('./pages/account-enquiry/details/details.component').then((c) => c.DetailsComponent),
       },
     ],
     canActivate: [authGuard],
