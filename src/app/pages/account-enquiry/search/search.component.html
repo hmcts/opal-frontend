@@ -1,3 +1,50 @@
-<p>search works!</p>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading">Account Enquiry</h1>
+      </legend>
 
-<button [routerLink]="['../../test-page']">TEST PAGE</button><button [routerLink]="['../matches']">MATCHES</button>
+      <app-govuk-text-input
+        labelFor="test"
+        labelText="This is a test"
+        inputId="test"
+        inputName="test"
+      ></app-govuk-text-input>
+      <!-- <div class="govuk-form-group">
+        <label class="govuk-label" for="address-line-1"> Address line 1 </label>
+        <input class="govuk-input" id="address-line-1" name="addressLine1" type="text" autocomplete="address-line1" />
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="address-line-2"> Address line 2 (optional) </label>
+        <input class="govuk-input" id="address-line-2" name="addressLine2" type="text" autocomplete="address-line2" />
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="address-town"> Town or city </label>
+        <input
+          class="govuk-input govuk-!-width-two-thirds"
+          id="address-town"
+          name="addressTown"
+          type="text"
+          autocomplete="address-level2"
+        />
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="address-county"> County (optional) </label>
+        <input class="govuk-input govuk-!-width-two-thirds" id="address-county" name="addressCounty" type="text" />
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="address-postcode"> Postcode </label>
+        <input
+          class="govuk-input govuk-input--width-10"
+          id="address-postcode"
+          name="addressPostcode"
+          type="text"
+          autocomplete="postal-code"
+        />
+      </div> -->
+    </fieldset>
+  </div>
+
+  <button [routerLink]="['../../test-page']">TEST PAGE</button><button [routerLink]="['../matches']">MATCHES</button>
+</div>
