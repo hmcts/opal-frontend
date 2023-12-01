@@ -5,12 +5,15 @@
         <h1 class="govuk-fieldset__heading">Account Enquiry</h1>
       </legend>
 
-      <app-govuk-text-input
-        labelFor="test"
-        labelText="This is a test"
-        inputId="test"
-        inputName="test"
-      ></app-govuk-text-input>
+      <div [formGroup]="searchForm">
+        <app-govuk-text-input
+          labelFor="test"
+          labelText="This is a test"
+          inputId="test"
+          inputName="test"
+          [control]="searchForm.controls['surname']"
+        ></app-govuk-text-input>
+      </div>
       <!-- <div class="govuk-form-group">
         <label class="govuk-label" for="address-line-1"> Address line 1 </label>
         <input class="govuk-input" id="address-line-1" name="addressLine1" type="text" autocomplete="address-line1" />

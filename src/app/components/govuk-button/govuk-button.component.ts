@@ -11,8 +11,8 @@ import { CommonModule } from '@angular/common';
 })
 export class GovukButtonComponent {
   @Input({ required: true }) buttonId!: string;
-  @Input() type = 'button';
-  @Input() buttonClasses!: string;
+  @Input({ required: false }) type = 'button';
+  @Input({ required: false }) buttonClasses!: string;
 
   @Output() buttonClickEvent = new EventEmitter<boolean>();
 
