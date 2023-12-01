@@ -22,7 +22,8 @@ export class GovukTextInputComponent {
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
-  @Input({ required: true }) set control(val: AbstractControl) {
-    this._control = val as FormControl;
+  @Input({ required: true }) set control(abstractControl: AbstractControl) {
+    // Form controls are passed in as abstract controls, we need to re-cast it.
+    this._control = abstractControl as FormControl;
   }
 }
