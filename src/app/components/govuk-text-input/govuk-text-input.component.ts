@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 export class GovukTextInputComponent {
   @Input({ required: true }) labelText!: string;
   @Input({ required: true }) labelFor!: string;
+  @Input({ required: false }) labelClasses!: string;
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
+  @Input({ required: false }) inputClasses!: string;
 }
