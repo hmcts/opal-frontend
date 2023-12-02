@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -8,5 +8,6 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   templateUrl: './matches.component.html',
   styleUrl: './matches.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchesComponent {}

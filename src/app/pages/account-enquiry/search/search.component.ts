@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { GovukTextInputComponent } from '@components';
   imports: [CommonModule, RouterModule, ReactiveFormsModule, GovukTextInputComponent],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit {
   private readonly stateService = inject(StateService);

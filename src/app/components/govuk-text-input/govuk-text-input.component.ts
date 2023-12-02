@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 
@@ -8,6 +8,7 @@ import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/form
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-text-input.component.html',
   styleUrl: './govuk-text-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTextInputComponent {
   private _control!: FormControl;
