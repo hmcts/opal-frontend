@@ -11,8 +11,16 @@
           labelText="This is a test"
           inputId="test"
           inputName="test"
-          [control]="searchForm.controls['surname']"
+          [control]="searchForm.controls['textInput']"
         ></app-govuk-text-input>
+
+        <app-govuk-radios
+          legendText="Hello World"
+          legendClasses="govuk-fieldset__legend--l"
+          [control]="searchForm.controls['radioInput']"
+          [radioInputs]="testRadioObj"
+          radioClasses="govuk-radios--inline govuk-radios--small"
+        ></app-govuk-radios>
       </div>
 
       <!-- <div class="govuk-form-group">

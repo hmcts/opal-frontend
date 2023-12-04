@@ -13,10 +13,6 @@ import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/form
 export class GovukTextInputComponent {
   private _control!: FormControl;
 
-  get getControl() {
-    return this._control;
-  }
-
   @Input({ required: true }) labelText!: string;
   @Input({ required: true }) labelFor!: string;
   @Input({ required: false }) labelClasses!: string;
@@ -26,5 +22,9 @@ export class GovukTextInputComponent {
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
     this._control = abstractControl as FormControl;
+  }
+
+  get getControl() {
+    return this._control;
   }
 }
