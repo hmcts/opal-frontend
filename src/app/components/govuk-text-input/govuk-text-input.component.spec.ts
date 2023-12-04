@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ChangeDetectorRef } from '@angular/core';
 
-fdescribe('GovukTextInputComponent', () => {
+describe('GovukTextInputComponent', () => {
   let component: GovukTextInputComponent;
   let fixture: ComponentFixture<GovukTextInputComponent>;
   let formControl: FormControl;

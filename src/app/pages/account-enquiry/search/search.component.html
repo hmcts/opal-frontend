@@ -7,20 +7,34 @@
 
       <div [formGroup]="searchForm">
         <app-govuk-text-input
-          labelFor="test"
-          labelText="This is a test"
-          inputId="test"
-          inputName="test"
-          [control]="searchForm.controls['textInput']"
+          labelFor="surname"
+          labelText="Surname"
+          inputId="surname"
+          inputName="surname"
+          [control]="searchForm.controls['surname']"
+        ></app-govuk-text-input>
+
+        <app-govuk-text-input
+          labelFor="company"
+          labelText="Company"
+          inputId="company"
+          inputName="company"
+          [control]="searchForm.controls['company']"
+        ></app-govuk-text-input>
+
+        <app-govuk-text-input
+          labelFor="account-number"
+          labelText="Account Number"
+          inputId="account-number"
+          inputName="account-number"
+          [control]="searchForm.controls['accountNumber']"
         ></app-govuk-text-input>
 
         <app-govuk-radios
-          legendText="Hello World"
-          legendClasses="govuk-fieldset__legend--l"
-          legendHintId="lhint"
-          legendHint="This is a hint"
-          [control]="searchForm.controls['radioInput']"
-          [radioInputs]="testRadioObj"
+          fieldSetId="search-type "
+          legendText="Search Type"
+          [control]="searchForm.controls['searchType']"
+          [radioInputs]="radioDataArr"
           radioClasses="govuk-radios--inline govuk-radios--small"
         ></app-govuk-radios>
       </div>

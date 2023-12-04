@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { DefendantAccountService } from './defendant-account.service';
 import { IGetDefendantAccountParams } from '@interfaces';
-import { defendantAccountMock } from '@mocks';
+import { DEFENDANT_ACCOUNT_MOCK } from '@mocks';
 
 describe('DefendantAccountService', () => {
   let service: DefendantAccountService;
@@ -31,12 +31,12 @@ describe('DefendantAccountService', () => {
     const apiUrl = `/api/defendant-account?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`;
 
     service.getDefendantAccount(params).subscribe((defendantAccount) => {
-      expect(defendantAccount).toEqual(defendantAccountMock);
+      expect(defendantAccount).toEqual(DEFENDANT_ACCOUNT_MOCK);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
 
-    req.flush(defendantAccountMock);
+    req.flush(DEFENDANT_ACCOUNT_MOCK);
   });
 });

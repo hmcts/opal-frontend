@@ -5,36 +5,8 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { StateService } from '@services';
 import { GovukTextInputComponent } from '@components';
 import { GovukRadiosComponent } from 'src/app/components/govuk-radios/govuk-radios.component';
-
-const TEST_RADIO_OBJ = [
-  {
-    inputName: 'test',
-    inputClasses: '',
-    inputId: 'test-1',
-    inputValue: 'test 1',
-    inputLabel: 'Test 1',
-    inputTextDivider: null,
-    inputHint: null,
-  },
-  {
-    inputName: 'test',
-    inputClasses: '',
-    inputId: 'test-2',
-    inputValue: 'test 2',
-    inputLabel: 'Test 2',
-    inputTextDivider: null,
-    inputHint: null,
-  },
-  {
-    inputName: 'test',
-    inputClasses: '',
-    inputId: 'test-3',
-    inputValue: 'test 3',
-    inputLabel: 'Test 3',
-    inputTextDivider: null,
-    inputHint: null,
-  },
-];
+import { IGovUkRadioData } from '@interfaces';
+import { SEARCH_TYPE_RADIOS } from './config/search-type-radios';
 
 @Component({
   selector: 'app-account-enquiry',
@@ -48,12 +20,14 @@ export class SearchComponent implements OnInit {
   private readonly stateService = inject(StateService);
   public searchForm!: FormGroup;
 
-  public testRadioObj = TEST_RADIO_OBJ;
+  public radioDataArr: IGovUkRadioData[] = SEARCH_TYPE_RADIOS;
 
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
-      textInput: new FormControl(null),
-      radioInput: new FormControl(null),
+      surname: new FormControl(null),
+      company: new FormControl(null),
+      accountNumber: new FormControl(null),
+      searchType: new FormControl(null),
     });
   }
 

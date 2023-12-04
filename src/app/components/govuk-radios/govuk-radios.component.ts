@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 
@@ -8,9 +8,13 @@ import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/form
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-radios.component.html',
   styleUrl: './govuk-radios.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukRadiosComponent {
   private _control!: FormControl;
+
+  @Input({ required: true }) fieldSetId!: string;
+
   @Input({ required: true }) legendText!: string;
   @Input({ required: false }) legendHintId!: string;
   @Input({ required: false }) legendHint!: string;
