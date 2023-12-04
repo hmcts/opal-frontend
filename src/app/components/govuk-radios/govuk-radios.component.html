@@ -1,10 +1,13 @@
 <div class="govuk-form-group">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend {{ legendClasses }}" [attr.describedby]="legendHintId">
+    <legend
+      class="govuk-fieldset__legend {{ legendClasses }}"
+      [attr.describedby]="legendHintId ? legendHintId + '-hint' : ''"
+    >
       {{ legendText }}
     </legend>
     @if (legendHint) {
-      <div [id]="legendHintId" class="govuk-hint">
+      <div [id]="legendHintId ? legendHintId + '-hint' : ''" class="govuk-hint">
         {{ legendHint }}
       </div>
     }
@@ -24,7 +27,7 @@
           />
           <label class="govuk-label govuk-radios__label" [for]="input.inputId"> {{ input.inputLabel }} </label>
           @if (input.inputHint) {
-            <div [id]="input.inputId + '-item-hint'" class="govuk-hint govuk-radios__hint">
+            <div [id]="input.inputId ? input.inputId + '-item-hint' : ''" class="govuk-hint govuk-radios__hint">
               {{ input.inputHint }}
             </div>
           }
