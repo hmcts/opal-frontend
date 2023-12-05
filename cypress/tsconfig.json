@@ -1,9 +1,22 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["node_modules/cypress", "**/*.ts"],
+  "include": [
+    "node_modules/cypress",
+    "**/*.ts"
+  ],
   "compilerOptions": {
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "noEmit": false,
     "sourceMap": false,
-    "types": ["cypress"]
+    "target": "es5",
+    "lib": [
+      "es5",
+      "dom"
+    ],
+    "types": [
+      "cypress",
+      "node"
+    ]
   }
 }
