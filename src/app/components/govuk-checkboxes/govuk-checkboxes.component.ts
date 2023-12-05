@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IGovUkCheckboxesData } from '@interfaces';
 
 @Component({
@@ -13,6 +13,7 @@ import { IGovUkCheckboxesData } from '@interfaces';
 })
 export class GovukCheckboxesComponent {
   private _group!: FormGroup;
+  public enabled = false;
 
   @Input({ required: true }) fieldSetId!: string;
 
@@ -24,9 +25,17 @@ export class GovukCheckboxesComponent {
   @Input({ required: true }) set group(abstractControl: AbstractControl | null) {
     this._group = abstractControl as FormGroup;
   }
-  @Input({ required: true }) checkboxInputs!: IGovUkCheckboxesData[];
+  @Input({ required: true }) checkboxInputs!: any[];
   @Input({ required: false }) checkboxClasses!: string;
   get getGroup() {
     return this._group;
+  }
+
+  public hideConditional(parentControlName: string): boolean {
+    const control = this._group.get(parentControlName);
+    if (control) {
+      return !control.value;
+    }
+    return true;
   }
 }

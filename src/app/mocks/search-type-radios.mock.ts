@@ -1,6 +1,6 @@
 export const SEARCH_TYPE_RADIOS_MOCK = [
   {
-    inputName: 'search-type',
+    inputName: 'searchType',
     inputClasses: null,
     inputId: 'defendant',
     inputValue: 'defendant',
@@ -9,7 +9,7 @@ export const SEARCH_TYPE_RADIOS_MOCK = [
     inputHint: null,
   },
   {
-    inputName: 'search-type',
+    inputName: 'searchType',
     inputClasses: 'radio-test-class',
     inputId: 'minor-creditor',
     inputValue: 'minor creditor',

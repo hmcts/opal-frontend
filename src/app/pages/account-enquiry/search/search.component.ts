@@ -29,7 +29,7 @@ export class SearchComponent implements OnInit {
 
   public readonly radioDataArr: IGovUkRadioData[] = SEARCH_TYPE_RADIOS;
 
-  public readonly checboxDataArr: IGovUkCheckboxesData[] = [
+  public readonly checboxDataArr: any[] = [
     {
       inputName: 'checkbox',
       inputClasses: null,
@@ -38,6 +38,14 @@ export class SearchComponent implements OnInit {
       inputLabel: 'Test One',
       inputTextDivider: 'DIV',
       inputHint: 'This is a hint',
+      conditionals: [
+        {
+          inputName: 'conditionalOne',
+          inputClasses: 'govuk-!-width-one-third',
+          inputId: 'conditionalOne',
+          inputLabel: 'ConditionalOne',
+        },
+      ],
     },
     {
       inputName: 'checkbox',
@@ -47,6 +55,14 @@ export class SearchComponent implements OnInit {
       inputLabel: 'Test Two',
       inputTextDivider: null,
       inputHint: null,
+      conditionals: [
+        {
+          inputName: 'conditionalTwo',
+          inputClasses: 'govuk-!-width-one-third',
+          inputId: 'conditionalTwo',
+          inputLabel: 'ConditionalTwo',
+        },
+      ],
     },
   ];
 
@@ -61,10 +77,10 @@ export class SearchComponent implements OnInit {
       nestedGroup: new FormGroup({
         testOne: new FormControl(false),
         testTwo: new FormControl(false),
+        conditionalOne: new FormControl(),
+        conditionalTwo: new FormControl(),
       }),
     });
-
-    console.log(this.searchForm.get('nestedGroup'));
   }
 
   public formVals(): void {

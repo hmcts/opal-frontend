@@ -3,12 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GovukRadiosComponent } from './govuk-radios.component';
 import { By } from '@angular/platform-browser';
 import { SEARCH_TYPE_RADIOS_MOCK } from '@mocks';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 describe('GovukRadiosComponent', () => {
   let component: GovukRadiosComponent;
   let fixture: ComponentFixture<GovukRadiosComponent>;
-  let formControl: FormControl;
+  let formGroup: FormGroup;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -17,9 +17,11 @@ describe('GovukRadiosComponent', () => {
 
     fixture = TestBed.createComponent(GovukRadiosComponent);
     component = fixture.componentInstance;
-    formControl = new FormControl(null);
+    formGroup = new FormGroup({
+      searchType: new FormControl(null),
+    });
 
-    component.control = formControl;
+    component.group = formGroup;
     component.fieldSetId = 'search-type';
     component.legendText = 'Search Type';
     component.legendHintId = 'search-type';
