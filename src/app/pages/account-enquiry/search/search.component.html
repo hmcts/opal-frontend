@@ -33,7 +33,7 @@
         <app-govuk-radios
           fieldSetId="search-type"
           legendText="Search Type"
-          [control]="searchForm.controls['searchType']"
+          [group]="searchForm.get('radioGroup')"
           [radioInputs]="radioDataArr"
           radioClasses="govuk-radios--inline govuk-radios--small"
         ></app-govuk-radios>

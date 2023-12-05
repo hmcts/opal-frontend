@@ -55,7 +55,9 @@ export class SearchComponent implements OnInit {
       surname: new FormControl(null),
       company: new FormControl(null),
       accountNumber: new FormControl(null),
-      searchType: new FormControl(null),
+      radioGroup: new FormGroup({
+        searchType: new FormControl(null),
+      }),
       nestedGroup: new FormGroup({
         testOne: new FormControl(false),
         testTwo: new FormControl(false),

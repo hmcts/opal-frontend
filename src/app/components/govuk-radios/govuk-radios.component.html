@@ -1,4 +1,4 @@
-<div class="govuk-form-group">
+<div class="govuk-form-group" [formGroup]="getGroup">
   <fieldset class="govuk-fieldset" [id]="fieldSetId">
     <legend
       class="govuk-fieldset__legend {{ legendClasses }}"
@@ -25,7 +25,7 @@
             [name]="input.inputName"
             type="radio"
             [value]="input.inputValue"
-            [formControl]="getControl"
+            formControlName="{{ input.inputName }}"
           />
           <label class="govuk-label govuk-radios__label" [for]="input.inputId"> {{ input.inputLabel }} </label>
           @if (input.inputHint) {

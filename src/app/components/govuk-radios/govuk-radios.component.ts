@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IGovUkRadioData } from '@interfaces';
 
 @Component({
@@ -12,7 +12,7 @@ import { IGovUkRadioData } from '@interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukRadiosComponent {
-  private _control!: FormControl;
+  private _group!: FormGroup;
 
   @Input({ required: true }) fieldSetId!: string;
 
@@ -24,11 +24,11 @@ export class GovukRadiosComponent {
   @Input({ required: true }) radioInputs!: IGovUkRadioData[];
   @Input({ required: false }) radioClasses!: string;
 
-  @Input({ required: true }) set control(abstractControl: AbstractControl) {
-    this._control = abstractControl as FormControl;
+  @Input({ required: true }) set group(abstractControl: AbstractControl | null) {
+    this._group = abstractControl as FormGroup;
   }
 
-  get getControl() {
-    return this._control;
+  get getGroup() {
+    return this._group;
   }
 }
