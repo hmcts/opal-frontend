@@ -34,6 +34,25 @@
             </div>
           }
         </div>
+
+        @for (conditional of input?.conditionals; track conditional.inputId) {
+          <div
+            class="govuk-checkboxes__conditional"
+            [ngClass]="{ 'govuk-checkboxes__conditional--hidden': hideConditional(input.inputName, input.inputValue) }"
+            [id]="'conditional-' + input.inputId"
+          >
+            <div class="govuk-form-group">
+              <label class="govuk-label" [for]="conditional.inputId">{{ conditional.inputLabel }} </label>
+              <input
+                class="govuk-input {{ conditional.inputClasses }}"
+                [id]="conditional.inputId"
+                [name]="conditional.inputName"
+                type="text"
+                formControlName="{{ conditional.inputId }}"
+              />
+            </div>
+          </div>
+        }
       }
     </div>
   </fieldset>

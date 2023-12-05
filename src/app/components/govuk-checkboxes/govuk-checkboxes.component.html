@@ -37,7 +37,7 @@
           }
         </div>
 
-        @for (conditional of input.conditionals; track conditional.inputId) {
+        @for (conditional of input?.conditionals; track conditional.inputId) {
           <div
             class="govuk-checkboxes__conditional"
             [ngClass]="{ 'govuk-checkboxes__conditional--hidden': hideConditional(input.inputId) }"

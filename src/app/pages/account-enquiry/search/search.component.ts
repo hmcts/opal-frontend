@@ -27,7 +27,42 @@ export class SearchComponent implements OnInit {
   private readonly stateService = inject(StateService);
   public searchForm!: FormGroup;
 
-  public readonly radioDataArr: IGovUkRadioData[] = SEARCH_TYPE_RADIOS;
+  public readonly radioDataArr: any[] = [
+    {
+      inputName: 'searchType',
+      inputClasses: null,
+      inputId: 'defendant',
+      inputValue: 'defendant',
+      inputLabel: 'Defendant',
+      inputTextDivider: null,
+      inputHint: null,
+      conditionals: [
+        {
+          inputName: 'conditionalOne',
+          inputClasses: 'govuk-!-width-one-third',
+          inputId: 'conditionalOne',
+          inputLabel: 'ConditionalOne',
+        },
+      ],
+    },
+    {
+      inputName: 'searchType',
+      inputClasses: null,
+      inputId: 'minor-creditor',
+      inputValue: 'minor creditor',
+      inputLabel: 'Minor Creditor',
+      inputTextDivider: null,
+      inputHint: null,
+      conditionals: [
+        {
+          inputName: 'conditionalTwo',
+          inputClasses: 'govuk-!-width-one-third',
+          inputId: 'conditionalTwo',
+          inputLabel: 'ConditionalTwo',
+        },
+      ],
+    },
+  ];
 
   public readonly checboxDataArr: any[] = [
     {
@@ -73,6 +108,8 @@ export class SearchComponent implements OnInit {
       accountNumber: new FormControl(null),
       radioGroup: new FormGroup({
         searchType: new FormControl(null),
+        conditionalOne: new FormControl(),
+        conditionalTwo: new FormControl(),
       }),
       nestedGroup: new FormGroup({
         testOne: new FormControl(false),

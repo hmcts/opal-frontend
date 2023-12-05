@@ -21,7 +21,7 @@ export class GovukRadiosComponent {
   @Input({ required: false }) legendHint!: string;
   @Input({ required: false }) legendClasses!: string;
 
-  @Input({ required: true }) radioInputs!: IGovUkRadioData[];
+  @Input({ required: true }) radioInputs!: any[];
   @Input({ required: false }) radioClasses!: string;
 
   @Input({ required: true }) set group(abstractControl: AbstractControl | null) {
@@ -30,5 +30,14 @@ export class GovukRadiosComponent {
 
   get getGroup() {
     return this._group;
+  }
+
+  public hideConditional(parentControlName: string, parentControlValue: string): boolean {
+    const control = this._group.get(parentControlName);
+
+    if (control) {
+      return !(control.value === parentControlValue);
+    }
+    return true;
   }
 }
