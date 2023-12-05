@@ -14,6 +14,8 @@ import { IGovUkRadioData } from '@interfaces';
 export class GovukRadiosComponent {
   private _group!: FormGroup;
 
+  public toggleConditional: any = {};
+
   @Input({ required: true }) fieldSetId!: string;
 
   @Input({ required: true }) legendText!: string;
@@ -32,12 +34,9 @@ export class GovukRadiosComponent {
     return this._group;
   }
 
-  public hideConditional(parentControlName: string, parentControlValue: string): boolean {
-    const control = this._group.get(parentControlName);
-
-    if (control) {
-      return !(control.value === parentControlValue);
-    }
-    return true;
+  public handleToggleConditional(inputId: string): void {
+    // Because there can only be one radio selected at a time, reset.
+    this.toggleConditional = {};
+    this.toggleConditional[inputId] = true;
   }
 }

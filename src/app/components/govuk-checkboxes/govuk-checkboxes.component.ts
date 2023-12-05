@@ -13,7 +13,7 @@ import { IGovUkCheckboxesData } from '@interfaces';
 })
 export class GovukCheckboxesComponent {
   private _group!: FormGroup;
-  public enabled = false;
+  public toggleConditional: any = {};
 
   @Input({ required: true }) fieldSetId!: string;
 
@@ -32,10 +32,19 @@ export class GovukCheckboxesComponent {
   }
 
   public hideConditional(parentControlName: string): boolean {
+    console.log('Called');
     const control = this._group.get(parentControlName);
     if (control) {
       return !control.value;
     }
     return true;
+  }
+
+  public handleToggleConditional(inputId: string): void {
+    if (this.toggleConditional[inputId]) {
+      this.toggleConditional[inputId] = !this.toggleConditional[inputId];
+    } else {
+      this.toggleConditional[inputId] = true;
+    }
   }
 }

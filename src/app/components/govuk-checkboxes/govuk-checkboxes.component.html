@@ -27,7 +27,7 @@
             type="checkbox"
             [value]="input.inputValue"
             formControlName="{{ input.inputId }}"
-            (change)="enabled = !enabled"
+            (change)="handleToggleConditional(input.inputId)"
           />
           <label class="govuk-label govuk-checkboxes__label" [for]="input.inputId"> {{ input.inputLabel }} </label>
           @if (input.inputHint) {
@@ -37,20 +37,16 @@
           }
         </div>
 
-        @for (conditional of input?.conditionals; track conditional.inputId) {
-          <div
-            class="govuk-checkboxes__conditional"
-            [ngClass]="{ 'govuk-checkboxes__conditional--hidden': hideConditional(input.inputId) }"
-            [id]="'conditional-' + input.inputId"
-          >
-            <div class="govuk-form-group">
-              <label class="govuk-label" [for]="conditional.inputId">{{ conditional.inputLabel }} </label>
+        @if (input?.conditional && toggleConditional[input.inputId]) {
+          <div class="govuk-checkboxes__conditional" [id]="'conditional-' + input.inputId">
+            <div class="govuk-form-group govuk-form-group--error">
+              <label class="govuk-label" [for]="input?.conditional.inputId">{{ input?.conditional.inputLabel }} </label>
               <input
-                class="govuk-input {{ conditional.inputClasses }}"
-                [id]="conditional.inputId"
-                [name]="conditional.inputName"
+                class="govuk-input govuk-input--error {{ input?.conditional.inputClasses }}"
+                [id]="input?.conditional.inputId"
+                [name]="input?.conditional.inputName"
                 type="text"
-                formControlName="{{ conditional.inputId }}"
+                formControlName="{{ input?.conditional.inputId }}"
               />
             </div>
           </div>

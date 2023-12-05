@@ -36,14 +36,12 @@ export class SearchComponent implements OnInit {
       inputLabel: 'Defendant',
       inputTextDivider: null,
       inputHint: null,
-      conditionals: [
-        {
-          inputName: 'conditionalOne',
-          inputClasses: 'govuk-!-width-one-third',
-          inputId: 'conditionalOne',
-          inputLabel: 'ConditionalOne',
-        },
-      ],
+      conditional: {
+        inputName: 'conditionalOne',
+        inputClasses: 'govuk-!-width-one-third',
+        inputId: 'conditionalOne',
+        inputLabel: 'ConditionalOne',
+      },
     },
     {
       inputName: 'searchType',
@@ -53,14 +51,12 @@ export class SearchComponent implements OnInit {
       inputLabel: 'Minor Creditor',
       inputTextDivider: null,
       inputHint: null,
-      conditionals: [
-        {
-          inputName: 'conditionalTwo',
-          inputClasses: 'govuk-!-width-one-third',
-          inputId: 'conditionalTwo',
-          inputLabel: 'ConditionalTwo',
-        },
-      ],
+      conditional: {
+        inputName: 'conditionalTwo',
+        inputClasses: 'govuk-!-width-one-third',
+        inputId: 'conditionalTwo',
+        inputLabel: 'ConditionalTwo',
+      },
     },
   ];
 
@@ -73,14 +69,12 @@ export class SearchComponent implements OnInit {
       inputLabel: 'Test One',
       inputTextDivider: 'DIV',
       inputHint: 'This is a hint',
-      conditionals: [
-        {
-          inputName: 'conditionalOne',
-          inputClasses: 'govuk-!-width-one-third',
-          inputId: 'conditionalOne',
-          inputLabel: 'ConditionalOne',
-        },
-      ],
+      conditional: {
+        inputName: 'conditionalOne',
+        inputClasses: 'govuk-!-width-one-third',
+        inputId: 'conditionalOne',
+        inputLabel: 'ConditionalOne',
+      },
     },
     {
       inputName: 'checkbox',
@@ -90,14 +84,12 @@ export class SearchComponent implements OnInit {
       inputLabel: 'Test Two',
       inputTextDivider: null,
       inputHint: null,
-      conditionals: [
-        {
-          inputName: 'conditionalTwo',
-          inputClasses: 'govuk-!-width-one-third',
-          inputId: 'conditionalTwo',
-          inputLabel: 'ConditionalTwo',
-        },
-      ],
+      conditional: {
+        inputName: 'conditionalTwo',
+        inputClasses: 'govuk-!-width-one-third',
+        inputId: 'conditionalTwo',
+        inputLabel: 'ConditionalTwo',
+      },
     },
   ];
 
@@ -110,6 +102,7 @@ export class SearchComponent implements OnInit {
         searchType: new FormControl(null),
         conditionalOne: new FormControl(),
         conditionalTwo: new FormControl(),
+        conditionalThree: new FormControl(),
       }),
       nestedGroup: new FormGroup({
         testOne: new FormControl(false),
