@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { IGovUkRadioData } from '@interfaces';
 
 @Component({
   selector: 'app-govuk-radios',
@@ -20,7 +21,7 @@ export class GovukRadiosComponent {
   @Input({ required: false }) legendHint!: string;
   @Input({ required: false }) legendClasses!: string;
 
-  @Input({ required: true }) radioInputs!: any[];
+  @Input({ required: true }) radioInputs!: IGovUkRadioData[];
   @Input({ required: false }) radioClasses!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl) {

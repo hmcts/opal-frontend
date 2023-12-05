@@ -31,12 +31,21 @@
         ></app-govuk-text-input>
 
         <app-govuk-radios
-          fieldSetId="search-type "
+          fieldSetId="search-type"
           legendText="Search Type"
           [control]="searchForm.controls['searchType']"
           [radioInputs]="radioDataArr"
           radioClasses="govuk-radios--inline govuk-radios--small"
         ></app-govuk-radios>
+
+        <app-govuk-checkboxes
+          fieldSetId="checkboxes"
+          [group]="searchForm.get('nestedGroup')"
+          [checkboxInputs]="checboxDataArr"
+          legendText="Checkboxes"
+          checkboxClasses="govuk-checkboxes--small"
+          legendHint="TEST"
+        ></app-govuk-checkboxes>
       </div>
 
       <!-- <div class="govuk-form-group">
@@ -75,4 +84,5 @@
   </div>
 
   <button [routerLink]="['../../test-page']">TEST PAGE</button><button [routerLink]="['../matches']">MATCHES</button>
+  <button (click)="formVals()">FORM VALS</button>
 </div>

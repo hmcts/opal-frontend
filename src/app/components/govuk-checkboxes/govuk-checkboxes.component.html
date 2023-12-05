@@ -1,0 +1,41 @@
+<div class="govuk-form-group" [formGroup]="getGroup">
+  <fieldset class="govuk-fieldset" [id]="fieldSetId">
+    <legend
+      class="govuk-fieldset__legend {{ legendClasses }}"
+      [attr.describedby]="legendHintId ? legendHintId + '-hint' : ''"
+    >
+      {{ legendText }}
+    </legend>
+    @if (legendHint) {
+      <div [id]="legendHintId ? legendHintId + '-hint' : ''" class="govuk-hint">
+        {{ legendHint }}
+      </div>
+    }
+    <div class="govuk-checkboxes {{ checkboxClasses }}" data-module="govuk-checkboxes">
+      @for (input of checkboxInputs; track input.inputId) {
+        @if (input.inputTextDivider) {
+          <div [id]="input.inputId ? input.inputId + '-radios-divider' : ''" class="govuk-radios__divider">
+            {{ input.inputTextDivider }}
+          </div>
+        }
+
+        <div class="govuk-checkboxes__item">
+          <input
+            class="govuk-checkboxes__input"
+            [id]="input.inputId"
+            [name]="input.inputName"
+            type="checkbox"
+            [value]="input.inputValue"
+            formControlName="{{ input.inputId }}"
+          />
+          <label class="govuk-label govuk-checkboxes__label" [for]="input.inputId"> {{ input.inputLabel }} </label>
+          @if (input.inputHint) {
+            <div [id]="input.inputId ? input.inputId + '-item-hint' : ''" class="govuk-hint govuk-checkboxes__hint">
+              {{ input.inputHint }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </fieldset>
+</div>

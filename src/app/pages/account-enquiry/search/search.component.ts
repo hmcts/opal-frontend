@@ -3,15 +3,22 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { StateService } from '@services';
-import { GovukTextInputComponent } from '@components';
-import { GovukRadiosComponent } from 'src/app/components/govuk-radios/govuk-radios.component';
-import { IGovUkRadioData } from '@interfaces';
+import { GovukCheckboxesComponent, GovukRadiosComponent, GovukTextInputComponent } from '@components';
+
+import { IGovUkCheckboxesData, IGovUkRadioData } from '@interfaces';
 import { SEARCH_TYPE_RADIOS } from './config/search-type-radios';
 
 @Component({
   selector: 'app-account-enquiry',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, GovukTextInputComponent, GovukRadiosComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    GovukTextInputComponent,
+    GovukRadiosComponent,
+    GovukCheckboxesComponent,
+  ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +27,28 @@ export class SearchComponent implements OnInit {
   private readonly stateService = inject(StateService);
   public searchForm!: FormGroup;
 
-  public radioDataArr: IGovUkRadioData[] = SEARCH_TYPE_RADIOS;
+  public readonly radioDataArr: IGovUkRadioData[] = SEARCH_TYPE_RADIOS;
+
+  public readonly checboxDataArr: IGovUkCheckboxesData[] = [
+    {
+      inputName: 'checkbox',
+      inputClasses: null,
+      inputId: 'testOne',
+      inputValue: 'testOne',
+      inputLabel: 'Test One',
+      inputTextDivider: 'DIV',
+      inputHint: 'This is a hint',
+    },
+    {
+      inputName: 'checkbox',
+      inputClasses: null,
+      inputId: 'testTwo',
+      inputValue: 'testTwo',
+      inputLabel: 'Test Two',
+      inputTextDivider: null,
+      inputHint: null,
+    },
+  ];
 
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
@@ -28,7 +56,17 @@ export class SearchComponent implements OnInit {
       company: new FormControl(null),
       accountNumber: new FormControl(null),
       searchType: new FormControl(null),
+      nestedGroup: new FormGroup({
+        testOne: new FormControl(false),
+        testTwo: new FormControl(false),
+      }),
     });
+
+    console.log(this.searchForm.get('nestedGroup'));
+  }
+
+  public formVals(): void {
+    console.log(this.searchForm.value);
   }
 
   public ngOnInit(): void {

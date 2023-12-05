@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { SEARCH_TYPE_RADIOS_MOCK } from '@mocks';
 import { FormControl } from '@angular/forms';
 
-fdescribe('GovukRadiosComponent', () => {
+describe('GovukRadiosComponent', () => {
   let component: GovukRadiosComponent;
   let fixture: ComponentFixture<GovukRadiosComponent>;
   let formControl: FormControl;
