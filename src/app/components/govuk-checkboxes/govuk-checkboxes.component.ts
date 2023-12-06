@@ -31,15 +31,6 @@ export class GovukCheckboxesComponent {
     return this._group;
   }
 
-  public hideConditional(parentControlName: string): boolean {
-    console.log('Called');
-    const control = this._group.get(parentControlName);
-    if (control) {
-      return !control.value;
-    }
-    return true;
-  }
-
   public handleToggleConditional(inputId: string): void {
     if (this.toggleConditional[inputId]) {
       this.toggleConditional[inputId] = !this.toggleConditional[inputId];

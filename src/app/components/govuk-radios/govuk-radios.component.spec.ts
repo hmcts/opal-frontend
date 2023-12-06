@@ -4,6 +4,7 @@ import { GovukRadiosComponent } from './govuk-radios.component';
 import { By } from '@angular/platform-browser';
 import { SEARCH_TYPE_RADIOS_MOCK } from '@mocks';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 
 describe('GovukRadiosComponent', () => {
   let component: GovukRadiosComponent;
@@ -19,6 +20,8 @@ describe('GovukRadiosComponent', () => {
     component = fixture.componentInstance;
     formGroup = new FormGroup({
       searchType: new FormControl(null),
+      conditionalOne: new FormControl(),
+      conditionalTwo: new FormControl(),
     });
 
     component.group = formGroup;
@@ -75,5 +78,20 @@ describe('GovukRadiosComponent', () => {
   it('should have added a class to the legend', () => {
     const elem = fixture.debugElement.query(By.css('#search-type .govuk-fieldset__legend.test-class')).nativeElement;
     expect(elem).toBeTruthy();
+  });
+
+  it('should toggle the conditional', () => {
+    const inputId = 'defendant';
+
+    expect(component.toggleConditional).toEqual({});
+    component.handleToggleConditional(inputId);
+    expect(component.toggleConditional).toEqual({
+      [inputId]: true,
+    });
+
+    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef as any);
+    cdr.detectChanges();
+
+    expect(fixture.debugElement.query(By.css(`#search-type #conditional-${inputId}`)).nativeElement).not.toBe(null);
   });
 });

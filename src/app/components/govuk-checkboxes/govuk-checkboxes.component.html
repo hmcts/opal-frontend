@@ -39,10 +39,10 @@
 
         @if (input?.conditional && toggleConditional[input.inputId]) {
           <div class="govuk-checkboxes__conditional" [id]="'conditional-' + input.inputId">
-            <div class="govuk-form-group govuk-form-group--error">
+            <div class="govuk-form-group">
               <label class="govuk-label" [for]="input?.conditional.inputId">{{ input?.conditional.inputLabel }} </label>
               <input
-                class="govuk-input govuk-input--error {{ input?.conditional.inputClasses }}"
+                class="govuk-input  {{ input?.conditional.inputClasses }}"
                 [id]="input?.conditional.inputId"
                 [name]="input?.conditional.inputName"
                 type="text"
