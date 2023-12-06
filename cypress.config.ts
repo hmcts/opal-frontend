@@ -18,10 +18,18 @@ async function setupNodeEvents(
 }
 
 export default defineConfig({
-  reporter: 'junit',
+  reporter: 'mochawesome',
+  reporterOptions: {
+    reportDir: 'cypress/results',
+    reportFilename: '[name].html',
+    overwrite: true,
+    html: true,
+    json: false,
+  },
   e2e: {
     baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
     specPattern: "**/*.feature",
+    screenshotsFolder: 'cypress/results/assets',
     setupNodeEvents,
   },
 });

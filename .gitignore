@@ -55,5 +55,6 @@ Thumbs.db
 cypress/videos
 cypress/screenshots
 cypress/downloads
+cypress/results
 functional-output
 smoke-output
