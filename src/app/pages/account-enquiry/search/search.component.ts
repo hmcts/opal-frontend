@@ -14,6 +14,7 @@ import {
 
 import { IGovUkDateInput } from '@interfaces';
 import { DATE_INPUTS } from './config/date-inputs';
+import { CT_LIST } from './config/ct-list';
 
 @Component({
   selector: 'app-account-enquiry',
@@ -38,6 +39,7 @@ export class SearchComponent implements OnInit {
   public searchForm!: FormGroup;
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
+  public readonly ctList = CT_LIST;
 
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
