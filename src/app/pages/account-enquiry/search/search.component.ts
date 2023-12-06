@@ -5,7 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { StateService } from '@services';
 import { GovukCheckboxesComponent, GovukRadiosComponent, GovukTextInputComponent } from '@components';
 
-import { IGovUkCheckboxesData, IGovUkRadioData } from '@interfaces';
+import { IGovUkCheckboxInput, IGovUkRadioInput } from '@interfaces';
 import { SEARCH_TYPE_RADIOS } from './config/search-type-radios';
 
 @Component({
@@ -27,37 +27,22 @@ export class SearchComponent implements OnInit {
   private readonly stateService = inject(StateService);
   public searchForm!: FormGroup;
 
-  public readonly radioDataArr: IGovUkRadioData[] = SEARCH_TYPE_RADIOS;
+  public readonly radioDataArr: IGovUkRadioInput[] = SEARCH_TYPE_RADIOS;
 
   public readonly checboxDataArr: any[] = [
     {
-      inputName: 'checkbox',
+      inputName: 'company',
       inputClasses: null,
-      inputId: 'testOne',
-      inputValue: 'testOne',
-      inputLabel: 'Test One',
-      inputTextDivider: 'DIV',
-      inputHint: 'This is a hint',
-      conditional: {
-        inputName: 'conditionalOne',
-        inputClasses: 'govuk-!-width-one-third',
-        inputId: 'conditionalOne',
-        inputLabel: 'ConditionalOne',
-      },
-    },
-    {
-      inputName: 'checkbox',
-      inputClasses: null,
-      inputId: 'testTwo',
-      inputValue: 'testTwo',
-      inputLabel: 'Test Two',
+      inputId: 'company',
+      inputValue: 'company',
+      inputLabel: 'Company',
       inputTextDivider: null,
       inputHint: null,
       conditional: {
-        inputName: 'conditionalTwo',
+        inputName: 'companyName',
         inputClasses: 'govuk-!-width-one-third',
-        inputId: 'conditionalTwo',
-        inputLabel: 'ConditionalTwo',
+        inputId: 'companyName',
+        inputLabel: 'Company Name',
       },
     },
   ];

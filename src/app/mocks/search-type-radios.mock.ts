@@ -17,7 +17,7 @@ export const SEARCH_TYPE_RADIOS_MOCK = [
   {
     inputName: 'searchType',
     inputClasses: 'radio-test-class',
-    inputId: 'minor-creditor',
+    inputId: 'minorCreditor',
     inputValue: 'minor creditor',
     inputLabel: 'Minor Creditor',
     inputTextDivider: null,

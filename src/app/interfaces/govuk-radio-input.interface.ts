@@ -1,10 +1,10 @@
-interface IGovUkRadioDataConditional {
+interface IGovUkRadioInputConditional {
   inputName: string;
   inputClasses: string;
   inputId: string;
   inputLabel: string;
 }
-export interface IGovUkRadioData {
+export interface IGovUkRadioInput {
   inputName: string;
   inputClasses?: string | null;
   inputId: string;
@@ -12,5 +12,5 @@ export interface IGovUkRadioData {
   inputLabel: string;
   inputTextDivider?: string | null;
   inputHint?: string | null;
-  conditional: IGovUkRadioDataConditional;
+  conditional?: IGovUkRadioInputConditional;
 }

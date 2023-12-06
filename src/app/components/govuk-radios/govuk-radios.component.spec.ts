@@ -25,9 +25,9 @@ describe('GovukRadiosComponent', () => {
     });
 
     component.group = formGroup;
-    component.fieldSetId = 'search-type';
+    component.fieldSetId = 'searchType';
     component.legendText = 'Search Type';
-    component.legendHintId = 'search-type';
+    component.legendHintId = 'searchType';
     component.legendHint = 'This is a hint';
     component.legendClasses = 'test-class';
 
@@ -41,42 +41,42 @@ describe('GovukRadiosComponent', () => {
   });
 
   it('should have legend text', () => {
-    const elem = fixture.debugElement.query(By.css('#search-type .govuk-fieldset__legend')).nativeElement;
+    const elem = fixture.debugElement.query(By.css('#searchType .govuk-fieldset__legend')).nativeElement;
 
     expect(elem.textContent).toContain('Search Type');
   });
 
   it('should have legend hint', () => {
-    const elem = fixture.debugElement.query(By.css('#search-type #search-type-hint')).nativeElement;
+    const elem = fixture.debugElement.query(By.css('#searchType #searchTypeHint')).nativeElement;
 
     expect(elem.textContent).toContain('This is a hint');
   });
 
   it('should have radio inputs', () => {
-    const radioOne = fixture.debugElement.query(By.css('#search-type #defendant')).nativeElement;
-    const radioTwo = fixture.debugElement.query(By.css('#search-type #minor-creditor')).nativeElement;
+    const radioOne = fixture.debugElement.query(By.css('#searchType #defendant')).nativeElement;
+    const radioTwo = fixture.debugElement.query(By.css('#searchType #minorCreditor')).nativeElement;
 
     expect(radioOne).toBeTruthy();
     expect(radioTwo).toBeTruthy();
   });
 
   it('should have radio input text divider', () => {
-    const radioOne = fixture.debugElement.query(By.css('#search-type #defendant-radios-divider')).nativeElement;
+    const radioOne = fixture.debugElement.query(By.css('#searchType #defendantRadiosDivider')).nativeElement;
     expect(radioOne.textContent).toContain('of');
   });
 
-  it('should have added a class to teh radio', () => {
-    const radioOne = fixture.debugElement.query(By.css('#search-type #minor-creditor'));
+  it('should have added a class to the radio', () => {
+    const radioOne = fixture.debugElement.query(By.css('#searchType #minorCreditor'));
     expect(radioOne.classes['radio-test-class']).toBeTruthy();
   });
 
   it('should have radio input hint', () => {
-    const radioOne = fixture.debugElement.query(By.css('#search-type #minor-creditor-item-hint')).nativeElement;
+    const radioOne = fixture.debugElement.query(By.css('#searchType #minorCreditorItemHint')).nativeElement;
     expect(radioOne.textContent).toContain('Hint Hint');
   });
 
   it('should have added a class to the legend', () => {
-    const elem = fixture.debugElement.query(By.css('#search-type .govuk-fieldset__legend.test-class')).nativeElement;
+    const elem = fixture.debugElement.query(By.css('#searchType .govuk-fieldset__legend.test-class')).nativeElement;
     expect(elem).toBeTruthy();
   });
 
@@ -92,6 +92,6 @@ describe('GovukRadiosComponent', () => {
     const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef as any);
     cdr.detectChanges();
 
-    expect(fixture.debugElement.query(By.css(`#search-type #conditional-${inputId}`)).nativeElement).not.toBe(null);
+    expect(fixture.debugElement.query(By.css(`#searchType #${inputId}Conditional`)).nativeElement).not.toBe(null);
   });
 });

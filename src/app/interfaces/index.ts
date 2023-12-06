@@ -1,6 +1,6 @@
 import { IGetDefendantAccountParams } from './get-defendant-account-params.interface';
 import { IDefendantAccount } from './defendant-account.interface';
-import { IGovUkRadioData } from './govuk-radio-data.interface';
-import { IGovUkCheckboxesData } from './govuk-checkboxes.interface';
+import { IGovUkRadioInput } from './govuk-radio-input.interface';
+import { IGovUkCheckboxInput } from './govuk-checkboxes-input.interface';
 
-export { IGetDefendantAccountParams, IDefendantAccount, IGovUkRadioData, IGovUkCheckboxesData };
+export { IGetDefendantAccountParams, IDefendantAccount, IGovUkRadioInput, IGovUkCheckboxInput };
