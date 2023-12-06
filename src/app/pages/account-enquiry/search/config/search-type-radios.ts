@@ -7,6 +7,12 @@ export const SEARCH_TYPE_RADIOS = [
     inputLabel: 'Defendant',
     inputTextDivider: null,
     inputHint: null,
+    conditional: {
+      inputName: 'conditionalOne',
+      inputClasses: 'govuk-!-width-one-third',
+      inputId: 'conditionalOne',
+      inputLabel: 'ConditionalOne',
+    },
   },
   {
     inputName: 'searchType',
@@ -16,5 +22,11 @@ export const SEARCH_TYPE_RADIOS = [
     inputLabel: 'Minor Creditor',
     inputTextDivider: null,
     inputHint: null,
+    conditional: {
+      inputName: 'conditionalTwo',
+      inputClasses: 'govuk-!-width-one-third',
+      inputId: 'conditionalTwo',
+      inputLabel: 'ConditionalTwo',
+    },
   },
 ];
