@@ -6,16 +6,15 @@
       </legend>
 
       <div [formGroup]="searchForm">
-        <!-- <app-govuk-text-input
-          labelFor="surname"
+        <app-govuk-select labelText="Court" selectId="court" selectName="court" selectClasses=""></app-govuk-select>
+        <app-govuk-text-input
           labelText="Surname"
           inputId="surname"
           inputName="surname"
-          inputClasses=""
+          inputClasses="govuk-!-width-one-half"
           [control]="searchForm.controls['surname']"
         ></app-govuk-text-input>
         <app-govuk-text-input
-          labelFor="forename"
           labelText="Forename"
           inputId="forename"
           inputName="forename"
@@ -23,22 +22,20 @@
           [control]="searchForm.controls['forename']"
         ></app-govuk-text-input>
         <app-govuk-text-input
-          labelFor="initials"
           labelText="Initials"
           inputId="initials"
           inputName="initials"
-          inputClasses="govuk-!-width-one-half"
+          inputClasses="govuk-!-width-one-quarter"
           [control]="searchForm.controls['initials']"
-        ></app-govuk-text-input> -->
+        ></app-govuk-text-input>
         <app-govuk-date-input
           [group]="searchForm.get('dateOfBirth')"
           [dateInputs]="dateInputs"
           fieldSetId="dateOfBirth"
-          legendText="What is your date of birth?"
-          legendHint="For example, 31 3 1980"
+          legendText="Date of Birth"
+          legendHint="For example, 04 06 1991"
         ></app-govuk-date-input>
-        <!-- <app-govuk-text-input
-          labelFor="addressLineOne"
+        <app-govuk-text-input
           labelText="Address Line One"
           inputId="addressLineOne"
           inputName="addressLineOne"
@@ -46,7 +43,6 @@
           [control]="searchForm.controls['addressLineOne']"
         ></app-govuk-text-input>
         <app-govuk-text-input
-          labelFor="niNumber"
           labelText="NI Number"
           inputId="niNumber"
           inputName="niNumber"
@@ -54,17 +50,24 @@
           [control]="searchForm.controls['niNumber']"
         ></app-govuk-text-input>
         <app-govuk-text-input
-          labelFor="pcr"
           labelText="PCR"
           inputId="pcr"
           inputName="pcr"
           inputClasses="govuk-!-width-one-half"
           [control]="searchForm.controls['pcr']"
-        ></app-govuk-text-input> -->
+        ></app-govuk-text-input>
       </div>
     </fieldset>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <app-govuk-button buttonClasses="govuk-button--secondary govuk-!-margin-right-3" buttonId="clearForm">
+          Clear</app-govuk-button
+        >
+        <app-govuk-button buttonId="submitForm"> Search</app-govuk-button>
+      </div>
+    </div>
   </div>
 
-  <button [routerLink]="['../../test-page']">TEST PAGE</button><button [routerLink]="['../matches']">MATCHES</button>
-  <button (click)="formVals()">FORM VALS</button>
+  <!-- <button [routerLink]="['../../test-page']">TEST PAGE</button><button [routerLink]="['../matches']">MATCHES</button>
+  <button (click)="formVals()">FORM VALS</button> -->
 </div>

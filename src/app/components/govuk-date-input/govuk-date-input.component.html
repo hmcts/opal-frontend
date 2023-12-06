@@ -2,12 +2,12 @@
   <fieldset class="govuk-fieldset" role="group" [id]="fieldSetId">
     <legend
       class="govuk-fieldset__legend {{ legendClasses }}"
-      [attr.describedby]="legendHintId ? legendHintId + 'Hint' : ''"
+      [attr.describedby]="legendHint ? fieldSetId + 'Hint' : ''"
     >
       {{ legendText }}
     </legend>
     @if (legendHint) {
-      <div [id]="legendHintId ? legendHintId + 'Hint' : ''" class="govuk-hint">
+      <div [id]="fieldSetId ? fieldSetId + 'Hint' : ''" class="govuk-hint">
         {{ legendHint }}
       </div>
     }

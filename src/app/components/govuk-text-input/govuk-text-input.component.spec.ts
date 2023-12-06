@@ -20,7 +20,6 @@ describe('GovukTextInputComponent', () => {
     formControl = new FormControl(null);
 
     component.labelText = 'test';
-    component.labelFor = 'test';
     component.inputId = 'test';
     component.inputName = 'test';
     component.control = formControl;

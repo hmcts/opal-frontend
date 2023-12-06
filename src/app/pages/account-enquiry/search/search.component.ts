@@ -8,6 +8,8 @@ import {
   GovukRadiosComponent,
   GovukTextInputComponent,
   GovukDateInputComponent,
+  GovukSelectComponent,
+  GovukButtonComponent,
 } from '@components';
 
 @Component({
@@ -21,6 +23,8 @@ import {
     GovukRadiosComponent,
     GovukCheckboxesComponent,
     GovukDateInputComponent,
+    GovukSelectComponent,
+    GovukButtonComponent,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',

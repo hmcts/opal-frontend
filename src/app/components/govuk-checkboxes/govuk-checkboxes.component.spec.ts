@@ -26,7 +26,7 @@ describe('GovukCheckboxesComponent', () => {
     component.group = formGroup;
     component.fieldSetId = 'companyCheckbox';
     component.legendText = 'Company';
-    component.legendHintId = 'companyCheckbox';
+
     component.legendHint = 'This is a hint';
     component.legendClasses = 'test-class';
 

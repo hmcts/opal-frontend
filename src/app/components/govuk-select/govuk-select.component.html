@@ -1,0 +1,26 @@
+<div class="govuk-form-group">
+  <label class="govuk-label {{ labelClasses }}" [for]="selectId"> {{ labelText }} </label>
+
+  @if (selectHint) {
+    <div [id]="selectId ? selectId + 'Hint' : ''" class="govuk-hint">
+      {{ selectHint }}
+    </div>
+  }
+  <select
+    class="govuk-select"
+    [id]="selectId"
+    [name]="selectName"
+    [attr.describedby]="selectHint ? selectId + 'Hint' : ''"
+  >
+    <option value="choose" selected>Choose court</option>
+    <option value="eastmidlands">East Midlands</option>
+    <option value="eastofengland">East of England</option>
+    <option value="london">London</option>
+    <option value="northeast">North East</option>
+    <option value="northwest">North West</option>
+    <option value="southeast">South East</option>
+    <option value="southwest">South West</option>
+    <option value="westmidlands">West Midlands</option>
+    <option value="yorkshire">Yorkshire and the Humber</option>
+  </select>
+</div>

@@ -16,7 +16,6 @@ export class GovukDateInputComponent {
   @Input({ required: true }) fieldSetId!: string;
 
   @Input({ required: true }) legendText!: string;
-  @Input({ required: false }) legendHintId!: string;
   @Input({ required: false }) legendHint!: string;
   @Input({ required: false }) legendClasses!: string;
 

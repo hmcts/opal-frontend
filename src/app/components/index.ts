@@ -6,6 +6,8 @@ import { GovukTextInputComponent } from './govuk-text-input/govuk-text-input.com
 import { GovukRadiosComponent } from './govuk-radios/govuk-radios.component';
 import { GovukCheckboxesComponent } from './govuk-checkboxes/govuk-checkboxes.component';
 import { GovukDateInputComponent } from './govuk-date-input/govuk-date-input.component';
+import { GovukSelectComponent } from './govuk-select/govuk-select.component';
+
 export {
   GovukButtonComponent,
   GovukAccordionComponent,
@@ -15,4 +17,5 @@ export {
   GovukRadiosComponent,
   GovukCheckboxesComponent,
   GovukDateInputComponent,
+  GovukSelectComponent,
 };

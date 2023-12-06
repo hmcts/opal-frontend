@@ -14,7 +14,6 @@ export class GovukTextInputComponent {
   private _control!: FormControl;
 
   @Input({ required: true }) labelText!: string;
-  @Input({ required: true }) labelFor!: string;
   @Input({ required: false }) labelClasses!: string;
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;

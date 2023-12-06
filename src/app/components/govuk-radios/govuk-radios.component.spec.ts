@@ -6,7 +6,7 @@ import { SEARCH_TYPE_RADIOS_MOCK } from '@mocks';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 
-describe('GovukRadiosComponent', () => {
+fdescribe('GovukRadiosComponent', () => {
   let component: GovukRadiosComponent;
   let fixture: ComponentFixture<GovukRadiosComponent>;
   let formGroup: FormGroup;
@@ -27,7 +27,6 @@ describe('GovukRadiosComponent', () => {
     component.group = formGroup;
     component.fieldSetId = 'searchType';
     component.legendText = 'Search Type';
-    component.legendHintId = 'searchType';
     component.legendHint = 'This is a hint';
     component.legendClasses = 'test-class';
 
