@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { StateService } from '@services';
-import { GovukCheckboxesComponent, GovukRadiosComponent, GovukTextInputComponent } from '@components';
-
-import { IGovUkCheckboxInput, IGovUkRadioInput } from '@interfaces';
-import { SEARCH_TYPE_RADIOS } from './config/search-type-radios';
+import {
+  GovukCheckboxesComponent,
+  GovukRadiosComponent,
+  GovukTextInputComponent,
+  GovukDateInputComponent,
+} from '@components';
 
 @Component({
   selector: 'app-account-enquiry',
@@ -18,6 +20,7 @@ import { SEARCH_TYPE_RADIOS } from './config/search-type-radios';
     GovukTextInputComponent,
     GovukRadiosComponent,
     GovukCheckboxesComponent,
+    GovukDateInputComponent,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
@@ -27,42 +30,40 @@ export class SearchComponent implements OnInit {
   private readonly stateService = inject(StateService);
   public searchForm!: FormGroup;
 
-  public readonly radioDataArr: IGovUkRadioInput[] = SEARCH_TYPE_RADIOS;
-
-  public readonly checboxDataArr: any[] = [
-    {
-      inputName: 'company',
-      inputClasses: null,
-      inputId: 'company',
-      inputValue: 'company',
-      inputLabel: 'Company',
-      inputTextDivider: null,
-      inputHint: null,
-      conditional: {
-        inputName: 'companyName',
-        inputClasses: 'govuk-!-width-one-third',
-        inputId: 'companyName',
-        inputLabel: 'Company Name',
-      },
+  public readonly dateInputs = {
+    day: {
+      inputName: 'dayOfBirth',
+      inputClasses: 'govuk-input--width-2',
+      inputId: 'dayOfBirth',
+      inputLabel: 'Day',
     },
-  ];
+    month: {
+      inputName: 'monthOfBirth',
+      inputClasses: 'govuk-input--width-2',
+      inputId: 'monthOfBirth',
+      inputLabel: 'Month',
+    },
+    year: {
+      inputName: 'yearOfBirth',
+      inputClasses: 'govuk-input--width-4',
+      inputId: 'yearOfBirth',
+      inputLabel: 'Year',
+    },
+  };
 
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
       surname: new FormControl(null),
-      company: new FormControl(null),
-      accountNumber: new FormControl(null),
-      radioGroup: new FormGroup({
-        searchType: new FormControl(null),
-        conditionalOne: new FormControl(),
-        conditionalTwo: new FormControl(),
+      forename: new FormControl(null),
+      initials: new FormControl(null),
+      dateOfBirth: new FormGroup({
+        dayOfBirth: new FormControl(),
+        monthOfBirth: new FormControl(),
+        yearOfBirth: new FormControl(),
       }),
-      nestedGroup: new FormGroup({
-        testOne: new FormControl(false),
-        testTwo: new FormControl(false),
-        conditionalOne: new FormControl(),
-        conditionalTwo: new FormControl(),
-      }),
+      addressLineOne: new FormControl(null),
+      niNumber: new FormControl(null),
+      pcr: new FormControl(null),
     });
   }
 

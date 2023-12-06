@@ -6,80 +6,62 @@
       </legend>
 
       <div [formGroup]="searchForm">
-        <app-govuk-text-input
+        <!-- <app-govuk-text-input
           labelFor="surname"
           labelText="Surname"
           inputId="surname"
           inputName="surname"
+          inputClasses=""
           [control]="searchForm.controls['surname']"
         ></app-govuk-text-input>
-
         <app-govuk-text-input
-          labelFor="company"
-          labelText="Company"
-          inputId="company"
-          inputName="company"
-          [control]="searchForm.controls['company']"
+          labelFor="forename"
+          labelText="Forename"
+          inputId="forename"
+          inputName="forename"
+          inputClasses="govuk-!-width-one-half"
+          [control]="searchForm.controls['forename']"
         ></app-govuk-text-input>
-
         <app-govuk-text-input
-          labelFor="account-number"
-          labelText="Account Number"
-          inputId="account-number"
-          inputName="account-number"
-          [control]="searchForm.controls['accountNumber']"
+          labelFor="initials"
+          labelText="Initials"
+          inputId="initials"
+          inputName="initials"
+          inputClasses="govuk-!-width-one-half"
+          [control]="searchForm.controls['initials']"
+        ></app-govuk-text-input> -->
+        <app-govuk-date-input
+          [group]="searchForm.get('dateOfBirth')"
+          [dateInputs]="dateInputs"
+          fieldSetId="dateOfBirth"
+          legendText="What is your date of birth?"
+          legendHint="For example, 31 3 1980"
+        ></app-govuk-date-input>
+        <!-- <app-govuk-text-input
+          labelFor="addressLineOne"
+          labelText="Address Line One"
+          inputId="addressLineOne"
+          inputName="addressLineOne"
+          inputClasses="govuk-!-width-one-half"
+          [control]="searchForm.controls['addressLineOne']"
         ></app-govuk-text-input>
-
-        <app-govuk-radios
-          fieldSetId="search-type"
-          legendText="Search Type"
-          [group]="searchForm.get('radioGroup')"
-          [radioInputs]="radioDataArr"
-          radioClasses=""
-        ></app-govuk-radios>
-
-        <app-govuk-checkboxes
-          fieldSetId="checkboxes"
-          [group]="searchForm.get('nestedGroup')"
-          [checkboxInputs]="checboxDataArr"
-          legendText="Checkboxes"
-          checkboxClasses="govuk-checkboxes--small"
-          legendHint="TEST"
-        ></app-govuk-checkboxes>
+        <app-govuk-text-input
+          labelFor="niNumber"
+          labelText="NI Number"
+          inputId="niNumber"
+          inputName="niNumber"
+          inputClasses="govuk-!-width-one-half"
+          [control]="searchForm.controls['niNumber']"
+        ></app-govuk-text-input>
+        <app-govuk-text-input
+          labelFor="pcr"
+          labelText="PCR"
+          inputId="pcr"
+          inputName="pcr"
+          inputClasses="govuk-!-width-one-half"
+          [control]="searchForm.controls['pcr']"
+        ></app-govuk-text-input> -->
       </div>
-
-      <!-- <div class="govuk-form-group">
-        <label class="govuk-label" for="address-line-1"> Address line 1 </label>
-        <input class="govuk-input" id="address-line-1" name="addressLine1" type="text" autocomplete="address-line1" />
-      </div>
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="address-line-2"> Address line 2 (optional) </label>
-        <input class="govuk-input" id="address-line-2" name="addressLine2" type="text" autocomplete="address-line2" />
-      </div>
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="address-town"> Town or city </label>
-        <input
-          class="govuk-input govuk-!-width-two-thirds"
-          id="address-town"
-          name="addressTown"
-          type="text"
-          autocomplete="address-level2"
-        />
-      </div>
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="address-county"> County (optional) </label>
-        <input class="govuk-input govuk-!-width-two-thirds" id="address-county" name="addressCounty" type="text" />
-      </div>
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="address-postcode"> Postcode </label>
-        <input
-          class="govuk-input govuk-input--width-10"
-          id="address-postcode"
-          name="addressPostcode"
-          type="text"
-          autocomplete="postal-code"
-        />
-      </div> -->
     </fieldset>
   </div>
 
