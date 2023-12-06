@@ -17,11 +17,11 @@ async function setupNodeEvents(
   return config;
 }
 
-  export default defineConfig({
+export default defineConfig({
   reporter: 'junit',
   e2e: {
-    baseUrl: process.env['TEST_URL'] || 'https://opal-frontend.staging.platform.hmcts.net/',
+    baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
     specPattern: "**/*.feature",
     setupNodeEvents,
-    },
+  },
 });
