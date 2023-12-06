@@ -6,7 +6,7 @@ import { SEARCH_TYPE_RADIOS_MOCK } from '@mocks';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 
-fdescribe('GovukRadiosComponent', () => {
+describe('GovukRadiosComponent', () => {
   let component: GovukRadiosComponent;
   let fixture: ComponentFixture<GovukRadiosComponent>;
   let formGroup: FormGroup;

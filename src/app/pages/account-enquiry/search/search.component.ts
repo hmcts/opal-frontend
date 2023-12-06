@@ -12,6 +12,9 @@ import {
   GovukButtonComponent,
 } from '@components';
 
+import { IGovUkDateInput } from '@interfaces';
+import { DATE_INPUTS } from './config/date-inputs';
+
 @Component({
   selector: 'app-account-enquiry',
   standalone: true,
@@ -34,26 +37,7 @@ export class SearchComponent implements OnInit {
   private readonly stateService = inject(StateService);
   public searchForm!: FormGroup;
 
-  public readonly dateInputs = {
-    day: {
-      inputName: 'dayOfBirth',
-      inputClasses: 'govuk-input--width-2',
-      inputId: 'dayOfBirth',
-      inputLabel: 'Day',
-    },
-    month: {
-      inputName: 'monthOfBirth',
-      inputClasses: 'govuk-input--width-2',
-      inputId: 'monthOfBirth',
-      inputLabel: 'Month',
-    },
-    year: {
-      inputName: 'yearOfBirth',
-      inputClasses: 'govuk-input--width-4',
-      inputId: 'yearOfBirth',
-      inputLabel: 'Year',
-    },
-  };
+  public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
 
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
