@@ -14,9 +14,8 @@ import {
 
 import { IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from './config/date-inputs';
-// import { CT_LIST } from './config/ct-list';
 
-import CT_LIST from './config/ct-list.json';
+import CT_LIST from './data/ct-list.json';
 
 @Component({
   selector: 'app-account-enquiry',
@@ -69,6 +68,7 @@ export class SearchComponent implements OnInit {
     this.stateService.accountEnquiry.set({
       search: this.searchForm.value,
     });
+    console.log(this.stateService.accountEnquiry());
   }
 
   public ngOnInit(): void {
