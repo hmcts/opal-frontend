@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { IGovUkSelectOptions } from '@interfaces';
 
 @Component({
   selector: 'app-govuk-select',
@@ -21,7 +22,7 @@ export class GovukSelectComponent {
   @Input({ required: false }) selectClasses!: string;
   @Input({ required: false }) selectHint!: string;
 
-  @Input({ required: true }) options!: any[];
+  @Input({ required: true }) options!: IGovUkSelectOptions[];
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
     this._control = abstractControl as FormControl;
