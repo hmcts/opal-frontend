@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StateService } from '@services';
 import {
   GovukCheckboxesComponent,
@@ -22,6 +22,7 @@ import { CT_LIST } from './config/ct-list';
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
     GovukRadiosComponent,
@@ -55,6 +56,16 @@ export class SearchComponent implements OnInit {
       addressLineOne: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
+    });
+  }
+
+  public handleClearForm(): void {
+    this.searchForm.reset();
+  }
+
+  public handleFormSubmit(): void {
+    this.stateService.accountEnquiry.set({
+      search: this.searchForm.value,
     });
   }
 
