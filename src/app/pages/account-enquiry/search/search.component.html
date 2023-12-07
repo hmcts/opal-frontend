@@ -6,7 +6,13 @@
       </legend>
 
       <div [formGroup]="searchForm">
-        <app-govuk-select labelText="Court" selectId="court" selectName="court" [options]="ctList"></app-govuk-select>
+        <app-govuk-select
+          labelText="Court"
+          selectId="court"
+          selectName="court"
+          [options]="ctList"
+          [control]="searchForm.controls['courts']"
+        ></app-govuk-select>
         <app-govuk-text-input
           labelText="Surname"
           inputId="surname"

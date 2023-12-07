@@ -22,12 +22,12 @@ export class GovukSelectComponent {
   @Input({ required: false }) selectHint!: string;
 
   @Input({ required: true }) options!: any[];
-  // @Input({ required: true }) set control(abstractControl: AbstractControl) {
-  //   // Form controls are passed in as abstract controls, we need to re-cast it.
-  //   this._control = abstractControl as FormControl;
-  // }
+  @Input({ required: true }) set control(abstractControl: AbstractControl) {
+    // Form controls are passed in as abstract controls, we need to re-cast it.
+    this._control = abstractControl as FormControl;
+  }
 
-  // get getControl() {
-  //   return this._control;
-  // }
+  get getControl() {
+    return this._control;
+  }
 }
