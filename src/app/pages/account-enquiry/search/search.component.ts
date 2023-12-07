@@ -14,7 +14,9 @@ import {
 
 import { IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from './config/date-inputs';
-import { CT_LIST } from './config/ct-list';
+// import { CT_LIST } from './config/ct-list';
+
+import CT_LIST from './config/ct-list.json';
 
 @Component({
   selector: 'app-account-enquiry',
