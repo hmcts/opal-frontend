@@ -9,7 +9,7 @@ describe('DefendantAccountService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+    TestBed.configureTestingModule({ imports: [HttpClientTestingModule], providers: [DefendantAccountService] });
     service = TestBed.inject(DefendantAccountService);
 
     httpMock = TestBed.inject(HttpTestingController);

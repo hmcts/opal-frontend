@@ -58,10 +58,6 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  public formVals(): void {
-    console.log(this.searchForm.value);
-  }
-
   public ngOnInit(): void {
     this.setupSearchForm();
   }

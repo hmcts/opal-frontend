@@ -20,6 +20,7 @@ describe('GovukTextInputComponent', () => {
     formControl = new FormControl(null);
 
     component.labelText = 'test';
+    component.labelClasses = 'govuk-label--l';
     component.inputId = 'test';
     component.inputName = 'test';
     component.control = formControl;
@@ -32,16 +33,13 @@ describe('GovukTextInputComponent', () => {
   });
 
   it('should have extra label classes', () => {
-    const labelClass = 'govuk-label--l';
-    component.labelClasses = labelClass;
-    fixture.detectChanges();
+    const elem = fixture.debugElement.query(By.css('.govuk-label.govuk-label--l')).nativeElement;
+    expect(elem).toBeTruthy();
+  });
 
-    const label = fixture.debugElement.query(By.css('.govuk-label'));
-
-    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef as any);
-    cdr.detectChanges();
-
-    expect(label.classes[labelClass]).toBeTruthy();
+  it('should have labelText', () => {
+    const elem = fixture.debugElement.query(By.css('.govuk-label.govuk-label--l')).nativeElement;
+    expect(elem.textContent).toContain('test');
   });
 
   it('should have extra input classes', () => {

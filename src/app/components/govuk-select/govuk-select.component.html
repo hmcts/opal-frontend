@@ -7,7 +7,7 @@
     </div>
   }
   <select
-    class="govuk-select"
+    class="govuk-select {{ selectClasses }}"
     [id]="selectId"
     [name]="selectName"
     [attr.describedby]="selectHint ? selectId + 'Hint' : ''"

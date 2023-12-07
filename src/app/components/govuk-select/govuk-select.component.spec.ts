@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CT_LIST_MOCK } from '@mocks';
 import { FormControl } from '@angular/forms';
 
-fdescribe('GovukSelectComponent', () => {
+describe('GovukSelectComponent', () => {
   let component: GovukSelectComponent;
   let fixture: ComponentFixture<GovukSelectComponent>;
   let formControl: FormControl;
@@ -26,6 +26,7 @@ fdescribe('GovukSelectComponent', () => {
     component.selectId = 'court';
     component.selectName = 'court';
     component.selectHint = 'hint hint';
+    component.selectClasses = 'extra-class';
 
     fixture.detectChanges();
   });
@@ -34,9 +35,14 @@ fdescribe('GovukSelectComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have label text', () => {
+  it('should have label text and an extra class', () => {
     const elem = fixture.debugElement.query(By.css('.ct-list')).nativeElement;
     expect(elem.textContent).toContain('Court');
+  });
+
+  it('should have a select extra class', () => {
+    const elem = fixture.debugElement.query(By.css('#court.extra-class')).nativeElement;
+    expect(elem).toBeTruthy();
   });
 
   it('should have select hint', () => {
