@@ -88,7 +88,7 @@ describe('GovukRadiosComponent', () => {
       [inputId]: true,
     });
 
-    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef as any);
+    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef);
     cdr.detectChanges();
 
     expect(fixture.debugElement.query(By.css(`#searchType #${inputId}Conditional`)).nativeElement).not.toBe(null);

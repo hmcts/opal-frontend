@@ -49,7 +49,7 @@ describe('GovukTextInputComponent', () => {
 
     const label = fixture.debugElement.query(By.css('.govuk-label'));
 
-    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef as any);
+    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef);
     cdr.detectChanges();
 
     expect(label.classes[labelClass]).toBeTruthy();

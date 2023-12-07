@@ -84,7 +84,7 @@ describe('GovukCheckboxesComponent', () => {
       [inputId]: true,
     });
 
-    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef as any);
+    const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef);
     cdr.detectChanges();
 
     expect(fixture.debugElement.query(By.css(`#companyCheckbox #${inputId}Conditional`)).nativeElement).not.toBe(null);
