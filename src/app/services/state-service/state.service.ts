@@ -1,9 +1,11 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
+import { IAccountEnquiryState } from '@interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StateService {
-  // TODO: Account enquiry state interface
-  public accountEnquiry = signal({});
+  public accountEnquiry: WritableSignal<IAccountEnquiryState> = signal({
+    search: null,
+  });
 }

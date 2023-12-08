@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StateService } from '@services';
 import {
@@ -37,6 +37,7 @@ import CT_LIST from './data/ct-list.json';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit {
+  private readonly router = inject(Router);
   private readonly stateService = inject(StateService);
   public searchForm!: FormGroup;
 
@@ -60,6 +61,14 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  private rePopulateSearchForm(): void {
+    const accountEnquirySearchData = this.stateService.accountEnquiry().search;
+    if (accountEnquirySearchData) {
+      console.log(accountEnquirySearchData);
+      this.searchForm.patchValue(accountEnquirySearchData);
+    }
+  }
+
   public handleClearForm(): void {
     this.searchForm.reset();
   }
@@ -68,10 +77,13 @@ export class SearchComponent implements OnInit {
     this.stateService.accountEnquiry.set({
       search: this.searchForm.value,
     });
+
     console.log(this.stateService.accountEnquiry());
+    this.router.navigate(['account-enquiry/matches']);
   }
 
   public ngOnInit(): void {
     this.setupSearchForm();
+    this.rePopulateSearchForm();
   }
 }

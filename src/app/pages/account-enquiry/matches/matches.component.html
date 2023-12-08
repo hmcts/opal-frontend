@@ -1,3 +1,11 @@
 <p>matches works!</p>
 
-<button [routerLink]="['../search']">SEARCH</button><button [routerLink]="['../details']">DETAILS</button>
+<app-govuk-button
+  buttonClasses="govuk-button--secondary govuk-!-margin-right-3"
+  buttonId="back"
+  (buttonClickEvent)="handleBack()"
+>
+  Back</app-govuk-button
+>
+
+<!-- <button [routerLink]="['../search']">SEARCH</button><button [routerLink]="['../details']">DETAILS</button> -->

@@ -15,6 +15,8 @@ export class AccountEnquiryComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.stateService.accountEnquiry.set({});
+    this.stateService.accountEnquiry.set({
+      search: null,
+    });
   }
 }

@@ -4,6 +4,7 @@ import { IGovUkRadioInput } from './govuk-radio-input.interface';
 import { IGovUkCheckboxInput } from './govuk-checkboxes-input.interface';
 import { IGovUkDateInput } from './govuk-date-input.interface';
 import { IGovUkSelectOptions } from './govuk-select-options.interface';
+import { IAccountEnquiryState } from './account-enquiry-state.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -12,4 +13,5 @@ export {
   IGovUkCheckboxInput,
   IGovUkDateInput,
   IGovUkSelectOptions,
+  IAccountEnquiryState,
 };
