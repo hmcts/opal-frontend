@@ -3,9 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { IDefendantAccount, IGetDefendantAccountParams } from '@interfaces';
 import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class DefendantAccountService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/';
