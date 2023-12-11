@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { CdkTableModule } from '@angular/cdk/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { GovukButtonComponent } from '@components';
@@ -18,9 +18,9 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
     CommonModule,
     RouterModule,
     GovukButtonComponent,
-    MatTableModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
+    CdkTableModule,
   ],
   providers: [DefendantAccountService],
   templateUrl: './matches.component.html',
