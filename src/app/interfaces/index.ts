@@ -4,7 +4,8 @@ import { IGovUkRadioInput } from './govuk-radio-input.interface';
 import { IGovUkCheckboxInput } from './govuk-checkboxes-input.interface';
 import { IGovUkDateInput } from './govuk-date-input.interface';
 import { IGovUkSelectOptions } from './govuk-select-options.interface';
-import { IAccountEnquiryState } from './account-enquiry-state.interface';
+import { IAccountEnquiryState, IAccountEnquiryStateSearch } from './account-enquiry-state.interface';
+import { ISearchDefendantAccountBody } from './search-defendant-account-body';
 
 export {
   IGetDefendantAccountParams,
@@ -14,4 +15,6 @@ export {
   IGovUkDateInput,
   IGovUkSelectOptions,
   IAccountEnquiryState,
+  IAccountEnquiryStateSearch,
+  ISearchDefendantAccountBody,
 };

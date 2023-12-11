@@ -10,6 +10,7 @@ import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
 import { Observable, map } from 'rxjs';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { IAccountEnquiryState, IAccountEnquiryStateSearch } from '@interfaces';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -32,29 +33,40 @@ export class MatchesComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
-  public storedResultsData!: any;
-
   public data$!: Observable<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  displayedColumns: string[] = ['accountNo', 'name', 'dateOfBirth', 'addressLine1', 'balance', 'court', 'view'];
+  public readonly displayedColumns: string[] = [
+    'accountNo',
+    'name',
+    'dateOfBirth',
+    'addressLine1',
+    'balance',
+    'court',
+    'view',
+  ];
 
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 
   private fetchResults(): void {
-    const postbody = { ...this.stateService.accountEnquiry(), court: 'test' };
-    this.data$ = this.defendantAccountService.searchDefendantAccount(postbody).pipe(
-      map((results) => {
-        this.storedResultsData = results;
-        // Wrap the results so we can use the datatable functionality...
-        const modified = new MatTableDataSource<any>(results.searchResults);
-        modified.paginator = this.paginator;
-        return modified;
-      }),
-    );
+    const searchState = this.stateService.accountEnquiry().search;
+    if (searchState) {
+      // TMP: Set court to test
+      const postBody = { ...searchState, court: 'test' };
+
+      this.data$ = this.defendantAccountService.searchDefendantAccount(postBody).pipe(
+        map((results) => {
+          // Wrap the results so we can use the datatable functionality...
+          const wrappedTableDataSource = new MatTableDataSource<any>(results.searchResults);
+          wrappedTableDataSource.paginator = this.paginator;
+          return wrappedTableDataSource;
+        }),
+      );
+    } else {
+      console.error('NO DATA');
+    }
   }
 
   public ngOnInit(): void {

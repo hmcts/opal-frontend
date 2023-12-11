@@ -5,7 +5,5 @@ import { IAccountEnquiryState } from '@interfaces';
   providedIn: 'root',
 })
 export class StateService {
-  public accountEnquiry: WritableSignal<IAccountEnquiryState> = signal({
-    search: null,
-  });
+  public accountEnquiry: WritableSignal<IAccountEnquiryState> = signal({});
 }

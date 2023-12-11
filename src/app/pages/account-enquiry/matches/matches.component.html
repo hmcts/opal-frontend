@@ -3,66 +3,63 @@
     <h1 class="govuk-heading-l">Account Enquiry Matches</h1>
   </div>
 </div>
-@if (data$ | async; as data) {
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <table cdk-table [dataSource]="data$ | async" class="govuk-table">
-        <!--- Note that these columns can be defined in any order.
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <table cdk-table [dataSource]="data$ | async" class="govuk-table">
+      <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
 
-        <!-- Position Column -->
-        <ng-container cdkColumnDef="accountNo">
-          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Account No.</th>
-          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.accountNo }}</td>
-        </ng-container>
+      <!-- Position Column -->
+      <ng-container cdkColumnDef="accountNo">
+        <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Account No.</th>
+        <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.accountNo }}</td>
+      </ng-container>
 
-        <!-- Name Column -->
-        <ng-container cdkColumnDef="name">
-          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Name</th>
-          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.name }}</td>
-        </ng-container>
+      <!-- Name Column -->
+      <ng-container cdkColumnDef="name">
+        <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Name</th>
+        <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.name }}</td>
+      </ng-container>
 
-        <!-- Weight Column -->
-        <ng-container cdkColumnDef="dateOfBirth">
-          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Date of Birth</th>
-          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.dateOfBirth }}</td>
-        </ng-container>
+      <!-- Weight Column -->
+      <ng-container cdkColumnDef="dateOfBirth">
+        <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Date of Birth</th>
+        <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.dateOfBirth }}</td>
+      </ng-container>
 
-        <!-- Symbol Column -->
-        <ng-container cdkColumnDef="addressLine1">
-          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Address Line 1</th>
-          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.addressLine1 }}</td>
-        </ng-container>
+      <!-- Symbol Column -->
+      <ng-container cdkColumnDef="addressLine1">
+        <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Address Line 1</th>
+        <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.addressLine1 }}</td>
+      </ng-container>
 
-        <!-- Symbol Column -->
-        <ng-container cdkColumnDef="balance">
-          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Balance</th>
-          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.balance | currency: 'GBP' }}</td>
-        </ng-container>
+      <!-- Symbol Column -->
+      <ng-container cdkColumnDef="balance">
+        <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Balance</th>
+        <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.balance | currency: 'GBP' }}</td>
+      </ng-container>
 
-        <!-- Symbol Column -->
-        <ng-container cdkColumnDef="court">
-          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Court</th>
-          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.court }}</td>
-        </ng-container>
+      <!-- Symbol Column -->
+      <ng-container cdkColumnDef="court">
+        <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Court</th>
+        <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.court }}</td>
+      </ng-container>
 
-        <ng-container cdkColumnDef="view">
-          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header"></th>
-          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">
-            <a href="#" class="govuk-link govuk-link--no-visited-state">View</a>
-          </td>
-        </ng-container>
+      <ng-container cdkColumnDef="view">
+        <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header"></th>
+        <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">
+          <a class="govuk-link govuk-link--no-visited-state" [routerLink]="['../details']">View</a>
+        </td>
+      </ng-container>
 
-        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns" class="govuk-table__row"></tr>
-        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns" class="govuk-table__row"></tr>
-      </table>
-      <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons aria-label="Select page">
-      </mat-paginator>
-    </div>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns" class="govuk-table__row"></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: displayedColumns" class="govuk-table__row"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons aria-label="Select page"> </mat-paginator>
   </div>
-} @else {
-  <mat-spinner></mat-spinner>
-}
+</div>
+
 <div class="govuk-grid-row govuk-!-margin-top-6">
   <div class="govuk-grid-column-two-thirds">
     <app-govuk-button
