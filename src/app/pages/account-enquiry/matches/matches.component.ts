@@ -38,7 +38,7 @@ export class MatchesComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  displayedColumns: string[] = ['accountNo', 'name', 'dateOfBirth', 'addressLine1', 'balance', 'court'];
+  displayedColumns: string[] = ['accountNo', 'name', 'dateOfBirth', 'addressLine1', 'balance', 'court', 'view'];
 
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.search]);

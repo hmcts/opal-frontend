@@ -46,6 +46,13 @@
           <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.court }}</td>
         </ng-container>
 
+        <ng-container cdkColumnDef="view">
+          <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header"></th>
+          <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">
+            <a href="#" class="govuk-link govuk-link--no-visited-state">View</a>
+          </td>
+        </ng-container>
+
         <tr cdk-header-row *cdkHeaderRowDef="displayedColumns" class="govuk-table__row"></tr>
         <tr cdk-row *cdkRowDef="let row; columns: displayedColumns" class="govuk-table__row"></tr>
       </table>
