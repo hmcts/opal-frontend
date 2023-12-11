@@ -21,7 +21,7 @@ Then('The sign out link should be visible', () => {
 });
 
 Then('I see {string} in the page body header', (bodyHeader) => {
-  cy.get('.govuk-heading-m').should('contain', bodyHeader);
+  cy.get('.govuk-fieldset__heading').should('contain', bodyHeader);
 });
 
 When('I click the Sign out link', () => {

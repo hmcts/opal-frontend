@@ -1,4 +1,64 @@
 Feature: PO-115 account search page
-  Scenario: check console log for all field search
+  Scenario: check values are entered for all field search
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
+
+    When I click Sign in
+    Then I see "Account Enquiry" in the page body header
+
+    When I populate the form with the following search criteria and search
+      | court    | Bath         |
+      | surname  | testSurname  |
+      | forename | testForename |
+      | initials |              |
+      | dobDay   | 01           |
+      | dobMonth | 01           |
+      | dobYear  | 1990         |
+      | addrLn1  | addrLn1      |
+      | niNumber | AB123456C    |
+      | pcr      | testPCR      |
+
+    Then I see the form contains the following search criteria
+      | court    | Bath         |
+      | surname  | testSurname  |
+      | forename | testForename |
+      | initials |              |
+      | dobDay   | 01           |
+      | dobMonth | 01           |
+      | dobYear  | 1990         |
+      | addrLn1  | addrLn1      |
+      | niNumber | AB123456C    |
+      | pcr      | testPCR      |
+
+  Scenario: check clear clears form
+    Given I am on the OPAL Frontend
+    Then I see "OPAL Frontend" in the header
+
+    When I click Sign in
+    Then I see "Account Enquiry" in the page body header
+
+    When I populate the form with the following search criteria and search
+      | court    | Bath         |
+      | surname  | testSurname  |
+      | forename | testForename |
+      | initials |              |
+      | dobDay   | 01           |
+      | dobMonth | 01           |
+      | dobYear  | 1990         |
+      | addrLn1  | addrLn1      |
+      | niNumber | AB123456C    |
+      | pcr      | testPCR      |
+
+    And I click the clear button
+
+    Then I see the form contains the following search criteria
+      | court    |  |
+      | surname  |  |
+      | forename |  |
+      | initials |  |
+      | dobDay   |  |
+      | dobMonth |  |
+      | dobYear  |  |
+      | addrLn1  |  |
+      | niNumber |  |
+      | pcr      |  |
