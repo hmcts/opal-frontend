@@ -10,7 +10,7 @@ import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
 import { Observable, map } from 'rxjs';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { IAccountEnquiryState, IAccountEnquiryStateSearch } from '@interfaces';
+import { ISearchDefendantAccountBody } from '@interfaces';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -54,7 +54,7 @@ export class MatchesComponent implements OnInit {
     const searchState = this.stateService.accountEnquiry().search;
     if (searchState) {
       // TMP: Set court to test
-      const postBody = { ...searchState, court: 'test' };
+      const postBody: ISearchDefendantAccountBody = { ...searchState, court: 'test' };
 
       this.data$ = this.defendantAccountService.searchDefendantAccount(postBody).pipe(
         map((results) => {
