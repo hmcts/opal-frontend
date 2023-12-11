@@ -13,4 +13,8 @@ export class DefendantAccountService {
       `${this.baseUrl}defendant-account?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`,
     );
   }
+
+  public searchDefendantAccount(body: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}defendant-account/search`, body);
+  }
 }

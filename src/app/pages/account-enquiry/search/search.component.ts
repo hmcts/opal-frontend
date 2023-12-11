@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { StateService } from '@services';
+import { DefendantAccountService, StateService } from '@services';
 import {
   GovukCheckboxesComponent,
   GovukRadiosComponent,
@@ -40,6 +40,7 @@ import { AccountEnquiryRoutes } from '@enums';
 export class SearchComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly stateService = inject(StateService);
+
   public searchForm!: FormGroup;
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
@@ -47,7 +48,7 @@ export class SearchComponent implements OnInit {
 
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
-      courts: new FormControl(null),
+      court: new FormControl(null),
       surname: new FormControl(null),
       forename: new FormControl(null),
       initials: new FormControl(null),
