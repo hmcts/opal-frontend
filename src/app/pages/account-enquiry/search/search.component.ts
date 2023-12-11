@@ -16,6 +16,7 @@ import { IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from './config/date-inputs';
 
 import CT_LIST from './data/ct-list.json';
+import { AccountEnquiryRoutes } from '@enums';
 
 @Component({
   selector: 'app-account-enquiry',
@@ -64,7 +65,6 @@ export class SearchComponent implements OnInit {
   private rePopulateSearchForm(): void {
     const accountEnquirySearchData = this.stateService.accountEnquiry().search;
     if (accountEnquirySearchData) {
-      console.log(accountEnquirySearchData);
       this.searchForm.patchValue(accountEnquirySearchData);
     }
   }
@@ -78,8 +78,7 @@ export class SearchComponent implements OnInit {
       search: this.searchForm.value,
     });
 
-    console.log(this.stateService.accountEnquiry());
-    this.router.navigate(['account-enquiry/matches']);
+    this.router.navigate([AccountEnquiryRoutes.matches]);
   }
 
   public ngOnInit(): void {

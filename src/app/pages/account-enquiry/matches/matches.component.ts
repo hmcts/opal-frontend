@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { GovukButtonComponent } from '@components';
+import { AccountEnquiryRoutes } from '@enums';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -15,6 +16,6 @@ export class MatchesComponent {
   private readonly router = inject(Router);
 
   public handleBack(): void {
-    this.router.navigate(['account-enquiry/search']);
+    this.router.navigate([AccountEnquiryRoutes.search]);
   }
 }
