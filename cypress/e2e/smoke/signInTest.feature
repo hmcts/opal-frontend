@@ -6,4 +6,4 @@ Feature: Sign In Smoke Test
     And The sign out link should be visible
 
     When I click the Sign out link
-    Then I see "Sign in" in the page body header
+    Then I see "Sign in" on the sign in page
