@@ -8,9 +8,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GovukButtonComponent } from '@components';
 import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
-import { Observable, map } from 'rxjs';
+import { EMPTY, Observable, map, of } from 'rxjs';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { ISearchDefendantAccount, ISearchDefendantAccountBody, ISearchDefendantAccounts } from '@interfaces';
+import { ISearchDefendantAccount, ISearchDefendantAccountBody } from '@interfaces';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -33,7 +33,7 @@ export class MatchesComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
-  public data$!: Observable<MatTableDataSource<ISearchDefendantAccount>>;
+  public data$: Observable<MatTableDataSource<ISearchDefendantAccount>> = EMPTY;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public readonly displayedColumns: string[] = [
