@@ -11,6 +11,7 @@ import { DefendantAccountService, StateService } from '@services';
 import { EMPTY, Observable, map, of } from 'rxjs';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ISearchDefendantAccount, ISearchDefendantAccountBody } from '@interfaces';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -22,6 +23,7 @@ import { ISearchDefendantAccount, ISearchDefendantAccountBody } from '@interface
     MatProgressSpinnerModule,
     MatPaginatorModule,
     CdkTableModule,
+    MatSortModule,
   ],
   providers: [DefendantAccountService],
   templateUrl: './matches.component.html',
@@ -33,7 +35,7 @@ export class MatchesComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
-  public data$: Observable<MatTableDataSource<ISearchDefendantAccount>> = EMPTY;
+  public data$!: Observable<MatTableDataSource<ISearchDefendantAccount>>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public readonly displayedColumns: string[] = [
