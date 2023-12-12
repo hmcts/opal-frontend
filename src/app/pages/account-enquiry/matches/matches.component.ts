@@ -10,7 +10,7 @@ import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
 import { Observable, map } from 'rxjs';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { ISearchDefendantAccountBody } from '@interfaces';
+import { ISearchDefendantAccount, ISearchDefendantAccountBody, ISearchDefendantAccounts } from '@interfaces';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -33,7 +33,7 @@ export class MatchesComponent implements OnInit {
   private readonly stateService = inject(StateService);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
-  public data$!: Observable<any>;
+  public data$!: Observable<MatTableDataSource<ISearchDefendantAccount>>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public readonly displayedColumns: string[] = [
@@ -56,10 +56,10 @@ export class MatchesComponent implements OnInit {
       // TMP: Set court to test
       const postBody: ISearchDefendantAccountBody = { ...searchState, court: 'test' };
 
-      this.data$ = this.defendantAccountService.searchDefendantAccount(postBody).pipe(
+      this.data$ = this.defendantAccountService.searchDefendantAccounts(postBody).pipe(
         map((results) => {
           // Wrap the results so we can use the datatable functionality...
-          const wrappedTableDataSource = new MatTableDataSource<any>(results.searchResults);
+          const wrappedTableDataSource = new MatTableDataSource<ISearchDefendantAccount>(results.searchResults);
           wrappedTableDataSource.paginator = this.paginator;
           return wrappedTableDataSource;
         }),
