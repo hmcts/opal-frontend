@@ -7,11 +7,20 @@ import {
   IGetDefendantAccountParams,
   ISearchDefendantAccountBody,
 } from '@interfaces';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable, catchError, of } from 'rxjs';
+import { StateService } from '../state-service/state.service';
 
 @Injectable()
 export class DefendantAccountService {
   private readonly http = inject(HttpClient);
+  private readonly stateService = inject(StateService);
+
+  private resetErrors(): void {
+    this.stateService.error.set({
+      error: false,
+      message: '',
+    });
+  }
 
   public getDefendantAccount(params: IGetDefendantAccountParams): Observable<IDefendantAccount> {
     return this.http.get<IDefendantAccount>(

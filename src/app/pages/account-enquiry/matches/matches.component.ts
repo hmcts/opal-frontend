@@ -32,10 +32,12 @@ import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 })
 export class MatchesComponent implements OnInit {
   private readonly router = inject(Router);
-  private readonly stateService = inject(StateService);
+  public readonly stateService = inject(StateService);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
   public data$!: Observable<MatTableDataSource<ISearchDefendantAccount>>;
+
+  public error = this.stateService.error();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public readonly displayedColumns: string[] = [
@@ -53,6 +55,7 @@ export class MatchesComponent implements OnInit {
   }
 
   private fetchResults(): void {
+    console.log('Fetcc');
     const searchState = this.stateService.accountEnquiry().search;
     if (searchState) {
       // TMP: Set court to test
