@@ -18,5 +18,11 @@ export class AccountEnquiryComponent implements OnDestroy {
     this.stateService.accountEnquiry.set({
       search: null,
     });
+
+    // Clear any errors...
+    this.stateService.error.set({
+      error: false,
+      message: '',
+    });
   }
 }
