@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-
+import { Logger } from '@hmcts/nodejs-logging';
 //Returns payload of JWT
 const parseJwt = (token: string) => {
   return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
@@ -26,7 +26,10 @@ const isJwtExpired = (token: string | undefined) => {
 };
 
 export default (req: Request, res: Response) => {
+  const logger = Logger.getLogger('authenticated');
   const token = req.session.securityToken?.accessToken;
+
+  logger.info(`Get session token ${req.session.securityToken?.accessToken}`);
 
   // Don't allow caching of this endpoint
   res.header('Cache-Control', 'no-store, must-revalidate');
