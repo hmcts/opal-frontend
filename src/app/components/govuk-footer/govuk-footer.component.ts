@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { GovukFooter } from '@enums';
@@ -9,6 +9,7 @@ import { GovukFooter } from '@enums';
   imports: [CommonModule],
   templateUrl: './govuk-footer.component.html',
   styleUrl: './govuk-footer.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukFooterComponent {
   public readonly footer = GovukFooter;

@@ -34,3 +34,13 @@ resource "azurerm_key_vault_secret" "redis_connection_string" {
 
   key_vault_id = data.azurerm_key_vault.opal_key_vault.id
 }
+
+resource "random_string" "session-secret" {
+  length = 16
+}
+
+resource "azurerm_key_vault_secret" "opal-frontend-session-secret" {
+  name         = "opal-frontend-session-secret"
+  value        = random_string.session-secret.result
+  key_vault_id = data.azurerm_key_vault.opal_key_vault.id
+}

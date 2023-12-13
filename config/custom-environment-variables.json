@@ -1,4 +1,5 @@
 {
+  "node-env": "NODE_ENV",
   "features": {
     "redis": {
       "enabled": {

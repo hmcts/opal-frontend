@@ -20,12 +20,14 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
+    "resolveJsonModule": true,
     "paths": {
       "@components": ["./src/app/components/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],
-      "@mocks": ["./src/app/mocks/index.ts"]
+      "@mocks": ["./src/app/mocks/index.ts"],
+      "@guards": ["./src/app/guards/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
