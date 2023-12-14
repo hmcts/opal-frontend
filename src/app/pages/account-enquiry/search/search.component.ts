@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DefendantAccountService, StateService } from '@services';
+import { StateService } from '@services';
 import {
   GovukCheckboxesComponent,
   GovukRadiosComponent,
