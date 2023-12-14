@@ -6,7 +6,7 @@ import { StateService } from '@services';
 import { SEARCH_STATE_MOCK } from '@mocks';
 import { AccountEnquiryRoutes } from '@enums';
 
-fdescribe('SearchComponent', () => {
+describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
   let stateService: StateService;
