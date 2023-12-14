@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { EMPTY, Observable } from 'rxjs';
 
