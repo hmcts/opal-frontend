@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { DefendantAccountService } from './defendant-account.service';
-import { IGetDefendantAccountParams } from '@interfaces';
-import { DEFENDANT_ACCOUNT_MOCK } from '@mocks';
+import { IGetDefendantAccountParams, ISearchDefendantAccountBody } from '@interfaces';
+import { DEFENDANT_ACCOUNT_MOCK, SEARCH_DEFENDANT_ACCOUNTS_MOCK } from '@mocks';
+import { ApiPaths } from '@enums';
 
 describe('DefendantAccountService', () => {
   let service: DefendantAccountService;
@@ -28,7 +29,7 @@ describe('DefendantAccountService', () => {
       businessUnitId: 1,
       accountNumber: '1212',
     };
-    const apiUrl = `/api/defendant-account?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`;
+    const apiUrl = `${ApiPaths.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`;
 
     service.getDefendantAccount(params).subscribe((defendantAccount) => {
       expect(defendantAccount).toEqual(DEFENDANT_ACCOUNT_MOCK);
@@ -38,5 +39,32 @@ describe('DefendantAccountService', () => {
     expect(req.request.method).toBe('GET');
 
     req.flush(DEFENDANT_ACCOUNT_MOCK);
+  });
+
+  it('should RETURN the defendant account search', () => {
+    const body: ISearchDefendantAccountBody = {
+      court: 'Bath',
+      surname: 'Test',
+      forename: 'Test',
+      initials: 'TT',
+      dateOfBirth: {
+        dayOfBirth: '12',
+        monthOfBirth: '12',
+        yearOfBirth: '1981',
+      },
+      addressLineOne: 'Test',
+      niNumber: 'TT1234',
+      pcr: '1234',
+    };
+    const apiUrl = ApiPaths.defendantAccountSearch;
+
+    service.searchDefendantAccounts(body).subscribe((searchDefendantAccounts) => {
+      expect(searchDefendantAccounts).toEqual(SEARCH_DEFENDANT_ACCOUNTS_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush(SEARCH_DEFENDANT_ACCOUNTS_MOCK);
   });
 });

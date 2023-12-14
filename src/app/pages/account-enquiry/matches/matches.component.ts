@@ -8,10 +8,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GovukButtonComponent } from '@components';
 import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
-import { EMPTY, Observable, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ISearchDefendantAccount, ISearchDefendantAccountBody } from '@interfaces';
-import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+import { MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-account-enquiry-matches',
@@ -55,7 +55,6 @@ export class MatchesComponent implements OnInit {
   }
 
   private fetchResults(): void {
-    console.log('Fetcc');
     const searchState = this.stateService.accountEnquiry().search;
     if (searchState) {
       // TMP: Set court to test
