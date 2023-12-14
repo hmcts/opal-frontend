@@ -50,27 +50,29 @@ export class MatchesComponent implements OnInit {
     'view',
   ];
 
-  public handleBack(): void {
-    this.router.navigate([AccountEnquiryRoutes.search]);
+  private wrapTableDataSource(source: ISearchDefendantAccount[]): MatTableDataSource<ISearchDefendantAccount> {
+    const wrappedTableDataSource = new MatTableDataSource<ISearchDefendantAccount>(source);
+    wrappedTableDataSource.paginator = this.paginator;
+    return wrappedTableDataSource;
   }
 
   private fetchResults(): void {
     const searchState = this.stateService.accountEnquiry().search;
+
     if (searchState) {
       // TMP: Set court to test
       const postBody: ISearchDefendantAccountBody = { ...searchState, court: 'test' };
 
-      this.data$ = this.defendantAccountService.searchDefendantAccounts(postBody).pipe(
-        map((results) => {
-          // Wrap the results so we can use the datatable functionality...
-          const wrappedTableDataSource = new MatTableDataSource<ISearchDefendantAccount>(results.searchResults);
-          wrappedTableDataSource.paginator = this.paginator;
-          return wrappedTableDataSource;
-        }),
-      );
+      this.data$ = this.defendantAccountService
+        .searchDefendantAccounts(postBody)
+        .pipe(map((results) => this.wrapTableDataSource(results.searchResults)));
     } else {
       console.error('NO DATA');
     }
+  }
+
+  public handleBack(): void {
+    this.router.navigate([AccountEnquiryRoutes.search]);
   }
 
   public ngOnInit(): void {
