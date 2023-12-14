@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MatchesComponent } from './matches.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -6,11 +6,10 @@ import { Router } from '@angular/router';
 import { AccountEnquiryRoutes } from '@enums';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DefendantAccountService, StateService } from '@services';
+import { StateService } from '@services';
 import { SEARCH_DEFENDANT_ACCOUNTS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
-import { EMPTY, of } from 'rxjs';
 
-fdescribe('MatchesComponent', () => {
+describe('MatchesComponent', () => {
   let component: MatchesComponent;
   let fixture: ComponentFixture<MatchesComponent>;
   let router: Router;

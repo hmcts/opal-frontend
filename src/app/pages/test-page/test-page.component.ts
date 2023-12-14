@@ -3,7 +3,7 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { EMPTY, Observable } from 'rxjs';
 
 import { GovukButtonComponent } from '@components';
-import { DefendantAccountService, StateService } from '@services';
+import { DefendantAccountService } from '@services';
 import { IDefendantAccount } from '@interfaces';
 import { RouterModule } from '@angular/router';
 
@@ -16,16 +16,10 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./test-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TestPageComponent implements OnInit {
+export class TestPageComponent {
   private readonly document = inject(DOCUMENT);
   private readonly defendantAccountService = inject(DefendantAccountService);
   public data$: Observable<IDefendantAccount> = EMPTY;
-
-  private readonly stateService = inject(StateService);
-
-  public ngOnInit(): void {
-    console.log(this.stateService.accountEnquiry());
-  }
 
   public handleLogoutApiButtonClick(): void {
     this.document.location.href = '/sso/logout';
