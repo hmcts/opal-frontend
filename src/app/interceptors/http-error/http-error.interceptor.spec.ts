@@ -17,14 +17,21 @@ describe('httpErrorInterceptor', () => {
     stateService = TestBed.inject(StateService);
   });
 
-  it('should be created', () => {
+  it('should have no errors', () => {
     expect(interceptor).toBeTruthy();
+  });
+
+  it('should be created', () => {
+    expect(stateService.error().error).toBeFalsy();
   });
 
   it('should intercept and set an error', () => {
     const errorResponse = new HttpErrorResponse({ status: 401 });
     const request = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = () => throwError(() => errorResponse);
+
+    expect(stateService.error().error).toBeFalsy();
+
     interceptor(request, next).subscribe({
       error: () => {
         const errorState = stateService.error().error;
@@ -45,6 +52,9 @@ describe('httpErrorInterceptor', () => {
     });
     const request = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = () => throwError(() => errorResponse);
+
+    expect(stateService.error().error).toBeFalsy();
+
     interceptor(request, next).subscribe({
       error: () => {
         const errorState = stateService.error().error;
