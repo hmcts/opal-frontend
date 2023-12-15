@@ -32,4 +32,24 @@ describe('httpErrorInterceptor', () => {
       },
     });
   });
+
+  it('should intercept and set an error.error', () => {
+    const errorResponse = new HttpErrorResponse({
+      status: 401,
+      error: new ErrorEvent('Error', {
+        error: new Error('Error'),
+        message: 'Error has occurred!',
+        lineno: 402,
+        filename: 'test.html',
+      }),
+    });
+    const request = new HttpRequest('GET', '/test');
+    const next: HttpHandlerFn = () => throwError(() => errorResponse);
+    interceptor(request, next).subscribe({
+      error: () => {
+        const errorState = stateService.error().error;
+        expect(errorState).toBeTruthy();
+      },
+    });
+  });
 });

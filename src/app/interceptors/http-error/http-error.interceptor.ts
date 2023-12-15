@@ -6,9 +6,9 @@ import { catchError, tap, throwError } from 'rxjs';
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const stateService = inject(StateService);
 
-  // return next(req);
   return next(req).pipe(
     tap(() => {
+      // Clear the state service on new requests
       stateService.error.set({ error: false, message: '' });
     }),
     catchError((error) => {
