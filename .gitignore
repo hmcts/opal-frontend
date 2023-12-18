@@ -45,6 +45,7 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
+package-lock.json
 
 # System files
 .DS_Store
@@ -54,5 +55,6 @@ Thumbs.db
 cypress/videos
 cypress/screenshots
 cypress/downloads
+cypress/results
 functional-output
 smoke-output
