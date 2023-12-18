@@ -1,10 +1,14 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import type { Router } from 'express';
 import { proxy } from './api';
 import { ssoAuthenticated, ssoLoginCallback, ssoLogin, ssoLogout, ssoLogoutCallback } from './sso';
 
 export default (): Router => {
   const router = express.Router();
+
+  router.use(bodyParser.json());
+  router.use(bodyParser.urlencoded({ extended: false }));
 
   router.use('/api', proxy());
 

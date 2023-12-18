@@ -6039,7 +6039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:^1.19.0":
+"body-parser@npm:^1.19.0, body-parser@npm:^1.20.2":
   version: 1.20.2
   resolution: "body-parser@npm:1.20.2"
   dependencies:
@@ -12561,6 +12561,7 @@ __metadata:
     "@typescript-eslint/parser": 6.14.0
     applicationinsights: ^2.9.0
     axios: ^1.6.2
+    body-parser: ^1.20.2
     config: ^3.3.9
     connect-redis: ^7.1.0
     cypress: ^13.6.0
