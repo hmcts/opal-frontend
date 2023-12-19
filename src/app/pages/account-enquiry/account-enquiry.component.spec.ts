@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccountEnquiryComponent } from './account-enquiry.component';
 import { StateService } from '@services';
+import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 describe('AccountEnquiryComponent', () => {
   let component: AccountEnquiryComponent;
@@ -32,7 +33,7 @@ describe('AccountEnquiryComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(stateService.accountEnquiry()).toEqual({ search: null });
+    expect(stateService.accountEnquiry()).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(stateService.error()).toEqual({ error: false, message: '' });
   });
 });

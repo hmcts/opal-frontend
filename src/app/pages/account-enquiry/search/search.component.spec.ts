@@ -5,6 +5,7 @@ import { SearchComponent } from './search.component';
 import { StateService } from '@services';
 import { SEARCH_STATE_MOCK } from '@mocks';
 import { AccountEnquiryRoutes } from '@enums';
+import { ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from '@constants';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -59,8 +60,8 @@ describe('SearchComponent', () => {
   it('should submit the form', () => {
     const navigateSpy = spyOn(router, 'navigate');
 
-    stateService.accountEnquiry.set({ search: null });
-    expect(stateService.accountEnquiry().search).toBeNull();
+    stateService.accountEnquiry.set({ search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH });
+    expect(stateService.accountEnquiry().search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
 
     component.searchForm.controls['court'].setValue('Bristol');
     expect(component.searchForm.value.court).toBe('Bristol');

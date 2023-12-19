@@ -5,7 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 import { SEARCH_DEFENDANT_ACCOUNTS_MOCK } from '@mocks';
 
-fdescribe('MatchesTableComponent', () => {
+describe('MatchesTableComponent', () => {
   let component: MatchesTableComponent;
   let fixture: ComponentFixture<MatchesTableComponent>;
 

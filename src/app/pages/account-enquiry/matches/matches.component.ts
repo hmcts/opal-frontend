@@ -18,31 +18,20 @@ import { MatchesTableComponent } from './matches-table/matches-table.component';
   styleUrl: './matches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MatchesComponent implements OnInit {
+export class MatchesComponent {
+  public readonly stateService = inject(StateService);
   private readonly router = inject(Router);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
-  public readonly stateService = inject(StateService);
-  private readonly searchState = this.stateService.accountEnquiry().search || null;
-  public data$!: Observable<ISearchDefendantAccounts>;
+  private readonly searchState = this.stateService.accountEnquiry().search;
+
   public readonly error = this.stateService.error();
-
-  private fetchResults(): void {
-    const searchState = this.stateService.accountEnquiry().search;
-
-    if (searchState) {
-      const postBody: ISearchDefendantAccountBody = { ...searchState, court: 'test' };
-      this.data$ = this.defendantAccountService.searchDefendantAccounts(postBody);
-    } else {
-      console.error('NO DATA');
-    }
-  }
+  public data$: Observable<ISearchDefendantAccounts> = this.defendantAccountService.searchDefendantAccounts({
+    ...this.searchState,
+    court: 'test',
+  });
 
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.search]);
-  }
-
-  public ngOnInit(): void {
-    this.fetchResults();
   }
 }

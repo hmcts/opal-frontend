@@ -24,6 +24,7 @@ describe('MatchesComponent', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     stateService = TestBed.inject(StateService);
+    stateService.accountEnquiry.set({ search: SEARCH_STATE_MOCK });
 
     fixture.detectChanges();
   });
@@ -39,15 +40,7 @@ describe('MatchesComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
   });
 
-  it('should not have state and not populate data$', () => {
-    expect(component.data$).toBeUndefined();
-  });
-
   it('should have state and populate data$', () => {
-    stateService.accountEnquiry.set({ search: SEARCH_STATE_MOCK });
-    component['fetchResults']();
-    fixture.detectChanges();
-
     expect(component.data$).not.toBeUndefined();
   });
 });

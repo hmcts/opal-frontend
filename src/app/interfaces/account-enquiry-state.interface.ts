@@ -13,5 +13,5 @@ export interface IAccountEnquiryStateSearch {
   pcr: string | null;
 }
 export interface IAccountEnquiryState {
-  search: IAccountEnquiryStateSearch | null;
+  search: IAccountEnquiryStateSearch;
 }

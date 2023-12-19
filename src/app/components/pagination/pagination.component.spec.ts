@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 
 import { PaginationComponent } from './pagination.component';
 
-fdescribe('PaginationComponent', () => {
+describe('PaginationComponent', () => {
   let component: PaginationComponent;
   let fixture: ComponentFixture<PaginationComponent>;
 
