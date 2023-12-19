@@ -1,2 +1,17 @@
-<p>details works!</p>
+<app-govuk-tabs>
+  <ng-container items>
+    <app-govuk-tab-list-item href="#past-day"></app-govuk-tab-list-item>
+    <app-govuk-tab-list-item href="#past-month"></app-govuk-tab-list-item
+    ><app-govuk-tab-list-item href="#past-year"></app-govuk-tab-list-item
+  ></ng-container>
+  <ng-container panels>
+    <app-govuk-tab-panel panelId="past-day">
+      <h2 class="govuk-heading-l">Past Day</h2>
+    </app-govuk-tab-panel>
+    <app-govuk-tab-panel panelId="past-month"> <h2 class="govuk-heading-l">Past Month</h2></app-govuk-tab-panel
+    ><app-govuk-tab-panel panelId="past-year">
+      <h2 class="govuk-heading-l">Past Year</h2></app-govuk-tab-panel
+    ></ng-container
+  >
+</app-govuk-tabs>
 <button [routerLink]="['../search']">SEARCH</button><button [routerLink]="['../matches']">MATCHES</button>

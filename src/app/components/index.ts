@@ -8,6 +8,10 @@ import { GovukCheckboxesComponent } from './govuk-checkboxes/govuk-checkboxes.co
 import { GovukDateInputComponent } from './govuk-date-input/govuk-date-input.component';
 import { GovukSelectComponent } from './govuk-select/govuk-select.component';
 import { PaginationComponent } from './pagination/pagination.component';
+import { GovukTabsComponent } from './govuk-tabs/govuk-tabs.component';
+import { GovukTabListItemComponent } from './govuk-tabs/govuk-tab-list-item/govuk-tab-list-item.component';
+import { GovukTabPanelComponent } from './govuk-tabs/govuk-tab-panel/govuk-tab-panel.component';
+
 export {
   GovukButtonComponent,
   GovukAccordionComponent,
@@ -19,4 +23,7 @@ export {
   GovukDateInputComponent,
   GovukSelectComponent,
   PaginationComponent,
+  GovukTabsComponent,
+  GovukTabListItemComponent,
+  GovukTabPanelComponent,
 };

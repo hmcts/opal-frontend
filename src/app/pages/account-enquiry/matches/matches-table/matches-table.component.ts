@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { GovukButtonComponent, PaginationComponent } from '@components';
@@ -12,9 +12,10 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
   imports: [CommonModule, RouterModule, GovukButtonComponent, PaginationComponent, CdkTableModule, PaginationComponent],
   templateUrl: './matches-table.component.html',
   styleUrl: './matches-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchesTableComponent implements OnInit {
-  @Input() data!: ISearchDefendantAccounts;
+  @Input({ required: true }) data!: ISearchDefendantAccounts;
 
   public tableData!: MatTableDataSource<ISearchDefendantAccount>;
 
