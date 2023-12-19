@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -6,7 +6,7 @@ import { GovukButtonComponent } from '@components';
 import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
 import { Observable } from 'rxjs';
-import { ISearchDefendantAccountBody, ISearchDefendantAccounts } from '@interfaces';
+import { ISearchDefendantAccounts } from '@interfaces';
 import { MatchesTableComponent } from './matches-table/matches-table.component';
 
 @Component({
