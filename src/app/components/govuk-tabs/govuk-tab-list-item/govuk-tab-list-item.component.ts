@@ -9,5 +9,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTabListItemComponent {
-  @Input({ required: true }) public href!: string;
+  @Input({ required: true }) public tabListItemHref!: string;
+  @Input({ required: true }) public tabListItemName!: string;
 }

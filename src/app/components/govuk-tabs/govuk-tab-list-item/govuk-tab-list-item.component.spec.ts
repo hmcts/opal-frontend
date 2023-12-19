@@ -8,16 +8,27 @@ describe('GovukTabListItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukTabListItemComponent]
-    })
-    .compileComponents();
-    
+      imports: [GovukTabListItemComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(GovukTabListItemComponent);
     component = fixture.componentInstance;
+    component.tabListItemHref = '#test';
+    component.tabListItemName = 'Test Content';
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should populate the tab href', () => {
+    const element = fixture.nativeElement.querySelector('.govuk-tabs__tab');
+    expect(element.getAttribute('href')).toBe('#test');
+  });
+
+  it('should populate the tab name', () => {
+    const element = fixture.nativeElement.querySelector('.govuk-tabs__tab');
+    expect(element.innerText).toBe('Test Content');
   });
 });
