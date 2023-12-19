@@ -3,5 +3,5 @@ const defendantAccountPath = 'defendant-account/';
 
 export enum ApiPaths {
   defendantAccount = `${baseUrl}${defendantAccountPath}`,
-  defendantAccountSearch = `${baseUrl}${defendantAccountPath}`,
+  defendantAccountSearch = `${baseUrl}${defendantAccountPath}search`,
 }
