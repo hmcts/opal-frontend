@@ -13,6 +13,9 @@ import { GovukButtonComponent } from '@components';
 export class SignInComponent {
   private readonly document = inject(DOCUMENT);
 
+  /**
+   * Handles the login button click event.
+   */
   public handleLoginButtonClick(): void {
     this.document.location.href = '/sso/login';
   }

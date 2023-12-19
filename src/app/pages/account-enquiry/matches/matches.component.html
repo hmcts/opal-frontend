@@ -4,7 +4,7 @@
   </div>
 </div>
 
-ERR: {{ stateService.error().message }}
+{{ stateService.error().message }}
 @if (!stateService.error().error) {
   @if (data$ | async; as data) {
     <div class="govuk-grid-row">

@@ -24,13 +24,16 @@ export class MatchesComponent {
   private readonly defendantAccountService = inject(DefendantAccountService);
 
   private readonly searchState = this.stateService.accountEnquiry().search;
-
   public readonly error = this.stateService.error();
+
   public data$: Observable<ISearchDefendantAccounts> = this.defendantAccountService.searchDefendantAccounts({
     ...this.searchState,
     court: 'test',
   });
 
+  /**
+   * Navigates back to the account search page.
+   */
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.search]);
   }

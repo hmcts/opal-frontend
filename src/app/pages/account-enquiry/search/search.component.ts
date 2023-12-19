@@ -41,11 +41,14 @@ export class SearchComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly stateService = inject(StateService);
 
-  public searchForm!: FormGroup;
-
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
   public readonly ctList: IGovUkSelectOptions[] = CT_LIST;
 
+  public searchForm!: FormGroup;
+
+  /**
+   * Sets up the search form with the necessary form controls.
+   */
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
       court: new FormControl(null),
@@ -63,17 +66,24 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  /**
+   * Repopulates the search form with the data from the account enquiry search.
+   */
   private rePopulateSearchForm(): void {
     const accountEnquirySearchData = this.stateService.accountEnquiry().search;
-    if (accountEnquirySearchData) {
-      this.searchForm.patchValue(accountEnquirySearchData);
-    }
+    this.searchForm.patchValue(accountEnquirySearchData);
   }
 
+  /**
+   * Clears the search form.
+   */
   public handleClearForm(): void {
     this.searchForm.reset();
   }
 
+  /**
+   * Handles the form submission.
+   */
   public handleFormSubmit(): void {
     this.stateService.accountEnquiry.set({
       search: this.searchForm.value,
