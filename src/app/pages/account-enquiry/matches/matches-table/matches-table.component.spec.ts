@@ -54,12 +54,12 @@ describe('MatchesTableComponent', () => {
     ]);
 
     component.data = searchResults;
-    component.pageLimit = pageLimit;
-    component.currentPage = currentPage;
+    component.pageLimit.set(pageLimit);
+    component.currentPage.set(currentPage);
     fixture.detectChanges;
 
     component.onPageChanged(2);
 
-    expect(component.pagedRows.filteredData).toEqual(expectedPagedRows.filteredData);
+    expect(component.pagedRows().filteredData).toEqual(expectedPagedRows.filteredData);
   });
 });

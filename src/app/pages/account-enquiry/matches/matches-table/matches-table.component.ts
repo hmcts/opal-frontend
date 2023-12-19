@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { GovukButtonComponent, PaginationComponent } from '@components';
@@ -17,11 +17,12 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 export class MatchesTableComponent implements OnInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
 
-  public tableData!: MatTableDataSource<ISearchDefendantAccount>;
-
-  public currentPage: number = 1;
-  public pageLimit: number = 10;
-  public pagedRows!: MatTableDataSource<ISearchDefendantAccount>;
+  public currentPage = signal(1);
+  public pageLimit = signal(10);
+  // public pagedRows!: MatTableDataSource<ISearchDefendantAccount>;
+  public pagedRows = signal<MatTableDataSource<ISearchDefendantAccount>>(
+    this.wrapTableDataSource(this.paginate([], this.pageLimit(), this.currentPage())),
+  );
 
   public readonly displayedColumns: string[] = [
     'accountNo',
@@ -61,11 +62,15 @@ export class MatchesTableComponent implements OnInit {
    * @param event The new page number.
    */
   public onPageChanged(event: number): void {
-    this.currentPage = event;
-    this.pagedRows = this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit, this.currentPage));
+    this.currentPage.set(event);
+    this.pagedRows.set(
+      this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit(), this.currentPage())),
+    );
   }
 
   public ngOnInit(): void {
-    this.pagedRows = this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit, this.currentPage));
+    this.pagedRows.set(
+      this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit(), this.currentPage())),
+    );
   }
 }
