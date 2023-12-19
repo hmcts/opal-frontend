@@ -1,16 +1,20 @@
 <app-govuk-tabs>
   <ng-container items>
-    <app-govuk-tab-list-item tabListItemHref="#past-day" tabListItemName="Past Day"></app-govuk-tab-list-item>
+    <app-govuk-tab-list-item
+      tabListItemHref="#accountDetails"
+      tabListItemName="Account Details"
+    ></app-govuk-tab-list-item>
     <app-govuk-tab-list-item tabListItemHref="#past-month" tabListItemName="Past Month"></app-govuk-tab-list-item
-    ><app-govuk-tab-list-item tabListItemHref="#past-year" tabListItemName="Past Year"></app-govuk-tab-list-item
   ></ng-container>
   <ng-container panels>
-    <app-govuk-tab-panel panelId="past-day">
-      <h2 class="govuk-heading-l">Past Day</h2>
+    <app-govuk-tab-panel panelId="accountDetails">
+      <h2 class="govuk-heading-l">Account Details</h2>
+      <app-govuk-summary-list>
+        <app-govuk-summary-list-row></app-govuk-summary-list-row>
+      </app-govuk-summary-list>
     </app-govuk-tab-panel>
-    <app-govuk-tab-panel panelId="past-month"> <h2 class="govuk-heading-l">Past Month</h2></app-govuk-tab-panel
-    ><app-govuk-tab-panel panelId="past-year">
-      <h2 class="govuk-heading-l">Past Year</h2></app-govuk-tab-panel
+    <app-govuk-tab-panel panelId="past-month">
+      <h2 class="govuk-heading-l">Past Month</h2></app-govuk-tab-panel
     ></ng-container
   >
 </app-govuk-tabs>

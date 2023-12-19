@@ -11,6 +11,8 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { GovukTabsComponent } from './govuk-tabs/govuk-tabs.component';
 import { GovukTabListItemComponent } from './govuk-tabs/govuk-tab-list-item/govuk-tab-list-item.component';
 import { GovukTabPanelComponent } from './govuk-tabs/govuk-tab-panel/govuk-tab-panel.component';
+import { GovukSummaryListComponent } from './govuk-summary-list/govuk-summary-list.component';
+import { GovukSummaryListRowComponent } from './govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 
 export {
   GovukButtonComponent,
@@ -26,4 +28,6 @@ export {
   GovukTabsComponent,
   GovukTabListItemComponent,
   GovukTabPanelComponent,
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
 };
