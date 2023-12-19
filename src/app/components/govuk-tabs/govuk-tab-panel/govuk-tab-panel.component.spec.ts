@@ -28,6 +28,6 @@ describe('GovukTabPanelComponent', () => {
 
   it('should render into list ng-content', () => {
     const element = fixture.nativeElement.querySelector('#test');
-    console.log(element);
+    expect(element.innerText).toBe('Hello World');
   });
 });
