@@ -18,8 +18,7 @@ export class MatchesTableComponent implements OnInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
 
   public currentPage = signal(1);
-  public pageLimit = signal(25);
-  // public pagedRows!: MatTableDataSource<ISearchDefendantAccount>;
+  public pageLimit = signal(10);
   public pagedRows = signal<MatTableDataSource<ISearchDefendantAccount>>(
     this.wrapTableDataSource(this.paginate([], this.pageLimit(), this.currentPage())),
   );
