@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import {
+  GovukButtonComponent,
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
   GovukTabListItemComponent,
@@ -10,6 +11,7 @@ import {
 } from '@components';
 
 import ACCOUNT_DETAILS from './data/account-details.json';
+import { AccountEnquiryRoutes } from '@enums';
 
 @Component({
   selector: 'app-account-enquiry-details',
@@ -22,6 +24,7 @@ import ACCOUNT_DETAILS from './data/account-details.json';
     GovukTabPanelComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
+    GovukButtonComponent,
   ],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss',
@@ -29,4 +32,9 @@ import ACCOUNT_DETAILS from './data/account-details.json';
 })
 export class DetailsComponent {
   public accountDetails = ACCOUNT_DETAILS;
+  private readonly router = inject(Router);
+
+  public handleBack(): void {
+    this.router.navigate([AccountEnquiryRoutes.matches]);
+  }
 }

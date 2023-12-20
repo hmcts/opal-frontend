@@ -1,6 +1,11 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Account</h1>
+    <p class="govuk-body"><span class="govuk-!-font-weight-bold">Account in</span> {{ accountDetails.accountCT }}</p>
+    <p class="govuk-body">
+      <span class="govuk-!-font-weight-bold">A/C No</span> {{ accountDetails.accountNumber }}
+      <span class="govuk-!-font-weight-bold govuk-!-margin-left-5">Name</span> {{ accountDetails.fullName }}
+    </p>
   </div>
 </div>
 
@@ -197,4 +202,14 @@
   </div>
 </div>
 
-<button [routerLink]="['../search']">SEARCH</button><button [routerLink]="['../matches']">MATCHES</button>
+<div class="govuk-grid-row govuk-!-margin-top-6">
+  <div class="govuk-grid-column-two-thirds">
+    <app-govuk-button
+      buttonClasses="govuk-button--secondary govuk-!-margin-right-3"
+      buttonId="back"
+      (buttonClickEvent)="handleBack()"
+    >
+      Back</app-govuk-button
+    >
+  </div>
+</div>
