@@ -1,4 +1,4 @@
-<nav *ngIf="pages.length > 1" class="govuk-pagination" role="navigation" aria-label="results">
+<nav *ngIf="pages().length > 1" class="govuk-pagination" role="navigation" aria-label="results">
   <div *ngIf="currentPage > 1" class="govuk-pagination__prev">
     <a class="govuk-link govuk-pagination__link" href="#" rel="prev" (click)="onPageChanged($event, currentPage - 1)">
       <svg
@@ -19,7 +19,7 @@
   </div>
   <ul class="govuk-pagination__list">
     <li
-      *ngFor="let page of elipsedPages"
+      *ngFor="let page of elipsedPages()"
       class="govuk-pagination__item"
       [class.govuk-pagination__item--current]="page === currentPage"
       [class.govuk-pagination__item--ellipses]="page === ELIPSIS"
@@ -36,7 +36,7 @@
       >
     </li>
   </ul>
-  <div *ngIf="currentPage < pages.length" class="govuk-pagination__next">
+  <div *ngIf="currentPage < pages().length" class="govuk-pagination__next">
     <a class="govuk-link govuk-pagination__link" href="#" rel="next" (click)="onPageChanged($event, currentPage + 1)">
       <span class="govuk-pagination__link-title">Next</span>
       <svg
