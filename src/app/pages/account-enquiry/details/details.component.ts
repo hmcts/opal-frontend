@@ -9,6 +9,8 @@ import {
   GovukTabsComponent,
 } from '@components';
 
+import ACCOUNT_DETAILS from './data/account-details.json';
+
 @Component({
   selector: 'app-account-enquiry-details',
   standalone: true,
@@ -25,4 +27,6 @@ import {
   styleUrl: './details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DetailsComponent {}
+export class DetailsComponent {
+  public accountDetails = ACCOUNT_DETAILS;
+}

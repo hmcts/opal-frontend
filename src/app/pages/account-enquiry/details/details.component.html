@@ -1,30 +1,39 @@
-<app-govuk-tabs>
-  <ng-container items>
-    <app-govuk-tab-list-item
-      tabListItemHref="#accountDetails"
-      tabListItemName="Account Details"
-    ></app-govuk-tab-list-item>
-    <app-govuk-tab-list-item tabListItemHref="#past-month" tabListItemName="Past Month"></app-govuk-tab-list-item
-  ></ng-container>
-  <ng-container panels>
-    <app-govuk-tab-panel panelId="accountDetails">
-      <h2 class="govuk-heading-l">Account Details</h2>
-      <app-govuk-summary-list>
-        <app-govuk-summary-list-row [actionEnabled]="true">
-          <ng-container name>Max</ng-container>
-          <ng-container value><p class="govuk-body">Hello</p></ng-container>
-          <ng-container action>Change<span class="govuk-visually-hidden"> name</span></ng-container>
-        </app-govuk-summary-list-row>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">Account</h1>
+    <app-govuk-tabs>
+      <ng-container items>
+        <app-govuk-tab-list-item tabListItemHref="#accountDetails" tabListItemName="Details"></app-govuk-tab-list-item>
+        <app-govuk-tab-list-item
+          tabListItemHref="#accountImposition"
+          tabListItemName="Imposition"
+        ></app-govuk-tab-list-item>
+        <app-govuk-tab-list-item tabListItemHref="#accountHistory" tabListItemName="History"></app-govuk-tab-list-item>
+      </ng-container>
+      <ng-container panels>
+        <app-govuk-tab-panel panelId="accountDetails">
+          <h2 class="govuk-heading-m">Account Details</h2>
+          <app-govuk-summary-list>
+            <app-govuk-summary-list-row [actionEnabled]="true">
+              <ng-container name>Max</ng-container>
+              <ng-container value><p class="govuk-body">Hello</p></ng-container>
+              <ng-container action>Change<span class="govuk-visually-hidden"> name</span></ng-container>
+            </app-govuk-summary-list-row>
 
-        <app-govuk-summary-list-row>
-          <ng-container name>Tim</ng-container>
-          <ng-container value><p class="govuk-body">Hello</p></ng-container>
-        </app-govuk-summary-list-row>
-      </app-govuk-summary-list>
-    </app-govuk-tab-panel>
-    <app-govuk-tab-panel panelId="past-month">
-      <h2 class="govuk-heading-l">Past Month</h2></app-govuk-tab-panel
-    ></ng-container
-  >
-</app-govuk-tabs>
+            <app-govuk-summary-list-row>
+              <ng-container name>Tim</ng-container>
+              <ng-container value><p class="govuk-body">Hello</p></ng-container>
+            </app-govuk-summary-list-row>
+          </app-govuk-summary-list>
+        </app-govuk-tab-panel>
+        <app-govuk-tab-panel panelId="accountImposition">
+          <h2 class="govuk-heading-m">Imposition</h2></app-govuk-tab-panel
+        ><app-govuk-tab-panel panelId="accountHistory">
+          <h2 class="govuk-heading-m">History</h2></app-govuk-tab-panel
+        ></ng-container
+      >
+    </app-govuk-tabs>
+  </div>
+</div>
+
 <button [routerLink]="['../search']">SEARCH</button><button [routerLink]="['../matches']">MATCHES</button>
