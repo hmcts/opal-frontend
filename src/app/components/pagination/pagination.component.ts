@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent implements OnChanges {
   @Input() currentPage = 1;
@@ -14,9 +15,9 @@ export class PaginationComponent implements OnChanges {
   @Input() limit = 25;
   @Output() changePage = new EventEmitter<number>();
 
-  pages: number[] = [];
-  elipsedPages: (number | string)[] = [];
-  ELIPSIS = '...';
+  public pages = signal<number[]>([]);
+  public elipsedPages = signal<(number | string)[]>([]);
+  public ELIPSIS = '...';
 
   ngOnChanges(): void {
     this.calculatePages();
@@ -29,8 +30,8 @@ export class PaginationComponent implements OnChanges {
 
   private calculatePages() {
     const pagesCount = Math.ceil(this.total / this.limit);
-    this.pages = this.range(1, pagesCount);
-    this.elipsedPages = this.elipseSkippedPages(this.pages, this.currentPage);
+    this.pages.set(this.range(1, pagesCount));
+    this.elipsedPages.set(this.elipseSkippedPages(this.pages(), this.currentPage));
   }
 
   private range(start: number, end: number): number[] {

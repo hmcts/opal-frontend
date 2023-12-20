@@ -38,7 +38,7 @@ describe('PaginationComponent', () => {
     currentPageElipseMap.forEach((value: (string | number)[], key: number) => {
       component.currentPage = key;
       component.ngOnChanges();
-      expect(component.elipsedPages).toEqual(value);
+      expect(component.elipsedPages()).toEqual(value);
     });
   });
 
