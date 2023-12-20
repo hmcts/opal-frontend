@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -10,12 +10,15 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./govuk-accordion.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GovukAccordionComponent implements OnInit {
+export class GovukAccordionComponent implements AfterViewInit {
   private platformId = inject(PLATFORM_ID);
 
-  public ngOnInit(): void {
-    // This is to load the govuk lib in dev mode.
-    // There is a polyfill in the server.ts to handle missing windo objects.
+  /**
+   * Lifecycle hook that is called after Angular has fully initialized the component's view.
+   * It is called only once after the first ngAfterContentChecked.
+   * We use it to initialize the govuk-frontend component.
+   */
+  ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
       import('govuk-frontend').then((govuk) => {
         govuk.initAll();

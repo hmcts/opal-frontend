@@ -34,6 +34,9 @@ export class DetailsComponent {
   public accountDetails = ACCOUNT_DETAILS;
   private readonly router = inject(Router);
 
+  /**
+   * Navigates to the matches page when the back button is clicked.
+   */
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.matches]);
   }

@@ -12,6 +12,10 @@ export class GovukSummaryListRowComponent {
   @Output() public actionClick = new EventEmitter<boolean>();
   @Input() public actionEnabled = false;
 
+  /**
+   * Handles the click event for the action button.
+   * @param event - The click event.
+   */
   public handleActionClick(event: Event): void {
     event.preventDefault();
     event.stopPropagation();

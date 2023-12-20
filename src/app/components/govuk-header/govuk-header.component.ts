@@ -13,5 +13,5 @@ import { AuthService } from '@services';
 })
 export class GovukHeaderComponent {
   public readonly header = GovukHeader;
-  public authenticated = inject(AuthService).authenticated;
+  public readonly authenticated = inject(AuthService).authenticated;
 }
