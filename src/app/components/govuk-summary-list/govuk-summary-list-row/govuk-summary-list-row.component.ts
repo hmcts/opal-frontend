@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-summary-list-row',
@@ -7,12 +7,14 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
   templateUrl: './govuk-summary-list-row.component.html',
   styleUrl: './govuk-summary-list-row.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [
-    `
-      :host {
-        display: table-row-group;
-      }
-    `,
-  ],
 })
-export class GovukSummaryListRowComponent {}
+export class GovukSummaryListRowComponent {
+  @Output() public actionClick = new EventEmitter<boolean>();
+  @Input() public actionEnabled = false;
+
+  public handleActionClick(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this, this.actionClick.emit(true);
+  }
+}
