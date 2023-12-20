@@ -14,7 +14,7 @@ class TestHostComponent {
   action = false;
 }
 
-fdescribe('GovukSummaryListRowComponent', () => {
+describe('GovukSummaryListRowComponent', () => {
   let component: TestHostComponent;
   let componentGSLRC: GovukSummaryListRowComponent;
 
