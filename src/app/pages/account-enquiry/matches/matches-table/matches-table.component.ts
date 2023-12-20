@@ -19,7 +19,6 @@ export class MatchesTableComponent implements OnInit {
 
   public currentPage = signal(1);
   public pageLimit = signal(25);
-  // public pagedRows!: MatTableDataSource<ISearchDefendantAccount>;
   public pagedRows = signal<MatTableDataSource<ISearchDefendantAccount>>(
     this.wrapTableDataSource(this.paginate([], this.pageLimit(), this.currentPage())),
   );
@@ -61,7 +60,7 @@ export class MatchesTableComponent implements OnInit {
    * Handles the page change event.
    * @param event The new page number.
    */
-  public onPageChanged(event: number): void {
+  public handlePageChanged(event: number): void {
     this.currentPage.set(event);
     this.pagedRows.set(
       this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit(), this.currentPage())),

@@ -58,7 +58,7 @@ describe('MatchesTableComponent', () => {
     component.currentPage.set(currentPage);
     fixture.detectChanges;
 
-    component.onPageChanged(2);
+    component.handlePageChanged(2);
 
     expect(component.pagedRows().filteredData).toEqual(expectedPagedRows.filteredData);
   });
