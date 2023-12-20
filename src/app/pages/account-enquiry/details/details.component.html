@@ -1,6 +1,11 @@
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-two-thirds">
     <h1 class="govuk-heading-l">Account</h1>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
     <app-govuk-tabs>
       <ng-container items>
         <app-govuk-tab-list-item tabListItemHref="#accountDetails" tabListItemName="Details"></app-govuk-tab-list-item>
@@ -14,15 +19,171 @@
         <app-govuk-tab-panel panelId="accountDetails">
           <h2 class="govuk-heading-m">Account Details</h2>
           <app-govuk-summary-list>
-            <app-govuk-summary-list-row [actionEnabled]="true">
-              <ng-container name>Max</ng-container>
-              <ng-container value><p class="govuk-body">Hello</p></ng-container>
-              <ng-container action>Change<span class="govuk-visually-hidden"> name</span></ng-container>
+            <app-govuk-summary-list-row>
+              <ng-container name>Account Type</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.accountType }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Address</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.address }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Postcode</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.postCode }}</p></ng-container
+              >
             </app-govuk-summary-list-row>
 
             <app-govuk-summary-list-row>
-              <ng-container name>Tim</ng-container>
-              <ng-container value><p class="govuk-body">Hello</p></ng-container>
+              <ng-container name>Date of Birth</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.dob }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Details Changed</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.detailsChanged }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Last Court App</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.lastCourtAppAndCourtCode }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Last Court Movement</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.lastMovement }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Comment Field</ng-container>
+              <ng-container value>
+                @for (comment of accountDetails.commentField; track $index) {
+                  <p class="govuk-body">{{ comment }}</p>
+                }
+              </ng-container>
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>PCR</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.pcr }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Document Language</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.documentLanguage }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Hearing Language</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.hearingLanguage }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Payment Details</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.paymentDetails }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Commencing</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.commencing }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+
+            <app-govuk-summary-list-row>
+              <ng-container name>Days in Default</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.daysInDefault }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Offence Date</ng-container>
+              <ng-container value><p class="govuk-body"></p></ng-container>
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Police Force/CTO</ng-container>
+              <ng-container value><p class="govuk-body"></p></ng-container>
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Last Enforcement</ng-container>
+              <ng-container value
+                ><p class="govuk-body">{{ accountDetails.lastEnforcement }}</p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Override</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.override }}
+                </p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Enforcer</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.enforcer }}
+                </p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Enforcement Court</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.enforcementCourt }}
+                </p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Imposed</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.imposed | currency: 'GBP' : 'symbol' }}
+                </p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Paid so Far</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.amountPaid | currency: 'GBP' : 'symbol' }}
+                </p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Amount Paid</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.amountPaid | currency: 'GBP' : 'symbol' }}
+                </p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Arrears</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.arrears | currency: 'GBP' : 'symbol' }}
+                </p></ng-container
+              >
+            </app-govuk-summary-list-row>
+            <app-govuk-summary-list-row>
+              <ng-container name>Arrears</ng-container>
+              <ng-container value
+                ><p class="govuk-body">
+                  {{ accountDetails.balance | currency: 'GBP' : 'symbol' }}
+                </p></ng-container
+              >
             </app-govuk-summary-list-row>
           </app-govuk-summary-list>
         </app-govuk-tab-panel>
