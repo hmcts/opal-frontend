@@ -2933,11 +2933,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@badeball/cypress-cucumber-preprocessor@npm:^19.2.0":
-  version: 19.2.0
-  resolution: "@badeball/cypress-cucumber-preprocessor@npm:19.2.0"
+"@badeball/cypress-cucumber-preprocessor@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.0"
   dependencies:
     "@badeball/cypress-configuration": ^6.1.0
+    "@cucumber/ci-environment": ^10.0.0
     "@cucumber/cucumber": ^10.0.0
     "@cucumber/cucumber-expressions": ^17.0.0
     "@cucumber/gherkin": ^27.0.0
@@ -2970,8 +2971,9 @@ __metadata:
   bin:
     cucumber-html-formatter: dist/bin/cucumber-html-formatter.js
     cucumber-json-formatter: dist/bin/cucumber-json-formatter.js
+    cucumber-merge-messages: dist/bin/cucumber-merge-messages.js
     cypress-cucumber-diagnostics: dist/bin/diagnostics.js
-  checksum: d4eb4aa944f5e1ed816d0d3b2d633b3ba2dad3c9251c7b4743dca8ec0a9f435d2bc20d7c5e97289c7077b30f842633125e25b54ac45d4f26b2556ab3d73cddcf
+  checksum: b49220b4a65c63cebd889d8f75a78c4e1b12fc2c3ea6aa56a7a7c4289edfc17f5c5a57b20dc8a5ef7a5911d8b8f86858e20a03395b66ef86f27f5be794524b31
   languageName: node
   linkType: hard
 
@@ -3006,6 +3008,13 @@ __metadata:
   version: 9.2.0
   resolution: "@cucumber/ci-environment@npm:9.2.0"
   checksum: 84582e41768e52c2f0241a09f319e124d22a6c7670ad168068b848e177468d37b0b306946eec3db979057ee2201030930c7d6821eaaa16e6bfc37fe34b2530b4
+  languageName: node
+  linkType: hard
+
+"@cucumber/ci-environment@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@cucumber/ci-environment@npm:10.0.0"
+  checksum: 1102dd8ba982d05ffe8ce16f9cf89ae52dcf90d5582228ac2a8857e812d28dd21ab0815693a647a53a3e8f22a5b2f85394d8c833f209afc67bc5b78bfbd670eb
   languageName: node
   linkType: hard
 
@@ -12542,7 +12551,7 @@ __metadata:
     "@angular/platform-server": ^17.0.1
     "@angular/router": ^17.0.1
     "@angular/ssr": ^17.0.0
-    "@badeball/cypress-cucumber-preprocessor": ^19.2.0
+    "@badeball/cypress-cucumber-preprocessor": ^20.0.0
     "@bahmutov/cypress-esbuild-preprocessor": ^2.2.0
     "@cypress/browserify-preprocessor": ^3.0.2
     "@hmcts/info-provider": ^1.1.0
