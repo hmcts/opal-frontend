@@ -55,9 +55,9 @@
   <tr cdk-row *cdkRowDef="let row; columns: displayedColumns" class="govuk-table__row"></tr>
 </table>
 
-<app-pagination
+<app-govuk-pagination
   [currentPage]="currentPage()"
   [limit]="pageLimit()"
   [total]="data.searchResults.length"
   (changePage)="onPageChanged($event)"
-></app-pagination>
+></app-govuk-pagination>

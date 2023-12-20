@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-pagination',
+  selector: 'app-govuk-pagination',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.scss'],
+  templateUrl: './govuk-pagination.component.html',
+  styleUrls: ['./govuk-pagination.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaginationComponent implements OnChanges {
+export class GovukPaginationComponent implements OnChanges {
   @Input() currentPage = 1;
   @Input() total = 0;
   @Input() limit = 25;
