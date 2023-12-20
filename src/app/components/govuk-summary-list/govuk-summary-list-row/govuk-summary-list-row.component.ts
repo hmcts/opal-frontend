@@ -15,6 +15,6 @@ export class GovukSummaryListRowComponent {
   public handleActionClick(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    this, this.actionClick.emit(true);
+    this.actionClick.emit(true);
   }
 }
