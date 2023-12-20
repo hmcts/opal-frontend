@@ -1,4 +1,4 @@
-<table aria-label="Account matches" cdk-table [dataSource]="pagedRows" class="govuk-table">
+<table aria-label="Account matches" cdk-table [dataSource]="pagedRows()" class="govuk-table">
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -56,8 +56,8 @@
 </table>
 
 <app-pagination
-  [currentPage]="currentPage"
-  [limit]="pageLimit"
+  [currentPage]="currentPage()"
+  [limit]="pageLimit()"
   [total]="data.searchResults.length"
   (changePage)="onPageChanged($event)"
 ></app-pagination>
