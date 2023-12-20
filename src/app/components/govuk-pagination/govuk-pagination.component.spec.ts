@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { PaginationComponent } from './pagination.component';
+import { GovukPaginationComponent } from './govuk-pagination.component';
 
-describe('PaginationComponent', () => {
-  let component: PaginationComponent;
-  let fixture: ComponentFixture<PaginationComponent>;
+describe('GovukPaginationComponent', () => {
+  let component: GovukPaginationComponent;
+  let fixture: ComponentFixture<GovukPaginationComponent>;
 
   const currentPageElipseMap = new Map<number, (string | number)[]>([
     [1, [1, 2, '...', 100]],
@@ -21,9 +21,9 @@ describe('PaginationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [PaginationComponent],
+      imports: [GovukPaginationComponent],
     });
-    fixture = TestBed.createComponent(PaginationComponent);
+    fixture = TestBed.createComponent(GovukPaginationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

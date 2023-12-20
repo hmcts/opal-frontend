@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { GovukButtonComponent, PaginationComponent } from '@components';
+import { GovukButtonComponent, GovukPaginationComponent } from '@components';
 import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 
 @Component({
   selector: 'app-matches-table',
   standalone: true,
-  imports: [CommonModule, RouterModule, GovukButtonComponent, PaginationComponent, CdkTableModule, PaginationComponent],
+  imports: [CommonModule, RouterModule, GovukButtonComponent, GovukPaginationComponent, CdkTableModule],
   templateUrl: './matches-table.component.html',
   styleUrl: './matches-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
