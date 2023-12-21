@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild, signal } from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
@@ -64,7 +64,7 @@ export class MatchesTableComponent implements AfterViewInit {
    * Handles the page change event.
    * @param event The new page number.
    */
-  public onPageChanged(event: number): void {
+  public handlePageChanged(event: number): void {
     this.currentPage.set(event);
     this.pagedRows.set(
       this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit(), this.currentPage())),
