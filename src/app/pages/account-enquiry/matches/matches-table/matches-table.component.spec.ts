@@ -4,6 +4,7 @@ import { MatchesTableComponent } from './matches-table.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 import { SEARCH_DEFENDANT_ACCOUNTS_MOCK } from '@mocks';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('MatchesTableComponent', () => {
   let component: MatchesTableComponent;
@@ -11,7 +12,7 @@ describe('MatchesTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatchesTableComponent],
+      imports: [MatchesTableComponent, BrowserAnimationsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MatchesTableComponent);
