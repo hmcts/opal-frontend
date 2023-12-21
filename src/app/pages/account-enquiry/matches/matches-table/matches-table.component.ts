@@ -1,6 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, signal } from '@angular/core';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { GovukButtonComponent, GovukPaginationComponent } from '@components';
@@ -9,13 +10,15 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 @Component({
   selector: 'app-matches-table',
   standalone: true,
-  imports: [CommonModule, RouterModule, GovukButtonComponent, GovukPaginationComponent, CdkTableModule],
+  imports: [CommonModule, RouterModule, GovukButtonComponent, GovukPaginationComponent, CdkTableModule, MatSortModule],
   templateUrl: './matches-table.component.html',
   styleUrl: './matches-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MatchesTableComponent implements OnInit {
+export class MatchesTableComponent implements AfterViewInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   public currentPage = signal(1);
   public pageLimit = signal(10);
@@ -41,6 +44,7 @@ export class MatchesTableComponent implements OnInit {
    */
   private wrapTableDataSource(source: ISearchDefendantAccount[]): MatTableDataSource<ISearchDefendantAccount> {
     const wrappedTableDataSource = new MatTableDataSource<ISearchDefendantAccount>(source);
+    wrappedTableDataSource.sort = this.sort;
     return wrappedTableDataSource;
   }
 
@@ -67,7 +71,7 @@ export class MatchesTableComponent implements OnInit {
     );
   }
 
-  public ngOnInit(): void {
+  public ngAfterViewInit(): void {
     this.pagedRows.set(
       this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit(), this.currentPage())),
     );
