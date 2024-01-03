@@ -13,7 +13,7 @@ export default (): Router => {
   router.use('/api', proxy());
 
   // Handle our authentication
-  router.get('/sso/login', (req, res, next) => ssoLogin(req, res, next));
+  router.get('/sso/login', (req, res) => ssoLogin(req, res));
 
   router.post('/sso/login-callback', (req, res, next) => ssoLoginCallback(req, res, next));
 
