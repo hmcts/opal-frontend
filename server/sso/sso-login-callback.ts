@@ -8,7 +8,6 @@ const INTERNAL_USER_CALLBACK = `${config.get('opal-api.url')}/internal-user/hand
 export default async (req: Request, res: Response, next: NextFunction) => {
   const logger = Logger.getLogger('login-callback');
   try {
-    console.log(req.body);
     const result = await axios.post<any>(INTERNAL_USER_CALLBACK, req.body, {
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
     });
@@ -17,8 +16,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     req.session.securityToken = securityToken;
 
-    logger.info(`Set session token ${req.session.securityToken?.accessToken}`);
-
     req.session.save((err) => {
       if (err) {
         return next(err);
@@ -26,7 +23,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
       res.redirect('/');
     });
   } catch (error) {
-    // logger.error('Error on authentication callback', error);
+    logger.error('Error on authentication callback', error);
     next(error);
   }
 };
