@@ -1,14 +1,12 @@
 <div class="govuk-summary-list__row">
-  <!-- //NOSONAR -->
   <dt class="govuk-summary-list__key">
     <ng-content select="[name]"></ng-content>
   </dt>
-  <!-- //NOSONAR -->
+
   <dd class="govuk-summary-list__value">
     <ng-content select="[value]"></ng-content>
   </dd>
   @if (actionEnabled) {
-    <!-- //NOSONAR -->
     <dd class="govuk-summary-list__actions">
       <a class="govuk-link" href="#" (click)="handleActionClick($event)">
         <ng-content select="[action]"></ng-content>
