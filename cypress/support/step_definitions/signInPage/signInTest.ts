@@ -20,6 +20,7 @@ When('I sign in with Microsoft SSO', () => {
       },
     },
     ({ emailSSO, passwordSSO }) => {
+      cy.wait(500)
       cy.get('input[type="email"]').type(emailSSO);
       cy.get('input[type="submit"]').click();
 
