@@ -5,6 +5,33 @@ Given('I am on the OPAL Frontend', () => {
   cy.wait(500);
 });
 
+When('I sign in with Microsoft SSO', () => {
+  const emailSSO: string = 'opal-test@hmcts.net';
+  const passwordSSO: string = 'OpalFinesService1';
+
+  cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+
+  cy.origin(
+    'https://login.microsoftonline.com',
+    {
+      args: {
+        emailSSO,
+        passwordSSO,
+      },
+    },
+    ({ emailSSO, passwordSSO }) => {
+      cy.get('input[type="email"]').type(emailSSO);
+      cy.get('input[type="submit"]').click();
+
+      cy.get('input[type="password"]').type(passwordSSO);
+      cy.get('input[type="submit"]').click();
+      cy.get('#idBtn_Back').click();
+    },
+  );
+
+  cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
+});
+
 Then('I see {string} in the header', (header) => {
   cy.get('.govuk-header__content > .govuk-header__link').should('contain', header);
 });
