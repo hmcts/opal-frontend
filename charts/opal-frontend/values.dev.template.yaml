@@ -8,7 +8,7 @@ nodejs:
         - AppInsightsInstrumentationKey
   environment:
     REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-redis-master:6379
-
+    FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
 redis:
   enabled: true
   architecture: standalone

@@ -12,6 +12,8 @@ nodejs:
   environment:
     ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: false
-
+    FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
 redis:
   enabled: false
+
+  

@@ -1,5 +1,8 @@
 {
   "node-env": "NODE_ENV",
+  "frontend-hostname": {
+    "prod": "FRONTEND_HOSTNAME"
+  },
   "features": {
     "redis": {
       "enabled": {
