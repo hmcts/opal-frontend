@@ -30,6 +30,12 @@ export class GovukCheckboxesComponent {
     return this._group;
   }
 
+  /**
+   * Toggles the conditional state of the input with the specified ID.
+   * If the input is currently conditional, it will be toggled to non-conditional.
+   * If the input is currently non-conditional, it will be toggled to conditional.
+   * @param inputId - The ID of the input to toggle.
+   */
   public handleToggleConditional(inputId: string): void {
     if (this.toggleConditional[inputId]) {
       this.toggleConditional[inputId] = !this.toggleConditional[inputId];

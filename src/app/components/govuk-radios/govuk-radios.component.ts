@@ -34,6 +34,10 @@ export class GovukRadiosComponent {
     return this._group;
   }
 
+  /**
+   * Handles the toggle of a conditional input based on the selected radio button.
+   * @param inputId - The ID of the input to toggle.
+   */
   public handleToggleConditional(inputId: string): void {
     // Because there can only be one radio selected at a time, reset.
     this.toggleConditional = {};

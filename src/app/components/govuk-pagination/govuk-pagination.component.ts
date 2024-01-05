@@ -19,25 +19,51 @@ export class GovukPaginationComponent implements OnChanges {
   public elipsedPages = signal<(number | string)[]>([]);
   public ELIPSIS = '...';
 
+  /**
+   * Lifecycle hook that is called when any data-bound property of the component changes.
+   * It recalculates the pages for pagination.
+   */
   ngOnChanges(): void {
     this.calculatePages();
   }
 
+  /**
+   * Handles the page change event.
+   *
+   * @param $event - The click event that triggered the page change.
+   * @param page - The new page number.
+   */
   onPageChanged($event: MouseEvent, page: number) {
     $event.preventDefault();
     this.changePage.emit(page);
   }
 
+  /**
+   * Calculates the number of pages based on the total number of items and the limit per page.
+   * Updates the `pages` and `elipsedPages` properties accordingly.
+   */
   private calculatePages() {
     const pagesCount = Math.ceil(this.total / this.limit);
     this.pages.set(this.range(1, pagesCount));
     this.elipsedPages.set(this.elipseSkippedPages(this.pages(), this.currentPage));
   }
 
+  /**
+   * Generates an array of numbers within a specified range.
+   * @param start The starting number of the range.
+   * @param end The ending number of the range.
+   * @returns An array of numbers within the specified range.
+   */
   private range(start: number, end: number): number[] {
     return [...Array(end).keys()].map((el) => el + start);
   }
 
+  /**
+   * Inserts ellipses into the given array of pages based on the current page number.
+   * @param pages - The array of pages.
+   * @param currentPage - The current page number.
+   * @returns The modified array of pages with ellipses inserted.
+   */
   private elipseSkippedPages(pages: (string | number)[], currentPage: number): (string | number)[] {
     pages = [...pages];
 
