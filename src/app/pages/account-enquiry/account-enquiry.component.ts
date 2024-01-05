@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { StateService } from '@services';
+import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 @Component({
   standalone: true,
@@ -15,6 +16,12 @@ export class AccountEnquiryComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.stateService.accountEnquiry.set({});
+    this.stateService.accountEnquiry.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+
+    // Clear any errors...
+    this.stateService.error.set({
+      error: false,
+      message: '',
+    });
   }
 }

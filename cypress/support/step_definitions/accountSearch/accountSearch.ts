@@ -19,8 +19,6 @@ When('I populate the form with the following search criteria and search', (table
   typeIfNotBlank('#addressLineOne', searchCriteria['addrLn1']);
   typeIfNotBlank('#niNumber', searchCriteria['niNumber']);
   typeIfNotBlank('#pcr', searchCriteria['pcr']);
-
-  cy.get('#submitForm').click();
 });
 
 Then('I see an Object logged in the console containing', (/*table: DataTable*/) => {

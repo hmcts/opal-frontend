@@ -7,7 +7,7 @@ import { GovukRadiosComponent } from './govuk-radios/govuk-radios.component';
 import { GovukCheckboxesComponent } from './govuk-checkboxes/govuk-checkboxes.component';
 import { GovukDateInputComponent } from './govuk-date-input/govuk-date-input.component';
 import { GovukSelectComponent } from './govuk-select/govuk-select.component';
-
+import { GovukPaginationComponent } from './govuk-pagination/govuk-pagination.component';
 export {
   GovukButtonComponent,
   GovukAccordionComponent,
@@ -18,4 +18,5 @@ export {
   GovukCheckboxesComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
+  GovukPaginationComponent,
 };
