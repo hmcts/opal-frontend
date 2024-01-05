@@ -16,6 +16,9 @@ export class GovukButtonComponent {
 
   @Output() buttonClickEvent = new EventEmitter<boolean>();
 
+  /**
+   * Handles the button click event.
+   */
   public handleButtonClick(): void {
     this.buttonClickEvent.emit(true);
   }
