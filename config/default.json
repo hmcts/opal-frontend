@@ -1,5 +1,9 @@
 {
   "node-env": "development",
+  "frontend-hostname": {
+    "dev": "http://localhost:4200",
+    "prod": "http://localhost:4000"
+  },
   "useCSRFProtection": true,
   "opal-api": {
     "url": "http://localhost:4550"
