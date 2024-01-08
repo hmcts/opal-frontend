@@ -26,7 +26,7 @@ const routes: Routes = [
       },
 
       {
-        path: 'details',
+        path: 'details/:defendantAccountId',
         loadComponent: () =>
           import('./pages/account-enquiry/details/details.component').then((c) => c.DetailsComponent),
       },

@@ -1,9 +1,9 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild, inject, signal } from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { GovukButtonComponent, GovukPaginationComponent } from '@components';
 import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 
@@ -17,8 +17,9 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 })
 export class MatchesTableComponent implements AfterViewInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
-
   @ViewChild(MatSort) sort!: MatSort;
+
+  private readonly router = inject(Router);
 
   public currentPage = signal(1);
   public pageLimit = signal(10);
