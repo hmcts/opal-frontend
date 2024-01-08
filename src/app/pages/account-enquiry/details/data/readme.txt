@@ -1,0 +1,1 @@
+This folder should only be temporary. We want to return the details via the API. Once deleted remove "resolveJsonModule": true, from the tsconfig file
