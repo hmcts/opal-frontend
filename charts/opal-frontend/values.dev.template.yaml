@@ -6,8 +6,8 @@ nodejs:
     opal:
       secrets:
         - AppInsightsInstrumentationKey
+        - opal-frontend-session-secret
   environment:
-    REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-redis-master:6379
 
 redis:
   enabled: true
