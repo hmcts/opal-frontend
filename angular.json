@@ -37,7 +37,11 @@
                 "output": "./assets/fonts"
               }
             ],
-            "styles": ["./node_modules/govuk-frontend/govuk/all.scss", "src/styles.scss"],
+            "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/govuk-frontend/govuk/all.scss",
+              "src/styles.scss"
+            ],
             "scripts": ["./node_modules/govuk-frontend/govuk/all.js"]
           },
           "configurations": {
@@ -45,8 +49,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -92,7 +96,7 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
             "scripts": [],
             "karmaConfig": "karma.conf.js"
           }
@@ -161,9 +165,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
+    "schematicCollections": ["@angular-eslint/schematics"],
     "analytics": false
   }
 }

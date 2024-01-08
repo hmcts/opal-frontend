@@ -1,0 +1,16 @@
+<div class="govuk-summary-list__row">
+  <dt class="govuk-summary-list__key">
+    <ng-content select="[name]"></ng-content>
+  </dt>
+
+  <dd class="govuk-summary-list__value">
+    <ng-content select="[value]"></ng-content>
+  </dd>
+  @if (actionEnabled) {
+    <dd class="govuk-summary-list__actions">
+      <a class="govuk-link" href="#" (click)="handleActionClick($event)">
+        <ng-content select="[action]"></ng-content>
+      </a>
+    </dd>
+  }
+</div>

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { StateService } from './state.service';
+import { SEARCH_STATE_MOCK } from '@mocks';
 
 describe('StateService', () => {
   let service: StateService;
@@ -12,5 +13,17 @@ describe('StateService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should store search state', () => {
+    service.accountEnquiry.set({ search: SEARCH_STATE_MOCK });
+    expect(service.accountEnquiry().search).toEqual(SEARCH_STATE_MOCK);
+  });
+
+  it('should store error state', () => {
+    const message = 'Test message';
+    service.error.set({ error: true, message: message });
+    expect(service.error().error).toBeTruthy();
+    expect(service.error().message).toEqual(message);
   });
 });
