@@ -6,6 +6,7 @@ import {
   ISearchDefendantAccounts,
   IGetDefendantAccountParams,
   ISearchDefendantAccountBody,
+  IDefendantAccountDetails,
 } from '@interfaces';
 import { Observable } from 'rxjs';
 
@@ -31,5 +32,12 @@ export class DefendantAccountService {
    */
   public searchDefendantAccounts(body: ISearchDefendantAccountBody): Observable<ISearchDefendantAccounts> {
     return this.http.post<ISearchDefendantAccounts>(ApiPaths.defendantAccountSearch, body);
+  }
+
+  // TODO: Interface for response
+  public getDefendantAccountDetails(defendantAccountId: number): Observable<IDefendantAccountDetails> {
+    return this.http.get<IDefendantAccountDetails>(
+      `${ApiPaths.defendantAccountDetails}?defendantAccountId=${defendantAccountId}`,
+    );
   }
 }
