@@ -104,7 +104,8 @@
   },
   "packageManager": "yarn@3.7.0",
   "resolutions": {
-    "axios": "^1.6.2"
+    "axios": "^1.6.2",
+    "follow-redirects": "^1.15.4"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
