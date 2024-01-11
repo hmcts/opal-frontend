@@ -1,0 +1,7 @@
+:host {
+  display: table-row-group;
+}
+
+.content-wrapper:empty {
+  display: none;
+}

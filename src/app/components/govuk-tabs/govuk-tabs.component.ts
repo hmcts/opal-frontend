@@ -1,16 +1,15 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, Component, PLATFORM_ID, inject } from '@angular/core';
+
 @Component({
-  selector: 'app-govuk-accordion',
+  selector: 'app-govuk-tabs',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './govuk-accordion.component.html',
-  styleUrls: ['./govuk-accordion.component.scss'],
+  imports: [],
+  templateUrl: './govuk-tabs.component.html',
+  styleUrl: './govuk-tabs.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GovukAccordionComponent implements AfterViewInit {
+export class GovukTabsComponent implements AfterViewInit {
   private platformId = inject(PLATFORM_ID);
 
   /**
