@@ -1,6 +1,4 @@
 import { DataTable, When, Then } from '@badeball/cypress-cucumber-preprocessor';
-import cypress from 'cypress';
-import { toInteger } from 'cypress/types/lodash';
 
 When('I click the back button', () => {
   cy.get('#back').click();
