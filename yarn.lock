@@ -289,9 +289,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:17.0.4":
-  version: 17.0.4
-  resolution: "@angular/cdk@npm:17.0.4"
+"@angular/cdk@npm:17.0.5":
+  version: 17.0.5
+  resolution: "@angular/cdk@npm:17.0.5"
   dependencies:
     parse5: ^7.1.2
     tslib: ^2.3.0
@@ -302,7 +302,7 @@ __metadata:
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: bf0a9639c23212136d1993a990d7a4483edfe3c077700475cdb17c3cbf80c48ffa7b2427a16e6b8d073772f9200488f2155ff48ae5ec95d15482258cab6be663
+  checksum: 00e8f9c47183a3696378aec62816185affadeb008e8e526509db408f64fd4ad5efd763185ff7d345bd6f7ec8304163c108efb774d49af54ccf34f1172d24cff1
   languageName: node
   linkType: hard
 
@@ -409,9 +409,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:17.0.4":
-  version: 17.0.4
-  resolution: "@angular/material@npm:17.0.4"
+"@angular/material@npm:17.0.5":
+  version: 17.0.5
+  resolution: "@angular/material@npm:17.0.5"
   dependencies:
     "@material/animation": 15.0.0-canary.a246a4439.0
     "@material/auto-init": 15.0.0-canary.a246a4439.0
@@ -463,13 +463,13 @@ __metadata:
     tslib: ^2.3.0
   peerDependencies:
     "@angular/animations": ^17.0.0 || ^18.0.0
-    "@angular/cdk": 17.0.4
+    "@angular/cdk": 17.0.5
     "@angular/common": ^17.0.0 || ^18.0.0
     "@angular/core": ^17.0.0 || ^18.0.0
     "@angular/forms": ^17.0.0 || ^18.0.0
     "@angular/platform-browser": ^17.0.0 || ^18.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: ccd4e0c7a97708f756e33c857ef24f3aa78b2845706116ddcee60132ecfdc456df6792c38e6e17a484f6cd37444d82f11651f19bf5901c24c21b523be0523323
+  checksum: 09f2b54b8f5b35698051d92c04fb793308e2898235e4d739ee38b2e9d81b7b59bad431a22b6a8280db947278c7a0feb6fcebc7c8585884fa7bfb8794044da041
   languageName: node
   linkType: hard
 
@@ -3015,8 +3015,8 @@ __metadata:
   linkType: hard
 
 "@badeball/cypress-cucumber-preprocessor@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.0"
+  version: 20.0.1
+  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.1"
   dependencies:
     "@badeball/cypress-configuration": ^6.1.0
     "@cucumber/ci-environment": ^10.0.0
@@ -3054,7 +3054,7 @@ __metadata:
     cucumber-json-formatter: dist/bin/cucumber-json-formatter.js
     cucumber-merge-messages: dist/bin/cucumber-merge-messages.js
     cypress-cucumber-diagnostics: dist/bin/diagnostics.js
-  checksum: b49220b4a65c63cebd889d8f75a78c4e1b12fc2c3ea6aa56a7a7c4289edfc17f5c5a57b20dc8a5ef7a5911d8b8f86858e20a03395b66ef86f27f5be794524b31
+  checksum: 04876213aafe9a504f7caa25a7bc13cd4545094d6833dcf694b4ae5f1303203f6b05dda84773f09d6c87d2602865747436539fe79ece2678df373d363bdd4178
   languageName: node
   linkType: hard
 
@@ -5153,7 +5153,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/core@npm:1.17.1, @opentelemetry/core@npm:^1.15.2":
+"@opentelemetry/core@npm:1.19.0":
+  version: 1.19.0
+  resolution: "@opentelemetry/core@npm:1.19.0"
+  dependencies:
+    "@opentelemetry/semantic-conventions": 1.19.0
+  peerDependencies:
+    "@opentelemetry/api": ">=1.0.0 <1.8.0"
+  checksum: d79b60d8db3908d38447ba2ff695dda32936ca216a9b24b8c468f014e3484766732e2e033ef085bc90e6ba3955ce754174583648bc994ffe3e535233c6af4f12
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/core@npm:^1.15.2":
   version: 1.17.1
   resolution: "@opentelemetry/core@npm:1.17.1"
   dependencies:
@@ -5179,35 +5190,42 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/resources@npm:1.17.1":
-  version: 1.17.1
-  resolution: "@opentelemetry/resources@npm:1.17.1"
+"@opentelemetry/resources@npm:1.19.0":
+  version: 1.19.0
+  resolution: "@opentelemetry/resources@npm:1.19.0"
   dependencies:
-    "@opentelemetry/core": "npm:1.17.1"
-    "@opentelemetry/semantic-conventions": "npm:1.17.1"
+    "@opentelemetry/core": 1.19.0
+    "@opentelemetry/semantic-conventions": 1.19.0
   peerDependencies:
-    "@opentelemetry/api": ">=1.0.0 <1.7.0"
-  checksum: ea4ec5568f5b67626be6eb2b975614d140dab4f6eb7ca73ee30d0f1957ef9779953956d1d44c35bb124c75e311b34a05e2036b32fcf31cf50ae983154df9ee3d
+    "@opentelemetry/api": ">=1.0.0 <1.8.0"
+  checksum: 575852a6cc2c3d96f02784d4da26287c2573adce7184814fea521a75be7f485557d6589d33217f58e20476474018f30cf284540ef87451cf1b8b53297409e846
   languageName: node
   linkType: hard
 
 "@opentelemetry/sdk-trace-base@npm:^1.15.2":
-  version: 1.17.1
-  resolution: "@opentelemetry/sdk-trace-base@npm:1.17.1"
+  version: 1.19.0
+  resolution: "@opentelemetry/sdk-trace-base@npm:1.19.0"
   dependencies:
-    "@opentelemetry/core": "npm:1.17.1"
-    "@opentelemetry/resources": "npm:1.17.1"
-    "@opentelemetry/semantic-conventions": "npm:1.17.1"
+    "@opentelemetry/core": 1.19.0
+    "@opentelemetry/resources": 1.19.0
+    "@opentelemetry/semantic-conventions": 1.19.0
   peerDependencies:
-    "@opentelemetry/api": ">=1.0.0 <1.7.0"
-  checksum: 1400666e673f003f3daceb8d2c55d099b6a2b7c4fa419b844a0fc9df0acb8835ce8dd35df27c180a806397fc01d5182d2f9ae114979f21ddb87afb73ddcab22e
+    "@opentelemetry/api": ">=1.0.0 <1.8.0"
+  checksum: 4e66c65f93f8ca84468e2421e05ec4a91ee1f66b38da01b573135d4af66e08cd26fa6d4e1db12aad15aede799b103a652c160569e937e772ba5965753cc486e6
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:1.17.1, @opentelemetry/semantic-conventions@npm:^1.15.2":
+"@opentelemetry/semantic-conventions@npm:1.17.1":
   version: 1.17.1
   resolution: "@opentelemetry/semantic-conventions@npm:1.17.1"
   checksum: 16161f70526d2abcd37a39771229ffe01a25d569f76c86e97200dc20399e7fa87b231c557a9654629b4789e945350e4fc55f88df979a502911f1dde4643ad416
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/semantic-conventions@npm:1.19.0, @opentelemetry/semantic-conventions@npm:^1.15.2":
+  version: 1.19.0
+  resolution: "@opentelemetry/semantic-conventions@npm:1.19.0"
+  checksum: c69225c43eb22468f3302a181f22decda950bd33868387e89302274f05439dd98bb54b15ee09f931836a072cbb20e2228b55b689207b72a71b019b0d13bdbb7d
   languageName: node
   linkType: hard
 
@@ -6461,7 +6479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"applicationinsights@npm:^2.9.0":
+"applicationinsights@npm:2.9.1":
   version: 2.9.1
   resolution: "applicationinsights@npm:2.9.1"
   dependencies:
@@ -10596,10 +10614,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "govuk-frontend@npm:4.7.0"
-  checksum: 0e246dd2c724e51fd14dd40fc31c66627df7d07ebe89e1a19b1e7da7e7a5eb86bc6560229e18a13e40651e6c953a67422d54e77e240d82efff7b2cbefaa8b88d
+"govuk-frontend@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "govuk-frontend@npm:5.0.0"
+  checksum: 8ef384f6bc9edc250b27f156aaf06a65b95386822c1922c71cd8ac7e3be6cc644ed6a0d4617624b30c497ac7424affce86c24f5138e51514ceca1f70d5819afd
   languageName: node
   linkType: hard
 
@@ -13433,14 +13451,14 @@ __metadata:
     "@angular-eslint/schematics": 17.2.0
     "@angular-eslint/template-parser": 17.2.0
     "@angular/animations": ^17.0.1
-    "@angular/cdk": 17.0.4
+    "@angular/cdk": 17.0.5
     "@angular/cli": ^17.0.0
     "@angular/common": ^17.0.1
     "@angular/compiler": ^17.0.1
     "@angular/compiler-cli": ^17.0.1
     "@angular/core": ^17.0.1
     "@angular/forms": ^17.0.1
-    "@angular/material": 17.0.4
+    "@angular/material": 17.0.5
     "@angular/platform-browser": ^17.0.1
     "@angular/platform-browser-dynamic": ^17.0.1
     "@angular/platform-server": ^17.0.1
@@ -13463,7 +13481,7 @@ __metadata:
     "@types/pa11y": ^5.3.6
     "@typescript-eslint/eslint-plugin": 6.15.0
     "@typescript-eslint/parser": 6.15.0
-    applicationinsights: ^2.9.0
+    applicationinsights: 2.9.1
     axios: ^1.6.2
     config: ^3.3.9
     connect-redis: ^7.1.0
@@ -13472,7 +13490,7 @@ __metadata:
     eslint: ^8.53.0
     express: ^4.15.2
     express-session: ^1.17.3
-    govuk-frontend: ^4.7.0
+    govuk-frontend: ^5.0.0
     helmet: ^7.0.0
     http-proxy-middleware: ^2.0.6
     jasmine-core: ~5.1.0
