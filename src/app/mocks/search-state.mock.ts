@@ -4,9 +4,9 @@ export const SEARCH_STATE_MOCK = {
   forename: 'Test',
   initials: 'TT',
   dateOfBirth: {
-    dayOfBirth: '01',
-    monthOfBirth: '01',
-    yearOfBirth: '1991',
+    dayOfMonth: '01',
+    monthOfYear: '01',
+    year: '1991',
   },
   addressLineOne: 'Test Street',
   niNumber: 'J9MNSK',

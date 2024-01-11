@@ -48,9 +48,9 @@ describe('DefendantAccountService', () => {
       forename: 'Test',
       initials: 'TT',
       dateOfBirth: {
-        dayOfBirth: '12',
-        monthOfBirth: '12',
-        yearOfBirth: '1981',
+        dayOfMonth: '12',
+        monthOfYear: '12',
+        year: '1981',
       },
       addressLineOne: 'Test',
       niNumber: 'TT1234',

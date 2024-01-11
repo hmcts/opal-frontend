@@ -56,9 +56,9 @@ export class SearchComponent implements OnInit {
       forename: new FormControl(null),
       initials: new FormControl(null),
       dateOfBirth: new FormGroup({
-        dayOfBirth: new FormControl(null),
-        monthOfBirth: new FormControl(null),
-        yearOfBirth: new FormControl(null),
+        dayOfMonth: new FormControl(null),
+        monthOfYear: new FormControl(null),
+        year: new FormControl(null),
       }),
       addressLineOne: new FormControl(null),
       niNumber: new FormControl(null),
