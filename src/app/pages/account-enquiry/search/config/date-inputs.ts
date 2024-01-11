@@ -1,20 +1,20 @@
 export const DATE_INPUTS = {
   day: {
-    inputName: 'dayOfBirth',
+    inputName: 'dayOfMonth',
     inputClasses: 'govuk-input--width-2',
-    inputId: 'dayOfBirth',
+    inputId: 'dayOfMonth',
     inputLabel: 'Day',
   },
   month: {
-    inputName: 'monthOfBirth',
+    inputName: 'monthOfYear',
     inputClasses: 'govuk-input--width-2',
-    inputId: 'monthOfBirth',
+    inputId: 'monthOfYear',
     inputLabel: 'Month',
   },
   year: {
-    inputName: 'yearOfBirth',
+    inputName: 'year',
     inputClasses: 'govuk-input--width-4',
-    inputId: 'yearOfBirth',
+    inputId: 'year',
     inputLabel: 'Year',
   },
 };
