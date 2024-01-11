@@ -10596,10 +10596,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "govuk-frontend@npm:4.7.0"
-  checksum: 0e246dd2c724e51fd14dd40fc31c66627df7d07ebe89e1a19b1e7da7e7a5eb86bc6560229e18a13e40651e6c953a67422d54e77e240d82efff7b2cbefaa8b88d
+"govuk-frontend@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "govuk-frontend@npm:5.0.0"
+  checksum: 8ef384f6bc9edc250b27f156aaf06a65b95386822c1922c71cd8ac7e3be6cc644ed6a0d4617624b30c497ac7424affce86c24f5138e51514ceca1f70d5819afd
   languageName: node
   linkType: hard
 
@@ -13472,7 +13472,7 @@ __metadata:
     eslint: ^8.53.0
     express: ^4.15.2
     express-session: ^1.17.3
-    govuk-frontend: ^4.7.0
+    govuk-frontend: ^5.0.0
     helmet: ^7.0.0
     http-proxy-middleware: ^2.0.6
     jasmine-core: ~5.1.0

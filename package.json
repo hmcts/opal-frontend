@@ -61,7 +61,7 @@
     "domino-ext": "^2.1.4",
     "express": "^4.15.2",
     "express-session": "^1.17.3",
-    "govuk-frontend": "^4.7.0",
+    "govuk-frontend": "^5.0.0",
     "helmet": "^7.0.0",
     "http-proxy-middleware": "^2.0.6",
     "lodash": "^4.17.21",
