@@ -11,6 +11,7 @@ export const SEARCH_DEFENDANT_ACCOUNTS_MOCK = {
       addressLine1: 'ASDF  ',
       balance: 0.34,
       court: 'West London  ',
+      defendantAccountId: 500000001,
     },
     {
       accountNo: '18000027D  ',
@@ -19,6 +20,7 @@ export const SEARCH_DEFENDANT_ACCOUNTS_MOCK = {
       addressLine1: '1 St. Kilda Road  ',
       balance: 200.0,
       court: 'West London  ',
+      defendantAccountId: 500000002,
     },
     {
       accountNo: '16000398C  ',
@@ -27,6 +29,7 @@ export const SEARCH_DEFENDANT_ACCOUNTS_MOCK = {
       addressLine1: '123 The Road  ',
       balance: 1000.0,
       court: 'West London  ',
+      defendantAccountId: 500000003,
     },
   ],
 };
