@@ -3015,8 +3015,8 @@ __metadata:
   linkType: hard
 
 "@badeball/cypress-cucumber-preprocessor@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.0"
+  version: 20.0.1
+  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.1"
   dependencies:
     "@badeball/cypress-configuration": ^6.1.0
     "@cucumber/ci-environment": ^10.0.0
@@ -3054,7 +3054,7 @@ __metadata:
     cucumber-json-formatter: dist/bin/cucumber-json-formatter.js
     cucumber-merge-messages: dist/bin/cucumber-merge-messages.js
     cypress-cucumber-diagnostics: dist/bin/diagnostics.js
-  checksum: b49220b4a65c63cebd889d8f75a78c4e1b12fc2c3ea6aa56a7a7c4289edfc17f5c5a57b20dc8a5ef7a5911d8b8f86858e20a03395b66ef86f27f5be794524b31
+  checksum: 04876213aafe9a504f7caa25a7bc13cd4545094d6833dcf694b4ae5f1303203f6b05dda84773f09d6c87d2602865747436539fe79ece2678df373d363bdd4178
   languageName: node
   linkType: hard
 
