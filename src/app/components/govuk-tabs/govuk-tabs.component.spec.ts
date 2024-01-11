@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukTabsComponent } from './govuk-tabs.component';
 import { Component } from '@angular/core';
-import { addGdsBodyClass } from '../utils/add-gds-body-class';
+import { addGdsBodyClass } from '../helpers/index';
 
 @Component({
   template: `<app-govuk-tabs><span items>Test Content</span><span panels>More Test Content</span></app-govuk-tabs>`,
@@ -13,9 +13,7 @@ describe('GovukTabsComponent', () => {
   let component: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
-  // We need to add the govuk-frontend-supported class to the body element as per govuk-frontend v5
-  addGdsBodyClass();
-
+  beforeAll(addGdsBodyClass);
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GovukTabsComponent],
