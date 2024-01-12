@@ -5,7 +5,7 @@ import { AuthService } from '@services';
 
 import { authGuard } from './auth.guard';
 import { of, throwError } from 'rxjs';
-import { getGuardWithDummyUrl, runAuthGuardWithContext } from '../utils';
+import { getGuardWithDummyUrl, runAuthGuardWithContext } from '../helpers';
 
 describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
