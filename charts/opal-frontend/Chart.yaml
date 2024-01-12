@@ -16,6 +16,6 @@ dependencies:
     condition: redis.enabled
   - name: opal-fines-service
     version: 0.0.21
-    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
+    repository: 'https://sdshmctspublic.azurecr.io/helm/v1/repo/'
     condition: opal-fines-service.enabled
   
