@@ -13,7 +13,7 @@ nodejs:
 opal-fines-service:
   enabled: true
   java:
-    releasaeNameOverride: ${SERVICE_NAME}-opal-fines-service
+    releaseNameOverride: ${SERVICE_NAME}-opal-fines-service
     ingressHost: opal-fines-service-${SERVICE_FQDN}
     keyVaults:
       opal:
