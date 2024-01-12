@@ -1,4 +1,5 @@
 export interface IDefendantAccountDetails {
+  defendantAccountId: number;
   accountNumber: string;
   fullName: string;
   accountCT: string;
