@@ -4,9 +4,9 @@ export const ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH = {
   forename: null,
   initials: null,
   dateOfBirth: {
-    dayOfBirth: null,
-    monthOfBirth: null,
-    yearOfBirth: null,
+    dayOfMonth: null,
+    monthOfYear: null,
+    year: null,
   },
   addressLineOne: null,
   niNumber: null,
