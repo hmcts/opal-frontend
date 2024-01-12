@@ -12,6 +12,10 @@ nodejs:
   environment:
     ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: false
+    OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
 
 redis:
+  enabled: false
+
+opal-fines-service:
   enabled: false

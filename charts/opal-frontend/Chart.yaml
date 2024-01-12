@@ -14,3 +14,8 @@ dependencies:
     version: 18.6.3
     repository: 'https://charts.bitnami.com/bitnami'
     condition: redis.enabled
+  - name: opal-fines-service
+    version: 0.0.21
+    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
+    condition: opal-fines-service.enabled
+  
