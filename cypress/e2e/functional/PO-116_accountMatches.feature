@@ -57,9 +57,9 @@ Feature: PO-116 account matches page
     And I click the search button
     #will need changing when exact search returns the details screen not matches screen
     Then I am presented with a result matching
-      | name        | Mr Smart John  |
-      | dateOfBirth | 1999-11-23     |
-      | addrLn1     | 10 Brooks Lake |
+      | name        | Mr Smart D John |
+      | dateOfBirth | 1999-11-23      |
+      | addrLn1     | 10 Brooks Lake  |
 
   Scenario: when a user performs a specific partial search the correct result is returned to the user on the matches screen
     Given I am on the OPAL Frontend
@@ -84,9 +84,9 @@ Feature: PO-116 account matches page
     And I click the search button
     #will need changing when exact search returns the details screen not matches screen
     Then I am presented with a result matching
-      | name        | Mr Smart John  |
-      | dateOfBirth | 1999-11-23     |
-      | addrLn1     | 10 Brooks Lake |
+      | name        | Mr Smart D John |
+      | dateOfBirth | 1999-11-23      |
+      | addrLn1     | 10 Brooks Lake  |
 
   Scenario: when a user performs a specific search with an incorrect date of birth no results are returned to the user on the matches screen
     Given I am on the OPAL Frontend
