@@ -16,3 +16,9 @@ nodejs:
 
 redis:
   enabled: false
+
+opal-fines-service:
+  enabled: false
+
+postgresql:
+  enabled: false
