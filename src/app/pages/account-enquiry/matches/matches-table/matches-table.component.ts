@@ -19,8 +19,6 @@ export class MatchesTableComponent implements AfterViewInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
   @ViewChild(MatSort) sort!: MatSort;
 
-  private readonly router = inject(Router);
-
   public currentPage = signal(1);
   public pageLimit = signal(10);
   public pagedRows = signal<MatTableDataSource<ISearchDefendantAccount>>(
