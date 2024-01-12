@@ -19,3 +19,6 @@ redis:
 
 opal-fines-service:
   enabled: false
+
+postgresql:
+  enabled: false
