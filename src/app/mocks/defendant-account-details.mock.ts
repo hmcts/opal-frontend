@@ -15,6 +15,7 @@ export const DEFENDANT_ACCOUNT_DETAILS_MOCK = {
   lumpSum: null,
   commencing: null,
   daysInDefault: 120,
+  sentencedDate: '2023-11-03',
   lastEnforcement: 'REM',
   override: '2723',
   enforcer: 100,

@@ -15,6 +15,7 @@ export interface IDefendantAccountDetails {
   lumpSum: null | number;
   commencing: null | string;
   daysInDefault: number;
+  sentencedDate: string;
   lastEnforcement: string;
   override: string;
   enforcer: number;
