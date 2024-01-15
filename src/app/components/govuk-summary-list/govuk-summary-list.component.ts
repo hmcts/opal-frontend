@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-summary-list',
@@ -8,4 +8,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './govuk-summary-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GovukSummaryListComponent {}
+export class GovukSummaryListComponent {
+  public _summaryListId!: string;
+  @Input({ required: true }) set summaryListId(summaryListId: string) {
+    this._summaryListId = summaryListId.charAt(0).toUpperCase() + summaryListId.slice(1);
+  }
+}

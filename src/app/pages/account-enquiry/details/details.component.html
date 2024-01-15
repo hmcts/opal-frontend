@@ -30,45 +30,45 @@
         <ng-container panels>
           <app-govuk-tab-panel panelId="accountDetails">
             <h2 class="govuk-heading-m">Account Details</h2>
-            <app-govuk-summary-list>
-              <app-govuk-summary-list-row>
+            <app-govuk-summary-list summaryListId="accountDetails">
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="address">
                 <ng-container name>Address</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.address }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="postcode">
                 <ng-container name>Postcode</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.postCode }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
 
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="dob">
                 <ng-container name>Date of Birth</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.dob }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="detailsChanged">
                 <ng-container name>Details Changed</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.detailsChanged }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="lastCourtAppAndCourtCode">
                 <ng-container name>Last Court App</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.lastCourtAppAndCourtCode }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="lastMovement">
                 <ng-container name>Last Court Movement</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.lastMovement }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="commentField">
                 <ng-container name>Comment Field</ng-container>
                 <ng-container value>
                   @for (comment of data.commentField; track $index) {
@@ -76,47 +76,47 @@
                   }
                 </ng-container>
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="pcr">
                 <ng-container name>PCR</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.pcr }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
 
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="paymentDetails">
                 <ng-container name>Payment Details</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.paymentDetails }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="commencing">
                 <ng-container name>Commencing</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.commencing }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
 
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="daysInDefault">
                 <ng-container name>Days in Default</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.daysInDefault }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="offenceDate">
                 <ng-container name>Offence Date</ng-container>
                 <ng-container value><p class="govuk-body"></p></ng-container>
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="offenceDate">
                 <ng-container name>Police Force/CTO</ng-container>
                 <ng-container value><p class="govuk-body"></p></ng-container>
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="lastEnforcement">
                 <ng-container name>Last Enforcement</ng-container>
                 <ng-container value
                   ><p class="govuk-body">{{ data.lastEnforcement }}</p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="override">
                 <ng-container name>Override</ng-container>
                 <ng-container value
                   ><p class="govuk-body">
@@ -124,7 +124,7 @@
                   </p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="enforcer">
                 <ng-container name>Enforcer</ng-container>
                 <ng-container value
                   ><p class="govuk-body">
@@ -132,7 +132,7 @@
                   </p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="enforcementCourt">
                 <ng-container name>Enforcement Court</ng-container>
                 <ng-container value
                   ><p class="govuk-body">
@@ -140,7 +140,7 @@
                   </p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="imposed">
                 <ng-container name>Imposed</ng-container>
                 <ng-container value
                   ><p class="govuk-body">
@@ -148,7 +148,7 @@
                   </p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="amountPaid">
                 <ng-container name>Paid so Far</ng-container>
                 <ng-container value
                   ><p class="govuk-body">
@@ -156,16 +156,8 @@
                   </p></ng-container
                 >
               </app-govuk-summary-list-row>
-              <app-govuk-summary-list-row>
-                <ng-container name>Amount Paid</ng-container>
-                <ng-container value
-                  ><p class="govuk-body">
-                    {{ data.amountPaid | currency: 'GBP' : 'symbol' }}
-                  </p></ng-container
-                >
-              </app-govuk-summary-list-row>
 
-              <app-govuk-summary-list-row>
+              <app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="balance">
                 <ng-container name>Balance</ng-container>
                 <ng-container value
                   ><p class="govuk-body">

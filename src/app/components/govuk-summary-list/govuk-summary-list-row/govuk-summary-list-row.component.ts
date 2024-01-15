@@ -9,8 +9,19 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukSummaryListRowComponent {
+  public _summaryListId!: string;
+  public _summaryListRowId!: string;
+
   @Output() public actionClick = new EventEmitter<boolean>();
   @Input() public actionEnabled = false;
+
+  @Input({ required: true }) set summaryListRowId(summaryListRowId: string) {
+    this._summaryListRowId = summaryListRowId.charAt(0).toUpperCase() + summaryListRowId.slice(1);
+  }
+
+  @Input({ required: true }) set summaryListId(summaryListId: string) {
+    this._summaryListId = summaryListId.charAt(0).toUpperCase() + summaryListId.slice(1);
+  }
 
   /**
    * Handles the click event for the action button.
