@@ -1,8 +1,8 @@
 export const DEFENDANT_ACCOUNT_DETAILS_MOCK = {
+  defendantAccountId: 1,
   accountNumber: '123456789',
   fullName: 'Mr John K Doe',
   accountCT: 'Greater London',
-  accountType: 'Defendant',
   address: '123 Main Street, Reading, Berkshire',
   postCode: 'RG12 0AA',
   dob: '1966-12-01',
@@ -11,8 +11,6 @@ export const DEFENDANT_ACCOUNT_DETAILS_MOCK = {
   lastMovement: '2022-11-01',
   commentField: ['Comment 1', 'Comment 2'],
   pcr: 'PC123456',
-  documentLanguage: 'English',
-  hearingLanguage: 'English',
   paymentDetails: '1000/month',
   lumpSum: 500.0,
   commencing: '2021-09-01',
@@ -24,6 +22,5 @@ export const DEFENDANT_ACCOUNT_DETAILS_MOCK = {
   enforcementCourt: 456,
   imposed: 2000.0,
   amountPaid: 1000.0,
-  arrears: 500.0,
   balance: 500.0,
 };

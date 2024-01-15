@@ -3,7 +3,6 @@ export interface IDefendantAccountDetails {
   accountNumber: string;
   fullName: string;
   accountCT: string;
-  accountType: string;
   address: string;
   postCode: string;
   dob: string;
@@ -12,8 +11,6 @@ export interface IDefendantAccountDetails {
   lastMovement: string;
   commentField: string[];
   pcr: string;
-  documentLanguage: string;
-  hearingLanguage: string;
   paymentDetails: string;
   lumpSum: number;
   commencing: string;
@@ -25,6 +22,5 @@ export interface IDefendantAccountDetails {
   enforcementCourt: number;
   imposed: number;
   amountPaid: number;
-  arrears: number;
   balance: number;
 }
