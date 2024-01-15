@@ -1,9 +1,9 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild, signal } from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { GovukButtonComponent, GovukPaginationComponent } from '@components';
 import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 
