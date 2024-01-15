@@ -12,8 +12,8 @@ export interface IDefendantAccountDetails {
   commentField: string[];
   pcr: string;
   paymentDetails: string;
-  lumpSum: number;
-  commencing: string;
+  lumpSum: null | number;
+  commencing: null | string;
   daysInDefault: number;
   lastEnforcement: string;
   override: string;
