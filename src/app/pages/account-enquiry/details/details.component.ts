@@ -11,9 +11,10 @@ import {
 } from '@components';
 
 import { AccountEnquiryRoutes } from '@enums';
-import { DefendantAccountService } from '@services';
+import { DefendantAccountService, StateService } from '@services';
 import { EMPTY, Observable } from 'rxjs';
 import { IDefendantAccountDetails } from '@interfaces';
+import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 @Component({
   selector: 'app-account-enquiry-details',
@@ -37,6 +38,7 @@ export class DetailsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
+  private readonly stateService = inject(StateService);
 
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
 
@@ -49,6 +51,14 @@ export class DetailsComponent implements OnInit {
       const defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
       this.data$ = this.defendantAccountService.getDefendantAccountDetails(defendantAccountId);
     });
+  }
+
+  /**
+   * Handles a new search by resetting the account enquiry state and navigating to the search page.
+   */
+  public handleNewSearch(): void {
+    this.stateService.accountEnquiry.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    this.router.navigate([AccountEnquiryRoutes.search]);
   }
 
   /**

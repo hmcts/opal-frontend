@@ -8,6 +8,7 @@ import { DEFENDANT_ACCOUNT_DETAILS_MOCK } from '@mocks';
 import { DefendantAccountService } from '@services';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes } from '@enums';
+import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 describe('DetailsComponent', () => {
   let component: DetailsComponent;
@@ -50,5 +51,15 @@ describe('DetailsComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleBack();
     expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.matches]);
+  });
+
+  it('should handle new search', () => {
+    const stateServiceSpy = spyOn(component['stateService'].accountEnquiry, 'set');
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.handleNewSearch();
+
+    expect(stateServiceSpy).toHaveBeenCalledWith(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
   });
 });
