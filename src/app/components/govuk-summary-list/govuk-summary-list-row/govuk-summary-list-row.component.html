@@ -1,27 +1,13 @@
-<div
-  class="govuk-summary-list__row"
-  [id]="_summaryListId && _summaryListRowId ? 'summaryListRowId' + _summaryListId + _summaryListRowId : ''"
->
-  <dt
-    class="govuk-summary-list__key"
-    [id]="_summaryListId && _summaryListRowId ? 'summaryListRowId' + _summaryListId + _summaryListRowId + 'Key' : ''"
-  >
+<div class="govuk-summary-list__row" [id]="summaryListId + _summaryListRowId">
+  <dt class="govuk-summary-list__key" [id]="summaryListId + _summaryListRowId + 'Key'">
     <ng-content select="[name]"></ng-content>
   </dt>
 
-  <dd
-    class="govuk-summary-list__value"
-    [id]="_summaryListId && _summaryListRowId ? 'summaryListRowId' + _summaryListId + _summaryListRowId + 'Value' : ''"
-  >
+  <dd class="govuk-summary-list__value" [id]="summaryListId + _summaryListRowId + 'Value'">
     <ng-content select="[value]"></ng-content>
   </dd>
   @if (actionEnabled) {
-    <dd
-      class="govuk-summary-list__actions"
-      [id]="
-        _summaryListId && _summaryListRowId ? 'summaryListRowId' + _summaryListId + _summaryListRowId + 'Actions' : ''
-      "
-    >
+    <dd class="govuk-summary-list__actions" [id]="summaryListId + _summaryListRowId + 'Actions'">
       <a class="govuk-link" href="#" (click)="handleActionClick($event)">
         <ng-content select="[action]"></ng-content>
       </a>

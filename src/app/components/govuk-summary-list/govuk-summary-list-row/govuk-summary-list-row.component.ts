@@ -11,19 +11,14 @@ import { UtilsService } from '@services';
 })
 export class GovukSummaryListRowComponent {
   private readonly utilService = inject(UtilsService);
-
-  public _summaryListId!: string;
   public _summaryListRowId!: string;
 
   @Output() public actionClick = new EventEmitter<boolean>();
   @Input() public actionEnabled = false;
 
+  @Input({ required: true }) summaryListId!: string;
   @Input({ required: true }) set summaryListRowId(summaryListRowId: string) {
     this._summaryListRowId = this.utilService.upperCaseFirstLetter(summaryListRowId);
-  }
-
-  @Input({ required: true }) set summaryListId(summaryListId: string) {
-    this._summaryListId = this.utilService.upperCaseFirstLetter(summaryListId);
   }
 
   /**

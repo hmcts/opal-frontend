@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { UtilsService } from '@services';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-summary-list',
@@ -10,10 +9,5 @@ import { UtilsService } from '@services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukSummaryListComponent {
-  public _summaryListId!: string;
-  private readonly utilService = inject(UtilsService);
-
-  @Input({ required: true }) set summaryListId(summaryListId: string) {
-    this._summaryListId = this.utilService.upperCaseFirstLetter(summaryListId);
-  }
+  @Input({ required: true }) summaryListId!: string;
 }
