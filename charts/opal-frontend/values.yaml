@@ -13,6 +13,7 @@ nodejs:
     ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: false
     OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
+    FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
 
 redis:
   enabled: false

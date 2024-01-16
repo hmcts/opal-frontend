@@ -3,6 +3,9 @@
   "opal-api": {
     "url": "OPAL_API_URL"
   },
+  "frontend-hostname": {
+    "prod": "FRONTEND_HOSTNAME"
+  },
   "features": {
     "redis": {
       "enabled": {
