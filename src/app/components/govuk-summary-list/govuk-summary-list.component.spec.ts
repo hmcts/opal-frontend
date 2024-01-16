@@ -4,7 +4,7 @@ import { GovukSummaryListComponent } from './govuk-summary-list.component';
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-summary-list>Hello World</app-govuk-summary-list>`,
+  template: `<app-govuk-summary-list summaryListId="test">Hello World</app-govuk-summary-list>`,
 })
 class TestHostComponent {}
 
@@ -28,7 +28,7 @@ describe('GovukSummaryListComponent', () => {
   });
 
   it('should render into list ng-content', () => {
-    const element = fixture.nativeElement.querySelector('.govuk-summary-list');
+    const element = fixture.nativeElement.querySelector('#test');
     expect(element.innerText).toBe('Hello World');
   });
 });

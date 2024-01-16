@@ -4,7 +4,7 @@ import { GovukSummaryListRowComponent } from './govuk-summary-list-row.component
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-summary-list-row [actionEnabled]="action"
+  template: `<app-govuk-summary-list-row summaryListId="test" summaryListRowId="rowTest" [actionEnabled]="action"
     ><ng-container name>Tim</ng-container>
     <ng-container value><p class="govuk-body">Hello</p></ng-container>
     <ng-container action>Change<span class="govuk-visually-hidden"> name</span></ng-container>
@@ -40,19 +40,19 @@ describe('GovukSummaryListRowComponent', () => {
   });
 
   it('should render into the name ng-content', () => {
-    const element = fixture.nativeElement.querySelector('.govuk-summary-list__key');
+    const element = fixture.nativeElement.querySelector('#testRowTestKey');
 
     expect(element.innerText).toBe('Tim');
   });
 
   it('should render into the value ng-content', () => {
-    const element = fixture.nativeElement.querySelector('.govuk-summary-list__value > .govuk-body');
+    const element = fixture.nativeElement.querySelector('#testRowTestValue > .govuk-body');
 
     expect(element.innerText).toBe('Hello');
   });
 
   it('should not render into the action ng-content', () => {
-    const element = fixture.nativeElement.querySelector('.govuk-summary-list__actions');
+    const element = fixture.nativeElement.querySelector('#testRowTestActions');
 
     expect(element).toBeFalsy();
   });
@@ -61,7 +61,7 @@ describe('GovukSummaryListRowComponent', () => {
     component.action = true;
     fixture.detectChanges();
 
-    const element = fixture.nativeElement.querySelector('.govuk-summary-list__actions .govuk-link');
+    const element = fixture.nativeElement.querySelector('#testRowTestActions .govuk-link');
 
     expect(element.innerText).toBe('Change name');
   });

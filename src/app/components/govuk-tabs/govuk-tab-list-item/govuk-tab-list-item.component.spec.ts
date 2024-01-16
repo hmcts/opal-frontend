@@ -13,6 +13,8 @@ describe('GovukTabListItemComponent', () => {
 
     fixture = TestBed.createComponent(GovukTabListItemComponent);
     component = fixture.componentInstance;
+    component.tabsId = 'test';
+    component.tabsListItemId = 'testTwo';
     component.tabListItemHref = '#test';
     component.tabListItemName = 'Test Content';
     fixture.detectChanges();

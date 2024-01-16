@@ -5,7 +5,9 @@ import { Component } from '@angular/core';
 import { addGdsBodyClass } from '../helpers/index';
 
 @Component({
-  template: `<app-govuk-tabs><span items>Test Content</span><span panels>More Test Content</span></app-govuk-tabs>`,
+  template: `<app-govuk-tabs tabsId="test"
+    ><span items>Test Content</span><span panels>More Test Content</span></app-govuk-tabs
+  >`,
 })
 class TestHostComponent {}
 
@@ -22,6 +24,7 @@ describe('GovukTabsComponent', () => {
 
     fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
