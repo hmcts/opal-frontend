@@ -28,7 +28,6 @@ export class MatchesComponent {
 
   public data$: Observable<ISearchDefendantAccounts> = this.defendantAccountService.searchDefendantAccounts({
     ...this.searchState,
-    court: 'test',
   });
 
   /**

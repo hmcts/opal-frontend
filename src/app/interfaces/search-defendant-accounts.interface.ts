@@ -5,6 +5,7 @@ export interface ISearchDefendantAccount {
   addressLine1: string;
   balance: number;
   court: string;
+  defendantAccountId: number;
 }
 export interface ISearchDefendantAccounts {
   count: number;

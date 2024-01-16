@@ -1,7 +1,7 @@
 {
   "node-env": "NODE_ENV",
-  "frontend-hostname": {
-    "prod": "FRONTEND_HOSTNAME"
+  "opal-api": {
+    "url": "OPAL_API_URL"
   },
   "features": {
     "redis": {

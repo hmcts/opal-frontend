@@ -1,6 +1,6 @@
 import { DataTable, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
-When('I populate the form with the following search criteria and search', (table: DataTable) => {
+When('I populate the form with the following search criteria', (table: DataTable) => {
   const searchCriteria = table.rowsHash();
 
   cy.get('#court').select(searchCriteria['court']);
@@ -13,9 +13,9 @@ When('I populate the form with the following search criteria and search', (table
   typeIfNotBlank('#surname', searchCriteria['surname']);
   typeIfNotBlank('#forename', searchCriteria['forename']);
   typeIfNotBlank('#initials', searchCriteria['initials']);
-  typeIfNotBlank('#dayOfBirth', searchCriteria['dobDay']);
-  typeIfNotBlank('#monthOfBirth', searchCriteria['dobMonth']);
-  typeIfNotBlank('#yearOfBirth', searchCriteria['dobYear']);
+  typeIfNotBlank('#dayOfMonth', searchCriteria['dobDay']);
+  typeIfNotBlank('#monthOfYear', searchCriteria['dobMonth']);
+  typeIfNotBlank('#year', searchCriteria['dobYear']);
   typeIfNotBlank('#addressLineOne', searchCriteria['addrLn1']);
   typeIfNotBlank('#niNumber', searchCriteria['niNumber']);
   typeIfNotBlank('#pcr', searchCriteria['pcr']);
@@ -46,9 +46,9 @@ When('I see the form contains the following search criteria', (table: DataTable)
   assertValueIsCorrect('#surname', searchCriteria['surname']);
   assertValueIsCorrect('#forename', searchCriteria['forename']);
   assertValueIsCorrect('#initials', searchCriteria['initials']);
-  assertValueIsCorrect('#dayOfBirth', searchCriteria['dobDay']);
-  assertValueIsCorrect('#monthOfBirth', searchCriteria['dobMonth']);
-  assertValueIsCorrect('#yearOfBirth', searchCriteria['dobYear']);
+  assertValueIsCorrect('#dayOfMonth', searchCriteria['dobDay']);
+  assertValueIsCorrect('#monthOfYear', searchCriteria['dobMonth']);
+  assertValueIsCorrect('#year', searchCriteria['dobYear']);
   assertValueIsCorrect('#addressLineOne', searchCriteria['addrLn1']);
   assertValueIsCorrect('#niNumber', searchCriteria['niNumber']);
   assertValueIsCorrect('#pcr', searchCriteria['pcr']);
@@ -56,4 +56,8 @@ When('I see the form contains the following search criteria', (table: DataTable)
 
 When('I click the clear button', () => {
   cy.get('#clearForm').click();
+});
+
+When('I click the search button', () => {
+  cy.get('#submitForm').click();
 });

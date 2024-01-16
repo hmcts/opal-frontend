@@ -4,9 +4,9 @@ export interface IAccountEnquiryStateSearch {
   forename: string | null;
   initials: string | null;
   dateOfBirth: {
-    dayOfBirth: string | null;
-    monthOfBirth: string | null;
-    yearOfBirth: string | null;
+    dayOfMonth: string | null;
+    monthOfYear: string | null;
+    year: string | null;
   };
   addressLineOne: string | null;
   niNumber: string | null;

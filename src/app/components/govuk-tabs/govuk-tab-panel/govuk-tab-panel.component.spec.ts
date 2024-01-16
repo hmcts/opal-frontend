@@ -4,7 +4,7 @@ import { GovukTabPanelComponent } from './govuk-tab-panel.component';
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-tab-panel [panelId]="'test'">Hello World</app-govuk-tab-panel>`,
+  template: `<app-govuk-tab-panel tabsId="testOne" tabsPanelId="testTwo">Hello World</app-govuk-tab-panel>`,
 })
 class TestHostComponent {}
 describe('GovukTabPanelComponent', () => {
@@ -27,7 +27,7 @@ describe('GovukTabPanelComponent', () => {
   });
 
   it('should render into list ng-content', () => {
-    const element = fixture.nativeElement.querySelector('#test');
+    const element = fixture.nativeElement.querySelector('#testOneTestTwo');
     expect(element.innerText).toBe('Hello World');
   });
 });

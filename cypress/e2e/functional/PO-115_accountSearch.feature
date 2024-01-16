@@ -6,7 +6,7 @@ Feature: PO-115 account search page
     When I sign in with Microsoft SSO
     Then I see "Account Enquiry" in the page body header
 
-    When I populate the form with the following search criteria and search
+    When I populate the form with the following search criteria
       | court    | Bath         |
       | surname  | testSurname  |
       | forename | testForename |
@@ -37,7 +37,7 @@ Feature: PO-115 account search page
     When I sign in with Microsoft SSO
     Then I see "Account Enquiry" in the page body header
 
-    When I populate the form with the following search criteria and search
+    When I populate the form with the following search criteria
       | court    | Bath         |
       | surname  | testSurname  |
       | forename | testForename |

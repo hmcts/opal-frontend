@@ -2,9 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukTabsComponent } from './govuk-tabs.component';
 import { Component } from '@angular/core';
+import { addGdsBodyClass } from '../helpers/index';
 
 @Component({
-  template: `<app-govuk-tabs><span items>Test Content</span><span panels>More Test Content</span></app-govuk-tabs>`,
+  template: `<app-govuk-tabs tabsId="test"
+    ><span items>Test Content</span><span panels>More Test Content</span></app-govuk-tabs
+  >`,
 })
 class TestHostComponent {}
 
@@ -12,6 +15,7 @@ describe('GovukTabsComponent', () => {
   let component: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
+  beforeAll(addGdsBodyClass);
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GovukTabsComponent],
@@ -20,6 +24,7 @@ describe('GovukTabsComponent', () => {
 
     fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
