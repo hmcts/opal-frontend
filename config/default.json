@@ -11,6 +11,9 @@
   "features": {
     "redis": {
       "enabled": false
+    },
+    "sso": {
+      "enabled": false
     }
   },
   "session": {
