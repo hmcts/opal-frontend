@@ -27,7 +27,7 @@ Then('I am presented with results all containing', (table: DataTable) => {
       numberOfResults = rows.length;
       cy.log('number of rows found: ' + numberOfResults);
 
-      while (index < numberOfResults) {
+      while (index <= numberOfResults) {
         resultContains(index, 'name', searchResults['name']);
         resultContains(index, 'dob', searchResults['dateOfBirth']);
         resultContains(index, 'address', searchResults['addrLn1']);

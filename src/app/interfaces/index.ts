@@ -7,6 +7,7 @@ import { IGovUkSelectOptions } from './govuk-select-options.interface';
 import { IAccountEnquiryState, IAccountEnquiryStateSearch } from './account-enquiry-state.interface';
 import { ISearchDefendantAccountBody } from './search-defendant-account-body';
 import { ISearchDefendantAccounts, ISearchDefendantAccount } from './search-defendant-accounts.interface';
+import { IDefendantAccountDetails } from './defendant-account-details.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -20,4 +21,5 @@ export {
   ISearchDefendantAccountBody,
   ISearchDefendantAccount,
   ISearchDefendantAccounts,
+  IDefendantAccountDetails,
 };

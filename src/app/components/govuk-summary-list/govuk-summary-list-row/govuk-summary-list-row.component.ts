@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { UtilsService } from '@services';
 
 @Component({
   selector: 'app-govuk-summary-list-row',
@@ -9,8 +10,16 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukSummaryListRowComponent {
+  private readonly utilService = inject(UtilsService);
+  public _summaryListRowId!: string;
+
   @Output() public actionClick = new EventEmitter<boolean>();
   @Input() public actionEnabled = false;
+
+  @Input({ required: true }) summaryListId!: string;
+  @Input({ required: true }) set summaryListRowId(summaryListRowId: string) {
+    this._summaryListRowId = this.utilService.upperCaseFirstLetter(summaryListRowId);
+  }
 
   /**
    * Handles the click event for the action button.

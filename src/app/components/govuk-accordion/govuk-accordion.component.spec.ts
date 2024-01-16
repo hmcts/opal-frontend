@@ -1,15 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukAccordionComponent } from './govuk-accordion.component';
+import { addGdsBodyClass } from '../helpers/index';
 
 describe('GovukAccordionComponent', () => {
   let component: GovukAccordionComponent;
   let fixture: ComponentFixture<GovukAccordionComponent>;
 
+  beforeAll(addGdsBodyClass);
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [GovukAccordionComponent],
     });
+
     fixture = TestBed.createComponent(GovukAccordionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

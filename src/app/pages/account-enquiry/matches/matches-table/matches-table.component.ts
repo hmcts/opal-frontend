@@ -17,7 +17,6 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 })
 export class MatchesTableComponent implements AfterViewInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
-
   @ViewChild(MatSort) sort!: MatSort;
 
   public currentPage = signal(1);
