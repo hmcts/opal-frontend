@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { UtilsService } from '@services';
 
 @Component({
   selector: 'app-govuk-tab-panel',
@@ -9,5 +10,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTabPanelComponent {
-  @Input({ required: true }) public panelId!: string;
+  private readonly utilService = inject(UtilsService);
+  public _tabsPanelId!: string;
+
+  @Input({ required: true }) public tabsId!: string;
+  @Input({ required: true }) set tabsPanelId(tabsPanelId: string) {
+    this._tabsPanelId = this.utilService.upperCaseFirstLetter(tabsPanelId);
+  }
 }

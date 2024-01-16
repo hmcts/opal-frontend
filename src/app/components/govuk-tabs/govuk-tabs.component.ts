@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, PLATFORM_ID, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, PLATFORM_ID, inject } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-tabs',
@@ -12,6 +12,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, PLATFORM_ID, inject 
 export class GovukTabsComponent implements AfterViewInit {
   private platformId = inject(PLATFORM_ID);
 
+  @Input({ required: true }) public tabsId!: string;
   /**
    * Lifecycle hook that is called after Angular has fully initialized the component's view.
    * It is called only once after the first ngAfterContentChecked.
