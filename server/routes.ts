@@ -42,10 +42,6 @@ export default (): Router => {
 
   router.use('/api', proxy());
 
-  router.get('/test', (req: Request, res: Response) =>
-    res.status(200).send(ssoEnabled ? 'SSO enabled' : 'SSO disabled'),
-  );
-
   setupSSORoutes(router, ssoEnabled);
 
   return router;
