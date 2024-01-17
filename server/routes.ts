@@ -13,7 +13,7 @@ import {
   ssoLogoutCallbackStub,
 } from './stubs/sso';
 
-function setupRoutes(router: Router, ssoEnabled: boolean) {
+const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
   const login = ssoEnabled ? ssoLogin : ssoLoginStub;
   const loginCallback = ssoEnabled ? ssoLoginCallback : ssoLoginCallbackStub;
   const logout = ssoEnabled ? ssoLogout : ssoLogoutStub;
@@ -31,7 +31,7 @@ function setupRoutes(router: Router, ssoEnabled: boolean) {
     logoutCallback(req, res, next),
   );
   router.get('/sso/authenticated', (req: Request, res: Response) => authenticated(req, res));
-}
+};
 
 export default (): Router => {
   const router = express.Router();
@@ -42,7 +42,7 @@ export default (): Router => {
 
   router.use('/api', proxy());
 
-  setupRoutes(router, ssoEnabled);
+  setupSSORoutes(router, ssoEnabled);
 
   return router;
 };
