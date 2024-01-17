@@ -1,5 +1,5 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
-export default async (res: Response) => {
+export default async (req: Request, res: Response) => {
   res.redirect('/sso/login-callback');
 };

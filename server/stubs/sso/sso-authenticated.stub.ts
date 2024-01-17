@@ -34,7 +34,6 @@ export default (req: Request, res: Response) => {
 
   // If we don't have a token
   if (!token) {
-    logger.error('No token found');
     res.status(401).send(false);
     return;
   }
