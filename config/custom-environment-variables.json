@@ -11,12 +11,12 @@
       "enabled": {
         "__name": "FEATURES_REDIS_ENABLED",
         "__format": "json"
-      },
-      "sso": {
-        "enabled": {
-          "__name": "FEATURES_SSO_ENABLED",
-          "__format": "json"
-        }
+      }
+    },
+    "sso": {
+      "enabled": {
+        "__name": "FEATURES_SSO_ENABLED",
+        "__format": "json"
       }
     }
   },
