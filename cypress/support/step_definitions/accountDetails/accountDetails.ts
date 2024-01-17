@@ -1,5 +1,4 @@
 import { DataTable, When, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { List, forEach } from 'cypress/types/lodash';
 
 When('I view the first result', () => {
   cy.get(':nth-child(1) > .cdk-column-view > .govuk-link').click();

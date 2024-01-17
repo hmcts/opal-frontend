@@ -5,32 +5,37 @@ Given('I am on the OPAL Frontend', () => {
   cy.wait(500);
 });
 
-When('I sign in with Microsoft SSO', () => {
+When('I sign in', () => {
   const emailSSO: string = 'opal-test@hmcts.net';
   const passwordSSO: string = 'OpalFinesService1';
 
-  cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+  if (cy.url().contains('pr-')) {
+    cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
 
-  cy.origin(
-    'https://login.microsoftonline.com',
-    {
-      args: {
-        emailSSO,
-        passwordSSO,
+    cy.origin(
+      'https://login.microsoftonline.com',
+      {
+        args: {
+          emailSSO,
+          passwordSSO,
+        },
       },
-    },
-    ({ emailSSO, passwordSSO }) => {
-      cy.wait(500);
-      cy.get('input[type="email"]').type(emailSSO);
-      cy.get('input[type="submit"]').click();
+      ({ emailSSO, passwordSSO }) => {
+        cy.wait(500);
+        cy.get('input[type="email"]').type(emailSSO);
+        cy.get('input[type="submit"]').click();
 
-      cy.get('input[type="password"]').type(passwordSSO);
-      cy.get('input[type="submit"]').click();
-      cy.get('#idBtn_Back').click();
-    },
-  );
+        cy.get('input[type="password"]').type(passwordSSO);
+        cy.get('input[type="submit"]').click();
+        cy.get('#idBtn_Back').click();
+      },
+    );
 
-  cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
+    cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
+  } else {
+    cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+    cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
+  }
 });
 
 Then('I see {string} in the header', (header) => {
