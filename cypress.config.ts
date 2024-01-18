@@ -20,9 +20,8 @@ async function setupNodeEvents(
 export default defineConfig({
   reporter: 'junit',
   e2e: {
-    baseUrl: process.env['TEST_URL'] || 'http://localhost:4200/',
+    baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
     specPattern: '**/*.feature',
-    screenshotsFolder: 'smoke-output/screenshots',
     setupNodeEvents,
   },
   experimentalModifyObstructiveThirdPartyCode: true,
