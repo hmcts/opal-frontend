@@ -5077,7 +5077,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^3.3.2":
+"@types/config@npm:^3.3.3":
   version: 3.3.3
   resolution: "@types/config@npm:3.3.3"
   checksum: 738c616fc385fa93e61b2236b43fbcfd93b1b53fc222fa14f2ebaef17ec7eaf03bf3d768fa8cb00df1b5173574893c020dc73eab11ddd6ea769dbf9ea113e8da
@@ -5174,7 +5174,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*, @types/express@npm:^4.17.0, @types/express@npm:^4.17.13":
+"@types/express@npm:*, @types/express@npm:^4.17.13, @types/express@npm:^4.17.21":
   version: 4.17.21
   resolution: "@types/express@npm:4.17.21"
   dependencies:
@@ -5190,7 +5190,7 @@ __metadata:
   version: 4.0.0
   resolution: "@types/helmet@npm:4.0.0"
   dependencies:
-    helmet: "npm:*"
+    helmet: "*"
   checksum: ded60d8d9960edbae4d10603511dca9b9c50a9937f49e0d2b14bc096302e85a038acd443889a132dab60bc950bfd0e47337bdca485d75bbb7b6224f74fc50ab7
   languageName: node
   linkType: hard
@@ -5211,7 +5211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:~5.1.0":
+"@types/jasmine@npm:^5.1.4":
   version: 5.1.4
   resolution: "@types/jasmine@npm:5.1.4"
   checksum: 1b2048d988077aee747a72fab31f4e0820f928c25e886ab91aa5a1ee2d4277655c22f81feed5d7b3b15cc61542878568a24b2381457eb21dfc84250c693f980a
@@ -5232,7 +5232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.200":
+"@types/lodash@npm:^4.14.202":
   version: 4.14.202
   resolution: "@types/lodash@npm:4.14.202"
   checksum: a91acf3564a568c6f199912f3eb2c76c99c5a0d7e219394294213b3f2d54f672619f0fde4da22b29dc5d4c31457cd799acc2e5cb6bd90f9af04a1578483b6ff7
@@ -5262,7 +5262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20.8.10":
+"@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20.11.5":
   version: 20.11.5
   resolution: "@types/node@npm:20.11.5"
   dependencies:
@@ -5278,7 +5278,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pa11y@npm:^5.3.6":
+"@types/pa11y@npm:^5.3.7":
   version: 5.3.7
   resolution: "@types/pa11y@npm:5.3.7"
   dependencies:
@@ -5291,7 +5291,7 @@ __metadata:
   version: 5.4.7
   resolution: "@types/puppeteer@npm:5.4.7"
   dependencies:
-    "@types/node": "npm:*"
+    "@types/node": "*"
   checksum: 491c0ca2d879b72e869f5152a9ea7de1356a66f44ef6210fdd5c5036d893b4ee2956212e2f3353c7045b9e56d1a4cea408f41a26d7cf3708774c4d6c19a7c654
   languageName: node
   linkType: hard
@@ -13254,19 +13254,18 @@ __metadata:
     "@hmcts/nodejs-healthcheck": ^1.8.3
     "@hmcts/nodejs-logging": ^4.0.4
     "@hmcts/properties-volume": ^1.1.0
-    "@types/config": ^3.3.2
-    "@types/express": ^4.17.0
+    "@types/config": ^3.3.3
+    "@types/express": ^4.17.21
     "@types/express-session": ^1.17.10
     "@types/helmet": ^4.0.0
-    "@types/jasmine": ~5.1.0
-    "@types/lodash": ^4.14.200
-    "@types/node": ^20.8.10
-    "@types/pa11y": ^5.3.6
+    "@types/jasmine": ^5.1.4
+    "@types/lodash": ^4.14.202
+    "@types/node": ^20.11.5
+    "@types/pa11y": ^5.3.7
     "@typescript-eslint/eslint-plugin": 6.19.0
     "@typescript-eslint/parser": 6.19.0
     applicationinsights: 2.9.1
     axios: ^1.6.2
-    body-parser: ^1.20.2
     browser-sync: ^3.0.2
     config: ^3.3.9
     connect-redis: ^7.1.0
