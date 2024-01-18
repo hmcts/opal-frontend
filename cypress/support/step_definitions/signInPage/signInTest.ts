@@ -11,6 +11,9 @@ When('I sign in', () => {
 
   if (cy.url().contains('pr-')) {
     cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+    cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
+  } else {
+    cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
 
     cy.origin(
       'https://login.microsoftonline.com',
@@ -31,9 +34,6 @@ When('I sign in', () => {
       },
     );
 
-    cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
-  } else {
-    cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
     cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
   }
 });
