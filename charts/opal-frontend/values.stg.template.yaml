@@ -4,4 +4,3 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   environment:
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
-    OPAL_API_URL: https://opal-fines-service.staging.platform.hmcts.net
