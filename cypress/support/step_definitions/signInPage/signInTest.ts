@@ -59,6 +59,7 @@ Then('I see {string} in the page body header', (bodyHeader) => {
   cy.get('.govuk-fieldset__heading').should('contain', bodyHeader);
 });
 Then('I see {string} on the sign in page', (bodyHeader) => {
+  cy.wait(600000);
   cy.get('.govuk-heading-m').should('contain', bodyHeader);
 });
 
