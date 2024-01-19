@@ -8,9 +8,9 @@ const INTERNAL_JWT = `${config.get('opal-api.url')}/api/testing-support/handle-o
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   const logger = Logger.getLogger('login-callback-stub');
-  const result = await axios.post(INTERNAL_JWT);
 
   try {
+    const result = await axios.post(INTERNAL_JWT);
     const mockSecurityToken = result.data;
     req.session.securityToken = mockSecurityToken;
 
