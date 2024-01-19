@@ -23,9 +23,16 @@ const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
   const loginCallbackType = ssoEnabled ? 'post' : 'get';
 
   router.get('/sso/login', (req: Request, res: Response) => login(req, res));
-  router[loginCallbackType]('/sso/login-callback', (req: Request, res: Response, next: NextFunction) =>
-    loginCallback(req, res, next),
-  );
+
+  const routePath = '/sso/login-callback';
+  const callbackHandler = (req: Request, res: Response, next: NextFunction) => loginCallback(req, res, next);
+
+  if (loginCallbackType === 'post') {
+    router.post(routePath, bodyParser.json(), bodyParser.urlencoded({ extended: false }), callbackHandler);
+  } else {
+    router.get(routePath, callbackHandler);
+  }
+
   router.get('/sso/logout', (req: Request, res: Response, next: NextFunction) => logout(req, res, next));
   router.get('/sso/logout-callback', (req: Request, res: Response, next: NextFunction) =>
     logoutCallback(req, res, next),
@@ -36,9 +43,6 @@ const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
 export default (): Router => {
   const router = express.Router();
   const ssoEnabled: boolean = config.get('features.sso.enabled');
-
-  router.use(bodyParser.json());
-  router.use(bodyParser.urlencoded({ extended: false }));
 
   router.use('/api', proxy());
 
