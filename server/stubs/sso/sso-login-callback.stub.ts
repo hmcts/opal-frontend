@@ -10,18 +10,22 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   const logger = Logger.getLogger('login-callback-stub');
   const result = await axios.post(INTERNAL_JWT);
 
-  res.send('login-callback-stub after JWT call');
+  // res.send('login-callback-stub after JWT call');
 
-  // const mockSecurityToken = result.data;
-  // req.session.securityToken = mockSecurityToken;
+  try {
+    const mockSecurityToken = result.data;
+    req.session.securityToken = mockSecurityToken;
 
-  // req.session.save((err) => {
-  //   if (err) {
-  //     return next(err);
-  //   }
+    req.session.save((err) => {
+      if (err) {
+        return next(err);
+      }
 
-  //   logger.info(`token saved`);
+      logger.info(`token saved`);
 
-  //   res.redirect('/');
-  // });
+      res.redirect('/');
+    });
+  } catch (error) {
+    return next(error);
+  }
 };
