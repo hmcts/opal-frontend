@@ -9,5 +9,3 @@ When('I attempt to get back to the account enquiry matches screen by changing th
 Then('I do not see {string} in the header', (header) => {
   cy.get('.h1.govuk-fieldset__heading').should('not.contain', header);
 });
-
-
