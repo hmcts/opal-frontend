@@ -1,17 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
-import axios from 'axios';
+import { Request, Response } from 'express';
 
-export default async (req: Request, res: Response, next: NextFunction) => {
-  const url = 'https://jsonplaceholder.typicode.com/todos/1';
+import config from 'config';
 
-  try {
-    const response = await axios.get(url);
+const INTERNAL_USER_LOGIN = `${config.get('opal-api.url')}/internal-user/login-or-refresh`;
 
-    // For now to test session creation
-    if (response) {
-      res.redirect('/sso/login-callback');
-    }
-  } catch (error) {
-    next(new Error('Error trying to fetch login page'));
-  }
+export default async (req: Request, res: Response) => {
+  const env = process.env['NODE_ENV'] || 'development';
+  const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
+  const url = `${INTERNAL_USER_LOGIN}?redirect_uri=${hostname}/sso/login-callback`;
+  res.redirect(url);
 };

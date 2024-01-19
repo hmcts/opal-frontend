@@ -3,10 +3,19 @@
   "opal-api": {
     "url": "OPAL_API_URL"
   },
+  "frontend-hostname": {
+    "prod": "FRONTEND_HOSTNAME"
+  },
   "features": {
     "redis": {
       "enabled": {
         "__name": "FEATURES_REDIS_ENABLED",
+        "__format": "json"
+      }
+    },
+    "sso": {
+      "enabled": {
+        "__name": "FEATURES_SSO_ENABLED",
         "__format": "json"
       }
     }
