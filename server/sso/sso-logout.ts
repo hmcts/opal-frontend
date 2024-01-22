@@ -22,7 +22,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     if (req.session.securityToken) {
       accessToken = req.session.securityToken.accessToken;
-      logger.info(`Access token: ${accessToken}`);
+      logger.info(`Access token: ${accessToken.substring(0, 10)}...`);
     }
 
     if (!accessToken) {

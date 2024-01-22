@@ -14,7 +14,7 @@ export default (req: Request, res: Response) => {
     logger.info(`No session token found`);
     res.status(401).send(false);
   } else {
-    logger.info(`Access Token: ${req.session.securityToken?.accessToken}`);
+    logger.info(`Access Token: ${req.session.securityToken?.accessToken.substring(0, 10)}`);
     res.status(200).send(true);
   }
 };

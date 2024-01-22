@@ -19,7 +19,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     const securityToken = result.data;
 
     logger.info(`Access Token received`);
-    logger.info(`Access Token: ${securityToken}`);
+    logger.info(`Access Token: ${securityToken.accessToken.substring(0, 10)}...`);
 
     req.session.securityToken = securityToken;
 
