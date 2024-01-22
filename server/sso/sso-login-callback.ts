@@ -12,6 +12,8 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.info(`Trying to make a request to ${INTERNAL_USER_CALLBACK}`);
 
+    logger.info(`Request body: ${JSON.stringify(req.body)}`);
+
     const result = await axios.post<any>(INTERNAL_USER_CALLBACK, req.body, {
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
     });
