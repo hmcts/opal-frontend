@@ -29,11 +29,13 @@ export default (req: Request, res: Response) => {
   const logger = Logger.getLogger('authenticated-stub');
   const token = req.session.securityToken?.accessToken;
 
+  logger.info(`Entered authenticated-stub file`);
   // Don't allow caching of this endpoint
   res.header('Cache-Control', 'no-store, must-revalidate');
 
   // If we don't have a token
   if (!token) {
+    logger.info(`No session token found`);
     res.status(401).send(false);
     return;
   }
@@ -43,6 +45,7 @@ export default (req: Request, res: Response) => {
     logger.error('JWT is expired');
     res.status(401).send(false);
   } else {
+    logger.info(`Access Token: ${token.substring(0, 10)}`);
     res.status(200).send(true);
   }
 };

@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import config from 'config';
-
+import { Logger } from '@hmcts/nodejs-logging';
 import type { NextFunction, Request, Response, Router } from 'express';
 import { proxy } from './api';
 import { ssoAuthenticated, ssoLoginCallback, ssoLogin, ssoLogout, ssoLogoutCallback } from './sso';
@@ -14,13 +14,18 @@ import {
 } from './stubs/sso';
 
 const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
+  const logger = Logger.getLogger('routes/setupSSORoutes ');
   const login = ssoEnabled ? ssoLogin : ssoLoginStub;
   const loginCallback = ssoEnabled ? ssoLoginCallback : ssoLoginCallbackStub;
   const logout = ssoEnabled ? ssoLogout : ssoLogoutStub;
   const logoutCallback = ssoEnabled ? ssoLogoutCallback : ssoLogoutCallbackStub;
   const authenticated = ssoEnabled ? ssoAuthenticated : ssoAuthenticatedStub;
 
+  logger.info(`Setting up SSO routes`);
+
   const loginCallbackType = ssoEnabled ? 'post' : 'get';
+
+  logger.info(`Login callback type: ${loginCallbackType}`);
 
   router.get('/sso/login', (req: Request, res: Response) => login(req, res));
 
@@ -41,8 +46,12 @@ const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
 };
 
 export default (): Router => {
+  const logger = Logger.getLogger('routes');
   const router = express.Router();
   const ssoEnabled: boolean = config.get('features.sso.enabled');
+
+  logger.info(`Entered routing file`);
+  logger.info(`SSO enabled: ${ssoEnabled}`);
 
   router.use('/api', proxy());
 
