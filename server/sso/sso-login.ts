@@ -10,7 +10,7 @@ export default async (req: Request, res: Response) => {
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
   const url = `${INTERNAL_USER_LOGIN}?redirect_uri=${hostname}/sso/login-callback`;
 
-  logger.info(`Entered login callback file...`);
+  logger.info(`Entered login-callback file...`);
   logger.info(`Environment: ${env}`);
   logger.info(`Hostname: ${hostname}`);
   logger.info(`Redirect url: ${url}`);
