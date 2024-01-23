@@ -4,7 +4,7 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
   environment:
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
-    OPAL_API_URL: https://opal-fines-service-${SERVICE_FQDN}
+    OPAL_API_URL: http://${SERVICE_NAME}-opal-fines-service
 
 opal-fines-service:
   enabled: true
