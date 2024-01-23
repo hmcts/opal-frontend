@@ -20,7 +20,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (!accessToken) {
-      next(new Error('No access token found in session'));
+      return next(new Error('No access token found in session'));
     }
 
     const response = await axios.get(url, {
@@ -32,6 +32,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     }
   } catch (error) {
     logger.error('Error logging out', error);
-    next(new Error('Error logging out'));
+    return next(error);
   }
 };
