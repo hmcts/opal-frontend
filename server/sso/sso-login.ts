@@ -1,10 +1,11 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
+import axios from 'axios';
 
 const INTERNAL_USER_LOGIN = `${config.get('opal-api.url')}/internal-user/login-or-refresh`;
 
-export default async (req: Request, res: Response) => {
+export default async (req: Request, res: Response, next: NextFunction) => {
   const logger = Logger.getLogger('login');
   const env = process.env['NODE_ENV'] || 'development';
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
@@ -13,8 +14,24 @@ export default async (req: Request, res: Response) => {
   logger.info(`Entered login-callback file...`);
   logger.info(`Environment: ${env}`);
   logger.info(`Hostname: ${hostname}`);
-  logger.info(`Redirect url: ${url}`);
+  logger.info(`Fetch url: ${url}`);
 
-  logger.info(`Redirecting to ${url}`);
-  res.redirect(url);
+  try {
+    logger.info(`Trying to make a request to ${url}`);
+    const response = await axios.get(url);
+    const redirectUrl = response.request.res.responseUrl;
+
+    console.log('redirectUrl', redirectUrl);
+
+    if (redirectUrl) {
+      res.redirect(redirectUrl);
+    } else {
+      const error = new Error('Error trying to fetch login page');
+      logger.error('Error on login', error);
+      return next(error);
+    }
+  } catch (error) {
+    logger.error('Error on login', error);
+    return next(error);
+  }
 };
