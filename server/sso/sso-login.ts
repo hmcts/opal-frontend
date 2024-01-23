@@ -11,17 +11,9 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
   const url = `${INTERNAL_USER_LOGIN}?redirect_uri=${hostname}/sso/login-callback`;
 
-  logger.info(`Entered login-callback file...`);
-  logger.info(`Environment: ${env}`);
-  logger.info(`Hostname: ${hostname}`);
-  logger.info(`Fetch url: ${url}`);
-
   try {
-    logger.info(`Trying to make a request to ${url}`);
     const response = await axios.get(url);
     const redirectUrl = response.request.res.responseUrl;
-
-    console.log('redirectUrl', redirectUrl);
 
     if (redirectUrl) {
       res.redirect(redirectUrl);
