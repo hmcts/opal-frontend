@@ -27,7 +27,7 @@ const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
 
   logger.info(`Login callback type: ${loginCallbackType}`);
 
-  router.get('/sso/login', (req: Request, res: Response) => login(req, res));
+  router.get('/sso/login', (req: Request, res: Response, next: NextFunction) => login(req, res, next));
 
   const routePath = '/sso/login-callback';
   const callbackHandler = (req: Request, res: Response, next: NextFunction) => loginCallback(req, res, next);
