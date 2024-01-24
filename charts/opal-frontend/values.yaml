@@ -14,7 +14,7 @@ nodejs:
     FEATURES_REDIS_ENABLED: true
     OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
-
+    SESSION_SECURE_ENABLED: true
 redis:
   enabled: false
 
