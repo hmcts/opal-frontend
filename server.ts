@@ -24,7 +24,6 @@ import { Logger } from '@hmcts/nodejs-logging';
 import healthCheck from '@hmcts/nodejs-healthcheck';
 
 import routes from './server/routes';
-// import session from './server/session/session';
 import { AppInsights, Helmet, PropertiesVolume } from './server/modules';
 import sessionStorage from './server/session/session-storage';
 
