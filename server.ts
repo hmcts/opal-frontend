@@ -25,7 +25,7 @@ import healthCheck from '@hmcts/nodejs-healthcheck';
 
 import routes from './server/routes';
 import { AppInsights, Helmet, PropertiesVolume } from './server/modules';
-import sessionStorage from './server/session/session-storage';
+import { sessionStorage } from './server/session/index';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
