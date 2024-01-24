@@ -53,7 +53,6 @@ export function app(): express.Express {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
 
-  // server.use(session());
   sessionStorage(server);
   server.use(routes());
 
