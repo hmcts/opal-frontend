@@ -12,6 +12,7 @@ const logger = Logger.getLogger('session-storage');
 
 const getStore = () => {
   if (config.get('features.redis.enabled')) {
+    logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
     const client = createClient({ url: config.get('secrets.opal.redis-connection-string') });
 
     client.connect().catch(logger.error);
@@ -35,10 +36,10 @@ export default (app: Application) => {
       cookie: {
         httpOnly: true,
         maxAge: config.get('session.maxAge'),
-        sameSite: 'lax', // required for the oauth2 redirect
+        sameSite: 'lax',
         secure: config.get('session.secure'),
       },
-      rolling: true, // Renew the cookie for another 20 minutes on each request
+      rolling: true,
       store: getStore(),
     }),
   );
