@@ -12,7 +12,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await axios.post(INTERNAL_JWT);
     const mockSecurityToken = result.data;
-
+    logger.info('mockSecurityToken', mockSecurityToken);
     req.session.securityToken = mockSecurityToken;
 
     req.session.save((err) => {
@@ -20,7 +20,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
         logger.error('Error saving session', err);
         return next(err);
       }
-
+      logger.info('Session saved');
       res.redirect('/');
     });
   } catch (error) {

@@ -20,6 +20,9 @@
       }
     }
   },
+  "session": {
+    "secure": { "__name": "SESSION_SECURE_ENABLED", "__format": "json" }
+  },
   "secrets": {
     "opal": {
       "AppInsightsInstrumentationKey": "APP_INSIGHTS_KEY",
