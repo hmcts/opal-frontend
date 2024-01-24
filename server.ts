@@ -50,9 +50,6 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
-
   sessionStorage(server);
   server.use(routes());
 
