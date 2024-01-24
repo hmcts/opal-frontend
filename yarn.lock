@@ -5103,6 +5103,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookie-parser@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "@types/cookie-parser@npm:1.4.6"
+  dependencies:
+    "@types/express": "*"
+  checksum: b1bbb17bc4189c0e953d4996b3b58bfa20161c27db21f98353e237032e7559aec733735d8902c283300e0a4cded20e62b1a5086af608608ef30a45387e080360
+  languageName: node
+  linkType: hard
+
 "@types/cookie@npm:^0.4.1":
   version: 0.4.1
   resolution: "@types/cookie@npm:0.4.1"
@@ -5165,7 +5174,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-session@npm:^1.17.10":
+"@types/express-session@npm:*, @types/express-session@npm:^1.17.10":
   version: 1.17.10
   resolution: "@types/express-session@npm:1.17.10"
   dependencies:
@@ -5351,6 +5360,16 @@ __metadata:
     "@types/mime": "npm:*"
     "@types/node": "npm:*"
   checksum: e2e71916d262cac05fa36c3178c3bcc5c0f2fb801f9dc3c4ee58864b7b2bd69b6fb0e312f60e3f19e0ba7206ea57964652a4a3251125121a463acb34dfc9f636
+  languageName: node
+  linkType: hard
+
+"@types/session-file-store@npm:^1.2.5":
+  version: 1.2.5
+  resolution: "@types/session-file-store@npm:1.2.5"
+  dependencies:
+    "@types/express": "*"
+    "@types/express-session": "*"
+  checksum: 77205f83886a454071130bcc1fff1b4592558705617142623b64630db993050e5d0f112616f6ff6bd44449efcd06f3b4a19e8ac29b6a3e58ff2537bf55727277
   languageName: node
   linkType: hard
 
@@ -6209,7 +6228,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"asn1.js@npm:^5.2.0":
+"asn1.js@npm:^5.2.0, asn1.js@npm:^5.4.1":
   version: 5.4.1
   resolution: "asn1.js@npm:5.4.1"
   dependencies:
@@ -6514,6 +6533,13 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0
   checksum: 2f6263bd05e6126823056aa7c73de69b2dcc5f28f7eebcfeba6098f30bb013f853aaca4b9a45c4a5fd564167ee7081a0bfc49d3a14b91d7fa2d11205b040bb84
+  languageName: node
+  linkType: hard
+
+"bagpipe@npm:^0.3.5":
+  version: 0.3.5
+  resolution: "bagpipe@npm:0.3.5"
+  checksum: 70c58ea56a10f226d030896badcfbecb14f1979fe7c59b9d725524fcf13b24ad821fe4f66d1cca7e24107feb5f65b94a1807d69b943f97796334bb83684656ec
   languageName: node
   linkType: hard
 
@@ -7794,10 +7820,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie-parser@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "cookie-parser@npm:1.4.6"
+  dependencies:
+    cookie: 0.4.1
+    cookie-signature: 1.0.6
+  checksum: 1e5a63aa82e8eb4e02d2977c6902983dee87b02e87ec5ec43ac3cb1e72da354003716570cd5190c0ad9e8a454c9d3237f4ad6e2f16d0902205a96a1c72b77ba5
+  languageName: node
+  linkType: hard
+
 "cookie-signature@npm:1.0.6":
   version: 1.0.6
   resolution: "cookie-signature@npm:1.0.6"
   checksum: f4e1b0a98a27a0e6e66fd7ea4e4e9d8e038f624058371bf4499cfcd8f3980be9a121486995202ba3fca74fbed93a407d6d54d43a43f96fd28d0bd7a06761591a
+  languageName: node
+  linkType: hard
+
+"cookie@npm:0.4.1":
+  version: 0.4.1
+  resolution: "cookie@npm:0.4.1"
+  checksum: bd7c47f5d94ab70ccdfe8210cde7d725880d2fcda06d8e375afbdd82de0c8d3b73541996e9ce57d35f67f672c4ee6d60208adec06b3c5fc94cebb85196084cf8
   languageName: node
   linkType: hard
 
@@ -10029,7 +10072,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^8.1.0":
+"fs-extra@npm:^8.0.1, fs-extra@npm:^8.1.0":
   version: 8.1.0
   resolution: "fs-extra@npm:8.1.0"
   dependencies:
@@ -11162,7 +11205,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-typedarray@npm:~1.0.0":
+"is-typedarray@npm:^1.0.0, is-typedarray@npm:~1.0.0":
   version: 1.0.0
   resolution: "is-typedarray@npm:1.0.0"
   checksum: 3508c6cd0a9ee2e0df2fa2e9baabcdc89e911c7bd5cf64604586697212feec525aa21050e48affb5ffc3df20f0f5d2e2cf79b08caa64e1ccc9578e251763aef7
@@ -11795,6 +11838,15 @@ __metadata:
   dependencies:
     seed-random: ~2.2.0
   checksum: 3f30993233570e461626e20349cde7e56ce713d7f2af8b0e2762ee5d1b37d1fc3cbf018c71b4122a2cd2eb24dc18621b32ae7e4310840d775b4aec7a29ba270d
+  languageName: node
+  linkType: hard
+
+"kruptein@npm:^2.0.4":
+  version: 2.2.3
+  resolution: "kruptein@npm:2.2.3"
+  dependencies:
+    asn1.js: ^5.4.1
+  checksum: b4f082edf184d2b54b323b059b8bb0fd26aed84743740cda8a8352a09bc7346981565dbb81ecc4d67b7c9a52f1be264be1a59b02c746ba32c6dd0439c88b7cf0
   languageName: node
   linkType: hard
 
@@ -13140,7 +13192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-assign@npm:^4, object-assign@npm:^4.0.1":
+"object-assign@npm:^4, object-assign@npm:^4.0.1, object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
   checksum: fcc6e4ea8c7fe48abfbb552578b1c53e0d194086e2e6bbbf59e0a536381a292f39943c6e9628af05b5528aa5e3318bb30d6b2e53cadaf5b8fe9e12c4b69af23f
@@ -13255,6 +13307,7 @@ __metadata:
     "@hmcts/nodejs-logging": ^4.0.4
     "@hmcts/properties-volume": ^1.1.0
     "@types/config": ^3.3.3
+    "@types/cookie-parser": ^1.4.6
     "@types/express": ^4.17.21
     "@types/express-session": ^1.17.10
     "@types/helmet": ^4.0.0
@@ -13262,6 +13315,7 @@ __metadata:
     "@types/lodash": ^4.14.202
     "@types/node": ^20.11.5
     "@types/pa11y": ^5.3.7
+    "@types/session-file-store": ^1.2.5
     "@typescript-eslint/eslint-plugin": 6.19.1
     "@typescript-eslint/parser": 6.19.1
     applicationinsights: 2.9.1
@@ -13270,6 +13324,7 @@ __metadata:
     browser-sync: ^3.0.2
     config: ^3.3.9
     connect-redis: ^7.1.0
+    cookie-parser: ^1.4.6
     cypress: ^13.6.0
     domino-ext: ^2.1.4
     eslint: ^8.53.0
@@ -13292,6 +13347,7 @@ __metadata:
     prettier: ^3.0.3
     redis: ^4.6.11
     rxjs: ~7.8.0
+    session-file-store: ^1.5.0
     ts-node: ^10.9.1
     tslib: ^2.3.0
     typescript: ~5.3.0
@@ -15001,6 +15057,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"session-file-store@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "session-file-store@npm:1.5.0"
+  dependencies:
+    bagpipe: ^0.3.5
+    fs-extra: ^8.0.1
+    kruptein: ^2.0.4
+    object-assign: ^4.1.1
+    retry: ^0.12.0
+    write-file-atomic: 3.0.3
+  checksum: e101f173c91c000e855035794162ccfd0eab1e9a38bf984742f562678a2531f6ef808879f337cb2f852b9256760d8532ab9d732a12786f541f08567f39a65d60
+  languageName: node
+  linkType: hard
+
 "set-function-length@npm:^1.1.1":
   version: 1.1.1
   resolution: "set-function-length@npm:1.1.1"
@@ -16203,6 +16273,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typedarray-to-buffer@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "typedarray-to-buffer@npm:3.1.5"
+  dependencies:
+    is-typedarray: ^1.0.0
+  checksum: 99c11aaa8f45189fcfba6b8a4825fd684a321caa9bd7a76a27cf0c7732c174d198b99f449c52c3818107430b5f41c0ccbbfb75cb2ee3ca4a9451710986d61a60
+  languageName: node
+  linkType: hard
+
 "typedarray@npm:^0.0.6":
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
@@ -16973,6 +17052,18 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 159da4805f7e84a3d003d8841557196034155008f817172d4e986bd591f74aa82aa7db55929a54222309e01079a65a92a9e6414da5a6aa4b01ee44a511ac3ee5
+  languageName: node
+  linkType: hard
+
+"write-file-atomic@npm:3.0.3":
+  version: 3.0.3
+  resolution: "write-file-atomic@npm:3.0.3"
+  dependencies:
+    imurmurhash: ^0.1.4
+    is-typedarray: ^1.0.0
+    signal-exit: ^3.0.2
+    typedarray-to-buffer: ^3.1.5
+  checksum: c55b24617cc61c3a4379f425fc62a386cc51916a9b9d993f39734d005a09d5a4bb748bc251f1304e7abd71d0a26d339996c275955f527a131b1dcded67878280
   languageName: node
   linkType: hard
 
