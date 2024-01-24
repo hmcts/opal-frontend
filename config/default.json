@@ -10,7 +10,7 @@
   },
   "features": {
     "redis": {
-      "enabled": true
+      "enabled": false
     },
     "sso": {
       "enabled": true
@@ -19,7 +19,8 @@
   "session": {
     "prefix": "opal-session",
     "ttlInSeconds": 1200,
-    "maxAge": 1260000
+    "maxAge": 1260000,
+    "secure": false
   },
   "secrets": {
     "opal": {

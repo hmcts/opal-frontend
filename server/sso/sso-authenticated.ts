@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 
 export default (req: Request, res: Response) => {
-  console.log('Checking if user is authenticated');
   const token = req.session.securityToken?.accessToken;
 
   // Don't allow caching of this endpoint

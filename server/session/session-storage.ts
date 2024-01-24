@@ -9,7 +9,6 @@ import FileStoreFactory from 'session-file-store';
 
 const FileStore = FileStoreFactory(session);
 const logger = Logger.getLogger('session-storage');
-const env = process.env['NODE_ENV'] || 'development';
 
 const getStore = () => {
   if (config.get('features.redis.enabled')) {
@@ -37,7 +36,7 @@ export default (app: Application) => {
         httpOnly: true,
         maxAge: config.get('session.maxAge'),
         sameSite: 'lax', // required for the oauth2 redirect
-        secure: true,
+        secure: config.get('session.secure'),
       },
       rolling: true, // Renew the cookie for another 20 minutes on each request
       store: getStore(),
