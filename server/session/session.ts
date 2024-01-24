@@ -32,5 +32,6 @@ export default () => {
     }
   }
 
+  logger.info('Session middleware configured', sessionMiddleware);
   return session(sessionMiddleware);
 };

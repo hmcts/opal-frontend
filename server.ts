@@ -24,8 +24,9 @@ import { Logger } from '@hmcts/nodejs-logging';
 import healthCheck from '@hmcts/nodejs-healthcheck';
 
 import routes from './server/routes';
-import session from './server/session/session';
+// import session from './server/session/session';
 import { AppInsights, Helmet, PropertiesVolume } from './server/modules';
+import sessionStorage from './server/session/session-storage';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -53,7 +54,8 @@ export function app(): express.Express {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
 
-  server.use(session());
+  // server.use(session());
+  sessionStorage(server);
   server.use(routes());
 
   // Serve static files from /browser
