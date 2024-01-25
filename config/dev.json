@@ -1,7 +1,1 @@
-{
-  "secrets": {
-    "opal": {
-      "redis-connection-string": "redis://localhost:6379"
-    }
-  }
-}
+{}
