@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import { Logger } from '@hmcts/nodejs-logging';
 import axios from 'axios';
 import config from 'config';
-import { log } from 'console';
 
 const INTERNAL_USER_CALLBACK = `${config.get('opal-api.url')}/internal-user/handle-oauth-code`;
 const logger = Logger.getLogger('login-callback');
