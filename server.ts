@@ -50,6 +50,7 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
+  new PropertiesVolume().enableFor(server);
   new SessionStorage().enableFor(server);
 
   server.use(routes());
@@ -87,8 +88,6 @@ function run(): void {
 
   // Start up the Node server
   const server = app();
-
-  new PropertiesVolume().enableFor(server);
 
   new AppInsights().enable();
   // secure the application by adding various HTTP headers to its responses
