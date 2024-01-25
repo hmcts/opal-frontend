@@ -9,10 +9,10 @@ import FileStoreFactory from 'session-file-store';
 
 const FileStore = FileStoreFactory(session);
 const logger = Logger.getLogger('session-storage');
+logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
 
 const getStore = () => {
   if (config.get('features.redis.enabled')) {
-    logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
     const client = createClient({ url: config.get('secrets.opal.redis-connection-string') });
 
     client.connect().catch(logger.error);
