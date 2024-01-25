@@ -1,2 +1,2 @@
-import sessionStorage from './session-storage';
-export { sessionStorage };
+import SessionStorage from './session-storage';
+export { SessionStorage };

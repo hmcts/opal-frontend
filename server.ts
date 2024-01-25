@@ -25,7 +25,7 @@ import healthCheck from '@hmcts/nodejs-healthcheck';
 
 import routes from './server/routes';
 import { AppInsights, Helmet, PropertiesVolume } from './server/modules';
-import { sessionStorage } from './server/session/index';
+import { SessionStorage } from './server/session/index';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -50,7 +50,8 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  sessionStorage(server);
+  new SessionStorage().enableFor(server);
+
   server.use(routes());
 
   // Serve static files from /browser
