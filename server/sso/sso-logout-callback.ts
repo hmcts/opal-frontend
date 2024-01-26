@@ -3,7 +3,7 @@ import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  const logger = Logger.getLogger('login');
+  const logger = Logger.getLogger('logout');
 
   req.session.destroy((err) => {
     if (err) {

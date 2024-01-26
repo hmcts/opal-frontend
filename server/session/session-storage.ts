@@ -34,6 +34,7 @@ export default class SessionStorage {
   }
 
   private getStore() {
+    logger.info('redis enabled', config.get('features.redis.enabled'));
     if (config.get('features.redis.enabled')) {
       logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
       const client = createClient({ url: config.get('secrets.opal.redis-connection-string') });
