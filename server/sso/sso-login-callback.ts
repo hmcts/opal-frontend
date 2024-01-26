@@ -21,6 +21,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     logger.info('Session security token set on req.session', req.session.securityToken);
 
     logger.info('Saving session');
+
     req.session.save((err) => {
       logger.info('Session saved.');
       if (err) {
