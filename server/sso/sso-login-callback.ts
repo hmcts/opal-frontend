@@ -18,6 +18,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     const securityToken = result.data;
     req.session.securityToken = securityToken;
+    logger.info('Session security token set on req.session', req.session.securityToken);
 
     logger.info('Saving session');
     req.session.save((err) => {
@@ -26,7 +27,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
         logger.error('Error saving session', err);
         return next(err);
       }
-      logger.info('Session saved.');
+      logger.info('Attempting to redirect to /');
       res.redirect('/');
     });
   } catch (error) {
