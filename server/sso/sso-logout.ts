@@ -12,6 +12,8 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
   const url = `${INTERNAL_USER_LOGOUT}?redirect_uri=${hostname}/sso/login-callback`;
 
+  logger.info(`Attempting to logout`);
+  logger.info('redis enabled', config.get('features.redis.enabled'));
   try {
     let accessToken;
 
