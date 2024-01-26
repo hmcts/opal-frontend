@@ -21,6 +21,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     logger.info('Saving session');
     req.session.save((err) => {
+      logger.info('Session saved.');
       if (err) {
         logger.error('Error saving session', err);
         return next(err);
@@ -30,6 +31,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     });
   } catch (error) {
     logger.error('Error on login-callback', error);
-    next(error);
+    return next(error);
   }
 };
