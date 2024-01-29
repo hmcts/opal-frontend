@@ -33,7 +33,7 @@ const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
   const callbackHandler = (req: Request, res: Response, next: NextFunction) => loginCallback(req, res, next);
 
   if (loginCallbackType === 'post') {
-    router.post(routePath, bodyParser.json(), bodyParser.urlencoded({ extended: false }), ssoLoginCallback());
+    router.post(routePath, bodyParser.json(), bodyParser.urlencoded({ extended: false }), callbackHandler);
   } else {
     router.get(routePath, callbackHandler);
   }
