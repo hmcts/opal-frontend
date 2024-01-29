@@ -22,6 +22,8 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     logger.info('Saving session');
 
+    logger.info(req.session);
+
     req.session.save((err) => {
       logger.info('Session saved.');
       if (err) {
