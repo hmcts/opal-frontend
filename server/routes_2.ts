@@ -51,7 +51,7 @@ export default class Routes {
     const callbackHandler = (req: Request, res: Response, next: NextFunction) => loginCallback(req, res, next);
 
     if (loginCallbackType === 'post') {
-      app.post(routePath, ssoLoginCallback());
+      app.post(routePath, callbackHandler);
     } else {
       app.get(routePath, callbackHandler);
     }
