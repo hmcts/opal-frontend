@@ -22,11 +22,6 @@ export default class Routes {
     logger.info(`Entered routing file 2`);
     logger.info(`SSO enabled: ${ssoEnabled}`);
 
-    app.use((req, res, next) => {
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-      next();
-    });
-
     app.use('/api', proxy());
 
     // Declare use of body-parser AFTER the use of proxy https://github.com/villadora/express-http-proxy
