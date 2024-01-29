@@ -22,7 +22,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     logger.info('Saving session');
 
-    console.log(req.session);
+    logger.info(req.session);
 
     req.session.save((err) => {
       logger.info('Session saved.');
