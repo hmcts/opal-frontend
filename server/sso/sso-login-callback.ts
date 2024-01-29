@@ -23,6 +23,8 @@ export default function (): (req: Request, res: Response, next: NextFunction) =>
 
       logger.info('Saving session');
 
+      req.session.cookie.expires = new Date(Date.now() + (config.get('session.maxAge') as number));
+      req.session.cookie.maxAge = config.get('session.maxAge');
       req.session.save((err) => {
         logger.info('Session saved.');
         if (err) {
