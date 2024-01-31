@@ -20,9 +20,12 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     req.session.securityToken = securityToken;
     logger.info('Session security token set on req.session', req.session.securityToken);
 
+    logger.info('----------------------------------------------------');
     logger.info('Saving session');
 
-    logger.info(req.session);
+    logger.info('req', req);
+    logger.info('----------------------------------------------------');
+    logger.info('req.session', req.session);
 
     req.session.save((err) => {
       logger.info('Session saved.');
@@ -33,6 +36,8 @@ export default async (req: Request, res: Response, next: NextFunction) => {
       logger.info('Attempting to redirect to /');
       res.redirect('/');
     });
+
+    logger.info('----------------------------------------------------');
   } catch (error) {
     logger.error('Error on login-callback', error);
     return next(error);
