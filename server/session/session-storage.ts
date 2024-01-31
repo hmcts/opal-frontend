@@ -39,7 +39,18 @@ export default class SessionStorage {
       logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
       const client = createClient({ url: config.get('secrets.opal.redis-connection-string') });
 
+      logger.info('Connecting to Redis');
       client.connect().catch(logger.error);
+
+      try {
+        logger.info('Pinging Redis');
+        client.ping().then((pong) => {
+          logger.info('ping', pong);
+          logger.info('Redis connected');
+        });
+      } catch (error) {
+        logger.error('Redis ping failed', error);
+      }
 
       return new RedisStore({ client });
     }
