@@ -10,12 +10,11 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   const env = process.env['NODE_ENV'] || 'development';
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
   const url = `${INTERNAL_USER_LOGIN}?redirect_uri=${hostname}/sso/login-callback`;
-  logger.info('Logging in....');
+
   try {
-    logger.info('fetching login page', url);
     const response = await axios.get(url);
     const redirectUrl = response.request.res.responseUrl;
-    logger.info('redirectUrl', redirectUrl);
+
     if (redirectUrl) {
       res.redirect(redirectUrl);
     } else {
