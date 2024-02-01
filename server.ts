@@ -27,8 +27,6 @@ import routes from './server/routes';
 import { AppInsights, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
 import Routes from './server/routes_2';
-import { createClient } from 'redis';
-import config from 'config';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -98,21 +96,9 @@ function run(): void {
   // secure the application by adding various HTTP headers to its responses
   new Helmet(developmentMode).enableFor(server);
 
-  // Start server once we know redis is ready...
-  if (config.get('features.redis.enabled')) {
-    const client = createClient({ url: config.get('secrets.opal.redis-connection-string') });
-    client.connect().catch(logger.error);
-    client.on('ready', function () {
-      logger.info(`Redis is ready`);
-      server.listen(port, () => {
-        logger.info(`Server listening on http://localhost:${port}`);
-      });
-    });
-  } else {
-    server.listen(port, () => {
-      logger.info(`Server listening on http://localhost:${port}`);
-    });
-  }
+  server.listen(port, () => {
+    logger.info(`Server listening on http://localhost:${port}`);
+  });
 }
 
 // Webpack will replace 'require' with '__webpack_require__'
