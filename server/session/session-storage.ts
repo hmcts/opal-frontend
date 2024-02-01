@@ -42,14 +42,14 @@ export default class SessionStorage {
       logger.info('Connecting to Redis');
       client.connect().catch(logger.error);
 
-      logger.info('Pinging Redis');
-      client
-        .ping()
-        .then((pong) => {
-          logger.info('ping', pong);
-          logger.info('Redis connected');
-        })
-        .catch(logger.error);
+      // logger.info('Pinging Redis');
+      // client
+      //   .ping()
+      //   .then((pong) => {
+      //     logger.info('ping', pong);
+      //     logger.info('Redis connected');
+      //   })
+      //   .catch(logger.error);
 
       return new RedisStore({ client });
     }
