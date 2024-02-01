@@ -98,22 +98,16 @@ function run(): void {
   // secure the application by adding various HTTP headers to its responses
   new Helmet(developmentMode).enableFor(server);
 
+  // Start server once we know redis is ready...
   if (config.get('features.redis.enabled')) {
-    logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
     const client = createClient({ url: config.get('secrets.opal.redis-connection-string') });
-
-    logger.info('Connecting to Redis');
     client.connect().catch(logger.error);
-
-    logger.info('Pinging Redis');
-    client
-      .ping()
-      .then((pong) => {
-        server.listen(port, () => {
-          logger.info(`Server listening on http://localhost:${port}`);
-        });
-      })
-      .catch(logger.error);
+    client.on('ready', function () {
+      logger.info(`Redis is ready`);
+      server.listen(port, () => {
+        logger.info(`Server listening on http://localhost:${port}`);
+      });
+    });
   } else {
     server.listen(port, () => {
       logger.info(`Server listening on http://localhost:${port}`);
