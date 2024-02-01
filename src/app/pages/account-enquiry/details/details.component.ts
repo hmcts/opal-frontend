@@ -8,6 +8,7 @@ import {
   GovukTabListItemComponent,
   GovukTabPanelComponent,
   GovukTabsComponent,
+  GovukTextInputComponent,
 } from '@components';
 
 import { AccountEnquiryRoutes } from '@enums';
@@ -15,6 +16,7 @@ import { DefendantAccountService, StateService } from '@services';
 import { EMPTY, Observable } from 'rxjs';
 import { IDefendantAccountDetails } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-account-enquiry-details',
@@ -28,6 +30,9 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukButtonComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    GovukTextInputComponent,
   ],
   providers: [DefendantAccountService],
   templateUrl: './details.component.html',
@@ -42,6 +47,14 @@ export class DetailsComponent implements OnInit {
 
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
 
+  public addNoteForm!: FormGroup;
+
+  private setupAddNoteForm(): void {
+    this.addNoteForm = new FormGroup({
+      note: new FormControl(null),
+    });
+  }
+
   /**
    * Performs the initial setup for the details component.
    * Retrieves the defendantAccountId from the route params and fetches the defendant account details.
@@ -50,7 +63,14 @@ export class DetailsComponent implements OnInit {
     this.route.params.subscribe((params) => {
       const defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
       this.data$ = this.defendantAccountService.getDefendantAccountDetails(defendantAccountId);
+
+      this.setupAddNoteForm();
     });
+  }
+
+  public handleNotesFormSubmit(): void {
+    const note = this.addNoteForm.get('note')?.value;
+    console.log(note);
   }
 
   /**

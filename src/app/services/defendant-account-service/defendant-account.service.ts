@@ -7,6 +7,8 @@ import {
   IGetDefendantAccountParams,
   ISearchDefendantAccountBody,
   IDefendantAccountDetails,
+  IAddDefendantAccountNoteBody,
+  IDefendantAccountNote,
 } from '@interfaces';
 import { Observable } from 'rxjs';
 
@@ -43,5 +45,9 @@ export class DefendantAccountService {
     return this.http.get<IDefendantAccountDetails>(
       `${ApiPaths.defendantAccountDetails}?defendantAccountId=${defendantAccountId}`,
     );
+  }
+
+  public addDefendantAccountNote(body: IAddDefendantAccountNoteBody): Observable<IDefendantAccountNote> {
+    return this.http.post<IDefendantAccountNote>(ApiPaths.defendantAccountAddNote, body);
   }
 }

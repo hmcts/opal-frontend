@@ -8,6 +8,8 @@ import { IAccountEnquiryState, IAccountEnquiryStateSearch } from './account-enqu
 import { ISearchDefendantAccountBody } from './search-defendant-account-body';
 import { ISearchDefendantAccounts, ISearchDefendantAccount } from './search-defendant-accounts.interface';
 import { IDefendantAccountDetails } from './defendant-account-details.interface';
+import { IAddDefendantAccountNoteBody } from './add-defendant-account-note-body';
+import { IDefendantAccountNote } from './add-defendant-account-note';
 
 export {
   IGetDefendantAccountParams,
@@ -22,4 +24,6 @@ export {
   ISearchDefendantAccount,
   ISearchDefendantAccounts,
   IDefendantAccountDetails,
+  IAddDefendantAccountNoteBody,
+  IDefendantAccountNote,
 };
