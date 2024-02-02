@@ -222,9 +222,19 @@
 
                 <div class="govuk-grid-row">
                   <div class="govuk-grid-column-full clearfix">
-                    <app-govuk-button buttonId="submitForm" type="submit"> Add</app-govuk-button>
+                    <span class="pull-right">
+                      <app-govuk-button buttonId="submitForm" type="submit"> Add</app-govuk-button>
+                    </span>
                   </div>
                 </div>
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+                @if (accountNotesData$ | async; as data) {
+                  <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full clearfix">
+                      {{ data.noteText }}
+                    </div>
+                  </div>
+                }
               </ng-container>
             </form>
           </app-govuk-tab-panel></ng-container

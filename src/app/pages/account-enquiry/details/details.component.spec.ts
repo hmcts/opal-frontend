@@ -4,13 +4,18 @@ import { of } from 'rxjs';
 
 import { DetailsComponent } from './details.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DEFENDANT_ACCOUNT_DETAILS_MOCK } from '@mocks';
+import {
+  ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
+  DEFENDANT_ACCOUNT_DETAILS_MOCK,
+  DEFENDANT_ACCOUNT_NOTE_MOCK,
+} from '@mocks';
 import { DefendantAccountService } from '@services';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
+import { IAddDefendantAccountNoteBody } from '@interfaces';
 
-describe('DetailsComponent', () => {
+fdescribe('DetailsComponent', () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
 
@@ -61,5 +66,30 @@ describe('DetailsComponent', () => {
 
     expect(stateServiceSpy).toHaveBeenCalledWith(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
+  });
+
+  it('should setup add note form', () => {
+    component['setupAddNoteForm']();
+    expect(component.addNoteForm).toBeDefined();
+    expect(component.addNoteForm.get('note')).toBeDefined();
+  });
+
+  it('should handle notes form submit', () => {
+    const note = ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.noteText;
+
+    component['defendantAccountId'] = Number(ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.associatedRecordId);
+    component['setupAddNoteForm']();
+    component.addNoteForm.controls['note'].setValue(note);
+
+    spyOn(component['defendantAccountService'], 'addDefendantAccountNote').and.returnValue(
+      of(DEFENDANT_ACCOUNT_NOTE_MOCK),
+    );
+
+    component.handleNotesFormSubmit();
+
+    expect(component['defendantAccountService'].addDefendantAccountNote).toHaveBeenCalledWith(
+      ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
+    );
+    expect(component.accountNotesData$).toBeDefined();
   });
 });
