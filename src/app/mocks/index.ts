@@ -8,6 +8,8 @@ import { SEARCH_DEFENDANT_ACCOUNTS_MOCK } from './search-defendant-accounts.mock
 import { DEFENDANT_ACCOUNT_DETAILS_MOCK } from './defendant-account-details.mock';
 import { DEFENDANT_ACCOUNT_NOTE_MOCK } from './defendant-account-note.mock';
 import { ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK } from './add-defendant-account-note.mock';
+import { DEFENDANT_ACCOUNT_NOTES_MOCK } from './defendant-account-notes.mock';
+
 export {
   DEFENDANT_ACCOUNT_MOCK,
   SEARCH_TYPE_RADIOS_MOCK,
@@ -19,4 +21,5 @@ export {
   DEFENDANT_ACCOUNT_DETAILS_MOCK,
   DEFENDANT_ACCOUNT_NOTE_MOCK,
   ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
+  DEFENDANT_ACCOUNT_NOTES_MOCK,
 };

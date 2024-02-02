@@ -13,7 +13,7 @@ import {
 
 import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, switchMap } from 'rxjs';
 import { IAddDefendantAccountNoteBody, IDefendantAccountDetails, IDefendantAccountNote } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -48,7 +48,7 @@ export class DetailsComponent implements OnInit {
   private defendantAccountId!: number;
 
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
-  public accountNotesData$: Observable<IDefendantAccountNote> = EMPTY;
+  public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
 
   public addNoteForm!: FormGroup;
 
@@ -69,6 +69,7 @@ export class DetailsComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
       this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId);
+      this.notes$ = this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
       this.setupAddNoteForm();
     });
   }
@@ -83,7 +84,13 @@ export class DetailsComponent implements OnInit {
       noteText: note,
     };
 
-    this.accountNotesData$ = this.defendantAccountService.addDefendantAccountNote(postBody);
+    this.addNoteForm.reset();
+
+    this.notes$ = this.defendantAccountService.addDefendantAccountNote(postBody).pipe(
+      switchMap(() => {
+        return this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
+      }),
+    );
   }
 
   /**

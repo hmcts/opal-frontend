@@ -228,12 +228,14 @@
                   </div>
                 </div>
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-                @if (accountNotesData$ | async; as data) {
-                  <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-full clearfix">
-                      {{ data.noteText }}
+
+                @if (notes$ | async; as data) {
+                  @for (note of data; track note.noteId) {
+                    <div class="govuk-inset-text">
+                      {{ note.noteText }} <br />
+                      {{ note.postedDate }}
                     </div>
-                  </div>
+                  }
                 }
               </ng-container>
             </form>
