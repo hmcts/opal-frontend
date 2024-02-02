@@ -13,9 +13,8 @@ import { DefendantAccountService } from '@services';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
-import { IAddDefendantAccountNoteBody } from '@interfaces';
 
-fdescribe('DetailsComponent', () => {
+describe('DetailsComponent', () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
 
