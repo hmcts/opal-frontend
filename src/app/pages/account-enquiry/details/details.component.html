@@ -231,10 +231,10 @@
 
                 @if (notes$ | async; as data) {
                   @for (note of data; track note.noteId) {
-                    <div class="govuk-inset-text">
+                    <app-govuk-inset-text [insetTextId]="'insetText' + note.noteId">
                       {{ note.noteText }} <br />
                       {{ note.postedDate }}
-                    </div>
+                    </app-govuk-inset-text>
                   }
                 }
               </ng-container>

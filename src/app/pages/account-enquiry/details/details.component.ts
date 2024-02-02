@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   GovukButtonComponent,
+  GovukInsetTextComponent,
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
   GovukTabListItemComponent,
@@ -33,6 +34,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
+    GovukInsetTextComponent,
   ],
   providers: [DefendantAccountService],
   templateUrl: './details.component.html',
