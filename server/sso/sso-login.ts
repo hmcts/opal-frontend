@@ -7,9 +7,11 @@ const INTERNAL_USER_LOGIN = `${config.get('opal-api.url')}/internal-user/login-o
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   const logger = Logger.getLogger('login');
-  const env = process.env['NODE_ENV'] || 'development';
+  const env = config.get('node-env') || 'development';
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
   const url = `${INTERNAL_USER_LOGIN}?redirect_uri=${hostname}/sso/login-callback`;
+
+  console.log(env);
 
   try {
     const response = await axios.get(url);
