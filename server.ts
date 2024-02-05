@@ -27,9 +27,8 @@ import routes from './server/routes';
 import { AppInsights, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
 import Routes from './server/routes_2';
-import config from 'config';
 
-const env = config.get('node-env') || 'development';
+const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
 
 // The Express app is exported so that it can be used by serverless Functions.

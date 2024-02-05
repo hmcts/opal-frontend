@@ -112,8 +112,7 @@
           },
           "configurations": {
             "production": {
-              "outputHashing": "media",
-              "optimization": false
+              "outputHashing": "media"
             },
             "development": {
               "buildOptimizer": false,
