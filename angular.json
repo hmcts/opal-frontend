@@ -108,7 +108,22 @@
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json",
             "inlineStyleLanguage": "scss",
-            "externalDependencies": ["@hmcts/nodejs-healthcheck"]
+            "externalDependencies": [
+              "@hmcts/nodejs-healthcheck",
+              "@hmcts/nodejs-logging",
+              "@hmcts/properties-volume",
+              "http-proxy-middleware",
+              "config",
+              "applicationinsights",
+              "helmet",
+              "connect-redis",
+              "cookie-parse",
+              "express-session",
+              "redis",
+              "session-file-store",
+              "axios",
+              "domino-ext"
+            ]
           },
           "configurations": {
             "production": {
