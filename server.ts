@@ -21,12 +21,10 @@ import { existsSync } from 'node:fs';
 import { AppServerModule } from './src/main.server';
 
 import { Logger } from '@hmcts/nodejs-logging';
-// import healthCheck from '@hmcts/nodejs-healthcheck';
 
-import routes from './server/routes';
 import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
-import Routes from './server/routes_2';
+import Routes from './server/routes';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -41,13 +39,6 @@ export function app(): express.Express {
 
   const commonEngine = new CommonEngine();
 
-  // const healthConfig = {
-  //   checks: {},
-  //   buildInfo: {},
-  // };
-
-  // healthCheck.addTo(server, healthConfig);
-
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
@@ -56,8 +47,6 @@ export function app(): express.Express {
   new HealthCheck().enableFor(server);
 
   new Routes().enableFor(server);
-
-  // server.use(routes());
 
   // Serve static files from /browser
   server.get(
