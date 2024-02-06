@@ -28,16 +28,18 @@ export default class SessionStorage {
           secure: config.get('session.secure'),
         },
         rolling: true,
-        store: this.getStore(),
+        store: this.getStore(app),
       }),
     );
   }
 
-  private getStore() {
+  private getStore(app: Application) {
     logger.info('redis enabled', config.get('features.redis.enabled'));
     if (config.get('features.redis.enabled')) {
       logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
-      const client = createClient({ url: config.get('secrets.opal.redis-connection-string') });
+      const client = createClient({
+        url: config.get('secrets.opal.redis-connection-string'),
+      });
 
       logger.info('Connecting to Redis');
       client.connect().catch(logger.error);
@@ -58,15 +60,7 @@ export default class SessionStorage {
         return logger.info('Redis connected! Cache Service is Working...');
       });
 
-      // logger.info('Pinging Redis');
-      // client
-      //   .ping()
-      //   .then((pong) => {
-      //     logger.info('ping', pong);
-      //     logger.info('Redis connected');
-      //   })
-      //   .catch(logger.error);
-
+      app.locals['redisClient'] = client;
       return new RedisStore({ client });
     }
 
