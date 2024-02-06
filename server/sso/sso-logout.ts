@@ -4,16 +4,13 @@ import config from 'config';
 import { Logger } from '@hmcts/nodejs-logging';
 
 const INTERNAL_USER_LOGOUT = `${config.get('opal-api.url')}/internal-user/logout`;
+const logger = Logger.getLogger('login');
 
 export default async (req: Request, res: Response, next: NextFunction) => {
-  const logger = Logger.getLogger('login');
-
   const env = process.env['NODE_ENV'] || 'development';
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
   const url = `${INTERNAL_USER_LOGOUT}?redirect_uri=${hostname}/sso/login-callback`;
 
-  logger.info(`Attempting to logout`);
-  logger.info('redis enabled', config.get('features.redis.enabled'));
   try {
     let accessToken;
 
