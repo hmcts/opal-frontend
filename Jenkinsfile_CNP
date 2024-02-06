@@ -6,9 +6,26 @@ def type = "angular"
 def product = "opal"
 def component = "frontend"
 
+def secrets = [
+  'opal-${env}': [
+    secret('OpalTestUserEmail', 'OPAL_TEST_USERNAME'),
+    secret('OpalTestUserPassword', 'OPAL_TEST_PASSWORD')
+  ],
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [$class     : 'AzureKeyVaultSecret',
+   secretType : 'Secret',
+   name       : secretName,
+   version    : '',
+   envVariable: envVar
+  ]
+}
+
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withPipeline(type, product, component) {
+  loadVaultSecrets(secrets)
   afterSuccess('build') {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
