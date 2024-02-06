@@ -21,10 +21,10 @@ import { existsSync } from 'node:fs';
 import { AppServerModule } from './src/main.server';
 
 import { Logger } from '@hmcts/nodejs-logging';
-import healthCheck from '@hmcts/nodejs-healthcheck';
+// import healthCheck from '@hmcts/nodejs-healthcheck';
 
 import routes from './server/routes';
-import { AppInsights, Helmet, PropertiesVolume } from './server/modules';
+import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
 import Routes from './server/routes_2';
 
@@ -41,18 +41,19 @@ export function app(): express.Express {
 
   const commonEngine = new CommonEngine();
 
-  const healthConfig = {
-    checks: {},
-    buildInfo: {},
-  };
+  // const healthConfig = {
+  //   checks: {},
+  //   buildInfo: {},
+  // };
 
-  healthCheck.addTo(server, healthConfig);
+  // healthCheck.addTo(server, healthConfig);
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
   new PropertiesVolume().enableFor(server);
   new SessionStorage().enableFor(server);
+  new HealthCheck().enableFor(server);
 
   new Routes().enableFor(server);
 
@@ -96,8 +97,14 @@ function run(): void {
   // secure the application by adding various HTTP headers to its responses
   new Helmet(developmentMode).enableFor(server);
 
-  server.listen(port, () => {
+  const listening = server.listen(port, () => {
     logger.info(`Server listening on http://localhost:${port}`);
+  });
+
+  process.on('SIGINT', function () {
+    logger.info('Stopping server');
+    listening.close();
+    process.exit();
   });
 }
 
