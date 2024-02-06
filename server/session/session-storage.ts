@@ -42,6 +42,22 @@ export default class SessionStorage {
       logger.info('Connecting to Redis');
       client.connect().catch(logger.error);
 
+      client.on('error', function () {
+        return logger.error('Redis connect error!');
+      });
+
+      client.on('reconnecting', function () {
+        return logger.info('Redis reconnecting...');
+      });
+
+      client.on('connect', function () {
+        return logger.info('Redis connect...');
+      });
+
+      client.on('ready', function () {
+        return logger.info('Redis connected! Cache Service is Working...');
+      });
+
       // logger.info('Pinging Redis');
       // client
       //   .ping()
