@@ -1,8 +1,8 @@
-import express from 'express';
+import { Application } from 'express';
 import bodyParser from 'body-parser';
 import config from 'config';
-import { Logger } from '@hmcts/nodejs-logging';
-import type { NextFunction, Request, Response, Router } from 'express';
+
+import type { NextFunction, Request, Response } from 'express';
 import { proxy } from './api';
 import { ssoAuthenticated, ssoLoginCallback, ssoLogin, ssoLogout, ssoLogoutCallback } from './sso';
 import {
@@ -13,49 +13,43 @@ import {
   ssoLogoutCallbackStub,
 } from './stubs/sso';
 
-const setupSSORoutes = (router: Router, ssoEnabled: boolean) => {
-  const logger = Logger.getLogger('routes/setupSSORoutes ');
-  const login = ssoEnabled ? ssoLogin : ssoLoginStub;
-  const loginCallback = ssoEnabled ? ssoLoginCallback : ssoLoginCallbackStub;
-  const logout = ssoEnabled ? ssoLogout : ssoLogoutStub;
-  const logoutCallback = ssoEnabled ? ssoLogoutCallback : ssoLogoutCallbackStub;
-  const authenticated = ssoEnabled ? ssoAuthenticated : ssoAuthenticatedStub;
+export default class Routes {
+  public enableFor(app: Application): void {
+    const ssoEnabled: boolean = config.get('features.sso.enabled');
 
-  logger.info(`Setting up SSO routes`);
+    app.use('/api', proxy());
 
-  const loginCallbackType = ssoEnabled ? 'post' : 'get';
+    // Declare use of body-parser AFTER the use of proxy https://github.com/villadora/express-http-proxy
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
 
-  logger.info(`Login callback type: ${loginCallbackType}`);
-
-  router.get('/sso/login', (req: Request, res: Response, next: NextFunction) => login(req, res, next));
-
-  const routePath = '/sso/login-callback';
-  const callbackHandler = (req: Request, res: Response, next: NextFunction) => loginCallback(req, res, next);
-
-  if (loginCallbackType === 'post') {
-    router.post(routePath, bodyParser.json(), bodyParser.urlencoded({ extended: false }), callbackHandler);
-  } else {
-    router.get(routePath, callbackHandler);
+    this.setupSSORoutes(app, ssoEnabled);
   }
 
-  router.get('/sso/logout', (req: Request, res: Response, next: NextFunction) => logout(req, res, next));
-  router.get('/sso/logout-callback', (req: Request, res: Response, next: NextFunction) =>
-    logoutCallback(req, res, next),
-  );
-  router.get('/sso/authenticated', (req: Request, res: Response) => authenticated(req, res));
-};
+  private setupSSORoutes(app: Application, ssoEnabled: boolean) {
+    const login = ssoEnabled ? ssoLogin : ssoLoginStub;
+    const loginCallback = ssoEnabled ? ssoLoginCallback : ssoLoginCallbackStub;
+    const logout = ssoEnabled ? ssoLogout : ssoLogoutStub;
+    const logoutCallback = ssoEnabled ? ssoLogoutCallback : ssoLogoutCallbackStub;
+    const authenticated = ssoEnabled ? ssoAuthenticated : ssoAuthenticatedStub;
 
-export default (): Router => {
-  const logger = Logger.getLogger('routes');
-  const router = express.Router();
-  const ssoEnabled: boolean = config.get('features.sso.enabled');
+    const loginCallbackType = ssoEnabled ? 'post' : 'get';
 
-  logger.info(`Entered routing file`);
-  logger.info(`SSO enabled: ${ssoEnabled}`);
+    app.get('/sso/login', (req: Request, res: Response, next: NextFunction) => login(req, res, next));
 
-  router.use('/api', proxy());
+    const routePath = '/sso/login-callback';
+    const callbackHandler = (req: Request, res: Response, next: NextFunction) => loginCallback(req, res, next);
 
-  setupSSORoutes(router, ssoEnabled);
+    if (loginCallbackType === 'post') {
+      app.post(routePath, callbackHandler);
+    } else {
+      app.get(routePath, callbackHandler);
+    }
 
-  return router;
-};
+    app.get('/sso/logout', (req: Request, res: Response, next: NextFunction) => logout(req, res, next));
+    app.get('/sso/logout-callback', (req: Request, res: Response, next: NextFunction) =>
+      logoutCallback(req, res, next),
+    );
+    app.get('/sso/authenticated', (req: Request, res: Response) => authenticated(req, res));
+  }
+}

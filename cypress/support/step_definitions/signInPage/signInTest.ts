@@ -64,4 +64,14 @@ Then('I see {string} on the sign in page', (bodyHeader) => {
 
 When('I click the Sign out link', () => {
   cy.get('.govuk-link').contains('Sign out').click();
+  cy.location('href').then((href: string) => {
+    if (href.includes('pr-')) {
+      cy.log('no SSO signing out');
+    } else {
+      cy.origin('https://login.microsoftonline.com', () => {
+        cy.wait(500);
+        cy.get('#tilesHolder > div:nth-child(1)').click();
+      });
+    }
+  });
 });
