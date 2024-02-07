@@ -4,16 +4,15 @@ import { Logger } from '@hmcts/nodejs-logging';
 import axios from 'axios';
 import config from 'config';
 
-const INTERNAL_JWT = `${config.get('opal-api.url')}/api/testing-support/handle-oauth-code`;
+const INTERNAL_JWT = `${config.get('opal-api.url')}/api/testing-support/token/test-user`;
+const logger = Logger.getLogger('login-callback-stub');
 
 export default async (req: Request, res: Response, next: NextFunction) => {
-  const logger = Logger.getLogger('login-callback-stub');
-
   try {
-    const result = await axios.post(INTERNAL_JWT);
-    const mockSecurityToken = result.data;
+    const result = await axios.get(INTERNAL_JWT);
+    const mockSecurityToken = result.data['access_token'];
 
-    req.session.securityToken = mockSecurityToken;
+    req.session.securityToken = { accessToken: mockSecurityToken };
 
     req.session.save((err) => {
       if (err) {
