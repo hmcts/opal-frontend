@@ -35,25 +35,25 @@ Feature: PO-137 view account history
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
-      | court    |             |
-      | surname  | John        |
-      | forename | Smart       |
-      | initials | D           |
-      | dobDay   | 23          |
-      | dobMonth | 11          |
-      | dobYear  | 1999        |
-      | addrLn1  | Brooks Lake |
-      | niNumber |             |
-      | pcr      |             |
+      | court    |               |
+      | surname  | Khalid        |
+      | forename | Muhad         |
+      | initials |               |
+      | dobDay   | 14            |
+      | dobMonth | 04            |
+      | dobYear  | 2000          |
+      | addrLn1  | 17 Brown Road |
+      | niNumber |               |
+      | pcr      |               |
 
     And I click the search button
     When I view the first result
 
-    When the name on the details screen for the result is "Mr Smart D John"
+    When the name on the details screen for the result is "Mr Muhad Khalid"
     And I click the "History" tab on the account details screen
     And I can see "History" in the account history panel header
 
-    Then I can see "Comment for Notes 500000009" at the top of the history
+    Then I can see "Comment for Notes 500000005" at the top of the history
 
     When I add the text "testNote1" to the note input
     And I click the Add button
