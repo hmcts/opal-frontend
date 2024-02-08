@@ -9,6 +9,8 @@ import {
   IDefendantAccountDetails,
   IAddDefendantAccountNoteBody,
   IDefendantAccountNote,
+  IAddDefendantAccountNoteBody,
+  IDefendantAccountNote,
 } from '@interfaces';
 import { Observable } from 'rxjs';
 
