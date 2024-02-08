@@ -10,7 +10,6 @@ import {
   GovukTabPanelComponent,
   GovukTabsComponent,
   GovukTextInputComponent,
-  GovukTextInputComponent,
 } from '@components';
 
 import { AccountEnquiryRoutes } from '@enums';
@@ -18,7 +17,6 @@ import { DefendantAccountService, StateService } from '@services';
 import { EMPTY, Observable, switchMap } from 'rxjs';
 import { IAddDefendantAccountNoteBody, IDefendantAccountDetails, IDefendantAccountNote } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -48,8 +46,6 @@ export class DetailsComponent implements OnInit {
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
   private readonly stateService = inject(StateService);
-
-  private defendantAccountId!: number;
 
   private defendantAccountId!: number;
 
