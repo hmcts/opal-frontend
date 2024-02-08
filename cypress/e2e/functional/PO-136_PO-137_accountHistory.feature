@@ -1,4 +1,4 @@
-Feature: PO-137 view account history
+Feature: PO-136 PO-137 view account history
   Scenario: The application shows the account history for a given account
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
