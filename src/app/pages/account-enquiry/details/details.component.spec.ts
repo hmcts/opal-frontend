@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
   DEFENDANT_ACCOUNT_DETAILS_MOCK,
+  DEFENDANT_ACCOUNT_NOTES_MOCK,
   DEFENDANT_ACCOUNT_NOTE_MOCK,
 } from '@mocks';
 import { DefendantAccountService } from '@services';
@@ -73,7 +74,7 @@ describe('DetailsComponent', () => {
     expect(component.addNoteForm.get('note')).toBeDefined();
   });
 
-  it('should handle notes form submit', () => {
+  it('should handle notes form submit', fakeAsync(() => {
     const note = ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.noteText;
 
     component['defendantAccountId'] = Number(ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.associatedRecordId);
@@ -83,12 +84,26 @@ describe('DetailsComponent', () => {
     spyOn(component['defendantAccountService'], 'addDefendantAccountNote').and.returnValue(
       of(DEFENDANT_ACCOUNT_NOTE_MOCK),
     );
+    spyOn(component['defendantAccountService'], 'getDefendantAccountNotes').and.returnValue(
+      of(DEFENDANT_ACCOUNT_NOTES_MOCK),
+    );
+
+    spyOn(component.addNoteForm, 'reset');
 
     component.handleNotesFormSubmit();
+
+    expect(component.addNoteForm.reset).toHaveBeenCalled();
 
     expect(component['defendantAccountService'].addDefendantAccountNote).toHaveBeenCalledWith(
       ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
     );
-    expect(component.accountNotesData$).toBeDefined();
-  });
+
+    expect(component.notes$).toBeDefined();
+
+    component.notes$.subscribe(() => {
+      expect(component['defendantAccountService'].getDefendantAccountNotes).toHaveBeenCalledWith(
+        component['defendantAccountId'],
+      );
+    });
+  }));
 });

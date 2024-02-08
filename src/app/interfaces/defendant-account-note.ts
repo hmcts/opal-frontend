@@ -5,5 +5,5 @@ export interface IDefendantAccountNote {
   associatedRecordId: string;
   noteText: string;
   postedDate: string;
-  postedBy: string;
+  postedBy: null | string;
 }

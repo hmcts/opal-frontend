@@ -5,6 +5,7 @@ import { IAddDefendantAccountNoteBody, IGetDefendantAccountParams, ISearchDefend
 import {
   ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
   DEFENDANT_ACCOUNT_MOCK,
+  DEFENDANT_ACCOUNT_NOTES_MOCK,
   DEFENDANT_ACCOUNT_NOTE_MOCK,
   SEARCH_DEFENDANT_ACCOUNTS_MOCK,
 } from '@mocks';
@@ -86,5 +87,19 @@ describe('DefendantAccountService', () => {
     expect(req.request.method).toBe('POST');
 
     req.flush(DEFENDANT_ACCOUNT_NOTE_MOCK);
+  });
+
+  it('should GET the defendant account notes', () => {
+    const defendantAccountId = 123;
+    const apiUrl = `${ApiPaths.defendantAccountNotes}/${defendantAccountId}`;
+
+    service.getDefendantAccountNotes(defendantAccountId).subscribe((defendantAccountNotes) => {
+      expect(defendantAccountNotes).toEqual(DEFENDANT_ACCOUNT_NOTES_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(DEFENDANT_ACCOUNT_NOTES_MOCK);
   });
 });

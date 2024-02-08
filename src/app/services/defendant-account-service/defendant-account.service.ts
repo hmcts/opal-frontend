@@ -47,7 +47,21 @@ export class DefendantAccountService {
     );
   }
 
+  /**
+   * Adds a note to a defendant account.
+   * @param body - The body of the note to be added.
+   * @returns An observable that emits the added defendant account note.
+   */
   public addDefendantAccountNote(body: IAddDefendantAccountNoteBody): Observable<IDefendantAccountNote> {
     return this.http.post<IDefendantAccountNote>(ApiPaths.defendantAccountAddNote, body);
+  }
+
+  /**
+   * Retrieves the notes associated with a defendant account.
+   * @param defendantAccountId - The ID of the defendant account.
+   * @returns An Observable that emits an array of defendant account notes.
+   */
+  public getDefendantAccountNotes(defendantAccountId: number): Observable<IDefendantAccountNote[]> {
+    return this.http.get<IDefendantAccountNote[]>(`${ApiPaths.defendantAccountNotes}/${defendantAccountId}`);
   }
 }
