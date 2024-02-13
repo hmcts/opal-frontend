@@ -23,12 +23,12 @@ export default class Routes {
       ignoreMethods: ['GET'],
     });
 
-    // Refresh the CSRF token on every request
-    app.get('*', csrfProtection, function (req, res, next) {
-      // Pass the Csrf Token
-      res.cookie('XSRF-TOKEN', req.csrfToken());
-      next();
-    });
+    // // Refresh the CSRF token on every request
+    // app.get('*', csrfProtection, function (req, res, next) {
+    //   // Pass the Csrf Token
+    //   res.cookie('XSRF-TOKEN', req.csrfToken());
+    //   next();
+    // });
 
     app.use('/api', csrfProtection, proxy());
 
