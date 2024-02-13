@@ -111,7 +111,8 @@
   "packageManager": "yarn@3.7.0",
   "resolutions": {
     "axios": "^1.6.2",
-    "follow-redirects": "^1.15.4"
+    "follow-redirects": "^1.15.4",
+    "node-ip": "^1.8.0"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
