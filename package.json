@@ -112,7 +112,7 @@
   "resolutions": {
     "axios": "^1.6.2",
     "follow-redirects": "^1.15.4",
-    "node-ip": "^1.8.0"
+    "node-ip": "^1.1.8"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
