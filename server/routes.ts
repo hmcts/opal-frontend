@@ -18,7 +18,7 @@ import csurf from 'csurf';
 export default class Routes {
   public enableFor(app: Application): void {
     const ssoEnabled: boolean = config.get('features.sso.enabled');
-    const csrfProtection = csurf({ cookie: { httpOnly: true, sameSite: 'lax' } });
+    const csrfProtection = csurf({ cookie: { httpOnly: true, sameSite: 'lax', secure: config.get('session.secure') } });
 
     // Refresh the CSRF token on every request
     app.get('*', csrfProtection, function (req, res, next) {
