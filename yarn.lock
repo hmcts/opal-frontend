@@ -9609,6 +9609,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"express-rate-limit@npm:^7.1.5":
+  version: 7.1.5
+  resolution: "express-rate-limit@npm:7.1.5"
+  peerDependencies:
+    express: 4 || 5 || ^5.0.0-beta.1
+  checksum: bdf6ddf4f8c8659d31de6ec1f088b473b2cb4180eb09ae234a279c88744832276e5c1482d530875110c90e314b51a7720bcfb2b3139c1b9e6bf652ba4b59f192
+  languageName: node
+  linkType: hard
+
 "express-session@npm:^1.17.3":
   version: 1.18.0
   resolution: "express-session@npm:1.18.0"
@@ -13343,6 +13352,7 @@ __metadata:
     domino-ext: ^2.1.4
     eslint: ^8.53.0
     express: ^4.15.2
+    express-rate-limit: ^7.1.5
     express-session: ^1.17.3
     govuk-frontend: ^5.0.0
     helmet: ^7.0.0
@@ -13359,6 +13369,7 @@ __metadata:
     ng: ^0.0.0
     pa11y: ^7.0.0
     prettier: ^3.0.3
+    rate-limit-redis: ^4.2.0
     redis: ^4.6.11
     rxjs: ~7.8.0
     session-file-store: ^1.5.0
@@ -14308,6 +14319,15 @@ __metadata:
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
   checksum: 0a268d4fea508661cf5743dfe3d5f47ce214fd6b7dec1de0da4d669dd4ef3d2144468ebe4179049eff253d9d27e719c88dae55be64f954e80135a0cada804ec9
+  languageName: node
+  linkType: hard
+
+"rate-limit-redis@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "rate-limit-redis@npm:4.2.0"
+  peerDependencies:
+    express-rate-limit: ">= 6"
+  checksum: 0e66f2a0bc64f23e7bb331db0465198c894738f856cc73e66ab45fb9933ce37fec29ea3b7b9ec12e501e663fa9184d60a5d64983b89296f842fce4b21872d5c0
   languageName: node
   linkType: hard
 

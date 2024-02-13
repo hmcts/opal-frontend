@@ -25,6 +25,7 @@ import { Logger } from '@hmcts/nodejs-logging';
 import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
 import Routes from './server/routes';
+import { RateLimit } from './server/rate-limit';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -44,6 +45,8 @@ export function app(): express.Express {
 
   new PropertiesVolume().enableFor(server);
   new SessionStorage().enableFor(server);
+  // Call rate limit after session storage set on app
+  new RateLimit().enableFor(server);
   new HealthCheck().enableFor(server);
 
   new Routes().enableFor(server);
