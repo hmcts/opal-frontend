@@ -19,9 +19,7 @@ export class CSRFToken {
     });
 
     app.use((req, res, next) => {
-      console.log('CSRF token middleware for path', req.path);
       if (ignore.includes(req.url)) {
-        console.log('CSRF token ignored for path', req.path);
         next();
       } else {
         csrfProtection(req, res, next);

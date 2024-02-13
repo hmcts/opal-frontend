@@ -13,24 +13,11 @@ import {
   ssoLogoutCallbackStub,
 } from './stubs/sso';
 
-import csurf from 'csurf';
-
 export default class Routes {
   public enableFor(app: Application): void {
     const ssoEnabled: boolean = config.get('features.sso.enabled');
-    const csrfProtection = csurf({
-      cookie: { httpOnly: true, sameSite: 'lax', secure: config.get('session.secure') },
-      ignoreMethods: ['GET'],
-    });
 
-    // // Refresh the CSRF token on every request
-    // app.get('*', csrfProtection, function (req, res, next) {
-    //   // Pass the Csrf Token
-    //   res.cookie('XSRF-TOKEN', req.csrfToken());
-    //   next();
-    // });
-
-    app.use('/api', csrfProtection, proxy());
+    app.use('/api', proxy());
 
     // Declare use of body-parser AFTER the use of proxy https://github.com/villadora/express-http-proxy
     app.use(bodyParser.json());
