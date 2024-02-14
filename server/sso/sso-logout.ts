@@ -9,7 +9,7 @@ const logger = Logger.getLogger('login');
 export default async (req: Request, res: Response, next: NextFunction) => {
   const env = process.env['NODE_ENV'] || 'development';
   const hostname = env === 'development' ? config.get('frontend-hostname.dev') : config.get('frontend-hostname.prod');
-  const url = `${INTERNAL_USER_LOGOUT}?redirect_uri=${hostname}/sso/login-callback`;
+  const url = `${INTERNAL_USER_LOGOUT}?redirect_uri=${hostname}/sso/logout-callback`;
 
   try {
     let accessToken;
@@ -26,8 +26,11 @@ export default async (req: Request, res: Response, next: NextFunction) => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    if (response) {
-      res.redirect('/sso/logout-callback');
+    const logoutRedirect = response.request.res.responseUrl;
+    if (logoutRedirect) {
+      res.redirect(logoutRedirect);
+    } else {
+      next(new Error('Error trying to fetch logout page'));
     }
   } catch (error) {
     logger.error('Error logging out', error);

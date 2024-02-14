@@ -22,6 +22,8 @@ opal-fines-service:
             alias: AAD_CLIENT_ID
           - name: AzureADClientSecret
             alias: AAD_CLIENT_SECRET
+          - name: OpalTestUserPassword
+            alias: OPAL_TEST_USER_PASSWORD
     environment:
       OPAL_FINES_DB_HOST: "{{ .Release.Name }}-postgresql"
       OPAL_FINES_DB_NAME: opal

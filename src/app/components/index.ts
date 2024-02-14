@@ -13,6 +13,7 @@ import { GovukSummaryListRowComponent } from './govuk-summary-list/govuk-summary
 import { GovukSummaryListComponent } from './govuk-summary-list/govuk-summary-list.component';
 import { GovukTabListItemComponent } from './govuk-tabs/govuk-tab-list-item/govuk-tab-list-item.component';
 import { GovukTabPanelComponent } from './govuk-tabs/govuk-tab-panel/govuk-tab-panel.component';
+import { GovukInsetTextComponent } from './govuk-inset-text/govuk-inset-text.component';
 
 export {
   GovukButtonComponent,
@@ -30,4 +31,5 @@ export {
   GovukTabPanelComponent,
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
+  GovukInsetTextComponent,
 };

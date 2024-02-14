@@ -86,14 +86,8 @@ function run(): void {
   // secure the application by adding various HTTP headers to its responses
   new Helmet(developmentMode).enableFor(server);
 
-  const listening = server.listen(port, () => {
+  server.listen(port, () => {
     logger.info(`Server listening on http://localhost:${port}`);
-  });
-
-  process.on('SIGINT', function () {
-    logger.info('Stopping server');
-    listening.close();
-    process.exit();
   });
 }
 

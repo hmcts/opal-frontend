@@ -5,4 +5,6 @@ export enum ApiPaths {
   defendantAccount = `${baseUrl}${defendantAccountPath}`,
   defendantAccountSearch = `${baseUrl}${defendantAccountPath}search`,
   defendantAccountDetails = `${baseUrl}${defendantAccountPath}details`,
+  defendantAccountAddNote = `${baseUrl}${defendantAccountPath}addNote`,
+  defendantAccountNotes = `${baseUrl}${defendantAccountPath}notes`,
 }

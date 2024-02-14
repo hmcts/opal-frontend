@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   GovukButtonComponent,
+  GovukInsetTextComponent,
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
   GovukTabListItemComponent,
   GovukTabPanelComponent,
   GovukTabsComponent,
+  GovukTextInputComponent,
 } from '@components';
 
 import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
-import { EMPTY, Observable } from 'rxjs';
-import { IDefendantAccountDetails } from '@interfaces';
+import { EMPTY, Observable, switchMap } from 'rxjs';
+import { IAddDefendantAccountNoteBody, IDefendantAccountDetails, IDefendantAccountNote } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-account-enquiry-details',
@@ -28,6 +31,10 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukButtonComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    GovukTextInputComponent,
+    GovukInsetTextComponent,
   ],
   providers: [DefendantAccountService],
   templateUrl: './details.component.html',
@@ -40,7 +47,21 @@ export class DetailsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly stateService = inject(StateService);
 
+  private defendantAccountId!: number;
+
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
+  public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
+
+  public addNoteForm!: FormGroup;
+
+  /**
+   * Sets up the add note form.
+   */
+  private setupAddNoteForm(): void {
+    this.addNoteForm = new FormGroup({
+      note: new FormControl(null),
+    });
+  }
 
   /**
    * Performs the initial setup for the details component.
@@ -48,9 +69,30 @@ export class DetailsComponent implements OnInit {
    */
   private initialSetup(): void {
     this.route.params.subscribe((params) => {
-      const defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
-      this.data$ = this.defendantAccountService.getDefendantAccountDetails(defendantAccountId);
+      this.defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
+      this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId);
+      this.notes$ = this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
+      this.setupAddNoteForm();
     });
+  }
+
+  /**
+   * Handles the form submission for adding a note.
+   */
+  public handleNotesFormSubmit(): void {
+    const note = this.addNoteForm.get('note')?.value;
+    const postBody: IAddDefendantAccountNoteBody = {
+      associatedRecordId: this.defendantAccountId.toString(),
+      noteText: note,
+    };
+
+    this.addNoteForm.reset();
+
+    this.notes$ = this.defendantAccountService.addDefendantAccountNote(postBody).pipe(
+      switchMap(() => {
+        return this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
+      }),
+    );
   }
 
   /**
