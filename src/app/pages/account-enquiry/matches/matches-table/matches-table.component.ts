@@ -81,6 +81,12 @@ export class MatchesTableComponent implements AfterViewInit {
     );
   }
 
+  /**
+   * Handles the event when viewing a defendant account.
+   *
+   * @param event - The event object.
+   * @param defendantAccountId - The ID of the defendant account.
+   */
   public handleViewDefendantAccount(event: Event, defendantAccountId: number): void {
     event.preventDefault();
     this.view.emit(defendantAccountId);
