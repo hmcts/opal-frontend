@@ -37,6 +37,11 @@ export class MatchesComponent {
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 
+  /**
+   * Navigates to the details page of a defendant account.
+   *
+   * @param defendantAccountId - The ID of the defendant account.
+   */
   public handleViewDefendantAccount(defendantAccountId: number): void {
     this.router.navigate([AccountEnquiryRoutes.details, defendantAccountId]);
   }
