@@ -48,10 +48,7 @@
               "./node_modules/@ministryofjustice/frontend/moj/all.scss",
               "src/styles.scss"
             ],
-            "scripts": [
-              "./node_modules/govuk-frontend/dist/govuk/all.bundle.js",
-              "./node_modules/@ministryofjustice/frontend/moj/all.js"
-            ]
+            "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js"]
           },
           "configurations": {
             "production": {
