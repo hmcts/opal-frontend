@@ -36,4 +36,8 @@ export class MatchesComponent {
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
+
+  public handleViewDefendantAccount(defendantAccountId: number): void {
+    this.router.navigate([AccountEnquiryRoutes.details, defendantAccountId]);
+  }
 }
