@@ -82,3 +82,24 @@
     <!-- <button [routerLink]="['../../test-page']">TEST PAGE</button><button [routerLink]="['../matches']">MATCHES</button> -->
   </div>
 </form>
+
+<app-moj-sub-navigation (activeNavigationItem)="handleMojSubNavigationItemClick($event)">
+  <app-moj-sub-navigation-item
+    navigationItem="item1"
+    navigationItemText="Item 1"
+    [currentNavigationItem]="mojNavigationItem"
+  ></app-moj-sub-navigation-item>
+  <app-moj-sub-navigation-item
+    navigationItem="item2"
+    navigationItemText="Item 2"
+    [currentNavigationItem]="mojNavigationItem"
+  ></app-moj-sub-navigation-item>
+</app-moj-sub-navigation>
+
+@if (mojNavigationItem === 'item1') {
+  <h1>HELLO WORLD 1</h1>
+}
+
+@if (mojNavigationItem === 'item2') {
+  <h1>HELLO WORLD 2</h1>
+}

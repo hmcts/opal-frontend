@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StateService } from '@services';
 import {
@@ -10,6 +10,8 @@ import {
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
+  MojSubNavigationComponent,
+  MojSubNavigationItemComponent,
 } from '@components';
 
 import { IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
@@ -32,6 +34,8 @@ import { AccountEnquiryRoutes } from '@enums';
     GovukDateInputComponent,
     GovukSelectComponent,
     GovukButtonComponent,
+    MojSubNavigationComponent,
+    MojSubNavigationItemComponent,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
@@ -39,12 +43,14 @@ import { AccountEnquiryRoutes } from '@enums';
 })
 export class SearchComponent implements OnInit {
   private readonly router = inject(Router);
+
   private readonly stateService = inject(StateService);
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
   public readonly ctList: IGovUkSelectOptions[] = CT_LIST;
 
   public searchForm!: FormGroup;
+  public mojNavigationItem: string = 'item1';
 
   /**
    * Sets up the search form with the necessary form controls.
@@ -90,6 +96,10 @@ export class SearchComponent implements OnInit {
     });
 
     this.router.navigate([AccountEnquiryRoutes.matches]);
+  }
+
+  public handleMojSubNavigationItemClick(fragment: string): void {
+    this.mojNavigationItem = fragment;
   }
 
   public ngOnInit(): void {

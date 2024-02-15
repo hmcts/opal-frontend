@@ -17,18 +17,21 @@ const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent),
+        canActivate: [authGuard],
       },
 
       {
         path: 'matches',
         loadComponent: () =>
           import('./pages/account-enquiry/matches/matches.component').then((c) => c.MatchesComponent),
+        canActivate: [authGuard],
       },
 
       {
         path: 'details/:defendantAccountId',
         loadComponent: () =>
           import('./pages/account-enquiry/details/details.component').then((c) => c.DetailsComponent),
+        canActivate: [authGuard],
       },
     ],
     canActivate: [authGuard],

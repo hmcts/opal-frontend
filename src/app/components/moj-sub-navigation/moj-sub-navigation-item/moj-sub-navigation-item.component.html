@@ -1,0 +1,8 @@
+<li class="moj-sub-navigation__item">
+  <a
+    class="moj-sub-navigation__link"
+    [attr.aria-current]="navigationItem === currentNavigationItem ? 'page' : ''"
+    (click)="handleItemClick($event, navigationItem)"
+    >{{ navigationItemText }}</a
+  >
+</li>
