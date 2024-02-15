@@ -16,9 +16,13 @@ export class MojSubNavigationComponent implements OnInit, OnDestroy {
 
   @Output() activeNavigationItem = new EventEmitter<string>();
 
+  /**
+   * Sets up the listeners for the route fragment changes.
+   * Emits the active navigation item when a fragment is present in the route.
+   */
   private setupListeners(): void {
+    // Basically we want to mimic the behaviour of the GDS tabs component, as this is how these will be used.
     this.routeFragmentSub = this.route.fragment.subscribe((fragment) => {
-      console.log('Fragment:', fragment);
       if (fragment) {
         this.activeNavigationItem.emit(fragment);
       }
@@ -29,6 +33,10 @@ export class MojSubNavigationComponent implements OnInit, OnDestroy {
     this.setupListeners();
   }
 
+  /**
+   * Lifecycle hook that is called when the component is about to be destroyed.
+   * Unsubscribes from the route fragment subscription.
+   */
   ngOnDestroy(): void {
     this.routeFragmentSub.unsubscribe();
   }

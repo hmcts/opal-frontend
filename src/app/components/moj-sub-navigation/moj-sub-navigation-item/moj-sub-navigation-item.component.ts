@@ -24,6 +24,7 @@ export class MojSubNavigationItemComponent {
    */
   public handleItemClick(event: Event, item: string): void {
     event.preventDefault();
+    // Basically we want to mimic the behaviour of the GDS tabs component, as this is how these will be used.
     this.router.navigate(['./'], { relativeTo: this.route, fragment: item });
   }
 }
