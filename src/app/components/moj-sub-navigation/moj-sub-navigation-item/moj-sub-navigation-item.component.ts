@@ -13,6 +13,7 @@ export class MojSubNavigationItemComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  @Input({ required: true }) public subNavItemId!: string;
   @Input({ required: true }) public navigationItem!: string;
   @Input({ required: true }) public navigationItemText!: string;
   @Input({ required: true }) public currentNavigationItem!: string;

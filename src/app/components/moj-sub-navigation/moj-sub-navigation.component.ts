@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -14,6 +23,7 @@ export class MojSubNavigationComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private routeFragmentSub!: Subscription;
 
+  @Input({ required: true }) public subNavId!: string;
   @Output() activeNavigationItem = new EventEmitter<string>();
 
   /**

@@ -83,15 +83,17 @@
   </div>
 </form>
 
-<app-moj-sub-navigation (activeNavigationItem)="handleMojSubNavigationItemClick($event)">
+<app-moj-sub-navigation (activeNavigationItem)="handleMojSubNavigationItemClick($event)" subNavId="searchSubNavigation">
   <app-moj-sub-navigation-item
     navigationItem="item1"
     navigationItemText="Item 1"
+    subNavItemId="item1"
     [currentNavigationItem]="mojNavigationItem"
   ></app-moj-sub-navigation-item>
   <app-moj-sub-navigation-item
     navigationItem="item2"
     navigationItemText="Item 2"
+    subNavItemId="item2"
     [currentNavigationItem]="mojNavigationItem"
   ></app-moj-sub-navigation-item>
 </app-moj-sub-navigation>

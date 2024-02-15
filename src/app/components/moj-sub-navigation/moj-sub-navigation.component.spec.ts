@@ -26,6 +26,7 @@ describe('MojSubNavigationComponent', () => {
 
     fixture = TestBed.createComponent(MojSubNavigationComponent);
     component = fixture.componentInstance;
+    component.subNavId = 'example';
     fixture.detectChanges();
   });
 
@@ -33,7 +34,12 @@ describe('MojSubNavigationComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create', () => {
+  it('should have an id', () => {
+    const element = fixture.nativeElement.querySelector('#example');
+    expect(element).toBeTruthy();
+  });
+
+  it('should emit the fragment', () => {
     spyOn(component.activeNavigationItem, 'emit');
 
     component.ngOnInit();

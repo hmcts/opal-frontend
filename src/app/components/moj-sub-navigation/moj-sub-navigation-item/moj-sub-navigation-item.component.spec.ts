@@ -19,11 +19,17 @@ describe('MojSubNavigationItemComponent', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
+    component.subNavItemId = 'example';
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have an id', () => {
+    const element = fixture.nativeElement.querySelector('#example');
+    expect(element).toBeTruthy();
   });
 
   it('should navigate to the correct route with fragment', () => {
