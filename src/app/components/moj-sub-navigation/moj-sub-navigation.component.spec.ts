@@ -40,11 +40,11 @@ describe('MojSubNavigationComponent', () => {
   });
 
   it('should emit the fragment', () => {
-    spyOn(component.activeNavigationItem, 'emit');
+    spyOn(component.activeSubNavItemFragment, 'emit');
 
     component.ngOnInit();
     expect(component['routeFragmentSub']).toBeDefined();
 
-    expect(component.activeNavigationItem.emit).toHaveBeenCalledWith(fragment);
+    expect(component.activeSubNavItemFragment.emit).toHaveBeenCalledWith(fragment);
   });
 });
