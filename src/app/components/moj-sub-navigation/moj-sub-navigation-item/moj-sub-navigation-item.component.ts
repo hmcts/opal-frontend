@@ -17,6 +17,11 @@ export class MojSubNavigationItemComponent {
   @Input({ required: true }) public navigationItemText!: string;
   @Input({ required: true }) public currentNavigationItem!: string;
 
+  /**
+   * Handles the click event of a sub-navigation item.
+   * @param event - The click event.
+   * @param item - The item string.
+   */
   public handleItemClick(event: Event, item: string): void {
     event.preventDefault();
     this.router.navigate(['./'], { relativeTo: this.route, fragment: item });

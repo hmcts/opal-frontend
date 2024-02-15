@@ -1,23 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MojSubNavigationItemComponent } from './moj-sub-navigation-item.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 
-describe('MojSubNavigationItemComponent', () => {
+fdescribe('MojSubNavigationItemComponent', () => {
   let component: MojSubNavigationItemComponent;
   let fixture: ComponentFixture<MojSubNavigationItemComponent>;
+  let router: Router;
+  let route: ActivatedRoute;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojSubNavigationItemComponent]
-    })
-    .compileComponents();
-    
+      imports: [MojSubNavigationItemComponent, RouterTestingModule],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(MojSubNavigationItemComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    route = TestBed.inject(ActivatedRoute);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate to the correct route with fragment', () => {
+    const event = new Event('click');
+    const item = 'example';
+    const navigateSpy = spyOn(router, 'navigate');
+
+    component.handleItemClick(event, item);
+
+    expect(navigateSpy).toHaveBeenCalledWith(['./'], {
+      relativeTo: route,
+      fragment: item,
+    });
   });
 });
