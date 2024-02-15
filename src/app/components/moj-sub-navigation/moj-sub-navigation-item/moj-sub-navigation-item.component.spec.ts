@@ -4,7 +4,7 @@ import { MojSubNavigationItemComponent } from './moj-sub-navigation-item.compone
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-fdescribe('MojSubNavigationItemComponent', () => {
+describe('MojSubNavigationItemComponent', () => {
   let component: MojSubNavigationItemComponent;
   let fixture: ComponentFixture<MojSubNavigationItemComponent>;
   let router: Router;
