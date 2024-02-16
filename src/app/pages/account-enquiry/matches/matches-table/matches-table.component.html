@@ -43,7 +43,12 @@
   <ng-container cdkColumnDef="view">
     <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header"></th>
     <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">
-      <a class="govuk-link govuk-link--no-visited-state" [routerLink]="['../details', element.defendantAccountId]"
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        (click)="handleViewDefendantAccount($event, element.defendantAccountId)"
+        (keyup.enter)="handleViewDefendantAccount($event, element.defendantAccountId)"
+        role="button"
+        tabindex="0"
         >View</a
       >
     </td>

@@ -12,7 +12,7 @@ const logger = Logger.getLogger('session-storage');
 
 export default class SessionStorage {
   public enableFor(app: Application): void {
-    app.use(cookieParser());
+    app.use(cookieParser(config.get('secrets.opal.opal-frontend-session-secret')));
     app.set('trust proxy', 1);
 
     app.use(

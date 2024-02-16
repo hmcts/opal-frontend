@@ -12,6 +12,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
     }
 
     res.clearCookie(config.get('session.prefix'));
+
     res.redirect('/');
   });
 };
