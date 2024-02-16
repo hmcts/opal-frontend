@@ -11,6 +11,7 @@ When('I sign in', () => {
 
   cy.log('test ' + emailSSO);
   cy.log('test ' + passwordSSO);
+  cy.screenshot;
 
   cy.location('href').then((href: string) => {
     if (href.includes('pr-')) {

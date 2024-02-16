@@ -9,8 +9,6 @@ nodejs:
         - AppInsightsInstrumentationKey
         - redis-connection-string
         - opal-frontend-session-secret
-        - OpalTestUserEmail
-        - OpalTestUserPassword
   environment:
     ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: true
