@@ -4,6 +4,7 @@ import { DefendantAccountService } from './defendant-account.service';
 import { IAddDefendantAccountNoteBody, IGetDefendantAccountParams, ISearchDefendantAccountBody } from '@interfaces';
 import {
   ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
+  DEFENDANT_ACCOUNT_DETAILS_MOCK,
   DEFENDANT_ACCOUNT_MOCK,
   DEFENDANT_ACCOUNT_NOTES_MOCK,
   DEFENDANT_ACCOUNT_NOTE_MOCK,
@@ -101,5 +102,19 @@ describe('DefendantAccountService', () => {
     expect(req.request.method).toBe('GET');
 
     req.flush(DEFENDANT_ACCOUNT_NOTES_MOCK);
+  });
+
+  it('should GET the defendant account details', () => {
+    const defendantAccountId = 123;
+    const apiUrl = `${ApiPaths.defendantAccount}/${defendantAccountId}`;
+
+    service.getDefendantAccountDetails(defendantAccountId).subscribe((defendantAccountDetails) => {
+      expect(defendantAccountDetails).toEqual(DEFENDANT_ACCOUNT_DETAILS_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(DEFENDANT_ACCOUNT_DETAILS_MOCK);
   });
 });
