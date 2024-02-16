@@ -89,6 +89,7 @@ export class MatchesTableComponent implements AfterViewInit {
    */
   public handleViewDefendantAccount(event: Event, defendantAccountId: number): void {
     event.preventDefault();
+
     this.view.emit(defendantAccountId);
   }
 

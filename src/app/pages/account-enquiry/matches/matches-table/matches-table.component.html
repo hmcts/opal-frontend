@@ -46,6 +46,9 @@
       <a
         class="govuk-link govuk-link--no-visited-state"
         (click)="handleViewDefendantAccount($event, element.defendantAccountId)"
+        (keyup.enter)="handleViewDefendantAccount($event, element.defendantAccountId)"
+        role="button"
+        tabindex="0"
         >View</a
       >
     </td>
