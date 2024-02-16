@@ -42,9 +42,7 @@ export class DefendantAccountService {
    * @returns An Observable that emits the defendant account details.
    */
   public getDefendantAccountDetails(defendantAccountId: number): Observable<IDefendantAccountDetails> {
-    return this.http.get<IDefendantAccountDetails>(
-      `${ApiPaths.defendantAccountDetails}?defendantAccountId=${defendantAccountId}`,
-    );
+    return this.http.get<IDefendantAccountDetails>(`${ApiPaths.defendantAccount}/${defendantAccountId}`);
   }
 
   /**
