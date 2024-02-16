@@ -8,8 +8,8 @@ def component = "frontend"
 
 def secrets = [
   'opal-${env}': [
-    secret('OpalTestUserEmail', 'OPAL_TEST_USERNAME'),
-    secret('OpalTestUserPassword', 'OPAL_TEST_PASSWORD')
+    secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
+    secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
   ],
 ]
 
