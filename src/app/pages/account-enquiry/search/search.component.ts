@@ -10,8 +10,6 @@ import {
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
-  MojSubNavigationComponent,
-  MojSubNavigationItemComponent,
 } from '@components';
 
 import { IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
@@ -34,8 +32,6 @@ import { AccountEnquiryRoutes } from '@enums';
     GovukDateInputComponent,
     GovukSelectComponent,
     GovukButtonComponent,
-    MojSubNavigationComponent,
-    MojSubNavigationItemComponent,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
@@ -50,7 +46,6 @@ export class SearchComponent implements OnInit {
   public readonly ctList: IGovUkSelectOptions[] = CT_LIST;
 
   public searchForm!: FormGroup;
-  public mojNavigationItem: string = 'item1';
 
   /**
    * Sets up the search form with the necessary form controls.
@@ -96,10 +91,6 @@ export class SearchComponent implements OnInit {
     });
 
     this.router.navigate([AccountEnquiryRoutes.matches]);
-  }
-
-  public handleMojSubNavigationItemClick(fragment: string): void {
-    this.mojNavigationItem = fragment;
   }
 
   public ngOnInit(): void {
