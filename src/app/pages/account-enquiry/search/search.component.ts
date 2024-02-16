@@ -39,6 +39,7 @@ import { AccountEnquiryRoutes } from '@enums';
 })
 export class SearchComponent implements OnInit {
   private readonly router = inject(Router);
+
   private readonly stateService = inject(StateService);
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;

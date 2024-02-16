@@ -14,6 +14,8 @@ import { GovukSummaryListComponent } from './govuk-summary-list/govuk-summary-li
 import { GovukTabListItemComponent } from './govuk-tabs/govuk-tab-list-item/govuk-tab-list-item.component';
 import { GovukTabPanelComponent } from './govuk-tabs/govuk-tab-panel/govuk-tab-panel.component';
 import { GovukInsetTextComponent } from './govuk-inset-text/govuk-inset-text.component';
+import { MojSubNavigationComponent } from './moj-sub-navigation/moj-sub-navigation.component';
+import { MojSubNavigationItemComponent } from './moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 
 export {
   GovukButtonComponent,
@@ -32,4 +34,6 @@ export {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
   GovukInsetTextComponent,
+  MojSubNavigationComponent,
+  MojSubNavigationItemComponent,
 };
