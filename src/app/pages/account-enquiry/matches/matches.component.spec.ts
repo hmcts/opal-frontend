@@ -43,4 +43,13 @@ describe('MatchesComponent', () => {
   it('should have state and populate data$', () => {
     expect(component.data$).not.toBeUndefined();
   });
+
+  it('should navigate to defendant account details', () => {
+    const defendantAccountId = 123;
+    const navigateSpy = spyOn(router, 'navigate');
+
+    component.handleViewDefendantAccount(defendantAccountId);
+
+    expect(navigateSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.details, defendantAccountId]);
+  });
 });

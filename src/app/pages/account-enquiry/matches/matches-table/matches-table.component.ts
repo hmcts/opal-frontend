@@ -1,6 +1,15 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  signal,
+} from '@angular/core';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
@@ -17,6 +26,8 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 })
 export class MatchesTableComponent implements AfterViewInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
+  @Output() view = new EventEmitter<number>();
+
   @ViewChild(MatSort) sort!: MatSort;
 
   public currentPage = signal(1);
@@ -68,6 +79,18 @@ export class MatchesTableComponent implements AfterViewInit {
     this.pagedRows.set(
       this.wrapTableDataSource(this.paginate(this.data.searchResults, this.pageLimit(), this.currentPage())),
     );
+  }
+
+  /**
+   * Handles the event when viewing a defendant account.
+   *
+   * @param event - The event object.
+   * @param defendantAccountId - The ID of the defendant account.
+   */
+  public handleViewDefendantAccount(event: Event, defendantAccountId: number): void {
+    event.preventDefault();
+
+    this.view.emit(defendantAccountId);
   }
 
   public ngAfterViewInit(): void {
