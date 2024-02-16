@@ -6,12 +6,12 @@ Given('I am on the OPAL Frontend', () => {
 });
 
 When('I sign in', () => {
-  const emailSSO = process.env['OPAL_TEST_USERNAME'] || '';
-  const passwordSSO = process.env['OPAL_TEST_PASSWORD'] || '';
+  const emailSSO = process.env['OPAL_TEST_USER_EMAIL'] || '';
+  const passwordSSO = process.env['OPAL_TEST_USER_PASSWORD'] || '';
 
   cy.log('test ' + emailSSO);
   cy.log('test ' + passwordSSO);
-  cy.screenshot;
+  cy.screenshot();
 
   cy.location('href').then((href: string) => {
     if (href.includes('pr-')) {
