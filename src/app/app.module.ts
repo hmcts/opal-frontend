@@ -3,7 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpClientXsrfModule,
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
 
 import { GovukHeaderComponent, GovukFooterComponent } from '@components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,6 +21,7 @@ import { httpErrorInterceptor } from './interceptors';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    HttpClientXsrfModule,
     GovukHeaderComponent,
     GovukFooterComponent,
     BrowserAnimationsModule,

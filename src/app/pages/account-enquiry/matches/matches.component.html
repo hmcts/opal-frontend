@@ -9,7 +9,7 @@
   @if (data$ | async; as data) {
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
-        <app-matches-table [data]="data"></app-matches-table>
+        <app-matches-table [data]="data" (view)="handleViewDefendantAccount($event)"></app-matches-table>
       </div>
     </div>
   }

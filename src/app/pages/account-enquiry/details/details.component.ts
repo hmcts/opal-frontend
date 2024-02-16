@@ -45,7 +45,7 @@ export class DetailsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
-  private readonly stateService = inject(StateService);
+  public readonly stateService = inject(StateService);
 
   private defendantAccountId!: number;
 

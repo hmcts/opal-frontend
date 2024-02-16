@@ -63,4 +63,14 @@ describe('MatchesTableComponent', () => {
 
     expect(component.pagedRows().filteredData).toEqual(expectedPagedRows.filteredData);
   });
+
+  it('should emit view event when handleViewDefendantAccount is called', () => {
+    const event = new Event('click');
+    const defendantAccountId = 123;
+    component.view.subscribe((accountId: number) => {
+      expect(accountId).toEqual(defendantAccountId);
+    });
+
+    component.handleViewDefendantAccount(event, defendantAccountId);
+  });
 });
