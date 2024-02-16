@@ -41,6 +41,7 @@ export class Helmet {
             objectSrc: [self],
             scriptSrc,
             styleSrc: [self, "'unsafe-inline'", 'https://fonts.googleapis.com'],
+            scriptSrcAttr: ["'unsafe-inline'"],
           },
         },
         referrerPolicy: { policy: 'origin' },
