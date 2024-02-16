@@ -1,0 +1,11 @@
+<li class="moj-sub-navigation__item" [id]="subNavItemId">
+  <a
+    class="moj-sub-navigation__link cursor-pointer"
+    [attr.aria-current]="subNavItemFragment === activeSubNavItemFragment ? 'page' : ''"
+    (click)="handleItemClick($event, subNavItemFragment)"
+    (keyup.enter)="handleItemClick($event, subNavItemFragment)"
+    role="button"
+    tabindex="0"
+    >{{ subNavItemText }}</a
+  >
+</li>

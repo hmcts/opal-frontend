@@ -43,9 +43,9 @@
           <span class="govuk-header__service-name"> {{ header.serviceName }} </span>
         }
         @if (!authenticated()) {
-          <a href="/sso/login" class="govuk-link govuk-link--inverse sign-in-link">Sign in</a>
+          <a href="/sso/login" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign in</a>
         } @else {
-          <a href="/sso/logout" class="govuk-link govuk-link--inverse sign-in-link">Sign out</a>
+          <a href="/sso/logout" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign out</a>
         }
       </div>
     }
