@@ -43,6 +43,10 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
+  new AppInsights().enable();
+  // secure the application by adding various HTTP headers to its responses
+  new Helmet(developmentMode).enableFor(server);
+
   new PropertiesVolume().enableFor(server);
   new SessionStorage().enableFor(server);
   new CSRFToken().enableFor(server);
@@ -83,10 +87,6 @@ function run(): void {
 
   // Start up the Node server
   const server = app();
-
-  new AppInsights().enable();
-  // secure the application by adding various HTTP headers to its responses
-  new Helmet(developmentMode).enableFor(server);
 
   server.listen(port, () => {
     logger.info(`Server listening on http://localhost:${port}`);

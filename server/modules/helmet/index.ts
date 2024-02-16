@@ -15,7 +15,12 @@ export class Helmet {
 
   public enableFor(app: express.Express): void {
     // include default helmet functions
-    const scriptSrc = [self, googleAnalyticsDomain, "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='"];
+    const scriptSrc = [
+      self,
+      googleAnalyticsDomain,
+      "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='",
+      "'unsafe-inline'",
+    ];
 
     if (this.developmentMode) {
       // Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval'
@@ -31,11 +36,11 @@ export class Helmet {
           directives: {
             connectSrc: [self],
             defaultSrc: ["'none'"],
-            fontSrc: [self, 'data:'],
+            fontSrc: [self, 'data:', 'https://fonts.gstatic.com'],
             imgSrc: [self, googleAnalyticsDomain],
             objectSrc: [self],
             scriptSrc,
-            styleSrc: [self],
+            styleSrc: [self, "'unsafe-inline'", 'https://fonts.googleapis.com'],
           },
         },
         referrerPolicy: { policy: 'origin' },
