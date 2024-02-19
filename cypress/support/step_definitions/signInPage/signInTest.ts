@@ -6,8 +6,8 @@ Given('I am on the OPAL Frontend', () => {
 });
 
 When('I sign in', () => {
-  const emailSSO: string = 'opal-test@hmcts.net';
-  const passwordSSO: string = 'OpalFinesService1';
+  const emailSSO = Cypress.env('CYPRESS_TEST_EMAIL') || '';
+  const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
   cy.location('href').then((href: string) => {
     if (href.includes('pr-')) {
