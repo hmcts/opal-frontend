@@ -43,8 +43,6 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  new AppInsights().enable();
-
   new PropertiesVolume().enableFor(server);
   new SessionStorage().enableFor(server);
   new CSRFToken().enableFor(server);
@@ -53,6 +51,8 @@ export function app(): express.Express {
   new Helmet(developmentMode).enableFor(server);
 
   new Routes().enableFor(server);
+
+  new AppInsights().enable();
 
   // Serve static files from /browser
   server.get(
