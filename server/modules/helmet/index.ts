@@ -1,7 +1,8 @@
 import * as express from 'express';
 import helmet from 'helmet';
 import config from 'config';
-
+import { Logger } from '@hmcts/nodejs-logging';
+const logger = Logger.getLogger('helmet');
 const googleAnalyticsDomain = '*.google-analytics.com';
 const self = "'self'";
 
@@ -16,6 +17,7 @@ export class Helmet {
 
   public enableFor(app: express.Express): void {
     if (config.get('features.helmet.enabled') === true) {
+      logger.info('Helmet enabled');
       // include default helmet functions
       const scriptSrc = [
         self,
