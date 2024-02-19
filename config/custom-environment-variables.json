@@ -18,6 +18,12 @@
         "__name": "FEATURES_SSO_ENABLED",
         "__format": "json"
       }
+    },
+    "helmet": {
+      "enabled": {
+        "__name": "FEATURES_HELMET_ENABLED",
+        "__format": "json"
+      }
     }
   },
   "session": {

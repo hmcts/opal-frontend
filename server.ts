@@ -44,13 +44,13 @@ export function app(): express.Express {
   server.set('views', distFolder);
 
   new AppInsights().enable();
-  // secure the application by adding various HTTP headers to its responses
-  new Helmet(developmentMode).enableFor(server);
 
   new PropertiesVolume().enableFor(server);
   new SessionStorage().enableFor(server);
   new CSRFToken().enableFor(server);
   new HealthCheck().enableFor(server);
+  // secure the application by adding various HTTP headers to its responses
+  new Helmet(developmentMode).enableFor(server);
 
   new Routes().enableFor(server);
 
