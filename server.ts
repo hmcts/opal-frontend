@@ -47,8 +47,12 @@ export function app(): express.Express {
   new SessionStorage().enableFor(server);
   new CSRFToken().enableFor(server);
   new HealthCheck().enableFor(server);
+  // secure the application by adding various HTTP headers to its responses
+  new Helmet(developmentMode).enableFor(server);
 
   new Routes().enableFor(server);
+
+  new AppInsights().enable();
 
   // Serve static files from /browser
   server.get(
@@ -83,10 +87,6 @@ function run(): void {
 
   // Start up the Node server
   const server = app();
-
-  new AppInsights().enable();
-  // secure the application by adding various HTTP headers to its responses
-  new Helmet(developmentMode).enableFor(server);
 
   server.listen(port, () => {
     logger.info(`Server listening on http://localhost:${port}`);

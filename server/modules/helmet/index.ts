@@ -1,6 +1,8 @@
 import * as express from 'express';
 import helmet from 'helmet';
-
+import config from 'config';
+import { Logger } from '@hmcts/nodejs-logging';
+const logger = Logger.getLogger('helmet');
 const googleAnalyticsDomain = '*.google-analytics.com';
 const self = "'self'";
 
@@ -14,32 +16,41 @@ export class Helmet {
   }
 
   public enableFor(app: express.Express): void {
-    // include default helmet functions
-    const scriptSrc = [self, googleAnalyticsDomain, "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='"];
+    if (config.get('features.helmet.enabled') === true) {
+      logger.info('Helmet enabled');
+      // include default helmet functions
+      const scriptSrc = [
+        self,
+        googleAnalyticsDomain,
+        "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='",
+        "'unsafe-inline'",
+      ];
 
-    if (this.developmentMode) {
-      // Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval'
-      // is not an allowed source of script in the following Content Security Policy directive:
-      // "script-src 'self' *.google-analytics.com 'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='".
-      // seems to be related to webpack
-      scriptSrc.push("'unsafe-eval'");
-    }
+      if (this.developmentMode) {
+        // Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval'
+        // is not an allowed source of script in the following Content Security Policy directive:
+        // "script-src 'self' *.google-analytics.com 'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='".
+        // seems to be related to webpack
+        scriptSrc.push("'unsafe-eval'");
+      }
 
-    app.use(
-      helmet({
-        contentSecurityPolicy: {
-          directives: {
-            connectSrc: [self],
-            defaultSrc: ["'none'"],
-            fontSrc: [self, 'data:'],
-            imgSrc: [self, googleAnalyticsDomain],
-            objectSrc: [self],
-            scriptSrc,
-            styleSrc: [self],
+      app.use(
+        helmet({
+          contentSecurityPolicy: {
+            directives: {
+              connectSrc: [self],
+              defaultSrc: ["'none'"],
+              fontSrc: [self, 'data:', 'https://fonts.gstatic.com'],
+              imgSrc: [self, googleAnalyticsDomain],
+              objectSrc: [self],
+              scriptSrc,
+              styleSrc: [self, "'unsafe-inline'", 'https://fonts.googleapis.com'],
+              scriptSrcAttr: ["'unsafe-inline'"],
+            },
           },
-        },
-        referrerPolicy: { policy: 'origin' },
-      }),
-    );
+          referrerPolicy: { policy: 'origin' },
+        }),
+      );
+    }
   }
 }
