@@ -2,10 +2,11 @@ import * as express from 'express';
 import helmet from 'helmet';
 import config from 'config';
 import { Logger } from '@hmcts/nodejs-logging';
+
 const logger = Logger.getLogger('helmet');
 const googleAnalyticsDomain = '*.google-analytics.com';
 const self = "'self'";
-
+const dynatraceDomain = '*.dynatrace.com';
 /**
  * Module that enables helmet in the application
  */
@@ -22,6 +23,7 @@ export class Helmet {
       const scriptSrc = [
         self,
         googleAnalyticsDomain,
+        dynatraceDomain,
         "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='",
         "'unsafe-inline'",
       ];
@@ -38,7 +40,7 @@ export class Helmet {
         helmet({
           contentSecurityPolicy: {
             directives: {
-              connectSrc: [self],
+              connectSrc: [self, dynatraceDomain],
               defaultSrc: ["'none'"],
               fontSrc: [self, 'data:', 'https://fonts.gstatic.com'],
               imgSrc: [self, googleAnalyticsDomain],
