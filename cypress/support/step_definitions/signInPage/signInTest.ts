@@ -9,10 +9,6 @@ When('I sign in', () => {
   const emailSSO = Cypress.env('CYPRESS_TEST_EMAIL') || '';
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
-  cy.log('test: ' + emailSSO);
-  cy.log('test pw:' + passwordSSO);
-  cy.get('#doesntExist').click();
-
   cy.location('href').then((href: string) => {
     if (href.includes('pr-')) {
       cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
