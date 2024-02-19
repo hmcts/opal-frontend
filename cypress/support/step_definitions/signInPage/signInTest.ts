@@ -6,11 +6,11 @@ Given('I am on the OPAL Frontend', () => {
 });
 
 When('I sign in', () => {
-  const emailSSO = process.env['OPAL_TEST_USER_EMAIL'] || '';
-  const passwordSSO = process.env['OPAL_TEST_USER_PASSWORD'] || '';
+  const emailSSO = Cypress.env('CYPRESS_TEST_EMAIL') || '';
+  const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
-  cy.log('test ' + emailSSO);
-  cy.log('test ' + passwordSSO);
+  cy.log('test: ' + emailSSO);
+  cy.log('test pw:' + passwordSSO);
   cy.get('#doesntExist').click();
 
   cy.location('href').then((href: string) => {

@@ -26,4 +26,8 @@ export default defineConfig({
   },
   experimentalModifyObstructiveThirdPartyCode: true,
   chromeWebSecurity: false,
+  env: {
+    CYPRESS_TEST_EMAIL: process.env['OPAL_TEST_USER_EMAIL'],
+    CYPRESS_TEST_PASSWORD: process.env['OPAL_TEST_USER_PASSWORD'],
+  },
 });
