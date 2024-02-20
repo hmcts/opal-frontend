@@ -28,7 +28,10 @@ export class CSRFToken {
 
     app.use((req, res, next) => {
       if (req.csrfToken) {
-        res.cookie('XSRF-TOKEN', req.csrfToken());
+        res.cookie('XSRF-TOKEN', req.csrfToken(), {
+          sameSite: 'lax',
+          secure: config.get('session.secure'),
+        });
       }
       next();
     });
