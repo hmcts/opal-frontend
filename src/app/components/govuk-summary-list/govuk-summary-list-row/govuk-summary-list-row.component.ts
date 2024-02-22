@@ -47,7 +47,7 @@ export class GovukSummaryListRowComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id = `${this.summaryListId + this._summaryListRowId}Key`;
+    this.id = `${this.summaryListId + this._summaryListRowId}`;
     this.class = 'govuk-summary-list__row';
   }
 }
