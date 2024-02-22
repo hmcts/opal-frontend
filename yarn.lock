@@ -6443,6 +6443,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axe-core@npm:^4.8.4":
+  version: 4.8.4
+  resolution: "axe-core@npm:4.8.4"
+  checksum: 644da2fec17bcf6f834edaab1baa5a75a9a3ee370c323215c73da6d7e45fac11d01470d92d0a3d5f26695e15c1d9b781733dfbe1fe09d505076c58f09ed74e02
+  languageName: node
+  linkType: hard
+
 "axios@npm:^1.6.2":
   version: 1.6.7
   resolution: "axios@npm:1.6.7"
@@ -13155,6 +13162,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 7.0.1
     "@typescript-eslint/parser": 7.0.1
     applicationinsights: 2.9.4
+    axe-core: ^4.8.4
     axios: ^1.6.2
     body-parser: ^1.20.2
     browser-sync: ^3.0.2
