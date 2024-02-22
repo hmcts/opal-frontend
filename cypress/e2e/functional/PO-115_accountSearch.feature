@@ -6,6 +6,8 @@ Feature: PO-115 account search page
     When I sign in
     Then I see "Account Enquiry" in the page body header
 
+    Then Check Accessibility
+
     When I populate the form with the following search criteria
       | court    | Bath         |
       | surname  | testSurname  |

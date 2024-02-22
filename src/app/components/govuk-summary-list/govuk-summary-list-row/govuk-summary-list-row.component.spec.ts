@@ -4,11 +4,11 @@ import { GovukSummaryListRowComponent } from './govuk-summary-list-row.component
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-summary-list-row summaryListId="test" summaryListRowId="rowTest" [actionEnabled]="action"
-    ><ng-container name>Tim</ng-container>
+  template: `<div app-govuk-summary-list-row summaryListId="test" summaryListRowId="rowTest" [actionEnabled]="action">
+    <ng-container name>Tim</ng-container>
     <ng-container value><p class="govuk-body">Hello</p></ng-container>
     <ng-container action>Change<span class="govuk-visually-hidden"> name</span></ng-container>
-  </app-govuk-summary-list-row>`,
+  </div>`,
 })
 class TestHostComponent {
   action = false;
@@ -84,5 +84,17 @@ describe('GovukSummaryListRowComponent', () => {
 
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
+  });
+
+  it('should set the host values onInit', () => {
+    componentGSLRC.summaryListId = 'test';
+    componentGSLRC.summaryListRowId = 'rowTest';
+
+    fixtureGSLRC.detectChanges();
+
+    componentGSLRC.ngOnInit();
+
+    expect(componentGSLRC.id).toBe('testRowTest');
+    expect(componentGSLRC.class).toBe('govuk-summary-list__row');
   });
 });

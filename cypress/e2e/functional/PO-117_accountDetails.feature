@@ -21,7 +21,8 @@ Feature: PO-117 account details page
 
     And I click the search button
     When I view the first result
-
+    Then Check Accessibility
+    
     Then the name on the details screen for the result is "Mr Smart D John"
     And the account details are
       | Postcode   | CK12 9XX   |
