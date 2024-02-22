@@ -85,4 +85,16 @@ describe('GovukSummaryListRowComponent', () => {
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
   });
+
+  it('should set the host values onInit', () => {
+    componentGSLRC.summaryListId = 'test';
+    componentGSLRC.summaryListRowId = 'rowTest';
+
+    fixtureGSLRC.detectChanges();
+
+    componentGSLRC.ngOnInit();
+
+    expect(componentGSLRC.id).toBe('testRowTest');
+    expect(componentGSLRC.class).toBe('govuk-summary-list__row');
+  });
 });
