@@ -8266,6 +8266,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cypress-axe@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "cypress-axe@npm:1.5.0"
+  peerDependencies:
+    axe-core: ^3 || ^4
+    cypress: ^10 || ^11 || ^12 || ^13
+  checksum: 7b5574da4ea2c1a1141f79cb4465a4f30879e30b9ac08da4aca935dfc7662d3fa170254be8c4eff26841bc065e6115bf6e6b8a8eee5ff7cb9812bbcbeb863ff2
+  languageName: node
+  linkType: hard
+
 "cypress@npm:^13.6.0":
   version: 13.6.4
   resolution: "cypress@npm:13.6.4"
@@ -13486,6 +13496,7 @@ __metadata:
     cookie-parser: ^1.4.6
     csurf: ^1.11.0
     cypress: ^13.6.0
+    cypress-axe: ^1.5.0
     domino-ext: ^2.1.4
     eslint: ^8.53.0
     express: ^4.15.2
