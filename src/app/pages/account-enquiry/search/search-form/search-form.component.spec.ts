@@ -55,7 +55,9 @@ describe('SearchFormComponent', () => {
   });
 
   it('should setup the search form on ngOnInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupSearchForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateSearchForm');
 
     component.ngOnInit();
