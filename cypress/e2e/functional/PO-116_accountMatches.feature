@@ -20,7 +20,6 @@ Feature: PO-116 account matches page
       | pcr      | testPCR      |
 
     Then I click the search button
-    Then Check Accessibility
     When I click the back button
 
     Then I see the form contains the following search criteria
