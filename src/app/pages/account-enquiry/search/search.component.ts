@@ -1,100 +1,52 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { StateService } from '@services';
-import {
-  GovukCheckboxesComponent,
-  GovukRadiosComponent,
-  GovukTextInputComponent,
-  GovukDateInputComponent,
-  GovukSelectComponent,
-  GovukButtonComponent,
-} from '@components';
+import { CourtService, StateService } from '@services';
 
-import { IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
-import { DATE_INPUTS } from './config/date-inputs';
+import { IAccountEnquiryStateSearch, IGovUkSelectOptions, ISearchCourt, ISearchCourtBody } from '@interfaces';
 
-import CT_LIST from './data/ct-list.json';
 import { AccountEnquiryRoutes } from '@enums';
+import { Observable, map } from 'rxjs';
+import { SearchFormComponent } from './search-form/search-form.component';
 
 @Component({
   selector: 'app-account-enquiry',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    GovukTextInputComponent,
-    GovukRadiosComponent,
-    GovukCheckboxesComponent,
-    GovukDateInputComponent,
-    GovukSelectComponent,
-    GovukButtonComponent,
-  ],
+  imports: [CommonModule, RouterModule, SearchFormComponent],
+  providers: [CourtService],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
   private readonly router = inject(Router);
+  private readonly courtService = inject(CourtService);
+  public readonly stateService = inject(StateService);
 
-  private readonly stateService = inject(StateService);
+  private readonly searchCourtBody: ISearchCourtBody = {
+    courtId: null,
+    courtCode: null,
+    parentCourtId: null,
+    localJusticeAreaId: null,
+    nationalCourtCode: null,
+  };
 
-  public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
-  public readonly ctList: IGovUkSelectOptions[] = CT_LIST;
+  public data$: Observable<IGovUkSelectOptions[]> = this.courtService.searchCourt(this.searchCourtBody).pipe(
+    map((response: ISearchCourt[]) => {
+      return response.map((item: ISearchCourt) => {
+        return {
+          value: item.name,
+          name: item.name,
+        };
+      });
+    }),
+  );
 
-  public searchForm!: FormGroup;
-
-  /**
-   * Sets up the search form with the necessary form controls.
-   */
-  private setupSearchForm(): void {
-    this.searchForm = new FormGroup({
-      court: new FormControl(null),
-      surname: new FormControl(null),
-      forename: new FormControl(null),
-      initials: new FormControl(null),
-      dateOfBirth: new FormGroup({
-        dayOfMonth: new FormControl(null),
-        monthOfYear: new FormControl(null),
-        year: new FormControl(null),
-      }),
-      addressLineOne: new FormControl(null),
-      niNumber: new FormControl(null),
-      pcr: new FormControl(null),
-    });
-  }
-
-  /**
-   * Repopulates the search form with the data from the account enquiry search.
-   */
-  private rePopulateSearchForm(): void {
-    const accountEnquirySearchData = this.stateService.accountEnquiry().search;
-    this.searchForm.patchValue(accountEnquirySearchData);
-  }
-
-  /**
-   * Clears the search form.
-   */
-  public handleClearForm(): void {
-    this.searchForm.reset();
-  }
-
-  /**
-   * Handles the form submission.
-   */
-  public handleFormSubmit(): void {
+  public handleFormSubmit(formData: IAccountEnquiryStateSearch): void {
     this.stateService.accountEnquiry.set({
-      search: this.searchForm.value,
+      search: formData,
     });
 
     this.router.navigate([AccountEnquiryRoutes.matches]);
-  }
-
-  public ngOnInit(): void {
-    this.setupSearchForm();
-    this.rePopulateSearchForm();
   }
 }

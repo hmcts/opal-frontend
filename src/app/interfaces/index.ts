@@ -10,6 +10,8 @@ import { ISearchDefendantAccounts, ISearchDefendantAccount } from './search-defe
 import { IDefendantAccountDetails } from './defendant-account-details.interface';
 import { IAddDefendantAccountNoteBody } from './add-defendant-account-note-body';
 import { IDefendantAccountNote } from './defendant-account-note';
+import { ISearchCourt } from './search-court.interface';
+import { ISearchCourtBody } from './search-court-body.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -26,4 +28,6 @@ export {
   IDefendantAccountDetails,
   IAddDefendantAccountNoteBody,
   IDefendantAccountNote,
+  ISearchCourt,
+  ISearchCourtBody,
 };

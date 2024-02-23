@@ -2,5 +2,6 @@ import { DefendantAccountService } from './defendant-account-service/defendant-a
 import { AuthService } from './auth-service/auth.service';
 import { StateService } from './state-service/state.service';
 import { UtilsService } from './utils/utils.service';
+import { CourtService } from './court-service/court.service';
 
-export { DefendantAccountService, AuthService, StateService, UtilsService };
+export { DefendantAccountService, AuthService, StateService, UtilsService, CourtService };
