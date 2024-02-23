@@ -121,19 +121,19 @@ Feature: PO-116 account matches page
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
-      | court    |      |
-      | surname  |      |
-      | forename |      |
-      | initials |      |
-      | dobDay   |      |
-      | dobMonth |      |
-      | dobYear  |      |
-      | addrLn1  | Road |
-      | niNumber |      |
-      | pcr      |      |
+      | court    |    |
+      | surname  |    |
+      | forename | il |
+      | initials |    |
+      | dobDay   |    |
+      | dobMonth |    |
+      | dobYear  |    |
+      | addrLn1  |    |
+      | niNumber |    |
+      | pcr      |    |
 
     And I click the search button
     Then I am presented with results all containing
-      | name        |      |
-      | dateOfBirth |      |
-      | addrLn1     | Road |
+      | name        | il |
+      | dateOfBirth |    |
+      | addrLn1     |    |
