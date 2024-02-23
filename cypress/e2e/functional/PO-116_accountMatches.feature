@@ -8,7 +8,7 @@ Feature: PO-116 account matches page
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
-      | court    | Bath         |
+      | court    | 500000000    |
       | surname  | testSurname  |
       | forename | testForename |
       | initials |              |
@@ -23,7 +23,7 @@ Feature: PO-116 account matches page
     When I click the back button
 
     Then I see the form contains the following search criteria
-      | court    | Bath         |
+      | court    | 500000000    |
       | surname  | testSurname  |
       | forename | testForename |
       | initials |              |
