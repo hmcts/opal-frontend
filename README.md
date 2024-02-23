@@ -126,15 +126,17 @@ yarn dev:ssr
 
 ```
 
-#### 1. pa11y
+#### 1. a11y
 
-Once the development server is running you can run the pa11y test by running the following command
+Once the development server is running you can run the a11y test by running the following command.
 
 ```bash
 
-yarn pa11y
+yarn test:smoke
 
 ```
+
+We are using [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility.
 
 ## Angular code scaffolding
 
