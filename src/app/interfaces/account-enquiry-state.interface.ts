@@ -8,7 +8,7 @@ export interface IAccountEnquiryStateSearch {
     monthOfYear: string | null;
     year: string | null;
   };
-  addressLineOne: string | null;
+  addressLine: string | null;
   niNumber: string | null;
   pcr: string | null;
 }

@@ -8,7 +8,7 @@ export const ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH = {
     monthOfYear: null,
     year: null,
   },
-  addressLineOne: null,
+  addressLine: null,
   niNumber: null,
   pcr: null,
 };
