@@ -1,4 +1,4 @@
 export interface IGovUkSelectOptions {
-  value: string;
+  value: string | number;
   name: string;
 }

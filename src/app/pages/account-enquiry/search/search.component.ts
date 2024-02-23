@@ -35,7 +35,7 @@ export class SearchComponent {
     map((response: ISearchCourt[]) => {
       return response.map((item: ISearchCourt) => {
         return {
-          value: item.name,
+          value: item.courtId,
           name: item.name,
         };
       });
