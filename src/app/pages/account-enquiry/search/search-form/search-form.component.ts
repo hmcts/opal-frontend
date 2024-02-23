@@ -51,7 +51,7 @@ export class SearchFormComponent implements OnInit {
         monthOfYear: new FormControl(null),
         year: new FormControl(null),
       }),
-      addressLineOne: new FormControl(null),
+      addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
     });
