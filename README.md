@@ -108,31 +108,57 @@ We are using [cypress](https://www.cypress.io/) for our end to end tests.
 
 Run `yarn test:smoke` to execute the end-to-end smoke tests.
 
-Run `yarn test:functional` to execute the end-to-end functional tests.
-
-Run `yarn cypress` to open the cypress console, very useful for debugging tests.
-
-## Running accessbility testing
-
-We are using [pa11y](https://pa11y.org/) for our accessbility tests. There are a couple of steps required to run the tests.
-
-#### 1. Development server
-
-The development server is required to be running. You can start it by running the following command.
-
 ```bash
 
-yarn dev:ssr
+yarn test:smoke
 
 ```
 
-#### 1. pa11y
-
-Once the development server is running you can run the pa11y test by running the following command
+Run `yarn test:functional` to execute the end-to-end functional tests.
 
 ```bash
 
-yarn pa11y
+yarn test:smoke
+
+```
+
+Run `yarn cypress` to open the cypress console, very useful for debugging tests.
+
+```bash
+
+yarn cypress
+
+```
+
+## Running accessbility testing
+
+We are using [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility. There are a couple of steps required to run the tests.
+
+#### 1. Development server
+
+The production server is required to be running. You can start it by running the following command.
+
+```bash
+
+yarn build:serve:ssr
+
+```
+
+#### 1. a11y
+
+Once the development server is running you can run the a11y test by running the following command.
+
+```bash
+
+yarn test:smoke
+
+```
+
+or you can open the cypress console and run the smoke commands in there.
+
+```bash
+
+yarn cypress
 
 ```
 
