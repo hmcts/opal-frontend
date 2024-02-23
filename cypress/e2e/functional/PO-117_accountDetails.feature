@@ -39,30 +39,30 @@ Feature: PO-117 account details page
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
-      | court    |      |
-      | surname  |      |
-      | forename |      |
-      | initials |      |
-      | dobDay   |      |
-      | dobMonth |      |
-      | dobYear  |      |
-      | addrLn1  | Road |
-      | niNumber |      |
-      | pcr      |      |
+      | court    |    |
+      | surname  | il |
+      | forename |    |
+      | initials |    |
+      | dobDay   |    |
+      | dobMonth |    |
+      | dobYear  |    |
+      | addrLn1  |    |
+      | niNumber |    |
+      | pcr      |    |
 
     And I click the search button
     Then I am presented with results all containing
-      | name        |      |
-      | dateOfBirth |      |
-      | addrLn1     | Road |
+      | name        | il |
+      | dateOfBirth |    |
+      | addrLn1     |    |
 
     And I view the first result
 
     When I click the back button
     Then I am presented with results all containing
-      | name        |      |
-      | dateOfBirth |      |
-      | addrLn1     | Road |
+      | name        | il |
+      | dateOfBirth |    |
+      | addrLn1     |    |
 
   Scenario: When the user clicks new search they are sent back to an empty search form
     Given I am on the OPAL Frontend
