@@ -59,7 +59,7 @@ describe('DefendantAccountService', () => {
         monthOfYear: '12',
         year: '1981',
       },
-      addressLineOne: 'Test',
+      addressLine: 'Test',
       niNumber: 'TT1234',
       pcr: '1234',
     };

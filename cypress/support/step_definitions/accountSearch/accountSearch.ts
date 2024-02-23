@@ -16,7 +16,7 @@ When('I populate the form with the following search criteria', (table: DataTable
   typeIfNotBlank('#dayOfMonth', searchCriteria['dobDay']);
   typeIfNotBlank('#monthOfYear', searchCriteria['dobMonth']);
   typeIfNotBlank('#year', searchCriteria['dobYear']);
-  typeIfNotBlank('#addressLineOne', searchCriteria['addrLn1']);
+  typeIfNotBlank('#addressLine', searchCriteria['addrLn1']);
   typeIfNotBlank('#niNumber', searchCriteria['niNumber']);
   typeIfNotBlank('#pcr', searchCriteria['pcr']);
 });
@@ -49,7 +49,7 @@ When('I see the form contains the following search criteria', (table: DataTable)
   assertValueIsCorrect('#dayOfMonth', searchCriteria['dobDay']);
   assertValueIsCorrect('#monthOfYear', searchCriteria['dobMonth']);
   assertValueIsCorrect('#year', searchCriteria['dobYear']);
-  assertValueIsCorrect('#addressLineOne', searchCriteria['addrLn1']);
+  assertValueIsCorrect('#addressLine', searchCriteria['addrLn1']);
   assertValueIsCorrect('#niNumber', searchCriteria['niNumber']);
   assertValueIsCorrect('#pcr', searchCriteria['pcr']);
 });
