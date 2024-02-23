@@ -40,8 +40,8 @@ Feature: PO-117 account details page
 
     When I populate the form with the following search criteria
       | court    |    |
-      | surname  | il |
-      | forename |    |
+      | surname  |    |
+      | forename | il |
       | initials |    |
       | dobDay   |    |
       | dobMonth |    |
