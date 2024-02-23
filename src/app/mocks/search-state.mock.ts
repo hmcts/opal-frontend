@@ -8,7 +8,7 @@ export const SEARCH_STATE_MOCK = {
     monthOfYear: '01',
     year: '1991',
   },
-  addressLineOne: 'Test Street',
+  addressLine: 'Test Street',
   niNumber: 'J9MNSK',
   pcr: '1233',
 };
