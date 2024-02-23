@@ -11,6 +11,7 @@ import { ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK } from './add-defendant-account-no
 import { DEFENDANT_ACCOUNT_NOTES_MOCK } from './defendant-account-notes.mock';
 import { SEARCH_COURT_MOCK } from './search-court.mock';
 import { SEARCH_COURT_BODY_MOCK } from './search-court-body.mock';
+import { SEARCH_COURT_SELECT_OPTIONS_MOCK } from './search-court-select-options.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -26,4 +27,5 @@ export {
   DEFENDANT_ACCOUNT_NOTES_MOCK,
   SEARCH_COURT_MOCK,
   SEARCH_COURT_BODY_MOCK,
+  SEARCH_COURT_SELECT_OPTIONS_MOCK,
 };
