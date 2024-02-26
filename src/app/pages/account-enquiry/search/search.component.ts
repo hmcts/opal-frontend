@@ -1,100 +1,65 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { StateService } from '@services';
-import {
-  GovukCheckboxesComponent,
-  GovukRadiosComponent,
-  GovukTextInputComponent,
-  GovukDateInputComponent,
-  GovukSelectComponent,
-  GovukButtonComponent,
-} from '@components';
+import { CourtService, StateService } from '@services';
 
-import { IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
-import { DATE_INPUTS } from './config/date-inputs';
+import { IAccountEnquiryStateSearch, IGovUkSelectOptions, ISearchCourt, ISearchCourtBody } from '@interfaces';
 
-import CT_LIST from './data/ct-list.json';
 import { AccountEnquiryRoutes } from '@enums';
+import { Observable, map } from 'rxjs';
+import { SearchFormComponent } from './search-form/search-form.component';
+
+const SEARCH_COURT_BODY: ISearchCourtBody = {
+  courtId: null,
+  courtCode: null,
+  parentCourtId: null,
+  localJusticeAreaId: null,
+  nationalCourtCode: null,
+};
 
 @Component({
   selector: 'app-account-enquiry',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    GovukTextInputComponent,
-    GovukRadiosComponent,
-    GovukCheckboxesComponent,
-    GovukDateInputComponent,
-    GovukSelectComponent,
-    GovukButtonComponent,
-  ],
+  imports: [CommonModule, RouterModule, SearchFormComponent],
+  providers: [CourtService],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
   private readonly router = inject(Router);
-
-  private readonly stateService = inject(StateService);
-
-  public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
-  public readonly ctList: IGovUkSelectOptions[] = CT_LIST;
-
-  public searchForm!: FormGroup;
+  private readonly courtService = inject(CourtService);
+  public readonly stateService = inject(StateService);
+  public data$: Observable<IGovUkSelectOptions[]> = this.courtService.searchCourt(SEARCH_COURT_BODY).pipe(
+    map((response: ISearchCourt[]) => {
+      return this.mapSearchCourtToSelectOptions(response);
+    }),
+  );
 
   /**
-   * Sets up the search form with the necessary form controls.
+   * Maps the search court response to an array of select options.
+   *
+   * @param response - The search court response.
+   * @returns An array of select options.
    */
-  private setupSearchForm(): void {
-    this.searchForm = new FormGroup({
-      court: new FormControl(null),
-      surname: new FormControl(null),
-      forename: new FormControl(null),
-      initials: new FormControl(null),
-      dateOfBirth: new FormGroup({
-        dayOfMonth: new FormControl(null),
-        monthOfYear: new FormControl(null),
-        year: new FormControl(null),
-      }),
-      addressLine: new FormControl(null),
-      niNumber: new FormControl(null),
-      pcr: new FormControl(null),
+  private mapSearchCourtToSelectOptions(response: ISearchCourt[]): IGovUkSelectOptions[] {
+    return response.map((item: ISearchCourt) => {
+      return {
+        value: item.courtId,
+        name: item.name,
+      };
     });
   }
 
   /**
-   * Repopulates the search form with the data from the account enquiry search.
+   * Handles the form submission for account enquiry search.
+   * @param formData - The form data containing the search parameters.
    */
-  private rePopulateSearchForm(): void {
-    const accountEnquirySearchData = this.stateService.accountEnquiry().search;
-    this.searchForm.patchValue(accountEnquirySearchData);
-  }
-
-  /**
-   * Clears the search form.
-   */
-  public handleClearForm(): void {
-    this.searchForm.reset();
-  }
-
-  /**
-   * Handles the form submission.
-   */
-  public handleFormSubmit(): void {
+  public handleFormSubmit(formData: IAccountEnquiryStateSearch): void {
     this.stateService.accountEnquiry.set({
-      search: this.searchForm.value,
+      search: formData,
     });
 
     this.router.navigate([AccountEnquiryRoutes.matches]);
-  }
-
-  public ngOnInit(): void {
-    this.setupSearchForm();
-    this.rePopulateSearchForm();
   }
 }

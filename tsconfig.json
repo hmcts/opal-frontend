@@ -20,7 +20,7 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
-    "resolveJsonModule": true,
+    "resolveJsonModule": false,
     "paths": {
       "@components": ["./src/app/components/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],

@@ -3,9 +3,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { SearchComponent } from './search.component';
 import { StateService } from '@services';
-import { SEARCH_STATE_MOCK } from '@mocks';
+import { SEARCH_COURT_MOCK, SEARCH_COURT_SELECT_OPTIONS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 import { AccountEnquiryRoutes } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from '@constants';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { IGovUkSelectOptions, ISearchCourt } from '@interfaces';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -15,7 +17,7 @@ describe('SearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchComponent, RouterTestingModule],
+      imports: [SearchComponent, RouterTestingModule, HttpClientTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);
@@ -30,31 +32,8 @@ describe('SearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should setup the search form', () => {
-    expect(component.searchForm).not.toBeNull();
-  });
-
-  it('should repopulate if there are any initials values', () => {
-    expect(component.searchForm.value.court).toBeNull();
-  });
-
-  it('should repopulate if there are values', () => {
-    stateService.accountEnquiry.set({
-      search: SEARCH_STATE_MOCK,
-    });
-    component['rePopulateSearchForm']();
-    expect(component.searchForm.value.court).toBe('Bath');
-  });
-
-  it('should clear the form', () => {
-    stateService.accountEnquiry.set({
-      search: SEARCH_STATE_MOCK,
-    });
-    component['rePopulateSearchForm']();
-    expect(component.searchForm.value.court).toBe('Bath');
-
-    component.handleClearForm();
-    expect(component.searchForm.value.court).toBeNull();
+  it('should have state and populate data$', () => {
+    expect(component.data$).not.toBeUndefined();
   });
 
   it('should submit the form', () => {
@@ -63,13 +42,20 @@ describe('SearchComponent', () => {
     stateService.accountEnquiry.set({ search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH });
     expect(stateService.accountEnquiry().search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
 
-    component.searchForm.controls['court'].setValue('Bristol');
-    expect(component.searchForm.value.court).toBe('Bristol');
+    component.handleFormSubmit({
+      ...SEARCH_STATE_MOCK,
+    });
 
-    component.handleFormSubmit();
-
-    expect(stateService.accountEnquiry().search?.court).toBe('Bristol');
+    expect(stateService.accountEnquiry().search?.court).toBe('Bath');
 
     expect(navigateSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.matches]);
+  });
+
+  it('should map search court to select options', () => {
+    const response: ISearchCourt[] = SEARCH_COURT_MOCK;
+    const expectedOptions: IGovUkSelectOptions[] = SEARCH_COURT_SELECT_OPTIONS_MOCK;
+    const result = component['mapSearchCourtToSelectOptions'](response);
+
+    expect(result).toEqual(expectedOptions);
   });
 });
