@@ -81,20 +81,20 @@ export class DetailsComponent implements OnInit {
    */
   public handleNotesFormSubmit(): void {
     const note = this.addNoteForm.get('note')?.value;
-    const postBody: IAddDefendantAccountNoteBody = {
-      associatedRecordId: this.defendantAccountId.toString(),
-      noteText: note,
-    };
 
     this.addNoteForm.reset();
 
-    this.notes$ = this.defendantAccountService.addDefendantAccountNote(postBody).pipe(
-      switchMap(() => {
-        return this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
-      }),
-    );
+    this.notes$ = this.defendantAccountService
+      .addDefendantAccountNote({
+        associatedRecordId: this.defendantAccountId.toString(),
+        noteText: note,
+      })
+      .pipe(
+        switchMap(() => {
+          return this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
+        }),
+      );
   }
-
   /**
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */

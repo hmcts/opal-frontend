@@ -18,17 +18,9 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       stateService.error.set({ error: false, message: '' });
     }),
     catchError((error) => {
-      let errMsg;
-
-      if (error.error instanceof ErrorEvent) {
-        errMsg = `Error: ${error.error.message}`;
-      } else {
-        errMsg = `Error: ${error.message}`;
-      }
-
       stateService.error.set({
         error: true,
-        message: errMsg,
+        message: error.error instanceof ErrorEvent ? `Error: ${error.error.message}` : `Error: ${error.message}`,
       });
 
       return throwError(() => error);

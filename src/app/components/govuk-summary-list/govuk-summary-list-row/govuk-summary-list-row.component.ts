@@ -42,12 +42,11 @@ export class GovukSummaryListRowComponent implements OnInit {
    */
   public handleActionClick(event: Event): void {
     event.preventDefault();
-    event.stopPropagation();
     this.actionClick.emit(true);
   }
 
   ngOnInit() {
-    this.id = `${this.summaryListId + this._summaryListRowId}`;
+    this.id = this.summaryListId + this._summaryListRowId;
     this.class = 'govuk-summary-list__row';
   }
 }
