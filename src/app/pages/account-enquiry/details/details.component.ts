@@ -15,7 +15,7 @@ import {
 import { AccountEnquiryRoutes } from '@enums';
 import { DefendantAccountService, StateService } from '@services';
 import { EMPTY, Observable, switchMap } from 'rxjs';
-import { IAddDefendantAccountNoteBody, IDefendantAccountDetails, IDefendantAccountNote } from '@interfaces';
+import { IDefendantAccountDetails, IDefendantAccountNote } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
