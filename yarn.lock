@@ -11685,36 +11685,36 @@ __metadata:
   linkType: hard
 
 "karma@npm:~6.4.0":
-  version: 6.4.2
-  resolution: "karma@npm:6.4.2"
+  version: 6.4.3
+  resolution: "karma@npm:6.4.3"
   dependencies:
-    "@colors/colors": "npm:1.5.0"
-    body-parser: "npm:^1.19.0"
-    braces: "npm:^3.0.2"
-    chokidar: "npm:^3.5.1"
-    connect: "npm:^3.7.0"
-    di: "npm:^0.0.1"
-    dom-serialize: "npm:^2.2.1"
-    glob: "npm:^7.1.7"
-    graceful-fs: "npm:^4.2.6"
-    http-proxy: "npm:^1.18.1"
-    isbinaryfile: "npm:^4.0.8"
-    lodash: "npm:^4.17.21"
-    log4js: "npm:^6.4.1"
-    mime: "npm:^2.5.2"
-    minimatch: "npm:^3.0.4"
-    mkdirp: "npm:^0.5.5"
-    qjobs: "npm:^1.2.0"
-    range-parser: "npm:^1.2.1"
-    rimraf: "npm:^3.0.2"
-    socket.io: "npm:^4.4.1"
-    source-map: "npm:^0.6.1"
-    tmp: "npm:^0.2.1"
-    ua-parser-js: "npm:^0.7.30"
-    yargs: "npm:^16.1.1"
+    "@colors/colors": 1.5.0
+    body-parser: ^1.19.0
+    braces: ^3.0.2
+    chokidar: ^3.5.1
+    connect: ^3.7.0
+    di: ^0.0.1
+    dom-serialize: ^2.2.1
+    glob: ^7.1.7
+    graceful-fs: ^4.2.6
+    http-proxy: ^1.18.1
+    isbinaryfile: ^4.0.8
+    lodash: ^4.17.21
+    log4js: ^6.4.1
+    mime: ^2.5.2
+    minimatch: ^3.0.4
+    mkdirp: ^0.5.5
+    qjobs: ^1.2.0
+    range-parser: ^1.2.1
+    rimraf: ^3.0.2
+    socket.io: ^4.7.2
+    source-map: ^0.6.1
+    tmp: ^0.2.1
+    ua-parser-js: ^0.7.30
+    yargs: ^16.1.1
   bin:
     karma: bin/karma
-  checksum: e493874729d87955f7c0f1f6c20b2e27184c82a3b33a14607538df9b049077b0263ecb398f5f0ebbba92325cb16f4f43a1461fa486d5a06eabbfdfb5f289f001
+  checksum: 4eee6f52c7cf54d860bb35600b61eac3631647efa01282671c9f799dbe4ea80ac729946c8c82e53be778905b5920d221b527c86bd9bec73214ca2f84339aebbe
   languageName: node
   linkType: hard
 
@@ -15034,6 +15034,21 @@ __metadata:
     socket.io-adapter: "npm:~2.5.2"
     socket.io-parser: "npm:~4.2.4"
   checksum: 2dfac8983a75e100e889c3dafc83b21b75a9863d0d1ee79cdc60c4391d5d9dffcf3a86fc8deca7568032bc11c2572676335fd2e469c7982f40d19f1141d4b266
+  languageName: node
+  linkType: hard
+
+"socket.io@npm:^4.7.2":
+  version: 4.7.4
+  resolution: "socket.io@npm:4.7.4"
+  dependencies:
+    accepts: ~1.3.4
+    base64id: ~2.0.0
+    cors: ~2.8.5
+    debug: ~4.3.2
+    engine.io: ~6.5.2
+    socket.io-adapter: ~2.5.2
+    socket.io-parser: ~4.2.4
+  checksum: 63bb2b0c1168beb7a79b60541def09d4de23f10f206e2e36e7a1ec1ef3d1f2f3143264878e026ceacdd26b52a37da74606c44e95da6651b4980cad5bfcc291a9
   languageName: node
   linkType: hard
 
