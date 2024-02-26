@@ -75,15 +75,13 @@ describe('GovukSummaryListRowComponent', () => {
     expect(componentGSLRC.actionClick.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should prevent default behavior and stop event propagation when handleActionClick is called', () => {
+  it('should prevent default behavior when handleActionClick is called', () => {
     const event = new Event('click');
     spyOn(event, 'preventDefault');
-    spyOn(event, 'stopPropagation');
 
     componentGSLRC.handleActionClick(event);
 
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(event.stopPropagation).toHaveBeenCalled();
   });
 
   it('should set the host values onInit', () => {

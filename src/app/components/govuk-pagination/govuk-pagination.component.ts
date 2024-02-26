@@ -77,6 +77,6 @@ export class GovukPaginationComponent implements OnChanges {
       pages.splice(1, currentPage - 3, this.ELIPSIS);
     }
 
-    return [...pages];
+    return pages;
   }
 }
