@@ -37,10 +37,6 @@ export class GovukCheckboxesComponent {
    * @param inputId - The ID of the input to toggle.
    */
   public handleToggleConditional(inputId: string): void {
-    if (this.toggleConditional[inputId]) {
-      this.toggleConditional[inputId] = !this.toggleConditional[inputId];
-    } else {
-      this.toggleConditional[inputId] = true;
-    }
+    this.toggleConditional[inputId] = !this.toggleConditional[inputId];
   }
 }
