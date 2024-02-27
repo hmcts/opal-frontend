@@ -28,7 +28,8 @@
       "@interfaces": ["./src/app/interfaces/index.ts"],
       "@mocks": ["./src/app/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
-      "@constants": ["./src/app/constants/index.ts"]
+      "@constants": ["./src/app/constants/index.ts"],
+      "@interceptors": ["./src/app/interceptors/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },

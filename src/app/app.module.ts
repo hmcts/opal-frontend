@@ -13,7 +13,7 @@ import {
 
 import { GovukHeaderComponent, GovukFooterComponent } from '@components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { httpErrorInterceptor } from './interceptors';
+import { httpErrorInterceptor } from '@interceptors';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +27,7 @@ import { httpErrorInterceptor } from './interceptors';
     BrowserAnimationsModule,
   ],
   providers: [provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor]))],
-  // providers: [],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

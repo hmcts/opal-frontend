@@ -21,7 +21,6 @@ const SEARCH_COURT_BODY: ISearchCourtBody = {
   selector: 'app-account-enquiry',
   standalone: true,
   imports: [CommonModule, RouterModule, SearchFormComponent],
-  providers: [CourtService],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
