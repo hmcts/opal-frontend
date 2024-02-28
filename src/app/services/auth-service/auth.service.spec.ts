@@ -4,9 +4,11 @@ import { AuthService } from './auth.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { SsoEndpoints } from 'src/app/enums/sso-endpoints';
+import { StateService } from '../state-service/state.service';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let stateService: StateService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -14,6 +16,7 @@ describe('AuthService', () => {
       imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(AuthService);
+    stateService = TestBed.inject(StateService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -24,7 +27,7 @@ describe('AuthService', () => {
   it('should be authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(true);
-      expect(service.authenticated()).toEqual(true);
+      expect(stateService.authenticated()).toEqual(true);
     });
 
     const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
@@ -36,7 +39,7 @@ describe('AuthService', () => {
   it('should be not authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(false);
-      expect(service.authenticated()).toEqual(false);
+      expect(stateService.authenticated()).toEqual(false);
     });
 
     const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);

@@ -12,7 +12,9 @@ import {
 } from '@interfaces';
 import { Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class DefendantAccountService {
   private readonly http = inject(HttpClient);
 

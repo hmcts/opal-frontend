@@ -6,7 +6,7 @@ import { IAccountEnquiryState } from '@interfaces';
   providedIn: 'root',
 })
 export class StateService {
-  public error = signal({ error: false, message: '' });
-
-  public accountEnquiry: WritableSignal<IAccountEnquiryState> = signal(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+  public readonly authenticated = signal<boolean>(false);
+  public readonly error = signal({ error: false, message: '' });
+  public readonly accountEnquiry: WritableSignal<IAccountEnquiryState> = signal(ACCOUNT_ENQUIRY_DEFAULT_STATE);
 }
