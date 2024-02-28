@@ -3,9 +3,8 @@
 import UserState from "./userState";
 
 class SecurityToken {
-  //   userState: UserState | undefined;
+  userState: UserState | undefined;
   accessToken!: string;
-  userState?: UserState;
 }
 
 export default SecurityToken;
