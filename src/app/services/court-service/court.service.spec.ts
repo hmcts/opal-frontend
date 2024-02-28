@@ -39,4 +39,26 @@ describe('CourtService', () => {
     expect(req.request.body).toEqual(searchBody);
     req.flush(expectedResponse);
   });
+
+  it('should return cached response for the same court search', () => {
+    const searchBody: ISearchCourtBody = SEARCH_COURT_BODY_MOCK;
+    const expectedResponse: ISearchCourt[] = SEARCH_COURT_MOCK;
+
+    service.searchCourt(searchBody).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(ApiPaths.courtSearch);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(searchBody);
+    req.flush(expectedResponse);
+
+    // Make a second call to searchCourt with the same search body
+    service.searchCourt(searchBody).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(ApiPaths.courtSearch);
+  });
 });
