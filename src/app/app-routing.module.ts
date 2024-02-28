@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard, signedInGuard } from '@guards';
-import { CourtService } from '@services';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
@@ -12,7 +11,6 @@ const routes: Routes = [
   },
   {
     path: 'account-enquiry',
-    // providers: [CourtService],
     loadComponent: () =>
       import('./pages/account-enquiry/account-enquiry.component').then((c) => c.AccountEnquiryComponent),
     children: [
