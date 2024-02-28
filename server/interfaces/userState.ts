@@ -5,8 +5,8 @@ class UserState {
 }
 
 class Role {
-  roleId!: number;
-  roleName!: string;
+  businessUserId!: number;
+  businessUnit!: string;
   permissions?: Permissions[];
 }
 
