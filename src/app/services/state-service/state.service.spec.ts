@@ -26,4 +26,13 @@ describe('StateService', () => {
     expect(service.error().error).toBeTruthy();
     expect(service.error().message).toEqual(message);
   });
+
+  it('should have initial authenticated state as false', () => {
+    expect(service.authenticated()).toBe(false);
+  });
+
+  it('should have an authenticated state of true', () => {
+    service.authenticated.set(true);
+    expect(service.authenticated()).toBe(true);
+  });
 });

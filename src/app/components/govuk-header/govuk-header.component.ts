@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { GovukHeader } from '@enums';
-import { AuthService } from '@services';
+import { StateService } from '@services';
 @Component({
   selector: 'app-govuk-header',
   standalone: true,
@@ -13,5 +13,5 @@ import { AuthService } from '@services';
 })
 export class GovukHeaderComponent {
   public readonly header = GovukHeader;
-  public readonly authenticated = inject(AuthService).authenticated;
+  public readonly authenticated = inject(StateService).authenticated;
 }
