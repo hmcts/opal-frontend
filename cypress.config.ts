@@ -30,6 +30,6 @@ export default defineConfig({
     CYPRESS_TEST_EMAIL: process.env['OPAL_TEST_USER_EMAIL'],
     CYPRESS_TEST_PASSWORD: process.env['OPAL_TEST_USER_PASSWORD'],
     TEST_MODE: process.env['TEST_MODE'] || 'OPAL',
-    API_URL: process.env['TEST_URL'] || 'http://localhost:4550',
+    API_URL: process.env['OPAL_API_URL'] || 'http://localhost:4550',
   },
 });
