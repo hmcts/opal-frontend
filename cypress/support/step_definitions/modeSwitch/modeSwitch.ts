@@ -6,7 +6,7 @@ function apiUrl() {
   if (baseUrl?.includes('localhost')) {
     url = 'http://localhost:4550';
   } else {
-    url = `https://test-${baseUrl.replace('https://', '')}`;
+    url = `https://opal-fines-service-${baseUrl.replace('https://', '')}`;
   }
   return url;
 }
