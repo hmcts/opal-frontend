@@ -12,8 +12,10 @@ export class LaunchDarklyService {
 
   constructor() {}
 
-  public initializeLaunchDarklyClient() {
-    this.ldClient = initialize('sdk-XXXXXXXXXXXXXXXX', {
+  public initializeLaunchDarklyClient(key: string) {
+    console.log('Initializing LaunchDarkly client', key);
+    this.ldClient = initialize(key, {
+      // key: '655ddb56ca6d3c12dea9c518',
       anonymous: true,
     });
 

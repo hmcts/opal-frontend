@@ -20,6 +20,8 @@ import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { AppServerModule } from './src/main.server';
 
+import config from 'config';
+
 import { Logger } from '@hmcts/nodejs-logging';
 
 import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
@@ -72,7 +74,10 @@ export function app(): express.Express {
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: distFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: baseUrl },
+          { provide: 'launchDarklyClientId', useValue: config.get('secrets.opal.launch-darkly-client-id') },
+        ],
       })
       .then((html) => res.send(html))
       .catch((err) => next(err));
