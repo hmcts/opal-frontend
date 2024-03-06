@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,6 +14,7 @@ import {
 import { GovukHeaderComponent, GovukFooterComponent } from '@components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors';
+import { LaunchDarklyService } from '@services';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +27,17 @@ import { httpErrorInterceptor } from '@interceptors';
     GovukFooterComponent,
     BrowserAnimationsModule,
   ],
-  providers: [provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor]))],
+  providers: [
+    provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor])),
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: (launchDarklyService: LaunchDarklyService) => {
+        return () => launchDarklyService.initializeLaunchDarklyClient();
+      },
+      deps: [LaunchDarklyService],
+    },
+  ],
 
   bootstrap: [AppComponent],
 })
