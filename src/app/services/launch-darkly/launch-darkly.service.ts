@@ -11,7 +11,7 @@ import {
   TransferState,
 } from '@angular/core';
 import { StateService } from '@services';
-import { initialize, LDClient, LDFlagSet } from 'launchdarkly-js-client-sdk';
+import { initialize, LDClient, LDFlagChangeset, LDFlagSet, LDFlagValue } from 'launchdarkly-js-client-sdk';
 // import { Subject } from 'rxjs';
 
 @Injectable({
@@ -43,13 +43,18 @@ export class LaunchDarklyService implements OnDestroy {
 
   private initializeLaunchDarklyFlags() {
     this.stateService.featureFlags.set(this.ldClient.allFlags());
-    console.log('Flags:', this.stateService.featureFlags());
+  }
+
+  private formatChangeFlags(flags: LDFlagChangeset): LDFlagSet {
+    return Object.keys(flags).reduce((flag: LDFlagSet, key) => {
+      flag[key] = flags[key].current;
+      return flag;
+    }, {});
   }
 
   private initializeLaunchDarklyChangeListener() {
-    this.ldClient.on('change', (flags) => {
-      this.stateService.featureFlags.set(flags);
-      console.log('Change Flags:', this.stateService.featureFlags());
+    this.ldClient.on('change', (flags: LDFlagChangeset) => {
+      this.stateService.featureFlags.set(this.formatChangeFlags(flags));
     });
   }
 

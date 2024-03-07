@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { GovukButtonComponent } from '@components';
+import { StateService } from '@services';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,7 +13,7 @@ import { GovukButtonComponent } from '@components';
 })
 export class SignInComponent {
   private readonly document = inject(DOCUMENT);
-
+  public readonly stateService = inject(StateService);
   /**
    * Handles the login button click event.
    */
