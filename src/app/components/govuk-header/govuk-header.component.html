@@ -44,7 +44,7 @@
         }
 
         @if (stateService.featureFlags()['test-demo']) {
-          @if (!stateService.authenticated) {
+          @if (!stateService.authenticated()) {
             <a href="/sso/login" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign in</a>
           } @else {
             <a href="/sso/logout" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign out</a>
