@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { LaunchDarklyService } from './launch-darkly.service';
 import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 
-fdescribe('LaunchDarklyService', () => {
+describe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
 
   beforeEach(() => {
@@ -46,7 +46,9 @@ fdescribe('LaunchDarklyService', () => {
   it('should initialize LaunchDarkly client with anonymous flag', () => {
     const clientId = '1234';
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'initializeLaunchDarklyReadyListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'initializeLaunchDarklyChangeListener');
 
     service['initializeLaunchDarklyClient'](clientId);
@@ -58,6 +60,7 @@ fdescribe('LaunchDarklyService', () => {
 
   it('should initialize LaunchDarkly', () => {
     const clientId = '1234';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'initializeLaunchDarklyClient');
 
     service['storedLaunchDarklyClientId'] = clientId;
@@ -67,11 +70,27 @@ fdescribe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly if clientId is not stored', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'initializeLaunchDarklyClient');
 
     service['storedLaunchDarklyClientId'] = null;
     service.initializeLaunchDarkly();
 
     expect(service['initializeLaunchDarklyClient']).not.toHaveBeenCalled();
+  });
+
+  it('should close the LaunchDarkly client', () => {
+    const clientId = '1234';
+    service['storedLaunchDarklyClientId'] = clientId;
+    service.initializeLaunchDarkly();
+    spyOn(service['ldClient'], 'close');
+    service.closeLaunchDarklyClient();
+    expect(service['ldClient'].close).toHaveBeenCalled();
+  });
+
+  it('should call closeLaunchDarklyClient on ngOnDestroy', () => {
+    spyOn(service, 'closeLaunchDarklyClient');
+    service.ngOnDestroy();
+    expect(service.closeLaunchDarklyClient).toHaveBeenCalled();
   });
 });
