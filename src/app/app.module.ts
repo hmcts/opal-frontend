@@ -33,7 +33,7 @@ import { LaunchDarklyService } from '@services';
       provide: APP_INITIALIZER,
       multi: true,
       useFactory: (launchDarklyService: LaunchDarklyService) => {
-        return () => launchDarklyService.initializeLaunchDarklyClient();
+        return () => launchDarklyService.initializeLaunchDarkly();
       },
       deps: [LaunchDarklyService],
     },

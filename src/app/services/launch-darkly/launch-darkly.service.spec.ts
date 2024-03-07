@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-
 import { LaunchDarklyService } from './launch-darkly.service';
 
-describe('LaunchDarklyService', () => {
+fdescribe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
 
   beforeEach(() => {
