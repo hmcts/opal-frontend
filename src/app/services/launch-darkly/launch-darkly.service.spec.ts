@@ -68,6 +68,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should call closeLaunchDarklyClient on ngOnDestroy', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'closeLaunchDarklyClient');
     service.ngOnDestroy();
     expect(service['closeLaunchDarklyClient']).toHaveBeenCalled();
