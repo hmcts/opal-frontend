@@ -60,6 +60,15 @@ export class LaunchDarklyService implements OnDestroy {
   }
 
   /**
+   * Closes the LaunchDarkly client if it is open.
+   */
+  private closeLaunchDarklyClient(): void {
+    if (this.ldClient) {
+      this.ldClient.close();
+    }
+  }
+
+  /**
    * Initializes the LaunchDarkly change listener.
    * This method listens for changes in feature flags and updates the state accordingly.
    */
@@ -101,15 +110,6 @@ export class LaunchDarklyService implements OnDestroy {
       this.ldClient = initialize(clientId, {
         anonymous: true,
       });
-    }
-  }
-
-  /**
-   * Closes the LaunchDarkly client if it is open.
-   */
-  public closeLaunchDarklyClient(): void {
-    if (this.ldClient) {
-      this.ldClient.close();
     }
   }
 
