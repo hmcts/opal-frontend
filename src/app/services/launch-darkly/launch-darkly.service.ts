@@ -38,10 +38,12 @@ export class LaunchDarklyService implements OnDestroy {
   }
 
   /**
-   * Initializes the LaunchDarkly flags by setting them in the state service.
+   * Sets the LaunchDarkly flags by updating the featureFlags in the state service.
    */
-  private initializeLaunchDarklyFlags() {
-    this.stateService.featureFlags.set(this.ldClient.allFlags());
+  private setLaunchDarklyFlags() {
+    if (this.ldClient) {
+      this.stateService.featureFlags.set(this.ldClient.allFlags());
+    }
   }
 
   /**
@@ -61,46 +63,45 @@ export class LaunchDarklyService implements OnDestroy {
    * Initializes the LaunchDarkly change listener.
    * This method listens for changes in feature flags and updates the state accordingly.
    */
-  private initializeLaunchDarklyChangeListener() {
-    this.ldClient.on('change', (flags: LDFlagChangeset) => {
-      const updatedFlags = { ...this.stateService.featureFlags(), ...this.formatChangeFlags(flags) };
-      this.stateService.featureFlags.set(updatedFlags);
-    });
+  public initializeLaunchDarklyChangeListener() {
+    if (this.ldClient) {
+      this.ldClient.on('change', (flags: LDFlagChangeset) => {
+        const updatedFlags = { ...this.stateService.featureFlags(), ...this.formatChangeFlags(flags) };
+        console.log('Updated LaunchDarkly flags:', updatedFlags);
+        this.stateService.featureFlags.set(updatedFlags);
+      });
+    }
   }
 
   /**
-   * Initializes the LaunchDarkly ready listener.
-   * When the LaunchDarkly client is ready, it calls the `initializeLaunchDarklyFlags` method.
+   * Initializes the LaunchDarkly flags and sets them.
+   * If the LD client is already initialized, it waits for initialization and then sets the flags.
+   * If the LD client is not initialized, it returns a resolved promise.
+   * @returns A promise that resolves when the flags are set.
    */
-  private initializeLaunchDarklyReadyListener(): void {
-    this.ldClient.on('ready', () => {
-      this.initializeLaunchDarklyFlags();
-    });
+  public initializeLaunchDarklyFlags(): Promise<void> {
+    if (this.ldClient) {
+      return this.ldClient
+        .waitForInitialization()
+        .then(() => this.setLaunchDarklyFlags())
+        .catch((err) => {
+          throw err;
+        });
+    }
+
+    return Promise.resolve();
   }
 
   /**
-   * Initializes the LaunchDarkly client with the specified client ID.
-   * @param clientId - The client ID to use for initializing the LaunchDarkly client.
+   * Initializes the LaunchDarkly client.
+   * If a stored LaunchDarkly client ID exists, it initializes the client with the ID and anonymous mode enabled.
    */
-  private initializeLaunchDarklyClient(clientId: string): void {
-    this.ldClient = initialize(clientId, {
-      anonymous: true,
-    });
-
-    // Setup our listeners once the client is initialized
-    this.initializeLaunchDarklyReadyListener();
-    this.initializeLaunchDarklyChangeListener();
-  }
-
-  /**
-   * Initializes the LaunchDarkly service.
-   * If a stored LaunchDarkly client ID is available, it initializes the client,
-   * sets up the ready listener, and sets up the change listener.
-   */
-  public initializeLaunchDarkly(): void {
+  public initializeLaunchDarklyClient(): void {
     const clientId = this.storedLaunchDarklyClientId;
     if (clientId) {
-      this.initializeLaunchDarklyClient(clientId);
+      this.ldClient = initialize(clientId, {
+        anonymous: true,
+      });
     }
   }
 
@@ -108,7 +109,9 @@ export class LaunchDarklyService implements OnDestroy {
    * Closes the LaunchDarkly client if it is open.
    */
   public closeLaunchDarklyClient(): void {
-    if (this.ldClient) this.ldClient.close();
+    if (this.ldClient) {
+      this.ldClient.close();
+    }
   }
 
   ngOnDestroy(): void {

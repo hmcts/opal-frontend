@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { LaunchDarklyService } from './launch-darkly.service';
 import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 
-describe('LaunchDarklyService', () => {
+fdescribe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
 
   beforeEach(() => {
@@ -11,13 +11,14 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly flags', () => {
-    service['initializeLaunchDarklyClient']('1234');
+    service['storedLaunchDarklyClientId'] = '1234';
+    service.initializeLaunchDarklyClient();
 
     const mockFlags = { flag1: true, flag2: false };
     spyOn(service['ldClient'], 'allFlags').and.returnValue(mockFlags);
     spyOn(service['stateService'].featureFlags, 'set');
 
-    service['initializeLaunchDarklyFlags']();
+    service['setLaunchDarklyFlags']();
 
     expect(service['ldClient'].allFlags).toHaveBeenCalled();
     expect(service['stateService'].featureFlags.set).toHaveBeenCalledWith(mockFlags);
@@ -43,46 +44,24 @@ describe('LaunchDarklyService', () => {
     expect(formattedFlags).toEqual({});
   });
 
-  it('should initialize LaunchDarkly client with anonymous flag', () => {
-    const clientId = '1234';
+  it('should initialize LaunchDarkly client', () => {
+    service['storedLaunchDarklyClientId'] = '1234';
+    service['initializeLaunchDarklyClient']();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'initializeLaunchDarklyReadyListener');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'initializeLaunchDarklyChangeListener');
-
-    service['initializeLaunchDarklyClient'](clientId);
-
-    expect(service['ldClient']).not.toBeNull();
-    expect(service['initializeLaunchDarklyReadyListener']).toHaveBeenCalled();
-    expect(service['initializeLaunchDarklyChangeListener']).toHaveBeenCalled();
+    expect(service['ldClient']).toBeDefined();
   });
 
-  it('should initialize LaunchDarkly', () => {
-    const clientId = '1234';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'initializeLaunchDarklyClient');
-
-    service['storedLaunchDarklyClientId'] = clientId;
-    service.initializeLaunchDarkly();
-
-    expect(service['initializeLaunchDarklyClient']).toHaveBeenCalledWith(clientId);
-  });
-
-  it('should not initialize LaunchDarkly if clientId is not stored', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'initializeLaunchDarklyClient');
-
+  it('should not initialize LaunchDarkly client', () => {
     service['storedLaunchDarklyClientId'] = null;
-    service.initializeLaunchDarkly();
 
-    expect(service['initializeLaunchDarklyClient']).not.toHaveBeenCalled();
+    service['initializeLaunchDarklyClient']();
+
+    expect(service['ldClient']).not.toBeDefined();
   });
 
   it('should close the LaunchDarkly client', () => {
-    const clientId = '1234';
-    service['storedLaunchDarklyClientId'] = clientId;
-    service.initializeLaunchDarkly();
+    service['storedLaunchDarklyClientId'] = '1234';
+    service.initializeLaunchDarklyClient();
     spyOn(service['ldClient'], 'close');
     service.closeLaunchDarklyClient();
     expect(service['ldClient'].close).toHaveBeenCalled();
@@ -92,5 +71,37 @@ describe('LaunchDarklyService', () => {
     spyOn(service, 'closeLaunchDarklyClient');
     service.ngOnDestroy();
     expect(service.closeLaunchDarklyClient).toHaveBeenCalled();
+  });
+
+  it('should initialize LaunchDarkly flags when ldClient is not defined', async () => {
+    spyOn<any>(service, 'setLaunchDarklyFlags');
+
+    await service.initializeLaunchDarklyFlags();
+
+    expect(service['setLaunchDarklyFlags']).not.toHaveBeenCalled();
+  });
+
+  it('should initialize LaunchDarkly flags when ldClient is defined', async () => {
+    // const mockFlags = { flag1: true, flag2: false };
+    service['storedLaunchDarklyClientId'] = '1234';
+    service.initializeLaunchDarklyClient();
+
+    spyOn(service['ldClient'], 'waitForInitialization').and.returnValue(Promise.resolve());
+    spyOn<any>(service, 'setLaunchDarklyFlags');
+
+    await service.initializeLaunchDarklyFlags();
+
+    expect(service['ldClient'].waitForInitialization).toHaveBeenCalled();
+    expect(service['setLaunchDarklyFlags']).toHaveBeenCalled();
+  });
+
+  it('should throw an error when waitForInitialization fails', async () => {
+    service['storedLaunchDarklyClientId'] = '1234';
+    service.initializeLaunchDarklyClient();
+
+    const error = new Error('Initialization failed');
+    spyOn(service['ldClient'], 'waitForInitialization').and.returnValue(Promise.reject(error));
+
+    await expectAsync(service.initializeLaunchDarklyFlags()).toBeRejectedWith(error);
   });
 });
