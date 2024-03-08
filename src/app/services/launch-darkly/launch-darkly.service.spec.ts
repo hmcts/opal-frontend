@@ -74,6 +74,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly flags when ldClient is not defined', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'setLaunchDarklyFlags');
 
     await service.initializeLaunchDarklyFlags();
@@ -87,6 +88,7 @@ describe('LaunchDarklyService', () => {
     service.initializeLaunchDarklyClient();
 
     spyOn(service['ldClient'], 'waitForInitialization').and.returnValue(Promise.resolve());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'setLaunchDarklyFlags');
 
     await service.initializeLaunchDarklyFlags();
