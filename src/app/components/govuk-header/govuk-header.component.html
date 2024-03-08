@@ -43,12 +43,10 @@
           <span class="govuk-header__service-name"> {{ header.serviceName }} </span>
         }
 
-        @if (stateService.featureFlags()['test-demo']) {
-          @if (!stateService.authenticated()) {
-            <a href="/sso/login" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign in</a>
-          } @else {
-            <a href="/sso/logout" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign out</a>
-          }
+        @if (!stateService.authenticated()) {
+          <a href="/sso/login" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign in</a>
+        } @else {
+          <a href="/sso/logout" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign out</a>
         }
       </div>
     }
