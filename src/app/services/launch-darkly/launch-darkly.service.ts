@@ -79,7 +79,7 @@ export class LaunchDarklyService implements OnDestroy {
    * If the LD client is not initialized, it returns a resolved promise.
    * @returns A promise that resolves when the flags are set.
    */
-  public initializeLaunchDarklyFlags(): Promise<void> {
+  public async initializeLaunchDarklyFlags(): Promise<void> {
     if (this.ldClient) {
       return this.ldClient
         .waitForInitialization()

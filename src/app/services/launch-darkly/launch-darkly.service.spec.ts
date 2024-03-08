@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { LaunchDarklyService } from './launch-darkly.service';
 import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 
-fdescribe('LaunchDarklyService', () => {
+describe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
 
   beforeEach(() => {
