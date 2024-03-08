@@ -17,6 +17,9 @@
     },
     "helmet": {
       "enabled": false
+    },
+    "launch-darkly": {
+      "stream": false
     }
   },
   "session": {

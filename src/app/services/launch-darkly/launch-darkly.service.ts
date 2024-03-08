@@ -9,6 +9,7 @@ import {
   PLATFORM_ID,
   TransferState,
 } from '@angular/core';
+import { ILaunchDarklyConfig } from '@interfaces';
 import { StateService } from '@services';
 import { initialize, LDClient, LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 
@@ -18,22 +19,30 @@ import { initialize, LDClient, LDFlagChangeset, LDFlagSet } from 'launchdarkly-j
 export class LaunchDarklyService implements OnDestroy {
   private readonly stateService = inject(StateService);
   private storedLaunchDarklyClientId: string | null = null;
+  private storedLaunchDarklyStream: boolean | null = null;
   private ldClient!: LDClient;
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: typeof PLATFORM_ID,
-    @Optional() @Inject('launchDarklyClientId') public readonly launchDarklyClientId: string | null,
+    @Optional() @Inject('launchDarklyConfig') public readonly launchDarklyConfig: ILaunchDarklyConfig,
     private readonly transferState: TransferState,
   ) {
     const storeKey = makeStateKey<string>('launchDarklyClientIdKey');
-    if (isPlatformBrowser(this.platformId)) {
-      //get launchDarklyClientId from transferState if browser side
-      this.launchDarklyClientId = this.transferState.get(storeKey, null);
+    const storeStreamKey = makeStateKey<boolean>('launchDarklyStreamKey');
 
-      this.storedLaunchDarklyClientId = this.launchDarklyClientId;
+    if (isPlatformBrowser(this.platformId)) {
+      //get launchDarklyClientId and from transferState if browser side
+      this.launchDarklyConfig = {
+        clientId: this.transferState.get(storeKey, null),
+        stream: this.transferState.get(storeStreamKey, null),
+      };
+
+      this.storedLaunchDarklyClientId = this.launchDarklyConfig.clientId;
+      this.storedLaunchDarklyStream = this.launchDarklyConfig.stream;
     } else {
       //server side: get provided launchDarklyClientId and store in in transfer state
-      this.transferState.set(storeKey, this.launchDarklyClientId);
+      this.transferState.set(storeKey, this.launchDarklyConfig.clientId);
+      this.transferState.set(storeStreamKey, this.launchDarklyConfig.stream);
     }
   }
 
@@ -73,7 +82,7 @@ export class LaunchDarklyService implements OnDestroy {
    * This method listens for changes in feature flags and updates the state accordingly.
    */
   public initializeLaunchDarklyChangeListener() {
-    if (this.ldClient) {
+    if (this.ldClient && this.storedLaunchDarklyStream) {
       this.ldClient.on('change', (flags: LDFlagChangeset) => {
         const updatedFlags = { ...this.stateService.featureFlags(), ...this.formatChangeFlags(flags) };
         this.stateService.featureFlags.set(updatedFlags);

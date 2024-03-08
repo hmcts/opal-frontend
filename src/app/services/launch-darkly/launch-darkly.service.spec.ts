@@ -110,6 +110,7 @@ describe('LaunchDarklyService', () => {
 
   it('should initialize LaunchDarkly change listener when ldClient is defined', () => {
     service['storedLaunchDarklyClientId'] = '1234';
+    service['storedLaunchDarklyStream'] = true;
     service.initializeLaunchDarklyClient();
 
     spyOn(service['ldClient'], 'on');
@@ -119,8 +120,21 @@ describe('LaunchDarklyService', () => {
     expect(service['ldClient'].on).toHaveBeenCalledWith('change', jasmine.any(Function));
   });
 
+  it('should not initialize LaunchDarkly change listener when stream is false', () => {
+    service['storedLaunchDarklyClientId'] = '1234';
+    service['storedLaunchDarklyStream'] = false;
+    service.initializeLaunchDarklyClient();
+
+    spyOn(service['ldClient'], 'on');
+
+    service.initializeLaunchDarklyChangeListener();
+
+    expect(service['ldClient'].on).not.toHaveBeenCalledWith('change', jasmine.any(Function));
+  });
+
   it('should update feature flags when ldClient emits change event', () => {
     service['storedLaunchDarklyClientId'] = '1234';
+    service['storedLaunchDarklyStream'] = true;
     service.initializeLaunchDarklyClient();
 
     const mockFlags: LDFlagChangeset = {

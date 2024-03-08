@@ -67,6 +67,8 @@ export function app(): express.Express {
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
+    const launchDarklyClientId = config.get('secrets.opal.launch-darkly-client-id');
+    const launchDarklyStream = config.get('features.launch-darkly.stream');
 
     commonEngine
       .render({
@@ -76,7 +78,13 @@ export function app(): express.Express {
         publicPath: distFolder,
         providers: [
           { provide: APP_BASE_HREF, useValue: baseUrl },
-          { provide: 'launchDarklyClientId', useValue: config.get('secrets.opal.launch-darkly-client-id') },
+          {
+            provide: 'launchDarklyConfig',
+            useValue: {
+              clientId: launchDarklyClientId,
+              stream: launchDarklyStream,
+            },
+          },
         ],
       })
       .then((html) => res.send(html))
