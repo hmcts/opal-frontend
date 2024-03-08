@@ -106,4 +106,41 @@ describe('LaunchDarklyService', () => {
 
     await expectAsync(service.initializeLaunchDarklyFlags()).toBeRejectedWith(error);
   });
+
+  it('should initialize LaunchDarkly change listener when ldClient is defined', () => {
+    service['storedLaunchDarklyClientId'] = '1234';
+    service.initializeLaunchDarklyClient();
+
+    spyOn(service['ldClient'], 'on');
+
+    service.initializeLaunchDarklyChangeListener();
+
+    expect(service['ldClient'].on).toHaveBeenCalledWith('change', jasmine.any(Function));
+  });
+
+  it('should update feature flags when ldClient emits change event', () => {
+    service['storedLaunchDarklyClientId'] = '1234';
+    service.initializeLaunchDarklyClient();
+
+    const mockFlags: LDFlagChangeset = {
+      flag1: { current: true, previous: false },
+      flag2: { current: false, previous: true },
+    };
+    const expectedUpdatedFlags = {
+      flag1: true,
+      flag2: false,
+    };
+
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    spyOn(service['ldClient'], 'on').and.callFake((event: string, callback: Function) => {
+      if (event === 'change') {
+        callback(mockFlags);
+      }
+    });
+    spyOn(service['stateService'].featureFlags, 'set');
+
+    service.initializeLaunchDarklyChangeListener();
+
+    expect(service['stateService'].featureFlags.set).toHaveBeenCalledWith(expectedUpdatedFlags);
+  });
 });

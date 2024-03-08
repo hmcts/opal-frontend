@@ -67,7 +67,6 @@ export class LaunchDarklyService implements OnDestroy {
     if (this.ldClient) {
       this.ldClient.on('change', (flags: LDFlagChangeset) => {
         const updatedFlags = { ...this.stateService.featureFlags(), ...this.formatChangeFlags(flags) };
-        console.log('Updated LaunchDarkly flags:', updatedFlags);
         this.stateService.featureFlags.set(updatedFlags);
       });
     }
