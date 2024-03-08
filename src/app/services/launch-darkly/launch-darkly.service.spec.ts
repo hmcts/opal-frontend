@@ -63,14 +63,14 @@ describe('LaunchDarklyService', () => {
     service['storedLaunchDarklyClientId'] = '1234';
     service.initializeLaunchDarklyClient();
     spyOn(service['ldClient'], 'close');
-    service.closeLaunchDarklyClient();
+    service['closeLaunchDarklyClient']();
     expect(service['ldClient'].close).toHaveBeenCalled();
   });
 
   it('should call closeLaunchDarklyClient on ngOnDestroy', () => {
-    spyOn(service, 'closeLaunchDarklyClient');
+    spyOn<any>(service, 'closeLaunchDarklyClient');
     service.ngOnDestroy();
-    expect(service.closeLaunchDarklyClient).toHaveBeenCalled();
+    expect(service['closeLaunchDarklyClient']).toHaveBeenCalled();
   });
 
   it('should initialize LaunchDarkly flags when ldClient is not defined', async () => {
