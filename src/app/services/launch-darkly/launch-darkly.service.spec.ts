@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LaunchDarklyService } from './launch-darkly.service';
 import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
+import { LAUNCH_DARKLY_CHANGE_FLAGS_MOCK, LAUNCH_DARKLY_FLAGS_MOCK } from '@mocks';
 
 describe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
@@ -14,7 +15,7 @@ describe('LaunchDarklyService', () => {
     service['storedLaunchDarklyClientId'] = '1234';
     service.initializeLaunchDarklyClient();
 
-    const mockFlags = { flag1: true, flag2: false };
+    const mockFlags: LDFlagSet = LAUNCH_DARKLY_FLAGS_MOCK;
     spyOn(service['ldClient'], 'allFlags').and.returnValue(mockFlags);
     spyOn(service['stateService'].featureFlags, 'set');
 
@@ -25,14 +26,8 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should format the flag changeset correctly', () => {
-    const flags: LDFlagChangeset = {
-      flag1: { current: true, previous: false },
-      flag2: { current: false, previous: true },
-    };
-    const expectedFormattedFlags: LDFlagSet = {
-      flag1: true,
-      flag2: false,
-    };
+    const flags: LDFlagChangeset = LAUNCH_DARKLY_CHANGE_FLAGS_MOCK;
+    const expectedFormattedFlags: LDFlagSet = LAUNCH_DARKLY_FLAGS_MOCK;
 
     const formattedFlags = service['formatChangeFlags'](flags);
     expect(formattedFlags).toEqual(expectedFormattedFlags);
@@ -137,14 +132,8 @@ describe('LaunchDarklyService', () => {
     service['storedLaunchDarklyStream'] = true;
     service.initializeLaunchDarklyClient();
 
-    const mockFlags: LDFlagChangeset = {
-      flag1: { current: true, previous: false },
-      flag2: { current: false, previous: true },
-    };
-    const expectedUpdatedFlags = {
-      flag1: true,
-      flag2: false,
-    };
+    const mockFlags: LDFlagChangeset = LAUNCH_DARKLY_CHANGE_FLAGS_MOCK;
+    const expectedUpdatedFlags = LAUNCH_DARKLY_FLAGS_MOCK;
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     spyOn(service['ldClient'], 'on').and.callFake((event: string, callback: Function) => {
