@@ -7,7 +7,7 @@ function apiUrl() {
     url = 'http://localhost:4550';
   }
   if (baseUrl?.includes('staging.staging')) {
-    url = `https://opal-fines-service-${baseUrl.replace('https://', '').replace('staging.staging', 'staging')}`;
+    url = 'https://opal-fines-service.staging.platform.hmcts.net';
   } else {
     url = `https://opal-fines-service-${baseUrl.replace('https://', '')}`;
   }
