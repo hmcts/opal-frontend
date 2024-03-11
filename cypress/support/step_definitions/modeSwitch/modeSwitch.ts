@@ -5,6 +5,9 @@ function apiUrl() {
   let url;
   if (baseUrl?.includes('localhost')) {
     url = 'http://localhost:4550';
+  }
+  if (baseUrl?.includes('staging.staging')) {
+    url = `https://opal-fines-service-${baseUrl.replace('https://', '').replace('staging.staging', 'staging')}`;
   } else {
     url = `https://opal-fines-service-${baseUrl.replace('https://', '')}`;
   }
