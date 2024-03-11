@@ -3,6 +3,7 @@ export interface IDefendantAccountDetails {
   accountNumber: string;
   fullName: string;
   accountCT: string;
+  businessUnitId: number;
   address: string;
   postCode: string;
   dob: string | null;
