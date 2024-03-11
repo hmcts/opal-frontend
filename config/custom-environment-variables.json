@@ -26,8 +26,14 @@
       }
     },
     "launch-darkly": {
-      "__name": "FEATURES_LAUNCH_DARKLY_STREAM",
-      "__format": "json"
+      "enabled": {
+        "__name": "FEATURES_LAUNCH_DARKLY_ENABLED",
+        "__format": "json"
+      },
+      "stream": {
+        "__name": "FEATURES_LAUNCH_DARKLY_STREAM",
+        "__format": "json"
+      }
     }
   },
   "session": {

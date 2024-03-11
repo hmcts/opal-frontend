@@ -5,3 +5,7 @@
     (formSubmit)="handleFormSubmit($event)"
   ></app-search-form>
 }
+
+@if (stateService.featureFlags()['test-demo']) {
+  THIS IS A TEST FLAG
+}
