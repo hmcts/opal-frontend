@@ -3,7 +3,7 @@ import { LaunchDarklyService } from './launch-darkly.service';
 import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 import { LAUNCH_DARKLY_CHANGE_FLAGS_MOCK, LAUNCH_DARKLY_FLAGS_MOCK } from '@mocks';
 
-describe('LaunchDarklyService', () => {
+fdescribe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
 
   beforeEach(() => {
@@ -12,6 +12,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly flags', () => {
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service.initializeLaunchDarklyClient();
 
@@ -40,13 +41,32 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly client', () => {
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service['initializeLaunchDarklyClient']();
 
     expect(service['ldClient']).toBeDefined();
   });
 
-  it('should not initialize LaunchDarkly client', () => {
+  it('should not initialize LaunchDarkly client if no client id', () => {
+    service['storedLaunchDarklyClientId'] = null;
+
+    service['initializeLaunchDarklyClient']();
+
+    expect(service['ldClient']).not.toBeDefined();
+  });
+
+  it('should not initialize LaunchDarkly client if not enabled', () => {
+    service['storedLaunchDarklyEnabled'] = false;
+    service['storedLaunchDarklyClientId'] = '1234';
+
+    service['initializeLaunchDarklyClient']();
+
+    expect(service['ldClient']).not.toBeDefined();
+  });
+
+  it('should not initialize LaunchDarkly client if not enabled and no client id', () => {
+    service['storedLaunchDarklyEnabled'] = false;
     service['storedLaunchDarklyClientId'] = null;
 
     service['initializeLaunchDarklyClient']();
@@ -55,6 +75,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should close the LaunchDarkly client', () => {
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service.initializeLaunchDarklyClient();
     spyOn(service['ldClient'], 'close');
@@ -79,7 +100,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly flags when ldClient is defined', async () => {
-    // const mockFlags = { flag1: true, flag2: false };
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service.initializeLaunchDarklyClient();
 
@@ -94,6 +115,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should throw an error when waitForInitialization fails', async () => {
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service.initializeLaunchDarklyClient();
 
@@ -104,6 +126,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly change listener when ldClient is defined', () => {
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service['storedLaunchDarklyStream'] = true;
     service.initializeLaunchDarklyClient();
@@ -116,6 +139,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly change listener when stream is false', () => {
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service['storedLaunchDarklyStream'] = false;
     service.initializeLaunchDarklyClient();
@@ -128,6 +152,7 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should update feature flags when ldClient emits change event', () => {
+    service['storedLaunchDarklyEnabled'] = true;
     service['storedLaunchDarklyClientId'] = '1234';
     service['storedLaunchDarklyStream'] = true;
     service.initializeLaunchDarklyClient();

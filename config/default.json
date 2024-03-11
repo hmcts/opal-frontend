@@ -19,7 +19,7 @@
       "enabled": false
     },
     "launch-darkly": {
-      "enabled": true,
+      "enabled": false,
       "stream": false
     }
   },

@@ -20,6 +20,7 @@ export class LaunchDarklyService implements OnDestroy {
   private readonly stateService = inject(StateService);
   private storedLaunchDarklyClientId: string | null = null;
   private storedLaunchDarklyStream: boolean | null = null;
+  private storedLaunchDarklyEnabled: boolean | null = null;
   private ldClient!: LDClient;
 
   constructor(
@@ -29,20 +30,24 @@ export class LaunchDarklyService implements OnDestroy {
   ) {
     const storeKey = makeStateKey<string>('launchDarklyClientIdKey');
     const storeStreamKey = makeStateKey<boolean>('launchDarklyStreamKey');
+    const storeEnabledKey = makeStateKey<boolean>('launchDarklyEnabledKey');
 
     if (isPlatformBrowser(this.platformId)) {
       //get launchDarklyClientId and from transferState if browser side
       this.launchDarklyConfig = {
+        enabled: this.transferState.get(storeEnabledKey, null),
         clientId: this.transferState.get(storeKey, null),
         stream: this.transferState.get(storeStreamKey, null),
       };
 
       this.storedLaunchDarklyClientId = this.launchDarklyConfig.clientId;
       this.storedLaunchDarklyStream = this.launchDarklyConfig.stream;
+      this.storedLaunchDarklyEnabled = this.launchDarklyConfig.enabled;
     } else {
       //server side: get provided launchDarklyClientId and store in in transfer state
       this.transferState.set(storeKey, this.launchDarklyConfig.clientId);
       this.transferState.set(storeStreamKey, this.launchDarklyConfig.stream);
+      this.transferState.set(storeEnabledKey, this.launchDarklyConfig.enabled);
     }
   }
 
@@ -114,8 +119,9 @@ export class LaunchDarklyService implements OnDestroy {
    * If a stored LaunchDarkly client ID exists, it initializes the client with the ID and anonymous mode enabled.
    */
   public initializeLaunchDarklyClient(): void {
+    const launchDarklyEnabled = this.storedLaunchDarklyEnabled;
     const clientId = this.storedLaunchDarklyClientId;
-    if (clientId) {
+    if (launchDarklyEnabled && clientId) {
       this.ldClient = initialize(clientId, {
         anonymous: true,
       });
