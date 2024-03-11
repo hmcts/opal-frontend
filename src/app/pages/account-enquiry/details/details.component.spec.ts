@@ -50,6 +50,11 @@ describe('DetailsComponent', () => {
     component['initialSetup']();
     expect(component['defendantAccountService'].getDefendantAccountDetails).toHaveBeenCalledWith(123);
     expect(component.data$).toBeDefined();
+
+    // Test tap set businessUnitId
+    component.data$.subscribe(() => {
+      expect(component['businessUnitId']).toEqual(DEFENDANT_ACCOUNT_DETAILS_MOCK.businessUnitId);
+    });
   });
 
   it('should navigate to matches page on handleBack', () => {
@@ -78,6 +83,7 @@ describe('DetailsComponent', () => {
     const note = ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.noteText;
 
     component['defendantAccountId'] = Number(ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.associatedRecordId);
+    component['businessUnitId'] = ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.businessUnitId;
     component['setupAddNoteForm']();
     component.addNoteForm.controls['note'].setValue(note);
 
