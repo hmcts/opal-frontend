@@ -5,16 +5,34 @@ function apiUrl() {
   let url;
   if (baseUrl?.includes('localhost')) {
     url = 'http://localhost:4550';
-  }
-  if (baseUrl?.includes('staging.staging')) {
-    url = `https://opal-fines-service-${baseUrl.replace('https://', '').replace('staging.staging', 'staging')}`;
+  } else if (baseUrl?.includes('staging.staging')) {
+    url = 'https://opal-fines-service.staging.platform.hmcts.net';
   } else {
     url = `https://opal-fines-service-${baseUrl.replace('https://', '')}`;
   }
   return url;
 }
 
+function checkHealthWithRetry(attemptsLeft = 3) {
+  if (attemptsLeft === 0) {
+    throw new Error('Maximum number of attempts reached');
+  }
+  cy.request(apiUrl() + '/health').then((response) => {
+    if (response.status === 200 && response.body.status === 'UP') {
+      cy.log(response.status.toString());
+      cy.log(response.body.status);
+      cy.log('Backend Health Good');
+    } else {
+      cy.log(response.status.toString());
+      cy.log(response.body.status);
+      return checkHealthWithRetry(attemptsLeft - 1);
+    }
+  });
+}
+
 BeforeAll(() => {
+  checkHealthWithRetry();
+
   if (Cypress.env('TEST_MODE') == 'OPAL') {
     cy.request('PUT', apiUrl() + '/api/testing-support/app-mode', { mode: 'opal' });
   }
