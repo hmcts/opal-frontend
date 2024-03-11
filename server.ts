@@ -24,7 +24,7 @@ import { Logger } from '@hmcts/nodejs-logging';
 
 import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
-import LaunchDarkly from './server/launch-darkly/launch-darkly';
+import { LaunchDarkly } from './server/launch-darkly/index';
 import Routes from './server/routes';
 import { CSRFToken } from './server/csrf-token';
 
