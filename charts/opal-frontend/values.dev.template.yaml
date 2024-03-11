@@ -13,7 +13,7 @@ nodejs:
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
     FEATURES_SSO_ENABLED: false
     FEATURES_LAUNCH_DARKLY_ENABLED: true
-    FEATURES_LAUNCH_DARKLY_STREAM: true
+    FEATURES_LAUNCH_DARKLY_STREAM: false
 opal-fines-service:
   enabled: true
   java:
