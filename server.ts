@@ -20,12 +20,11 @@ import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { AppServerModule } from './src/main.server';
 
-import config from 'config';
-
 import { Logger } from '@hmcts/nodejs-logging';
 
 import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
+import LaunchDarkly from './server/launch-darkly/launch-darkly';
 import Routes from './server/routes';
 import { CSRFToken } from './server/csrf-token';
 
@@ -56,6 +55,8 @@ export function app(): express.Express {
 
   new AppInsights().enable();
 
+  const launchDarkly = new LaunchDarkly().enableFor();
+
   // Serve static files from /browser
   server.get(
     '*.*',
@@ -67,8 +68,6 @@ export function app(): express.Express {
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
-    const launchDarklyClientId = config.get('secrets.opal.launch-darkly-client-id');
-    const launchDarklyStream = config.get('features.launch-darkly.stream');
 
     commonEngine
       .render({
@@ -80,10 +79,7 @@ export function app(): express.Express {
           { provide: APP_BASE_HREF, useValue: baseUrl },
           {
             provide: 'launchDarklyConfig',
-            useValue: {
-              clientId: launchDarklyClientId,
-              stream: launchDarklyStream,
-            },
+            useValue: launchDarkly,
           },
         ],
       })
