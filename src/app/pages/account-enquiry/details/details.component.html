@@ -246,9 +246,9 @@
             <h2 class="govuk-heading-m">Imposition</h2></app-govuk-tab-panel
           ><app-govuk-tab-panel tabsId="tabsAccount" tabsPanelId="panelAccountHistory">
             <h2 class="govuk-heading-m">History</h2>
-            <form (submit)="handleNotesFormSubmit()">
-              <ng-container [formGroup]="addNoteForm">
-                @if (stateService.featureFlags()['add-note'] !== false) {
+            @if (stateService.featureFlags()['add-note'] !== false) {
+              <form (submit)="handleNotesFormSubmit()">
+                <ng-container [formGroup]="addNoteForm">
                   <app-govuk-text-input
                     labelText="Add a note"
                     inputId="note"
@@ -264,18 +264,19 @@
                       </span>
                     </div>
                   </div>
-                  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-                }
-                @if (notes$ | async; as data) {
-                  @for (note of data; track note.noteId) {
-                    <app-govuk-inset-text [insetTextId]="'insetText' + note.noteId">
-                      {{ note.noteText }} <br />
-                      {{ note.postedDate }}
-                    </app-govuk-inset-text>
-                  }
-                }
-              </ng-container>
-            </form>
+                </ng-container>
+              </form>
+
+              <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+            }
+            @if (notes$ | async; as data) {
+              @for (note of data; track note.noteId) {
+                <app-govuk-inset-text [insetTextId]="'insetText' + note.noteId">
+                  {{ note.noteText }} <br />
+                  {{ note.postedDate }}
+                </app-govuk-inset-text>
+              }
+            }
           </app-govuk-tab-panel></ng-container
         >
       </app-govuk-tabs>
