@@ -76,11 +76,20 @@ And enable Redis integration within the application by setting the environment v
 
 #### Launch Darkly (Optional)
 
-By default Launch Darkly is disabled by default for local development. If it is required you can enable it [here](https://github.com/hmcts/opal-frontend/blob/b3146dff0a337a20cef18844d0e72c3c0eeca4d2/config/default.json#L28). Also it is recommended to run following command in your terminal to add the client id. If you don't have the id to hand ask a member of the team.
+By default Launch Darkly is disabled by default for local development. To enable set the following environment variables. Replace `XXXXXXXXXXXX` with the project client id.
 
 ```bash
 
+export const FEATURES_LAUNCH_DARKLY_ENABLED=true
 export const LAUNCH_DARKLY_CLIENT_ID=XXXXXXXXXXXX
+
+```
+
+The streaming of flags is disabled by default, if you would like to enable set the following environment variable.
+
+```bash
+
+export const FEATURES_LAUNCH_DARKLY_STREAM=true
 
 ```
 
