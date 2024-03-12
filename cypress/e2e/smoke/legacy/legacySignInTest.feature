@@ -1,7 +1,7 @@
 Feature: Sign In Smoke Test - Legacy Mode
   Scenario: The user can sign in to and sign out of the application
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend1" in the header
+    Then I see "OPAL Frontend" in the header
 
 ##Legacy mode currently not available
 

@@ -4,7 +4,7 @@ Feature: PO-115 account search page
     Then I see "OPAL Frontend" in the header
 
     When I sign in
-    Then I see "Account Enquiry1" in the page body header
+    Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
       | court    | 500000000    |
