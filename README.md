@@ -74,6 +74,25 @@ docker run -p 6379:6379 -it redis/redis-stack-server:latest
 
 And enable Redis integration within the application by setting the environment variable `FEATURES_REDIS_ENABLED` to `true`. The application will connect to Redis on the next startup.
 
+#### Launch Darkly (Optional)
+
+By default Launch Darkly is disabled by default for local development. To enable set the following environment variables. Replace `XXXXXXXXXXXX` with the project client id.
+
+```bash
+
+export FEATURES_LAUNCH_DARKLY_ENABLED=true
+export LAUNCH_DARKLY_CLIENT_ID=XXXXXXXXXXXX
+
+```
+
+The streaming of flags is disabled by default, if you would like to enable set the following environment variable.
+
+```bash
+
+export FEATURES_LAUNCH_DARKLY_STREAM=true
+
+```
+
 ## Build
 
 Run `yarn:build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.

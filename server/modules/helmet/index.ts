@@ -7,6 +7,7 @@ const logger = Logger.getLogger('helmet');
 const googleAnalyticsDomain = '*.google-analytics.com';
 const self = "'self'";
 const dynatraceDomain = '*.dynatrace.com';
+const LaunchDarklyDomain = '*.launchdarkly.com';
 /**
  * Module that enables helmet in the application
  */
@@ -40,7 +41,7 @@ export class Helmet {
         helmet({
           contentSecurityPolicy: {
             directives: {
-              connectSrc: [self, dynatraceDomain],
+              connectSrc: [self, dynatraceDomain, LaunchDarklyDomain],
               defaultSrc: ["'none'"],
               fontSrc: [self, 'data:', 'https://fonts.gstatic.com'],
               imgSrc: [self, googleAnalyticsDomain],

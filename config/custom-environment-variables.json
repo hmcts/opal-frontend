@@ -24,6 +24,16 @@
         "__name": "FEATURES_HELMET_ENABLED",
         "__format": "json"
       }
+    },
+    "launch-darkly": {
+      "enabled": {
+        "__name": "FEATURES_LAUNCH_DARKLY_ENABLED",
+        "__format": "json"
+      },
+      "stream": {
+        "__name": "FEATURES_LAUNCH_DARKLY_STREAM",
+        "__format": "json"
+      }
     }
   },
   "session": {
@@ -32,7 +42,8 @@
   "secrets": {
     "opal": {
       "AppInsightsInstrumentationKey": "APP_INSIGHTS_KEY",
-      "redis-connection-string": "REDIS_CONNECTION_STRING"
+      "redis-connection-string": "REDIS_CONNECTION_STRING",
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
     }
   }
 }

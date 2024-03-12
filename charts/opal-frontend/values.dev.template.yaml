@@ -6,6 +6,7 @@ nodejs:
     opal:
       secrets:
         - AppInsightsInstrumentationKey
+        - launch-darkly-client-id
   environment:
     REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-redis-master:6379
     OPAL_API_URL: https://opal-fines-service-${SERVICE_FQDN}

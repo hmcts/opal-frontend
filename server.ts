@@ -24,6 +24,7 @@ import { Logger } from '@hmcts/nodejs-logging';
 
 import { AppInsights, HealthCheck, Helmet, PropertiesVolume } from './server/modules';
 import { SessionStorage } from './server/session/index';
+import { LaunchDarkly } from './server/launch-darkly/index';
 import Routes from './server/routes';
 import { CSRFToken } from './server/csrf-token';
 
@@ -54,6 +55,8 @@ export function app(): express.Express {
 
   new AppInsights().enable();
 
+  const launchDarkly = new LaunchDarkly().enableFor();
+
   // Serve static files from /browser
   server.get(
     '*.*',
@@ -72,7 +75,13 @@ export function app(): express.Express {
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: distFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: baseUrl },
+          {
+            provide: 'launchDarklyConfig',
+            useValue: launchDarkly,
+          },
+        ],
       })
       .then((html) => res.send(html))
       .catch((err) => next(err));

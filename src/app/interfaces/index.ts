@@ -12,6 +12,7 @@ import { IAddDefendantAccountNoteBody } from './add-defendant-account-note-body'
 import { IDefendantAccountNote } from './defendant-account-note';
 import { ISearchCourt } from './search-court.interface';
 import { ISearchCourtBody } from './search-court-body.interface';
+import { ILaunchDarklyConfig } from './launch-darkly-config.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -30,4 +31,5 @@ export {
   IDefendantAccountNote,
   ISearchCourt,
   ISearchCourtBody,
+  ILaunchDarklyConfig,
 };
