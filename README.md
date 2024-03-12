@@ -80,8 +80,8 @@ By default Launch Darkly is disabled by default for local development. To enable
 
 ```bash
 
-export const FEATURES_LAUNCH_DARKLY_ENABLED=true
-export const LAUNCH_DARKLY_CLIENT_ID=XXXXXXXXXXXX
+export FEATURES_LAUNCH_DARKLY_ENABLED=true
+export LAUNCH_DARKLY_CLIENT_ID=XXXXXXXXXXXX
 
 ```
 
@@ -89,7 +89,7 @@ The streaming of flags is disabled by default, if you would like to enable set t
 
 ```bash
 
-export const FEATURES_LAUNCH_DARKLY_STREAM=true
+export FEATURES_LAUNCH_DARKLY_STREAM=true
 
 ```
 
