@@ -5,8 +5,7 @@ nodejs:
   environment:
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
     OPAL_API_URL: http://${SERVICE_NAME}-opal-fines-service
-    FEATURES_LAUNCH_DARKLY_ENABLED: true
-    FEATURES_LAUNCH_DARKLY_STREAM: false
+    FEATURES_LAUNCH_DARKLY_ENABLED: false
 opal-fines-service:
   enabled: true
   java:
