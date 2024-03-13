@@ -5461,13 +5461,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.202":
-  version: 4.17.0
-  resolution: "@types/lodash@npm:4.17.0"
-  checksum: 3f98c0b67a93994cbc3403d4fa9dbaf52b0b6bb7f07a764d73875c2dcd5ef91222621bd5bcf8eee7b417a74d175c2f7191b9f595f8603956fd06f0674c0cba93
-  languageName: node
-  linkType: hard
-
 "@types/mime@npm:*":
   version: 3.0.3
   resolution: "@types/mime@npm:3.0.3"
@@ -13401,7 +13394,6 @@ __metadata:
     "@types/express-session": ^1.17.10
     "@types/helmet": ^4.0.0
     "@types/jasmine": ^5.1.4
-    "@types/lodash": ^4.14.202
     "@types/node": ^20.11.5
     "@types/session-file-store": ^1.2.5
     "@typescript-eslint/eslint-plugin": 7.2.0
@@ -13432,7 +13424,6 @@ __metadata:
     karma-jasmine: ~5.1.0
     karma-jasmine-html-reporter: ~2.1.0
     launchdarkly-js-client-sdk: ^3.1.4
-    lodash: ^4.17.21
     mocha: ^10.2.0
     ng: ^0.0.0
     prettier: ^3.0.3
