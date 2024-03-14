@@ -1,2 +1,4 @@
 import SessionStorage from './session-storage';
-export { SessionStorage };
+import userState from './user-state';
+
+export { SessionStorage, userState };
