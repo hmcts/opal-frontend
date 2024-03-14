@@ -13,7 +13,7 @@ import {
   ssoLogoutCallbackStub,
 } from './stubs/sso';
 
-import { userState } from './session/index';
+import { userProfile, userPermissions, userState } from './session/index';
 
 export default class Routes {
   public enableFor(app: Application): void {
@@ -31,6 +31,8 @@ export default class Routes {
 
   private setupSessionRoutes(app: Application) {
     app.get('/session/user-state', (req: Request, res: Response) => userState(req, res));
+    app.get('/session/user-profile', (req: Request, res: Response) => userProfile(req, res));
+    app.get('/session/user-roles', (req: Request, res: Response) => userPermissions(req, res));
   }
 
   private setupSSORoutes(app: Application, ssoEnabled: boolean) {
