@@ -12,12 +12,12 @@ export default (req: Request, res: Response) => {
     });
   });
 
-  const uniquePermissions = Array.from(permissions);
+  const uniquePermissionIds = Array.from(permissions);
 
   if (token && userState) {
     res.send({
+      uniquePermissionIds: uniquePermissionIds,
       permissions: userRoles,
-      uniquePermissions: uniquePermissions,
     });
   } else {
     res.send({});
