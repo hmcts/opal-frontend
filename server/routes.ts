@@ -24,9 +24,12 @@ export default class Routes {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    app.get('/session/user-state', (req: Request, res: Response) => userState(req, res));
-
+    this.setupSessionRoutes(app);
     this.setupSSORoutes(app, ssoEnabled);
+  }
+
+  private setupSessionRoutes(app: Application) {
+    app.get('/session/user-state', (req: Request, res: Response) => userState(req, res));
   }
 
   private setupSSORoutes(app: Application, ssoEnabled: boolean) {
