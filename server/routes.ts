@@ -12,6 +12,7 @@ import {
   ssoLogoutStub,
   ssoLogoutCallbackStub,
 } from './stubs/sso';
+import { userState } from './session/index';
 
 export default class Routes {
   public enableFor(app: Application): void {
@@ -22,6 +23,8 @@ export default class Routes {
     // Declare use of body-parser AFTER the use of proxy https://github.com/villadora/express-http-proxy
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
+
+    app.get('/session/user-state', (req: Request, res: Response) => userState(req, res));
 
     this.setupSSORoutes(app, ssoEnabled);
   }

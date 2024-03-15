@@ -67,7 +67,7 @@ export function app(): express.Express {
 
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers, session } = req;
+    const { protocol, originalUrl, baseUrl, headers } = req;
 
     commonEngine
       .render({
@@ -80,10 +80,6 @@ export function app(): express.Express {
           {
             provide: 'launchDarklyConfig',
             useValue: launchDarkly,
-          },
-          {
-            provide: 'userState',
-            useValue: session.securityToken?.userState,
           },
         ],
       })
