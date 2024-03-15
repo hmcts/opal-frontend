@@ -11,4 +11,5 @@ export class StateService {
   public readonly error = signal({ error: false, message: '' });
   public readonly accountEnquiry: WritableSignal<IAccountEnquiryState> = signal(ACCOUNT_ENQUIRY_DEFAULT_STATE);
   public readonly featureFlags = signal<LDFlagSet>({});
+  public readonly userState = signal({});
 }

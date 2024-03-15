@@ -12,7 +12,31 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     const result = await axios.get(INTERNAL_JWT);
     const mockSecurityToken = result.data['access_token'];
 
-    req.session.securityToken = { accessToken: mockSecurityToken };
+    const mockUserState = {
+      userId: 'gl.tim',
+      userName: 'timmy.test.test@HMCTS.NET',
+      roles: [
+        {
+          businessUserId: 'L070KG',
+          businessUnit: '70',
+          permissions: [
+            {
+              permissionId: 54,
+              permissionName: 'Account Enquiry',
+            },
+            {
+              permissionId: 41,
+              permissionName: 'Account Enquiry - Account Notes',
+            },
+          ],
+        },
+      ],
+    };
+
+    req.session.securityToken = {
+      accessToken: mockSecurityToken,
+      userState: mockUserState,
+    };
 
     req.session.save((err) => {
       if (err) {
