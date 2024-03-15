@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 
 export default (req: Request, res: Response) => {
-  const token = req.session.securityToken?.accessToken;
-  const userState = req.session.securityToken?.userState;
-
-  if (token && userState) {
+  const userState = req.session?.securityToken?.userState;
+  // If we have state return it...
+  // We only have state after a successful login
+  if (userState) {
     return res.send(userState);
   }
 
