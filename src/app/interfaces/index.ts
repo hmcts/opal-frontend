@@ -13,6 +13,7 @@ import { IDefendantAccountNote } from './defendant-account-note';
 import { ISearchCourt } from './search-court.interface';
 import { ISearchCourtBody } from './search-court-body.interface';
 import { ILaunchDarklyConfig } from './launch-darkly-config.interface';
+import { IUserState } from './user-state.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -32,4 +33,5 @@ export {
   ISearchCourt,
   ISearchCourtBody,
   ILaunchDarklyConfig,
+  IUserState,
 };
