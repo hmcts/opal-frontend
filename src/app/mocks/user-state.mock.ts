@@ -1,6 +1,6 @@
 export const USER_STATE_MOCK = {
-  userId: 'gl.userfour',
-  userName: 'opal-test@HMCTS.NET',
+  userId: 'gl.timTest',
+  userName: 'timmyTest@HMCTS.NET',
   roles: [
     {
       businessUserId: 'L017KG',
