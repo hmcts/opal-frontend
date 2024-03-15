@@ -5485,11 +5485,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20.11.5":
-  version: 20.11.27
-  resolution: "@types/node@npm:20.11.27"
+  version: 20.11.28
+  resolution: "@types/node@npm:20.11.28"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 24a134a3c18e7261b6d6385c2b7714b6cf93663f30d5df8ca95c649f9cef917a422d77bfd4a18b2c7d190d3a39f445b345ecd9ef6f994e61c7e92f400ecbe80f
+  checksum: 83fe7e649c6439103872a292f7b9808233e1eea4bf7d5afa6fce71729e3f7a06933cd792543db84cf65b89ca985fb6f44efaeb748e2ce51a6525ade030338af8
   languageName: node
   linkType: hard
 
@@ -10142,12 +10142,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.15.4":
-  version: 1.15.5
-  resolution: "follow-redirects@npm:1.15.5"
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 5ca49b5ce6f44338cbfc3546823357e7a70813cecc9b7b768158a1d32c1e62e7407c944402a918ea8c38ae2e78266312d617dc68783fac502cbb55e1047b34ec
+  checksum: a62c378dfc8c00f60b9c80cab158ba54e99ba0239a5dd7c81245e5a5b39d10f0c35e249c3379eae719ff0285fff88c365dd446fab19dee771f1d76252df1bbf5
   languageName: node
   linkType: hard
 
