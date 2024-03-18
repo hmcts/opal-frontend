@@ -18,10 +18,8 @@ export class AppInitializerService {
 
   /**
    * Initializes the LaunchDarkly client and change listener.
-   *
-   * @returns A promise that resolves when the initialization is complete.
    */
-  private async initializeLaunchDarkly(): Promise<void> {
+  private async initializeLaunchDarkly() {
     this.launchDarklyService.initializeLaunchDarklyClient();
     this.launchDarklyService.initializeLaunchDarklyChangeListener();
   }
