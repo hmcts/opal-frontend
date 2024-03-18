@@ -81,6 +81,10 @@ export function app(): express.Express {
             provide: 'launchDarklyConfig',
             useValue: launchDarkly,
           },
+          {
+            provide: 'userState',
+            useValue: req.session?.securityToken?.userState || null,
+          },
         ],
       })
       .then((html) => res.send(html))

@@ -34,10 +34,13 @@ import { LaunchDarklyService, UserStateService } from '@services';
       multi: true,
       useFactory: (launchDarklyService: LaunchDarklyService, userStateService: UserStateService) => {
         return () => {
+          // Initialize the user state
+          userStateService.initializeUserState();
+
           // Initialize the LaunchDarkly client and flags
           launchDarklyService.initializeLaunchDarklyClient();
           launchDarklyService.initializeLaunchDarklyChangeListener();
-          return [launchDarklyService.initializeLaunchDarklyFlags(), userStateService.getUserStateOnInitialize()];
+          return [launchDarklyService.initializeLaunchDarklyFlags()];
         };
       },
       deps: [LaunchDarklyService, UserStateService],

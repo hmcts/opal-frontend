@@ -1,27 +1,37 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { SessionEndpoints } from '@enums';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, Optional, PLATFORM_ID, TransferState, inject, makeStateKey } from '@angular/core';
+
 import { IUserState } from '@interfaces';
 import { StateService } from '@services';
-import { firstValueFrom, shareReplay, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserStateService {
-  private readonly http = inject(HttpClient);
   private readonly stateService = inject(StateService);
+  private storedUserState: IUserState | null = null;
+
+  constructor(
+    @Inject(PLATFORM_ID) private readonly platformId: typeof PLATFORM_ID,
+    @Optional() @Inject('userState') public readonly userState: IUserState | null,
+    private readonly transferState: TransferState,
+  ) {
+    const storeKey = makeStateKey<IUserState | null>('userState');
+
+    if (isPlatformBrowser(this.platformId)) {
+      // get user state from transfer state if browser side
+      this.userState = this.transferState.get(storeKey, null);
+      this.storedUserState = this.userState;
+    } else {
+      // server side: get provided user state and store in transfer state
+      this.transferState.set(storeKey, this.userState);
+    }
+  }
 
   /**
-   * Retrieves the user state on initialization.
-   * @returns A Promise that resolves to an IUserState object.
+   * Initializes the user state.
    */
-  public getUserStateOnInitialize(): Promise<IUserState> {
-    return firstValueFrom(
-      this.http
-        .get<IUserState>(SessionEndpoints.userState)
-        .pipe(shareReplay(1))
-        .pipe(tap((userState) => this.stateService.userState.set(userState))),
-    );
+  public initializeUserState(): void {
+    this.stateService.userState.set(this.storedUserState);
   }
 }
