@@ -14,7 +14,7 @@ import {
 import { GovukHeaderComponent, GovukFooterComponent } from '@components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors';
-import { LaunchDarklyService, UserStateService } from '@services';
+import { AppInitializerService } from '@services';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,18 +32,12 @@ import { LaunchDarklyService, UserStateService } from '@services';
     {
       provide: APP_INITIALIZER,
       multi: true,
-      useFactory: (launchDarklyService: LaunchDarklyService, userStateService: UserStateService) => {
+      useFactory: (appInitializerService: AppInitializerService) => {
         return () => {
-          // Initialize the user state
-          userStateService.initializeUserState();
-
-          // Initialize the LaunchDarkly client and flags
-          launchDarklyService.initializeLaunchDarklyClient();
-          launchDarklyService.initializeLaunchDarklyChangeListener();
-          return [launchDarklyService.initializeLaunchDarklyFlags()];
+          return appInitializerService.initializeApp();
         };
       },
-      deps: [LaunchDarklyService, UserStateService],
+      deps: [AppInitializerService],
     },
   ],
 
