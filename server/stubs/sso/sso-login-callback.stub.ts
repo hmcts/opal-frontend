@@ -10,9 +10,9 @@ const logger = Logger.getLogger('login-callback-stub');
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await axios.get(INTERNAL_JWT);
-    const mockSecurityToken = result.data['access_token'];
 
-    req.session.securityToken = { accessToken: mockSecurityToken };
+    const mockSecurityToken = result.data;
+    req.session.securityToken = mockSecurityToken;
 
     req.session.save((err) => {
       if (err) {
