@@ -3,6 +3,7 @@ import { Inject, Injectable, Optional, PLATFORM_ID, TransferState, inject, makeS
 
 import { IUserState } from '@interfaces';
 import { StateService } from '@services';
+import c from 'config';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,7 @@ import { StateService } from '@services';
 export class UserStateService {
   private readonly stateService = inject(StateService);
   private storedUserState: IUserState | null = null;
+  private storedUniquePermissionIds: number[] = [];
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: typeof PLATFORM_ID,
@@ -26,6 +28,18 @@ export class UserStateService {
       // server side: get provided user state and store in transfer state
       this.transferState.set(storeKey, this.userState);
     }
+  }
+
+  public getUserUniquePermissions(): number[] {
+    if (!this.storedUniquePermissionIds.length) {
+      const permissionIds = this.storedUserState?.roles.flatMap((role) => {
+        return role.permissions.map(({ permissionId }) => permissionId);
+      });
+
+      this.storedUniquePermissionIds = [...new Set(permissionIds)];
+    }
+
+    return this.storedUniquePermissionIds;
   }
 
   /**
