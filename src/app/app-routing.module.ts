@@ -40,6 +40,10 @@ const routes: Routes = [
         canActivate: [authGuard],
       },
     ],
+  },
+  {
+    path: 'access-denied',
+    loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
     canActivate: [authGuard],
   },
   {
