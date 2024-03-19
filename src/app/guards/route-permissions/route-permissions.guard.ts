@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { UserStateService } from '@services';
 
-export const routePermissionsGuard = (routePermissionId: number): CanActivateFn => {
+export const routePermissionsGuard = (routePermissionId: number | null): CanActivateFn => {
   return () => {
     const userStateService = inject(UserStateService);
     const router = inject(Router);
@@ -18,7 +18,13 @@ export const routePermissionsGuard = (routePermissionId: number): CanActivateFn 
       return true;
     }
 
+    // If we don't have any unique permission ids, then we can't check for permissions
+    if (uniquePermissionIds.length === 0) {
+      return true;
+    }
+
     // if we have a permission id for the route, then we need to check if the user has the permission
+    console.log('uniquePermissionIds', uniquePermissionIds);
     if (!uniquePermissionIds.includes(routePermissionId)) {
       router.navigate(['access-denied']);
       return false;

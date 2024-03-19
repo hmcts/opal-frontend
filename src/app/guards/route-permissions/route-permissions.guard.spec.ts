@@ -49,11 +49,19 @@ fdescribe('routePermissionsGuard', () => {
     expect(TestBed.runInInjectionContext(() => routePermissionsGuard(54))).toBeTruthy();
   });
 
-  it('should be created2 ', () => {
+  it('should return true if no route permission ids ', () => {
     const dummyRoute = new ActivatedRouteSnapshot();
     dummyRoute.url = [new UrlSegment(urlPath, {})];
     const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
 
-    expect(TestBed.runInInjectionContext(() => routePermissionsGuard(54)(dummyRoute, dummyState)));
+    expect(TestBed.runInInjectionContext(() => routePermissionsGuard(null)(dummyRoute, dummyState))).toBeTruthy();
+  });
+
+  it('should return true if no unique permission ids ', () => {
+    const dummyRoute = new ActivatedRouteSnapshot();
+    dummyRoute.url = [new UrlSegment(urlPath, {})];
+    const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
+
+    expect(TestBed.runInInjectionContext(() => routePermissionsGuard(54)(dummyRoute, dummyState))).toBeTruthy();
   });
 });
