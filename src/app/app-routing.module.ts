@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { authGuard, signedInGuard } from '@guards';
+import { authGuard, permissionsGuard, signedInGuard } from '@guards';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
@@ -23,21 +23,21 @@ const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent),
-        canActivate: [authGuard],
+        canActivate: [authGuard, permissionsGuard],
       },
 
       {
         path: 'matches',
         loadComponent: () =>
           import('./pages/account-enquiry/matches/matches.component').then((c) => c.MatchesComponent),
-        canActivate: [authGuard],
+        canActivate: [authGuard, permissionsGuard],
       },
 
       {
         path: 'details/:defendantAccountId',
         loadComponent: () =>
           import('./pages/account-enquiry/details/details.component').then((c) => c.DetailsComponent),
-        canActivate: [authGuard],
+        canActivate: [authGuard, permissionsGuard],
       },
     ],
   },
