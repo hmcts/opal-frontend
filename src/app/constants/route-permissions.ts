@@ -1,3 +1,3 @@
 export const ROUTE_PERMISSIONS: { [key: string]: number } = {
-  'account-enquiry': 54,
+  'account-enquiry': 99,
 };

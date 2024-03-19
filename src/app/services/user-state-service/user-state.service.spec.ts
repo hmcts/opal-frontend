@@ -27,4 +27,14 @@ describe('UserStateService', () => {
 
     expect(stateService.userState()).toEqual(mockUserState);
   });
+
+  it('should return unique permission IDs', () => {
+    service['storedUserState'] = USER_STATE_MOCK;
+
+    // Act
+    service.getUserUniquePermissions();
+
+    // Assert
+    expect(service['storedUniquePermissionIds']).toEqual([54, 41]);
+  });
 });

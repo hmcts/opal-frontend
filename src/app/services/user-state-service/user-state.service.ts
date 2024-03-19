@@ -30,6 +30,11 @@ export class UserStateService {
     }
   }
 
+  /**
+   * Retrieves the unique permission IDs associated with the user.
+   * If the unique permission IDs have not been stored yet, it calculates them based on the user's roles and permissions.
+   * @returns An array of unique permission IDs.
+   */
   public getUserUniquePermissions(): number[] {
     if (!this.storedUniquePermissionIds.length) {
       const permissionIds = this.storedUserState?.roles.flatMap((role) => {
