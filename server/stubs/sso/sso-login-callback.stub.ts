@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 
-import { Logger } from '@hmcts/nodejs-logging';
+import {Logger} from '@hmcts/nodejs-logging';
 import axios from 'axios';
 import config from 'config';
 
@@ -11,8 +11,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await axios.get(INTERNAL_JWT);
 
-    const mockSecurityToken = result.data;
-    req.session.securityToken = mockSecurityToken;
+    req.session.securityToken = result.data;
 
     req.session.save((err) => {
       if (err) {
