@@ -21,12 +21,12 @@ describe('PermissionsService', () => {
   });
 
   it('should return permission access', () => {
-    const hasPermissionAccess = service.hasPermissionAccess(54, 17, USER_STATE_MOCK);
+    const hasPermissionAccess = service.hasPermissionAccess(54, 17, USER_STATE_MOCK.roles);
     expect(hasPermissionAccess).toBeTrue();
   });
 
   it('should not return permission access', () => {
-    const hasPermissionAccess = service.hasPermissionAccess(54, 99, USER_STATE_MOCK);
+    const hasPermissionAccess = service.hasPermissionAccess(54, 99, USER_STATE_MOCK.roles);
     expect(hasPermissionAccess).toBeFalse();
   });
 });

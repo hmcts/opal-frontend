@@ -29,9 +29,10 @@ export class AppInitializerService {
    *
    * @returns A promise that resolves when the initialization is complete.
    */
-  public async initializeApp(): Promise<Promise<void>[]> {
+  public async initializeApp(): Promise<void> {
     this.initializeUserState();
     this.initializeLaunchDarkly();
-    return [this.launchDarklyService.initializeLaunchDarklyFlags()];
+    await this.launchDarklyService.initializeLaunchDarklyFlags();
+    return Promise.resolve();
   }
 }
