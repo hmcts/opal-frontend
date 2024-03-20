@@ -20,7 +20,7 @@ function runRoutePermissionGuard(guard: typeof routePermissionsGuard, guardParam
   return TestBed.runInInjectionContext(() => guard(guardParameters)(dummyRoute, dummyState));
 }
 
-fdescribe('routePermissionsGuard', () => {
+describe('routePermissionsGuard', () => {
   let mockUSerStateService: jasmine.SpyObj<UserStateService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
