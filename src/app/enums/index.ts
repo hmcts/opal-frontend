@@ -4,5 +4,6 @@ import { AccountEnquiryRoutes } from './account-enquiry-routes';
 import { SsoEndpoints } from './sso-endpoints';
 import { ApiPaths } from './api-paths';
 import { RoutingPaths } from './routing-paths';
+import { Permissions } from './permissions';
 
-export { GovukFooter, GovukHeader, SsoEndpoints, AccountEnquiryRoutes, ApiPaths, RoutingPaths };
+export { GovukFooter, GovukHeader, SsoEndpoints, AccountEnquiryRoutes, ApiPaths, RoutingPaths, Permissions };

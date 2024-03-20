@@ -9,7 +9,7 @@ import {
 } from '@angular/router';
 
 import { routePermissionsGuard } from './route-permissions.guard';
-import { UserStateService } from '@services';
+import { PermissionsService } from '@services';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { RoutingPaths } from '@enums';
 
@@ -21,13 +21,13 @@ function runRoutePermissionGuard(guard: typeof routePermissionsGuard, guardParam
 }
 
 describe('routePermissionsGuard', () => {
-  let mockUSerStateService: jasmine.SpyObj<UserStateService>;
+  let mockPermissionsService: jasmine.SpyObj<PermissionsService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
   const urlPath = '/account-details/search';
 
   beforeEach(() => {
-    mockUSerStateService = jasmine.createSpyObj(routePermissionsGuard, ['getUserUniquePermissions']);
+    mockPermissionsService = jasmine.createSpyObj(routePermissionsGuard, ['getUniquePermissions']);
     mockRouter = jasmine.createSpyObj(routePermissionsGuard, ['navigate', 'createUrlTree', 'parseUrl']);
     mockRouter.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
@@ -43,8 +43,8 @@ describe('routePermissionsGuard', () => {
           useValue: mockRouter,
         },
         {
-          provide: UserStateService,
-          useValue: mockUSerStateService,
+          provide: PermissionsService,
+          useValue: mockPermissionsService,
         },
       ],
     });
@@ -59,19 +59,19 @@ describe('routePermissionsGuard', () => {
   });
 
   it('should return true if no unique permission ids ', () => {
-    mockUSerStateService.getUserUniquePermissions.and.returnValue([]);
+    mockPermissionsService.getUniquePermissions.and.returnValue([]);
     expect(runRoutePermissionGuard(routePermissionsGuard, 999, urlPath)).toBeTruthy();
   });
 
   it('should return true if user has permission id', () => {
-    mockUSerStateService.getUserUniquePermissions.and.returnValue([ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry]]);
+    mockPermissionsService.getUniquePermissions.and.returnValue([ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry]]);
     expect(
       runRoutePermissionGuard(routePermissionsGuard, ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry], urlPath),
     ).toBeTruthy();
   });
 
   it('should re-route if no access', () => {
-    mockUSerStateService.getUserUniquePermissions.and.returnValue([999]);
+    mockPermissionsService.getUniquePermissions.and.returnValue([999]);
     runRoutePermissionGuard(routePermissionsGuard, ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry], urlPath);
     expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
   });

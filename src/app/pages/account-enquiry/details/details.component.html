@@ -247,6 +247,8 @@
           ><app-govuk-tab-panel tabsId="tabsAccount" tabsPanelId="panelAccountHistory">
             <h2 class="govuk-heading-m">History</h2>
             @if (stateService.featureFlags()['add-note'] !== false) {
+              {{ permissions['addNote'] }}
+
               <form (submit)="handleNotesFormSubmit()">
                 <ng-container [formGroup]="addNoteForm">
                   <app-govuk-text-input

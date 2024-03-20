@@ -12,10 +12,10 @@ import {
   GovukTextInputComponent,
 } from '@components';
 
-import { AccountEnquiryRoutes } from '@enums';
-import { DefendantAccountService, StateService } from '@services';
+import { AccountEnquiryRoutes, Permissions } from '@enums';
+import { DefendantAccountService, PermissionsService, StateService } from '@services';
 import { EMPTY, Observable, switchMap, tap } from 'rxjs';
-import { IDefendantAccountDetails, IDefendantAccountNote } from '@interfaces';
+import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -45,10 +45,18 @@ export class DetailsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
+
   public readonly stateService = inject(StateService);
+  public readonly permissionsService = inject(PermissionsService);
+
+  private readonly userStateRoles = this.stateService.userState()?.roles;
 
   private defendantAccountId!: number;
-  private businessUnitId!: number;
+  public businessUnitId!: number;
+
+  public readonly permissions: IPermissions = {
+    addNote: true,
+  };
 
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
   public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
@@ -64,6 +72,17 @@ export class DetailsComponent implements OnInit {
     });
   }
 
+  private setupPermissions(): void {
+    // Setup the permissions for the page
+    if (this.userStateRoles) {
+      this.permissions['addNote'] = this.permissionsService.hasPermissionAccess(
+        Permissions.accountEnquiryAddNote,
+        this.businessUnitId,
+        this.userStateRoles,
+      );
+    }
+  }
+
   /**
    * Performs the initial setup for the details component.
    * Retrieves the defendantAccountId from the route params and fetches the defendant account details.
@@ -71,9 +90,12 @@ export class DetailsComponent implements OnInit {
   private initialSetup(): void {
     this.route.params.subscribe((params) => {
       this.defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
-      this.data$ = this.defendantAccountService
-        .getDefendantAccountDetails(this.defendantAccountId)
-        .pipe(tap(({ businessUnitId }) => (this.businessUnitId = businessUnitId)));
+      this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId).pipe(
+        tap(({ businessUnitId }) => {
+          this.businessUnitId = businessUnitId;
+          this.setupPermissions();
+        }),
+      );
       this.notes$ = this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
       this.setupAddNoteForm();
     });
@@ -112,6 +134,10 @@ export class DetailsComponent implements OnInit {
    */
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.matches]);
+  }
+
+  public test(): void {
+    console.log('test');
   }
 
   ngOnInit() {
