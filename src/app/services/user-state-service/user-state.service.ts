@@ -3,7 +3,6 @@ import { Inject, Injectable, Optional, PLATFORM_ID, TransferState, inject, makeS
 
 import { IUserState } from '@interfaces';
 import { StateService } from '@services';
-import c from 'config';
 
 @Injectable({
   providedIn: 'root',
