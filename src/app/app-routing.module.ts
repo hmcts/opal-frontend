@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, routePermissionsGuard, signedInGuard } from '@guards';
+import { RoutingPaths } from './enums/routing-paths';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
@@ -12,36 +13,36 @@ const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'account-enquiry',
+    path: RoutingPaths.accountEnquiry,
     loadComponent: () =>
       import('./pages/account-enquiry/account-enquiry.component').then((c) => c.AccountEnquiryComponent),
     children: [
       {
         path: '',
-        redirectTo: 'search',
+        redirectTo: RoutingPaths.accountEnquirySearch,
         pathMatch: 'full',
       },
       {
-        path: 'search',
+        path: RoutingPaths.accountEnquirySearch,
         loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent),
         canActivate: [authGuard],
       },
 
       {
-        path: 'matches',
+        path: RoutingPaths.accountEnquiryMatches,
         loadComponent: () =>
           import('./pages/account-enquiry/matches/matches.component').then((c) => c.MatchesComponent),
         canActivate: [authGuard],
       },
 
       {
-        path: 'details/:defendantAccountId',
+        path: RoutingPaths.accountEnquiryDetails,
         loadComponent: () =>
           import('./pages/account-enquiry/details/details.component').then((c) => c.DetailsComponent),
         canActivate: [authGuard],
       },
     ],
-    canActivate: [authGuard, routePermissionsGuard(ROUTE_PERMISSIONS['account-enquiry'])],
+    canActivate: [authGuard, routePermissionsGuard(ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry])],
   },
   {
     path: 'access-denied',

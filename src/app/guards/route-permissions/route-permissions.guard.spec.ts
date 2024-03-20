@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
-  CanActivateFn,
   Router,
   RouterStateSnapshot,
   UrlSegment,
@@ -10,12 +9,18 @@ import {
 } from '@angular/router';
 
 import { routePermissionsGuard } from './route-permissions.guard';
-import { AuthService, UserStateService } from '@services';
-import { getGuardWithDummyUrl } from '../helpers';
+import { UserStateService } from '@services';
+import { ROUTE_PERMISSIONS } from '@constants';
+import { RoutingPaths } from '@enums';
+
+function runRoutePermissionGuard(guard: typeof routePermissionsGuard, guardParameters: number | null, urlPath: string) {
+  const dummyRoute = new ActivatedRouteSnapshot();
+  dummyRoute.url = [new UrlSegment(urlPath, {})];
+  const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
+  return TestBed.runInInjectionContext(() => guard(guardParameters)(dummyRoute, dummyState));
+}
 
 fdescribe('routePermissionsGuard', () => {
-  // const executeGuard: CanActivateFn = (...guardParameters) =>
-  //   TestBed.runInInjectionContext(() => routePermissionsGuard(...guardParameters));
   let mockUSerStateService: jasmine.SpyObj<UserStateService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
@@ -50,18 +55,24 @@ fdescribe('routePermissionsGuard', () => {
   });
 
   it('should return true if no route permission ids ', () => {
-    const dummyRoute = new ActivatedRouteSnapshot();
-    dummyRoute.url = [new UrlSegment(urlPath, {})];
-    const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
-
-    expect(TestBed.runInInjectionContext(() => routePermissionsGuard(null)(dummyRoute, dummyState))).toBeTruthy();
+    expect(runRoutePermissionGuard(routePermissionsGuard, null, urlPath)).toBeTruthy();
   });
 
   it('should return true if no unique permission ids ', () => {
-    const dummyRoute = new ActivatedRouteSnapshot();
-    dummyRoute.url = [new UrlSegment(urlPath, {})];
-    const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
+    mockUSerStateService.getUserUniquePermissions.and.returnValue([]);
+    expect(runRoutePermissionGuard(routePermissionsGuard, 999, urlPath)).toBeTruthy();
+  });
 
-    expect(TestBed.runInInjectionContext(() => routePermissionsGuard(54)(dummyRoute, dummyState))).toBeTruthy();
+  it('should return true if user has permission id', () => {
+    mockUSerStateService.getUserUniquePermissions.and.returnValue([ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry]]);
+    expect(
+      runRoutePermissionGuard(routePermissionsGuard, ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry], urlPath),
+    ).toBeTruthy();
+  });
+
+  it('should re-route if no access', () => {
+    mockUSerStateService.getUserUniquePermissions.and.returnValue([999]);
+    runRoutePermissionGuard(routePermissionsGuard, ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry], urlPath);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith(['/access-denied']);
   });
 });
