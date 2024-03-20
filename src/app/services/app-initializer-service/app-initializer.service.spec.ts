@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { AppInitializerService } from './app-initializer.service';
 
-fdescribe('AppInitializerService', () => {
+describe('AppInitializerService', () => {
   let service: AppInitializerService;
 
   beforeEach(() => {
