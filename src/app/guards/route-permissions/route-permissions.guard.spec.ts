@@ -73,6 +73,6 @@ describe('routePermissionsGuard', () => {
   it('should re-route if no access', () => {
     mockUSerStateService.getUserUniquePermissions.and.returnValue([999]);
     runRoutePermissionGuard(routePermissionsGuard, ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry], urlPath);
-    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith(['/access-denied']);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
   });
 });

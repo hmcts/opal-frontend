@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { RoutingPaths } from '@enums';
 import { UserStateService } from '@services';
 
 /**
@@ -23,7 +24,7 @@ export const routePermissionsGuard = (routePermissionId: number | null): CanActi
     // if we have a permission id for the route, then we need to check if the user has the permission
 
     if (!uniquePermissionIds.includes(routePermissionId)) {
-      return router.createUrlTree(['/access-denied']);
+      return router.createUrlTree([`/${RoutingPaths.accessDenied}`]);
     }
 
     return true;

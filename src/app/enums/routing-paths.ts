@@ -3,4 +3,5 @@ export enum RoutingPaths {
   accountEnquirySearch = 'search',
   accountEnquiryMatches = 'matches',
   accountEnquiryDetails = 'details/:defendantAccountId',
+  accessDenied = 'access-denied',
 }
