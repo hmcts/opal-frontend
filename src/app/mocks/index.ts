@@ -14,6 +14,7 @@ import { SEARCH_COURT_BODY_MOCK } from './search-court-body.mock';
 import { SEARCH_COURT_SELECT_OPTIONS_MOCK } from './search-court-select-options.mock';
 import { LAUNCH_DARKLY_CHANGE_FLAGS_MOCK } from './launch-darkly-change-flags.mock';
 import { LAUNCH_DARKLY_FLAGS_MOCK } from './launch-darkly-flags.mock';
+import { USER_STATE_MOCK } from './user-state.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -32,4 +33,5 @@ export {
   SEARCH_COURT_SELECT_OPTIONS_MOCK,
   LAUNCH_DARKLY_CHANGE_FLAGS_MOCK,
   LAUNCH_DARKLY_FLAGS_MOCK,
+  USER_STATE_MOCK,
 };

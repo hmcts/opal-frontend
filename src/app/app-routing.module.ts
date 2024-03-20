@@ -4,6 +4,7 @@ import { authGuard, signedInGuard } from '@guards';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
+
   {
     path: 'test-page',
     loadComponent: () => import('./pages/test-page/test-page.component').then((c) => c.TestPageComponent),
@@ -14,6 +15,11 @@ const routes: Routes = [
     loadComponent: () =>
       import('./pages/account-enquiry/account-enquiry.component').then((c) => c.AccountEnquiryComponent),
     children: [
+      {
+        path: '',
+        redirectTo: 'search',
+        pathMatch: 'full',
+      },
       {
         path: 'search',
         loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent),
