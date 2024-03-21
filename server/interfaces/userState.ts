@@ -1,11 +1,11 @@
 class UserState {
-  userId!: number;
+  userId!: string;
   userName!: string;
   roles?: Role[];
 }
 
 class Role {
-  businessUserId!: number;
+  businessUserId!: string;
   businessUnit!: string;
   permissions?: Permissions[];
 }
