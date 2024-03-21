@@ -12,7 +12,7 @@ import {
   GovukTextInputComponent,
 } from '@components';
 
-import { AccountEnquiryRoutes, Permissions } from '@enums';
+import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { DefendantAccountService, PermissionsService, StateService } from '@services';
 import { EMPTY, Observable, switchMap, tap } from 'rxjs';
 import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions } from '@interfaces';
@@ -51,12 +51,13 @@ export class DetailsComponent implements OnInit {
 
   private readonly userStateRoles = this.stateService.userState()?.roles;
   public readonly featureFlags = this.stateService.featureFlags();
+  public readonly permissionsMap = PermissionsMap;
 
   private defendantAccountId!: number;
   public businessUnitId!: number;
 
   public readonly permissions: IPermissions = {
-    addNote: true,
+    [this.permissionsMap.accountEnquiryAddNote]: true, // default to true so that if no permissions are found, the add note is still displayed
   };
 
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
@@ -75,9 +76,8 @@ export class DetailsComponent implements OnInit {
 
   private setupPermissions(): void {
     if (this.userStateRoles) {
-      // Setup the permissions for the page
-      this.permissions['addNote'] = this.permissionsService.hasPermissionAccess(
-        Permissions.accountEnquiryAddNote,
+      this.permissions[this.permissionsMap.accountEnquiryAddNote] = this.permissionsService.hasPermissionAccess(
+        this.permissionsMap.accountEnquiryAddNote,
         this.businessUnitId,
         this.userStateRoles,
       );

@@ -1,3 +1,3 @@
 export interface IPermissions {
-  [key: string]: boolean;
+  [permissionId: number]: boolean;
 }
