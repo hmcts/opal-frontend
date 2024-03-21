@@ -15,9 +15,10 @@ import {
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { DefendantAccountService, PermissionsService, StateService } from '@services';
 import { EMPTY, Observable, switchMap, tap } from 'rxjs';
-import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions } from '@interfaces';
+import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LDFlagSet } from 'launchdarkly-js-client-sdk';
 
 @Component({
   selector: 'app-account-enquiry-details',
@@ -49,15 +50,15 @@ export class DetailsComponent implements OnInit {
   public readonly stateService = inject(StateService);
   public readonly permissionsService = inject(PermissionsService);
 
-  private readonly userStateRoles = this.stateService.userState()?.roles;
-  public readonly featureFlags = this.stateService.featureFlags();
+  private userStateRoles: IUserStateRole[] = [];
+  public featureFlags: LDFlagSet = {};
   public readonly permissionsMap = PermissionsMap;
 
   private defendantAccountId!: number;
   public businessUnitId!: number;
 
   public readonly permissions: IPermissions = {
-    [this.permissionsMap.accountEnquiryAddNote]: true, // default to true so that if no permissions are found, the add note is still displayed
+    [PermissionsMap.accountEnquiryAddNote]: true, // default to true so that if no permissions are found, the add note is still displayed
   };
 
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
@@ -74,14 +75,24 @@ export class DetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Sets up the permissions for the account enquiry details component.
+   * This method checks if the user has permission to add a note to the account enquiry.
+   */
   private setupPermissions(): void {
-    if (this.userStateRoles) {
-      this.permissions[this.permissionsMap.accountEnquiryAddNote] = this.permissionsService.hasPermissionAccess(
-        this.permissionsMap.accountEnquiryAddNote,
-        this.businessUnitId,
-        this.userStateRoles,
-      );
-    }
+    this.permissions[this.permissionsMap.accountEnquiryAddNote] = this.permissionsService.hasPermissionAccess(
+      this.permissionsMap.accountEnquiryAddNote,
+      this.businessUnitId,
+      this.userStateRoles,
+    );
+  }
+
+  private setUserStateRoles(userStateRoles: IUserStateRole[] = []): void {
+    this.userStateRoles = userStateRoles;
+  }
+
+  private setFeatureFlags(featureFlags: LDFlagSet = {}): void {
+    this.featureFlags = featureFlags;
   }
 
   /**
@@ -89,6 +100,9 @@ export class DetailsComponent implements OnInit {
    * Retrieves the defendantAccountId from the route params and fetches the defendant account details.
    */
   private initialSetup(): void {
+    this.setUserStateRoles(this.stateService.userState()?.roles);
+    this.setFeatureFlags(this.stateService.featureFlags());
+
     this.route.params.subscribe((params) => {
       this.defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
       this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId).pipe(

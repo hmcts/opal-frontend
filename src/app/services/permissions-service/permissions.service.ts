@@ -27,7 +27,7 @@ export class PermissionsService {
   }
 
   public hasPermissionAccess(permissionId: number, businessUnitId: number, roles: IUserStateRole[]): boolean {
-    if (roles) {
+    if (roles && roles.length) {
       // First we need to find the matching role
       const role = roles?.find((role) => role.businessUnitId === businessUnitId);
 
