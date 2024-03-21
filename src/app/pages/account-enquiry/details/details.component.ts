@@ -73,8 +73,8 @@ export class DetailsComponent implements OnInit {
   }
 
   private setupPermissions(): void {
-    // Setup the permissions for the page
     if (this.userStateRoles) {
+      // Setup the permissions for the page
       this.permissions['addNote'] = this.permissionsService.hasPermissionAccess(
         Permissions.accountEnquiryAddNote,
         this.businessUnitId,
