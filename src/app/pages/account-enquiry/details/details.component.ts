@@ -50,6 +50,7 @@ export class DetailsComponent implements OnInit {
   public readonly permissionsService = inject(PermissionsService);
 
   private readonly userStateRoles = this.stateService.userState()?.roles;
+  public readonly featureFlags = this.stateService.featureFlags();
 
   private defendantAccountId!: number;
   public businessUnitId!: number;
@@ -134,10 +135,6 @@ export class DetailsComponent implements OnInit {
    */
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.matches]);
-  }
-
-  public test(): void {
-    console.log('test');
   }
 
   ngOnInit() {

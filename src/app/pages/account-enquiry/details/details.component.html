@@ -246,7 +246,7 @@
             <h2 class="govuk-heading-m">Imposition</h2></app-govuk-tab-panel
           ><app-govuk-tab-panel tabsId="tabsAccount" tabsPanelId="panelAccountHistory">
             <h2 class="govuk-heading-m">History</h2>
-            @if (stateService.featureFlags()['add-note'] !== false) {
+            @if (featureFlags['add-note'] !== false) {
               {{ permissions['addNote'] }}
 
               <form (submit)="handleNotesFormSubmit()">
