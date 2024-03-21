@@ -50,21 +50,19 @@ export class DetailsComponent implements OnInit {
   public readonly stateService = inject(StateService);
   public readonly permissionsService = inject(PermissionsService);
 
-  private userStateRoles: IUserStateRole[] = [];
-  public featureFlags: LDFlagSet = {};
-  public readonly permissionsMap = PermissionsMap;
-
   private defendantAccountId!: number;
-  public businessUnitId!: number;
+  private userStateRoles: IUserStateRole[] = [];
 
+  public featureFlags: LDFlagSet = {};
+  public businessUnitId!: number;
+  public data$: Observable<IDefendantAccountDetails> = EMPTY;
+  public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
+  public addNoteForm!: FormGroup;
+
+  public readonly permissionsMap = PermissionsMap;
   public readonly permissions: IPermissions = {
     [PermissionsMap.accountEnquiryAddNote]: true, // default to true so that if no permissions are found, the add note is still displayed
   };
-
-  public data$: Observable<IDefendantAccountDetails> = EMPTY;
-  public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
-
-  public addNoteForm!: FormGroup;
 
   /**
    * Sets up the add note form.
@@ -87,10 +85,20 @@ export class DetailsComponent implements OnInit {
     );
   }
 
+  /**
+   * Sets the user state roles.
+   *
+   * @param userStateRoles - An array of user state roles.
+   */
   private setUserStateRoles(userStateRoles: IUserStateRole[] = []): void {
     this.userStateRoles = userStateRoles;
   }
 
+  /**
+   * Sets the feature flags for the component.
+   *
+   * @param featureFlags - The feature flags to set.
+   */
   private setFeatureFlags(featureFlags: LDFlagSet = {}): void {
     this.featureFlags = featureFlags;
   }
@@ -100,6 +108,7 @@ export class DetailsComponent implements OnInit {
    * Retrieves the defendantAccountId from the route params and fetches the defendant account details.
    */
   private initialSetup(): void {
+    // Set our roles and feature flags...
     this.setUserStateRoles(this.stateService.userState()?.roles);
     this.setFeatureFlags(this.stateService.featureFlags());
 
