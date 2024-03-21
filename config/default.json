@@ -13,7 +13,7 @@
       "enabled": false
     },
     "sso": {
-      "enabled": true
+      "enabled": false
     },
     "helmet": {
       "enabled": false
