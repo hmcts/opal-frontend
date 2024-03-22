@@ -92,7 +92,7 @@ export class DetailsComponent implements OnInit {
 
   /**
    * Performs the initial setup for the details component.
-   * Retrieves the defendantAccountId from the route params and fetches the defendant account details.
+   * Retrieves the defendantAccountId from the route params and initializes the necessary data and forms.
    */
   private initialSetup(): void {
     this.route.params.subscribe((params) => {
@@ -110,6 +110,9 @@ export class DetailsComponent implements OnInit {
 
   /**
    * Handles the form submission for adding a note.
+   * Retrieves the note value from the form, resets the form,
+   * and then adds the note to the defendant account.
+   * Finally, retrieves the updated list of notes for the defendant account.
    */
   public handleNotesFormSubmit(): void {
     const note = this.addNoteForm.get('note')?.value;
@@ -128,6 +131,7 @@ export class DetailsComponent implements OnInit {
         }),
       );
   }
+
   /**
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */
@@ -137,7 +141,7 @@ export class DetailsComponent implements OnInit {
   }
 
   /**
-   * Navigates to the matches page when the back button is clicked.
+   * Navigates back to the account enquiry matches page.
    */
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.matches]);
