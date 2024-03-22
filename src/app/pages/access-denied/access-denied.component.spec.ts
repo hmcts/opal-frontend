@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AccessDeniedComponent } from './access-denied.component';
 
 describe('AccessDeniedComponent', () => {
@@ -8,7 +7,8 @@ describe('AccessDeniedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccessDeniedComponent],
+      imports: [],
+      declarations: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccessDeniedComponent);
@@ -18,5 +18,11 @@ describe('AccessDeniedComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate to test page on go back button click', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.handleGoBackButtonClick();
+    expect(routerSpy).toHaveBeenCalledWith(['/test-page']);
   });
 });
