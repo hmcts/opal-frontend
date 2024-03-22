@@ -18,7 +18,6 @@ import { EMPTY, Observable, switchMap, tap } from 'rxjs';
 import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LDFlagSet } from 'launchdarkly-js-client-sdk';
 
 @Component({
   selector: 'app-account-enquiry-details',
@@ -47,13 +46,17 @@ export class DetailsComponent implements OnInit {
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
 
-  public readonly stateService = inject(StateService);
-  public readonly permissionsService = inject(PermissionsService);
+  // Get what we need from the state service...
+  private readonly accountEnquiryState = inject(StateService).accountEnquiry;
+  public readonly featureFlagsState = inject(StateService).featureFlags;
+  public readonly userState = inject(StateService).userState;
+  public readonly errorState = inject(StateService).error;
+
+  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private readonly userStateRoles: IUserStateRole[] = this.userState()?.roles || [];
 
   private defendantAccountId!: number;
-  private userStateRoles: IUserStateRole[] = [];
 
-  public featureFlags: LDFlagSet = {};
   public businessUnitId!: number;
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
   public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
@@ -78,29 +81,13 @@ export class DetailsComponent implements OnInit {
    * This method checks if the user has permission to add a note to the account enquiry.
    */
   private setupPermissions(): void {
-    this.permissions[this.permissionsMap.accountEnquiryAddNote] = this.permissionsService.hasPermissionAccess(
-      this.permissionsMap.accountEnquiryAddNote,
-      this.businessUnitId,
-      this.userStateRoles,
-    );
-  }
-
-  /**
-   * Sets the user state roles.
-   *
-   * @param userStateRoles - An array of user state roles.
-   */
-  private setUserStateRoles(userStateRoles: IUserStateRole[] = []): void {
-    this.userStateRoles = userStateRoles;
-  }
-
-  /**
-   * Sets the feature flags for the component.
-   *
-   * @param featureFlags - The feature flags to set.
-   */
-  private setFeatureFlags(featureFlags: LDFlagSet = {}): void {
-    this.featureFlags = featureFlags;
+    if (this.userStateRoles && this.userStateRoles.length > 0) {
+      this.permissions[this.permissionsMap.accountEnquiryAddNote] = this.hasPermissionAccess(
+        this.permissionsMap.accountEnquiryAddNote,
+        this.businessUnitId,
+        this.userStateRoles,
+      );
+    }
   }
 
   /**
@@ -108,10 +95,6 @@ export class DetailsComponent implements OnInit {
    * Retrieves the defendantAccountId from the route params and fetches the defendant account details.
    */
   private initialSetup(): void {
-    // Set our roles and feature flags...
-    this.setUserStateRoles(this.stateService.userState()?.roles);
-    this.setFeatureFlags(this.stateService.featureFlags());
-
     this.route.params.subscribe((params) => {
       this.defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
       this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId).pipe(
@@ -149,7 +132,7 @@ export class DetailsComponent implements OnInit {
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */
   public handleNewSearch(): void {
-    this.stateService.accountEnquiry.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    this.accountEnquiryState.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 

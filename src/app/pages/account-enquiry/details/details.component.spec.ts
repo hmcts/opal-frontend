@@ -37,18 +37,18 @@ describe('DetailsComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DetailsComponent);
-    component = fixture.componentInstance;
-
+    // We need the data available before the component creates
     stateService = TestBed.inject(StateService);
     stateService.userState.set(USER_STATE_MOCK);
     stateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
 
-    fixture.detectChanges();
+    fixture = TestBed.createComponent(DetailsComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
   });
 
   it('should fetch defendant account details and set roles and flags on initial setup', () => {
@@ -57,10 +57,6 @@ describe('DetailsComponent', () => {
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setUserStateRoles');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setFeatureFlags');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPermissions');
 
     component['initialSetup']();
@@ -68,14 +64,6 @@ describe('DetailsComponent', () => {
     // Test API is called
     expect(component['defendantAccountService'].getDefendantAccountDetails).toHaveBeenCalledWith(123);
     expect(component.data$).toBeDefined();
-
-    // Test set user state roles are set
-    expect(component['setUserStateRoles']).toHaveBeenCalledWith(USER_STATE_MOCK.roles);
-    expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
-
-    // Test flags are set
-    expect(component['setFeatureFlags']).toHaveBeenCalledWith(LAUNCH_DARKLY_FLAGS_MOCK);
-    expect(component['featureFlags']).toEqual(LAUNCH_DARKLY_FLAGS_MOCK);
 
     // Test tap set businessUnitId
     component.data$.subscribe(() => {
@@ -91,7 +79,7 @@ describe('DetailsComponent', () => {
   });
 
   it('should handle new search', () => {
-    const stateServiceSpy = spyOn(component['stateService'].accountEnquiry, 'set');
+    const stateServiceSpy = spyOn(component['accountEnquiryState'], 'set');
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleNewSearch();
@@ -141,31 +129,15 @@ describe('DetailsComponent', () => {
   }));
 
   it('should setup permissions', () => {
-    spyOn(component.permissionsService, 'hasPermissionAccess').and.returnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'hasPermissionAccess').and.returnValue(true);
 
     component['businessUnitId'] = ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.businessUnitId;
-    component['userStateRoles'] = USER_STATE_MOCK.roles;
 
     fixture.detectChanges();
     component['setupPermissions']();
 
-    expect(component.permissionsService.hasPermissionAccess).toHaveBeenCalled();
+    expect(component['hasPermissionAccess']).toHaveBeenCalled();
     expect(component.permissions[PermissionsMap.accountEnquiryAddNote]).toBeTruthy();
-  });
-
-  it('should set feature flags', () => {
-    component.featureFlags = {};
-    fixture.detectChanges();
-
-    component['setFeatureFlags'](LAUNCH_DARKLY_FLAGS_MOCK);
-    expect(component.featureFlags).toEqual(LAUNCH_DARKLY_FLAGS_MOCK);
-  });
-
-  it('should set userStateRoles', () => {
-    component['userStateRoles'] = [];
-    fixture.detectChanges();
-
-    component['setUserStateRoles'](USER_STATE_MOCK.roles);
-    expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
   });
 });
