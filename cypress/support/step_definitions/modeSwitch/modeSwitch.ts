@@ -13,7 +13,7 @@ function apiUrl() {
   return url;
 }
 
-function checkHealthWithRetry(attemptsLeft = 3) {
+function checkHealthWithRetry(attemptsLeft = 10) {
   if (attemptsLeft === 0) {
     throw new Error('Maximum number of attempts reached');
   }
@@ -25,6 +25,7 @@ function checkHealthWithRetry(attemptsLeft = 3) {
     } else {
       cy.log(response.status.toString());
       cy.log(response.body.status);
+      cy.wait(2000);
       return checkHealthWithRetry(attemptsLeft - 1);
     }
   });
