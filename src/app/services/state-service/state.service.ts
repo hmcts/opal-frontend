@@ -1,6 +1,6 @@
 import { Injectable, WritableSignal, signal } from '@angular/core';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
-import { IAccountEnquiryState, IUserState } from '@interfaces';
+import { IAccountEnquiryState, ILaunchDarklyConfig, IUserState } from '@interfaces';
 import { LDFlagSet } from 'launchdarkly-js-client-sdk';
 
 @Injectable({
@@ -16,4 +16,5 @@ export class StateService {
   // Otherwise just store the state
   public userState: IUserState | null = null;
   public ssoEnabled: boolean | null = false;
+  public launchDarklyConfig: ILaunchDarklyConfig | null = null;
 }

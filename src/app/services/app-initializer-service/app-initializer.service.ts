@@ -29,6 +29,7 @@ export class AppInitializerService {
    * Initializes the LaunchDarkly client and change listener.
    */
   private initializeLaunchDarkly() {
+    this.transferStateService.initializeLaunchDarklyConfig();
     this.launchDarklyService.initializeLaunchDarklyClient();
     this.launchDarklyService.initializeLaunchDarklyChangeListener();
   }
