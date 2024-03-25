@@ -12,6 +12,7 @@ import {
 import { ssoSignInGuard } from './sso-sign-in.guard';
 
 import { StateService } from '@services';
+import { RoutingPaths } from '@enums';
 
 function runSsoSignInGuard(guard: typeof ssoSignInGuard, guardParameters: boolean, urlPath: string) {
   const dummyRoute = new ActivatedRouteSnapshot();
@@ -20,7 +21,7 @@ function runSsoSignInGuard(guard: typeof ssoSignInGuard, guardParameters: boolea
   return TestBed.runInInjectionContext(() => guard(guardParameters)(dummyRoute, dummyState));
 }
 
-fdescribe('ssoSignInGuard', () => {
+describe('ssoSignInGuard', () => {
   let mockStateService: jasmine.SpyObj<StateService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
@@ -54,23 +55,23 @@ fdescribe('ssoSignInGuard', () => {
 
   it('should return true if sso enabled and sso route ', () => {
     mockStateService.ssoEnabled = true;
-    expect(runSsoSignInGuard(ssoSignInGuard, true, '/sign-in')).toBeTruthy();
+    expect(runSsoSignInGuard(ssoSignInGuard, true, `/${RoutingPaths.signIn}`)).toBeTruthy();
   });
 
   it('should return true if sso enabled and sso route ', () => {
     mockStateService.ssoEnabled = false;
-    expect(runSsoSignInGuard(ssoSignInGuard, false, '/sign-in-stub')).toBeTruthy();
+    expect(runSsoSignInGuard(ssoSignInGuard, false, `/${RoutingPaths.signInStub}`)).toBeTruthy();
   });
 
   it('should re-route if no access', () => {
     mockStateService.ssoEnabled = false;
     runSsoSignInGuard(ssoSignInGuard, true, '/sign-in');
-    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/sign-in-stub`]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.signInStub}`]);
   });
 
   it('should re-route if no access', () => {
     mockStateService.ssoEnabled = true;
     runSsoSignInGuard(ssoSignInGuard, false, '/sign-in-stub');
-    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/sign-in`]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.signIn}`]);
   });
 });

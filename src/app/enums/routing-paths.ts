@@ -4,4 +4,6 @@ export enum RoutingPaths {
   accountEnquiryMatches = 'matches',
   accountEnquiryDetails = 'details/:defendantAccountId',
   accessDenied = 'access-denied',
+  signIn = 'sign-in',
+  signInStub = 'sign-in-stub',
 }

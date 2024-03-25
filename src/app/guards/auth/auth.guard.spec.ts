@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { CanActivateFn, Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 
-import { AuthService } from '@services';
+import { AuthService, StateService } from '@services';
 
 import { authGuard } from './auth.guard';
 import { of, throwError } from 'rxjs';
@@ -11,6 +11,7 @@ describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => authGuard(...guardParameters));
 
+  let mockStateService: jasmine.SpyObj<StateService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
@@ -19,6 +20,7 @@ describe('authGuard', () => {
 
   beforeEach(() => {
     mockAuthService = jasmine.createSpyObj(authGuard, ['checkAuthenticated']);
+    mockStateService = jasmine.createSpyObj(authGuard, ['ssoEnabled']);
     mockRouter = jasmine.createSpyObj(authGuard, ['navigate', 'createUrlTree', 'parseUrl']);
     mockRouter.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
@@ -37,6 +39,10 @@ describe('authGuard', () => {
           provide: AuthService,
           useValue: mockAuthService,
         },
+        {
+          provide: StateService,
+          useValue: mockStateService,
+        },
       ],
     });
   });
@@ -52,6 +58,7 @@ describe('authGuard', () => {
   }));
 
   it('should redirect to login with originalUrl and loggedOut url if catches an error ', fakeAsync(async () => {
+    mockStateService.ssoEnabled = true;
     mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(authGuard, urlPath));
     expect(mockRouter.navigate).toHaveBeenCalledOnceWith([expectedUrl]);

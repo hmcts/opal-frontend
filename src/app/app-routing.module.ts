@@ -46,17 +46,17 @@ const routes: Routes = [
     canActivate: [authGuard, routePermissionsGuard(ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry])],
   },
   {
-    path: 'access-denied',
+    path: RoutingPaths.accessDenied,
     loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
     canActivate: [authGuard],
   },
   {
-    path: 'sign-in',
+    path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
     canActivate: [ssoSignInGuard(true), signedInGuard],
   },
   {
-    path: 'sign-in-stub',
+    path: RoutingPaths.signInStub,
     loadComponent: () => import('./pages/sign-in-stub/sign-in-stub.component').then((c) => c.SignInStubComponent),
     canActivate: [ssoSignInGuard(false), signedInGuard],
   },

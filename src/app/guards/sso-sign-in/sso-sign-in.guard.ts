@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { RoutingPaths } from '@enums';
 import { StateService } from '@services';
 
 export const ssoSignInGuard = (ssoRoute: boolean): CanActivateFn => {
@@ -8,11 +9,11 @@ export const ssoSignInGuard = (ssoRoute: boolean): CanActivateFn => {
     const router = inject(Router);
 
     if (ssoRoute && !ssoEnabled) {
-      return router.createUrlTree([`/sign-in-stub`]);
+      return router.createUrlTree([`/${RoutingPaths.signInStub}`]);
     }
 
     if (!ssoRoute && ssoEnabled) {
-      return router.createUrlTree([`/sign-in`]);
+      return router.createUrlTree([`/${RoutingPaths.signIn}`]);
     }
 
     return true;
