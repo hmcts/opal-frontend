@@ -1,7 +1,7 @@
 @if (data$ | async; as data) {
   <app-search-form
     [selectOptions]="data"
-    [state]="stateService.accountEnquiry().search"
+    [state]="stateService.accountEnquiry.search"
     (formSubmit)="handleFormSubmit($event)"
   ></app-search-form>
 }

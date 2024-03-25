@@ -7,14 +7,14 @@ import { LDFlagSet } from 'launchdarkly-js-client-sdk';
   providedIn: 'root',
 })
 export class StateService {
-  // Use signals if we need to reactively make changes
+  // Reactive state
   public readonly authenticated = signal<boolean>(false);
   public readonly error = signal({ error: false, message: '' });
-  public readonly accountEnquiry: WritableSignal<IAccountEnquiryState> = signal(ACCOUNT_ENQUIRY_DEFAULT_STATE);
   public readonly featureFlags = signal<LDFlagSet>({});
 
-  // Otherwise just store the state
+  // Non reactive state
   public userState: IUserState | null = null;
   public ssoEnabled: boolean | null = false;
   public launchDarklyConfig: ILaunchDarklyConfig | null = null;
+  public accountEnquiry: IAccountEnquiryState = ACCOUNT_ENQUIRY_DEFAULT_STATE;
 }

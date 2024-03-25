@@ -16,7 +16,7 @@ export class AccountEnquiryComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.stateService.accountEnquiry.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    this.stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
 
     // Clear any errors...
     this.stateService.error.set({

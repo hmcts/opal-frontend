@@ -79,12 +79,11 @@ describe('DetailsComponent', () => {
   });
 
   it('should handle new search', () => {
-    const stateServiceSpy = spyOn(component['accountEnquiryState'], 'set');
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleNewSearch();
 
-    expect(stateServiceSpy).toHaveBeenCalledWith(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(stateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
   });
 

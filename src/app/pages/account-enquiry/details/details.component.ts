@@ -47,7 +47,7 @@ export class DetailsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   // Get what we need from the state service...
-  private readonly accountEnquiryState = inject(StateService).accountEnquiry;
+  private accountEnquiryState = inject(StateService).accountEnquiry;
   public readonly featureFlagsState = inject(StateService).featureFlags;
   public readonly userState = inject(StateService).userState;
   public readonly errorState = inject(StateService).error;
@@ -136,7 +136,7 @@ export class DetailsComponent implements OnInit {
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */
   public handleNewSearch(): void {
-    this.accountEnquiryState.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    this.accountEnquiryState = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 
