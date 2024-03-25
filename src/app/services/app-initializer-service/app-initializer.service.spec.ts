@@ -15,9 +15,9 @@ describe('AppInitializerService', () => {
   });
 
   it('should initialize user state', () => {
-    spyOn(service['userStateService'], 'initializeUserState');
+    spyOn(service['transferStateService'], 'initializeUserState');
     service['initializeUserState']();
-    expect(service['userStateService'].initializeUserState).toHaveBeenCalled();
+    expect(service['transferStateService'].initializeUserState).toHaveBeenCalled();
   });
 
   it('should initialize LaunchDarkly', async () => {
@@ -42,5 +42,11 @@ describe('AppInitializerService', () => {
     expect(service['initializeUserState']).toHaveBeenCalled();
     expect(service['initializeLaunchDarkly']).toHaveBeenCalled();
     expect(service['launchDarklyService'].initializeLaunchDarklyFlags).toHaveBeenCalled();
+  });
+
+  it('should initialize SSO enabled', () => {
+    spyOn(service['transferStateService'], 'initializeSsoEnabled');
+    service['initializeSsoEnabled']();
+    expect(service['transferStateService'].initializeSsoEnabled).toHaveBeenCalled();
   });
 });

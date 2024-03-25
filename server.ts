@@ -27,6 +27,7 @@ import { SessionStorage } from './server/session/index';
 import { LaunchDarkly } from './server/launch-darkly/index';
 import Routes from './server/routes';
 import { CSRFToken } from './server/csrf-token';
+import config from 'config';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -84,6 +85,10 @@ export function app(): express.Express {
           {
             provide: 'userState',
             useValue: req.session?.securityToken?.userState || null,
+          },
+          {
+            provide: 'ssoEnabled',
+            useValue: config.get('features.sso.enabled'),
           },
         ],
       })

@@ -1,25 +1,34 @@
 import { Injectable, inject } from '@angular/core';
-import { LaunchDarklyService } from '../launch-darkly/launch-darkly.service';
-import { UserStateService } from '../user-state-service/user-state.service';
+
+import { TransferStateService, LaunchDarklyService } from '@services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppInitializerService {
   private readonly launchDarklyService = inject(LaunchDarklyService);
-  private readonly userStateService = inject(UserStateService);
+  // private readonly userStateService = inject(UserStateService);
+  private readonly transferStateService = inject(TransferStateService);
 
   /**
    * Initializes the user state.
    */
   private initializeUserState(): void {
-    this.userStateService.initializeUserState();
+    this.transferStateService.initializeUserState();
+  }
+
+  /**
+   * Initializes the SSO (Single Sign-On) enabled state.
+   * This method calls the `initializeSsoEnabled` method of the `transferStateService`.
+   */
+  private initializeSsoEnabled(): void {
+    this.transferStateService.initializeSsoEnabled();
   }
 
   /**
    * Initializes the LaunchDarkly client and change listener.
    */
-  private async initializeLaunchDarkly() {
+  private initializeLaunchDarkly() {
     this.launchDarklyService.initializeLaunchDarklyClient();
     this.launchDarklyService.initializeLaunchDarklyChangeListener();
   }
@@ -31,6 +40,7 @@ export class AppInitializerService {
    */
   public async initializeApp(): Promise<void[]> {
     this.initializeUserState();
+    this.initializeSsoEnabled();
     this.initializeLaunchDarkly();
 
     // We need to wait for this promise to resolve, before starting the application.

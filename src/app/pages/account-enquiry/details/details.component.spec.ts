@@ -39,7 +39,7 @@ describe('DetailsComponent', () => {
 
     // We need the data available before the component creates
     stateService = TestBed.inject(StateService);
-    stateService.userState.set(USER_STATE_MOCK);
+    stateService.userState = USER_STATE_MOCK;
     stateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
 
     fixture = TestBed.createComponent(DetailsComponent);

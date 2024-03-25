@@ -53,7 +53,7 @@ export class DetailsComponent implements OnInit {
   public readonly errorState = inject(StateService).error;
 
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: IUserStateRole[] = this.userState()?.roles || [];
+  private readonly userStateRoles: IUserStateRole[] = this.userState?.roles || [];
 
   private defendantAccountId!: number;
 

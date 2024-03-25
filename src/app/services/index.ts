@@ -4,10 +4,10 @@ import { StateService } from './state-service/state.service';
 import { UtilsService } from './utils/utils.service';
 import { CourtService } from './court-service/court.service';
 import { LaunchDarklyService } from './launch-darkly/launch-darkly.service';
-import { UserStateService } from './user-state-service/user-state.service';
+
 import { AppInitializerService } from './app-initializer-service/app-initializer.service';
 import { PermissionsService } from './permissions-service/permissions.service';
-
+import { TransferStateService } from './transfer-state-service/transfer-state.service';
 export {
   DefendantAccountService,
   AuthService,
@@ -15,7 +15,7 @@ export {
   UtilsService,
   CourtService,
   LaunchDarklyService,
-  UserStateService,
   AppInitializerService,
   PermissionsService,
+  TransferStateService,
 };

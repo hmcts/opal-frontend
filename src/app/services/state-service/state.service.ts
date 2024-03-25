@@ -7,9 +7,13 @@ import { LDFlagSet } from 'launchdarkly-js-client-sdk';
   providedIn: 'root',
 })
 export class StateService {
+  // Use signals if we need to reactively make changes
   public readonly authenticated = signal<boolean>(false);
   public readonly error = signal({ error: false, message: '' });
   public readonly accountEnquiry: WritableSignal<IAccountEnquiryState> = signal(ACCOUNT_ENQUIRY_DEFAULT_STATE);
   public readonly featureFlags = signal<LDFlagSet>({});
-  public readonly userState = signal<IUserState | null>(null);
+
+  // Otherwise just store the state
+  public userState: IUserState | null = null;
+  public ssoEnabled: boolean | null = false;
 }
