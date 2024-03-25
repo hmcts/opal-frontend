@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
-import { authGuard, routePermissionsGuard, signedInGuard } from '@guards';
+import { authGuard, routePermissionsGuard, ssoSignInGuard } from '@guards';
 import { RoutingPaths } from './enums/routing-paths';
+import { signedInGuard } from '@guards';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
@@ -52,7 +53,12 @@ const routes: Routes = [
   {
     path: 'sign-in',
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    canActivate: [signedInGuard],
+    canActivate: [ssoSignInGuard(true), signedInGuard],
+  },
+  {
+    path: 'sign-in-stub',
+    loadComponent: () => import('./pages/sign-in-stub/sign-in-stub.component').then((c) => c.SignInStubComponent),
+    canActivate: [ssoSignInGuard(false), signedInGuard],
   },
 ];
 
