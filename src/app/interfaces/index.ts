@@ -15,7 +15,7 @@ import { ISearchCourtBody } from './search-court-body.interface';
 import { ILaunchDarklyConfig } from './launch-darkly-config.interface';
 import { IUserState, IUserStateRole, IUserStatePermission } from './user-state.interface';
 import { IPermissions } from './permissions.interface';
-
+import { ITransferServerState } from './transfer-server-state.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -38,4 +38,5 @@ export {
   IUserStateRole,
   IUserStatePermission,
   IPermissions,
+  ITransferServerState,
 };

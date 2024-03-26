@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { TransferStateService } from './transfer-state.service';
-import { IUserState } from '@interfaces';
-import { USER_STATE_MOCK } from '@mocks';
+
+import { LAUNCH_DARKLY_CONFIG_MOCK, USER_STATE_MOCK } from '@mocks';
 import { StateService } from '../state-service/state.service';
 
 describe('TransferStateService', () => {
@@ -13,6 +13,11 @@ describe('TransferStateService', () => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(TransferStateService);
     stateService = TestBed.inject(StateService);
+    service['storedServerTransferState'] = {
+      launchDarklyConfig: LAUNCH_DARKLY_CONFIG_MOCK,
+      userState: USER_STATE_MOCK,
+      ssoEnabled: true,
+    };
   });
 
   it('should be created', () => {
@@ -20,21 +25,20 @@ describe('TransferStateService', () => {
   });
 
   it('should initialize user state', () => {
-    const mockUserState: IUserState = USER_STATE_MOCK;
-
-    service['storedUserState'] = mockUserState;
     service.initializeUserState();
 
-    expect(stateService.userState).toEqual(mockUserState);
+    expect(stateService.userState).toEqual(service['storedServerTransferState'].userState);
   });
 
   it('should initialize SSO enabled', () => {
-    const storedSsoEnabled = true;
-    service['storedSsoEnabled'] = storedSsoEnabled;
-
     service.initializeSsoEnabled();
 
-    expect(stateService.ssoEnabled).toEqual(storedSsoEnabled);
-    expect(service['storedSsoEnabled']).toBeNull();
+    expect(stateService.ssoEnabled).toEqual(service['storedServerTransferState'].ssoEnabled);
+  });
+
+  it('should initialize launch darkly', () => {
+    service.initializeLaunchDarklyConfig();
+
+    expect(stateService.launchDarklyConfig).toEqual(service['storedServerTransferState'].launchDarklyConfig);
   });
 });
