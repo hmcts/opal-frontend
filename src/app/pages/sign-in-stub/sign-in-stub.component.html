@@ -1,1 +1,26 @@
-<p>sign-in-stub works!</p>
+<form (submit)="handleFormSubmit()">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h1 class="govuk-fieldset__heading">Sign in - Stub</h1>
+        </legend>
+
+        <div [formGroup]="signInForm">
+          <app-govuk-text-input
+            labelText="Username"
+            inputId="username"
+            inputName="username"
+            inputClasses="govuk-!-width-one-half"
+            [control]="signInForm.controls['username']"
+          ></app-govuk-text-input>
+        </div>
+      </fieldset>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+          <app-govuk-button buttonId="submitForm" type="submit"> Sign in</app-govuk-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
