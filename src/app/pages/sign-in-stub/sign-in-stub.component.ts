@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukButtonComponent, GovukTextInputComponent } from '@components';
 
 @Component({
@@ -17,12 +17,14 @@ export class SignInStubComponent implements OnInit {
 
   private setupSignInForm(): void {
     this.signInForm = new FormGroup({
-      username: new FormControl(null),
+      email: new FormControl(null, [Validators.required]),
     });
   }
 
   public handleFormSubmit(): void {
-    this.document.location.href = `/sso/login?username=${this.signInForm.value.username}`;
+    if (this.signInForm.valid) {
+      this.document.location.href = `/sso/login?email=${this.signInForm.value.email}`;
+    }
   }
 
   public ngOnInit(): void {

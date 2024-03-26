@@ -9,8 +9,8 @@ const logger = Logger.getLogger('login-callback-stub');
 
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const username = req.query['username'] as string;
-    const result = await axios.get(INTERNAL_JWT, { headers: { 'X-User-Email': username } });
+    const email = req.query['email'] as string;
+    const result = await axios.get(INTERNAL_JWT, { headers: { 'X-User-Email': email } });
 
     req.session.securityToken = result.data;
 
