@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, routePermissionsGuard, ssoSignInGuard } from '@guards';
-import { RoutingPaths } from './enums/routing-paths';
+import { RoutingPaths } from '@enums';
 import { signedInGuard } from '@guards';
 
 const routes: Routes = [
