@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GovukButtonComponent, GovukTextInputComponent } from '@components';
 
@@ -11,6 +12,7 @@ import { GovukButtonComponent, GovukTextInputComponent } from '@components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInStubComponent implements OnInit {
+  private readonly document = inject(DOCUMENT);
   public signInForm!: FormGroup;
 
   private setupSignInForm(): void {
@@ -20,7 +22,7 @@ export class SignInStubComponent implements OnInit {
   }
 
   public handleFormSubmit(): void {
-    console.log(this.signInForm.value);
+    this.document.location.href = `/sso/login?username=${this.signInForm.value.username}`;
   }
 
   public ngOnInit(): void {
