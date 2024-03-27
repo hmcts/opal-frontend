@@ -36,10 +36,6 @@ describe('signedInGuard', () => {
           provide: AuthService,
           useValue: mockAuthService,
         },
-        {
-          provide: StateService,
-          useValue: mockStateService,
-        },
       ],
     });
   });
