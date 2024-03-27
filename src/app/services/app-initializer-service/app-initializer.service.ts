@@ -29,9 +29,13 @@ export class AppInitializerService {
    *
    * @returns A promise that resolves when the initialization is complete.
    */
-  public async initializeApp(): Promise<Promise<void>[]> {
+  public async initializeApp(): Promise<void[]> {
     this.initializeUserState();
     this.initializeLaunchDarkly();
-    return [this.launchDarklyService.initializeLaunchDarklyFlags()];
+
+    // We need to wait for this promise to resolve, before starting the application.
+    // This is so that we are sure that the LaunchDarkly flags are set before the application starts.
+
+    return Promise.all([this.launchDarklyService.initializeLaunchDarklyFlags()]);
   }
 }

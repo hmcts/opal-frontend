@@ -1,16 +1,16 @@
-interface Permission {
+export interface IUserStatePermission {
   permissionId: number;
   permissionName: string;
 }
 
-interface Role {
+export interface IUserStateRole {
   businessUserId: string;
   businessUnitId: number;
-  permissions: Permission[];
+  permissions: IUserStatePermission[];
 }
 
 export interface IUserState {
   userId: string;
   userName: string;
-  roles: Role[];
+  roles: IUserStateRole[];
 }

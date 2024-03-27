@@ -54,7 +54,7 @@ The following command builds the [Angular SSR](https://angular.dev/guide/ssr) ap
 
 ```bash
 
-yarn dev:build:serve:ssr
+yarn build:serve:ssr
 
 ```
 
