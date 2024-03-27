@@ -11,15 +11,20 @@ import {
   DEFENDANT_ACCOUNT_NOTE_MOCK,
   LAUNCH_DARKLY_FLAGS_MOCK,
   USER_STATE_MOCK,
+  LAUNCH_DARKLY_FLAGS_MOCK,
+  USER_STATE_MOCK,
 } from '@mocks';
 import { DefendantAccountService, StateService } from '@services';
+import { DefendantAccountService, StateService } from '@services';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 describe('DetailsComponent', () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
+  let stateService: StateService;
   let stateService: StateService;
 
   beforeEach(async () => {
@@ -49,8 +54,10 @@ describe('DetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
+    expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
   });
 
+  it('should fetch defendant account details and set roles and flags on initial setup', () => {
   it('should fetch defendant account details and set roles and flags on initial setup', () => {
     spyOn(component['defendantAccountService'], 'getDefendantAccountDetails').and.returnValue(
       of(DEFENDANT_ACCOUNT_DETAILS_MOCK),
@@ -59,7 +66,13 @@ describe('DetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPermissions');
 
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupPermissions');
+
     component['initialSetup']();
+
+    // Test API is called
 
     // Test API is called
     expect(component['defendantAccountService'].getDefendantAccountDetails).toHaveBeenCalledWith(123);
@@ -68,6 +81,7 @@ describe('DetailsComponent', () => {
     // Test tap set businessUnitId
     component.data$.subscribe(() => {
       expect(component['businessUnitId']).toEqual(DEFENDANT_ACCOUNT_DETAILS_MOCK.businessUnitId);
+      expect(component['setupPermissions']).toHaveBeenCalled();
       expect(component['setupPermissions']).toHaveBeenCalled();
     });
   });
@@ -126,6 +140,19 @@ describe('DetailsComponent', () => {
       );
     });
   }));
+
+  it('should setup permissions', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'hasPermissionAccess').and.returnValue(true);
+
+    component['businessUnitId'] = ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK.businessUnitId;
+
+    fixture.detectChanges();
+    component['setupPermissions']();
+
+    expect(component['hasPermissionAccess']).toHaveBeenCalled();
+    expect(component.permissions[PermissionsMap.accountEnquiryAddNote]).toBeTruthy();
+  });
 
   it('should setup permissions', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -14,7 +14,10 @@ import {
 
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { DefendantAccountService, PermissionsService, StateService } from '@services';
+import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
+import { DefendantAccountService, PermissionsService, StateService } from '@services';
 import { EMPTY, Observable, switchMap, tap } from 'rxjs';
+import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -58,9 +61,15 @@ export class DetailsComponent implements OnInit {
   private defendantAccountId!: number;
 
   public businessUnitId!: number;
+  public businessUnitId!: number;
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
   public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
   public addNoteForm!: FormGroup;
+
+  public readonly permissionsMap = PermissionsMap;
+  public readonly permissions: IPermissions = {
+    [PermissionsMap.accountEnquiryAddNote]: true, // default to true so that if no permissions are found, the add note is still displayed
+  };
 
   public readonly permissionsMap = PermissionsMap;
   public readonly permissions: IPermissions = {
@@ -91,12 +100,33 @@ export class DetailsComponent implements OnInit {
   }
 
   /**
+   * Sets up the permissions for the account enquiry details component.
+   * This method checks if the user has permission to add a note to the account enquiry.
+   */
+  private setupPermissions(): void {
+    if (this.userStateRoles && this.userStateRoles.length > 0) {
+      this.permissions[this.permissionsMap.accountEnquiryAddNote] = this.hasPermissionAccess(
+        this.permissionsMap.accountEnquiryAddNote,
+        this.businessUnitId,
+        this.userStateRoles,
+      );
+    }
+  }
+
+  /**
    * Performs the initial setup for the details component.
+   * Retrieves the defendantAccountId from the route params and initializes the necessary data and forms.
    * Retrieves the defendantAccountId from the route params and initializes the necessary data and forms.
    */
   private initialSetup(): void {
     this.route.params.subscribe((params) => {
       this.defendantAccountId = params['defendantAccountId']; // get defendantAccountId from route params
+      this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId).pipe(
+        tap(({ businessUnitId }) => {
+          this.businessUnitId = businessUnitId;
+          this.setupPermissions();
+        }),
+      );
       this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId).pipe(
         tap(({ businessUnitId }) => {
           this.businessUnitId = businessUnitId;
@@ -110,6 +140,9 @@ export class DetailsComponent implements OnInit {
 
   /**
    * Handles the form submission for adding a note.
+   * Retrieves the note value from the form, resets the form,
+   * and then adds the note to the defendant account.
+   * Finally, retrieves the updated list of notes for the defendant account.
    * Retrieves the note value from the form, resets the form,
    * and then adds the note to the defendant account.
    * Finally, retrieves the updated list of notes for the defendant account.
@@ -141,6 +174,7 @@ export class DetailsComponent implements OnInit {
   }
 
   /**
+   * Navigates back to the account enquiry matches page.
    * Navigates back to the account enquiry matches page.
    */
   public handleBack(): void {
