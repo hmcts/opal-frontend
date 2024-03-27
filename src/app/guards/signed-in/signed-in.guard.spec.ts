@@ -2,9 +2,10 @@ import { TestBed, fakeAsync } from '@angular/core/testing';
 import { CanActivateFn, Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 
 import { signedInGuard } from './signed-in.guard';
-import { AuthService } from '@services';
+import { AuthService, StateService } from '@services';
 import { throwError, of } from 'rxjs';
 import { getGuardWithDummyUrl, runAuthGuardWithContext } from '../helpers';
+import { USER_STATE_MOCK } from '@mocks';
 
 describe('signedInGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
@@ -12,6 +13,7 @@ describe('signedInGuard', () => {
 
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockStateService: StateService;
 
   const urlPath = '/sign-in';
   const expectedUrl = '/';
@@ -26,6 +28,9 @@ describe('signedInGuard', () => {
       return urlTree;
     });
 
+    mockStateService = jasmine.createSpyObj(signedInGuard, ['userState']);
+    mockStateService.userState = USER_STATE_MOCK;
+
     TestBed.configureTestingModule({
       providers: [
         {
@@ -35,6 +40,10 @@ describe('signedInGuard', () => {
         {
           provide: AuthService,
           useValue: mockAuthService,
+        },
+        {
+          provide: StateService,
+          useValue: mockStateService,
         },
       ],
     });
@@ -47,7 +56,7 @@ describe('signedInGuard', () => {
   it('should return false if the user is logged in and redirect to the default route', fakeAsync(async () => {
     mockIsLoggedInFalse();
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(signedInGuard, urlPath));
-    expect(mockRouter.navigate).toHaveBeenCalledOnceWith([expectedUrl]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([expectedUrl]);
     expect(authenticated).toBeFalsy();
   }));
 
