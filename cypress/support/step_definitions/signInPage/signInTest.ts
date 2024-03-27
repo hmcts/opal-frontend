@@ -10,7 +10,7 @@ When('I sign in', () => {
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
   cy.location('href').then((href: string) => {
-    if (href.includes('localhost')) {
+    if (href.includes('pr-')) {
       cy.get('input[type="text"]').type(emailSSO);
       cy.get('#submitForm').click();
       cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
