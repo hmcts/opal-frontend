@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 import { DetailsComponent } from './details.component';
-import { RouterTestingModule } from '@angular/router/testing';
+
 import {
   ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
   DEFENDANT_ACCOUNT_DETAILS_MOCK,
@@ -24,7 +24,7 @@ describe('DetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetailsComponent, RouterTestingModule, HttpClientTestingModule],
+      imports: [DetailsComponent, HttpClientTestingModule],
 
       providers: [
         DefendantAccountService,

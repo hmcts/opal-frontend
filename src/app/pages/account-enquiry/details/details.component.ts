@@ -46,14 +46,10 @@ export class DetailsComponent implements OnInit {
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
 
-  // Get what we need from the state service...
-  private accountEnquiryState = inject(StateService).accountEnquiry;
-  public readonly featureFlagsState = inject(StateService).featureFlags;
-  public readonly userState = inject(StateService).userState;
-  public readonly errorState = inject(StateService).error;
+  public readonly stateService = inject(StateService);
 
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: IUserStateRole[] = this.userState?.roles || [];
+  private readonly userStateRoles: IUserStateRole[] = this.stateService.userState?.roles || [];
 
   private defendantAccountId!: number;
 
@@ -147,7 +143,7 @@ export class DetailsComponent implements OnInit {
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */
   public handleNewSearch(): void {
-    this.accountEnquiryState = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    this.stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 
