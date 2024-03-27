@@ -19,6 +19,7 @@ nodejs:
     FEATURES_HELMET_ENABLED: true
     FEATURES_LAUNCH_DARKLY_ENABLED: true
     FEATURES_LAUNCH_DARKLY_STREAM: false
+    FEATURES_SSO_ENABLED: true
 redis:
   enabled: false
 
