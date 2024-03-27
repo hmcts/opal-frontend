@@ -10,10 +10,9 @@ When('I sign in', () => {
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
   cy.location('href').then((href: string) => {
-    if (href.includes('pr-')) {
+    if (href.includes('localhost')) {
       cy.get('input[type="text"]').type(emailSSO);
-      cy.get('input[type="submit"]').click();
-      cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+      cy.get('#submitForm').click();
       cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
     } else {
       cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
