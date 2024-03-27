@@ -39,7 +39,7 @@ describe('DetailsComponent', () => {
 
     // We need the data available before the component creates
     stateService = TestBed.inject(StateService);
-    stateService.userState.set(USER_STATE_MOCK);
+    stateService.userState = USER_STATE_MOCK;
     stateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
 
     fixture = TestBed.createComponent(DetailsComponent);
@@ -79,12 +79,11 @@ describe('DetailsComponent', () => {
   });
 
   it('should handle new search', () => {
-    const stateServiceSpy = spyOn(component['accountEnquiryState'], 'set');
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleNewSearch();
 
-    expect(stateServiceSpy).toHaveBeenCalledWith(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(stateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
   });
 

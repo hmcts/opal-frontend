@@ -15,18 +15,15 @@ const routes: Routes = [
   },
   {
     path: RoutingPaths.accountEnquiry,
-    path: RoutingPaths.accountEnquiry,
     loadComponent: () =>
       import('./pages/account-enquiry/account-enquiry.component').then((c) => c.AccountEnquiryComponent),
     children: [
       {
         path: '',
         redirectTo: RoutingPaths.accountEnquirySearch,
-        redirectTo: RoutingPaths.accountEnquirySearch,
         pathMatch: 'full',
       },
       {
-        path: RoutingPaths.accountEnquirySearch,
         path: RoutingPaths.accountEnquirySearch,
         loadComponent: () => import('./pages/account-enquiry/search/search.component').then((c) => c.SearchComponent),
         canActivate: [authGuard],
@@ -34,14 +31,12 @@ const routes: Routes = [
 
       {
         path: RoutingPaths.accountEnquiryMatches,
-        path: RoutingPaths.accountEnquiryMatches,
         loadComponent: () =>
           import('./pages/account-enquiry/matches/matches.component').then((c) => c.MatchesComponent),
         canActivate: [authGuard],
       },
 
       {
-        path: RoutingPaths.accountEnquiryDetails,
         path: RoutingPaths.accountEnquiryDetails,
         loadComponent: () =>
           import('./pages/account-enquiry/details/details.component').then((c) => c.DetailsComponent),

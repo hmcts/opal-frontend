@@ -6,11 +6,9 @@ import { IGovUkDateInput } from './govuk-date-input.interface';
 import { IGovUkSelectOptions } from './govuk-select-options.interface';
 import { IAccountEnquiryState, IAccountEnquiryStateSearch } from './account-enquiry-state.interface';
 import { ISearchDefendantAccountBody } from './search-defendant-account-body.interface';
-import { ISearchDefendantAccountBody } from './search-defendant-account-body.interface';
+
 import { ISearchDefendantAccounts, ISearchDefendantAccount } from './search-defendant-accounts.interface';
 import { IDefendantAccountDetails } from './defendant-account-details.interface';
-import { IAddDefendantAccountNoteBody } from './add-defendant-account-note-body.interface';
-import { IDefendantAccountNote } from './defendant-account-note.interface';
 import { IAddDefendantAccountNoteBody } from './add-defendant-account-note-body.interface';
 import { IDefendantAccountNote } from './defendant-account-note.interface';
 import { ISearchCourt } from './search-court.interface';
