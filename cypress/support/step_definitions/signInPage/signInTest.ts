@@ -11,6 +11,8 @@ When('I sign in', () => {
 
   cy.location('href').then((href: string) => {
     if (href.includes('pr-')) {
+      cy.get('input[type="text"]').type(emailSSO);
+      cy.get('input[type="submit"]').click();
       cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
       cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
     } else {
