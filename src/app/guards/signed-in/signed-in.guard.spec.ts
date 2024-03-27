@@ -5,7 +5,6 @@ import { signedInGuard } from './signed-in.guard';
 import { AuthService, StateService } from '@services';
 import { throwError, of } from 'rxjs';
 import { getGuardWithDummyUrl, runAuthGuardWithContext } from '../helpers';
-import { USER_STATE_MOCK } from '@mocks';
 
 describe('signedInGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
@@ -13,7 +12,6 @@ describe('signedInGuard', () => {
 
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let mockStateService: StateService;
 
   const urlPath = '/sign-in';
   const expectedUrl = '/';
@@ -27,9 +25,6 @@ describe('signedInGuard', () => {
       urlTree.root = new UrlSegmentGroup([urlSegment], {});
       return urlTree;
     });
-
-    mockStateService = jasmine.createSpyObj(signedInGuard, ['userState']);
-    mockStateService.userState = USER_STATE_MOCK;
 
     TestBed.configureTestingModule({
       providers: [
