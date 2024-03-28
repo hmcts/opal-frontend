@@ -7,7 +7,6 @@ import { TransferStateService, LaunchDarklyService } from '@services';
 })
 export class AppInitializerService {
   private readonly launchDarklyService = inject(LaunchDarklyService);
-  // private readonly userStateService = inject(UserStateService);
   private readonly transferStateService = inject(TransferStateService);
 
   /**

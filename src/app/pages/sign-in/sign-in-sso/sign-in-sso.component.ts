@@ -13,6 +13,10 @@ import { GovukButtonComponent } from '@components';
 export class SignInSsoComponent {
   @Output() private signInButtonClick = new EventEmitter();
 
+  /**
+   * Handles the button click event.
+   * Emits the `signInButtonClick` event.
+   */
   public handleButtonClick(): void {
     this.signInButtonClick.emit();
   }

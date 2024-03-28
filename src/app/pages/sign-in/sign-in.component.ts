@@ -5,6 +5,7 @@ import { SignInSsoComponent } from './sign-in-sso/sign-in-sso.component';
 import { SignInStubComponent } from './sign-in-stub/sign-in-stub.component';
 import { StateService } from '@services';
 import { ISignInStubForm } from '@interfaces';
+import { SsoEndpoints } from '@enums';
 
 @Component({
   selector: 'app-sign-in',
@@ -24,11 +25,16 @@ export class SignInComponent implements OnInit {
    * Handles the login button click event.
    */
   public handleSsoSignInButtonClick(): void {
-    this.document.location.href = '/sso/login';
+    this.document.location.href = SsoEndpoints.login;
   }
 
+  /**
+   * Handles the submission of the stub sign-in form.
+   * Redirects the user to the SSO login page with the provided email.
+   * @param formData - The form data containing the email.
+   */
   public handleStubSignInFormSubmit(formData: ISignInStubForm): void {
-    this.document.location.href = `/sso/login?email=${formData.email}`;
+    this.document.location.href = `${SsoEndpoints.login}?email=${formData.email}`;
   }
 
   ngOnInit(): void {

@@ -30,14 +30,25 @@ export class TransferStateService {
     }
   }
 
+  /**
+   * Initializes the SSO (Single Sign-On) enabled state.
+   * Sets the SSO enabled state based on the stored server transfer state.
+   */
   public initializeSsoEnabled(): void {
     this.stateService.ssoEnabled = this.storedServerTransferState?.ssoEnabled;
   }
 
+  /**
+   * Initializes the user state by assigning the stored server transfer state's user state to the state service.
+   */
   public initializeUserState(): void {
     this.stateService.userState = this.storedServerTransferState?.userState;
   }
 
+  /**
+   * Initializes the LaunchDarkly configuration by assigning the stored server transfer state's
+   * launchDarklyConfig value to the stateService's launchDarklyConfig property.
+   */
   public initializeLaunchDarklyConfig(): void {
     this.stateService.launchDarklyConfig = this.storedServerTransferState?.launchDarklyConfig;
   }
