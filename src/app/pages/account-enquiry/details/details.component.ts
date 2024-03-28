@@ -101,12 +101,6 @@ export class DetailsComponent implements OnInit {
           this.setupPermissions();
         }),
       );
-      this.data$ = this.defendantAccountService.getDefendantAccountDetails(this.defendantAccountId).pipe(
-        tap(({ businessUnitId }) => {
-          this.businessUnitId = businessUnitId;
-          this.setupPermissions();
-        }),
-      );
       this.notes$ = this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
       this.setupAddNoteForm();
     });
