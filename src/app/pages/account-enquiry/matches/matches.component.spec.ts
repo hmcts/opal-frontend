@@ -24,7 +24,7 @@ describe('MatchesComponent', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     stateService = TestBed.inject(StateService);
-    stateService.accountEnquiry.set({ search: SEARCH_STATE_MOCK });
+    stateService.accountEnquiry = { search: SEARCH_STATE_MOCK };
 
     fixture.detectChanges();
   });

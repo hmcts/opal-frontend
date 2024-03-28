@@ -55,9 +55,9 @@ export class SearchComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleFormSubmit(formData: IAccountEnquiryStateSearch): void {
-    this.stateService.accountEnquiry.set({
+    this.stateService.accountEnquiry = {
       search: formData,
-    });
+    };
 
     this.router.navigate([AccountEnquiryRoutes.matches]);
   }

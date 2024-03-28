@@ -15,7 +15,7 @@ export const routePermissionsGuard = (routePermissionId: number | null): CanActi
     const router = inject(Router);
 
     // Get the unique permission ids for the user
-    const uniquePermissionIds = permissionService.getUniquePermissions(stateService.userState()) || [];
+    const uniquePermissionIds = permissionService.getUniquePermissions(stateService.userState) || [];
 
     // If we don't have a permission id for the route, or we don't have any unique permission ids, then we can't check for permissions
     // So allow the user to access the route

@@ -11,10 +11,12 @@ When('I sign in', () => {
 
   cy.location('href').then((href: string) => {
     if (href.includes('pr-')) {
-      cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+      cy.wait(50);
+      cy.get('input[type="text"]').type(emailSSO);
+      cy.get('#submitForm').click();
       cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
     } else {
-      cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+      cy.get('#signInButton').contains('Sign in').click();
 
       cy.origin(
         'https://login.microsoftonline.com',
@@ -48,7 +50,7 @@ When('I click the link in the footer', () => {
 });
 
 When('I click Sign in', () => {
-  cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+  cy.get('#signInButton').contains('Sign in').click();
 });
 
 Then('The sign out link should be visible', () => {
@@ -59,7 +61,13 @@ Then('I see {string} in the page body header', (bodyHeader) => {
   cy.get('.govuk-fieldset__heading').should('contain', bodyHeader);
 });
 Then('I see {string} on the sign in page', (bodyHeader) => {
-  cy.get('.govuk-heading-m').should('contain', bodyHeader);
+  cy.location('href').then((href: string) => {
+    if (href.includes('pr-')) {
+      cy.get('.govuk-fieldset__heading').should('contain', bodyHeader);
+    } else {
+      cy.get('.govuk-heading-m').should('contain', bodyHeader);
+    }
+  });
 });
 
 When('I click the Sign out link', () => {

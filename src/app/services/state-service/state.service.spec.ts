@@ -16,8 +16,8 @@ describe('StateService', () => {
   });
 
   it('should store search state', () => {
-    service.accountEnquiry.set({ search: SEARCH_STATE_MOCK });
-    expect(service.accountEnquiry().search).toEqual(SEARCH_STATE_MOCK);
+    service.accountEnquiry = { search: SEARCH_STATE_MOCK };
+    expect(service.accountEnquiry.search).toEqual(SEARCH_STATE_MOCK);
   });
 
   it('should store error state', () => {

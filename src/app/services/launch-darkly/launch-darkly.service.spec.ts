@@ -2,18 +2,25 @@ import { TestBed } from '@angular/core/testing';
 import { LaunchDarklyService } from './launch-darkly.service';
 import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 import { LAUNCH_DARKLY_CHANGE_FLAGS_MOCK, LAUNCH_DARKLY_FLAGS_MOCK } from '@mocks';
+import { StateService } from '@services';
 
 describe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
+  let stateService: StateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(LaunchDarklyService);
+    stateService = TestBed.inject(StateService);
+
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: '1234',
+      stream: true,
+    };
   });
 
   it('should initialize LaunchDarkly flags', () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
     service.initializeLaunchDarklyClient();
 
     const mockFlags: LDFlagSet = LAUNCH_DARKLY_FLAGS_MOCK;
@@ -41,15 +48,17 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly client', () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
     service['initializeLaunchDarklyClient']();
 
     expect(service['ldClient']).toBeDefined();
   });
 
   it('should not initialize LaunchDarkly client if no client id', () => {
-    service['storedLaunchDarklyClientId'] = null;
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: null,
+      stream: true,
+    };
 
     service['initializeLaunchDarklyClient']();
 
@@ -57,8 +66,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly client if not enabled', () => {
-    service['storedLaunchDarklyEnabled'] = false;
-    service['storedLaunchDarklyClientId'] = '1234';
+    stateService.launchDarklyConfig = {
+      enabled: false,
+      clientId: '1234',
+      stream: false,
+    };
 
     service['initializeLaunchDarklyClient']();
 
@@ -66,8 +78,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly client if not enabled and no client id', () => {
-    service['storedLaunchDarklyEnabled'] = false;
-    service['storedLaunchDarklyClientId'] = null;
+    stateService.launchDarklyConfig = {
+      enabled: false,
+      clientId: null,
+      stream: false,
+    };
 
     service['initializeLaunchDarklyClient']();
 
@@ -75,8 +90,12 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should close the LaunchDarkly client', () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: '1234',
+      stream: false,
+    };
+
     service.initializeLaunchDarklyClient();
     spyOn(service['ldClient'], 'close');
     service['closeLaunchDarklyClient']();
@@ -100,8 +119,12 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly flags when ldClient is defined', async () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: '1234',
+      stream: false,
+    };
+
     service.initializeLaunchDarklyClient();
 
     spyOn(service['ldClient'], 'waitForInitialization').and.returnValue(Promise.resolve());
@@ -115,8 +138,12 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should throw an error when waitForInitialization fails', async () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: '1234',
+      stream: false,
+    };
+
     service.initializeLaunchDarklyClient();
 
     const error = new Error('Initialization failed');
@@ -126,9 +153,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly change listener when ldClient is defined', () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
-    service['storedLaunchDarklyStream'] = true;
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: '1234',
+      stream: true,
+    };
     service.initializeLaunchDarklyClient();
 
     spyOn(service['ldClient'], 'on');
@@ -139,9 +168,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly change listener when stream is false', () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
-    service['storedLaunchDarklyStream'] = false;
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: '1234',
+      stream: false,
+    };
     service.initializeLaunchDarklyClient();
 
     spyOn(service['ldClient'], 'on');
@@ -152,9 +183,12 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should update feature flags when ldClient emits change event', () => {
-    service['storedLaunchDarklyEnabled'] = true;
-    service['storedLaunchDarklyClientId'] = '1234';
-    service['storedLaunchDarklyStream'] = true;
+    stateService.launchDarklyConfig = {
+      enabled: true,
+      clientId: '1234',
+      stream: true,
+    };
+
     service.initializeLaunchDarklyClient();
 
     const mockFlags: LDFlagChangeset = LAUNCH_DARKLY_CHANGE_FLAGS_MOCK;

@@ -33,7 +33,7 @@ describe('AccountEnquiryComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(stateService.accountEnquiry()).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(stateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(stateService.error()).toEqual({ error: false, message: '' });
   });
 });

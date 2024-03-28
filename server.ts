@@ -27,6 +27,8 @@ import { SessionStorage } from './server/session/index';
 import { LaunchDarkly } from './server/launch-darkly/index';
 import Routes from './server/routes';
 import { CSRFToken } from './server/csrf-token';
+import config from 'config';
+import TransferServerState from './server/interfaces/transferServerState';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -68,6 +70,11 @@ export function app(): express.Express {
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
+    const serverTransferState: TransferServerState = {
+      launchDarklyConfig: launchDarkly,
+      userState: req.session?.securityToken?.userState,
+      ssoEnabled: config.get('features.sso.enabled'),
+    };
 
     commonEngine
       .render({
@@ -78,12 +85,8 @@ export function app(): express.Express {
         providers: [
           { provide: APP_BASE_HREF, useValue: baseUrl },
           {
-            provide: 'launchDarklyConfig',
-            useValue: launchDarkly,
-          },
-          {
-            provide: 'userState',
-            useValue: req.session?.securityToken?.userState || null,
+            provide: 'serverTransferState',
+            useValue: serverTransferState,
           },
         ],
       })
