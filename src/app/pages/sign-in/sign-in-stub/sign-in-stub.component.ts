@@ -1,7 +1,7 @@
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukButtonComponent, GovukTextInputComponent } from '@components';
+import { ISignInStubForm } from '@interfaces';
 
 @Component({
   selector: 'app-sign-in-stub',
@@ -12,18 +12,25 @@ import { GovukButtonComponent, GovukTextInputComponent } from '@components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInStubComponent implements OnInit {
-  private readonly document = inject(DOCUMENT);
   public signInForm!: FormGroup;
+  @Output() private signInFormSubmit = new EventEmitter<ISignInStubForm>();
 
+  /**
+   * Sets up the sign-in form.
+   */
   private setupSignInForm(): void {
     this.signInForm = new FormGroup({
       email: new FormControl(null, [Validators.required]),
     });
   }
 
+  /**
+   * Handles the form submission.
+   * If the signInForm is valid, emits the signInForm value using the signInFormSubmit event.
+   */
   public handleFormSubmit(): void {
     if (this.signInForm.valid) {
-      this.document.location.href = `/sso/login?email=${this.signInForm.value.email}`;
+      this.signInFormSubmit.emit(this.signInForm.value);
     }
   }
 

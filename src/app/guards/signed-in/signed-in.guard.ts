@@ -1,7 +1,6 @@
-import { DOCUMENT } from '@angular/common';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService, StateService } from '@services';
+import { AuthService } from '@services';
 import { map, catchError, of } from 'rxjs';
 
 /**

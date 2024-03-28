@@ -17,6 +17,8 @@ import { ILaunchDarklyConfig } from './launch-darkly-config.interface';
 import { IUserState, IUserStateRole, IUserStatePermission } from './user-state.interface';
 import { IPermissions } from './permissions.interface';
 import { ITransferServerState } from './transfer-server-state.interface';
+import { ISignInStubForm } from './sign-in-stub-form.interface';
+
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -40,4 +42,5 @@ export {
   IUserStatePermission,
   IPermissions,
   ITransferServerState,
+  ISignInStubForm,
 };

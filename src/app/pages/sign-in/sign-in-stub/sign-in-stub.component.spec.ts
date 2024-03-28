@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignInStubComponent } from './sign-in-stub.component';
+import { SIGN_IN_STUB_FORM_MOCK } from '@mocks';
 
 describe('SignInStubComponent', () => {
   let component: SignInStubComponent;
@@ -39,5 +40,20 @@ describe('SignInStubComponent', () => {
     expect(emailControl?.valid).toBeFalsy();
     emailControl?.setValue('test@example.com');
     expect(emailControl?.valid).toBeTruthy();
+  });
+  it('should emit signInForm value on form submit when form is valid', () => {
+    spyOn(component['signInFormSubmit'], 'emit');
+    component.signInForm.setValue(SIGN_IN_STUB_FORM_MOCK);
+    component.handleFormSubmit();
+    expect(component['signInFormSubmit'].emit).toHaveBeenCalledWith(SIGN_IN_STUB_FORM_MOCK);
+  });
+
+  it('should not emit signInForm value on form submit when form is invalid', () => {
+    spyOn(component['signInFormSubmit'], 'emit');
+    component.signInForm.setValue({
+      email: null,
+    });
+    component.handleFormSubmit();
+    expect(component['signInFormSubmit'].emit).not.toHaveBeenCalled();
   });
 });

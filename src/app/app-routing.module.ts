@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
-import { authGuard, routePermissionsGuard, ssoSignInGuard } from '@guards';
+import { authGuard, routePermissionsGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { signedInGuard } from '@guards';
 
@@ -53,12 +53,7 @@ const routes: Routes = [
   {
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    canActivate: [ssoSignInGuard(true), signedInGuard],
-  },
-  {
-    path: RoutingPaths.signInStub,
-    loadComponent: () => import('./pages/sign-in-stub/sign-in-stub.component').then((c) => c.SignInStubComponent),
-    canActivate: [ssoSignInGuard(false), signedInGuard],
+    canActivate: [signedInGuard],
   },
 ];
 
