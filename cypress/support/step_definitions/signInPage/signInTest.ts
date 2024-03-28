@@ -11,11 +11,12 @@ When('I sign in', () => {
 
   cy.location('href').then((href: string) => {
     if (href.includes('pr-')) {
+      cy.wait(50);
       cy.get('input[type="text"]').type(emailSSO);
       cy.get('#submitForm').click();
       cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
     } else {
-      cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+      cy.get('#signInButton').contains('Sign in').click();
 
       cy.origin(
         'https://login.microsoftonline.com',
@@ -49,7 +50,7 @@ When('I click the link in the footer', () => {
 });
 
 When('I click Sign in', () => {
-  cy.get('app-govuk-button > #fetch-api-data').contains('Sign in').click();
+  cy.get('#signInButton').contains('Sign in').click();
 });
 
 Then('The sign out link should be visible', () => {
