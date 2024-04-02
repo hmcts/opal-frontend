@@ -8,6 +8,7 @@ import { LaunchDarklyService } from './launch-darkly/launch-darkly.service';
 import { AppInitializerService } from './app-initializer-service/app-initializer.service';
 import { PermissionsService } from './permissions-service/permissions.service';
 import { TransferStateService } from './transfer-state-service/transfer-state.service';
+import { SessionService } from './session-service/session.service';
 export {
   DefendantAccountService,
   AuthService,
@@ -18,4 +19,5 @@ export {
   AppInitializerService,
   PermissionsService,
   TransferStateService,
+  SessionService,
 };

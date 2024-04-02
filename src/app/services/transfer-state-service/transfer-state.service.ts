@@ -39,13 +39,6 @@ export class TransferStateService {
   }
 
   /**
-   * Initializes the user state by assigning the stored server transfer state's user state to the state service.
-   */
-  public initializeUserState(): void {
-    this.stateService.userState = this.storedServerTransferState?.userState;
-  }
-
-  /**
    * Initializes the LaunchDarkly configuration by assigning the stored server transfer state's
    * launchDarklyConfig value to the stateService's launchDarklyConfig property.
    */
