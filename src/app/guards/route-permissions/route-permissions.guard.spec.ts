@@ -54,15 +54,6 @@ describe('routePermissionsGuard', () => {
     expect(TestBed.runInInjectionContext(() => routePermissionsGuard(54))).toBeTruthy();
   });
 
-  it('should return true if no route permission ids ', () => {
-    expect(runRoutePermissionGuard(routePermissionsGuard, null, urlPath)).toBeTruthy();
-  });
-
-  it('should return true if no unique permission ids ', () => {
-    mockPermissionsService.getUniquePermissions.and.returnValue([]);
-    expect(runRoutePermissionGuard(routePermissionsGuard, 999, urlPath)).toBeTruthy();
-  });
-
   it('should return true if user has permission id', () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry]]);
     expect(
@@ -73,6 +64,20 @@ describe('routePermissionsGuard', () => {
   it('should re-route if no access', () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([999]);
     runRoutePermissionGuard(routePermissionsGuard, ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry], urlPath);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
+  });
+
+  it('should re-route no unique permission ids ', () => {
+    mockPermissionsService.getUniquePermissions.and.returnValue([]);
+
+    runRoutePermissionGuard(routePermissionsGuard, ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry], urlPath);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
+  });
+
+  it('should return true if no route permission ids ', () => {
+    mockPermissionsService.getUniquePermissions.and.returnValue([]);
+
+    runRoutePermissionGuard(routePermissionsGuard, null, urlPath);
     expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
   });
 });

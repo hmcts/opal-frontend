@@ -17,14 +17,9 @@ export const routePermissionsGuard = (routePermissionId: number | null): CanActi
     // Get the unique permission ids for the user
     const uniquePermissionIds = permissionService.getUniquePermissions(stateService.userState) || [];
 
-    // If we don't have a permission id for the route, or we don't have any unique permission ids, then we can't check for permissions
-    // So allow the user to access the route
-    if (!routePermissionId || uniquePermissionIds.length === 0) {
-      return true;
-    }
-    // if we have a permission id for the route, then we need to check if the user has the permission
-
-    if (!uniquePermissionIds.includes(routePermissionId)) {
+    // If we don't have a permission id for the route, or we don't have any unique permission ids, or the user doesn't have the required permission
+    // then redirect the user to the access denied page
+    if (!routePermissionId || uniquePermissionIds.length === 0 || !uniquePermissionIds.includes(routePermissionId)) {
       return router.createUrlTree([`/${RoutingPaths.accessDenied}`]);
     }
 

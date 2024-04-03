@@ -6,7 +6,7 @@ import { RoutingPaths } from '@enums';
 import { signedInGuard } from '@guards';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
+  { path: '', redirectTo: 'test-page', pathMatch: 'full' },
 
   {
     path: 'test-page',
@@ -60,7 +60,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      initialNavigation: 'enabledBlocking',
+      initialNavigation: 'disabled', // enabledBlocking -> disabled to allow for app_initializer to be called first, and roles to be set, as required by route guards - routes initialised in app.component.ts
     }),
   ],
   exports: [RouterModule],
