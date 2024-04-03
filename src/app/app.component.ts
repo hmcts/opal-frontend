@@ -7,8 +7,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'opal-frontend';
-
   constructor(router: Router) {
     router.initialNavigation();
   }

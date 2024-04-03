@@ -57,10 +57,15 @@ const routes: Routes = [
   },
 ];
 
+// initialNavigation: 'disabled' is set (was enabledBlocking) to prevent the router from navigating before the root component is created...
+// As we need our app to bootstrap first, to trigger the app_initializer service, which sets the roles...
+// This is because the roles are needed to determine the permissions for the routes...
+// Routing initialised in app.component.ts
+// https://github.com/angular/angular/issues/14588#issuecomment-281744906
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      initialNavigation: 'disabled', // enabledBlocking -> disabled to allow for app_initializer to be called first, and roles to be set, as required by route guards - routes initialised in app.component.ts
+      initialNavigation: 'disabled',
     }),
   ],
   exports: [RouterModule],
