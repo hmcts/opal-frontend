@@ -6,7 +6,7 @@ import { RoutingPaths } from '@enums';
 import { signedInGuard } from '@guards';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'test-page', pathMatch: 'full' },
+  { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
 
   {
     path: 'test-page',
@@ -57,15 +57,10 @@ const routes: Routes = [
   },
 ];
 
-// initialNavigation: 'disabled' is set (was enabledBlocking) to prevent the router from navigating before the root component is created...
-// As we need our app to bootstrap first, to trigger the app_initializer service, which sets the roles...
-// This is because the roles are needed to determine the permissions for the routes...
-// Routing initialised in app.component.ts
-// https://github.com/angular/angular/issues/14588#issuecomment-281744906
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      initialNavigation: 'disabled',
+      initialNavigation: 'enabledBlocking',
     }),
   ],
   exports: [RouterModule],

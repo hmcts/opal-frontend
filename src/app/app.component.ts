@@ -1,13 +1,52 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { SessionService, StateService } from '@services';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  constructor(router: Router) {
-    router.initialNavigation();
+export class AppComponent implements OnInit, OnDestroy {
+  private componentDestroyed$: Subject<boolean> = new Subject();
+  private readonly stateService = inject(StateService);
+  private readonly sessionService = inject(SessionService);
+
+  /**
+   * Refreshes the user state cache by redirecting the window to the root URL.
+   * This triggers the entire application to reload, and the server to update the cache.
+   */
+  private refreshUserStateCache(): void {
+    window.location.href = '/';
+  }
+
+  /**
+   * Validates the user state cache by comparing the cache in the browser with the cache in the server.
+   * If the caches do not match, the page is reloaded.
+   */
+  private validateUserStateCache(): void {
+    // If the cache in the browser, does not match the cache in the server, then reload the page.
+    this.sessionService
+      .getUserState()
+      .pipe(takeUntil(this.componentDestroyed$))
+      .subscribe((userState) => {
+        const userStateIsDifferent = JSON.stringify(userState) !== JSON.stringify(this.stateService.userState);
+        if (userStateIsDifferent) {
+          // Force browser to reload the page, and update the cache.
+          this.refreshUserStateCache();
+        }
+      });
+  }
+
+  ngOnInit(): void {
+    // Only validate if we are authenticated
+    if (this.stateService.authenticated()) {
+      this.validateUserStateCache();
+    }
+  }
+
+  ngOnDestroy() {
+    this.componentDestroyed$.next(true);
+    this.componentDestroyed$.complete();
   }
 }

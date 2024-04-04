@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AppInitializerService } from './app-initializer.service';
-import { USER_STATE_MOCK } from '@mocks';
-import { of } from 'rxjs';
+
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppInitializerService', () => {
@@ -19,12 +18,10 @@ describe('AppInitializerService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should initialize user state', async () => {
-    spyOn(service['sessionService'], 'getUserState').and.returnValue(of(USER_STATE_MOCK));
-
-    await service['initializeUserState']();
-
-    expect(service['sessionService'].getUserState).toHaveBeenCalled();
+  it('should initialize user state', () => {
+    spyOn(service['transferStateService'], 'initializeUserState');
+    service['initializeUserState']();
+    expect(service['transferStateService'].initializeUserState).toHaveBeenCalled();
   });
 
   it('should initialize LaunchDarkly', async () => {
