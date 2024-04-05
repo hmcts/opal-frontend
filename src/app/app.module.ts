@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,6 +28,7 @@ import { AppInitializerService } from '@services';
     BrowserAnimationsModule,
   ],
   providers: [
+    provideClientHydration(),
     provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor])),
     {
       provide: APP_INITIALIZER,
