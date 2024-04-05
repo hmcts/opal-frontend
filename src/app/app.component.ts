@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
    */
   private validateUserStateCache(): void {
     // If the cache in the browser, does not match the cache in the server, then reload the page.
+    // We do not need to unsubscribe from this subscription - https://stackoverflow.com/a/35043309
     this.sessionService.getUserState().subscribe((userState) => {
       const userStateIsDifferent = JSON.stringify(userState) !== JSON.stringify(this.stateService.userState);
       if (userStateIsDifferent) {
