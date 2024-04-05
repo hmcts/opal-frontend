@@ -9,7 +9,7 @@ export default class LaunchDarkly {
       stream: config.get('features.launch-darkly.stream'),
     };
 
-    if (launchDarklyConfig.enabled) {
+    if (launchDarklyConfig.enabled && config.has('secrets.opal.launch-darkly-client-id')) {
       launchDarklyConfig.clientId = config.get('secrets.opal.launch-darkly-client-id');
     }
 
