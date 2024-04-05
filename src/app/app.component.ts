@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 
   /**
    * Validates the user state cache by comparing the cache in the browser with the cache in the server.
-   * If the caches do not match, the page is reloaded.
+   * If the caches do not match, the page is reloaded. This can be caused by the user navigating back to cached pages in the browser history
    */
   private validateUserStateCache(): void {
     // If the cache in the browser, does not match the cache in the server, then reload the page.
