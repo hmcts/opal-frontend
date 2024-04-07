@@ -4,18 +4,22 @@ import { SessionService } from './session.service';
 
 import { SessionEndpoints } from '@enums';
 import { USER_STATE_MOCK } from '@mocks';
+import { StateService } from '@services';
 import { IUserState } from '@interfaces';
 
 describe('SessionService', () => {
   let service: SessionService;
   let httpMock: HttpTestingController;
+  let stateService: StateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
+      providers: [StateService],
     });
     service = TestBed.inject(SessionService);
     httpMock = TestBed.inject(HttpTestingController);
+    stateService = TestBed.inject(StateService);
   });
 
   afterEach(() => {
@@ -31,6 +35,7 @@ describe('SessionService', () => {
 
     service.getUserState().subscribe((userState: IUserState) => {
       expect(userState).toEqual(mockUserState);
+      expect(stateService.userState).toEqual(mockUserState);
     });
 
     const req = httpMock.expectOne(SessionEndpoints.userState);

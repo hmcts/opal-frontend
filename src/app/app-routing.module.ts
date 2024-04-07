@@ -43,7 +43,8 @@ const routes: Routes = [
         canActivate: [authGuard],
       },
     ],
-    canActivate: [authGuard, routePermissionsGuard(ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry])],
+    canActivate: [authGuard, routePermissionsGuard],
+    data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry] },
   },
   {
     path: RoutingPaths.accessDenied,

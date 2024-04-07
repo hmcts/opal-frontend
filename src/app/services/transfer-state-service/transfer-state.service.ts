@@ -31,13 +31,6 @@ export class TransferStateService {
   }
 
   /**
-   * Initializes the user state by assigning the stored server transfer state's user state to the state service.
-   */
-  public initializeUserState(): void {
-    this.stateService.userState = this.storedServerTransferState?.userState;
-  }
-
-  /**
    * Initializes the SSO (Single Sign-On) enabled state.
    * Sets the SSO enabled state based on the stored server transfer state.
    */

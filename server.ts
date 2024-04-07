@@ -58,6 +58,10 @@ export function app(): express.Express {
   new AppInsights().enable();
 
   const launchDarkly = new LaunchDarkly().enableFor();
+  const serverTransferState: TransferServerState = {
+    launchDarklyConfig: launchDarkly,
+    ssoEnabled: config.get('features.sso.enabled'),
+  };
 
   // Serve static files from /browser
   server.get(
@@ -70,12 +74,6 @@ export function app(): express.Express {
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
-
-    const serverTransferState: TransferServerState = {
-      launchDarklyConfig: launchDarkly,
-      userState: req.session?.securityToken?.userState || null,
-      ssoEnabled: config.get('features.sso.enabled'),
-    };
 
     commonEngine
       .render({
