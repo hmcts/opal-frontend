@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { tap } from 'rxjs';
 
@@ -14,7 +14,17 @@ export class AuthService {
 
   public checkAuthenticated() {
     return this.http
-      .get<boolean>(`${SsoEndpoints.authenticated}`)
-      .pipe(tap((resp) => this.stateService.authenticated.set(resp)));
+      .get<boolean>(SsoEndpoints.authenticated, {
+        headers: new HttpHeaders({
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+          Expires: '0',
+        }),
+      })
+      .pipe(
+        tap((resp) => {
+          this.stateService.authenticated.set(resp);
+        }),
+      );
   }
 }
