@@ -20,14 +20,14 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should subscribe to launchDarklyFlags$', () => {
+  it('should initialize launchDarklyFlags and subscribe to launchDarklyFlags$', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    spyOn(app['launchDarklyFlags$'], 'subscribe');
+    spyOn(app['launchDarklyService'], 'initializeLaunchDarklyFlags').and.returnValue(Promise.resolve());
 
     fixture.detectChanges();
 
-    expect(app['launchDarklyFlags$'].subscribe).toHaveBeenCalled();
+    expect(app['launchDarklyService'].initializeLaunchDarklyFlags).toHaveBeenCalled();
   });
 });
