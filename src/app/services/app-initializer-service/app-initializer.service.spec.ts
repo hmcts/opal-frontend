@@ -29,27 +29,22 @@ describe('AppInitializerService', () => {
   });
 
   it('should initialize LaunchDarkly', async () => {
-    spyOn(service['launchDarklyService'], 'initializeLaunchDarklyClient');
-    spyOn(service['launchDarklyService'], 'initializeLaunchDarklyChangeListener');
+    spyOn(service['transferStateService'], 'initializeLaunchDarklyConfig');
 
     service['initializeLaunchDarkly']();
 
-    expect(service['launchDarklyService'].initializeLaunchDarklyClient).toHaveBeenCalled();
-    expect(service['launchDarklyService'].initializeLaunchDarklyChangeListener).toHaveBeenCalled();
+    expect(service['transferStateService'].initializeLaunchDarklyConfig).toHaveBeenCalled();
   });
 
   it('should initialize the app', async () => {
+    spyOn(service['sessionService'], 'getUserState').and.returnValue(of(USER_STATE_MOCK));
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'initializeUserState');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'initializeLaunchDarkly').and.returnValue(Promise.resolve());
-    spyOn(service['launchDarklyService'], 'initializeLaunchDarklyFlags').and.returnValue(Promise.resolve());
 
     await service.initializeApp();
 
     expect(service['initializeUserState']).toHaveBeenCalled();
-    expect(service['initializeLaunchDarkly']).toHaveBeenCalled();
-    expect(service['launchDarklyService'].initializeLaunchDarklyFlags).toHaveBeenCalled();
   });
 
   it('should initialize SSO enabled', () => {

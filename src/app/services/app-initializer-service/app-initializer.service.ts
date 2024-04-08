@@ -13,9 +13,6 @@ export class AppInitializerService {
   /**
    * Initializes the user state.
    */
-  // private initializeUserState(): void {
-  //   this.transferStateService.initializeUserState();
-  // }
 
   private async initializeUserState(): Promise<void> {
     // Convert the observable to a promise, so that we can wait for it to resolve.
@@ -34,12 +31,10 @@ export class AppInitializerService {
   }
 
   /**
-   * Initializes the LaunchDarkly client and change listener.
+   * Initializes the LaunchDarkly configuration.
    */
-  private initializeLaunchDarkly() {
+  private initializeLaunchDarkly(): void {
     this.transferStateService.initializeLaunchDarklyConfig();
-    this.launchDarklyService.initializeLaunchDarklyClient();
-    this.launchDarklyService.initializeLaunchDarklyChangeListener();
   }
 
   /**
@@ -51,9 +46,6 @@ export class AppInitializerService {
     this.initializeSsoEnabled();
     this.initializeLaunchDarkly();
 
-    // We need to wait for this promise to resolve, before starting the application.
-    // This is so that we are sure that the LaunchDarkly flags are set before the application starts.
-
-    return Promise.all([this.launchDarklyService.initializeLaunchDarklyFlags(), this.initializeUserState()]);
+    return Promise.all([this.initializeUserState()]);
   }
 }
