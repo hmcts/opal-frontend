@@ -22,7 +22,6 @@ const SEARCH_COURT_BODY: ISearchCourtBody = {
   standalone: true,
   imports: [CommonModule, RouterModule, SearchFormComponent],
   templateUrl: './search.component.html',
-  styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent {
@@ -55,9 +54,9 @@ export class SearchComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleFormSubmit(formData: IAccountEnquiryStateSearch): void {
-    this.stateService.accountEnquiry.set({
+    this.stateService.accountEnquiry = {
       search: formData,
-    });
+    };
 
     this.router.navigate([AccountEnquiryRoutes.matches]);
   }

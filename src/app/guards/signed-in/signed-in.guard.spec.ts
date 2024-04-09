@@ -47,7 +47,7 @@ describe('signedInGuard', () => {
   it('should return false if the user is logged in and redirect to the default route', fakeAsync(async () => {
     mockIsLoggedInFalse();
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(signedInGuard, urlPath));
-    expect(mockRouter.navigate).toHaveBeenCalledOnceWith([expectedUrl]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([expectedUrl]);
     expect(authenticated).toBeFalsy();
   }));
 

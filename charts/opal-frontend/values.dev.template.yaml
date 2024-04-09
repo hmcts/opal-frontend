@@ -11,8 +11,8 @@ nodejs:
     REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-redis-master:6379
     OPAL_API_URL: https://opal-fines-service-${SERVICE_FQDN}
     FRONTEND_HOSTNAME: https://${SERVICE_FQDN}
-    FEATURES_SSO_ENABLED: false
     FEATURES_LAUNCH_DARKLY_ENABLED: false
+    FEATURES_SSO_ENABLED: false
 opal-fines-service:
   enabled: true
   java:

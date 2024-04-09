@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
-import { authGuard, routePermissionsGuard, signedInGuard } from '@guards';
-import { RoutingPaths } from './enums/routing-paths';
+import { authGuard, routePermissionsGuard } from '@guards';
+import { RoutingPaths } from '@enums';
+import { signedInGuard } from '@guards';
 
 const routes: Routes = [
   { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
@@ -42,15 +43,16 @@ const routes: Routes = [
         canActivate: [authGuard],
       },
     ],
-    canActivate: [authGuard, routePermissionsGuard(ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry])],
+    canActivate: [authGuard, routePermissionsGuard],
+    data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry] },
   },
   {
-    path: 'access-denied',
+    path: RoutingPaths.accessDenied,
     loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
     canActivate: [authGuard],
   },
   {
-    path: 'sign-in',
+    path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
     canActivate: [signedInGuard],
   },

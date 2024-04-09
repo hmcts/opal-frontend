@@ -3,8 +3,7 @@ Feature: PO-117 account details page
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
 
-    #When I sign in with Microsoft SSO
-    When I sign in
+    When I sign in as "opal-test@hmcts.net"
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
@@ -34,8 +33,7 @@ Feature: PO-117 account details page
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
 
-    #When I sign in with Microsoft SSO
-    When I sign in
+    When I sign in as "opal-test@hmcts.net"
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
@@ -68,8 +66,7 @@ Feature: PO-117 account details page
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
 
-    #When I sign in with Microsoft SSO
-    When I sign in
+    When I sign in as "opal-test@hmcts.net"
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
@@ -105,8 +102,7 @@ Feature: PO-117 account details page
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
 
-    #When I sign in with Microsoft SSO
-    When I sign in
+    When I sign in as "opal-test@hmcts.net"
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria

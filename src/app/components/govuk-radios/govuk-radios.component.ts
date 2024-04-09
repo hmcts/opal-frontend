@@ -8,7 +8,7 @@ import { IGovUkRadioInput } from '@interfaces';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-radios.component.html',
-  styleUrl: './govuk-radios.component.scss',
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukRadiosComponent {

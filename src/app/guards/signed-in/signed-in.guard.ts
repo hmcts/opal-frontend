@@ -12,11 +12,10 @@ import { map, catchError, of } from 'rxjs';
 export const signedInGuard: CanActivateFn = () => {
   const authService: AuthService = inject(AuthService);
   const router = inject(Router);
+
   return authService.checkAuthenticated().pipe(
     map(() => {
-      // Redirect to default route if signed in...
-      router.navigate(['/']);
-      return false;
+      return router.createUrlTree(['/']);
     }),
     catchError(() => {
       return of(true);

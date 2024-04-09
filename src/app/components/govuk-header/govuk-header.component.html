@@ -47,7 +47,7 @@
           <a href="/sso/login" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer">Sign in</a>
         } @else {
           <a href="/sso/logout" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer"
-            >{{ stateService.userState()?.userName }} - Sign out
+            >{{ stateService.userState?.userName }} - Sign out
           </a>
         }
       </div>

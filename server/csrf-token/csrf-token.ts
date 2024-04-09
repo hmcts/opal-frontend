@@ -11,6 +11,7 @@ export class CSRFToken {
       '/sso/login-callback',
       '/sso/logout-callback',
       '/styles.css.map',
+      '/',
     ];
 
     const csrfProtection = csurf({

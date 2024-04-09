@@ -8,7 +8,6 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
   standalone: true,
   imports: [CommonModule, RouterOutlet],
   templateUrl: './account-enquiry.component.html',
-  styleUrl: './account-enquiry.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountEnquiryComponent implements OnDestroy {
@@ -16,7 +15,7 @@ export class AccountEnquiryComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.stateService.accountEnquiry.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    this.stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
 
     // Clear any errors...
     this.stateService.error.set({

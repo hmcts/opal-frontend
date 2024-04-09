@@ -46,18 +46,15 @@ export class DetailsComponent implements OnInit {
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
 
-  // Get what we need from the state service...
-  private readonly accountEnquiryState = inject(StateService).accountEnquiry;
-  public readonly featureFlagsState = inject(StateService).featureFlags;
-  public readonly userState = inject(StateService).userState;
-  public readonly errorState = inject(StateService).error;
+  public readonly stateService = inject(StateService);
 
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: IUserStateRole[] = this.userState()?.roles || [];
+  private readonly userStateRoles: IUserStateRole[] = this.stateService.userState?.roles || [];
 
   private defendantAccountId!: number;
 
   public businessUnitId!: number;
+
   public data$: Observable<IDefendantAccountDetails> = EMPTY;
   public notes$: Observable<IDefendantAccountNote[]> = EMPTY;
   public addNoteForm!: FormGroup;
@@ -93,6 +90,7 @@ export class DetailsComponent implements OnInit {
   /**
    * Performs the initial setup for the details component.
    * Retrieves the defendantAccountId from the route params and initializes the necessary data and forms.
+   * Retrieves the defendantAccountId from the route params and initializes the necessary data and forms.
    */
   private initialSetup(): void {
     this.route.params.subscribe((params) => {
@@ -110,6 +108,9 @@ export class DetailsComponent implements OnInit {
 
   /**
    * Handles the form submission for adding a note.
+   * Retrieves the note value from the form, resets the form,
+   * and then adds the note to the defendant account.
+   * Finally, retrieves the updated list of notes for the defendant account.
    * Retrieves the note value from the form, resets the form,
    * and then adds the note to the defendant account.
    * Finally, retrieves the updated list of notes for the defendant account.
@@ -136,11 +137,12 @@ export class DetailsComponent implements OnInit {
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */
   public handleNewSearch(): void {
-    this.accountEnquiryState.set(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    this.stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 
   /**
+   * Navigates back to the account enquiry matches page.
    * Navigates back to the account enquiry matches page.
    */
   public handleBack(): void {

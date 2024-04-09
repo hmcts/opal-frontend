@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 import { DetailsComponent } from './details.component';
-import { RouterTestingModule } from '@angular/router/testing';
+
 import {
   ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
   DEFENDANT_ACCOUNT_DETAILS_MOCK,
@@ -24,7 +24,7 @@ describe('DetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetailsComponent, RouterTestingModule, HttpClientTestingModule],
+      imports: [DetailsComponent, HttpClientTestingModule],
 
       providers: [
         DefendantAccountService,
@@ -39,7 +39,7 @@ describe('DetailsComponent', () => {
 
     // We need the data available before the component creates
     stateService = TestBed.inject(StateService);
-    stateService.userState.set(USER_STATE_MOCK);
+    stateService.userState = USER_STATE_MOCK;
     stateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
 
     fixture = TestBed.createComponent(DetailsComponent);
@@ -49,6 +49,14 @@ describe('DetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
+  });
+
+  it('should populate with an empty roles array', () => {
+    stateService.userState = null;
+    fixture = TestBed.createComponent(DetailsComponent);
+    component = fixture.componentInstance;
+
+    expect(component['userStateRoles']).toEqual([]);
   });
 
   it('should fetch defendant account details and set roles and flags on initial setup', () => {
@@ -79,12 +87,11 @@ describe('DetailsComponent', () => {
   });
 
   it('should handle new search', () => {
-    const stateServiceSpy = spyOn(component['accountEnquiryState'], 'set');
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleNewSearch();
 
-    expect(stateServiceSpy).toHaveBeenCalledWith(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(stateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
   });
 

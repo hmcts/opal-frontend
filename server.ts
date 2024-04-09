@@ -27,6 +27,8 @@ import { SessionStorage } from './server/session/index';
 import { LaunchDarkly } from './server/launch-darkly/index';
 import Routes from './server/routes';
 import { CSRFToken } from './server/csrf-token';
+import config from 'config';
+import TransferServerState from './server/interfaces/transferServerState';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -56,6 +58,10 @@ export function app(): express.Express {
   new AppInsights().enable();
 
   const launchDarkly = new LaunchDarkly().enableFor();
+  const serverTransferState: TransferServerState = {
+    launchDarklyConfig: launchDarkly,
+    ssoEnabled: config.get('features.sso.enabled'),
+  };
 
   // Serve static files from /browser
   server.get(
@@ -78,12 +84,8 @@ export function app(): express.Express {
         providers: [
           { provide: APP_BASE_HREF, useValue: baseUrl },
           {
-            provide: 'launchDarklyConfig',
-            useValue: launchDarkly,
-          },
-          {
-            provide: 'userState',
-            useValue: req.session?.securityToken?.userState || null,
+            provide: 'serverTransferState',
+            useValue: serverTransferState,
           },
         ],
       })

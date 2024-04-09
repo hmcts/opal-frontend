@@ -8,7 +8,6 @@ import { IGovUkDateInput } from '@interfaces';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-date-input.component.html',
-  styleUrl: './govuk-date-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukDateInputComponent {

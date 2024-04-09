@@ -21,7 +21,7 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
   standalone: true,
   imports: [CommonModule, RouterModule, GovukButtonComponent, GovukPaginationComponent, CdkTableModule, MatSortModule],
   templateUrl: './matches-table.component.html',
-  styleUrl: './matches-table.component.scss',
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchesTableComponent implements AfterViewInit {

@@ -39,14 +39,14 @@ describe('SearchComponent', () => {
   it('should submit the form', () => {
     const navigateSpy = spyOn(router, 'navigate');
 
-    stateService.accountEnquiry.set({ search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH });
-    expect(stateService.accountEnquiry().search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
+    stateService.accountEnquiry = { search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH };
+    expect(stateService.accountEnquiry.search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
 
     component.handleFormSubmit({
       ...SEARCH_STATE_MOCK,
     });
 
-    expect(stateService.accountEnquiry().search?.court).toBe('Bath');
+    expect(stateService.accountEnquiry.search?.court).toBe('Bath');
 
     expect(navigateSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.matches]);
   });

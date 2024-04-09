@@ -6,7 +6,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input, PLATFORM_ID, 
   standalone: true,
   imports: [],
   templateUrl: './govuk-tabs.component.html',
-  styleUrl: './govuk-tabs.component.scss',
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTabsComponent implements AfterViewInit {

@@ -7,7 +7,7 @@ import { isPlatformBrowser } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './govuk-accordion.component.html',
-  styleUrls: ['./govuk-accordion.component.scss'],
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukAccordionComponent implements AfterViewInit {
