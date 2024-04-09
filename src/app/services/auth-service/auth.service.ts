@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { tap } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 
 import { SsoEndpoints } from 'src/app/enums/sso-endpoints';
 import { StateService } from '../state-service/state.service';
@@ -24,6 +24,12 @@ export class AuthService {
       .pipe(
         tap((resp) => {
           this.stateService.authenticated.set(resp);
+        }),
+      )
+      .pipe(
+        catchError((error) => {
+          this.stateService.authenticated.set(false);
+          return throwError(() => error);
         }),
       );
   }
