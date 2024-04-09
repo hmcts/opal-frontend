@@ -47,4 +47,18 @@ describe('AuthService', () => {
 
     req.flush(false);
   });
+
+  it('should make a GET request to check authentication and set authenticated state to false on error', () => {
+    service.checkAuthenticated().subscribe(
+      () => {},
+      () => {
+        expect(stateService.authenticated()).toEqual(false);
+      },
+    );
+
+    const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
+    expect(req.request.method).toBe('GET');
+
+    req.flush('401 error', { status: 401, statusText: 'Not Authenticated' });
+  });
 });
