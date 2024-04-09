@@ -8,7 +8,7 @@ import { ISignInStubForm } from '@interfaces';
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, GovukTextInputComponent, GovukButtonComponent],
   templateUrl: './sign-in-stub.component.html',
-  styleUrl: './sign-in-stub.component.scss',
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInStubComponent implements OnInit {

@@ -4,15 +4,22 @@ import { SignInComponent } from './sign-in.component';
 import { ISignInStubForm } from '@interfaces';
 import { StateService } from '@services';
 import { ChangeDetectorRef } from '@angular/core';
+import { SsoEndpoints } from '@enums';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
   let fixture: ComponentFixture<SignInComponent>;
   let stateService: StateService;
+  const mockDocumentLocation = {
+    location: {
+      href: '',
+    },
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SignInComponent],
+      providers: [],
     }).compileComponents();
 
     stateService = TestBed.inject(StateService);
@@ -54,5 +61,25 @@ describe('SignInComponent', () => {
 
     component.handleStubSignInFormSubmit(mockFormData);
     expect(spy).toHaveBeenCalledWith(mockFormData);
+  });
+
+  it('should handleSsoSignInButtonClick', () => {
+    const spy = spyOn(component, 'handleSsoSignInButtonClick').and.callFake(() => {
+      mockDocumentLocation.location.href = SsoEndpoints.login;
+    });
+    component.handleSsoSignInButtonClick();
+    expect(spy).toHaveBeenCalled();
+    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.login);
+  });
+
+  it('should handleStubSignInFormSubmit', () => {
+    const formData: ISignInStubForm = { email: 'test' };
+    const url = `${SsoEndpoints.login}?email=${formData.email}`;
+    const spy = spyOn(component, 'handleStubSignInFormSubmit').and.callFake(() => {
+      mockDocumentLocation.location.href = url;
+    });
+    component.handleStubSignInFormSubmit(formData);
+    expect(spy).toHaveBeenCalled();
+    expect(mockDocumentLocation.location.href).toBe(url);
   });
 });

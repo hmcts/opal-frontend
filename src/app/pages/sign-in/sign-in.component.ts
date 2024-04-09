@@ -12,7 +12,7 @@ import { SsoEndpoints } from '@enums';
   standalone: true,
   imports: [CommonModule, GovukButtonComponent, SignInSsoComponent, SignInStubComponent],
   templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.scss',
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent implements OnInit {
