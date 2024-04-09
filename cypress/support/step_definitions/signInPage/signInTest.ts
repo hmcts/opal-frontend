@@ -5,16 +5,27 @@ Given('I am on the OPAL Frontend', () => {
   cy.wait(500);
 });
 
-When('I sign in', () => {
-  const emailSSO = Cypress.env('CYPRESS_TEST_EMAIL') || '';
+Then('I see an access denied error', () => {
+  cy.get('.govuk-heading-l').should('contain.text', 'Access Denied');
+});
+
+Then('The error message is {string}', (errorMsg: string) => {
+  cy.get('.govuk-grid-column-two-thirds > :nth-child(2)').should('contain.text', errorMsg);
+});
+
+Then('There is a button to go back to the dashboard', () => {
+  cy.get('#go-back').should('contain.text', 'Back to dashboard');
+});
+
+When('I sign in as {string}', (email: string) => {
+  const emailSSO = email;
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
   cy.location('href').then((href: string) => {
-    if (href.includes('pr-')) {
+    if (href.includes('pr-') || href.includes('localhost')) {
       cy.wait(50);
       cy.get('input[type="text"]').type(emailSSO);
       cy.get('#submitForm').click();
-      cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
     } else {
       cy.get('#signInButton').contains('Sign in').click();
 

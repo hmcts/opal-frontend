@@ -5,14 +5,14 @@ Feature: PO-224 Accesibility Tests
 
   Scenario: Defandant seach page Page - Accessibility
     Given I am on the OPAL Frontend
-    Then I sign in
+    Then I sign in as "opal-test@hmcts.net"
     Then I check accessibility
 
     Then I click the Sign out link
 
   Scenario: Defendant matches Page - Accessibility
     Given I am on the OPAL Frontend
-    When I sign in
+    When I sign in as "opal-test@hmcts.net"
 
     When I populate the form with the following search criteria
       | court    |             |
@@ -34,7 +34,7 @@ Feature: PO-224 Accesibility Tests
   Scenario: Defendant details Page - Accessibility
     Given I am on the OPAL Frontend
 
-    When I sign in
+    When I sign in as "opal-test@hmcts.net"
 
     When I populate the form with the following search criteria
       | court    |             |
