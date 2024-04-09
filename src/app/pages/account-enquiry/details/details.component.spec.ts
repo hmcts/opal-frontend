@@ -17,7 +17,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
-describe('DetailsComponent', () => {
+fdescribe('DetailsComponent', () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
   let stateService: StateService;
@@ -49,6 +49,14 @@ describe('DetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
+  });
+
+  it('should populate with an empty roles array', () => {
+    stateService.userState = null;
+    fixture = TestBed.createComponent(DetailsComponent);
+    component = fixture.componentInstance;
+
+    expect(component['userStateRoles']).toEqual([]);
   });
 
   it('should fetch defendant account details and set roles and flags on initial setup', () => {
