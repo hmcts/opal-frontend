@@ -11,10 +11,10 @@ export const routePermissionsGuard: CanActivateFn = (route: ActivatedRouteSnapsh
 
   return sessionService.getUserState().pipe(
     map((resp) => {
-      const routePermissionId = route.data['routePermissionId'];
+      const routePermissionId: number = route.data['routePermissionId'];
 
       // Get the unique permission ids for the user
-      const uniquePermissionIds = permissionService.getUniquePermissions(resp) || [];
+      const uniquePermissionIds = permissionService.getUniquePermissions(resp);
 
       // If we don't have a permission id for the route, or we don't have any unique permission ids, or the user doesn't have the required permission
       // then redirect the user to the access denied page
