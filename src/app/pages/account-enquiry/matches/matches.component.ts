@@ -15,7 +15,7 @@ import { MatchesTableComponent } from './matches-table/matches-table.component';
   imports: [CommonModule, GovukButtonComponent, MatchesTableComponent],
   providers: [DefendantAccountService],
   templateUrl: './matches.component.html',
-  styleUrl: './matches.component.scss',
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchesComponent {

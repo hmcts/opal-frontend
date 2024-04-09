@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, GovukButtonComponent, RouterModule],
   providers: [DefendantAccountService],
   templateUrl: './test-page.component.html',
-  styleUrls: ['./test-page.component.scss'],
+
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TestPageComponent {

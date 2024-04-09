@@ -8,7 +8,6 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
   standalone: true,
   imports: [CommonModule, RouterOutlet],
   templateUrl: './account-enquiry.component.html',
-  styleUrl: './account-enquiry.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountEnquiryComponent implements OnDestroy {
