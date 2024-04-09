@@ -17,7 +17,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
-fdescribe('DetailsComponent', () => {
+describe('DetailsComponent', () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
   let stateService: StateService;
