@@ -5,7 +5,6 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './govuk-inset-text.component.html',
-  styleUrl: './govuk-inset-text.component.scss',
 })
 export class GovukInsetTextComponent {
   @Input({ required: true }) insetTextId!: string;

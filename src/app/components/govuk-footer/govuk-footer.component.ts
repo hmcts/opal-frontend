@@ -8,7 +8,6 @@ import { GovukFooter } from '@enums';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './govuk-footer.component.html',
-  styleUrl: './govuk-footer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukFooterComponent {

@@ -6,7 +6,6 @@ import { UtilsService } from '@services';
   standalone: true,
   imports: [],
   templateUrl: './govuk-tab-list-item.component.html',
-  styleUrl: './govuk-tab-list-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTabListItemComponent {

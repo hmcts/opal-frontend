@@ -51,6 +51,14 @@ describe('DetailsComponent', () => {
     expect(component['userStateRoles']).toEqual(USER_STATE_MOCK.roles);
   });
 
+  it('should populate with an empty roles array', () => {
+    stateService.userState = null;
+    fixture = TestBed.createComponent(DetailsComponent);
+    component = fixture.componentInstance;
+
+    expect(component['userStateRoles']).toEqual([]);
+  });
+
   it('should fetch defendant account details and set roles and flags on initial setup', () => {
     spyOn(component['defendantAccountService'], 'getDefendantAccountDetails').and.returnValue(
       of(DEFENDANT_ACCOUNT_DETAILS_MOCK),

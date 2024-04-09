@@ -25,7 +25,6 @@ import { DATE_INPUTS } from '../config/date-inputs';
     GovukButtonComponent,
   ],
   templateUrl: './search-form.component.html',
-  styleUrl: './search-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchFormComponent implements OnInit {

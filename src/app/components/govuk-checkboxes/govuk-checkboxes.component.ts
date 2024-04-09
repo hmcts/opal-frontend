@@ -8,7 +8,6 @@ import { IGovUkCheckboxInput } from '@interfaces';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-checkboxes.component.html',
-  styleUrl: './govuk-checkboxes.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukCheckboxesComponent {

@@ -75,6 +75,7 @@ describe('routePermissionsGuard', () => {
 
   it('should return true if user has permission id', fakeAsync(async () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry]]);
+
     const guard = await runRoutePermissionGuard(
       routePermissionsGuard,
       ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry],
@@ -96,10 +97,17 @@ describe('routePermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
   }));
 
-  it('should return true if no route permission ids ', fakeAsync(async () => {
+  it('should re-route if no route permission ids ', fakeAsync(async () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([]);
 
     await runRoutePermissionGuard(routePermissionsGuard, null, urlPath);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
+  }));
+
+  it('should re-route if route permission id does not exist', fakeAsync(async () => {
+    mockPermissionsService.getUniquePermissions.and.returnValue([]);
+
+    await runRoutePermissionGuard(routePermissionsGuard, 999999999, urlPath);
     expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
   }));
 

@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './govuk-button.component.html',
-  styleUrls: ['./govuk-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukButtonComponent {
