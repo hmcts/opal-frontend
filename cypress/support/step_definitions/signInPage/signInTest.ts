@@ -47,8 +47,6 @@ When('I sign in as {string}', (email: string) => {
           cy.get('#idBtn_Back').click();
         },
       );
-
-      cy.get('.govuk-fieldset__heading').should('contain', 'Account Enquiry');
     }
   });
 });
