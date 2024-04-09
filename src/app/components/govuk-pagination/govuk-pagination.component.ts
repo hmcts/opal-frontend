@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './govuk-pagination.component.html',
-  styleUrls: ['./govuk-pagination.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukPaginationComponent implements OnChanges {

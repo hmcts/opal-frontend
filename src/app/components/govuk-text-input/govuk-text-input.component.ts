@@ -7,7 +7,6 @@ import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/form
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-text-input.component.html',
-  styleUrl: './govuk-text-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTextInputComponent {

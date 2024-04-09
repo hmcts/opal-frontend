@@ -6,7 +6,6 @@ import { UtilsService } from '@services';
   standalone: true,
   imports: [],
   templateUrl: './govuk-tab-panel.component.html',
-  styleUrl: './govuk-tab-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTabPanelComponent {

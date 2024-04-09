@@ -8,7 +8,6 @@ import { IGovUkSelectOptions } from '@interfaces';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-select.component.html',
-  styleUrl: './govuk-select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukSelectComponent {
