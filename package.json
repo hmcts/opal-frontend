@@ -117,8 +117,7 @@
   "resolutions": {
     "axios": "^1.6.2",
     "follow-redirects": "^1.15.4",
-    "ip": "^2.0.1",
-    "tar": "^6.2.1"
+    "ip": "^2.0.1"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
