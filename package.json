@@ -115,7 +115,7 @@
   },
   "packageManager": "yarn@3.8.1",
   "resolutions": {
-    "axios": "^1.6.2"
+    "tar": "^6.2.1"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
