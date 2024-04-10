@@ -26,7 +26,7 @@
   "session": {
     "prefix": "opal-session",
     "ttlInSeconds": 1200,
-    "maxAge": 1260000,
+    "maxAge": null,
     "secure": false
   },
   "secrets": {
