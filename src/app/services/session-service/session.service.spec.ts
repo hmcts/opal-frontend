@@ -6,6 +6,7 @@ import { SessionEndpoints } from '@enums';
 import { USER_STATE_MOCK } from '@mocks';
 import { StateService } from '@services';
 import { IUserState } from '@interfaces';
+import { of } from 'rxjs';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -30,7 +31,16 @@ describe('SessionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return user state', () => {
+  it('should return user state when stateService has a value', () => {
+    const mockUserState: IUserState = USER_STATE_MOCK;
+    stateService.userState = mockUserState;
+
+    service.getUserState().subscribe((userState: IUserState) => {
+      expect(userState).toEqual(mockUserState);
+    });
+  });
+
+  it('should return user state when stateService is empty', () => {
     const mockUserState: IUserState = USER_STATE_MOCK;
 
     service.getUserState().subscribe((userState: IUserState) => {
