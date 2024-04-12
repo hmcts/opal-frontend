@@ -1,12 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { TransferStateService, LaunchDarklyService, SessionService } from '@services';
+import { TransferStateService, SessionService } from '@services';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppInitializerService {
-  private readonly launchDarklyService = inject(LaunchDarklyService);
   private readonly transferStateService = inject(TransferStateService);
   private readonly sessionService = inject(SessionService);
 
