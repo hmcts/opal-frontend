@@ -6,7 +6,6 @@ import { SessionEndpoints } from '@enums';
 import { USER_STATE_MOCK } from '@mocks';
 import { StateService } from '@services';
 import { IUserState } from '@interfaces';
-import { of } from 'rxjs';
 
 describe('SessionService', () => {
   let service: SessionService;
