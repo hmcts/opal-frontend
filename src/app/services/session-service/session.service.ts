@@ -20,7 +20,7 @@ export class SessionService {
    * @returns An observable that emits the user state.
    */
   public getUserState(): Observable<IUserState> {
-    return this.stateService.userState
+    return this.stateService.userState?.userId
       ? of(this.stateService.userState)
       : this.http
           .get<IUserState>(SessionEndpoints.userState)
