@@ -6,7 +6,7 @@ import { RoutingPaths } from '@enums';
 import { signedInGuard } from '@guards';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
+  { path: '', redirectTo: 'test-page', pathMatch: 'full' },
 
   {
     path: 'test-page',
