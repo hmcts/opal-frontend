@@ -32,6 +32,7 @@
     "prettier": "prettier --check \"./**/*.{ts,js,html,scss}\"",
     "prettier:fix": "prettier --write \"./**/*.{ts,js,html,scss}\"",
     "cypress": "cypress open "
+    "cypress": "cypress open "
   },
   "private": true,
   "dependencies": {
