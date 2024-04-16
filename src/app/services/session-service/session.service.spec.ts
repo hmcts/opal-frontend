@@ -30,24 +30,71 @@ describe('SessionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return user state when stateService has a value', () => {
-    const mockUserState: IUserState = USER_STATE_MOCK;
-    stateService.userState = mockUserState;
-
-    service.getUserState().subscribe((userState: IUserState) => {
-      expect(userState).toEqual(mockUserState);
-    });
-  });
-
-  it('should return user state when stateService is empty', () => {
+  it('should return the user state', () => {
     const mockUserState: IUserState = USER_STATE_MOCK;
 
-    service.getUserState().subscribe((userState: IUserState) => {
-      expect(userState).toEqual(mockUserState);
-      expect(stateService.userState).toEqual(mockUserState);
+    service.getUserState().subscribe((response) => {
+      expect(response).toEqual(mockUserState);
+      expect(stateService.userState()).toEqual(mockUserState);
     });
 
     const req = httpMock.expectOne(SessionEndpoints.userState);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockUserState);
+  });
+
+  it('should return cached response ', () => {
+    const mockUserState: IUserState = USER_STATE_MOCK;
+
+    service.getUserState().subscribe((response) => {
+      expect(response).toEqual(mockUserState);
+      expect(stateService.userState()).toEqual(mockUserState);
+    });
+
+    const req = httpMock.expectOne(SessionEndpoints.userState);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockUserState);
+
+    // Make a second call
+    service.getUserState().subscribe((response) => {
+      expect(response).toEqual(mockUserState);
+      expect(stateService.userState()).toEqual(mockUserState);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(SessionEndpoints.userState);
+  });
+
+  it('should do a new request if the cached response is empty ', () => {
+    const mockUserState: IUserState = USER_STATE_MOCK;
+
+    service.getUserState().subscribe((response) => {
+      expect(response).toEqual(mockUserState);
+      expect(stateService.userState()).toEqual(mockUserState);
+    });
+
+    let req = httpMock.expectOne(SessionEndpoints.userState);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockUserState);
+
+    // Make a second call
+    service.getUserState().subscribe((response) => {
+      expect(response).toEqual(mockUserState);
+      expect(stateService.userState()).toEqual(mockUserState);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(SessionEndpoints.userState);
+
+    // Clear the cache
+    stateService.userState.set({} as IUserState);
+
+    // Make a third call
+    service.getUserState().subscribe((response) => {
+      expect(response).toEqual(mockUserState);
+    });
+
+    req = httpMock.expectOne(SessionEndpoints.userState);
     expect(req.request.method).toBe('GET');
     req.flush(mockUserState);
   });

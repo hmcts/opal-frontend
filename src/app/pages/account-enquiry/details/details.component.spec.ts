@@ -16,6 +16,7 @@ import { DefendantAccountService, StateService } from '@services';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
+import { IUserState } from '@interfaces';
 
 describe('DetailsComponent', () => {
   let component: DetailsComponent;
@@ -39,7 +40,7 @@ describe('DetailsComponent', () => {
 
     // We need the data available before the component creates
     stateService = TestBed.inject(StateService);
-    stateService.userState = USER_STATE_MOCK;
+    stateService.userState.set(USER_STATE_MOCK);
     stateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
 
     fixture = TestBed.createComponent(DetailsComponent);
@@ -52,7 +53,7 @@ describe('DetailsComponent', () => {
   });
 
   it('should populate with an empty roles array', () => {
-    stateService.userState = null;
+    stateService.userState.set({} as IUserState);
     fixture = TestBed.createComponent(DetailsComponent);
     component = fixture.componentInstance;
 

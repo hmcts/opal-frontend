@@ -4,7 +4,7 @@ import { SessionEndpoints } from '@enums';
 import { IUserState } from '@interfaces';
 import { StateService } from '@services';
 
-import { Observable, of, shareReplay, tap } from 'rxjs';
+import { Observable, shareReplay, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,19 +12,32 @@ import { Observable, of, shareReplay, tap } from 'rxjs';
 export class SessionService {
   private readonly http = inject(HttpClient);
   private readonly stateService = inject(StateService);
+  private userStateCache$!: Observable<IUserState>;
 
   /**
-   * Retrieves the user state as an observable.
-   * If the user state is already available, it returns it immediately.
-   * Otherwise, it makes an HTTP GET request to fetch the user state and caches it for future use.
+   * Retrieves the user state from the backend.
+   * If the user state is not available or needs to be refreshed, it makes an HTTP request to fetch the user state.
+   * The user state is then stored in the state service for future use.
+   * The user state is cached using the `shareReplay` operator to avoid unnecessary HTTP requests.
    * @returns An observable that emits the user state.
    */
   public getUserState(): Observable<IUserState> {
-    return this.stateService.userState?.userId
-      ? of(this.stateService.userState)
-      : this.http
-          .get<IUserState>(SessionEndpoints.userState)
-          .pipe(shareReplay(1))
-          .pipe(tap((userState) => (this.stateService.userState = userState)));
+    // The backend can return an empty object so...
+    // If we don't have a user state, then we need to refresh it...
+    // And override the shareReplay cache...
+    const refresh = !this.stateService.userState()?.userId;
+
+    if (!this.userStateCache$ || refresh) {
+      this.userStateCache$ = this.http
+        .get<IUserState>(SessionEndpoints.userState)
+        .pipe(shareReplay(1))
+        .pipe(
+          tap((userState) => {
+            this.stateService.userState.set(userState);
+          }),
+        );
+    }
+
+    return this.userStateCache$;
   }
 }

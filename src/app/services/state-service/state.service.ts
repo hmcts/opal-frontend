@@ -11,9 +11,9 @@ export class StateService {
   public readonly authenticated = signal<boolean>(false);
   public readonly error = signal({ error: false, message: '' });
   public readonly featureFlags = signal<LDFlagSet>({});
+  public readonly userState = signal<IUserState>({} as IUserState);
 
   // Non reactive state
-  public userState: IUserState | null = null;
   public ssoEnabled: boolean | null = false;
   public launchDarklyConfig: ILaunchDarklyConfig | null = null;
   public accountEnquiry: IAccountEnquiryState = ACCOUNT_ENQUIRY_DEFAULT_STATE;

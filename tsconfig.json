@@ -29,7 +29,8 @@
       "@mocks": ["./src/app/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
-      "@interceptors": ["./src/app/interceptors/index.ts"]
+      "@interceptors": ["./src/app/interceptors/index.ts"],
+      "@resolvers": ["./src/app/resolvers/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
