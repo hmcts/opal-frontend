@@ -55,7 +55,7 @@ When('I sign in as {string}', (email: string) => {
   });
 });
 Then('I am on the dashboard', () => {
-  cy.get('#main-content > app-dashboard > div > div > h2').should('contain', 'Dashboard');
+  cy.get('#main-content > app-dashboard > div > div > h1').should('contain', 'Dashboard');
 });
 Then('I navigate to Account Enquiry', () => {
   cy.get('#accountEnquiryLink').should('contain', 'Account Enquiry').click();
