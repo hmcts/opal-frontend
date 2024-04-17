@@ -26,6 +26,8 @@ When('I sign in as {string}', (email: string) => {
       cy.wait(50);
       cy.get('input[type="text"]').type(emailSSO);
       cy.get('#submitForm').click();
+
+      cy.get('.govuk-link').contains('Sign out').should('contain.text', emailSSO);
     } else {
       cy.get('#signInButton').contains('Sign in').click();
 
@@ -47,8 +49,16 @@ When('I sign in as {string}', (email: string) => {
           cy.get('#idBtn_Back').click();
         },
       );
+      cy.wait(500);
+      cy.get('.govuk-link').contains('Sign out').should('contain.text', emailSSO);
     }
   });
+});
+Then('I am on the dashboard', () => {
+  cy.get('#main-content > app-dashboard > div > div > h2').should('contain', 'Dashboard');
+});
+Then('I navigate to Account Enquiry', () => {
+  cy.get('#accountEnquiryLink').should('contain', 'Account Enquiry').click();
 });
 
 Then('I see {string} in the header', (header) => {
@@ -71,7 +81,7 @@ Then('I see {string} in the page body header', (bodyHeader) => {
 });
 Then('I see {string} on the sign in page', (bodyHeader) => {
   cy.location('href').then((href: string) => {
-    if (href.includes('pr-')) {
+    if (href.includes('pr-') || href.includes('localhost')) {
       cy.get('.govuk-fieldset__heading').should('contain', bodyHeader);
     } else {
       cy.get('.govuk-heading-m').should('contain', bodyHeader);
@@ -82,7 +92,7 @@ Then('I see {string} on the sign in page', (bodyHeader) => {
 When('I click the Sign out link', () => {
   cy.get('.govuk-link').contains('Sign out').click();
   cy.location('href').then((href: string) => {
-    if (href.includes('pr-')) {
+    if (href.includes('pr-') || href.includes('localhost')) {
       cy.log('no SSO signing out');
     } else {
       cy.origin('https://login.microsoftonline.com', () => {
