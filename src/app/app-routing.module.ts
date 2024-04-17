@@ -4,14 +4,16 @@ import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, routePermissionsGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { signedInGuard } from '@guards';
+import { userStateResolver } from '@resolvers';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'test-page', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   {
-    path: 'test-page',
-    loadComponent: () => import('./pages/test-page/test-page.component').then((c) => c.TestPageComponent),
+    path: RoutingPaths.dashboard,
+    loadComponent: () => import('./pages/dashboard/dashboard.component').then((c) => c.DashboardComponent),
     canActivate: [authGuard],
+    resolve: { userState: userStateResolver },
   },
   {
     path: RoutingPaths.accountEnquiry,
@@ -45,11 +47,13 @@ const routes: Routes = [
     ],
     canActivate: [authGuard, routePermissionsGuard],
     data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry] },
+    resolve: { userState: userStateResolver },
   },
   {
     path: RoutingPaths.accessDenied,
     loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
     canActivate: [authGuard],
+    resolve: { userState: userStateResolver },
   },
   {
     path: RoutingPaths.signIn,

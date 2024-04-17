@@ -3,17 +3,28 @@ Feature: PO-224 Accesibility Tests
     Given I am on the OPAL Frontend
     Then I check accessibility
 
+  Scenario: Dashboard - Accessibility
+    Given I am on the OPAL Frontend
+    Then I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+    Then I check accessibility
+
   Scenario: Defandant seach page Page - Accessibility
     Given I am on the OPAL Frontend
-    Then I sign in as "opal-test@hmcts.net"
+    Then I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+
+    When I navigate to Account Enquiry
     Then I check accessibility
 
     Then I click the Sign out link
 
   Scenario: Defendant matches Page - Accessibility
     Given I am on the OPAL Frontend
-    When I sign in as "opal-test@hmcts.net"
+    When I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
 
+    When I navigate to Account Enquiry
     When I populate the form with the following search criteria
       | court    |             |
       | surname  | John        |
@@ -34,7 +45,10 @@ Feature: PO-224 Accesibility Tests
   Scenario: Defendant details Page - Accessibility
     Given I am on the OPAL Frontend
 
-    When I sign in as "opal-test@hmcts.net"
+    When I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+
+    When I navigate to Account Enquiry
 
     When I populate the form with the following search criteria
       | court    |             |

@@ -3,7 +3,10 @@ Feature: PO-136 PO-137 view account history
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
 
-    When I sign in as "opal-test@hmcts.net"
+    When I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+
+    When I navigate to Account Enquiry
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
@@ -31,7 +34,10 @@ Feature: PO-136 PO-137 view account history
     Given I am on the OPAL Frontend
     Then I see "OPAL Frontend" in the header
 
-    When I sign in as "opal-test@hmcts.net"
+    When I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+
+    When I navigate to Account Enquiry
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria

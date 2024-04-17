@@ -3,8 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { AppInitializerService } from './app-initializer.service';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { USER_STATE_MOCK } from '@mocks';
-import { of } from 'rxjs';
 
 describe('AppInitializerService', () => {
   let service: AppInitializerService;
@@ -20,15 +18,7 @@ describe('AppInitializerService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should initialize user state', async () => {
-    spyOn(service['sessionService'], 'getUserState').and.returnValue(of(USER_STATE_MOCK));
-
-    await service['initializeUserState']();
-
-    expect(service['sessionService'].getUserState).toHaveBeenCalled();
-  });
-
-  it('should initialize LaunchDarkly', async () => {
+  it('should initialize LaunchDarkly', () => {
     spyOn(service['transferStateService'], 'initializeLaunchDarklyConfig');
 
     service['initializeLaunchDarkly']();
@@ -36,20 +26,19 @@ describe('AppInitializerService', () => {
     expect(service['transferStateService'].initializeLaunchDarklyConfig).toHaveBeenCalled();
   });
 
-  it('should initialize the app', async () => {
-    spyOn(service['sessionService'], 'getUserState').and.returnValue(of(USER_STATE_MOCK));
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(service, 'initializeUserState');
-
-    await service.initializeApp();
-
-    expect(service['initializeUserState']).toHaveBeenCalled();
-  });
-
   it('should initialize SSO enabled', () => {
     spyOn(service['transferStateService'], 'initializeSsoEnabled');
     service['initializeSsoEnabled']();
+    expect(service['transferStateService'].initializeSsoEnabled).toHaveBeenCalled();
+  });
+
+  it('should initialize the app', () => {
+    spyOn(service['transferStateService'], 'initializeLaunchDarklyConfig');
+    spyOn(service['transferStateService'], 'initializeSsoEnabled');
+
+    service.initializeApp();
+
+    expect(service['transferStateService'].initializeLaunchDarklyConfig).toHaveBeenCalled();
     expect(service['transferStateService'].initializeSsoEnabled).toHaveBeenCalled();
   });
 });
