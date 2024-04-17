@@ -7,11 +7,11 @@ import { signedInGuard } from '@guards';
 import { userStateResolver } from '@resolvers';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'account-enquiry/search', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   {
-    path: 'test-page',
-    loadComponent: () => import('./pages/test-page/test-page.component').then((c) => c.TestPageComponent),
+    path: RoutingPaths.dashboard,
+    loadComponent: () => import('./pages/dashboard/dashboard.component').then((c) => c.DashboardComponent),
     canActivate: [authGuard],
     resolve: { userState: userStateResolver },
   },
