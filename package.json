@@ -66,7 +66,7 @@
     "express-session": "^1.17.3",
     "govuk-frontend": "^5.0.0",
     "helmet": "^7.0.0",
-    "http-proxy-middleware": "^2.0.6",
+    "http-proxy-middleware": "^3.0.0",
     "launchdarkly-js-client-sdk": "^3.1.4",
     "ng": "^0.0.0",
     "prettier": "^3.0.3",
