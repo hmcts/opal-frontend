@@ -1,0 +1,11 @@
+:host ::ng-deep {
+  .autocomplete__option {
+    font-family: 'GDS Transport', arial, sans-serif;
+  }
+
+  .govuk-input--error input {
+    border-color: #d4351c;
+  }
+
+  width: 50%;
+}

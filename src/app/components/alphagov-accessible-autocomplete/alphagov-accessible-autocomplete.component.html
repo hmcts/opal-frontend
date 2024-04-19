@@ -1,0 +1,12 @@
+<label class="govuk-label" for="{{ dataType }}-autocomplete">{{ label ? label : (dataType | titlecase) }}</label>
+
+<!-- validation errors -->
+@if (isInvalid) {
+  <div id="{{ dataType }}-errors">
+    @for (error of errors; track error) {
+      <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>
+    }
+  </div>
+}
+
+<div #autocomplete id="{{ dataType }}-autocomplete-container" [class.govuk-input--error]="isInvalid"></div>
