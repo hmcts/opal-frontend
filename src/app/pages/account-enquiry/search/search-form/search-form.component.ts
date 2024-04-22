@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
   GovukRadiosComponent,
@@ -61,7 +61,7 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
-      autoComplete: new FormControl(null),
+      autoComplete: new FormControl(null, [Validators.required]),
     });
   }
 
