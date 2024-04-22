@@ -1,26 +1,8 @@
-import { TitleCasePipe, isPlatformBrowser } from '@angular/common';
-import {
-  AfterViewInit,
-  ApplicationRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  SimpleChanges,
-  ViewChild,
-  afterNextRender,
-  inject,
-} from '@angular/core';
+import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild, afterNextRender } from '@angular/core';
+import { FormControl, AbstractControl } from '@angular/forms';
+import { IAutoCompleteItem } from '@interfaces';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
-
-export type AutoCompleteItem = {
-  id: number;
-  name: string;
-};
 
 @Component({
   selector: 'app-alphagov-accessible-autocomplete',
@@ -28,16 +10,23 @@ export type AutoCompleteItem = {
   imports: [TitleCasePipe],
   templateUrl: './alphagov-accessible-autocomplete.component.html',
   styleUrl: './alphagov-accessible-autocomplete.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnChanges {
-  @Input() data: AutoCompleteItem[] = [];
-  @Input({ required: true }) dataType!: string;
-  @Input() label = '';
-  @Input() selectedData = '';
-  @Input() isInvalid = false;
+export class AlphagovAccessibleAutocompleteComponent {
+  private _control!: FormControl;
+  @Input({ required: true }) set control(abstractControl: AbstractControl) {
+    // Form controls are passed in as abstract controls, we need to re-cast it.
+    this._control = abstractControl as FormControl;
+  }
+  @Input({ required: true }) labelText!: string;
+  @Input({ required: false }) labelClasses!: string;
+  @Input({ required: true }) inputId!: string;
+  @Input({ required: true }) inputName!: string;
+  @Input({ required: false }) inputClasses!: string;
+  @Input({ required: true }) autoCompleteItems: IAutoCompleteItem[] = [];
+
   @Input() showAllValues = false;
-  @Input() errors: string[] = [];
-  @Output() dataSelect = new EventEmitter<AutoCompleteItem | null>();
+
   @ViewChild('autocomplete') autocompleteContainer!: ElementRef<HTMLElement>;
 
   constructor() {
@@ -46,50 +35,34 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnChange
       this.configureAutoComplete();
     });
   }
-  props: AccessibleAutocompleteProps | null = null;
 
-  ngOnInit() {
-    this.data = [
-      { name: 'France', id: 1 },
-      { name: 'Germany', id: 2 },
-      { name: 'United Kingdom', id: 3 },
-    ];
+  private handleOnConfirm = (selectedName: string) => {
+    // selectedName is populated on selecting an option but is undefined onBlur, so we need to grab the input value directly from the input
+    const name = selectedName || (document.querySelector(`#${this.inputId}`) as HTMLInputElement).value;
+    const selectedItem = this.autoCompleteItems.find((item) => item.name === name) ?? null;
 
-    this.props = {
-      id: this.dataType + '-autocomplete',
-      source: [],
-      name: this.dataType + '-autocomplete',
+    this._control.setValue(selectedItem?.value);
+    this._control.markAsTouched();
+    this._control.markAsDirty();
+  };
+
+  private buildAutoCompleteProps(): AccessibleAutocompleteProps {
+    return {
+      id: this.inputId,
+      element: this.autocompleteContainer.nativeElement,
+      source: this.autoCompleteItems.map((item) => item.name),
+      name: this.inputId,
       showAllValues: this.showAllValues,
-      onConfirm: (selectedName: string) => {
-        // selectedName is populated on selecting an option but is undefined onBlur, so we need to grab the input value directly from the input
-        const name =
-          selectedName || (document.querySelector(`#${this.dataType}-autocomplete`) as HTMLInputElement).value;
-        const selectedItem = this.data.find((d) => d.name === name) ?? null;
-        this.dataSelect.emit(selectedItem);
-      },
+      defaultValue: this._control.value || '',
+      onConfirm: (selectedName: string) => this.handleOnConfirm(selectedName),
     };
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] && !changes['data'].isFirstChange()) {
-      console.log('Data changed');
-      this.configureAutoComplete();
-    }
   }
 
   configureAutoComplete() {
     this.autocompleteContainer.nativeElement.innerHTML = '';
 
-    if (this.props) {
-      this.props.element = this.autocompleteContainer.nativeElement;
-      this.props.source = this.data.map((item) => item.name);
-      this.props.defaultValue = this.selectedData;
-
-      import('accessible-autocomplete').then((accessibleAutocomplete) => {
-        if (this.props) {
-          accessibleAutocomplete.default(this.props);
-        }
-      });
-    }
+    import('accessible-autocomplete').then((accessibleAutocomplete) => {
+      accessibleAutocomplete.default(this.buildAutoCompleteProps());
+    });
   }
 }

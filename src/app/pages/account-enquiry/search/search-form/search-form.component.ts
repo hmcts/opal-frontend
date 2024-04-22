@@ -7,6 +7,7 @@ import {
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
+  AlphagovAccessibleAutocompleteComponent,
 } from '@components';
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
@@ -23,6 +24,7 @@ import { DATE_INPUTS } from '../config/date-inputs';
     GovukDateInputComponent,
     GovukSelectComponent,
     GovukButtonComponent,
+    AlphagovAccessibleAutocompleteComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +37,12 @@ export class SearchFormComponent implements OnInit {
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
 
   public searchForm!: FormGroup;
+
+  public data = [
+    { name: 'France', value: 'France' },
+    { name: 'Germany', value: 'Germany' },
+    { name: 'United Kingdom', value: 'United Kingdom' },
+  ];
 
   /**
    * Sets up the search form with the necessary form controls.
@@ -53,6 +61,7 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
+      autoComplete: new FormControl(null),
     });
   }
 

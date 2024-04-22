@@ -6,7 +6,6 @@ import { IGovUkDateInput } from './govuk-date-input.interface';
 import { IGovUkSelectOptions } from './govuk-select-options.interface';
 import { IAccountEnquiryState, IAccountEnquiryStateSearch } from './account-enquiry-state.interface';
 import { ISearchDefendantAccountBody } from './search-defendant-account-body.interface';
-
 import { ISearchDefendantAccounts, ISearchDefendantAccount } from './search-defendant-accounts.interface';
 import { IDefendantAccountDetails } from './defendant-account-details.interface';
 import { IAddDefendantAccountNoteBody } from './add-defendant-account-note-body.interface';
@@ -18,6 +17,7 @@ import { IUserState, IUserStateRole, IUserStatePermission } from './user-state.i
 import { IPermissions } from './permissions.interface';
 import { ITransferServerState } from './transfer-server-state.interface';
 import { ISignInStubForm } from './sign-in-stub-form.interface';
+import { IAutoCompleteItem } from './auto-complete-item.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -43,4 +43,5 @@ export {
   IPermissions,
   ITransferServerState,
   ISignInStubForm,
+  IAutoCompleteItem,
 };

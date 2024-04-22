@@ -63,6 +63,17 @@
             inputClasses="govuk-!-width-one-half"
             [control]="searchForm.controls['pcr']"
           ></app-govuk-text-input>
+
+          <app-alphagov-accessible-autocomplete
+            [control]="searchForm.controls['autoComplete']"
+            labelText="Autocomplete"
+            inputId="autocomplete"
+            inputName="autocomplete"
+            inputClasses="govuk-!-width-one-half"
+            dataType="users"
+            label="Search for a user"
+            [autoCompleteItems]="data"
+          ></app-alphagov-accessible-autocomplete>
         </div>
       </fieldset>
       <div class="govuk-grid-row">
