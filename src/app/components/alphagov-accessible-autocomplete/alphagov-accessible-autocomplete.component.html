@@ -1,7 +1,5 @@
 <div class="govuk-form-group">
   <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText | titlecase }} </label>
-  <p id="passport-issued-error" class="govuk-error-message">
-    <span class="govuk-visually-hidden">Error:</span> The date your passport was issued must be in the past
-  </p>
   <div #autocomplete id="{{ inputId }}-autocomplete-container" class="{{ inputClasses }}"></div>
+  <input [id]="inputId" [name]="inputName" type="hidden" [formControl]="getControl" />
 </div>

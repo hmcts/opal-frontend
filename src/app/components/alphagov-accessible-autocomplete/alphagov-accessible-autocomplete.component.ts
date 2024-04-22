@@ -1,18 +1,28 @@
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild, afterNextRender } from '@angular/core';
-import { FormControl, AbstractControl } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  ViewChild,
+  afterNextRender,
+  inject,
+} from '@angular/core';
+import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { IAutoCompleteItem } from '@interfaces';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
 
 @Component({
   selector: 'app-alphagov-accessible-autocomplete',
   standalone: true,
-  imports: [TitleCasePipe],
+  imports: [TitleCasePipe, ReactiveFormsModule],
   templateUrl: './alphagov-accessible-autocomplete.component.html',
   styleUrl: './alphagov-accessible-autocomplete.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlphagovAccessibleAutocompleteComponent {
+  private changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _control!: FormControl;
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
@@ -36,22 +46,35 @@ export class AlphagovAccessibleAutocompleteComponent {
     });
   }
 
+  get getControl() {
+    return this._control;
+  }
+
   private handleOnConfirm = (selectedName: string) => {
     // selectedName is populated on selecting an option but is undefined onBlur, so we need to grab the input value directly from the input
-    const name = selectedName || (document.querySelector(`#${this.inputId}`) as HTMLInputElement).value;
+    const name = selectedName || (document.querySelector(`#${this.inputId}-autocomplete`) as HTMLInputElement).value;
     const selectedItem = this.autoCompleteItems.find((item) => item.name === name) ?? null;
+    const previousValue = this._control.value;
 
     this._control.setValue(selectedItem?.value);
     this._control.markAsTouched();
-    this._control.markAsDirty();
+
+    if (selectedItem === null && previousValue === null) {
+      this._control.markAsPristine();
+    } else if (selectedItem?.value !== previousValue) {
+      this._control.markAsDirty();
+    }
+
+    this._control.updateValueAndValidity();
+    this.changeDetector.detectChanges();
   };
 
   private buildAutoCompleteProps(): AccessibleAutocompleteProps {
     return {
-      id: this.inputId,
+      id: this.inputId + '-autocomplete',
       element: this.autocompleteContainer.nativeElement,
       source: this.autoCompleteItems.map((item) => item.name),
-      name: this.inputId,
+      name: this.inputId + '-autocomplete',
       showAllValues: this.showAllValues,
       defaultValue: this._control.value || '',
       onConfirm: (selectedName: string) => this.handleOnConfirm(selectedName),
@@ -59,8 +82,6 @@ export class AlphagovAccessibleAutocompleteComponent {
   }
 
   configureAutoComplete() {
-    this.autocompleteContainer.nativeElement.innerHTML = '';
-
     import('accessible-autocomplete').then((accessibleAutocomplete) => {
       accessibleAutocomplete.default(this.buildAutoCompleteProps());
     });
