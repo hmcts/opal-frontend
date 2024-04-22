@@ -22,22 +22,24 @@ import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlphagovAccessibleAutocompleteComponent {
-  private changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
-  private _control!: FormControl;
-  @Input({ required: true }) set control(abstractControl: AbstractControl) {
-    // Form controls are passed in as abstract controls, we need to re-cast it.
-    this._control = abstractControl as FormControl;
-  }
   @Input({ required: true }) labelText!: string;
   @Input({ required: false }) labelClasses!: string;
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
   @Input({ required: true }) autoCompleteItems: IAutoCompleteItem[] = [];
-
   @Input() showAllValues = false;
 
   @ViewChild('autocomplete') autocompleteContainer!: ElementRef<HTMLElement>;
+
+  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private _control!: FormControl;
+  public readonly autoCompleteId = this.inputId + '-autocomplete';
+
+  @Input({ required: true }) set control(abstractControl: AbstractControl) {
+    // Form controls are passed in as abstract controls, we need to re-cast it.
+    this._control = abstractControl as FormControl;
+  }
 
   constructor() {
     afterNextRender(() => {
@@ -52,7 +54,7 @@ export class AlphagovAccessibleAutocompleteComponent {
 
   private handleOnConfirm = (selectedName: string) => {
     // selectedName is populated on selecting an option but is undefined onBlur, so we need to grab the input value directly from the input
-    const name = selectedName || (document.querySelector(`#${this.inputId}-autocomplete`) as HTMLInputElement).value;
+    const name = selectedName || (document.querySelector(`#${this.autoCompleteId}`) as HTMLInputElement).value;
     const selectedItem = this.autoCompleteItems.find((item) => item.name === name) ?? null;
     const previousValue = this._control.value;
 
@@ -71,10 +73,10 @@ export class AlphagovAccessibleAutocompleteComponent {
 
   private buildAutoCompleteProps(): AccessibleAutocompleteProps {
     return {
-      id: this.inputId + '-autocomplete',
+      id: this.autoCompleteId,
       element: this.autocompleteContainer.nativeElement,
       source: this.autoCompleteItems.map((item) => item.name),
-      name: this.inputId + '-autocomplete',
+      name: this.autoCompleteId,
       showAllValues: this.showAllValues,
       defaultValue: this._control.value || '',
       onConfirm: (selectedName: string) => this.handleOnConfirm(selectedName),
