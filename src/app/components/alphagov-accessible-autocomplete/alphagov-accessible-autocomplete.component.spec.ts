@@ -55,11 +55,10 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     expect(actualProps.defaultValue).toEqual(expectedProps.defaultValue);
   });
 
-  it('should handle on confirm', () => {
-    const selectedName = 'Test Option';
-    const inputValue = 'Test Input';
-    const selectedItem = { name: selectedName, value: 'Test Value' };
-    const previousValue = null;
+  it('should handle on confirm and input should be marked as dirty', () => {
+    const selectedName = AUTO_COMPLETE_ITEMS_MOCK[0].name;
+    const inputValue = AUTO_COMPLETE_ITEMS_MOCK[0].name;
+    const selectedItem = AUTO_COMPLETE_ITEMS_MOCK[0];
 
     // Mock document.querySelector
     const mockInputElement = document.createElement('input');
@@ -67,21 +66,39 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     spyOn(document, 'querySelector').and.returnValue(mockInputElement);
     spyOn(component['changeDetector'], 'detectChanges');
 
-    component.autoCompleteItems = [{ name: 'Option 1', value: 'Value 1' }, selectedItem];
-    component['_control'] = new FormControl(previousValue);
+    component['_control'].reset();
 
     component['handleOnConfirm'](selectedName);
 
     expect(component['_control'].value).toEqual(selectedItem.value);
     expect(component['_control'].touched).toBeTrue();
 
-    if (selectedItem === null && previousValue === null) {
-      expect(component['_control'].pristine).toBeTrue();
-    } else if (selectedItem?.value !== previousValue) {
-      expect(component['_control'].dirty).toBeTrue();
-    }
+    expect(component['_control'].dirty).toBeTrue();
 
     expect(component['_control'].valid).toBeTrue();
+    expect(component['changeDetector'].detectChanges).toHaveBeenCalled();
+  });
+
+  it('should handle on confirm and input should be marked as pristine', () => {
+    const selectedName = undefined;
+    const inputValue = '';
+    const selectedItem = null;
+
+    // Mock document.querySelector
+    const mockInputElement = document.createElement('input');
+    mockInputElement.value = inputValue;
+    spyOn(document, 'querySelector').and.returnValue(mockInputElement);
+    spyOn(component['changeDetector'], 'detectChanges');
+
+    component['_control'].reset();
+
+    component['handleOnConfirm'](selectedName);
+
+    expect(component['_control'].value).toEqual(selectedItem);
+    expect(component['_control'].touched).toBeTrue();
+    expect(component['_control'].pristine).toBeTrue();
+
+    expect(component['_control'].valid).not.toBeTrue();
     expect(component['changeDetector'].detectChanges).toHaveBeenCalled();
   });
 

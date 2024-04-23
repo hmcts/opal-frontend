@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnInit,
   ViewChild,
   afterNextRender,
   inject,
@@ -21,7 +22,7 @@ import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
   styleUrl: './alphagov-accessible-autocomplete.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlphagovAccessibleAutocompleteComponent {
+export class AlphagovAccessibleAutocompleteComponent implements OnInit {
   @Input({ required: true }) labelText!: string;
   @Input({ required: false }) labelClasses!: string;
   @Input({ required: true }) inputId!: string;
@@ -34,7 +35,7 @@ export class AlphagovAccessibleAutocompleteComponent {
 
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _control!: FormControl;
-  public readonly autoCompleteId = this.inputId + '-autocomplete';
+  public autoCompleteId!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
@@ -62,15 +63,17 @@ export class AlphagovAccessibleAutocompleteComponent {
    * @param selectedName - The selected name.
    * @returns void
    */
-  private handleOnConfirm(selectedName: string): void {
+  private handleOnConfirm(selectedName: string | undefined): void {
     // selectedName is populated on selecting an option but is undefined onBlur, so we need to grab the input value directly from the input
     const name = selectedName || (document.querySelector(`#${this.autoCompleteId}`) as HTMLInputElement).value;
     const selectedItem = this.autoCompleteItems.find((item) => item.name === name) ?? null;
     const previousValue = this._control.value;
+    const selectedValue = selectedItem?.value || null;
 
-    this._control.patchValue(selectedItem?.value);
+    this._control.setValue(selectedValue);
     this._control.markAsTouched();
 
+    // Handles initial empty state when the user clicks away from the input
     if (selectedItem === null && previousValue === null) {
       this._control.markAsPristine();
     } else if (selectedItem?.value !== previousValue) {
@@ -104,5 +107,9 @@ export class AlphagovAccessibleAutocompleteComponent {
     import('accessible-autocomplete').then((accessibleAutocomplete) => {
       accessibleAutocomplete.default(this.buildAutoCompleteProps());
     });
+  }
+
+  ngOnInit(): void {
+    this.autoCompleteId = this.inputId + '-autocomplete';
   }
 }

@@ -1,5 +1,5 @@
 <div class="govuk-form-group" [class.govuk-form-group--error]="getControl.invalid && getControl.touched">
-  <label class="govuk-label {{ labelClasses }}" [for]="this.autoCompleteId"> {{ labelText | titlecase }} </label>
+  <label class="govuk-label {{ labelClasses }}" [for]="autoCompleteId"> {{ labelText | titlecase }} </label>
   @if (getControl.invalid && getControl.touched) {
     <p id="{{ this.autoCompleteId }}-error-message" class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> The date your passport was issued must be in the past
@@ -8,7 +8,7 @@
 
   <div
     #autocomplete
-    id="{{ this.autoCompleteId }}-container"
+    id="{{ autoCompleteId }}-container"
     class="{{ inputClasses }}"
     [class.govuk-input--error]="getControl.invalid && getControl.touched"
   ></div>

@@ -49,7 +49,8 @@
               "./node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.css",
               "src/styles.scss"
             ],
-            "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js"]
+            "scripts": ["./node_modules/govuk-frontend/dist/govuk/all.bundle.js"],
+            "allowedCommonJsDependencies": ["accessible-autocomplete"]
           },
           "configurations": {
             "production": {
