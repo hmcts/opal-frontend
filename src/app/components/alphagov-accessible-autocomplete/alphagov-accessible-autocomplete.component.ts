@@ -48,17 +48,27 @@ export class AlphagovAccessibleAutocompleteComponent {
     });
   }
 
+  /**
+   * Gets the control for the alphagov-accessible-autocomplete component.
+   * @returns The control for the component.
+   */
   get getControl() {
     return this._control;
   }
 
-  private handleOnConfirm = (selectedName: string) => {
+  /**
+   * Handles the confirmation of a selected name.
+   *
+   * @param selectedName - The selected name.
+   * @returns void
+   */
+  private handleOnConfirm(selectedName: string): void {
     // selectedName is populated on selecting an option but is undefined onBlur, so we need to grab the input value directly from the input
     const name = selectedName || (document.querySelector(`#${this.autoCompleteId}`) as HTMLInputElement).value;
     const selectedItem = this.autoCompleteItems.find((item) => item.name === name) ?? null;
     const previousValue = this._control.value;
 
-    this._control.setValue(selectedItem?.value);
+    this._control.patchValue(selectedItem?.value);
     this._control.markAsTouched();
 
     if (selectedItem === null && previousValue === null) {
@@ -69,8 +79,12 @@ export class AlphagovAccessibleAutocompleteComponent {
 
     this._control.updateValueAndValidity();
     this.changeDetector.detectChanges();
-  };
+  }
 
+  /**
+   * Builds the props object for the AccessibleAutocomplete component.
+   * @returns The props object for the AccessibleAutocomplete component.
+   */
   private buildAutoCompleteProps(): AccessibleAutocompleteProps {
     return {
       id: this.autoCompleteId,
@@ -83,7 +97,10 @@ export class AlphagovAccessibleAutocompleteComponent {
     };
   }
 
-  configureAutoComplete() {
+  /**
+   * Configures the auto-complete functionality using the accessible-autocomplete library.
+   */
+  private configureAutoComplete(): void {
     import('accessible-autocomplete').then((accessibleAutocomplete) => {
       accessibleAutocomplete.default(this.buildAutoCompleteProps());
     });

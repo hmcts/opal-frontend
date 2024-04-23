@@ -48,7 +48,8 @@ describe('SearchFormComponent', () => {
     const formValue = SEARCH_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
 
-    component.searchForm.setValue(formValue);
+    component.searchForm.patchValue(formValue);
+
     component.handleFormSubmit();
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(formValue);
