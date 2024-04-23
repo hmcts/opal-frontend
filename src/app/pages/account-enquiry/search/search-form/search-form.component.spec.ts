@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
-import { SEARCH_STATE_MOCK } from '@mocks';
+import { AUTO_COMPLETE_ITEMS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 
 describe('SearchFormComponent', () => {
   let component: SearchFormComponent;
@@ -14,6 +14,7 @@ describe('SearchFormComponent', () => {
 
     fixture = TestBed.createComponent(SearchFormComponent);
     component = fixture.componentInstance;
+    component.selectOptions = AUTO_COMPLETE_ITEMS_MOCK;
     fixture.detectChanges();
   });
 

@@ -85,6 +85,17 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit {
   }
 
   /**
+   * Retrieves the default value for the autocomplete component.
+   *
+   * @returns The default value as a string.
+   */
+  private getDefaultValue() {
+    const controlValue = this._control.value;
+    const foundItem = this.autoCompleteItems.find((item) => item.value === controlValue);
+    return foundItem ? foundItem.name : '';
+  }
+
+  /**
    * Builds the props object for the AccessibleAutocomplete component.
    * @returns The props object for the AccessibleAutocomplete component.
    */
@@ -95,7 +106,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit {
       source: this.autoCompleteItems.map((item) => item.name),
       name: this.autoCompleteId,
       showAllValues: this.showAllValues,
-      defaultValue: this._control.value || '',
+      defaultValue: this.getDefaultValue(),
       onConfirm: (selectedName: string) => this.handleOnConfirm(selectedName),
     };
   }

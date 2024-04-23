@@ -1,4 +1,4 @@
 export interface IAutoCompleteItem {
   name: string;
-  value: string;
+  value: string | number;
 }

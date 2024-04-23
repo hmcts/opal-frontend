@@ -73,6 +73,7 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     expect(component['_control'].value).toEqual(selectedItem.value);
     expect(component['_control'].touched).toBeTrue();
 
+    expect(component['_control'].pristine).not.toBeTrue();
     expect(component['_control'].dirty).toBeTrue();
 
     expect(component['_control'].valid).toBeTrue();
@@ -97,6 +98,7 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     expect(component['_control'].value).toEqual(selectedItem);
     expect(component['_control'].touched).toBeTrue();
     expect(component['_control'].pristine).toBeTrue();
+    expect(component['_control'].dirty).not.toBeTrue();
 
     expect(component['_control'].valid).not.toBeTrue();
     expect(component['changeDetector'].detectChanges).toHaveBeenCalled();
@@ -106,5 +108,34 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     const result = component.getControl;
 
     expect(result).toEqual(component['_control']);
+  });
+
+  it('should get the default value', () => {
+    const controlValue = AUTO_COMPLETE_ITEMS_MOCK[0].value;
+    const selectedItem = AUTO_COMPLETE_ITEMS_MOCK[0];
+
+    component['_control'].setValue(controlValue);
+
+    const result = component['getDefaultValue']();
+
+    expect(result).toEqual(selectedItem.name);
+  });
+
+  it('should return an empty string if control value is falsy', () => {
+    component['_control'].setValue(null);
+
+    const result = component['getDefaultValue']();
+
+    expect(result).toEqual('');
+  });
+
+  it('should return an empty string if control value does not match any item', () => {
+    const controlValue = 'test';
+
+    component['_control'].setValue(controlValue);
+
+    const result = component['getDefaultValue']();
+
+    expect(result).toEqual('');
   });
 });

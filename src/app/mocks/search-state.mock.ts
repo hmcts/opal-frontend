@@ -11,5 +11,4 @@ export const SEARCH_STATE_MOCK = {
   addressLine: 'Test Street',
   niNumber: 'J9MNSK',
   pcr: '1233',
-  autoComplete: 'United Kingdom',
 };

@@ -38,12 +38,6 @@ export class SearchFormComponent implements OnInit {
 
   public searchForm!: FormGroup;
 
-  public data = [
-    { name: 'France', value: 'France' },
-    { name: 'Germany', value: 'Germany' },
-    { name: 'United Kingdom', value: 'United Kingdom' },
-  ];
-
   /**
    * Sets up the search form with the necessary form controls.
    */
@@ -61,7 +55,6 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
-      autoComplete: new FormControl(null, [Validators.required]),
     });
   }
 

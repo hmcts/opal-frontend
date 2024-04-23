@@ -7,13 +7,24 @@
         </legend>
 
         <div [formGroup]="searchForm">
-          <app-govuk-select
+          <!-- <app-govuk-select
             labelText="Court"
             selectId="court"
             selectName="court"
             [options]="selectOptions"
             [control]="searchForm.controls['court']"
-          ></app-govuk-select>
+          ></app-govuk-select> -->
+
+          <app-alphagov-accessible-autocomplete
+            [control]="searchForm.controls['court']"
+            labelText="Court"
+            inputId="court"
+            inputName="court"
+            inputClasses="govuk-!-width-one-half"
+            label="Search for a user"
+            [autoCompleteItems]="selectOptions"
+          ></app-alphagov-accessible-autocomplete>
+
           <app-govuk-text-input
             labelText="Surname"
             inputId="surname"
@@ -63,17 +74,6 @@
             inputClasses="govuk-!-width-one-half"
             [control]="searchForm.controls['pcr']"
           ></app-govuk-text-input>
-
-          <app-alphagov-accessible-autocomplete
-            [control]="searchForm.controls['autoComplete']"
-            labelText="Autocomplete"
-            inputId="autocomplete"
-            inputName="autocomplete"
-            inputClasses="govuk-!-width-one-half"
-            dataType="users"
-            label="Search for a user"
-            [autoCompleteItems]="data"
-          ></app-alphagov-accessible-autocomplete>
         </div>
       </fieldset>
       <div class="govuk-grid-row">
