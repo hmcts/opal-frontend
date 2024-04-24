@@ -115,7 +115,8 @@
   },
   "packageManager": "yarn@3.8.1",
   "resolutions": {
-    "tar": "^6.2.1"
+    "tar": "^6.2.1",
+    "superagent": "9"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
