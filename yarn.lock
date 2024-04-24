@@ -13645,6 +13645,7 @@ __metadata:
     "@types/session-file-store": ^1.2.5
     "@typescript-eslint/eslint-plugin": 7.7.1
     "@typescript-eslint/parser": 7.7.1
+    accessible-autocomplete: ^3.0.0
     applicationinsights: 2.9.5
     axe-core: ^4.8.4
     axios: ^1.6.2
