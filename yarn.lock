@@ -2877,8 +2877,8 @@ __metadata:
   linkType: hard
 
 "@badeball/cypress-cucumber-preprocessor@npm:^20.0.0":
-  version: 20.0.3
-  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.3"
+  version: 20.0.4
+  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.4"
   dependencies:
     "@badeball/cypress-configuration": ^6.1.0
     "@cucumber/ci-environment": ^10.0.0
@@ -2916,7 +2916,7 @@ __metadata:
     cucumber-json-formatter: dist/bin/cucumber-json-formatter.js
     cucumber-merge-messages: dist/bin/cucumber-merge-messages.js
     cypress-cucumber-diagnostics: dist/bin/diagnostics.js
-  checksum: 04ac80b4069bac3b30178ac0029ae963efb6721eeeb540fe9fced44db892ec54215ce04fe6f8e4852e24a3ac7f26f401c1c77e21f21a8b33b85a2548ed3657c4
+  checksum: 1626aa056dfa041381d78238ae821c296101f13711bdeb147046c828645feff8dd86266d0dfd08a50e772100f742420430ed32edfe68700ab196e5be87d407e4
   languageName: node
   linkType: hard
 
@@ -10773,9 +10773,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.3.0
-  resolution: "govuk-frontend@npm:5.3.0"
-  checksum: 2ab97dfbb5c5badb9ad1078ba5200f23089411eafe00c262886ec582b093a98b393a4190c288484e6227bc3322633b35eaa34d3e24583f86e090355ac76768b0
+  version: 5.3.1
+  resolution: "govuk-frontend@npm:5.3.1"
+  checksum: b87c2208a7b971cc6ac1d0c19eb188fe1f40587af6e904d60a18ed9e5e9fef2ad9cec53734b38ad512c4fbd6c947677845d0afeff4594c59f18905485b0d0ae9
   languageName: node
   linkType: hard
 
