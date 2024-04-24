@@ -16,7 +16,7 @@ import { GovukTabPanelComponent } from './govuk/govuk-tabs/govuk-tab-panel/govuk
 import { GovukInsetTextComponent } from './govuk/govuk-inset-text/govuk-inset-text.component';
 import { MojSubNavigationComponent } from './moj/moj-sub-navigation/moj-sub-navigation.component';
 import { MojSubNavigationItemComponent } from './moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
-import { AlphagovAccessibleAutocompleteComponent } from './alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
+import { AlphagovAccessibleAutocompleteComponent } from './alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 
 export {
   GovukButtonComponent,
