@@ -7,14 +7,6 @@
         </legend>
 
         <div [formGroup]="searchForm">
-          <!-- <app-govuk-select
-            labelText="Court"
-            selectId="court"
-            selectName="court"
-            [options]="selectOptions"
-            [control]="searchForm.controls['court']"
-          ></app-govuk-select> -->
-
           <app-alphagov-accessible-autocomplete
             [control]="searchForm.controls['court']"
             labelText="Court"
@@ -23,6 +15,7 @@
             inputClasses="govuk-!-width-one-half"
             label="Search for a user"
             [autoCompleteItems]="selectOptions"
+            errorMsg="Please select a court"
           ></app-alphagov-accessible-autocomplete>
 
           <app-govuk-text-input

@@ -43,7 +43,7 @@ export class SearchFormComponent implements OnInit {
    */
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
-      court: new FormControl(null),
+      court: new FormControl(null, [Validators.required]),
       surname: new FormControl(null),
       forename: new FormControl(null),
       initials: new FormControl(null),
