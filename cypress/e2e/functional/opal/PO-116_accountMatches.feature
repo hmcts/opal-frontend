@@ -10,7 +10,7 @@ Feature: PO-116 account matches page
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
-      | court    | 500000000    |
+      | court    | Kingston     |
       | surname  | testSurname  |
       | forename | testForename |
       | initials |              |
@@ -25,16 +25,16 @@ Feature: PO-116 account matches page
     When I click the back button
 
     Then I see the form contains the following search criteria
-      | court    | 500000000    |
-      | surname  | testSurname  |
-      | forename | testForename |
-      | initials |              |
-      | dobDay   | 01           |
-      | dobMonth | 01           |
-      | dobYear  | 1990         |
-      | addrLn1  | addrLn1      |
-      | niNumber | AB123456C    |
-      | pcr      | testPCR      |
+      | court    | Kingston-upon-Thames Mags Court |
+      | surname  | testSurname                     |
+      | forename | testForename                    |
+      | initials |                                 |
+      | dobDay   | 01                              |
+      | dobMonth | 01                              |
+      | dobYear  | 1990                            |
+      | addrLn1  | addrLn1                         |
+      | niNumber | AB123456C                       |
+      | pcr      | testPCR                         |
 
   Scenario: when a user performs a specific search the correct result is returned to the user on the matches screen
     Given I am on the OPAL Frontend

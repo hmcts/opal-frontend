@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
   GovukRadiosComponent,
@@ -7,6 +7,7 @@ import {
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
+  AlphagovAccessibleAutocompleteComponent,
 } from '@components';
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
@@ -23,6 +24,7 @@ import { DATE_INPUTS } from '../config/date-inputs';
     GovukDateInputComponent,
     GovukSelectComponent,
     GovukButtonComponent,
+    AlphagovAccessibleAutocompleteComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,7 +43,7 @@ export class SearchFormComponent implements OnInit {
    */
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
-      court: new FormControl(null),
+      court: new FormControl(null, [Validators.required]),
       surname: new FormControl(null),
       forename: new FormControl(null),
       initials: new FormControl(null),

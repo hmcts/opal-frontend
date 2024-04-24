@@ -1,0 +1,16 @@
+<div class="govuk-form-group" [class.govuk-form-group--error]="getControl.invalid && getControl.touched">
+  <label class="govuk-label {{ labelClasses }}" [for]="autoCompleteId"> {{ labelText | titlecase }} </label>
+  @if (getControl.invalid && getControl.touched) {
+    <p id="{{ this.autoCompleteId }}-error-message" class="govuk-error-message">
+      <span class="govuk-visually-hidden">Error:</span> {{ errorMsg }}
+    </p>
+  }
+
+  <div
+    #autocomplete
+    id="{{ autoCompleteId }}-container"
+    class="{{ inputClasses }}"
+    [class.govuk-input--error]="getControl.invalid && getControl.touched"
+  ></div>
+  <input [id]="inputId" [name]="inputName" type="hidden" [formControl]="getControl" />
+</div>

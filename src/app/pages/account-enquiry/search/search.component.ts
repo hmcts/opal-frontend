@@ -3,7 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { CourtService, StateService } from '@services';
 
-import { IAccountEnquiryStateSearch, IGovUkSelectOptions, ISearchCourt, ISearchCourtBody } from '@interfaces';
+import {
+  IAccountEnquiryStateSearch,
+  IAutoCompleteItem,
+  IGovUkSelectOptions,
+  ISearchCourt,
+  ISearchCourtBody,
+} from '@interfaces';
 
 import { AccountEnquiryRoutes } from '@enums';
 import { Observable, map } from 'rxjs';
@@ -40,7 +46,7 @@ export class SearchComponent {
    * @param response - The search court response.
    * @returns An array of select options.
    */
-  private mapSearchCourtToSelectOptions(response: ISearchCourt[]): IGovUkSelectOptions[] {
+  private mapSearchCourtToSelectOptions(response: ISearchCourt[]): IAutoCompleteItem[] {
     return response.map((item: ISearchCourt) => {
       return {
         value: item.courtId,

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
-import { SEARCH_STATE_MOCK } from '@mocks';
+import { AUTO_COMPLETE_ITEMS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 
 describe('SearchFormComponent', () => {
   let component: SearchFormComponent;
@@ -14,6 +14,7 @@ describe('SearchFormComponent', () => {
 
     fixture = TestBed.createComponent(SearchFormComponent);
     component = fixture.componentInstance;
+    component.selectOptions = AUTO_COMPLETE_ITEMS_MOCK;
     fixture.detectChanges();
   });
 
@@ -35,7 +36,7 @@ describe('SearchFormComponent', () => {
     expect(component.searchForm.value.court).toBe('Bath');
   });
 
-  it('should clear the form', () => {
+  it('should repopulate the form', () => {
     component.state = SEARCH_STATE_MOCK;
     component['rePopulateSearchForm']();
     expect(component.searchForm.value.court).toBe('Bath');
@@ -48,7 +49,8 @@ describe('SearchFormComponent', () => {
     const formValue = SEARCH_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
 
-    component.searchForm.setValue(formValue);
+    component.searchForm.patchValue(formValue);
+
     component.handleFormSubmit();
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(formValue);

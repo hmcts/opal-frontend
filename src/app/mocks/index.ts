@@ -18,6 +18,7 @@ import { USER_STATE_MOCK } from './user-state.mock';
 import { LAUNCH_DARKLY_CONFIG_MOCK } from './launch-darkly-config.mock';
 import { SIGN_IN_STUB_FORM_MOCK } from './sign-in-stub-form.mock';
 import { TRANSFER_STATE_MOCK } from './transfer-state-mock';
+import { AUTO_COMPLETE_ITEMS_MOCK } from './auto-complete-items.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -40,4 +41,5 @@ export {
   LAUNCH_DARKLY_CONFIG_MOCK,
   SIGN_IN_STUB_FORM_MOCK,
   TRANSFER_STATE_MOCK,
+  AUTO_COMPLETE_ITEMS_MOCK,
 };

@@ -24,6 +24,6 @@
     "esbenp.prettier-vscode",
     "mrmlnc.vscode-scss",
     "pflannery.vscode-versionlens",
-    "webhint.vscode-webhint"
+    "deque-systems.vscode-axe-linter"
   ]
 }

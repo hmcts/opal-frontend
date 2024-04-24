@@ -6267,6 +6267,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"accessible-autocomplete@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "accessible-autocomplete@npm:3.0.0"
+  peerDependencies:
+    preact: ^8.0.0
+  peerDependenciesMeta:
+    preact:
+      optional: true
+  checksum: 4f1c27ec66ee8376335a2dc2672ef070366d4d2e1a8ba6e0c4f81695cb1c1db0f05912503c63d055534df6d7c5c3ceae564ef466bf95e4316f6e0e0ef8eba1de
+  languageName: node
+  linkType: hard
+
 "acorn-import-assertions@npm:^1.9.0":
   version: 1.9.0
   resolution: "acorn-import-assertions@npm:1.9.0"
@@ -13633,6 +13645,7 @@ __metadata:
     "@types/session-file-store": ^1.2.5
     "@typescript-eslint/eslint-plugin": 7.7.1
     "@typescript-eslint/parser": 7.7.1
+    accessible-autocomplete: ^3.0.0
     applicationinsights: 2.9.5
     axe-core: ^4.8.4
     axios: ^1.6.2
