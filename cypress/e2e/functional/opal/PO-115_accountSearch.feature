@@ -10,7 +10,7 @@ Feature: PO-115 account search page
     Then I see "Account Enquiry" in the page body header
 
     When I populate the form with the following search criteria
-      | court    | 500000000    |
+      | court    | Kingston     |
       | surname  | testSurname  |
       | forename | testForename |
       | initials |              |
@@ -22,16 +22,16 @@ Feature: PO-115 account search page
       | pcr      | testPCR      |
 
     Then I see the form contains the following search criteria
-      | court    | 500000000    |
-      | surname  | testSurname  |
-      | forename | testForename |
-      | initials |              |
-      | dobDay   | 01           |
-      | dobMonth | 01           |
-      | dobYear  | 1990         |
-      | addrLn1  | addrLn1      |
-      | niNumber | AB123456C    |
-      | pcr      | testPCR      |
+      | court    | Kingston-upon-Thames Mags Court |
+      | surname  | testSurname                     |
+      | forename | testForename                    |
+      | initials |                                 |
+      | dobDay   | 01                              |
+      | dobMonth | 01                              |
+      | dobYear  | 1990                            |
+      | addrLn1  | addrLn1                         |
+      | niNumber | AB123456C                       |
+      | pcr      | testPCR                         |
 
   Scenario: check clear clears form
     Given I am on the OPAL Frontend

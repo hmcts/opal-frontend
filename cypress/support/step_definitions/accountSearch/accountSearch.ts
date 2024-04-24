@@ -3,7 +3,11 @@ import { DataTable, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 When('I populate the form with the following search criteria', (table: DataTable) => {
   const searchCriteria = table.rowsHash();
 
-  cy.get('#court').select(searchCriteria['court']);
+  if (searchCriteria['court']) {
+    cy.get('#court-autocomplete').type(searchCriteria['court']);
+    cy.get('#court-autocomplete__listbox').should('not.contain', 'No results found');
+    cy.get('#court-autocomplete').type('{downArrow}{enter}');
+  }
 
   function typeIfNotBlank(selector: string, value: string) {
     if (value) {
@@ -30,7 +34,7 @@ When('I see the form contains the following search criteria', (table: DataTable)
   const searchCriteria = table.rowsHash();
 
   if (searchCriteria['court'] != '') {
-    cy.get('#court').should('have.value', searchCriteria['court']);
+    cy.get('#court-autocomplete').should('have.value', searchCriteria['court']);
   } else
     () => {
       cy.get('#court').should('have.value', null);
