@@ -36,7 +36,7 @@ describe('SearchFormComponent', () => {
     expect(component.searchForm.value.court).toBe('Bath');
   });
 
-  it('should clear the form', () => {
+  it('should repopulate the form', () => {
     component.state = SEARCH_STATE_MOCK;
     component['rePopulateSearchForm']();
     expect(component.searchForm.value.court).toBe('Bath');
