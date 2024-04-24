@@ -10395,7 +10395,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"formidable@npm:3.5.1":
+"formidable@npm:^3.5.1":
   version: 3.5.1
   resolution: "formidable@npm:3.5.1"
   dependencies:
