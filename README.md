@@ -137,7 +137,7 @@ Run `yarn test:functional` to execute the end-to-end functional tests.
 
 ```bash
 
-yarn test:smoke
+yarn test:functional
 
 ```
 
