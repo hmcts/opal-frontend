@@ -14,27 +14,23 @@ export class AppInsights {
       : null;
 
     if (appInsightsKey) {
-      try {
-        appInsights
-          .setup(appInsightsKey)
-          .setAutoCollectRequests(true)
-          .setAutoCollectPerformance(true, true)
-          .setAutoCollectExceptions(true)
-          .setAutoCollectDependencies(true)
-          .setAutoCollectConsole(true, false)
-          .setAutoCollectPreAggregatedMetrics(true)
-          .setSendLiveMetrics(true)
-          .setInternalLogging(false, true)
-          .enableWebInstrumentation(false)
-          .start();
+      appInsights
+        .setup(appInsightsKey)
+        .setAutoCollectRequests(true)
+        .setAutoCollectPerformance(true, true)
+        .setAutoCollectExceptions(true)
+        .setAutoCollectDependencies(true)
+        .setAutoCollectConsole(true, false)
+        .setAutoCollectPreAggregatedMetrics(true)
+        .setSendLiveMetrics(true)
+        .setInternalLogging(false, true)
+        .enableWebInstrumentation(false)
+        .start();
 
-        appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = 'opal-frontend';
-        appInsights.defaultClient.trackTrace({
-          message: 'App insights activated',
-        });
-      } catch (error) {
-        console.error('Error activating AppInsights:', error);
-      }
+      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = 'opal-frontend';
+      appInsights.defaultClient.trackTrace({
+        message: 'App insights activated',
+      });
     }
   }
 }
