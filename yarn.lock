@@ -3754,12 +3754,12 @@ __metadata:
   linkType: hard
 
 "@hmcts/info-provider@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@hmcts/info-provider@npm:1.1.0"
+  version: 1.2.1
+  resolution: "@hmcts/info-provider@npm:1.2.1"
   dependencies:
-    express: "npm:^4.18.2"
-    js-yaml: "npm:^4.1.0"
-  checksum: e1ddca0e051c20943502e62e88d3fe612d117eb0e20b0eece3c3216832352d746bca2bbd370a23af9789771cb7ad60ee2456a8e92364e1022374c1c6ed4fe75e
+    express: ^4.19.2
+    js-yaml: ^4.1.0
+  checksum: ec2f55f05691f4501846a584c8fe55a614f5213692e5e350e09537a75a4876dd78d684cb229ea0304bdb8298eeacbd0a89e1c6701491e4771a95b71fd42c980a
   languageName: node
   linkType: hard
 
@@ -10018,7 +10018,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.15.2, express@npm:^4.17.3, express@npm:^4.18.2":
+"express@npm:^4.15.2, express@npm:^4.17.3, express@npm:^4.19.2":
   version: 4.19.2
   resolution: "express@npm:4.19.2"
   dependencies:
