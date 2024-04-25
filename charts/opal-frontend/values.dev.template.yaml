@@ -5,7 +5,7 @@ nodejs:
   keyVaults:
     opal:
       secrets:
-        - AppInsightsInstrumentationKey
+        - app-insights-connection-string
         - launch-darkly-client-id
   environment:
     REDIS_CONNECTION_STRING: redis://${SERVICE_NAME}-redis-master:6379
