@@ -6,7 +6,7 @@ nodejs:
   keyVaults:
     opal:
       secrets:
-        - AppInsightsInstrumentationKey
+        - app-insights-connection-string
         - redis-connection-string
         - opal-frontend-session-secret
         - launch-darkly-client-id

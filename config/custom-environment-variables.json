@@ -41,7 +41,7 @@
   },
   "secrets": {
     "opal": {
-      "AppInsightsInstrumentationKey": "APP_INSIGHTS_KEY",
+      "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",
       "redis-connection-string": "REDIS_CONNECTION_STRING",
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
     }
