@@ -1,7 +1,6 @@
 import config from 'config';
 
 process.env['APPLICATIONINSIGHTS_CONFIGURATION_CONTENT'] = '{}';
-// const appInsights = require('applicationinsights');
 import * as appInsights from 'applicationinsights';
 
 // As of 2.9.0 issue reading bundled applicationinsights.json
