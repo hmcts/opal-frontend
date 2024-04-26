@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { StateService } from '@services';
-import { MojHeader } from 'src/app/enums/moj-header';
-
+import { MojHeaderLinks } from '@enums';
 @Component({
   selector: 'app-moj-header',
   standalone: true,
@@ -11,6 +10,6 @@ import { MojHeader } from 'src/app/enums/moj-header';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojHeaderComponent {
-  public readonly header = MojHeader;
+  public readonly headerLinks = MojHeaderLinks;
   public readonly stateService = inject(StateService);
 }

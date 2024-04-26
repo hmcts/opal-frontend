@@ -1,7 +1,7 @@
 <header class="moj-header" role="banner">
   <div class="moj-header__container">
     <div class="moj-header__logo">
-      <a [href]="header.headerLink" class="govuk-header__link" title="GOV.UK" aria-label="GOV.UK home page">
+      <a [href]="headerLinks.govukLink" class="govuk-header__link" title="GOV.UK" aria-label="GOV.UK home page">
         <svg
           aria-hidden="true"
           focusable="false"
@@ -19,35 +19,39 @@
         </svg>
       </a>
 
-      @if (header.organisationName && header.serviceName) {
-        @if (header.serviceLink) {
-          <a [href]="header.serviceLink" class="moj-header__link moj-header__link--organisation-name">
-            {{ header.organisationName }}
-          </a>
-          <a [href]="header.serviceLink" class="moj-header__link moj-header__link--service-name">
-            {{ header.serviceName }}
-          </a>
-        } @else {
-          <span class="moj-header__link--organisation-name"> {{ header.organisationName }} </span>
-          <span class="moj-header__link--service-name"> {{ header.serviceName }} </span>
-        }
+      @if (headerLinks.serviceLink) {
+        <a [href]="headerLinks.serviceLink" class="moj-header__link moj-header__link--organisation-name">
+          <ng-content select="[organisationName]"></ng-content>
+        </a>
+
+        <a [href]="headerLinks.serviceLink" class="moj-header__link moj-header__link--service-name">
+          <ng-content select="[serviceName]"></ng-content>
+        </a>
+      } @else {
+        <span class="moj-header__link--organisation-name">
+          <ng-content select="[organisationName]"></ng-content>
+        </span>
+
+        <span class="moj-header__link--service-name">
+          <ng-content select="[serviceName]"></ng-content>
+        </span>
       }
     </div>
     <div class="moj-header__content">
       <nav class="moj-header__navigation" aria-label="Account navigation">
-        @if (!stateService.authenticated()) {
-          <ul class="moj-header__navigation-list">
-            <li class="moj-header__navigation-item">
-              <a href="/sso/login" class="moj-header__navigation-link">Sign in</a>
-            </li>
-          </ul>
-        } @else {
-          <ul class="moj-header__navigation-list">
-            <li class="moj-header__navigation-item">
-              <a href="/sso/logout" class="moj-header__navigation-link">Sign out</a>
-            </li>
-          </ul>
-        }
+        <ul class="moj-header__navigation-list">
+          <li class="moj-header__navigation-item">
+            @if (!stateService.authenticated()) {
+              <a href="/sso/login" class="moj-header__navigation-link" title="Sign in">
+                <ng-content select="[signInText]"></ng-content>
+              </a>
+            } @else {
+              <a href="/sso/logout" class="moj-header__navigation-link" title="Sign out">
+                <ng-content select="[signOutText]"></ng-content>
+              </a>
+            }
+          </li>
+        </ul>
       </nav>
     </div>
   </div>
