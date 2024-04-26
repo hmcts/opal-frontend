@@ -1,6 +1,11 @@
 <app-moj-header>
   <ng-container organisationName>HMCTS</ng-container>
   <ng-container serviceName>Opal</ng-container>
+  <!-- 
+    PO-322
+    Angular hydration issue with conditional selected content
+    ng-container doesn't work for Sign in/Sign out, span does for some reason
+  -->
   <span signInText>Sign in</span>
   <span signOutText>Sign out</span>
 </app-moj-header>
