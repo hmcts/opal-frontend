@@ -17,6 +17,7 @@ import { GovukInsetTextComponent } from './govuk/govuk-inset-text/govuk-inset-te
 import { MojSubNavigationComponent } from './moj/moj-sub-navigation/moj-sub-navigation.component';
 import { MojSubNavigationItemComponent } from './moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { AlphagovAccessibleAutocompleteComponent } from './alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
+import { MojHeaderComponent } from './moj/moj-header/moj-header.component';
 
 export {
   GovukButtonComponent,
@@ -38,4 +39,5 @@ export {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
   AlphagovAccessibleAutocompleteComponent,
+  MojHeaderComponent,
 };
