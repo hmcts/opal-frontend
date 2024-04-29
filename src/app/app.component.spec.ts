@@ -4,11 +4,13 @@ import { GovukFooterComponent } from './components/govuk/govuk-footer/govuk-foot
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MojHeaderComponent } from './components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from './components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
         MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
