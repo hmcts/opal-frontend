@@ -4,7 +4,7 @@ import { AccountEnquiryComponent } from './account-enquiry.component';
 import { StateService } from '@services';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
-fdescribe('AccountEnquiryComponent', () => {
+describe('AccountEnquiryComponent', () => {
   let component: AccountEnquiryComponent;
   let fixture: ComponentFixture<AccountEnquiryComponent>;
   let stateService: StateService;
