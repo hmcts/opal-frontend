@@ -11,7 +11,7 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 
-import { MojHeaderComponent, GovukFooterComponent } from '@components';
+import { MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterComponent } from '@components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors';
 import { AppInitializerService } from '@services';
@@ -24,6 +24,7 @@ import { AppInitializerService } from '@services';
     HttpClientModule,
     HttpClientXsrfModule,
     MojHeaderComponent,
+    MojHeaderNavigationItemComponent,
     GovukFooterComponent,
     BrowserAnimationsModule,
   ],

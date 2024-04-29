@@ -1,23 +1,51 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MojHeaderComponent } from './moj-header.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component } from '@angular/core';
+import { MojHeaderNavigationItemComponent } from './moj-header-navigation-item/moj-header-navigation-item.component';
+
+@Component({
+  template: `<app-moj-header>
+    <ng-container organisationName>Test Organisation</ng-container>
+    <ng-container serviceName>Test Service</ng-container>
+    <app-moj-header-navigation-item>
+      <ng-container linkText>Test Link</ng-container>
+    </app-moj-header-navigation-item>
+  </app-moj-header>`,
+})
+class TestHostComponent {}
 
 describe('MojHeaderComponent', () => {
-  let component: MojHeaderComponent;
-  let fixture: ComponentFixture<MojHeaderComponent>;
+  let component: TestHostComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojHeaderComponent, HttpClientTestingModule],
+      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent],
+      declarations: [TestHostComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MojHeaderComponent);
+    fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render into organisationName ng-content', () => {
+    const element = fixture.nativeElement.querySelector('.moj-header__link--organisation-name');
+    expect(element.innerText).toBe('Test Organisation');
+  });
+
+  it('should render into serviceName ng-content', () => {
+    const element = fixture.nativeElement.querySelector('.moj-header__link--service-name');
+    expect(element.innerText).toBe('Test Service');
+  });
+
+  it('should render into linkText ng-content', () => {
+    const element = fixture.nativeElement.querySelector('app-moj-header-navigation-item');
+    expect(element.innerText).toBe('Test Link');
   });
 });

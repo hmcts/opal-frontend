@@ -39,18 +39,11 @@
     </div>
     <div class="moj-header__content">
       <nav class="moj-header__navigation" aria-label="Account navigation">
-        <ul class="moj-header__navigation-list">
-          <li class="moj-header__navigation-item">
-            @if (!stateService.authenticated()) {
-              <a href="/sso/login" class="moj-header__navigation-link" title="Sign in">
-                <ng-content select="[signInText]"></ng-content>
-              </a>
-            } @else {
-              <a href="/sso/logout" class="moj-header__navigation-link" title="Sign out">
-                <ng-content select="[signOutText]"></ng-content>
-              </a>
-            }
-          </li>
+        <!--PO-322
+  For accessibility we need to add a role to prevent any accessibility issues
+-->
+        <ul class="moj-header__navigation-list" role="list">
+          <ng-content></ng-content>
         </ul>
       </nav>
     </div>

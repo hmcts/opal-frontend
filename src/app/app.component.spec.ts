@@ -1,14 +1,19 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { GovukFooterComponent } from './components/govuk/govuk-footer/govuk-footer.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MojHeaderComponent } from './components/moj/moj-header/moj-header.component';
+import { MojHeaderNavigationItemComponent } from './components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 
 describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, MojHeaderComponent, GovukFooterComponent, HttpClientTestingModule],
+      imports: [
+        MojHeaderComponent,
+        MojHeaderNavigationItemComponent,
+        GovukFooterComponent,
+        HttpClientTestingModule,
+      ],
       declarations: [AppComponent],
       providers: [],
     });

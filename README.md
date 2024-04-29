@@ -95,7 +95,7 @@ export FEATURES_LAUNCH_DARKLY_STREAM=true
 
 ## Build
 
-Run `yarn:build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.
+Run `yarn build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.
 
 ## Code style
 
