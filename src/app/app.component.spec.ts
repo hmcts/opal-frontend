@@ -75,7 +75,7 @@ describe('AppComponent', () => {
       });
 
       component.handleAuthentication();
-      
+
       expect(spy).toHaveBeenCalled();
       expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.logout);
     });
