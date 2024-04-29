@@ -8,7 +8,6 @@ import { GovukHeaderLinks } from '@enums';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './govuk-header.component.html',
-  styleUrl: './govuk-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukHeaderComponent {

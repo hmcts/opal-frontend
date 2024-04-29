@@ -46,15 +46,7 @@
         </span>
       }
 
-      @if (!stateService.authenticated()) {
-        <a href="/sso/login" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer" title="Sign in">
-          <ng-content select="[signInText]"></ng-content>
-        </a>
-      } @else {
-        <a href="/sso/logout" class="govuk-link govuk-link--inverse sign-in-link cursor-pointer" title="Sign out">
-          <ng-content select="[signOutText]"></ng-content>
-        </a>
-      }
+      <ng-content></ng-content>
     </div>
   </div>
 </header>

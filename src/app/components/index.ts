@@ -19,11 +19,13 @@ import { MojSubNavigationItemComponent } from './moj/moj-sub-navigation/moj-sub-
 import { AlphagovAccessibleAutocompleteComponent } from './alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { MojHeaderComponent } from './moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from './moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
+import { GovukHeaderNavigationItemComponent } from './govuk/govuk-header/govuk-header-navigation-item/govuk-header-navigation-item.component';
 
 export {
   GovukButtonComponent,
   GovukAccordionComponent,
   GovukHeaderComponent,
+  GovukHeaderNavigationItemComponent,
   GovukFooterComponent,
   GovukTextInputComponent,
   GovukRadiosComponent,

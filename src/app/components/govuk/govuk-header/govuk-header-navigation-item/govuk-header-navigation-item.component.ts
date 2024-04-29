@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-moj-header-navigation-item, [app-moj-header-navigation-item]',
+  selector: 'app-govuk-header-navigation-item',
   standalone: true,
   imports: [],
-  templateUrl: './moj-header-navigation-item.component.html',
+  templateUrl: './govuk-header-navigation-item.component.html',
+  styleUrl: './govuk-header-navigation-item.component.scss',
 })
-export class MojHeaderNavigationItemComponent {
+export class GovukHeaderNavigationItemComponent {
   @Output() public actionClick = new EventEmitter<boolean>();
 
   /**

@@ -6,7 +6,6 @@ import { MojHeaderLinks } from '@enums';
   standalone: true,
   imports: [],
   templateUrl: './moj-header.component.html',
-  styleUrl: './moj-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojHeaderComponent {
