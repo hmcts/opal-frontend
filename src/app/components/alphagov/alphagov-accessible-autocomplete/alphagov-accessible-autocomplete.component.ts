@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
   afterNextRender,
@@ -13,6 +14,7 @@ import {
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { IAutoCompleteItem } from '@interfaces';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
+import { Subscription, pairwise, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-alphagov-accessible-autocomplete',
@@ -22,7 +24,7 @@ import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
   styleUrl: './alphagov-accessible-autocomplete.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlphagovAccessibleAutocompleteComponent implements OnInit {
+export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestroy {
   @Input({ required: true }) labelText!: string;
   @Input({ required: false }) labelClasses!: string;
   @Input({ required: true }) inputId!: string;
@@ -36,6 +38,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit {
 
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _control!: FormControl;
+  private controlSub!: Subscription;
   public autoCompleteId!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
@@ -122,7 +125,27 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit {
     });
   }
 
+  private setupControlSub(): void {
+    this.controlSub = this._control.valueChanges.pipe(startWith(null), pairwise()).subscribe(([prev, next]) => {
+      // If both values are null, we don't need to do anything
+      if (prev === null && next === null) {
+        return;
+      }
+
+      // Otherwise, next is null, we need to clear the autocomplete
+      if (next === null) {
+        this.autocompleteContainer.nativeElement.innerHTML = '';
+        this.configureAutoComplete();
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.autoCompleteId = this.inputId + '-autocomplete';
+    this.setupControlSub();
+  }
+
+  ngOnDestroy(): void {
+    this.controlSub.unsubscribe();
   }
 }
