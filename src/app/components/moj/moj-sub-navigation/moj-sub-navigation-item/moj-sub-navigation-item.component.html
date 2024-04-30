@@ -4,7 +4,7 @@
     [attr.aria-current]="subNavItemFragment === activeSubNavItemFragment ? 'page' : ''"
     (click)="handleItemClick($event, subNavItemFragment)"
     (keyup.enter)="handleItemClick($event, subNavItemFragment)"
-    role="button"
+    role="link"
     tabindex="0"
     >{{ subNavItemText }}</a
   >

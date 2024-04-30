@@ -1,4 +1,14 @@
-<app-govuk-header></app-govuk-header>
+<app-moj-header>
+  <ng-container organisationName>HMCTS</ng-container>
+  <ng-container serviceName>Opal</ng-container>
+  <app-moj-header-navigation-item (actionClick)="handleAuthentication()">
+    @if (!stateService.authenticated()) {
+      <ng-container linkText>Sign in</ng-container>
+    } @else {
+      <ng-container linkText>Sign out</ng-container>
+    }
+  </app-moj-header-navigation-item>
+</app-moj-header>
 
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">

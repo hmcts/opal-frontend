@@ -20,9 +20,9 @@ describe('AccessDeniedComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to test page on go back button click', () => {
+  it('should navigate to / on go back button click', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleGoBackButtonClick();
-    expect(routerSpy).toHaveBeenCalledWith(['/test-page']);
+    expect(routerSpy).toHaveBeenCalledWith(['/']);
   });
 });

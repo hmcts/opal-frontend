@@ -3,6 +3,9 @@
     <h1 class="govuk-heading-m">Dashboard</h1>
     <ul class="govuk-list">
       <li>
+        <span>{{ stateService.userState().userName }}</span>
+      </li>
+      <li>
         <a class="govuk-link" [routerLink]="['../account-enquiry/search']" id="accountEnquiryLink">Account Enquiry</a>
       </li>
     </ul>

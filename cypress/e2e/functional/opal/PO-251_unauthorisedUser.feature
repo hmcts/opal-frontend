@@ -1,7 +1,7 @@
 Feature: PO-251 unauthorised user presented with access denied screen
   Scenario: Unauthorised user presented with access denied screen
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test-2@HMCTS.NET"
     Then I am on the dashboard
