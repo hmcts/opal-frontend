@@ -3366,7 +3366,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/nodejs-healthcheck@npm:^1.8.3":
+"@hmcts/nodejs-healthcheck@npm:^1.8.5":
   version: 1.8.5
   resolution: "@hmcts/nodejs-healthcheck@npm:1.8.5"
   dependencies:
@@ -13440,7 +13440,7 @@ __metadata:
     "@bahmutov/cypress-esbuild-preprocessor": ^2.2.0
     "@cypress/browserify-preprocessor": ^3.0.2
     "@hmcts/info-provider": ^1.1.0
-    "@hmcts/nodejs-healthcheck": ^1.8.3
+    "@hmcts/nodejs-healthcheck": ^1.8.5
     "@hmcts/nodejs-logging": ^4.0.4
     "@hmcts/properties-volume": ^1.1.0
     "@ministryofjustice/frontend": ^2.1.0
