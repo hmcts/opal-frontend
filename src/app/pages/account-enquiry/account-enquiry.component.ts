@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { StateService } from '@services';
@@ -12,6 +12,10 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 })
 export class AccountEnquiryComponent implements OnDestroy {
   private readonly stateService = inject(StateService);
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(): boolean {
+    return this.stateService.accountEnquiry.search.court === null;
+  }
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
