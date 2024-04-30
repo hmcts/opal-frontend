@@ -125,6 +125,11 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
     });
   }
 
+  /**
+   * Sets up the control subscription for value changes.
+   * Whenever the control value changes, this method is called to handle the changes.
+   * If the new value is null, it clears the autocomplete container and configures the autocomplete.
+   */
   private setupControlSub(): void {
     this.controlSub = this._control.valueChanges.pipe(startWith(null), pairwise()).subscribe(([prev, next]) => {
       // If both values are null, we don't need to do anything
