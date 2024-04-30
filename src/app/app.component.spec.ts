@@ -55,7 +55,7 @@ describe('AppComponent', () => {
 
       const fixture = TestBed.createComponent(AppComponent);
       const component = fixture.componentInstance;
-      const spy = spyOn(component, 'handleAuthentication').and.callFake(() => {
+      const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
         mockDocumentLocation.location.href = SsoEndpoints.login;
       });
 
@@ -70,7 +70,7 @@ describe('AppComponent', () => {
 
       const fixture = TestBed.createComponent(AppComponent);
       const component = fixture.componentInstance;
-      const spy = spyOn(component, 'handleAuthentication').and.callFake(() => {
+      const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
         mockDocumentLocation.location.href = SsoEndpoints.logout;
       });
 

@@ -32,13 +32,20 @@ export class AppComponent implements OnInit {
   }
 
   /**
+   * Handles the redirect
+   */
+  public handleRedirect(ssoEndpoint: string): void {
+    this.document.location.href = ssoEndpoint;
+  }
+
+  /**
    * Handles the authentication dependent on whether the user is already authenticated
    */
   handleAuthentication(): void {
     if (!this.stateService.authenticated()) {
-      this.document.location.href = SsoEndpoints.login;
+      this.handleRedirect(SsoEndpoints.login);
     } else {
-      this.document.location.href = SsoEndpoints.logout;
+      this.handleRedirect(SsoEndpoints.logout);
     }
   }
 }
