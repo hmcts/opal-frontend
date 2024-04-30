@@ -1,7 +1,7 @@
 Feature: PO-117 account details page
   Scenario: When the user views the account details for any account they are correct
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -34,7 +34,7 @@ Feature: PO-117 account details page
 
   Scenario: The search results persist when the user clicks back on the details screen
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -70,7 +70,7 @@ Feature: PO-117 account details page
 
   Scenario: When the user clicks new search they are sent back to an empty search form
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -109,7 +109,7 @@ Feature: PO-117 account details page
 
   Scenario: The tabs on the account details screen are functional
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard

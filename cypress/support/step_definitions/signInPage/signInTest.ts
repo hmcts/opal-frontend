@@ -27,7 +27,7 @@ When('I sign in as {string}', (email: string) => {
       cy.get('input[type="text"]').type(emailSSO);
       cy.get('#submitForm').click();
 
-      cy.get('.govuk-link').contains('Sign out').should('contain.text', emailSSO);
+      cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
     } else {
       cy.get('#signInButton').contains('Sign in').click();
 
@@ -50,7 +50,7 @@ When('I sign in as {string}', (email: string) => {
         },
       );
       cy.wait(500);
-      cy.get('.govuk-link').contains('Sign out').should('contain.text', emailSSO);
+      cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
     }
   });
 });
@@ -62,7 +62,7 @@ Then('I navigate to Account Enquiry', () => {
 });
 
 Then('I see {string} in the header', (header) => {
-  cy.get('.govuk-header__content > .govuk-header__link').should('contain', header);
+  cy.get('.moj-header__link--service-name').should('contain', header);
 });
 When('I click the link in the footer', () => {
   cy.get('.govuk-footer__licence-description > .govuk-footer__link').click();
@@ -73,7 +73,7 @@ When('I click Sign in', () => {
 });
 
 Then('The sign out link should be visible', () => {
-  cy.get('.govuk-link').contains('Sign out').should('be.visible');
+  cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out').should('be.visible');
 });
 
 Then('I see {string} in the page body header', (bodyHeader) => {
@@ -90,7 +90,7 @@ Then('I see {string} on the sign in page', (bodyHeader) => {
 });
 
 When('I click the Sign out link', () => {
-  cy.get('.govuk-link').contains('Sign out').click();
+  cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out').click();
   cy.location('href').then((href: string) => {
     if (href.includes('pr-') || href.includes('localhost')) {
       cy.log('no SSO signing out');

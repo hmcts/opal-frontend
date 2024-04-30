@@ -50,7 +50,7 @@
     "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@hmcts/info-provider": "^1.1.0",
-    "@hmcts/nodejs-healthcheck": "^1.8.3",
+    "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
     "@hmcts/properties-volume": "^1.1.0",
     "@ministryofjustice/frontend": "^2.1.0",
@@ -115,9 +115,6 @@
     "typescript": "~5.4.0"
   },
   "packageManager": "yarn@3.8.1",
-  "resolutions": {
-    "superagent": "9"
-  },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   }

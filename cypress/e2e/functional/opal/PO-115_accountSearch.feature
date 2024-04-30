@@ -1,7 +1,7 @@
 Feature: PO-115 account search page
   Scenario: check values are entered for all field search
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -35,7 +35,7 @@ Feature: PO-115 account search page
 
   Scenario: check clear clears form
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard

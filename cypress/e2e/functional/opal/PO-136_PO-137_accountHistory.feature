@@ -1,7 +1,7 @@
 Feature: PO-136 PO-137 view account history
   Scenario: The application shows the account history for a given account
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -32,7 +32,7 @@ Feature: PO-136 PO-137 view account history
 
   Scenario: The application shows the existing and additional account history for a given account
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
