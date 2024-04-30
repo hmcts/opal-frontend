@@ -71,10 +71,10 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   private handleOnConfirm(selectedName: string | undefined): void {
     // selectedName is populated on selecting an option but is undefined onBlur, so we need to grab the input value directly from the input
     const control = this._control;
-    const name = selectedName || (document.querySelector(`#${this.autoCompleteId}`) as HTMLInputElement).value;
+    const name = selectedName ?? (document.querySelector(`#${this.autoCompleteId}`) as HTMLInputElement).value;
     const selectedItem = this.autoCompleteItems.find((item) => item.name === name) ?? null;
     const previousValue = control.value;
-    const selectedValue = selectedItem?.value || null;
+    const selectedValue = selectedItem?.value ?? null;
 
     control.setValue(selectedValue);
     control.markAsTouched();
@@ -97,7 +97,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
    */
 
   private getDefaultValue() {
-    return this.autoCompleteItems.find((item) => item.value === this._control.value)?.name || '';
+    return this.autoCompleteItems.find((item) => item.value === this._control.value)?.name ?? '';
   }
 
   /**
