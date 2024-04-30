@@ -138,4 +138,44 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
 
     expect(result).toEqual('');
   });
+
+  it('should not clear the autocomplete as we have a value', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'configureAutoComplete');
+
+    component['controlSub'].unsubscribe();
+    component['setupControlSub']();
+    component['_control'].setValue('Hello');
+
+    expect(component['configureAutoComplete']).not.toHaveBeenCalled();
+  });
+
+  it('should clear autocomplete when control value changes to null', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'configureAutoComplete');
+
+    component['controlSub'].unsubscribe();
+
+    component['setupControlSub']();
+
+    component['_control'].setValue('Hello');
+    component['_control'].setValue(null);
+
+    expect(component['configureAutoComplete']).toHaveBeenCalled();
+    expect(component['autocompleteContainer'].nativeElement.innerHTML).toEqual('');
+  });
+
+  it('should not do anything as we have no values', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'configureAutoComplete');
+
+    component['controlSub'].unsubscribe();
+
+    component['setupControlSub']();
+
+    component['_control'].setValue(null);
+    component['_control'].setValue(null);
+
+    expect(component['configureAutoComplete']).not.toHaveBeenCalled();
+  });
 });
