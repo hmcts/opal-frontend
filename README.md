@@ -95,7 +95,7 @@ export FEATURES_LAUNCH_DARKLY_STREAM=true
 
 ## Build
 
-Run `yarn:build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.
+Run `yarn build:ssr` to build the project. The build artifacts will be stored in the `dist/opal-frontend` directory. This compiles both the node.js server-side code and angular code.
 
 ## Code style
 
@@ -149,40 +149,14 @@ yarn cypress
 
 ```
 
-## Running accessbility testing
+## Running accessibility tests
 
-We are using [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility. There are a couple of steps required to run the tests.
-
-#### 1. Development server
-
-The production server is required to be running. You can start it by running the following command.
-
-```bash
-
-yarn build:serve:ssr
-
-```
-
-#### 1. a11y
-
-Once the development server is running you can run the a11y test by running the following command.
-
-```bash
-
-yarn test:smoke
-
-```
-
-or you can open the cypress console and run the smoke commands in there.
-
-```bash
-
-yarn cypress
-
-```
+We are using [axe-core](https://github.com/dequelabs/axe-core) and [cypress-axe](https://github.com/component-driven/cypress-axe) to check the accessibility.
+Run the production server and once running you can run the smoke or functional test commands.
 
 ## Angular code scaffolding
 
 Run `yarn ng generate component component-name` to generate a new component. You can also use `yarn ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 Note the requirement for prefixing the `ng` commands with `yarn`
+‹

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { StateService } from '@services';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,4 +9,6 @@ import { RouterModule } from '@angular/router';
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent {}
+export class DashboardComponent {
+  public readonly stateService = inject(StateService);
+}

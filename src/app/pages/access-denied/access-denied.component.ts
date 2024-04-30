@@ -14,6 +14,6 @@ export class AccessDeniedComponent {
 
   public handleGoBackButtonClick(): void {
     // For now, test page will act as our 'Dashboard' page
-    this.router.navigate(['/test-page']);
+    this.router.navigate(['/']);
   }
 }

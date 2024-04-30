@@ -1,7 +1,7 @@
 Feature: PO-116 account matches page
   Scenario: Search criteria persists when user goes back from matches screen
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -38,7 +38,7 @@ Feature: PO-116 account matches page
 
   Scenario: when a user performs a specific search the correct result is returned to the user on the matches screen
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -67,7 +67,7 @@ Feature: PO-116 account matches page
 
   Scenario: when a user performs a specific partial search the correct result is returned to the user on the matches screen
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -96,7 +96,7 @@ Feature: PO-116 account matches page
 
   Scenario: when a user performs a specific search with an incorrect date of birth no results are returned to the user on the matches screen
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
@@ -122,7 +122,7 @@ Feature: PO-116 account matches page
 
   Scenario: when a user performs a broad search the correct results are returned to the user on the matches screen
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard

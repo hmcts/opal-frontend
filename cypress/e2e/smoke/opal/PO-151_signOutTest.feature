@@ -1,7 +1,7 @@
 Feature: PO-151 authentication sign out
   Scenario: check the session token is destroyed
     Given I am on the OPAL Frontend
-    Then I see "OPAL Frontend" in the header
+    Then I see "Opal" in the header
     When I sign in as "opal-test@HMCTS.NET"
     And The sign out link should be visible
 
