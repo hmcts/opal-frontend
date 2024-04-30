@@ -115,9 +115,6 @@
     "typescript": "~5.4.0"
   },
   "packageManager": "yarn@3.8.1",
-  "resolutions": {
-    "superagent": "9"
-  },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   }
