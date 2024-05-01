@@ -10,7 +10,7 @@ import {
   DEFENDANT_ACCOUNT_NOTE_MOCK,
   SEARCH_DEFENDANT_ACCOUNTS_MOCK,
 } from '@mocks';
-import { ApiPaths } from '@enums';
+import { API_PATHS } from '@constants';
 
 describe('DefendantAccountService', () => {
   let service: DefendantAccountService;
@@ -36,7 +36,7 @@ describe('DefendantAccountService', () => {
       businessUnitId: 1,
       accountNumber: '1212',
     };
-    const apiUrl = `${ApiPaths.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`;
+    const apiUrl = `${API_PATHS.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`;
 
     service.getDefendantAccount(params).subscribe((defendantAccount) => {
       expect(defendantAccount).toEqual(DEFENDANT_ACCOUNT_MOCK);
@@ -63,7 +63,7 @@ describe('DefendantAccountService', () => {
       niNumber: 'TT1234',
       pcr: '1234',
     };
-    const apiUrl = ApiPaths.defendantAccountSearch;
+    const apiUrl = API_PATHS.defendantAccountSearch;
 
     service.searchDefendantAccounts(body).subscribe((searchDefendantAccounts) => {
       expect(searchDefendantAccounts).toEqual(SEARCH_DEFENDANT_ACCOUNTS_MOCK);
@@ -78,7 +78,7 @@ describe('DefendantAccountService', () => {
   it('should POST the defendant account note', () => {
     const body: IAddDefendantAccountNoteBody = ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK;
 
-    const apiUrl = ApiPaths.defendantAccountAddNote;
+    const apiUrl = API_PATHS.defendantAccountAddNote;
 
     service.addDefendantAccountNote(body).subscribe((defendantAccountNote) => {
       expect(defendantAccountNote).toEqual(DEFENDANT_ACCOUNT_NOTE_MOCK);
@@ -92,7 +92,7 @@ describe('DefendantAccountService', () => {
 
   it('should GET the defendant account notes', () => {
     const defendantAccountId = 123;
-    const apiUrl = `${ApiPaths.defendantAccountNotes}/${defendantAccountId}`;
+    const apiUrl = `${API_PATHS.defendantAccountNotes}/${defendantAccountId}`;
 
     service.getDefendantAccountNotes(defendantAccountId).subscribe((defendantAccountNotes) => {
       expect(defendantAccountNotes).toEqual(DEFENDANT_ACCOUNT_NOTES_MOCK);
@@ -106,7 +106,7 @@ describe('DefendantAccountService', () => {
 
   it('should GET the defendant account details', () => {
     const defendantAccountId = 123;
-    const apiUrl = `${ApiPaths.defendantAccount}/${defendantAccountId}`;
+    const apiUrl = `${API_PATHS.defendantAccount}/${defendantAccountId}`;
 
     service.getDefendantAccountDetails(defendantAccountId).subscribe((defendantAccountDetails) => {
       expect(defendantAccountDetails).toEqual(DEFENDANT_ACCOUNT_DETAILS_MOCK);
