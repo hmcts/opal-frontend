@@ -2,6 +2,10 @@ declare module 'govuk-frontend' {
   export function initAll(): void;
 }
 
+declare module '@scottish-government/design-system/src/all' {
+  export function initAll(): void;
+}
+
 declare module 'accessible-autocomplete' {
   type SourceFunction = (query: string, populateResults: (values: string[]) => void) => string[];
 
