@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { ApiPaths } from '@enums';
+import { API_PATHS } from '@constants';
 import { ISearchCourt, ISearchCourtBody } from '@interfaces';
 import { Observable, shareReplay } from 'rxjs';
 
@@ -21,7 +21,7 @@ export class CourtService {
 
     // Court search is cached to prevent multiple requests for the same data.
     if (!this.courtCache$[key]) {
-      this.courtCache$[key] = this.http.post<ISearchCourt[]>(ApiPaths.courtSearch, body).pipe(shareReplay(1));
+      this.courtCache$[key] = this.http.post<ISearchCourt[]>(API_PATHS.courtSearch, body).pipe(shareReplay(1));
     }
 
     return this.courtCache$[key];

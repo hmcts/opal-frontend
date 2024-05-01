@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CourtService } from './court.service';
 import { ISearchCourt, ISearchCourtBody } from '@interfaces';
-import { ApiPaths } from '@enums';
 import { SEARCH_COURT_BODY_MOCK, SEARCH_COURT_MOCK } from '@mocks';
+import { API_PATHS } from '@constants';
 
 describe('CourtService', () => {
   let service: CourtService;
@@ -34,7 +34,7 @@ describe('CourtService', () => {
       expect(response).toEqual(expectedResponse);
     });
 
-    const req = httpMock.expectOne(ApiPaths.courtSearch);
+    const req = httpMock.expectOne(API_PATHS.courtSearch);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(searchBody);
     req.flush(expectedResponse);
@@ -48,7 +48,7 @@ describe('CourtService', () => {
       expect(response).toEqual(expectedResponse);
     });
 
-    const req = httpMock.expectOne(ApiPaths.courtSearch);
+    const req = httpMock.expectOne(API_PATHS.courtSearch);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(searchBody);
     req.flush(expectedResponse);
@@ -59,6 +59,6 @@ describe('CourtService', () => {
     });
 
     // No new request should be made since the response is cached
-    httpMock.expectNone(ApiPaths.courtSearch);
+    httpMock.expectNone(API_PATHS.courtSearch);
   });
 });

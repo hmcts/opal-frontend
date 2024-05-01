@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { ApiPaths } from '@enums';
+import { API_PATHS } from '@constants';
 import {
   IDefendantAccount,
   ISearchDefendantAccounts,
@@ -25,7 +25,7 @@ export class DefendantAccountService {
    */
   public getDefendantAccount(params: IGetDefendantAccountParams): Observable<IDefendantAccount> {
     return this.http.get<IDefendantAccount>(
-      `${ApiPaths.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`,
+      `${API_PATHS.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`,
     );
   }
 
@@ -35,7 +35,7 @@ export class DefendantAccountService {
    * @returns An Observable that emits the search results.
    */
   public searchDefendantAccounts(body: ISearchDefendantAccountBody): Observable<ISearchDefendantAccounts> {
-    return this.http.post<ISearchDefendantAccounts>(ApiPaths.defendantAccountSearch, body);
+    return this.http.post<ISearchDefendantAccounts>(API_PATHS.defendantAccountSearch, body);
   }
 
   /**
@@ -44,7 +44,7 @@ export class DefendantAccountService {
    * @returns An Observable that emits the defendant account details.
    */
   public getDefendantAccountDetails(defendantAccountId: number): Observable<IDefendantAccountDetails> {
-    return this.http.get<IDefendantAccountDetails>(`${ApiPaths.defendantAccount}/${defendantAccountId}`);
+    return this.http.get<IDefendantAccountDetails>(`${API_PATHS.defendantAccount}/${defendantAccountId}`);
   }
 
   /**
@@ -53,7 +53,7 @@ export class DefendantAccountService {
    * @returns An observable that emits the added defendant account note.
    */
   public addDefendantAccountNote(body: IAddDefendantAccountNoteBody): Observable<IDefendantAccountNote> {
-    return this.http.post<IDefendantAccountNote>(ApiPaths.defendantAccountAddNote, body);
+    return this.http.post<IDefendantAccountNote>(API_PATHS.defendantAccountAddNote, body);
   }
 
   /**
@@ -62,6 +62,6 @@ export class DefendantAccountService {
    * @returns An Observable that emits an array of defendant account notes.
    */
   public getDefendantAccountNotes(defendantAccountId: number): Observable<IDefendantAccountNote[]> {
-    return this.http.get<IDefendantAccountNote[]>(`${ApiPaths.defendantAccountNotes}/${defendantAccountId}`);
+    return this.http.get<IDefendantAccountNote[]>(`${API_PATHS.defendantAccountNotes}/${defendantAccountId}`);
   }
 }
