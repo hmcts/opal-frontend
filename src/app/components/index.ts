@@ -20,6 +20,7 @@ import { AlphagovAccessibleAutocompleteComponent } from './alphagov/alphagov-acc
 import { MojHeaderComponent } from './moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from './moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { GovukHeaderNavigationItemComponent } from './govuk/govuk-header/govuk-header-navigation-item/govuk-header-navigation-item.component';
+import { ScotgovDatePickerComponent } from './scotgov/scotgov-date-picker/scotgov-date-picker.component';
 
 export {
   GovukButtonComponent,
@@ -44,4 +45,5 @@ export {
   AlphagovAccessibleAutocompleteComponent,
   MojHeaderComponent,
   MojHeaderNavigationItemComponent,
+  ScotgovDatePickerComponent,
 };
