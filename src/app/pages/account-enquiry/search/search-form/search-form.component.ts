@@ -12,6 +12,19 @@ import {
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
 
+interface FieldErrors {
+  [key: string]: {
+    [key: string]: {
+      message: string;
+      priority: number;
+    };
+  };
+}
+
+interface FormErrorMessages {
+  [key: string]: string | null;
+}
+
 @Component({
   selector: 'app-search-form',
   standalone: true,
@@ -32,11 +45,61 @@ import { DATE_INPUTS } from '../config/date-inputs';
 export class SearchFormComponent implements OnInit {
   @Input({ required: true }) public selectOptions!: IGovUkSelectOptions[];
   @Input({ required: true }) public state!: IAccountEnquiryStateSearch;
+
   @Output() private formSubmit = new EventEmitter<IAccountEnquiryStateSearch>();
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
-
   public searchForm!: FormGroup;
+
+  public fieldErrors: FieldErrors = {
+    surname: {
+      required: {
+        message: 'Enter an email address',
+        priority: 1,
+      },
+      email: {
+        message: 'Enter a valid email address',
+        priority: 2,
+      },
+      maxlength: {
+        message: 'Too long',
+        priority: 3,
+      },
+    },
+  };
+
+  public formErrorMessages: FormErrorMessages = {
+    surname: null,
+  };
+
+  public getFieldErrorMessages(fieldName: string): string | null {
+    // Get the control
+    const control = this.searchForm.get(fieldName);
+
+    // If we have errors
+    if (control?.errors) {
+      /// Get all the error keys
+      const errorKeys = Object.keys(control.errors);
+
+      // Get all the field errors
+      const fieldErrors = this.fieldErrors[fieldName];
+
+      if (fieldErrors) {
+        // Get the highest priority error
+        const highestPriorityError = errorKeys
+          .map((errorType) => fieldErrors[errorType])
+          .sort((a, b) => a.priority - b.priority)[0];
+        return highestPriorityError?.message;
+      }
+    }
+    return null;
+  }
+
+  private buildFieldErrorMessages() {
+    return {
+      surname: this.getFieldErrorMessages('surname'),
+    };
+  }
 
   /**
    * Sets up the search form with the necessary form controls.
@@ -44,7 +107,7 @@ export class SearchFormComponent implements OnInit {
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
       court: new FormControl(null, [Validators.required]),
-      surname: new FormControl(null),
+      surname: new FormControl(null, [Validators.required, Validators.maxLength(5), Validators.email]),
       forename: new FormControl(null),
       initials: new FormControl(null),
       dateOfBirth: new FormGroup({
@@ -76,6 +139,7 @@ export class SearchFormComponent implements OnInit {
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
+    this.formErrorMessages = this.buildFieldErrorMessages();
     this.formSubmit.emit(this.searchForm.value);
   }
 
