@@ -12,13 +12,20 @@ import {
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
 
-interface FieldErrors {
+// interface FieldError {
+//   message: string;
+//   priority: number;
+// }
+
+interface FieldError {
   [key: string]: {
-    [key: string]: {
-      message: string;
-      priority: number;
-    };
+    message: string;
+    priority: number;
   };
+}
+
+interface FieldErrors {
+  [key: string]: FieldError;
 }
 
 interface FormErrorMessages {
@@ -72,6 +79,12 @@ export class SearchFormComponent implements OnInit {
     surname: null,
   };
 
+  private getHighestPriorityError(errorKeys: string[], fieldErrors: FieldError) {
+    return errorKeys
+      .map((errorType: string) => fieldErrors[errorType])
+      .sort((a, b) => a['priority'] - b['priority'])[0];
+  }
+
   public getFieldErrorMessages(fieldName: string): string | null {
     // Get the control
     const control = this.searchForm.get(fieldName);
@@ -80,16 +93,10 @@ export class SearchFormComponent implements OnInit {
     if (control?.errors) {
       /// Get all the error keys
       const errorKeys = Object.keys(control.errors);
-
-      // Get all the field errors
       const fieldErrors = this.fieldErrors[fieldName];
 
       if (fieldErrors) {
-        // Get the highest priority error
-        const highestPriorityError = errorKeys
-          .map((errorType) => fieldErrors[errorType])
-          .sort((a, b) => a.priority - b.priority)[0];
-        return highestPriorityError?.message;
+        return this.getHighestPriorityError(errorKeys, fieldErrors).message;
       }
     }
     return null;
@@ -140,7 +147,9 @@ export class SearchFormComponent implements OnInit {
    */
   public handleFormSubmit(): void {
     this.formErrorMessages = this.buildFieldErrorMessages();
-    this.formSubmit.emit(this.searchForm.value);
+    if (this.searchForm.valid) {
+      this.formSubmit.emit(this.searchForm.value);
+    }
   }
 
   public ngOnInit(): void {
