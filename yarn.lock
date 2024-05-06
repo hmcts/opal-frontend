@@ -11845,8 +11845,8 @@ __metadata:
   linkType: hard
 
 "junit-report-merger@npm:^6.0.2":
-  version: 6.0.3
-  resolution: "junit-report-merger@npm:6.0.3"
+  version: 6.0.4
+  resolution: "junit-report-merger@npm:6.0.4"
   dependencies:
     commander: ~11.1.0
     fast-glob: ~3.3.0
@@ -11854,7 +11854,7 @@ __metadata:
   bin:
     jrm: cli.js
     junit-report-merger: cli.js
-  checksum: f3c713f4e644887a05f60d2d324b9452b0210cb47ef21e0c55c65f84c2cf0e325738794f0bf3fcf5f0b70a9698449a9333171f953fb78d550212ddb1740fbfaa
+  checksum: 1eeeec39c7cf34b421ca91ea4a72902159d9f3d850ec2d4d456342c73e6446722a577b28e01425671f8502ff8995d0a5a73d4191ecceba1d8279ffb345132e65
   languageName: node
   linkType: hard
 
