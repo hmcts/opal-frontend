@@ -23,8 +23,8 @@ describe('ScotgovDatePickerComponent', () => {
     const initAllSpy = jasmine.createSpy('initAll');
     spyOn(component, 'configureDatePicker').and.callFake(() => {
       return Promise.resolve({
-        initAll: initAllSpy
-      }).then(library => {
+        initAll: initAllSpy,
+      }).then((library) => {
         library.initAll();
         expect(initAllSpy).toHaveBeenCalled();
       });
