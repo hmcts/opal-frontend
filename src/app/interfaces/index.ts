@@ -18,6 +18,10 @@ import { IPermissions } from './permissions.interface';
 import { ITransferServerState } from './transfer-server-state.interface';
 import { ISignInStubForm } from './sign-in-stub-form.interface';
 import { IAutoCompleteItem } from './auto-complete-item.interface';
+import { IFormControlError } from './form-control-error.interface';
+import { IFormControlErrors } from './form-control-errors.interface';
+import { IFormErrorMessages } from './form-error-messages.interface';
+import { IFormErrorSummaryInterface } from './form-error-summary-entry.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -44,4 +48,8 @@ export {
   ITransferServerState,
   ISignInStubForm,
   IAutoCompleteItem,
+  IFormControlError,
+  IFormControlErrors,
+  IFormErrorMessages,
+  IFormErrorSummaryInterface,
 };

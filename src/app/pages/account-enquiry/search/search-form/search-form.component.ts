@@ -9,33 +9,16 @@ import {
   GovukButtonComponent,
   AlphagovAccessibleAutocompleteComponent,
 } from '@components';
-import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
+import {
+  IAccountEnquiryStateSearch,
+  IFormControlError,
+  IFormControlErrors,
+  IFormErrorMessages,
+  IFormErrorSummaryInterface,
+  IGovUkDateInput,
+  IGovUkSelectOptions,
+} from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
-
-// interface FieldError {
-//   message: string;
-//   priority: number;
-// }
-
-interface FieldError {
-  [key: string]: {
-    message: string;
-    priority: number;
-  };
-}
-
-interface FieldErrors {
-  [key: string]: FieldError;
-}
-
-interface FormErrorMessages {
-  [key: string]: string | null;
-}
-
-interface ErrorSummaryEntry {
-  fieldId: string;
-  message: string | null;
-}
 
 @Component({
   selector: 'app-search-form',
@@ -63,7 +46,8 @@ export class SearchFormComponent implements OnInit {
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
   public searchForm!: FormGroup;
 
-  public fieldErrors: FieldErrors = {
+  // We will move this to a constant field in the future
+  public fieldErrors: IFormControlErrors = {
     surname: {
       required: {
         message: 'Enter an email address',
@@ -80,23 +64,36 @@ export class SearchFormComponent implements OnInit {
     },
   };
 
-  public formErrorMessages!: FormErrorMessages;
+  public formErrorMessages!: IFormErrorMessages;
 
-  private getHighestPriorityError(errorKeys: string[], fieldErrors: FieldError) {
+  /**
+   * Returns the highest priority error from the given error keys and field errors.
+   * @param errorKeys - An array of error keys.
+   * @param fieldErrors - An object containing field errors.
+   * @returns The highest priority error from the field errors.
+   */
+  private getHighestPriorityError(errorKeys: string[], fieldErrors: IFormControlError) {
     return errorKeys
       .map((errorType: string) => fieldErrors[errorType])
       .sort((a, b) => a['priority'] - b['priority'])[0];
   }
 
-  public getFieldErrorMessages(controlPath: string[]): string | null {
+  /**
+   * Retrieves the error message for a given form control.
+   *
+   * @param controlPath - The path to the form control.
+   * @returns The error message for the control, or null if there are no errors.
+   */
+  private getFieldErrorMessages(controlPath: string[]): string | null {
     // Get the control
     const control = this.searchForm.get(controlPath);
 
     // If we have errors
-    if (control?.errors) {
+    const controlErrors = control?.errors;
+    if (controlErrors) {
       /// Get all the error keys
       const controlKey = controlPath[controlPath.length - 1];
-      const errorKeys = Object.keys(control.errors);
+      const errorKeys = Object.keys(controlErrors);
       const fieldErrors = this.fieldErrors[controlKey];
 
       if (fieldErrors) {
@@ -106,13 +103,25 @@ export class SearchFormComponent implements OnInit {
     return null;
   }
 
-  private buildFieldErrorMessages(errorSummaryEntry: ErrorSummaryEntry[]) {
+  /**
+   * Builds field error messages based on the provided error summary entries.
+   * @param errorSummaryEntry - An array of error summary entries.
+   */
+  private buildFieldErrorMessages(errorSummaryEntry: IFormErrorSummaryInterface[]) {
     errorSummaryEntry.forEach((entry) => {
       this.formErrorMessages[entry.fieldId] = entry.message;
     });
   }
 
-  getErrorSummary(form: FormGroup, controlPath: string[] = []): ErrorSummaryEntry[] {
+  /**
+   * Retrieves the error summary for a given form and its controls.
+   * This method recursively gets all errors from all controls in the form, including nested form group controls.
+   *
+   * @param form - The form group to retrieve the error summary from.
+   * @param controlPath - The path of the control within the form group (used for nested form groups).
+   * @returns An array of ErrorSummaryEntry objects representing the error summary.
+   */
+  private getErrorSummary(form: FormGroup, controlPath: string[] = []): IFormErrorSummaryInterface[] {
     // recursively get all errors from all controls in the form including nested form group controls
     const formControls = form.controls;
 
@@ -131,6 +140,22 @@ export class SearchFormComponent implements OnInit {
         };
       })
       .flat();
+  }
+
+  /**
+   * Sets the initial form error messages.
+   *
+   * @param form - The form group.
+   */
+  private setInitialFormErrorMessages(form: FormGroup): void {
+    const formControls = form.controls;
+    const initialFormErrorMessages: IFormErrorMessages = {};
+
+    Object.keys(formControls).map((controlName) => {
+      initialFormErrorMessages[controlName] = null;
+    });
+
+    this.formErrorMessages = initialFormErrorMessages;
   }
 
   /**
@@ -172,15 +197,15 @@ export class SearchFormComponent implements OnInit {
    */
   public handleFormSubmit(): void {
     this.buildFieldErrorMessages(this.getErrorSummary(this.searchForm));
-    console.log(this.formErrorMessages);
 
     if (this.searchForm.valid) {
-      // this.formSubmit.emit(this.searchForm.value);
+      this.formSubmit.emit(this.searchForm.value);
     }
   }
 
   public ngOnInit(): void {
     this.setupSearchForm();
+    this.setInitialFormErrorMessages(this.searchForm);
     this.rePopulateSearchForm();
   }
 }
