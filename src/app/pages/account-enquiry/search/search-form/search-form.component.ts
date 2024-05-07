@@ -96,8 +96,8 @@ export class SearchFormComponent implements OnInit {
       const errorKeys = Object.keys(controlErrors);
       const fieldErrors = this.fieldErrors[controlKey];
 
-      if (fieldErrors) {
-        return this.getHighestPriorityError(errorKeys, fieldErrors).message;
+      if (errorKeys && fieldErrors) {
+        return this.getHighestPriorityError(errorKeys, fieldErrors)?.message;
       }
     }
     return null;
@@ -164,13 +164,13 @@ export class SearchFormComponent implements OnInit {
   private setupSearchForm(): void {
     this.searchForm = new FormGroup({
       court: new FormControl(null, [Validators.required]),
-      surname: new FormControl(null, [Validators.required, Validators.maxLength(5), Validators.email]),
+      surname: new FormControl(null),
       forename: new FormControl(null),
       initials: new FormControl(null),
       dateOfBirth: new FormGroup({
-        dayOfMonth: new FormControl(null, [Validators.required]),
-        monthOfYear: new FormControl(null, [Validators.required]),
-        year: new FormControl(null, [Validators.required]),
+        dayOfMonth: new FormControl(null),
+        monthOfYear: new FormControl(null),
+        year: new FormControl(null),
       }),
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),

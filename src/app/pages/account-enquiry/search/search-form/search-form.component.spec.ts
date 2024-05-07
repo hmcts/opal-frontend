@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
 import { AUTO_COMPLETE_ITEMS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
+import { IFormControlError } from '@interfaces';
 
-describe('SearchFormComponent', () => {
+fdescribe('SearchFormComponent', () => {
   let component: SearchFormComponent;
   let fixture: ComponentFixture<SearchFormComponent>;
 
@@ -66,5 +67,50 @@ describe('SearchFormComponent', () => {
 
     expect(component['setupSearchForm']).toHaveBeenCalled();
     expect(component['rePopulateSearchForm']).toHaveBeenCalled();
+  });
+
+  it('should return the highest priority error', () => {
+    const component = new SearchFormComponent();
+    const errorKeys = ['required', 'minLength'];
+    const fieldErrors: IFormControlError = {
+      required: { priority: 2, message: 'Required error' },
+      minLength: { priority: 1, message: 'Min length error' },
+    };
+
+    const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
+
+    expect(result).toEqual(fieldErrors['minLength']);
+  });
+
+  it('should return null if errorKeys is empty', () => {
+    const component = new SearchFormComponent();
+    const errorKeys: string[] = [];
+    const fieldErrors: IFormControlError = {
+      required: { priority: 2, message: 'Required error' },
+      minLength: { priority: 1, message: 'Min length error' },
+    };
+
+    const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
+    expect(result).toBeUndefined();
+  });
+
+  it('should return null if fieldErrors is empty', () => {
+    const component = new SearchFormComponent();
+    const errorKeys = ['required', 'minLength'];
+    const fieldErrors: IFormControlError = {};
+
+    const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
+
+    expect(result).toBeUndefined();
+  });
+
+  it('should return null if errorKeys and fieldErrors are empty', () => {
+    const component = new SearchFormComponent();
+    const errorKeys: string[] = [];
+    const fieldErrors: IFormControlError = {};
+
+    const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
+
+    expect(result).toBeUndefined();
   });
 });
