@@ -2,22 +2,31 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { SearchComponent } from './search.component';
-import { StateService } from '@services';
+import { CourtService, StateService } from '@services';
 import { SEARCH_COURT_MOCK, SEARCH_COURT_SELECT_OPTIONS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 import { AccountEnquiryRoutes } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from '@constants';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { IGovUkSelectOptions, ISearchCourt } from '@interfaces';
+import { of } from 'rxjs';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
   let stateService: StateService;
   let router: Router;
+  let mockCourtService: Partial<CourtService>;
 
   beforeEach(async () => {
+    mockCourtService = {
+      searchCourt: jasmine.createSpy('searchCourt').and.returnValue(of(SEARCH_COURT_MOCK))
+    };
+
     await TestBed.configureTestingModule({
       imports: [SearchComponent, RouterTestingModule, HttpClientTestingModule],
+      providers: [
+        { provide: CourtService, useValue: mockCourtService },
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);
@@ -57,5 +66,12 @@ describe('SearchComponent', () => {
     const result = component['mapSearchCourtToSelectOptions'](response);
 
     expect(result).toEqual(expectedOptions);
+  });
+
+  it('should transform court search results into select options', () => {
+    component.data$.subscribe(result => {
+      expect(result).toEqual(SEARCH_COURT_SELECT_OPTIONS_MOCK);
+      expect(mockCourtService.searchCourt).toHaveBeenCalled();
+    });
   });
 });
