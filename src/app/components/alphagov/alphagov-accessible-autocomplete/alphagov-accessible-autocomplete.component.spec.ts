@@ -178,4 +178,23 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
 
     expect(component['configureAutoComplete']).not.toHaveBeenCalled();
   });
+
+  interface PrivateFunctionsComponent {
+    handleOnConfirm: (arg: string) => void;
+  }
+
+  it('it should test the onConfirm section of buildAutoCompleteProps', () => {
+    const autoCompleteProps = component['buildAutoCompleteProps']();
+    if (typeof autoCompleteProps.onConfirm === 'function') {
+      const onConfirm = autoCompleteProps.onConfirm;
+
+      spyOn(component as unknown as PrivateFunctionsComponent, 'handleOnConfirm').and.callThrough();
+
+      onConfirm('france');
+
+      expect(component['handleOnConfirm']).toHaveBeenCalledWith('france');
+    } else {
+      fail('onConfirm is not a function or is undefined');
+    }
+  });
 });
