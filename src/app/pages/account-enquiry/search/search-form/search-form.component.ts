@@ -32,6 +32,11 @@ interface FormErrorMessages {
   [key: string]: string | null;
 }
 
+interface ErrorSummaryEntry {
+  fieldId: string;
+  message: string | null;
+}
+
 @Component({
   selector: 'app-search-form',
   standalone: true,
@@ -75,9 +80,7 @@ export class SearchFormComponent implements OnInit {
     },
   };
 
-  public formErrorMessages: FormErrorMessages = {
-    surname: null,
-  };
+  public formErrorMessages!: FormErrorMessages;
 
   private getHighestPriorityError(errorKeys: string[], fieldErrors: FieldError) {
     return errorKeys
@@ -85,15 +88,16 @@ export class SearchFormComponent implements OnInit {
       .sort((a, b) => a['priority'] - b['priority'])[0];
   }
 
-  public getFieldErrorMessages(fieldName: string): string | null {
+  public getFieldErrorMessages(controlPath: string[]): string | null {
     // Get the control
-    const control = this.searchForm.get(fieldName);
+    const control = this.searchForm.get(controlPath);
 
     // If we have errors
     if (control?.errors) {
       /// Get all the error keys
+      const controlKey = controlPath[controlPath.length - 1];
       const errorKeys = Object.keys(control.errors);
-      const fieldErrors = this.fieldErrors[fieldName];
+      const fieldErrors = this.fieldErrors[controlKey];
 
       if (fieldErrors) {
         return this.getHighestPriorityError(errorKeys, fieldErrors).message;
@@ -102,10 +106,31 @@ export class SearchFormComponent implements OnInit {
     return null;
   }
 
-  private buildFieldErrorMessages() {
-    return {
-      surname: this.getFieldErrorMessages('surname'),
-    };
+  private buildFieldErrorMessages(errorSummaryEntry: ErrorSummaryEntry[]) {
+    errorSummaryEntry.forEach((entry) => {
+      this.formErrorMessages[entry.fieldId] = entry.message;
+    });
+  }
+
+  getErrorSummary(form: FormGroup, controlPath: string[] = []): ErrorSummaryEntry[] {
+    // recursively get all errors from all controls in the form including nested form group controls
+    const formControls = form.controls;
+
+    return Object.keys(formControls)
+      .filter((controlName) => formControls[controlName].invalid)
+      .map((controlName) => {
+        const control = formControls[controlName];
+
+        if (control instanceof FormGroup) {
+          return this.getErrorSummary(control, [...controlPath, controlName]);
+        }
+
+        return {
+          fieldId: controlName,
+          message: this.getFieldErrorMessages([...controlPath, controlName]),
+        };
+      })
+      .flat();
   }
 
   /**
@@ -118,9 +143,9 @@ export class SearchFormComponent implements OnInit {
       forename: new FormControl(null),
       initials: new FormControl(null),
       dateOfBirth: new FormGroup({
-        dayOfMonth: new FormControl(null),
-        monthOfYear: new FormControl(null),
-        year: new FormControl(null),
+        dayOfMonth: new FormControl(null, [Validators.required]),
+        monthOfYear: new FormControl(null, [Validators.required]),
+        year: new FormControl(null, [Validators.required]),
       }),
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
@@ -146,9 +171,11 @@ export class SearchFormComponent implements OnInit {
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
-    this.formErrorMessages = this.buildFieldErrorMessages();
+    this.buildFieldErrorMessages(this.getErrorSummary(this.searchForm));
+    console.log(this.formErrorMessages);
+
     if (this.searchForm.valid) {
-      this.formSubmit.emit(this.searchForm.value);
+      // this.formSubmit.emit(this.searchForm.value);
     }
   }
 
