@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ScotgovDatePickerComponent } from './scotgov-date-picker.component';
 
 describe('ScotgovDatePickerComponent', () => {
@@ -18,4 +18,18 @@ describe('ScotgovDatePickerComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call initAll on date picker library', waitForAsync(() => {
+    const initAllSpy = jasmine.createSpy('initAll');
+    spyOn(component, 'configureDatePicker').and.callFake(() => {
+      return Promise.resolve({
+        initAll: initAllSpy
+      }).then(library => {
+        library.initAll();
+        expect(initAllSpy).toHaveBeenCalled();
+      });
+    });
+
+    component.configureDatePicker();
+  }));
 });

@@ -29,4 +29,9 @@ describe('PermissionsService', () => {
     const hasPermissionAccess = service.hasPermissionAccess(54, 99, USER_STATE_MOCK.roles);
     expect(hasPermissionAccess).toBeFalse();
   });
+
+  it('should return true when no roles are provided', () => {
+    const result = service.hasPermissionAccess(1, 1, []);
+    expect(result).toBeTrue();
+  });
 });
