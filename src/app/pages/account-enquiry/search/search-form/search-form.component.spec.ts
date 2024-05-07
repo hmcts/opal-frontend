@@ -3,8 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SearchFormComponent } from './search-form.component';
 import { AUTO_COMPLETE_ITEMS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 import { IFormControlError, IFormErrorSummaryEntry } from '@interfaces';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-fdescribe('SearchFormComponent', () => {
+describe('SearchFormComponent', () => {
   let component: SearchFormComponent;
   let fixture: ComponentFixture<SearchFormComponent>;
 
@@ -133,5 +134,57 @@ fdescribe('SearchFormComponent', () => {
 
     expect(component.formErrorMessages['court']).toBe('Court error');
     expect(component.formErrorMessages['surname']).toBe('Surname error');
+  });
+
+  it('should return an empty array if the form is valid', () => {
+    component.searchForm.patchValue(SEARCH_STATE_MOCK);
+    const result = component['getErrorSummary'](component.searchForm);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should return an array of error summary entries for invalid form controls', () => {
+    const result = component['getErrorSummary'](component.searchForm);
+    expect(result).toEqual([{ fieldId: 'court', message: component['fieldErrors']['court']['required']['message'] }]);
+  });
+
+  it('should return an array of error summary entries for nested form group controls', () => {
+    component['fieldErrors'] = {
+      street: {
+        required: {
+          message: 'Street is required',
+          priority: 1,
+        },
+      },
+      city: {
+        required: {
+          message: 'City is required',
+          priority: 1,
+        },
+      },
+    };
+
+    component.searchForm = new FormGroup({
+      address: new FormGroup({
+        street: new FormControl('', Validators.required),
+        city: new FormControl('', Validators.required),
+      }),
+    });
+
+    fixture.detectChanges();
+
+    const result = component['getErrorSummary'](component.searchForm);
+
+    expect(result).toEqual([
+      { fieldId: 'street', message: 'Street is required' },
+      { fieldId: 'city', message: 'City is required' },
+    ]);
+  });
+
+  it('should set initial form error messages to null for each form control', () => {
+    component['setInitialFormErrorMessages'](component.searchForm);
+
+    expect(component.formErrorMessages['court']).toBeNull();
+    expect(component.formErrorMessages['surname']).toBeNull();
   });
 });
