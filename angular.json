@@ -115,8 +115,7 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["@angular/material/prebuilt-themes/indigo-pink.css", "src/styles.scss"],
             "scripts": [],
-            "karmaConfig": "karma.conf.js",
-            "codeCoverage": true
+            "karmaConfig": "karma.conf.js"
           }
         },
         "server": {
