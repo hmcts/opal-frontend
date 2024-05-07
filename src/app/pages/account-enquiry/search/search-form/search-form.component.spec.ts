@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
 import { AUTO_COMPLETE_ITEMS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
-import { IFormControlError } from '@interfaces';
+import { IFormControlError, IFormErrorSummaryEntry } from '@interfaces';
 
 fdescribe('SearchFormComponent', () => {
   let component: SearchFormComponent;
@@ -112,5 +112,26 @@ fdescribe('SearchFormComponent', () => {
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
     expect(result).toBeUndefined();
+  });
+
+  it('should return the error summary entries', () => {
+    const errorMessage = component['getFieldErrorMessages'](['court']);
+    expect(errorMessage).toBe(component['fieldErrors']['court']['required']['message']);
+  });
+
+  it('should return null as no control error', () => {
+    expect(component['getFieldErrorMessages'](['surname'])).toBeNull();
+  });
+
+  it('should build field error messages', () => {
+    const errorSummaryEntry: IFormErrorSummaryEntry[] = [
+      { fieldId: 'court', message: 'Court error' },
+      { fieldId: 'surname', message: 'Surname error' },
+    ];
+
+    component['buildFieldErrorMessages'](errorSummaryEntry);
+
+    expect(component.formErrorMessages['court']).toBe('Court error');
+    expect(component.formErrorMessages['surname']).toBe('Surname error');
   });
 });

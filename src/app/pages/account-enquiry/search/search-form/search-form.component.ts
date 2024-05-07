@@ -14,7 +14,7 @@ import {
   IFormControlError,
   IFormControlErrors,
   IFormErrorMessages,
-  IFormErrorSummaryInterface,
+  IFormErrorSummaryEntry,
   IGovUkDateInput,
   IGovUkSelectOptions,
 } from '@interfaces';
@@ -47,19 +47,11 @@ export class SearchFormComponent implements OnInit {
   public searchForm!: FormGroup;
 
   // We will move this to a constant field in the future
-  public fieldErrors: IFormControlErrors = {
-    surname: {
+  private fieldErrors: IFormControlErrors = {
+    court: {
       required: {
-        message: 'Enter an email address',
+        message: 'Select a court',
         priority: 1,
-      },
-      email: {
-        message: 'Enter a valid email address',
-        priority: 2,
-      },
-      maxlength: {
-        message: 'Too long',
-        priority: 3,
       },
     },
   };
@@ -90,6 +82,7 @@ export class SearchFormComponent implements OnInit {
 
     // If we have errors
     const controlErrors = control?.errors;
+
     if (controlErrors) {
       /// Get all the error keys
       const controlKey = controlPath[controlPath.length - 1];
@@ -107,7 +100,7 @@ export class SearchFormComponent implements OnInit {
    * Builds field error messages based on the provided error summary entries.
    * @param errorSummaryEntry - An array of error summary entries.
    */
-  private buildFieldErrorMessages(errorSummaryEntry: IFormErrorSummaryInterface[]) {
+  private buildFieldErrorMessages(errorSummaryEntry: IFormErrorSummaryEntry[]) {
     errorSummaryEntry.forEach((entry) => {
       this.formErrorMessages[entry.fieldId] = entry.message;
     });
@@ -121,7 +114,7 @@ export class SearchFormComponent implements OnInit {
    * @param controlPath - The path of the control within the form group (used for nested form groups).
    * @returns An array of ErrorSummaryEntry objects representing the error summary.
    */
-  private getErrorSummary(form: FormGroup, controlPath: string[] = []): IFormErrorSummaryInterface[] {
+  private getErrorSummary(form: FormGroup, controlPath: string[] = []): IFormErrorSummaryEntry[] {
     // recursively get all errors from all controls in the form including nested form group controls
     const formControls = form.controls;
 

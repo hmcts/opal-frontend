@@ -21,7 +21,7 @@ import { IAutoCompleteItem } from './auto-complete-item.interface';
 import { IFormControlError } from './form-control-error.interface';
 import { IFormControlErrors } from './form-control-errors.interface';
 import { IFormErrorMessages } from './form-error-messages.interface';
-import { IFormErrorSummaryInterface } from './form-error-summary-entry.interface';
+import { IFormErrorSummaryEntry } from './form-error-summary-entry.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -51,5 +51,5 @@ export {
   IFormControlError,
   IFormControlErrors,
   IFormErrorMessages,
-  IFormErrorSummaryInterface,
+  IFormErrorSummaryEntry,
 };
