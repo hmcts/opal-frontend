@@ -19,14 +19,12 @@ describe('SearchComponent', () => {
 
   beforeEach(async () => {
     mockCourtService = {
-      searchCourt: jasmine.createSpy('searchCourt').and.returnValue(of(SEARCH_COURT_MOCK))
+      searchCourt: jasmine.createSpy('searchCourt').and.returnValue(of(SEARCH_COURT_MOCK)),
     };
 
     await TestBed.configureTestingModule({
       imports: [SearchComponent, RouterTestingModule, HttpClientTestingModule],
-      providers: [
-        { provide: CourtService, useValue: mockCourtService },
-      ]
+      providers: [{ provide: CourtService, useValue: mockCourtService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);
@@ -69,7 +67,7 @@ describe('SearchComponent', () => {
   });
 
   it('should transform court search results into select options', () => {
-    component.data$.subscribe(result => {
+    component.data$.subscribe((result) => {
       expect(result).toEqual(SEARCH_COURT_SELECT_OPTIONS_MOCK);
       expect(mockCourtService.searchCourt).toHaveBeenCalled();
     });
