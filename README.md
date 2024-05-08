@@ -121,6 +121,9 @@ yarn  prettier:fix
 
 Run `yarn test` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html).
 
+To check code coverage, run `yarn test --code-coverage` to execute the unit tests via [karma](https://karma-runner.github.io/latest/index.html) but with code coverage.
+Code coverage can then be found in the coverage folder of the repository locally.
+
 ## Running end-to-end tests
 
 We are using [cypress](https://www.cypress.io/) for our end to end tests.
