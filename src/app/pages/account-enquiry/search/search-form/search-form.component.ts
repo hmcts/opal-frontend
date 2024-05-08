@@ -191,9 +191,10 @@ export class SearchFormComponent implements OnInit {
   public handleFormSubmit(): void {
     this.buildFieldErrorMessages(this.getErrorSummary(this.searchForm));
 
-    if (this.searchForm.valid) {
-      this.formSubmit.emit(this.searchForm.value);
-    }
+    // Code not required for DISCO+ as we are not using the form validation
+    // if (this.searchForm.valid) {
+    this.formSubmit.emit(this.searchForm.value);
+    // }
   }
 
   public ngOnInit(): void {

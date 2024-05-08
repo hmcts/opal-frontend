@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
-import { AUTO_COMPLETE_ITEMS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
+import { AUTO_COMPLETE_ITEMS_MOCK, FORM_CONTROL_ERROR_MOCK, FORM_ERROR_SUMMARY_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 import { IFormControlError, IFormErrorSummaryEntry } from '@interfaces';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -73,10 +73,7 @@ describe('SearchFormComponent', () => {
   it('should return the highest priority error', () => {
     const component = new SearchFormComponent();
     const errorKeys = ['required', 'minLength'];
-    const fieldErrors: IFormControlError = {
-      required: { priority: 2, message: 'Required error' },
-      minLength: { priority: 1, message: 'Min length error' },
-    };
+    const fieldErrors: IFormControlError = FORM_CONTROL_ERROR_MOCK;
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
@@ -86,10 +83,7 @@ describe('SearchFormComponent', () => {
   it('should return null if errorKeys is empty', () => {
     const component = new SearchFormComponent();
     const errorKeys: string[] = [];
-    const fieldErrors: IFormControlError = {
-      required: { priority: 2, message: 'Required error' },
-      minLength: { priority: 1, message: 'Min length error' },
-    };
+    const fieldErrors: IFormControlError = FORM_CONTROL_ERROR_MOCK;
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
     expect(result).toBeUndefined();
@@ -125,10 +119,7 @@ describe('SearchFormComponent', () => {
   });
 
   it('should build field error messages', () => {
-    const errorSummaryEntry: IFormErrorSummaryEntry[] = [
-      { fieldId: 'court', message: 'Court error' },
-      { fieldId: 'surname', message: 'Surname error' },
-    ];
+    const errorSummaryEntry: IFormErrorSummaryEntry[] = FORM_ERROR_SUMMARY_MOCK;
 
     component['buildFieldErrorMessages'](errorSummaryEntry);
 
