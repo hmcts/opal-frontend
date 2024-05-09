@@ -1,4 +1,4 @@
-<div class="govuk-form-group" [formGroup]="getGroup">
+<div class="govuk-form-group" [formGroup]="getGroup" [class.govuk-form-group--error]="errors !== null">
   <fieldset class="govuk-fieldset" [id]="fieldSetId">
     <legend
       class="govuk-fieldset__legend {{ legendClasses }}"
@@ -6,6 +6,11 @@
     >
       {{ legendText }}
     </legend>
+    @if (errors) {
+      <p id="{{ fieldSetId }}-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> {{ errors }}
+      </p>
+    }
     @if (legendHint) {
       <div [id]="fieldSetId ? fieldSetId + 'Hint' : ''" class="govuk-hint">
         {{ legendHint }}
