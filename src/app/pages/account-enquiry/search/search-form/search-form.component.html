@@ -24,6 +24,7 @@
             inputName="surname"
             inputClasses="govuk-!-width-one-half"
             [control]="searchForm.controls['surname']"
+            [errors]="formErrorMessages['surname']"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Forename"
