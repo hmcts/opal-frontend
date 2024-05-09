@@ -8,6 +8,7 @@ import {
   GovukSelectComponent,
   GovukButtonComponent,
   AlphagovAccessibleAutocompleteComponent,
+  GovukErrorSummaryComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -33,6 +34,7 @@ import { DATE_INPUTS } from '../config/date-inputs';
     GovukSelectComponent,
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
+    GovukErrorSummaryComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,6 +59,7 @@ export class SearchFormComponent implements OnInit {
   };
 
   public formErrorMessages!: IFormErrorMessages;
+  public formErrorSummary!: IFormErrorSummaryEntry[];
 
   /**
    * Returns the highest priority error from the given error keys and field errors.
@@ -101,6 +104,7 @@ export class SearchFormComponent implements OnInit {
    * @param errorSummaryEntry - An array of error summary entries.
    */
   private buildFieldErrorMessages(errorSummaryEntry: IFormErrorSummaryEntry[]) {
+    this.formErrorSummary = errorSummaryEntry;
     errorSummaryEntry.forEach((entry) => {
       this.formErrorMessages[entry.fieldId] = entry.message;
     });
@@ -201,5 +205,12 @@ export class SearchFormComponent implements OnInit {
     this.setupSearchForm();
     this.setInitialFormErrorMessages(this.searchForm);
     this.rePopulateSearchForm();
+  }
+
+  scroll(fieldId: string) {
+    const labelElement = document.querySelector(`label[for=${fieldId}]`) as HTMLInputElement;
+    const fieldElement = document.getElementById(fieldId);
+    labelElement?.scrollIntoView({ behavior: 'smooth' });
+    fieldElement?.focus();
   }
 }

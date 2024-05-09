@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IFormErrorSummaryEntry } from '@interfaces';
 
 @Component({
   selector: 'app-govuk-error-summary',
@@ -7,7 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './govuk-error-summary.component.html',
 })
 export class GovukErrorSummaryComponent {
-  @Input() errors: { fieldId: string; message: string }[] = [];
+  @Input() errors: IFormErrorSummaryEntry[] = [];
   @Output() errorClick = new EventEmitter<string>();
 
   /**
