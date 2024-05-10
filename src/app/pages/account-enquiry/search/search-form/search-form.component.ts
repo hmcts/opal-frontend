@@ -255,7 +255,13 @@ export class SearchFormComponent implements OnInit {
       }
     });
 
-    newErr.push(...lowestPriorityItems);
+    if (lowestPriorityItems.length > 1) {
+      lowestPriorityItems.forEach((item) => {
+        newErr.push({ ...item, message: 'Please enter a DOB' });
+      });
+    } else {
+      newErr.push(...lowestPriorityItems);
+    }
 
     // console.log(newErr);
     return newErr;
