@@ -19,6 +19,7 @@ import {
   IGovUkSelectOptions,
 } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
+import c from 'config';
 
 @Component({
   selector: 'app-search-form',
@@ -54,6 +55,28 @@ export class SearchFormComponent implements OnInit {
         priority: 1,
       },
     },
+    dayOfMonth: {
+      required: {
+        message: 'The date your passport was issued must include a day',
+        priority: 1,
+      },
+      maxlength: {
+        message: 'The day must be 2 characters or fewer',
+        priority: 2,
+      },
+    },
+    monthOfYear: {
+      required: {
+        message: 'The date your passport was issued must include a month',
+        priority: 1,
+      },
+    },
+    year: {
+      required: {
+        message: 'The date your passport was issued must include a year',
+        priority: 1,
+      },
+    },
   };
 
   public formErrorMessages!: IFormErrorMessages;
@@ -76,7 +99,7 @@ export class SearchFormComponent implements OnInit {
    * @param controlPath - The path to the form control.
    * @returns The error message for the control, or null if there are no errors.
    */
-  private getFieldErrorMessages(controlPath: string[]): string | null {
+  private getFieldErrorMessages(controlPath: string[]) {
     // Get the control
     const control = this.searchForm.get(controlPath);
 
@@ -90,7 +113,7 @@ export class SearchFormComponent implements OnInit {
       const fieldErrors = this.fieldErrors[controlKey];
 
       if (errorKeys && fieldErrors) {
-        return this.getHighestPriorityError(errorKeys, fieldErrors)?.message;
+        return this.getHighestPriorityError(errorKeys, fieldErrors);
       }
     }
     return null;
@@ -101,6 +124,7 @@ export class SearchFormComponent implements OnInit {
    * @param errorSummaryEntry - An array of error summary entries.
    */
   private buildFieldErrorMessages(errorSummaryEntry: IFormErrorSummaryEntry[]) {
+    this.formErrorMessages = {};
     errorSummaryEntry.forEach((entry) => {
       this.formErrorMessages[entry.fieldId] = entry.message;
     });
@@ -114,7 +138,7 @@ export class SearchFormComponent implements OnInit {
    * @param controlPath - The path of the control within the form group (used for nested form groups).
    * @returns An array of ErrorSummaryEntry objects representing the error summary.
    */
-  private getErrorSummary(form: FormGroup, controlPath: string[] = []): IFormErrorSummaryEntry[] {
+  private getErrorSummary(form: FormGroup, controlPath: string[] = []): any[] {
     // recursively get all errors from all controls in the form including nested form group controls
     const formControls = form.controls;
 
@@ -129,7 +153,7 @@ export class SearchFormComponent implements OnInit {
 
         return {
           fieldId: controlName,
-          message: this.getFieldErrorMessages([...controlPath, controlName]),
+          ...this.getFieldErrorMessages([...controlPath, controlName]),
         };
       })
       .flat();
@@ -161,9 +185,9 @@ export class SearchFormComponent implements OnInit {
       forename: new FormControl(null),
       initials: new FormControl(null),
       dateOfBirth: new FormGroup({
-        dayOfMonth: new FormControl(null),
-        monthOfYear: new FormControl(null),
-        year: new FormControl(null),
+        dayOfMonth: new FormControl(null, [Validators.required, Validators.maxLength(2)]),
+        monthOfYear: new FormControl(null, [Validators.required]),
+        year: new FormControl(null, [Validators.required]),
       }),
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
@@ -185,15 +209,73 @@ export class SearchFormComponent implements OnInit {
     this.searchForm.reset();
   }
 
+  private getDateInputErrors(errorSummary: any) {
+    // console.log(errorSummary);
+
+    const array: any[] = [];
+    const newErr: any[] = [];
+    errorSummary.forEach((error: any, index: number) => {
+      switch (error.fieldId) {
+        case 'dayOfMonth':
+          array.push(error);
+
+          break;
+        case 'monthOfYear':
+          array.push(error);
+
+          break;
+        case 'year':
+          array.push(error);
+
+          break;
+      }
+    });
+
+    // Find the lowest priority
+    let lowestPriority = Math.min(...array.map((item) => item.priority));
+
+    // Filter the array to only include items with the lowest priority
+    let lowestPriorityItems = array.filter((item) => item.priority === lowestPriority);
+
+    // Now lowestPriorityItems contains only the items with the lowest priority
+
+    // console.log(lowestPriorityItems);
+
+    errorSummary.forEach((error: any, index: number) => {
+      switch (error.fieldId) {
+        case 'dayOfMonth':
+          break;
+        case 'monthOfYear':
+          break;
+        case 'year':
+          break;
+        default:
+          newErr.push(error);
+          break;
+      }
+    });
+
+    newErr.push(...lowestPriorityItems);
+
+    // console.log(newErr);
+    return newErr;
+  }
+
   /**
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
-    this.buildFieldErrorMessages(this.getErrorSummary(this.searchForm));
+    let errorSummary = this.getErrorSummary(this.searchForm);
+    errorSummary = this.getDateInputErrors(errorSummary);
+
+    console.log(errorSummary);
+    this.buildFieldErrorMessages(errorSummary);
+
+    console.log(this.formErrorMessages);
 
     // Code not required for DISCO+ as we are not using the form validation
     // if (this.searchForm.valid) {
-    this.formSubmit.emit(this.searchForm.value);
+    // this.formSubmit.emit(this.searchForm.value);
     // }
   }
 

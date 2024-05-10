@@ -24,7 +24,6 @@
             inputName="surname"
             inputClasses="govuk-!-width-one-half"
             [control]="searchForm.controls['surname']"
-            [errors]="formErrorMessages['surname']"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Forename"
@@ -46,6 +45,9 @@
             fieldSetId="dateOfBirth"
             legendText="Date of Birth"
             legendHint="For example, 04 06 1991"
+            [errorDay]="formErrorMessages['dayOfMonth']"
+            [errorMonth]="formErrorMessages['monthOfYear']"
+            [errorYear]="formErrorMessages['year']"
           ></app-govuk-date-input>
           <app-govuk-text-input
             labelText="Address Line One"

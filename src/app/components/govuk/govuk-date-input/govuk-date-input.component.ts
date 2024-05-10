@@ -19,6 +19,10 @@ export class GovukDateInputComponent {
   @Input({ required: false }) legendHint!: string;
   @Input({ required: false }) legendClasses!: string;
 
+  @Input({ required: false }) errorDay: string | null = null;
+  @Input({ required: false }) errorMonth: string | null = null;
+  @Input({ required: false }) errorYear: string | null = null;
+
   @Input({ required: true }) dateInputs!: IGovUkDateInput;
   @Input({ required: true }) set group(abstractControl: AbstractControl | null) {
     this._group = abstractControl as FormGroup;
@@ -26,5 +30,13 @@ export class GovukDateInputComponent {
 
   get getGroup() {
     return this._group;
+  }
+
+  public hasError(): boolean {
+    return (
+      (this.errorDay !== null && this.errorDay !== undefined) ||
+      (this.errorMonth !== null && this.errorMonth !== undefined) ||
+      (this.errorYear !== null && this.errorYear !== undefined)
+    );
   }
 }
