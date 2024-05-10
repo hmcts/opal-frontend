@@ -19,7 +19,12 @@ import {
   IGovUkSelectOptions,
 } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
-import c from 'config';
+
+interface IHighPriorityError {
+  message: string;
+  priority: number;
+  type: string;
+}
 
 @Component({
   selector: 'app-search-form',
@@ -82,15 +87,22 @@ export class SearchFormComponent implements OnInit {
   public formErrorMessages!: IFormErrorMessages;
 
   /**
-   * Returns the highest priority error from the given error keys and field errors.
-   * @param errorKeys - An array of error keys.
-   * @param fieldErrors - An object containing field errors.
-   * @returns The highest priority error from the field errors.
+   * Returns the highest priority error from the given list of error keys and field errors.
+   * @param errorKeys - The list of error keys.
+   * @param fieldErrors - The field errors object.
+   * @returns The highest priority error.
    */
-  private getHighestPriorityError(errorKeys: string[], fieldErrors: IFormControlError) {
-    return errorKeys
-      .map((errorType: string) => fieldErrors[errorType])
-      .sort((a, b) => a['priority'] - b['priority'])[0];
+  private getHighestPriorityError(errorKeys: string[], fieldErrors: IFormControlError): IHighPriorityError {
+    // Loop over the error keys and return the error with the highest priority
+    // Also add the error type to the object
+    const errors = errorKeys.map((errorType: string) => {
+      return {
+        ...fieldErrors[errorType],
+        type: errorType,
+      };
+    });
+
+    return errors.sort((a, b) => a['priority'] - b['priority'])[0];
   }
 
   /**
@@ -99,7 +111,7 @@ export class SearchFormComponent implements OnInit {
    * @param controlPath - The path to the form control.
    * @returns The error message for the control, or null if there are no errors.
    */
-  private getFieldErrorMessages(controlPath: string[]) {
+  private getFieldErrorDetails(controlPath: string[]): IHighPriorityError | null {
     // Get the control
     const control = this.searchForm.get(controlPath);
 
@@ -124,7 +136,10 @@ export class SearchFormComponent implements OnInit {
    * @param errorSummaryEntry - An array of error summary entries.
    */
   private buildFieldErrorMessages(errorSummaryEntry: IFormErrorSummaryEntry[]) {
+    // Reset the form error messages
     this.formErrorMessages = {};
+
+    // Set the form error messages based on the error summary entries
     errorSummaryEntry.forEach((entry) => {
       this.formErrorMessages[entry.fieldId] = entry.message;
     });
@@ -138,11 +153,13 @@ export class SearchFormComponent implements OnInit {
    * @param controlPath - The path of the control within the form group (used for nested form groups).
    * @returns An array of ErrorSummaryEntry objects representing the error summary.
    */
-  private getErrorSummary(form: FormGroup, controlPath: string[] = []): any[] {
+
+  // Potentially refactor to handle null getErrorDetails response
+  private getErrorSummary(form: FormGroup, controlPath: string[] = []): IFormErrorSummaryEntry[] {
     // recursively get all errors from all controls in the form including nested form group controls
     const formControls = form.controls;
 
-    return Object.keys(formControls)
+    const errorSummary = Object.keys(formControls)
       .filter((controlName) => formControls[controlName].invalid)
       .map((controlName) => {
         const control = formControls[controlName];
@@ -151,12 +168,21 @@ export class SearchFormComponent implements OnInit {
           return this.getErrorSummary(control, [...controlPath, controlName]);
         }
 
+        const getFieldErrorDetails = this.getFieldErrorDetails([...controlPath, controlName]);
+
+        // Return the error summary entry
+        // If we don't have the error details, return a null message
         return {
           fieldId: controlName,
-          ...this.getFieldErrorMessages([...controlPath, controlName]),
+          message: getFieldErrorDetails?.message || null,
+          priority: getFieldErrorDetails?.priority || 999999999,
+          type: getFieldErrorDetails?.type || null,
         };
       })
       .flat();
+
+    // Remove any null errors
+    return errorSummary.filter((item) => item.message !== null);
   }
 
   /**
@@ -209,62 +235,56 @@ export class SearchFormComponent implements OnInit {
     this.searchForm.reset();
   }
 
-  private getDateInputErrors(errorSummary: any) {
-    // console.log(errorSummary);
+  private splitErrorSummaryArrays(
+    fieldIds: string[],
+    errorSummary: IFormErrorSummaryEntry[],
+  ): IFormErrorSummaryEntry[][] {
+    const cleanErrorSummaries: IFormErrorSummaryEntry[] = [];
+    const removedErrorSummaries: IFormErrorSummaryEntry[] = [];
 
-    const array: any[] = [];
-    const newErr: any[] = [];
-    errorSummary.forEach((error: any, index: number) => {
-      switch (error.fieldId) {
-        case 'dayOfMonth':
-          array.push(error);
-
-          break;
-        case 'monthOfYear':
-          array.push(error);
-
-          break;
-        case 'year':
-          array.push(error);
-
-          break;
+    errorSummary.forEach((error) => {
+      if (fieldIds.includes(error.fieldId)) {
+        removedErrorSummaries.push(error);
+      } else {
+        cleanErrorSummaries.push(error);
       }
     });
 
-    // Find the lowest priority
-    let lowestPriority = Math.min(...array.map((item) => item.priority));
+    return [cleanErrorSummaries, removedErrorSummaries];
+  }
 
-    // Filter the array to only include items with the lowest priority
-    let lowestPriorityItems = array.filter((item) => item.priority === lowestPriority);
+  private getHighPriorityErrorSummaries(errorSummary: IFormErrorSummaryEntry[]): IFormErrorSummaryEntry[] {
+    // Get the lowest priority (1 is the highest priority, 3 is the lowest priority)
+    const lowestPriority = Math.min(...errorSummary.map((item) => item.priority));
+    return errorSummary.filter((item) => item.priority === lowestPriority);
+  }
 
-    // Now lowestPriorityItems contains only the items with the lowest priority
+  private handleDateInputErrors(errorSummary: IFormErrorSummaryEntry[]) {
+    const fields = ['dayOfMonth', 'monthOfYear', 'year'];
+    // Remove the date fields from the error details array
+    const splitErrorSummaries = this.splitErrorSummaryArrays(fields, errorSummary);
+    const cleanedErrorSummaries: IFormErrorSummaryEntry[] = splitErrorSummaries[0];
+    const fieldErrorSummaries: IFormErrorSummaryEntry[] = splitErrorSummaries[1];
 
-    // console.log(lowestPriorityItems);
+    // Get the highest priority error summaries
+    const highestPriorityItems = this.getHighPriorityErrorSummaries(fieldErrorSummaries);
 
-    errorSummary.forEach((error: any, index: number) => {
-      switch (error.fieldId) {
-        case 'dayOfMonth':
-          break;
-        case 'monthOfYear':
-          break;
-        case 'year':
-          break;
-        default:
-          newErr.push(error);
-          break;
-      }
-    });
-
-    if (lowestPriorityItems.length > 1) {
-      lowestPriorityItems.forEach((item) => {
-        newErr.push({ ...item, message: 'Please enter a DOB' });
+    // If we have more than one error, we need to override the message
+    // for the required field
+    if (highestPriorityItems.length > 1) {
+      highestPriorityItems.forEach((item) => {
+        // Check if we want to override the message
+        if (item.type === 'required') {
+          cleanedErrorSummaries.push({ ...item, message: 'Please enter a DOB' });
+        } else {
+          cleanedErrorSummaries.push(item);
+        }
       });
     } else {
-      newErr.push(...lowestPriorityItems);
+      cleanedErrorSummaries.push(...highestPriorityItems);
     }
 
-    // console.log(newErr);
-    return newErr;
+    return cleanedErrorSummaries;
   }
 
   /**
@@ -272,7 +292,7 @@ export class SearchFormComponent implements OnInit {
    */
   public handleFormSubmit(): void {
     let errorSummary = this.getErrorSummary(this.searchForm);
-    errorSummary = this.getDateInputErrors(errorSummary);
+    errorSummary = this.handleDateInputErrors(errorSummary);
 
     console.log(errorSummary);
     this.buildFieldErrorMessages(errorSummary);
