@@ -5,7 +5,7 @@ import { AUTO_COMPLETE_ITEMS_MOCK, FORM_CONTROL_ERROR_MOCK, FORM_ERROR_SUMMARY_M
 import { IFieldError, IFormError } from '@interfaces';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-fdescribe('SearchFormComponent', () => {
+describe('SearchFormComponent', () => {
   let component: SearchFormComponent;
   let fixture: ComponentFixture<SearchFormComponent>;
 
