@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
 import { AUTO_COMPLETE_ITEMS_MOCK, FORM_CONTROL_ERROR_MOCK, FORM_ERROR_SUMMARY_MOCK, SEARCH_STATE_MOCK } from '@mocks';
-import { IFormControlError, IFormErrorSummaryEntry } from '@interfaces';
+import { IFieldError, IFormError } from '@interfaces';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-describe('SearchFormComponent', () => {
+fdescribe('SearchFormComponent', () => {
   let component: SearchFormComponent;
   let fixture: ComponentFixture<SearchFormComponent>;
 
@@ -63,81 +63,106 @@ describe('SearchFormComponent', () => {
     spyOn<any>(component, 'setupSearchForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateSearchForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setInitialErrorMessages');
 
     component.ngOnInit();
 
     expect(component['setupSearchForm']).toHaveBeenCalled();
+    expect(component['setInitialErrorMessages']).toHaveBeenCalledWith(component.searchForm);
     expect(component['rePopulateSearchForm']).toHaveBeenCalled();
   });
 
   it('should return the highest priority error', () => {
     const component = new SearchFormComponent();
     const errorKeys = ['required', 'minLength'];
-    const fieldErrors: IFormControlError = FORM_CONTROL_ERROR_MOCK;
+    const fieldErrors: IFieldError = FORM_CONTROL_ERROR_MOCK;
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
-    expect(result).toEqual(fieldErrors['minLength']);
+    expect(result).toEqual({ ...fieldErrors['minLength'], type: 'minLength' });
   });
 
   it('should return null if errorKeys is empty', () => {
     const component = new SearchFormComponent();
     const errorKeys: string[] = [];
-    const fieldErrors: IFormControlError = FORM_CONTROL_ERROR_MOCK;
+    const fieldErrors: IFieldError = FORM_CONTROL_ERROR_MOCK;
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
-    expect(result).toBeUndefined();
+    expect(result).toBe(null);
   });
 
   it('should return null if fieldErrors is empty', () => {
     const component = new SearchFormComponent();
     const errorKeys = ['required', 'minLength'];
-    const fieldErrors: IFormControlError = {};
+    const fieldErrors: IFieldError = {};
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
-    expect(result).toBeUndefined();
+    expect(result).toBe(null);
   });
 
   it('should return null if errorKeys and fieldErrors are empty', () => {
     const component = new SearchFormComponent();
     const errorKeys: string[] = [];
-    const fieldErrors: IFormControlError = {};
+    const fieldErrors: IFieldError = {};
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
-    expect(result).toBeUndefined();
+    expect(result).toBe(null);
   });
 
   it('should return the error summary entries', () => {
-    const errorMessage = component['getFieldErrorMessages'](['court']);
-    expect(errorMessage).toBe(component['fieldErrors']['court']['required']['message']);
+    const errorMessage = component['getFieldErrorDetails'](['court']);
+    const expectedResp = { message: 'Select a court', priority: 1, type: 'required' };
+
+    expect(errorMessage).toEqual(expectedResp);
   });
 
   it('should return null as no control error', () => {
-    expect(component['getFieldErrorMessages'](['surname'])).toBeNull();
+    expect(component['getFieldErrorDetails'](['surname'])).toBeNull();
   });
 
-  it('should build field error messages', () => {
-    const errorSummaryEntry: IFormErrorSummaryEntry[] = FORM_ERROR_SUMMARY_MOCK;
+  it('should set the error messages', () => {
+    const errorSummaryEntry: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
 
-    component['buildFieldErrorMessages'](errorSummaryEntry);
+    component['setErrorMessages'](errorSummaryEntry);
 
-    expect(component.formErrorMessages['court']).toBe('Court error');
-    expect(component.formErrorMessages['surname']).toBe('Surname error');
-    expect(component.formErrorSummary.length).toBe(2);
+    expect(component.formControlErrorMessages['court']).toBe('Select a court');
+    expect(component.formControlErrorMessages['dayOfMonth']).toBe(
+      'The date your passport was issued must include a day',
+    );
+    expect(component.formErrorSummaryMessage).toEqual([
+      {
+        fieldId: 'court',
+        message: 'Select a court',
+      },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+      },
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+      },
+      {
+        fieldId: 'year',
+        message: 'The date your passport was issued must include a year',
+      },
+    ]);
   });
 
   it('should return an empty array if the form is valid', () => {
     component.searchForm.patchValue(SEARCH_STATE_MOCK);
-    const result = component['getErrorSummary'](component.searchForm);
+    const result = component['getFormErrors'](component.searchForm);
 
     expect(result).toEqual([]);
   });
 
   it('should return an array of error summary entries for invalid form controls', () => {
-    const result = component['getErrorSummary'](component.searchForm);
-    expect(result).toEqual([{ fieldId: 'court', message: component['fieldErrors']['court']['required']['message'] }]);
+    const result = component['getFormErrors'](component.searchForm);
+    console.log(result);
+    expect(result).toEqual(FORM_ERROR_SUMMARY_MOCK);
   });
 
   it('should return an array of error summary entries for nested form group controls', () => {
@@ -165,19 +190,22 @@ describe('SearchFormComponent', () => {
 
     fixture.detectChanges();
 
-    const result = component['getErrorSummary'](component.searchForm);
+    const result = component['getFormErrors'](component.searchForm);
 
     expect(result).toEqual([
-      { fieldId: 'street', message: 'Street is required' },
-      { fieldId: 'city', message: 'City is required' },
+      { fieldId: 'street', message: 'Street is required', type: 'required', priority: 1 },
+      { fieldId: 'city', message: 'City is required', type: 'required', priority: 1 },
     ]);
   });
 
   it('should set initial form error messages to null for each form control', () => {
-    component['setInitialFormErrorMessages'](component.searchForm);
+    component['setInitialErrorMessages'](component.searchForm);
 
-    expect(component.formErrorMessages['court']).toBeNull();
-    expect(component.formErrorMessages['surname']).toBeNull();
+    console.log(component['formControlErrorMessages']);
+
+    expect(component.formControlErrorMessages['court']).toBeNull();
+    expect(component.formControlErrorMessages['surname']).toBeNull();
+    expect(component.formErrorSummaryMessage.length).toBe(0);
   });
 
   it('should test scroll', () => {

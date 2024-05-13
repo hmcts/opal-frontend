@@ -1,4 +1,4 @@
-export interface IFormErrorSummaryEntry {
+export interface IFormError {
   fieldId: string;
   message: string | null;
   priority: number;
