@@ -84,7 +84,8 @@ export class SearchFormComponent implements OnInit {
     },
   };
 
-  public formErrorMessages!: IFormErrorMessages;
+  public formControlErrorMessages!: IFormErrorMessages;
+  public formErrorSummaryMessage!: IFormErrorMessages;
 
   /**
    * Returns the highest priority error from the given list of error keys and field errors.
@@ -135,13 +136,15 @@ export class SearchFormComponent implements OnInit {
    * Builds field error messages based on the provided error summary entries.
    * @param errorSummaryEntry - An array of error summary entries.
    */
-  private buildFieldErrorMessages(errorSummaryEntry: IFormErrorSummaryEntry[]) {
+  private setErrorMessages(errorSummaryEntry: IFormErrorSummaryEntry[]) {
     // Reset the form error messages
-    this.formErrorMessages = {};
+    this.formControlErrorMessages = {};
+    this.formErrorSummaryMessage = {};
 
     // Set the form error messages based on the error summary entries
     errorSummaryEntry.forEach((entry) => {
-      this.formErrorMessages[entry.fieldId] = entry.message;
+      this.formControlErrorMessages[entry.fieldId] = entry.message;
+      this.formErrorSummaryMessage[entry.fieldId] = entry.message;
     });
   }
 
@@ -190,15 +193,18 @@ export class SearchFormComponent implements OnInit {
    *
    * @param form - The form group.
    */
-  private setInitialFormErrorMessages(form: FormGroup): void {
+  private setInitialErrorMessages(form: FormGroup): void {
     const formControls = form.controls;
-    const initialFormErrorMessages: IFormErrorMessages = {};
+    const initialFormControlErrorMessages: IFormErrorMessages = {};
+    const initialFormErrorSummaryMessage: IFormErrorMessages = {};
 
     Object.keys(formControls).map((controlName) => {
-      initialFormErrorMessages[controlName] = null;
+      initialFormControlErrorMessages[controlName] = null;
+      initialFormErrorSummaryMessage[controlName] = null;
     });
 
-    this.formErrorMessages = initialFormErrorMessages;
+    this.formControlErrorMessages = initialFormControlErrorMessages;
+    this.formErrorSummaryMessage = initialFormErrorSummaryMessage;
   }
 
   /**
@@ -259,32 +265,43 @@ export class SearchFormComponent implements OnInit {
     return errorSummary.filter((item) => item.priority === lowestPriority);
   }
 
-  private handleDateInputErrors(errorSummary: IFormErrorSummaryEntry[]) {
-    const fields = ['dayOfMonth', 'monthOfYear', 'year'];
-    // Remove the date fields from the error details array
-    const splitErrorSummaries = this.splitErrorSummaryArrays(fields, errorSummary);
-    const cleanedErrorSummaries: IFormErrorSummaryEntry[] = splitErrorSummaries[0];
-    const fieldErrorSummaries: IFormErrorSummaryEntry[] = splitErrorSummaries[1];
-
-    // Get the highest priority error summaries
-    const highestPriorityItems = this.getHighPriorityErrorSummaries(fieldErrorSummaries);
-
-    // If we have more than one error, we need to override the message
-    // for the required field
-    if (highestPriorityItems.length > 1) {
-      highestPriorityItems.forEach((item) => {
-        // Check if we want to override the message
-        if (item.type === 'required') {
-          cleanedErrorSummaries.push({ ...item, message: 'Please enter a DOB' });
-        } else {
-          cleanedErrorSummaries.push(item);
+  private manipulateErrorMessage(
+    fields: string[],
+    messageOverride: string,
+    errorType: string,
+    errorSummary: IFormErrorSummaryEntry[],
+  ) {
+    const manipulatedFields: IFormErrorSummaryEntry[] = [];
+    errorSummary.forEach((field) => {
+      if (fields.includes(field.fieldId)) {
+        if (field.type === errorType) {
+          manipulatedFields.push({ ...field, message: messageOverride });
         }
-      });
-    } else {
-      cleanedErrorSummaries.push(...highestPriorityItems);
+      } else {
+        manipulatedFields.push(field);
+      }
+    });
+
+    return manipulatedFields;
+  }
+
+  private handleDateInputFormErrors(errorSummary: IFormErrorSummaryEntry[]) {
+    const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
+    const splitErrorSummaries = this.splitErrorSummaryArrays(dateInputFields, errorSummary);
+    const highPriorityDateControlErrors = this.getHighPriorityErrorSummaries(splitErrorSummaries[1]);
+    let manipulatedErrorSummary: IFormErrorSummaryEntry[] = highPriorityDateControlErrors;
+
+    // If we have more than one error then we want to manipulate the error message
+    if (highPriorityDateControlErrors.length > 1) {
+      manipulatedErrorSummary = this.manipulateErrorMessage(
+        dateInputFields,
+        'Please enter a DOB',
+        'required',
+        manipulatedErrorSummary,
+      );
     }
 
-    return cleanedErrorSummaries;
+    return [...splitErrorSummaries[0], ...manipulatedErrorSummary];
   }
 
   /**
@@ -292,22 +309,14 @@ export class SearchFormComponent implements OnInit {
    */
   public handleFormSubmit(): void {
     let errorSummary = this.getErrorSummary(this.searchForm);
-    errorSummary = this.handleDateInputErrors(errorSummary);
+    errorSummary = this.handleDateInputFormErrors(errorSummary);
 
-    console.log(errorSummary);
-    this.buildFieldErrorMessages(errorSummary);
-
-    console.log(this.formErrorMessages);
-
-    // Code not required for DISCO+ as we are not using the form validation
-    // if (this.searchForm.valid) {
-    // this.formSubmit.emit(this.searchForm.value);
-    // }
+    this.setErrorMessages(errorSummary);
   }
 
   public ngOnInit(): void {
     this.setupSearchForm();
-    this.setInitialFormErrorMessages(this.searchForm);
+    this.setInitialErrorMessages(this.searchForm);
     this.rePopulateSearchForm();
   }
 }

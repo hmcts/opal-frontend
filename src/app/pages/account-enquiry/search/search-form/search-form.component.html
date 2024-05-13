@@ -45,9 +45,9 @@
             fieldSetId="dateOfBirth"
             legendText="Date of Birth"
             legendHint="For example, 04 06 1991"
-            [errorDay]="formErrorMessages['dayOfMonth']"
-            [errorMonth]="formErrorMessages['monthOfYear']"
-            [errorYear]="formErrorMessages['year']"
+            [errorDay]="formControlErrorMessages['dayOfMonth']"
+            [errorMonth]="formControlErrorMessages['monthOfYear']"
+            [errorYear]="formControlErrorMessages['year']"
           ></app-govuk-date-input>
           <app-govuk-text-input
             labelText="Address Line One"
