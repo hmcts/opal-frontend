@@ -22,7 +22,7 @@ import {
   IHighPriorityFormError,
 } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
-import { beforeDateValidator } from 'src/app/validators/before-date.validator';
+import { overEighteenValidator } from 'src/app/validators/over-eighteen.validator';
 
 @Component({
   selector: 'app-search-form',
@@ -68,7 +68,7 @@ export class SearchFormComponent implements OnInit {
         message: 'The day must be 2 characters or fewer',
         priority: 2,
       },
-      beforeDate: {
+      underEighteen: {
         message: 'You need to be older than 18 years old',
         priority: 3,
       },
@@ -78,7 +78,7 @@ export class SearchFormComponent implements OnInit {
         message: 'The date your passport was issued must include a month',
         priority: 1,
       },
-      beforeDate: {
+      underEighteen: {
         message: 'You need to be older than 18 years old',
         priority: 3,
       },
@@ -88,7 +88,7 @@ export class SearchFormComponent implements OnInit {
         message: 'The date your passport was issued must include a year',
         priority: 1,
       },
-      beforeDate: {
+      underEighteen: {
         message: 'You need to be older than 18 years old',
         priority: 3,
       },
@@ -113,7 +113,9 @@ export class SearchFormComponent implements OnInit {
         };
       });
 
-      return errors.sort((a, b) => a['priority'] - b['priority'])[0];
+      const sortedErrors = [...errors].sort((a, b) => a.priority - b.priority);
+
+      return sortedErrors[0];
     }
     return null;
   }
@@ -169,9 +171,9 @@ export class SearchFormComponent implements OnInit {
         // If we don't have the error details, return a null message
         return {
           fieldId: controlName,
-          message: getFieldErrorDetails?.message || null,
-          priority: getFieldErrorDetails?.priority || 999999999,
-          type: getFieldErrorDetails?.type || null,
+          message: getFieldErrorDetails?.message ?? null,
+          priority: getFieldErrorDetails?.priority ?? 999999999,
+          type: getFieldErrorDetails?.type ?? null,
         };
       })
       .flat();
@@ -314,7 +316,7 @@ export class SearchFormComponent implements OnInit {
           monthOfYear: new FormControl(null, [Validators.required]),
           year: new FormControl(null, [Validators.required]),
         },
-        { validators: beforeDateValidator('dayOfMonth', 'monthOfYear', 'year', '13/05/2006') },
+        { validators: overEighteenValidator('dayOfMonth', 'monthOfYear', 'year') },
       ),
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
@@ -327,6 +329,22 @@ export class SearchFormComponent implements OnInit {
    */
   private rePopulateSearchForm(): void {
     this.searchForm.patchValue(this.state);
+  }
+
+  /**
+   * Scrolls to the label of the component and focuses on the field id
+   *
+   * @param fieldId - Field id of the component
+   */
+  private scroll(fieldId: string): void {
+    const fieldElement = document.getElementById(fieldId);
+    if (fieldElement) {
+      const labelElement = document.querySelector(`label[for=${fieldId}]`) as HTMLInputElement;
+      if (labelElement) {
+        labelElement.scrollIntoView({ behavior: 'smooth' });
+      }
+      fieldElement.focus();
+    }
   }
 
   /**
@@ -348,16 +366,18 @@ export class SearchFormComponent implements OnInit {
     this.formSubmit.emit(this.searchForm.value);
   }
 
+  /**
+   * Handles the scroll of the component error from the summary
+   *
+   * @param fieldId - Field id of the component
+   */
+  public scrollTo(fieldId: string): void {
+    this.scroll(fieldId);
+  }
+
   public ngOnInit(): void {
     this.setupSearchForm();
     this.setInitialErrorMessages(this.searchForm);
     this.rePopulateSearchForm();
-  }
-
-  scroll(fieldId: string) {
-    const labelElement = document.querySelector(`label[for=${fieldId}]`) as HTMLInputElement;
-    const fieldElement = document.getElementById(fieldId);
-    labelElement?.scrollIntoView({ behavior: 'smooth' });
-    fieldElement?.focus();
   }
 }

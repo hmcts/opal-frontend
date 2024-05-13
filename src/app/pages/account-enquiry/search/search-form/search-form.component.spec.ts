@@ -161,7 +161,6 @@ describe('SearchFormComponent', () => {
 
   it('should return an array of error summary entries for invalid form controls', () => {
     const result = component['getFormErrors'](component.searchForm);
-    console.log(result);
     expect(result).toEqual(FORM_ERROR_SUMMARY_MOCK);
   });
 
@@ -206,14 +205,38 @@ describe('SearchFormComponent', () => {
     expect(component.formErrorSummaryMessage.length).toBe(0);
   });
 
+  it('should test scrollTo', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'scroll');
+
+    component.scrollTo('court');
+
+    expect(component['scroll']).toHaveBeenCalled();
+  });
+
   it('should test scroll', () => {
     // TODO: add tests/expects for the error label so scroll is being tested
-    const fieldElement = document.getElementById('court') as HTMLElement;
+    const fieldElement = document.getElementById('niNumber') as HTMLElement;
+    const labelElement = document.querySelector('label[for=niNumber]') as HTMLInputElement;
     spyOn(fieldElement, 'focus');
+    spyOn(labelElement, 'scrollIntoView');
 
-    component.scroll('court');
+    component['scroll']('niNumber');
 
     expect(fieldElement.focus).toHaveBeenCalled();
+    expect(labelElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+  });
+
+  it('should test scroll when fieldElement is undefined', () => {
+    const fieldElement = document.getElementById('niNumber') as HTMLElement;
+    const labelElement = document.querySelector('label[for=niNumber]') as HTMLInputElement;
+    spyOn(fieldElement, 'focus');
+    spyOn(labelElement, 'scrollIntoView');
+
+    component['scroll']('test');
+
+    expect(fieldElement.focus).not.toHaveBeenCalled();
+    expect(labelElement.scrollIntoView).not.toHaveBeenCalledWith({ behavior: 'smooth' });
   });
 
   it('should split form errors into clean and removed form errors', () => {
