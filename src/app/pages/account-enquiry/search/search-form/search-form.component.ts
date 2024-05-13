@@ -100,7 +100,7 @@ export class SearchFormComponent implements OnInit {
   };
 
   public formControlErrorMessages!: IFormErrorMessages;
-  public formErrorSummaryMessage!: IFormErrorMessages;
+  public formErrorSummaryMessage!: any[];
 
   /**
    * Returns the highest priority error from the given list of error keys and field errors.
@@ -154,12 +154,12 @@ export class SearchFormComponent implements OnInit {
   private setErrorMessages(errorSummaryEntry: IFormErrorSummaryEntry[]) {
     // Reset the form error messages
     this.formControlErrorMessages = {};
-    this.formErrorSummaryMessage = {};
+    this.formErrorSummaryMessage = [];
 
     // Set the form error messages based on the error summary entries
     errorSummaryEntry.forEach((entry) => {
       this.formControlErrorMessages[entry.fieldId] = entry.message;
-      this.formErrorSummaryMessage[entry.fieldId] = entry.message;
+      this.formErrorSummaryMessage.push({'fieldId': entry.fieldId, 'message': entry.message});
     });
   }
 
@@ -211,15 +211,13 @@ export class SearchFormComponent implements OnInit {
   private setInitialErrorMessages(form: FormGroup): void {
     const formControls = form.controls;
     const initialFormControlErrorMessages: IFormErrorMessages = {};
-    const initialFormErrorSummaryMessage: IFormErrorMessages = {};
 
     Object.keys(formControls).map((controlName) => {
       initialFormControlErrorMessages[controlName] = null;
-      initialFormErrorSummaryMessage[controlName] = null;
     });
 
     this.formControlErrorMessages = initialFormControlErrorMessages;
-    this.formErrorSummaryMessage = initialFormErrorSummaryMessage;
+    this.formErrorSummaryMessage = [];
   }
 
   /**

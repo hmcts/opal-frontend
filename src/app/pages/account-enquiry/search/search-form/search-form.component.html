@@ -5,7 +5,7 @@
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 class="govuk-fieldset__heading">Account Enquiry</h1>
         </legend>
-        <app-govuk-error-summary [errors]="formErrorSummary" (errorClick)="scroll($event)"></app-govuk-error-summary>
+        <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scroll($event)"></app-govuk-error-summary>
         <div [formGroup]="searchForm">
           <app-alphagov-accessible-autocomplete
             [control]="searchForm.controls['court']"
