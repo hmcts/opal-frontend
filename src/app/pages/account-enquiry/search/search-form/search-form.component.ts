@@ -8,6 +8,7 @@ import {
   GovukSelectComponent,
   GovukButtonComponent,
   AlphagovAccessibleAutocompleteComponent,
+  GovukErrorSummaryComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -40,6 +41,7 @@ interface IHighPriorityError {
     GovukSelectComponent,
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
+    GovukErrorSummaryComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -344,5 +346,12 @@ export class SearchFormComponent implements OnInit {
     this.setupSearchForm();
     this.setInitialErrorMessages(this.searchForm);
     this.rePopulateSearchForm();
+  }
+
+  scroll(fieldId: string) {
+    const labelElement = document.querySelector(`label[for=${fieldId}]`) as HTMLInputElement;
+    const fieldElement = document.getElementById(fieldId);
+    labelElement?.scrollIntoView({ behavior: 'smooth' });
+    fieldElement?.focus();
   }
 }

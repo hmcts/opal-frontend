@@ -125,6 +125,7 @@ describe('SearchFormComponent', () => {
 
     expect(component.formErrorMessages['court']).toBe('Court error');
     expect(component.formErrorMessages['surname']).toBe('Surname error');
+    expect(component.formErrorSummary.length).toBe(2);
   });
 
   it('should return an empty array if the form is valid', () => {
@@ -177,5 +178,15 @@ describe('SearchFormComponent', () => {
 
     expect(component.formErrorMessages['court']).toBeNull();
     expect(component.formErrorMessages['surname']).toBeNull();
+  });
+
+  it('should test scroll', () => {
+    // TODO: add tests/expects for the error label so scroll is being tested
+    const fieldElement = document.getElementById('court') as HTMLElement;
+    spyOn(fieldElement, 'focus');
+
+    component.scroll('court');
+
+    expect(fieldElement.focus).toHaveBeenCalled();
   });
 });
