@@ -215,65 +215,32 @@ fdescribe('SearchFormComponent', () => {
 
     expect(fieldElement.focus).toHaveBeenCalled();
   });
+
   it('should split form errors into clean and removed form errors', () => {
-    const fieldIds = ['court', 'dayOfMonth'];
-    const formErrors: IFormError[] = [
-      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 2,
-        type: 'required',
-      },
-      {
-        fieldId: 'monthOfYear',
-        message: 'The date your passport was issued must include a month',
-        priority: 3,
-        type: 'required',
-      },
-    ];
+    const fieldIds = ['monthOfYear', 'dayOfMonth', 'year'];
+    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
 
     const [cleanFormErrors, removedFormErrors] = component['splitFormErrors'](fieldIds, formErrors);
 
-    expect(cleanFormErrors).toEqual([
-      {
-        fieldId: 'monthOfYear',
-        message: 'The date your passport was issued must include a month',
-        priority: 3,
-        type: 'required',
-      },
-    ]);
+    expect(cleanFormErrors).toEqual([FORM_ERROR_SUMMARY_MOCK[0]]);
 
     expect(removedFormErrors).toEqual([
-      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 2,
-        type: 'required',
-      },
+      FORM_ERROR_SUMMARY_MOCK[1],
+      FORM_ERROR_SUMMARY_MOCK[2],
+      FORM_ERROR_SUMMARY_MOCK[3],
     ]);
   });
   it('should return the highest priority form errors', () => {
     const formErrors: IFormError[] = [
-      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 2,
-        type: 'required',
-      },
-      {
-        fieldId: 'monthOfYear',
-        message: 'The date your passport was issued must include a month',
-        priority: 3,
-        type: 'required',
-      },
+      FORM_ERROR_SUMMARY_MOCK[0],
+      { ...FORM_ERROR_SUMMARY_MOCK[1], priority: 2 },
+      { ...FORM_ERROR_SUMMARY_MOCK[2], priority: 2 },
+      { ...FORM_ERROR_SUMMARY_MOCK[3], priority: 2 },
     ];
 
     const result = component['getHighPriorityFormErrors'](formErrors);
 
-    expect(result).toEqual([{ fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' }]);
+    expect(result).toEqual([FORM_ERROR_SUMMARY_MOCK[0]]);
   });
 
   it('should return an empty array if formErrors is empty', () => {
@@ -285,21 +252,7 @@ fdescribe('SearchFormComponent', () => {
   });
 
   it('should return all form errors if they have the same priority', () => {
-    const formErrors: IFormError[] = [
-      { fieldId: 'court', message: 'Select a court', priority: 2, type: 'required' },
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 2,
-        type: 'required',
-      },
-      {
-        fieldId: 'monthOfYear',
-        message: 'The date your passport was issued must include a month',
-        priority: 2,
-        type: 'required',
-      },
-    ];
+    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
 
     const result = component['getHighPriorityFormErrors'](formErrors);
 
@@ -307,85 +260,34 @@ fdescribe('SearchFormComponent', () => {
   });
 
   it('should manipulate the form error message for specified fields', () => {
-    const fields = ['court', 'dayOfMonth'];
+    const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'required';
-    const formErrors: IFormError[] = [
-      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 2,
-        type: 'required',
-      },
-      {
-        fieldId: 'monthOfYear',
-        message: 'The date your passport was issued must include a month',
-        priority: 3,
-        type: 'required',
-      },
-    ];
+    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
 
     const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
 
     expect(manipulatedFields).toEqual([
-      { fieldId: 'court', message: 'New error message', priority: 1, type: 'required' },
-      { fieldId: 'dayOfMonth', message: 'New error message', priority: 2, type: 'required' },
-      {
-        fieldId: 'monthOfYear',
-        message: 'The date your passport was issued must include a month',
-        priority: 3,
-        type: 'required',
-      },
-    ]);
-  });
-
-  it('should not manipulate the form error message for fields not specified', () => {
-    const fields = ['court', 'dayOfMonth'];
-    const messageOverride = 'New error message';
-    const errorType = 'required';
-    const formErrors: IFormError[] = [
-      { fieldId: 'street', message: 'Street is required', priority: 1, type: 'required' },
-      { fieldId: 'city', message: 'City is required', priority: 1, type: 'required' },
-    ];
-
-    const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
-
-    expect(manipulatedFields).toEqual([
-      { fieldId: 'street', message: 'Street is required', priority: 1, type: 'required' },
-      { fieldId: 'city', message: 'City is required', priority: 1, type: 'required' },
+      FORM_ERROR_SUMMARY_MOCK[0],
+      { ...FORM_ERROR_SUMMARY_MOCK[1], message: messageOverride },
+      { ...FORM_ERROR_SUMMARY_MOCK[2], message: messageOverride },
+      { ...FORM_ERROR_SUMMARY_MOCK[3], message: messageOverride },
     ]);
   });
 
   it('should not manipulate the form error message if the error type does not match', () => {
-    const fields = ['court', 'dayOfMonth'];
+    const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'maxLength';
-    const formErrors: IFormError[] = [
-      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 2,
-        type: 'required',
-      },
-    ];
+    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
 
     const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
 
-    expect(manipulatedFields).toEqual([
-      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 2,
-        type: 'required',
-      },
-    ]);
+    expect(manipulatedFields).toEqual(formErrors);
   });
 
   it('should return an empty array if formErrors is empty', () => {
-    const fields = ['court', 'dayOfMonth'];
+    const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'required';
     const formErrors: IFormError[] = [];
@@ -396,35 +298,16 @@ fdescribe('SearchFormComponent', () => {
   });
 
   it('should handle date input form errors', () => {
-    const errorSummary: IFormError[] = [
-      {
-        fieldId: 'dayOfMonth',
-        message: 'The date your passport was issued must include a day',
-        priority: 1,
-        type: 'required',
-      },
-      {
-        fieldId: 'monthOfYear',
-        message: 'The date your passport was issued must include a month',
-        priority: 1,
-        type: 'required',
-      },
-      {
-        fieldId: 'year',
-        message: 'The date your passport was issued must include a year',
-        priority: 1,
-        type: 'required',
-      },
-    ];
-
-    const expectedManipulatedFormErrors: IFormError[] = [
-      { fieldId: 'dayOfMonth', message: 'Please enter a DOB', priority: 1, type: 'required' },
-      { fieldId: 'monthOfYear', message: 'Please enter a DOB', priority: 1, type: 'required' },
-      { fieldId: 'year', message: 'Please enter a DOB', priority: 1, type: 'required' },
-    ];
+    const errorSummary: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    const messageOverride = 'Please enter a DOB';
 
     const result = component['handleDateInputFormErrors'](errorSummary);
 
-    expect(result).toEqual(expectedManipulatedFormErrors);
+    expect(result).toEqual([
+      FORM_ERROR_SUMMARY_MOCK[0],
+      { ...FORM_ERROR_SUMMARY_MOCK[1], message: messageOverride },
+      { ...FORM_ERROR_SUMMARY_MOCK[2], message: messageOverride },
+      { ...FORM_ERROR_SUMMARY_MOCK[3], message: messageOverride },
+    ]);
   });
 });
