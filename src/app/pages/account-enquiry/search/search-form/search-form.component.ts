@@ -19,6 +19,7 @@ import {
   IGovUkSelectOptions,
 } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
+import { beforeDateValidator } from 'src/app/validators/before-date.validator';
 
 interface IHighPriorityError {
   message: string;
@@ -69,17 +70,29 @@ export class SearchFormComponent implements OnInit {
         message: 'The day must be 2 characters or fewer',
         priority: 2,
       },
+      beforeDate: {
+        message: 'You need to be older than 18 years old',
+        priority: 3,
+      },
     },
     monthOfYear: {
       required: {
         message: 'The date your passport was issued must include a month',
         priority: 1,
       },
+      beforeDate: {
+        message: 'You need to be older than 18 years old',
+        priority: 3,
+      },
     },
     year: {
       required: {
         message: 'The date your passport was issued must include a year',
         priority: 1,
+      },
+      beforeDate: {
+        message: 'You need to be older than 18 years old',
+        priority: 3,
       },
     },
   };
@@ -216,11 +229,14 @@ export class SearchFormComponent implements OnInit {
       surname: new FormControl(null),
       forename: new FormControl(null),
       initials: new FormControl(null),
-      dateOfBirth: new FormGroup({
-        dayOfMonth: new FormControl(null, [Validators.required, Validators.maxLength(2)]),
-        monthOfYear: new FormControl(null, [Validators.required]),
-        year: new FormControl(null, [Validators.required]),
-      }),
+      dateOfBirth: new FormGroup(
+        {
+          dayOfMonth: new FormControl(null, [Validators.required, Validators.maxLength(2)]),
+          monthOfYear: new FormControl(null, [Validators.required]),
+          year: new FormControl(null, [Validators.required]),
+        },
+        { validators: beforeDateValidator('dayOfMonth', 'monthOfYear', 'year', '13/05/2006') },
+      ),
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
@@ -276,6 +292,8 @@ export class SearchFormComponent implements OnInit {
       if (fields.includes(field.fieldId)) {
         if (field.type === errorType) {
           manipulatedFields.push({ ...field, message: messageOverride });
+        } else {
+          manipulatedFields.push(field);
         }
       } else {
         manipulatedFields.push(field);
@@ -299,6 +317,12 @@ export class SearchFormComponent implements OnInit {
         'required',
         manipulatedErrorSummary,
       );
+      manipulatedErrorSummary = this.manipulateErrorMessage(
+        dateInputFields,
+        'You need to be 18 years old',
+        'beforeDate',
+        manipulatedErrorSummary,
+      );
     }
 
     return [...splitErrorSummaries[0], ...manipulatedErrorSummary];
@@ -310,6 +334,8 @@ export class SearchFormComponent implements OnInit {
   public handleFormSubmit(): void {
     let errorSummary = this.getErrorSummary(this.searchForm);
     errorSummary = this.handleDateInputFormErrors(errorSummary);
+
+    console.log(errorSummary);
 
     this.setErrorMessages(errorSummary);
   }
