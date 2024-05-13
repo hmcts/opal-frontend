@@ -201,8 +201,6 @@ fdescribe('SearchFormComponent', () => {
   it('should set initial form error messages to null for each form control', () => {
     component['setInitialErrorMessages'](component.searchForm);
 
-    console.log(component['formControlErrorMessages']);
-
     expect(component.formControlErrorMessages['court']).toBeNull();
     expect(component.formControlErrorMessages['surname']).toBeNull();
     expect(component.formErrorSummaryMessage.length).toBe(0);
@@ -216,5 +214,184 @@ fdescribe('SearchFormComponent', () => {
     component.scroll('court');
 
     expect(fieldElement.focus).toHaveBeenCalled();
+  });
+  it('should split form errors into clean and removed form errors', () => {
+    const fieldIds = ['court', 'dayOfMonth'];
+    const formErrors: IFormError[] = [
+      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 2,
+        type: 'required',
+      },
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+        priority: 3,
+        type: 'required',
+      },
+    ];
+
+    const [cleanFormErrors, removedFormErrors] = component['splitFormErrors'](fieldIds, formErrors);
+
+    expect(cleanFormErrors).toEqual([
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+        priority: 3,
+        type: 'required',
+      },
+    ]);
+
+    expect(removedFormErrors).toEqual([
+      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 2,
+        type: 'required',
+      },
+    ]);
+  });
+  it('should return the highest priority form errors', () => {
+    const formErrors: IFormError[] = [
+      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 2,
+        type: 'required',
+      },
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+        priority: 3,
+        type: 'required',
+      },
+    ];
+
+    const result = component['getHighPriorityFormErrors'](formErrors);
+
+    expect(result).toEqual([{ fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' }]);
+  });
+
+  it('should return an empty array if formErrors is empty', () => {
+    const formErrors: IFormError[] = [];
+
+    const result = component['getHighPriorityFormErrors'](formErrors);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should return all form errors if they have the same priority', () => {
+    const formErrors: IFormError[] = [
+      { fieldId: 'court', message: 'Select a court', priority: 2, type: 'required' },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 2,
+        type: 'required',
+      },
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+        priority: 2,
+        type: 'required',
+      },
+    ];
+
+    const result = component['getHighPriorityFormErrors'](formErrors);
+
+    expect(result).toEqual(formErrors);
+  });
+
+  it('should manipulate the form error message for specified fields', () => {
+    const fields = ['court', 'dayOfMonth'];
+    const messageOverride = 'New error message';
+    const errorType = 'required';
+    const formErrors: IFormError[] = [
+      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 2,
+        type: 'required',
+      },
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+        priority: 3,
+        type: 'required',
+      },
+    ];
+
+    const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
+
+    expect(manipulatedFields).toEqual([
+      { fieldId: 'court', message: 'New error message', priority: 1, type: 'required' },
+      { fieldId: 'dayOfMonth', message: 'New error message', priority: 2, type: 'required' },
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+        priority: 3,
+        type: 'required',
+      },
+    ]);
+  });
+
+  it('should not manipulate the form error message for fields not specified', () => {
+    const fields = ['court', 'dayOfMonth'];
+    const messageOverride = 'New error message';
+    const errorType = 'required';
+    const formErrors: IFormError[] = [
+      { fieldId: 'street', message: 'Street is required', priority: 1, type: 'required' },
+      { fieldId: 'city', message: 'City is required', priority: 1, type: 'required' },
+    ];
+
+    const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
+
+    expect(manipulatedFields).toEqual([
+      { fieldId: 'street', message: 'Street is required', priority: 1, type: 'required' },
+      { fieldId: 'city', message: 'City is required', priority: 1, type: 'required' },
+    ]);
+  });
+
+  it('should not manipulate the form error message if the error type does not match', () => {
+    const fields = ['court', 'dayOfMonth'];
+    const messageOverride = 'New error message';
+    const errorType = 'maxLength';
+    const formErrors: IFormError[] = [
+      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 2,
+        type: 'required',
+      },
+    ];
+
+    const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
+
+    expect(manipulatedFields).toEqual([
+      { fieldId: 'court', message: 'Select a court', priority: 1, type: 'required' },
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 2,
+        type: 'required',
+      },
+    ]);
+  });
+
+  it('should return an empty array if formErrors is empty', () => {
+    const fields = ['court', 'dayOfMonth'];
+    const messageOverride = 'New error message';
+    const errorType = 'required';
+    const formErrors: IFormError[] = [];
+
+    const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
+
+    expect(manipulatedFields).toEqual([]);
   });
 });

@@ -209,6 +209,15 @@ export class SearchFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Splits the form errors into two arrays based on the provided field IDs.
+   * Errors with field IDs included in the fieldIds array will be moved to the removedFormErrors array,
+   * while the remaining errors will be moved to the cleanFormErrors array.
+   *
+   * @param fieldIds - An array of field IDs to filter the form errors.
+   * @param formErrors - An array of form errors to be split.
+   * @returns An array containing two arrays: cleanFormErrors and removedFormErrors.
+   */
   private splitFormErrors(fieldIds: string[], formErrors: IFormError[]): IFormError[][] {
     const cleanFormErrors: IFormError[] = [];
     const removedFormErrors: IFormError[] = [];
@@ -224,12 +233,26 @@ export class SearchFormComponent implements OnInit {
     return [cleanFormErrors, removedFormErrors];
   }
 
+  /**
+   * Retrieves the form errors with the highest priority.
+   *
+   * @param formErrors - An array of form errors.
+   * @returns An array of form errors with the highest priority.
+   */
   private getHighPriorityFormErrors(formErrors: IFormError[]): IFormError[] {
     // Get the lowest priority (1 is the highest priority, 3 is the lowest priority)
     const lowestPriority = Math.min(...formErrors.map((item) => item.priority));
     return formErrors.filter((item) => item.priority === lowestPriority);
   }
 
+  /**
+   * Manipulates the error message for specific fields in the formErrors array.
+   * @param fields - An array of field IDs to target for error message manipulation.
+   * @param messageOverride - The new error message to be used for the targeted fields.
+   * @param errorType - The type of error to match for the targeted fields.
+   * @param formErrors - An array of IFormError objects representing the form errors.
+   * @returns An array of IFormError objects with the manipulated error messages.
+   */
   private manipulateFormErrorMessage(
     fields: string[],
     messageOverride: string,
