@@ -394,4 +394,37 @@ fdescribe('SearchFormComponent', () => {
 
     expect(manipulatedFields).toEqual([]);
   });
+
+  it('should handle date input form errors', () => {
+    const errorSummary: IFormError[] = [
+      {
+        fieldId: 'dayOfMonth',
+        message: 'The date your passport was issued must include a day',
+        priority: 1,
+        type: 'required',
+      },
+      {
+        fieldId: 'monthOfYear',
+        message: 'The date your passport was issued must include a month',
+        priority: 1,
+        type: 'required',
+      },
+      {
+        fieldId: 'year',
+        message: 'The date your passport was issued must include a year',
+        priority: 1,
+        type: 'required',
+      },
+    ];
+
+    const expectedManipulatedFormErrors: IFormError[] = [
+      { fieldId: 'dayOfMonth', message: 'Please enter a DOB', priority: 1, type: 'required' },
+      { fieldId: 'monthOfYear', message: 'Please enter a DOB', priority: 1, type: 'required' },
+      { fieldId: 'year', message: 'Please enter a DOB', priority: 1, type: 'required' },
+    ];
+
+    const result = component['handleDateInputFormErrors'](errorSummary);
+
+    expect(result).toEqual(expectedManipulatedFormErrors);
+  });
 });

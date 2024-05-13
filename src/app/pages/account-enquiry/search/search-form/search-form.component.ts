@@ -275,6 +275,11 @@ export class SearchFormComponent implements OnInit {
     return manipulatedFields;
   }
 
+  /**
+   * Handles the form errors related to date inputs.
+   * @param errorSummary - The array of form errors.
+   * @returns An array of manipulated form errors.
+   */
   private handleDateInputFormErrors(errorSummary: IFormError[]) {
     const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
     const splitFormErrors = this.splitFormErrors(dateInputFields, errorSummary);
@@ -287,12 +292,6 @@ export class SearchFormComponent implements OnInit {
         dateInputFields,
         'Please enter a DOB',
         'required',
-        manipulatedFormErrors,
-      );
-      manipulatedFormErrors = this.manipulateFormErrorMessage(
-        dateInputFields,
-        'You need to be 18 years old',
-        'beforeDate',
         manipulatedFormErrors,
       );
     }
