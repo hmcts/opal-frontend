@@ -354,6 +354,23 @@ export class SearchFormComponent implements OnInit {
     }
   }
 
+  private reduceErrorSummaryMessages(errorSummaryMessages: IFormError[]): IFormError[] {
+    if (errorSummaryMessages.some(errorSummaryMessage => errorSummaryMessage.fieldId === 'dayOfMonth')) {
+      const monthOfYearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'monthOfYear');
+      errorSummaryMessages.splice(monthOfYearPosition, 1);
+      const yearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'year');
+      errorSummaryMessages.splice(yearPosition, 1);
+    }
+
+    if (errorSummaryMessages.some(errorSummaryMessage => errorSummaryMessage.fieldId === 'monthOfYear')) {
+      const yearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'year');
+      errorSummaryMessages.splice(yearPosition, 1);
+    }
+
+    return errorSummaryMessages;
+  }
+
+
   /**
    * Clears the search form.
    */
@@ -368,9 +385,12 @@ export class SearchFormComponent implements OnInit {
     let errorSummary = this.getFormErrors(this.searchForm);
     errorSummary = this.handleDateInputFormErrors(errorSummary);
 
-    this.setErrorMessages(errorSummary);
+    errorSummary = this.reduceErrorSummaryMessages(errorSummary);
 
-    this.formSubmit.emit(this.searchForm.value);
+    this.setErrorMessages(errorSummary);
+    if (this.searchForm.valid) {
+      this.formSubmit.emit(this.searchForm.value);
+    }
   }
 
   /**
