@@ -21,6 +21,7 @@ import { TRANSFER_STATE_MOCK } from './transfer-state-mock';
 import { AUTO_COMPLETE_ITEMS_MOCK } from './auto-complete-items.mock';
 import { FORM_CONTROL_ERROR_MOCK } from './form-control-error.mock';
 import { FORM_ERROR_SUMMARY_MOCK } from './form-error-summary-entry.mock';
+import { FORM_DATE_ERROR_SUMMARY_MOCK } from './form-date-error-summary.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -46,4 +47,5 @@ export {
   AUTO_COMPLETE_ITEMS_MOCK,
   FORM_CONTROL_ERROR_MOCK,
   FORM_ERROR_SUMMARY_MOCK,
+  FORM_DATE_ERROR_SUMMARY_MOCK,
 };

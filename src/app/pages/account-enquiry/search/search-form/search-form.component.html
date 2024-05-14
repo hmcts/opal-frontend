@@ -5,7 +5,10 @@
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
           <h1 class="govuk-fieldset__heading">Account Enquiry</h1>
         </legend>
-
+        <app-govuk-error-summary
+          [errors]="formErrorSummaryMessage"
+          (errorClick)="scrollTo($event)"
+        ></app-govuk-error-summary>
         <div [formGroup]="searchForm">
           <app-alphagov-accessible-autocomplete
             [control]="searchForm.controls['court']"
@@ -24,7 +27,6 @@
             inputName="surname"
             inputClasses="govuk-!-width-one-half"
             [control]="searchForm.controls['surname']"
-            [errors]="formErrorMessages['surname']"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Forename"
@@ -46,6 +48,9 @@
             fieldSetId="dateOfBirth"
             legendText="Date of Birth"
             legendHint="For example, 04 06 1991"
+            [errorDay]="formControlErrorMessages['dayOfMonth']"
+            [errorMonth]="formControlErrorMessages['monthOfYear']"
+            [errorYear]="formControlErrorMessages['year']"
           ></app-govuk-date-input>
           <app-govuk-text-input
             labelText="Address Line One"
