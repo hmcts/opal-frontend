@@ -404,9 +404,7 @@ export class SearchFormComponent implements OnInit {
       this.getDateFieldsToRemoveIndexes(this.formErrorSummaryMessage),
     );
 
-    // if (this.searchForm.valid) {
     this.formSubmit.emit(this.searchForm.value);
-    // }
   }
 
   /**
