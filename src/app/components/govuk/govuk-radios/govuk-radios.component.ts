@@ -20,9 +20,8 @@ export class GovukRadiosComponent {
 
   @Input({ required: true }) labelText!: string;
   @Input({ required: false }) labelClasses!: string;
-  
+
   @Input({ required: false }) legendHint!: string;
-  
 
   @Input({ required: true }) radioInputs!: IGovUkRadioInput[];
   @Input({ required: false }) radioClasses!: string;
