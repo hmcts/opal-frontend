@@ -102,6 +102,14 @@ describe('SearchFormComponent', () => {
     expect(result).toBe(null);
   });
 
+  it('should return null if nothing is not passed in', () => {
+    const component = new SearchFormComponent();
+
+    const result = component['getHighestPriorityError']();
+
+    expect(result).toBe(null);
+  });
+
   it('should return null if errorKeys and fieldErrors are empty', () => {
     const component = new SearchFormComponent();
     const errorKeys: string[] = [];
