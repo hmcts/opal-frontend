@@ -1,8 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
-import { AUTO_COMPLETE_ITEMS_MOCK, FORM_CONTROL_ERROR_MOCK, FORM_ERROR_SUMMARY_MOCK, SEARCH_STATE_MOCK } from '@mocks';
-import { IFieldError, IFormError } from '@interfaces';
+import {
+  AUTO_COMPLETE_ITEMS_MOCK,
+  FORM_CONTROL_ERROR_MOCK,
+  FORM_DATE_ERROR_SUMMARY_MOCK,
+  FORM_ERROR_SUMMARY_MOCK,
+  SEARCH_STATE_MOCK,
+} from '@mocks';
+import { IFieldError, IFormError, IFormErrorSummaryMessage } from '@interfaces';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 describe('SearchFormComponent', () => {
@@ -349,5 +355,21 @@ describe('SearchFormComponent', () => {
     const result = component['getFormErrors'](component.searchForm);
 
     expect(result).toEqual([]);
+  });
+
+  it('should test getDateFieldsToRemoveIndexes and return array of indexes', () => {
+    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+
+    const result = component['getDateFieldsToRemoveIndexes'](formErrorSummaryMessage);
+
+    expect(result).toEqual([2]);
+  });
+
+  it('should test removeErrorSummaryMessages and return reduced messages', () => {
+    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+
+    const result = component['removeErrorSummaryMessages'](formErrorSummaryMessage, [1, 2]);
+
+    expect(result).toEqual([formErrorSummaryMessage[0]]);
   });
 });
