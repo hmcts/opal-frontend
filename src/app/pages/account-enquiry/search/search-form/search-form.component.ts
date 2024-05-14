@@ -104,7 +104,10 @@ export class SearchFormComponent implements OnInit {
    * @param fieldErrors - An object containing field errors.
    * @returns The highest priority form error or null if no errors are found.
    */
-  private getHighestPriorityError(errorKeys: string[], fieldErrors: IFieldError): IHighPriorityFormError | null {
+  private getHighestPriorityError(
+    errorKeys: string[] = [],
+    fieldErrors: IFieldError = {},
+  ): IHighPriorityFormError | null {
     if (errorKeys.length && Object.keys(fieldErrors).length) {
       const errors = errorKeys.map((errorType: string) => {
         return {
@@ -135,8 +138,8 @@ export class SearchFormComponent implements OnInit {
     if (controlErrors) {
       /// Get all the error keys
       const controlKey = controlPath[controlPath.length - 1];
-      const errorKeys = Object.keys(controlErrors);
-      const fieldErrors = this.fieldErrors[controlKey];
+      const errorKeys = Object.keys(controlErrors) || [];
+      const fieldErrors = this.fieldErrors[controlKey] || {};
 
       if (errorKeys.length && Object.keys(fieldErrors).length) {
         return this.getHighestPriorityError(errorKeys, fieldErrors);

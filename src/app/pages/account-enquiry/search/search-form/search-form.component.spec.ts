@@ -333,4 +333,13 @@ describe('SearchFormComponent', () => {
       { ...FORM_ERROR_SUMMARY_MOCK[3], message: messageOverride },
     ]);
   });
+
+  it('should return an empty array if the form control does not have a field error', () => {
+    component.searchForm = new FormGroup({
+      test: new FormControl(null, Validators.required),
+    });
+    const result = component['getFormErrors'](component.searchForm);
+
+    expect(result).toEqual([]);
+  });
 });
