@@ -1,4 +1,4 @@
-<div class="govuk-form-group" [formGroup]="getGroup">
+<div class="govuk-form-group" [formGroup]="getGroup" [class.govuk-form-group--error]="hasError()">
   <fieldset class="govuk-fieldset" role="group" [id]="fieldSetId">
     <legend
       class="govuk-fieldset__legend {{ legendClasses }}"
@@ -11,6 +11,11 @@
         {{ legendHint }}
       </div>
     }
+    @if (hasError()) {
+      <p id="{{ this.fieldSetId }}-error-message" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> {{ errorDay || errorMonth || errorYear }}
+      </p>
+    }
     <div class="govuk-date-input" id="passport-issued">
       <div class="govuk-date-input__item">
         <div class="govuk-form-group">
@@ -19,6 +24,7 @@
           </label>
           <input
             class="govuk-input govuk-date-input__input {{ dateInputs.day.inputClasses }}"
+            [class.govuk-input--error]="errorDay && errorDay !== null"
             [id]="dateInputs.day.inputId"
             [name]="dateInputs.day.inputName"
             type="text"
@@ -34,6 +40,7 @@
           </label>
           <input
             class="govuk-input govuk-date-input__input {{ dateInputs.month.inputClasses }}"
+            [class.govuk-input--error]="errorMonth && errorMonth !== null"
             [id]="dateInputs.month.inputId"
             [name]="dateInputs.month.inputName"
             type="text"
@@ -49,6 +56,7 @@
           </label>
           <input
             class="govuk-input govuk-date-input__input {{ dateInputs.year.inputClasses }}"
+            [class.govuk-input--error]="errorYear && errorYear !== null"
             [id]="dateInputs.year.inputId"
             [name]="dateInputs.year.inputName"
             type="text"
