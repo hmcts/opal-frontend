@@ -377,6 +377,12 @@ export class SearchFormComponent implements OnInit {
     this.searchForm.reset();
   }
 
+  /**
+   * Returns an array of indexes representing the date input fields that should be removed from the form error summary message.
+   *
+   * @param formErrorSummaryMessage - The array of form error summary messages.
+   * @returns An array of indexes representing the date input fields to remove.
+   */
   private getDateFieldsToRemoveIndexes(formErrorSummaryMessage: IFormErrorSummaryMessage[]): number[] {
     const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
     const dateInputFieldIndexes = dateInputFields.map((field) =>
@@ -386,6 +392,13 @@ export class SearchFormComponent implements OnInit {
     return dateInputFieldIndexes.filter((item) => item > 1);
   }
 
+  /**
+   * Removes error summary messages from the given array based on the specified indexes.
+   *
+   * @param formErrorSummaryMessage - The array of error summary messages.
+   * @param indexes - The indexes of the error summary messages to be removed.
+   * @returns The updated array of error summary messages.
+   */
   private removeErrorSummaryMessages(
     formErrorSummaryMessage: IFormErrorSummaryMessage[],
     indexes: number[],
