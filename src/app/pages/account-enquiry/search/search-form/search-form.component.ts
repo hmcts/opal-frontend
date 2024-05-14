@@ -421,7 +421,7 @@ export class SearchFormComponent implements OnInit {
     );
 
     // if (this.searchForm.valid) {
-    // this.formSubmit.emit(this.searchForm.value);
+    this.formSubmit.emit(this.searchForm.value);
     // }
   }
 
