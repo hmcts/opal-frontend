@@ -354,28 +354,43 @@ export class SearchFormComponent implements OnInit {
     }
   }
 
-  private reduceErrorSummaryMessages(errorSummaryMessages: IFormError[]): IFormError[] {
-    if (errorSummaryMessages.some(errorSummaryMessage => errorSummaryMessage.fieldId === 'dayOfMonth')) {
-      const monthOfYearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'monthOfYear');
-      errorSummaryMessages.splice(monthOfYearPosition, 1);
-      const yearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'year');
-      errorSummaryMessages.splice(yearPosition, 1);
-    }
+  // private reduceErrorSummaryMessages(errorSummaryMessages: IFormError[]): IFormError[] {
+  //   if (errorSummaryMessages.some(errorSummaryMessage => errorSummaryMessage.fieldId === 'dayOfMonth')) {
+  //     const monthOfYearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'monthOfYear');
+  //     errorSummaryMessages.splice(monthOfYearPosition, 1);
+  //     const yearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'year');
+  //     errorSummaryMessages.splice(yearPosition, 1);
+  //   }
 
-    if (errorSummaryMessages.some(errorSummaryMessage => errorSummaryMessage.fieldId === 'monthOfYear')) {
-      const yearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'year');
-      errorSummaryMessages.splice(yearPosition, 1);
-    }
+  //   if (errorSummaryMessages.some(errorSummaryMessage => errorSummaryMessage.fieldId === 'monthOfYear')) {
+  //     const yearPosition = errorSummaryMessages.findIndex(x => x.fieldId === 'year');
+  //     errorSummaryMessages.splice(yearPosition, 1);
+  //   }
 
-    return errorSummaryMessages;
-  }
-
+  //   return errorSummaryMessages;
+  // }
 
   /**
    * Clears the search form.
    */
   public handleClearForm(): void {
     this.searchForm.reset();
+  }
+
+  private getDateFieldsToRemoveIndexes(formErrorSummaryMessage: IFormErrorSummaryMessage[]): number[] {
+    const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
+    const dateInputFieldIndexes = dateInputFields.map((field) =>
+      formErrorSummaryMessage.findIndex((error) => error.fieldId === field),
+    );
+
+    return dateInputFieldIndexes.filter((item) => item > 1);
+  }
+
+  private removeErrorSummaryMessages(
+    formErrorSummaryMessage: IFormErrorSummaryMessage[],
+    indexes: number[],
+  ): IFormErrorSummaryMessage[] {
+    return formErrorSummaryMessage.filter((_, index) => !indexes.includes(index));
   }
 
   /**
@@ -385,12 +400,16 @@ export class SearchFormComponent implements OnInit {
     let errorSummary = this.getFormErrors(this.searchForm);
     errorSummary = this.handleDateInputFormErrors(errorSummary);
 
-    errorSummary = this.reduceErrorSummaryMessages(errorSummary);
-
     this.setErrorMessages(errorSummary);
-    if (this.searchForm.valid) {
-      this.formSubmit.emit(this.searchForm.value);
-    }
+
+    this.formErrorSummaryMessage = this.removeErrorSummaryMessages(
+      this.formErrorSummaryMessage,
+      this.getDateFieldsToRemoveIndexes(this.formErrorSummaryMessage),
+    );
+
+    // if (this.searchForm.valid) {
+    // this.formSubmit.emit(this.searchForm.value);
+    // }
   }
 
   /**
