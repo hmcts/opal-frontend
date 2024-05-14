@@ -202,13 +202,17 @@ export class SearchFormComponent implements OnInit {
     this.formErrorSummaryMessage = [];
   }
 
-  private setErrorMessages(errorSummaryEntry: IFormError[]) {
+  /**
+   * Sets the error messages for the form controls and error summary based on the provided form errors.
+   * @param formErrors - An array of form errors containing field IDs and error messages.
+   */
+  private setErrorMessages(formErrors: IFormError[]) {
     // Reset the form error messages
     this.formControlErrorMessages = {};
     this.formErrorSummaryMessage = [];
 
     // Set the form error messages based on the error summary entries
-    errorSummaryEntry.forEach((entry) => {
+    formErrors.forEach((entry) => {
       this.formControlErrorMessages[entry.fieldId] = entry.message;
       this.formErrorSummaryMessage.push({ fieldId: entry.fieldId, message: entry.message });
     });
@@ -281,13 +285,13 @@ export class SearchFormComponent implements OnInit {
   }
 
   /**
-   * Handles the form errors related to date inputs.
-   * @param errorSummary - The array of form errors.
-   * @returns An array of manipulated form errors.
+   * Handles the form errors for the date input fields.
+   * @param formErrors - An array of form errors.
+   * @returns An array of form errors with the manipulated error messages.
    */
-  private handleDateInputFormErrors(errorSummary: IFormError[]) {
+  private handleDateInputFormErrors(formErrors: IFormError[]) {
     const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
-    const splitFormErrors = this.splitFormErrors(dateInputFields, errorSummary);
+    const splitFormErrors = this.splitFormErrors(dateInputFields, formErrors);
     const highPriorityDateControlErrors = this.getHighPriorityFormErrors(splitFormErrors[1]);
     let manipulatedFormErrors: IFormError[] = highPriorityDateControlErrors;
 
