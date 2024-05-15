@@ -50,9 +50,26 @@ const routes: Routes = [
     resolve: { userState: userStateResolver },
   },
   {
+    path: RoutingPaths.manualAccountCreation,
+    loadComponent: () =>
+      import('./pages/manual-account-creation/manual-account-creation.component').then(
+        (c) => c.ManualAccountCreationComponent,
+      ),
+    children: [
+      {
+        path: '',
+        redirectTo: RoutingPaths.manualAccountCreation,
+        pathMatch: 'full',
+      },
+    ],
+    canActivate: [authGuard],
+    resolve: { userState: userStateResolver },
+  },
+  {
     path: RoutingPaths.accessDenied,
     loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
-    canActivate: [authGuard],
+    canActivate: [authGuard, routePermissionsGuard],
+    data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.manualAccountCreation] },
     resolve: { userState: userStateResolver },
   },
   {
