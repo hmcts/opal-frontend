@@ -22,6 +22,7 @@ import { MojHeaderNavigationItemComponent } from './moj/moj-header/moj-header-na
 import { GovukHeaderNavigationItemComponent } from './govuk/govuk-header/govuk-header-navigation-item/govuk-header-navigation-item.component';
 import { ScotgovDatePickerComponent } from './scotgov/scotgov-date-picker/scotgov-date-picker.component';
 import { GovukErrorSummaryComponent } from './govuk/govuk-error-summary/govuk-error-summary.component';
+import { GovukBackLinkComponent } from './govuk/govuk-back-link/govuk-back-link.component';
 
 export {
   GovukButtonComponent,
@@ -48,4 +49,5 @@ export {
   MojHeaderNavigationItemComponent,
   ScotgovDatePickerComponent,
   GovukErrorSummaryComponent,
+  GovukBackLinkComponent,
 };

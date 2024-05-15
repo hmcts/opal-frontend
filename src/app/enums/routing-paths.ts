@@ -8,4 +8,5 @@ export enum RoutingPaths {
   signInStub = 'sign-in-stub',
   dashboard = 'dashboard',
   manualAccountCreation = 'manual-account-creation',
+  manualAccountCreationAccountDetails = 'account-details',
 }
