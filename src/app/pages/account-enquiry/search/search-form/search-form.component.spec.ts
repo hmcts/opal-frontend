@@ -228,14 +228,25 @@ describe('SearchFormComponent', () => {
     expect(component['scroll']).toHaveBeenCalled();
   });
 
-  it('should test scroll', () => {
-    // TODO: add tests/expects for the error label so scroll is being tested
+  it('should test scroll - normal label', () => {
     const fieldElement = document.getElementById('niNumber') as HTMLElement;
     const labelElement = document.querySelector('label[for=niNumber]') as HTMLInputElement;
     spyOn(fieldElement, 'focus');
     spyOn(labelElement, 'scrollIntoView');
 
     component['scroll']('niNumber');
+
+    expect(fieldElement.focus).toHaveBeenCalled();
+    expect(labelElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+  });
+
+  it('should test scroll - autocomplete label', () => {
+    const fieldElement = document.getElementById('court') as HTMLElement;
+    const labelElement = document.querySelector('label[for=court-autocomplete]') as HTMLInputElement;
+    spyOn(fieldElement, 'focus');
+    spyOn(labelElement, 'scrollIntoView');
+
+    component['scroll']('court');
 
     expect(fieldElement.focus).toHaveBeenCalled();
     expect(labelElement.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
@@ -414,5 +425,13 @@ describe('SearchFormComponent', () => {
     const result = component['getDateFieldsToRemoveIndexes']();
 
     expect(result).toEqual([]);
+  });
+
+  it('should remove error summary messages', () => {
+    component.formErrorSummaryMessage = FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 1);
+
+    component['removeErrorSummaryMessages'](component.formErrorSummaryMessage, [1]);
+
+    expect(component.formErrorSummaryMessage.length).toBe(1);
   });
 });

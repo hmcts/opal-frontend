@@ -18,13 +18,11 @@ import {
   IFormError,
   IFormErrorSummaryMessage,
   IGovUkDateInput,
-  IGovUkRadioInput,
   IGovUkSelectOptions,
   IHighPriorityFormError,
 } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
 import { overEighteenValidator } from 'src/app/validators';
-import { SEARCH_TYPE_RADIOS } from '../config/search-type-radios';
 
 @Component({
   selector: 'app-search-form',
@@ -40,7 +38,6 @@ import { SEARCH_TYPE_RADIOS } from '../config/search-type-radios';
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
     GovukErrorSummaryComponent,
-    GovukRadiosComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,8 +50,6 @@ export class SearchFormComponent implements OnInit {
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
   public searchForm!: FormGroup;
-
-  public radioOptions: IGovUkRadioInput[] = SEARCH_TYPE_RADIOS;
 
   // We will move this to a constant field in the future
   private fieldErrors: IFieldErrors = {
@@ -96,12 +91,6 @@ export class SearchFormComponent implements OnInit {
       underEighteen: {
         message: 'You need to be older than 18 years old',
         priority: 3,
-      },
-    },
-    whereDoYouLive: {
-      required: {
-        message: 'Select the country where you live',
-        priority: 1,
       },
     },
   };
@@ -339,9 +328,6 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
-      whereDoYouLive: new FormGroup({
-        whereDoYouLive: new FormControl(null, [Validators.required]),
-      }),
     });
   }
 
@@ -448,9 +434,7 @@ export class SearchFormComponent implements OnInit {
       this.getDateFieldsToRemoveIndexes(),
     );
 
-    // if (this.searchForm.valid) {
     this.formSubmit.emit(this.searchForm.value);
-    // }
   }
 
   /**
