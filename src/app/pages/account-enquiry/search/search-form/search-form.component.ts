@@ -346,9 +346,12 @@ export class SearchFormComponent implements OnInit {
   private scroll(fieldId: string): void {
     const fieldElement = document.getElementById(fieldId);
     if (fieldElement) {
-      const labelElement = document.querySelector(`label[for=${fieldId}]`) as HTMLInputElement;
-      if (labelElement) {
-        labelElement.scrollIntoView({ behavior: 'smooth' });
+      const labelTarget =
+        document.querySelector(`label[for=${fieldId}]`) ||
+        document.querySelector(`#${fieldId} .govuk-fieldset__legend`) ||
+        document.querySelector(`label[for=${fieldId}-autocomplete]`);
+      if (labelTarget) {
+        labelTarget.scrollIntoView({ behavior: 'smooth' });
       }
       fieldElement.focus();
     }
@@ -362,18 +365,45 @@ export class SearchFormComponent implements OnInit {
   }
 
   /**
-   * Returns an array of indexes representing the date input fields that should be removed from the form error summary message.
-   *
-   * @param formErrorSummaryMessage - The array of form error summary messages.
-   * @returns An array of indexes representing the date input fields to remove.
+   * Gets the indexes of the date fields to remove based on the form error summary message.
+   * @returns An array of indexes representing the date fields to remove.
    */
-  private getDateFieldsToRemoveIndexes(formErrorSummaryMessage: IFormErrorSummaryMessage[]): number[] {
-    const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
-    const dateInputFieldIndexes = dateInputFields.map((field) =>
-      formErrorSummaryMessage.findIndex((error) => error.fieldId === field),
+  private getDateFieldsToRemoveIndexes(): number[] {
+    const indexesToRemove: number[] = [];
+    // The order of the field ids is important
+    // this is the order in which we want to remove them
+    const foundIndexes = this.getFormErrorSummaryIndex(
+      ['dayOfMonth', 'monthOfYear', 'year'],
+      this.formErrorSummaryMessage,
     );
 
-    return dateInputFieldIndexes.filter((item) => item > 1);
+    // Determine which indexes to remove based on the found fields
+    switch (foundIndexes.length) {
+      case 3:
+        // All three date fields are present
+        indexesToRemove.push(foundIndexes[1], foundIndexes[2]);
+        break;
+      case 2:
+        // Two date fields are present
+        indexesToRemove.push(foundIndexes[1]);
+        break;
+    }
+
+    return indexesToRemove;
+  }
+
+  /**
+   * Returns an array of indices corresponding to the positions of the given field IDs in the form error summary message array.
+   *
+   * @param fieldIds - An array of field IDs to search for in the form error summary message array.
+   * @param formErrorSummaryMessage - An array of form error summary messages.
+   * @returns An array of indices corresponding to the positions of the field IDs in the form error summary message array.
+   */
+  private getFormErrorSummaryIndex(fieldIds: string[], formErrorSummaryMessage: IFormErrorSummaryMessage[]): number[] {
+    return fieldIds.reduce((acc: number[], field) => {
+      const index = formErrorSummaryMessage.findIndex((error) => error.fieldId === field);
+      return index !== -1 ? [...acc, index] : acc;
+    }, []);
   }
 
   /**
@@ -401,7 +431,7 @@ export class SearchFormComponent implements OnInit {
 
     this.formErrorSummaryMessage = this.removeErrorSummaryMessages(
       this.formErrorSummaryMessage,
-      this.getDateFieldsToRemoveIndexes(this.formErrorSummaryMessage),
+      this.getDateFieldsToRemoveIndexes(),
     );
 
     this.formSubmit.emit(this.searchForm.value);

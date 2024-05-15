@@ -25,6 +25,7 @@ export class GovukRadiosComponent {
 
   @Input({ required: true }) radioInputs!: IGovUkRadioInput[];
   @Input({ required: false }) radioClasses!: string;
+  @Input({ required: false }) errors: string | null = null;
 
   @Input({ required: true }) set group(abstractControl: AbstractControl | null) {
     this._group = abstractControl as FormGroup;

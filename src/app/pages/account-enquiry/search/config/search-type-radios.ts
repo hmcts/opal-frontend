@@ -1,6 +1,6 @@
 export const SEARCH_TYPE_RADIOS = [
   {
-    inputName: 'searchType',
+    inputName: 'whereDoYouLive',
     inputClasses: null,
     inputId: 'defendant',
     inputValue: 'defendant',
@@ -9,7 +9,7 @@ export const SEARCH_TYPE_RADIOS = [
     inputHint: null,
   },
   {
-    inputName: 'searchType',
+    inputName: 'whereDoYouLive',
     inputClasses: null,
     inputId: 'minor-creditor',
     inputValue: 'minor creditor',
