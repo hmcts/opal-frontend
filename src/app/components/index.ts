@@ -23,9 +23,6 @@ import { GovukHeaderNavigationItemComponent } from './govuk/govuk-header/govuk-h
 import { ScotgovDatePickerComponent } from './scotgov/scotgov-date-picker/scotgov-date-picker.component';
 import { GovukErrorSummaryComponent } from './govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukBackLinkComponent } from './govuk/govuk-back-link/govuk-back-link.component';
-import { GovukTagComponent } from './govuk/govuk-tag/govuk-tag.component';
-import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.component';
-import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 import { GovukCheckboxesItemComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { GovukCheckboxesConditionalComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesDividerComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-divider/govuk-checkboxes-divider.component';
@@ -40,6 +37,9 @@ import { MojBannerComponent } from './moj/moj-banner/moj-banner.component';
 import { GovukNotificationBannerComponent } from './govuk/govuk-notification-banner/govuk-notification-banner.component';
 import { FormBaseComponent } from './abstract/form-base/form-base.component';
 import { FormParentBaseComponent } from './abstract/form-parent-base/form-parent-base.component';
+import { GovukTagComponent } from './govuk/govuk-tag/govuk-tag.component';
+import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.component';
+import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 
 export {
   GovukButtonComponent,
@@ -83,4 +83,7 @@ export {
   GovukNotificationBannerComponent,
   FormBaseComponent,
   FormParentBaseComponent,
+  GovukTagComponent,
+  GovukTaskListComponent,
+  GovukTaskListItemComponent,
 };
