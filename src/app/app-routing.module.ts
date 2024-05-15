@@ -92,14 +92,13 @@ const routes: Routes = [
   {
     path: RoutingPaths.accessDenied,
     loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
-    canActivate: [authGuard, routePermissionsGuard],
-    data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.manualAccountCreation] },
+    canActivate: [authGuard],
     resolve: { userState: userStateResolver },
   },
   {
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    canActivate: [signedInGuard],
+    resolve: { userState: userStateResolver },
   },
 ];
 
