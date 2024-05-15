@@ -61,8 +61,6 @@ const routes: Routes = [
         pathMatch: 'full',
       },
     ],
-    canActivate: [authGuard, routePermissionsGuard],
-    data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.manualAccountCreation] },
     resolve: { userState: userStateResolver },
   },
   {
