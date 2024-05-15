@@ -60,6 +60,14 @@ const routes: Routes = [
         redirectTo: RoutingPaths.manualAccountCreation,
         pathMatch: 'full',
       },
+      {
+        path: RoutingPaths.manualAccountCreationCreateAccount,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/create-account/create-account.component').then(
+            (c) => c.CreateAccountComponent,
+          ),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
   },
