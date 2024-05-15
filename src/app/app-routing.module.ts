@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, routePermissionsGuard } from '@guards';
 import { RoutingPaths } from '@enums';
-import { signedInGuard } from '@guards';
 import { userStateResolver } from '@resolvers';
 
 const routes: Routes = [
@@ -62,20 +61,20 @@ const routes: Routes = [
         pathMatch: 'full',
       },
     ],
-    canActivate: [authGuard],
-    resolve: { userState: userStateResolver },
-  },
-  {
-    path: RoutingPaths.accessDenied,
-    loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
     canActivate: [authGuard, routePermissionsGuard],
     data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.manualAccountCreation] },
     resolve: { userState: userStateResolver },
   },
   {
+    path: RoutingPaths.accessDenied,
+    loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
+    canActivate: [authGuard],
+    resolve: { userState: userStateResolver },
+  },
+  {
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    canActivate: [signedInGuard],
+    resolve: { userState: userStateResolver },
   },
 ];
 
