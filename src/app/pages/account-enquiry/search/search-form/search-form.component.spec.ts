@@ -357,19 +357,62 @@ describe('SearchFormComponent', () => {
     expect(result).toEqual([]);
   });
 
-  it('should test getDateFieldsToRemoveIndexes and return array of indexes', () => {
+  it('should return the indices of form error summary messages for given field IDs', () => {
+    const fieldIds = ['dayOfMonth', 'monthOfYear', 'year'];
     const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
 
-    const result = component['getDateFieldsToRemoveIndexes'](formErrorSummaryMessage);
+    const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
 
-    expect(result).toEqual([2]);
+    expect(result).toEqual([0, 1, 2]);
   });
 
-  it('should test removeErrorSummaryMessages and return reduced messages', () => {
+  it('should return an empty array if no form error summary messages match the field IDs', () => {
+    const fieldIds = ['surname', 'address', 'phone'];
     const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
 
-    const result = component['removeErrorSummaryMessages'](formErrorSummaryMessage, [1, 2]);
+    const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
 
-    expect(result).toEqual([formErrorSummaryMessage[0]]);
+    expect(result).toEqual([]);
+  });
+  it('should return the indices of form error summary messages for given field IDs', () => {
+    const fieldIds = ['dayOfMonth', 'monthOfYear', 'year'];
+    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+
+    const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
+
+    expect(result).toEqual([0, 1, 2]);
+  });
+
+  it('should return an empty array if no form error summary messages match the field IDs', () => {
+    const fieldIds = ['surname', 'address', 'phone'];
+    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+
+    const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should return the indices of form error summary messages to remove for date fields', () => {
+    component.formErrorSummaryMessage = FORM_DATE_ERROR_SUMMARY_MOCK;
+
+    const result = component['getDateFieldsToRemoveIndexes']();
+
+    expect(result).toEqual([1, 2]);
+  });
+
+  it('should return the indices of form error summary messages to remove for date fields when only two fields are present', () => {
+    component.formErrorSummaryMessage = FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 2);
+
+    const result = component['getDateFieldsToRemoveIndexes']();
+
+    expect(result).toEqual([1]);
+  });
+
+  it('should return an empty array if no form error summary messages to remove for date fields', () => {
+    component.formErrorSummaryMessage = [];
+
+    const result = component['getDateFieldsToRemoveIndexes']();
+
+    expect(result).toEqual([]);
   });
 });
