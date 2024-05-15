@@ -18,11 +18,13 @@ import {
   IFormError,
   IFormErrorSummaryMessage,
   IGovUkDateInput,
+  IGovUkRadioInput,
   IGovUkSelectOptions,
   IHighPriorityFormError,
 } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
 import { overEighteenValidator } from 'src/app/validators';
+import { SEARCH_TYPE_RADIOS } from '../config/search-type-radios';
 
 @Component({
   selector: 'app-search-form',
@@ -38,6 +40,7 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
     GovukErrorSummaryComponent,
+    GovukRadiosComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +53,8 @@ export class SearchFormComponent implements OnInit {
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
   public searchForm!: FormGroup;
+
+  public radioOptions: IGovUkRadioInput[] = SEARCH_TYPE_RADIOS;
 
   // We will move this to a constant field in the future
   private fieldErrors: IFieldErrors = {
@@ -91,6 +96,12 @@ export class SearchFormComponent implements OnInit {
       underEighteen: {
         message: 'You need to be older than 18 years old',
         priority: 3,
+      },
+    },
+    whereDoYouLive: {
+      required: {
+        message: 'Select the country where you live',
+        priority: 1,
       },
     },
   };
@@ -328,6 +339,9 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
+      whereDoYouLive: new FormGroup({
+        whereDoYouLive: new FormControl(null, [Validators.required]),
+      }),
     });
   }
 
@@ -346,9 +360,12 @@ export class SearchFormComponent implements OnInit {
   private scroll(fieldId: string): void {
     const fieldElement = document.getElementById(fieldId);
     if (fieldElement) {
-      const labelElement = document.querySelector(`label[for=${fieldId}]`) as HTMLInputElement;
-      if (labelElement) {
-        labelElement.scrollIntoView({ behavior: 'smooth' });
+      const labelTarget =
+        document.querySelector(`label[for=${fieldId}]`) ||
+        document.querySelector(`#${fieldId} .govuk-fieldset__legend`) ||
+        document.querySelector(`label[for=${fieldId}-autocomplete]`);
+      if (labelTarget) {
+        labelTarget.scrollIntoView({ behavior: 'smooth' });
       }
       fieldElement.focus();
     }
@@ -361,6 +378,45 @@ export class SearchFormComponent implements OnInit {
     this.searchForm.reset();
   }
 
+  // /**
+  //  * Returns an array of indexes representing the date input fields that should be removed from the form error summary message.
+  //  *
+  //  * @param formErrorSummaryMessage - The array of form error summary messages.
+  //  * @returns An array of indexes representing the date input fields to remove.
+  //  */
+  // private getDateFieldsToRemoveIndexes(formErrorSummaryMessage: IFormErrorSummaryMessage[]): number[] {
+  //   const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
+  //   const indexesToRemove: number[] = [];
+
+  //   // Collect the indexes of the date fields that are present in the formErrorSummaryMessage
+  //   const foundIndexes: { [key: string]: number } = {};
+
+  //   for (const field of dateInputFields) {
+  //     const index = formErrorSummaryMessage.findIndex((error) => error.fieldId === field);
+  //     if (index !== -1) {
+  //       foundIndexes[field] = index;
+  //     }
+  //   }
+
+  //   // Determine which indexes to remove based on the found fields
+  //   if (
+  //     foundIndexes['dayOfMonth'] !== undefined &&
+  //     foundIndexes['monthOfYear'] !== undefined &&
+  //     foundIndexes['year'] !== undefined
+  //   ) {
+  //     // All three date fields are present
+  //     indexesToRemove.push(foundIndexes['monthOfYear'], foundIndexes['year']);
+  //   } else if (foundIndexes['dayOfMonth'] !== undefined && foundIndexes['monthOfYear'] !== undefined) {
+  //     // Only dayOfMonth and monthOfYear are present
+  //     indexesToRemove.push(foundIndexes['monthOfYear']);
+  //   } else if (foundIndexes['monthOfYear'] !== undefined && foundIndexes['year'] !== undefined) {
+  //     // Only monthOfYear and year are present
+  //     indexesToRemove.push(foundIndexes['year']);
+  //   }
+
+  //   return indexesToRemove;
+  // }
+
   /**
    * Returns an array of indexes representing the date input fields that should be removed from the form error summary message.
    *
@@ -369,11 +425,23 @@ export class SearchFormComponent implements OnInit {
    */
   private getDateFieldsToRemoveIndexes(formErrorSummaryMessage: IFormErrorSummaryMessage[]): number[] {
     const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
-    const dateInputFieldIndexes = dateInputFields.map((field) =>
-      formErrorSummaryMessage.findIndex((error) => error.fieldId === field),
-    );
+    const indexesToRemove: number[] = [];
 
-    return dateInputFieldIndexes.filter((item) => item > 1);
+    // Collect the indexes of the date fields that are present in the formErrorSummaryMessage
+    const foundIndexes = dateInputFields
+      .map((field) => formErrorSummaryMessage.findIndex((error) => error.fieldId === field))
+      .filter((index) => index !== -1);
+
+    // Determine which indexes to remove based on the found fields
+    if (foundIndexes.length === 3) {
+      // All three date fields are present
+      indexesToRemove.push(foundIndexes[1], foundIndexes[2]);
+    } else if (foundIndexes.length === 2) {
+      // Two date fields are present
+      indexesToRemove.push(foundIndexes[1]);
+    }
+
+    return indexesToRemove;
   }
 
   /**
@@ -404,7 +472,9 @@ export class SearchFormComponent implements OnInit {
       this.getDateFieldsToRemoveIndexes(this.formErrorSummaryMessage),
     );
 
-    this.formSubmit.emit(this.searchForm.value);
+    if (this.searchForm.valid) {
+      this.formSubmit.emit(this.searchForm.value);
+    }
   }
 
   /**

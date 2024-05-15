@@ -1,6 +1,11 @@
 <div class="govuk-form-group" [formGroup]="getGroup" [class.govuk-form-group--error]="errors !== null">
   <fieldset class="govuk-fieldset" [id]="fieldSetId">
-    <label class="govuk-label {{ labelClasses }}" [for]="fieldSetId"> {{ labelText }} </label>
+    <legend
+      class="govuk-fieldset__legend {{ legendClasses }}"
+      [attr.describedby]="legendHint ? fieldSetId + 'Hint' : ''"
+    >
+      {{ legendText }}
+    </legend>
 
     @if (errors) {
       <p id="{{ fieldSetId }}-error" class="govuk-error-message">

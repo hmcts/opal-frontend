@@ -73,6 +73,13 @@
             inputClasses="govuk-!-width-one-half"
             [control]="searchForm.controls['pcr']"
           ></app-govuk-text-input>
+          <app-govuk-radios
+            fieldSetId="whereDoYouLive"
+            legendText="Where do you live?"
+            [radioInputs]="radioOptions"
+            [group]="searchForm.get('whereDoYouLive')"
+            [errors]="formControlErrorMessages['whereDoYouLive']"
+          ></app-govuk-radios>
         </div>
       </fieldset>
       <div class="govuk-grid-row">
