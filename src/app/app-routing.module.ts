@@ -92,7 +92,8 @@ const routes: Routes = [
   {
     path: RoutingPaths.accessDenied,
     loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
-    canActivate: [authGuard],
+    canActivate: [authGuard, routePermissionsGuard],
+    data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.manualAccountCreation] },
     resolve: { userState: userStateResolver },
   },
   {
