@@ -1,15 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
 
-html,
-body {
+html, body {
   height: 100%;
+  margin: 0;
 }
 
 body {
-  margin: 0;
   font-family: 'GDS Transport', arial, sans-serif;
 }
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the page container takes the full height of the viewport */
+}
+
+.content-wrapper {
+  flex: 1; /* This makes the main content area grow to take up the available space */
+}
+
+.govuk-width-container {
+  height: 100%; /* Ensure the container takes the full height if necessary */
+}
+
+.govuk-main-wrapper {
+  padding-bottom: 1rem; /* Add some padding to the bottom if necessary */
+}
+
+app-govuk-footer {
+  margin-top: auto; /* Push the footer to the bottom of the page */
 }
