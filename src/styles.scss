@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'govuk-frontend/dist/govuk/helpers/colour';
 
 html,
 body {
@@ -17,5 +18,11 @@ body {
 .border-top {
   &__none {
     border-top: none !important;
+  }
+}
+
+.govuk-color {
+  &__error {
+    color: govuk-colour('red') !important;
   }
 }
