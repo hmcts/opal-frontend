@@ -27,11 +27,17 @@ import { ManualAccountCreationRoutes } from '@enums';
 })
 export class CreateAccountComponent {
   private readonly router = inject(Router);
+  public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   /**
    * Handles back and navigates to the manual account creation page.
    */
   public handleBack(): void {
     this.router.navigate([ManualAccountCreationRoutes.accountDetails]);
+  }
+
+  public handleLinkNavigation(event: Event, path: string): void {
+    event.preventDefault();
+    this.router.navigate([path]);
   }
 }

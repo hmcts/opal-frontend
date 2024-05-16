@@ -1,10 +1,5 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <app-govuk-back-link (clickEvent)="handleBack()"></app-govuk-back-link>
-  </div>
-</div>
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
     <span class="govuk-caption-l">Cambridgeshire</span>
     <h1 class="govuk-heading-l">Create account</h1>
   </div>
@@ -19,7 +14,14 @@
         taskListItemClasses="govuk-task-list__item--with-link"
       >
         <ng-container name>
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="courtDetailsStatus"> Court Details </a>
+          <a
+            class="govuk-link govuk-task-list__link"
+            href="#"
+            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.courtDetails)"
+            aria-describedby="courtDetailsStatus"
+          >
+            Court Details
+          </a>
         </ng-container>
         <ng-container status> <app-govuk-tag tagId="courtDetailsStatusTag">Not provided</app-govuk-tag> </ng-container>
       </app-govuk-task-list-item>
@@ -36,7 +38,12 @@
         taskListItemClasses="govuk-task-list__item--with-link"
       >
         <ng-container name>
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="personalDetailsStatus">
+          <a
+            class="govuk-link govuk-task-list__link"
+            href="#"
+            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.personalDetails)"
+            aria-describedby="personalDetailsStatus"
+          >
             Personal details
           </a>
         </ng-container>
@@ -50,7 +57,12 @@
         taskListItemClasses="govuk-task-list__item--with-link border-top__none"
       >
         <ng-container name>
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="contactDetailsStatus">
+          <a
+            class="govuk-link govuk-task-list__link"
+            href="#"
+            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.contactDetails)"
+            aria-describedby="contactDetailsStatus"
+          >
             Contact and communication details
           </a>
         </ng-container>
@@ -64,7 +76,12 @@
         taskListItemClasses="govuk-task-list__item--with-link border-top__none"
       >
         <ng-container name>
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="employerDetailsStatus">
+          <a
+            class="govuk-link govuk-task-list__link"
+            href="#"
+            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.employerDetails)"
+            aria-describedby="employerDetailsStatus"
+          >
             Employer details
           </a>
         </ng-container>
@@ -85,7 +102,12 @@
         taskListItemClasses="govuk-task-list__item--with-link"
       >
         <ng-container name>
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="offenceDetailsStatus">
+          <a
+            class="govuk-link govuk-task-list__link"
+            href="#"
+            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.offenceDetails)"
+            aria-describedby="offenceDetailsStatus"
+          >
             Offence Details
           </a>
         </ng-container>
@@ -99,7 +121,14 @@
         taskListItemClasses="govuk-task-list__item--with-link border-top__none"
       >
         <ng-container name>
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="paymentTermsStatus"> Payment terms </a>
+          <a
+            class="govuk-link govuk-task-list__link"
+            href="#"
+            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.paymentDetails)"
+            aria-describedby="paymentTermsStatus"
+          >
+            Payment terms
+          </a>
         </ng-container>
         <ng-container status>
           <app-govuk-tag tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>

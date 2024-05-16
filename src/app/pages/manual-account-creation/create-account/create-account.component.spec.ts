@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateAccountComponent } from './create-account.component';
 import { ManualAccountCreationRoutes } from '@enums';
 
-describe('CreateAccountComponent', () => {
+fdescribe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
   let fixture: ComponentFixture<CreateAccountComponent>;
 
@@ -25,5 +25,16 @@ describe('CreateAccountComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleBack();
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
+  });
+
+  it('should navigate to the specified path on handleLinkNavigation', () => {
+    const event = jasmine.createSpyObj('event', ['preventDefault']);
+    const path = 'some-path';
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.handleLinkNavigation(event, path);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(routerSpy).toHaveBeenCalledWith([path]);
   });
 });
