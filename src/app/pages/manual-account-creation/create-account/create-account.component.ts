@@ -23,7 +23,6 @@ import { ManualAccountCreationRoutes } from '@enums';
     GovukBackLinkComponent,
   ],
   templateUrl: './create-account.component.html',
-  styleUrl: './create-account.component.scss',
 })
 export class CreateAccountComponent {
   private readonly router = inject(Router);
