@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-back-link',
@@ -8,14 +8,16 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukBackLinkComponent {
+  @Output() clickEvent = new EventEmitter<Event>();
+
   /**
-   * Handles the back navigation for the component.
-   * This method prevents the default action of the event and navigates back in the browser history.
+   * Handles the back navigation for the component by emitting an event.
+   * This method prevents the default action of the event.
    *
    * @param {Event} event - The event object representing the user's action.
    */
   public onBack(event: Event): void {
     event.preventDefault();
-    window.history.back();
+    this.clickEvent.emit(event);
   }
 }

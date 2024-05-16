@@ -5,5 +5,7 @@ Then('I navigate to Manual Account Creation', () => {
 });
 
 Then('I see {string} on the page header', (bodyHeader) => {
-  cy.get('#main-content > app-manual-account-creation > app-account-details > h1').should('contain', bodyHeader);
+  cy.get(
+    '#main-content > app-manual-account-creation > app-account-details > .govuk-grid-row > .govuk-grid-column-two-thirds > h1',
+  ).should('contain', bodyHeader);
 });

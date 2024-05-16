@@ -6,6 +6,7 @@ import { RoutingPaths } from './routing-paths';
 import { PermissionsMap } from './permissions-map';
 import { SessionEndpoints } from './session-endpoints';
 import { MojHeaderLinks } from './moj-header-links';
+import { ManualAccountCreationRoutes } from './manual-account-creation-routes';
 
 export {
   GovukFooter,
@@ -16,4 +17,5 @@ export {
   PermissionsMap,
   SessionEndpoints,
   MojHeaderLinks,
+  ManualAccountCreationRoutes,
 };
