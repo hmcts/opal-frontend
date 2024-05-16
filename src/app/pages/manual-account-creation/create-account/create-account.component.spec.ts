@@ -4,7 +4,7 @@ import { CreateAccountComponent } from './create-account.component';
 import { ManualAccountCreationRoutes } from '@enums';
 import { RouterTestingModule } from '@angular/router/testing';
 
-fdescribe('CreateAccountComponent', () => {
+describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
   let fixture: ComponentFixture<CreateAccountComponent>;
 
