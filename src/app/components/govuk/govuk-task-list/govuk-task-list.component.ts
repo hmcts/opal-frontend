@@ -5,7 +5,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './govuk-task-list.component.html',
-  styleUrl: './govuk-task-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTaskListComponent {
