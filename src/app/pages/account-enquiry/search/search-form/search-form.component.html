@@ -1,90 +1,88 @@
 <form (submit)="handleFormSubmit()">
-  <div class="govuk-grid-column-two-thirds">
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-        <h1 class="govuk-fieldset__heading">Account Enquiry</h1>
-      </legend>
-      <app-govuk-error-summary
-        [errors]="formErrorSummaryMessage"
-        (errorClick)="scrollTo($event)"
-      ></app-govuk-error-summary>
-      <div [formGroup]="searchForm">
-        <app-alphagov-accessible-autocomplete
-          [control]="searchForm.controls['court']"
-          labelText="Court"
-          inputId="court"
-          inputName="court"
-          inputClasses="govuk-!-width-one-half"
-          label="Search for a user"
-          [autoCompleteItems]="selectOptions"
-          errorMsg="Please select a court"
-        ></app-alphagov-accessible-autocomplete>
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">Account Enquiry</h1>
+    </legend>
+    <app-govuk-error-summary
+      [errors]="formErrorSummaryMessage"
+      (errorClick)="scrollTo($event)"
+    ></app-govuk-error-summary>
+    <div [formGroup]="searchForm">
+      <app-alphagov-accessible-autocomplete
+        [control]="searchForm.controls['court']"
+        labelText="Court"
+        inputId="court"
+        inputName="court"
+        inputClasses="govuk-!-width-one-half"
+        label="Search for a user"
+        [autoCompleteItems]="selectOptions"
+        errorMsg="Please select a court"
+      ></app-alphagov-accessible-autocomplete>
 
-        <app-govuk-text-input
-          labelText="Surname"
-          inputId="surname"
-          inputName="surname"
-          inputClasses="govuk-!-width-one-half"
-          [control]="searchForm.controls['surname']"
-        ></app-govuk-text-input>
-        <app-govuk-text-input
-          labelText="Forename"
-          inputId="forename"
-          inputName="forename"
-          inputClasses="govuk-!-width-one-half"
-          [control]="searchForm.controls['forename']"
-        ></app-govuk-text-input>
-        <app-govuk-text-input
-          labelText="Initials"
-          inputId="initials"
-          inputName="initials"
-          inputClasses="govuk-!-width-one-quarter"
-          [control]="searchForm.controls['initials']"
-        ></app-govuk-text-input>
-        <app-govuk-date-input
-          [group]="searchForm.get('dateOfBirth')"
-          [dateInputs]="dateInputs"
-          fieldSetId="dateOfBirth"
-          legendText="Date of Birth"
-          legendHint="For example, 04 06 1991"
-          [errorDay]="formControlErrorMessages['dayOfMonth']"
-          [errorMonth]="formControlErrorMessages['monthOfYear']"
-          [errorYear]="formControlErrorMessages['year']"
-        ></app-govuk-date-input>
-        <app-govuk-text-input
-          labelText="Address Line One"
-          inputId="addressLine"
-          inputName="addressLine"
-          inputClasses="govuk-!-width-one-half"
-          [control]="searchForm.controls['addressLine']"
-        ></app-govuk-text-input>
-        <app-govuk-text-input
-          labelText="NI Number"
-          inputId="niNumber"
-          inputName="niNumber"
-          inputClasses="govuk-!-width-one-half"
-          [control]="searchForm.controls['niNumber']"
-        ></app-govuk-text-input>
-        <app-govuk-text-input
-          labelText="PCR"
-          inputId="pcr"
-          inputName="pcr"
-          inputClasses="govuk-!-width-one-half"
-          [control]="searchForm.controls['pcr']"
-        ></app-govuk-text-input>
-      </div>
-    </fieldset>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third">
-        <app-govuk-button
-          buttonClasses="govuk-button--secondary govuk-!-margin-right-3"
-          buttonId="clearForm"
-          (buttonClickEvent)="handleClearForm()"
-        >
-          Clear</app-govuk-button
-        >
-        <app-govuk-button buttonId="submitForm" type="submit"> Search</app-govuk-button>
-      </div>
+      <app-govuk-text-input
+        labelText="Surname"
+        inputId="surname"
+        inputName="surname"
+        inputClasses="govuk-!-width-one-half"
+        [control]="searchForm.controls['surname']"
+      ></app-govuk-text-input>
+      <app-govuk-text-input
+        labelText="Forename"
+        inputId="forename"
+        inputName="forename"
+        inputClasses="govuk-!-width-one-half"
+        [control]="searchForm.controls['forename']"
+      ></app-govuk-text-input>
+      <app-govuk-text-input
+        labelText="Initials"
+        inputId="initials"
+        inputName="initials"
+        inputClasses="govuk-!-width-one-quarter"
+        [control]="searchForm.controls['initials']"
+      ></app-govuk-text-input>
+      <app-govuk-date-input
+        [group]="searchForm.get('dateOfBirth')"
+        [dateInputs]="dateInputs"
+        fieldSetId="dateOfBirth"
+        legendText="Date of Birth"
+        legendHint="For example, 04 06 1991"
+        [errorDay]="formControlErrorMessages['dayOfMonth']"
+        [errorMonth]="formControlErrorMessages['monthOfYear']"
+        [errorYear]="formControlErrorMessages['year']"
+      ></app-govuk-date-input>
+      <app-govuk-text-input
+        labelText="Address Line One"
+        inputId="addressLine"
+        inputName="addressLine"
+        inputClasses="govuk-!-width-one-half"
+        [control]="searchForm.controls['addressLine']"
+      ></app-govuk-text-input>
+      <app-govuk-text-input
+        labelText="NI Number"
+        inputId="niNumber"
+        inputName="niNumber"
+        inputClasses="govuk-!-width-one-half"
+        [control]="searchForm.controls['niNumber']"
+      ></app-govuk-text-input>
+      <app-govuk-text-input
+        labelText="PCR"
+        inputId="pcr"
+        inputName="pcr"
+        inputClasses="govuk-!-width-one-half"
+        [control]="searchForm.controls['pcr']"
+      ></app-govuk-text-input>
+    </div>
+  </fieldset>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+      <app-govuk-button
+        buttonClasses="govuk-button--secondary govuk-!-margin-right-3"
+        buttonId="clearForm"
+        (buttonClickEvent)="handleClearForm()"
+      >
+        Clear</app-govuk-button
+      >
+      <app-govuk-button buttonId="submitForm" type="submit"> Search</app-govuk-button>
     </div>
   </div>
 </form>

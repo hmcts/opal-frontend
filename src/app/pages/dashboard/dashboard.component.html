@@ -1,18 +1,16 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-m">Dashboard</h1>
-    <ul class="govuk-list">
-      <li>
-        <span>{{ stateService.userState().userName }}</span>
-      </li>
-      <li>
-        <a class="govuk-link" [href]="routingPaths.accountEnquiry" id="accountEnquiryLink">Account Enquiry</a>
-      </li>
-      <li>
-        <a class="govuk-link" [href]="manualAccountCreationRoutes.accountDetails" id="manualAccountCreationLink"
-          >Manually Create Account</a
-        >
-      </li>
-    </ul>
-  </div>
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-m">Dashboard</h1>
+  <ul class="govuk-list">
+    <li>
+      <span>{{ stateService.userState().userName }}</span>
+    </li>
+    <li>
+      <a class="govuk-link" [href]="routingPaths.accountEnquiry" id="accountEnquiryLink">Account Enquiry</a>
+    </li>
+    <li>
+      <a class="govuk-link" [href]="manualAccountCreationRoutes.accountDetails" id="manualAccountCreationLink"
+        >Manually Create Account</a
+      >
+    </li>
+  </ul>
 </div>
