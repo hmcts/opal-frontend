@@ -183,3 +183,48 @@
     </app-govuk-task-list>
   </div>
 </div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m">Offence and imposition details</h2>
+    <app-govuk-task-list taskListId="offenceAndImpositionDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <app-govuk-task-list-item
+        taskListItemId="offenceDetailsItem"
+        taskListStatusId="offenceDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link"
+      >
+        <ng-container name>
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="offenceDetailsStatus">
+            Offence Details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+      <app-govuk-task-list-item
+        taskListItemId="paymentTermsItem"
+        taskListStatusId="paymentTermsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+      >
+        <ng-container name>
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="paymentTermsStatus"> Payment terms </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+    </app-govuk-task-list>
+  </div>
+</div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m">Review and publish</h2>
+    <p class="govuk-body">Check that all required fields have been entered before you publish</p>
+    <p class="govuk-body">
+      <app-govuk-button buttonId="signInButton"> Review account</app-govuk-button>
+    </p>
+    <p class="govuk-body">
+      <a href="#" class="govuk-link govuk-color__error">Delete account</a>
+    </p>
+  </div>
+</div>
