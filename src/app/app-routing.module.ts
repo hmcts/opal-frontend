@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, routePermissionsGuard } from '@guards';
 import { RoutingPaths } from '@enums';
-import { signedInGuard } from '@guards';
 import { userStateResolver } from '@resolvers';
 
 const routes: Routes = [
@@ -50,6 +49,21 @@ const routes: Routes = [
     resolve: { userState: userStateResolver },
   },
   {
+    path: RoutingPaths.manualAccountCreation,
+    loadComponent: () =>
+      import('./pages/manual-account-creation/manual-account-creation.component').then(
+        (c) => c.ManualAccountCreationComponent,
+      ),
+    children: [
+      {
+        path: '',
+        redirectTo: RoutingPaths.manualAccountCreation,
+        pathMatch: 'full',
+      },
+    ],
+    resolve: { userState: userStateResolver },
+  },
+  {
     path: RoutingPaths.accessDenied,
     loadComponent: () => import('./pages/access-denied/access-denied.component').then((c) => c.AccessDeniedComponent),
     canActivate: [authGuard],
@@ -58,7 +72,7 @@ const routes: Routes = [
   {
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    canActivate: [signedInGuard],
+    resolve: { userState: userStateResolver },
   },
 ];
 
