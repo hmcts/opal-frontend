@@ -13,3 +13,9 @@ body {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.border-top {
+  &__none {
+    border-top: none !important;
+  }
+}
