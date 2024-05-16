@@ -36,4 +36,9 @@ export class CreateAccountComponent {
   public handleBack(): void {
     this.router.navigate([ManualAccountCreationRoutes.accountDetails]);
   }
+
+  public handleLinkNavigation(event: Event, path: string): void {
+    event.preventDefault();
+    this.router.navigate([path]);
+  }
 }
