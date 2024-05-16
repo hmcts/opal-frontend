@@ -1,21 +1,17 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">Account Enquiry Matches</h1>
-  </div>
+<div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-l">Account Enquiry Matches</h1>
 </div>
 
 {{ stateService.error().message }}
 @if (!stateService.error().error) {
   @if (data$ | async; as data) {
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <app-matches-table [data]="data" (view)="handleViewDefendantAccount($event)"></app-matches-table>
-      </div>
+    <div class="govuk-grid-column-full">
+      <app-matches-table [data]="data" (view)="handleViewDefendantAccount($event)"></app-matches-table>
     </div>
   }
 }
 
-<div class="govuk-grid-row govuk-!-margin-top-6">
+<div class="govuk-!-margin-top-6">
   <div class="govuk-grid-column-two-thirds">
     <app-govuk-button
       buttonClasses="govuk-button--secondary govuk-!-margin-right-3"
