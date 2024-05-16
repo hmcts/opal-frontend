@@ -81,6 +81,7 @@ const routes: Routes = [
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
     resolve: { userState: userStateResolver },
+    resolve: { userState: userStateResolver },
   },
 ];
 
