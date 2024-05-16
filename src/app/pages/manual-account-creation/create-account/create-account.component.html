@@ -134,3 +134,52 @@
     <a href="#" class="govuk-link govuk-color__error" onclick="return false;">Delete account</a>
   </p>
 </div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m">Defendant details</h2>
+    <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <app-govuk-task-list-item
+        taskListItemId="personalDetailsItem"
+        taskListStatusId="personalDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link"
+      >
+        <ng-container name>
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="personalDetailsStatus">
+            Personal details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+      <app-govuk-task-list-item
+        taskListItemId="contactDetailsItem"
+        taskListStatusId="contactDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+      >
+        <ng-container name>
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="contactDetailsStatus">
+            Contact and communication details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+      <app-govuk-task-list-item
+        taskListItemId="employerDetailsItem"
+        taskListStatusId="employerDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+      >
+        <ng-container name>
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="employerDetailsStatus">
+            Employer details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+    </app-govuk-task-list>
+  </div>
+</div>
