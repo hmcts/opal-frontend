@@ -1,24 +1,22 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <span class="govuk-caption-l">govuk-caption-l</span>
-    <h1 class="govuk-heading-l">govuk-heading-l</h1>
+    <span class="govuk-caption-l">Cambridgeshire</span>
+    <h1 class="govuk-heading-l">Create account</h1>
   </div>
 </div>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <h2 class="govuk-heading-m">Court details</h2>
-    <app-govuk-task-list taskListId="courtDetails">
+    <app-govuk-task-list taskListId="courtDetails" taskListClasses="govuk-!-margin-left-0 ">
       <app-govuk-task-list-item
-        taskListItemId="test"
-        taskListStatusId="company-details-1-status"
+        taskListItemId="courtDetailsItem"
+        taskListStatusId="courtDetailsStatus"
         taskListItemClasses="govuk-task-list__item--with-link"
       >
         <ng-container name>
-          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="company-details-1-status">
-            Company details
-          </a>
+          <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="courtDetailsStatus"> Court Details </a>
         </ng-container>
-        <ng-container status> <app-govuk-tag>Not provided</app-govuk-tag> </ng-container>
+        <ng-container status> <app-govuk-tag tagId="courtDetailsStatusTag">Not provided</app-govuk-tag> </ng-container>
       </app-govuk-task-list-item>
     </app-govuk-task-list>
   </div>

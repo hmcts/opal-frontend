@@ -10,4 +10,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class GovukTaskListComponent {
   @Input({ required: true }) taskListId!: string;
+  @Input({ required: false }) taskListClasses!: string;
 }
