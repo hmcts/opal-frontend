@@ -15,9 +15,8 @@
       >
         <ng-container name>
           <a
-            class="govuk-link govuk-task-list__link"
-            href="#"
-            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.courtDetails)"
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [href]="manualAccountCreationRoutes.courtDetails"
             aria-describedby="courtDetailsStatus"
           >
             Court Details
@@ -39,9 +38,8 @@
       >
         <ng-container name>
           <a
-            class="govuk-link govuk-task-list__link"
-            href="#"
-            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.personalDetails)"
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [href]="manualAccountCreationRoutes.personalDetails"
             aria-describedby="personalDetailsStatus"
           >
             Personal details
@@ -52,34 +50,14 @@
         </ng-container>
       </app-govuk-task-list-item>
       <app-govuk-task-list-item
-        taskListItemId="contactDetailsItem"
-        taskListStatusId="contactDetailsStatus"
-        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
-      >
-        <ng-container name>
-          <a
-            class="govuk-link govuk-task-list__link"
-            href="#"
-            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.contactDetails)"
-            aria-describedby="contactDetailsStatus"
-          >
-            Contact and communication details
-          </a>
-        </ng-container>
-        <ng-container status>
-          <app-govuk-tag tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
-        </ng-container>
-      </app-govuk-task-list-item>
-      <app-govuk-task-list-item
         taskListItemId="employerDetailsItem"
         taskListStatusId="employerDetailsStatus"
         taskListItemClasses="govuk-task-list__item--with-link border-top__none"
       >
         <ng-container name>
           <a
-            class="govuk-link govuk-task-list__link"
-            href="#"
-            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.employerDetails)"
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [href]="manualAccountCreationRoutes.employerDetails"
             aria-describedby="employerDetailsStatus"
           >
             Employer details
@@ -87,6 +65,24 @@
         </ng-container>
         <ng-container status>
           <app-govuk-tag tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+      <app-govuk-task-list-item
+        taskListItemId="additionalDetailsItem"
+        taskListStatusId="additionalDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+      >
+        <ng-container name>
+          <a
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [href]="manualAccountCreationRoutes.additionalDetails"
+            aria-describedby="additionalDetailsStatus"
+          >
+            Additional defendant details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagId="additionalDetailsStatusTag">Not provided</app-govuk-tag>
         </ng-container>
       </app-govuk-task-list-item>
     </app-govuk-task-list>
@@ -103,9 +99,8 @@
       >
         <ng-container name>
           <a
-            class="govuk-link govuk-task-list__link"
-            href="#"
-            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.offenceDetails)"
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [href]="manualAccountCreationRoutes.offenceDetails"
             aria-describedby="offenceDetailsStatus"
           >
             Offence Details
@@ -122,9 +117,8 @@
       >
         <ng-container name>
           <a
-            class="govuk-link govuk-task-list__link"
-            href="#"
-            (click)="handleLinkNavigation($event, manualAccountCreationRoutes.paymentDetails)"
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [href]="manualAccountCreationRoutes.paymentDetails"
             aria-describedby="paymentTermsStatus"
           >
             Payment terms
@@ -142,10 +136,10 @@
     <h2 class="govuk-heading-m">Review and publish</h2>
     <p class="govuk-body">Check that all required fields have been entered before you publish</p>
     <p class="govuk-body">
-      <app-govuk-button buttonId="signInButton"> Review account</app-govuk-button>
+      <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
     </p>
     <p class="govuk-body">
-      <a href="#" class="govuk-link govuk-color__error">Delete account</a>
+      <a href="#" class="govuk-link govuk-color__error" onclick="return false;">Delete account</a>
     </p>
   </div>
 </div>
