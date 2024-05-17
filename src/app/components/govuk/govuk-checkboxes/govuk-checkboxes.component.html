@@ -14,7 +14,7 @@
     <div class="govuk-checkboxes {{ checkboxClasses }}" data-module="govuk-checkboxes">
       @for (input of checkboxInputs; track input.inputId) {
         @if (input.inputTextDivider) {
-          <div [id]="input.inputId ? input.inputId + 'CheckboxesDivider' : ''" class="govuk-radios__divider">
+          <div [id]="input.inputId ? input.inputId + 'CheckboxesDivider' : ''" class="govuk-checkboxes__divider">
             {{ input.inputTextDivider }}
           </div>
         }

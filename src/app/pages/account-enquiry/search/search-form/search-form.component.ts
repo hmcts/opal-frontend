@@ -9,6 +9,9 @@ import {
   GovukButtonComponent,
   AlphagovAccessibleAutocompleteComponent,
   GovukErrorSummaryComponent,
+  GovukCheckboxesNewComponent,
+  GovukCheckboxesItemComponent,
+  GovukCheckboxesConditionalComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -38,6 +41,9 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
     GovukErrorSummaryComponent,
+    GovukCheckboxesNewComponent,
+    GovukCheckboxesItemComponent,
+    GovukCheckboxesConditionalComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -328,6 +334,10 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
+      checkboxes: new FormGroup({
+        checkbox1: new FormControl(null),
+        checkbox2: new FormControl(null),
+      }),
     });
   }
 
@@ -434,7 +444,9 @@ export class SearchFormComponent implements OnInit {
       this.getDateFieldsToRemoveIndexes(),
     );
 
-    this.formSubmit.emit(this.searchForm.value);
+    console.log(this.searchForm.value);
+
+    // this.formSubmit.emit(this.searchForm.value);
   }
 
   /**
@@ -450,5 +462,7 @@ export class SearchFormComponent implements OnInit {
     this.setupSearchForm();
     this.setInitialErrorMessages(this.searchForm);
     this.rePopulateSearchForm();
+
+    // this.searchForm.get('checkboxes.checkbox1');
   }
 }

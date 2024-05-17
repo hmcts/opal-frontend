@@ -57,13 +57,13 @@
         inputClasses="govuk-!-width-one-half"
         [control]="searchForm.controls['addressLine']"
       ></app-govuk-text-input>
-      <app-govuk-text-input
+      <!-- <app-govuk-text-input
         labelText="NI Number"
         inputId="niNumber"
         inputName="niNumber"
         inputClasses="govuk-!-width-one-half"
         [control]="searchForm.controls['niNumber']"
-      ></app-govuk-text-input>
+      ></app-govuk-text-input> -->
       <app-govuk-text-input
         labelText="PCR"
         inputId="pcr"
@@ -85,4 +85,65 @@
       <app-govuk-button buttonId="submitForm" type="submit"> Search</app-govuk-button>
     </div>
   </div>
+
+  <app-govuk-checkboxes-new fieldSetId="checkboxes" checkboxClasses="" legendText="Hello World">
+    <!-- <app-govuk-checkboxes-item
+      labelText="Checkbox 1"
+      inputId="checkbox1"
+      inputName="checkbox1"
+      itemClasses="govuk-!-margin-bottom-2"
+      [control]="searchForm.get('checkboxes.checkbox1')"
+    >
+      <div class="govuk-checkboxes__conditional" id="checkbox1Conditional">
+        <app-govuk-text-input
+          labelText="NI Number"
+          inputId="niNumber"
+          inputName="niNumber"
+          inputClasses="govuk-!-width-one-half"
+          [control]="searchForm.controls['niNumber']"
+        ></app-govuk-text-input>
+      </div>
+    </app-govuk-checkboxes-item> -->
+    <!-- <app-govuk-checkboxes-item
+      labelText="Checkbox 2"
+      inputId="checkbox2"
+      inputName="checkbox2"
+      [control]="searchForm.get('checkboxes.checkbox2')"
+    ></app-govuk-checkboxes-item> -->
+    <!-- <ng-container
+      app-govuk-checkboxes-item
+      labelText="Checkbox 2"
+      inputId="checkbox2"
+      inputName="checkbox2"
+      [control]="searchForm.get('checkboxes.checkbox2')"
+    ></ng-container> -->
+
+    <div
+      app-govuk-checkboxes-item
+      labelText="Checkbox 1"
+      inputId="checkbox1"
+      inputName="checkbox1"
+      [control]="searchForm.get('checkboxes.checkbox1')"
+    ></div>
+
+    @if (searchForm.get('checkboxes.checkbox1')?.value === true) {
+      <div app-govuk-checkboxes-conditional conditionalId="checkbox1">
+        <app-govuk-text-input
+          labelText="NI Number"
+          inputId="niNumber"
+          inputName="niNumber"
+          inputClasses="govuk-!-width-one-half"
+          [control]="searchForm.controls['niNumber']"
+        ></app-govuk-text-input>
+      </div>
+    }
+
+    <div
+      app-govuk-checkboxes-item
+      labelText="Checkbox 2"
+      inputId="checkbox2"
+      inputName="checkbox2"
+      [control]="searchForm.get('checkboxes.checkbox2')"
+    ></div>
+  </app-govuk-checkboxes-new>
 </form>
