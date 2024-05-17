@@ -126,6 +126,8 @@
       [control]="searchForm.get('checkboxes.checkbox1')"
     ></div>
 
+    <!-- init -->
+
     @if (searchForm.get('checkboxes.checkbox1')?.value === true) {
       <div app-govuk-checkboxes-conditional conditionalId="checkbox1">
         <app-govuk-text-input
