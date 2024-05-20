@@ -143,7 +143,6 @@ export class DetailsComponent implements OnInit {
 
   /**
    * Navigates back to the account enquiry matches page.
-   * Navigates back to the account enquiry matches page.
    */
   public handleBack(): void {
     this.router.navigate([AccountEnquiryRoutes.matches]);

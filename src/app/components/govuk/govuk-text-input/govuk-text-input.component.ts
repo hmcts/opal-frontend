@@ -30,6 +30,6 @@ export class GovukTextInputComponent {
   }
 
   public hasError(): boolean {
-    return (this.errors !== null && typeof this.errors !== 'undefined');
+    return this.errors !== null && typeof this.errors !== 'undefined';
   }
 }

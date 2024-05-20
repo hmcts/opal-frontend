@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { GovukBackLinkComponent, GovukButtonComponent } from '@components';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
+import { StateService } from '@services';
 
 @Component({
   selector: 'app-account-details',
@@ -13,6 +14,7 @@ import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 })
 export class AccountDetailsComponent {
   private readonly router = inject(Router);
+  public readonly stateService = inject(StateService);
 
   /**
    * Handles continue and navigates to the create account page.

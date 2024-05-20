@@ -4,6 +4,7 @@ import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, routePermissionsGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
+import { FlowExitStateGuard } from './guards/flow-exit-state-guard/flow-exit-state.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -57,7 +58,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: RoutingPaths.accountEnquiryDetails,
+        redirectTo: RoutingPaths.manualAccountCreationAccountDetails,
         pathMatch: 'full',
       },
       {
@@ -83,6 +84,16 @@ const routes: Routes = [
             (c) => c.EmployerDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [FlowExitStateGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationEmployerDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/employer-details/employer-details-form/employer-details-form.component').then(
+            (c) => c.EmployerDetailsFormComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [FlowExitStateGuard],
       },
     ],
     resolve: { userState: userStateResolver },
