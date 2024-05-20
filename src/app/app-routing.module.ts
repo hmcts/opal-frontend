@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
-import { authGuard, routePermissionsGuard } from '@guards';
+import { authGuard, routePermissionsGuard, signedInGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
 
@@ -72,7 +72,7 @@ const routes: Routes = [
   {
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    resolve: { userState: userStateResolver },
+    canActivate: [signedInGuard],
   },
 ];
 
