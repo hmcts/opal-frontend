@@ -1,7 +1,7 @@
 import { ValidatorFn, AbstractControl } from '@angular/forms';
 
 export function optionalPhoneNumberValidator(): ValidatorFn {
-  const numericPattern = /^\d*$/;
+  const numericPattern = /^[\d\s]*$/;
   return (control: AbstractControl): { [key: string]: unknown } | null => {
     if (control.value) {
       const valid = numericPattern.test(control.value);

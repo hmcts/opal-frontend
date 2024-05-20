@@ -1,14 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-  inject,
-} from '@angular/core';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import {
   GovukTextInputComponent,
@@ -26,12 +17,7 @@ import {
   IHighPriorityFormError,
   IFormError,
 } from '@interfaces';
-import { Observable } from 'rxjs';
-import {
-  optionalMaxLengthValidator,
-  optionalEmailAddressValidator,
-  optionalPhoneNumberValidator,
-} from 'src/app/validators';
+import { StateService } from '@services';
 
 @Component({
   selector: 'app-employer-details-form',
@@ -49,27 +35,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployerDetailsFormComponent implements OnInit {
-  @Input({ required: true }) public state!: IManualAccountCreationEmployerDetailsState;
+  @Input() public employerDetailsForm!: FormGroup;
   @Output() private employerDetailsFormSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
 
-  // @HostListener allows us to also guard against browser refresh, close, etc.
-  @HostListener('window:beforeunload')
-  canDeactivate(): Observable<boolean> | boolean {
-    if (this.employerDetailsForm.dirty) {
-      const controls = this.employerDetailsForm.controls;
-      for (const controlName in controls) {
-        const control = controls[controlName];
-        if (control.dirty && control.value.trim() !== '') {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
   private readonly router = inject(Router);
+  public readonly stateService = inject(StateService).manualAccountCreation.employerDetails;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
-  public employerDetailsForm!: FormGroup;
   public formControlErrorMessages!: IFormControlErrorMessage;
   public formErrorSummaryMessage!: IFormErrorSummaryMessage[];
 
@@ -107,7 +79,7 @@ export class EmployerDetailsFormComponent implements OnInit {
     },
     employerTelephone: {
       maxlength: {
-        message: 'The employer email address must be 11 characters or fewer',
+        message: 'The employer telephone number must be 11 characters or fewer',
         priority: 1,
       },
       phoneNumberPattern: {
@@ -124,30 +96,50 @@ export class EmployerDetailsFormComponent implements OnInit {
         message: 'The employer address line 1 must be 30 characters or fewer',
         priority: 2,
       },
+      specialCharactersPattern: {
+        message: 'The employer address line 1 must not contain special characters',
+        priority: 3,
+      }
     },
     employerAddress2: {
       maxlength: {
         message: 'The employer address line 2 must be 30 characters or fewer',
         priority: 1,
       },
+      specialCharactersPattern: {
+        message: 'The employer address line 2 must not contain special characters',
+        priority: 2,
+      }
     },
     employerAddress3: {
       maxlength: {
         message: 'The employer address line 3 must be 30 characters or fewer',
         priority: 1,
       },
+      specialCharactersPattern: {
+        message: 'The employer address line 3 must not contain special characters',
+        priority: 2,
+      }
     },
     employerAddress4: {
       maxlength: {
         message: 'The employer address line 4 must be 30 characters or fewer',
         priority: 1,
       },
+      specialCharactersPattern: {
+        message: 'The employer address line 4 must not contain special characters',
+        priority: 2,
+      }
     },
     employerAddress5: {
       maxlength: {
         message: 'The employer address line 5 must be 30 characters or fewer',
         priority: 1,
       },
+      specialCharactersPattern: {
+        message: 'The employer address line 5 must not contain special characters',
+        priority: 2,
+      }
     },
     employerPostcode: {
       maxlength: {
@@ -297,28 +289,10 @@ export class EmployerDetailsFormComponent implements OnInit {
   }
 
   /**
-   * Sets up the employer details form with the necessary form controls.
-   */
-  private setupEmployerDetailsForm(): void {
-    this.employerDetailsForm = new FormGroup({
-      employerName: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
-      employeeReference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
-      employerEmailAddress: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      employerTelephone: new FormControl(null, [optionalMaxLengthValidator(11), optionalPhoneNumberValidator()]),
-      employerAddress1: new FormControl(null, [Validators.required, Validators.maxLength(30)]),
-      employerAddress2: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      employerAddress3: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      employerAddress4: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      employerAddress5: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      employerPostcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-    });
-  }
-
-  /**
    * Repopulates the employer details form with the data from the create account page.
    */
   private rePopulateEmployerDetailsForm(): void {
-    this.employerDetailsForm.patchValue(this.state);
+    this.employerDetailsForm.patchValue(this.stateService);
   }
 
   /**
@@ -351,8 +325,6 @@ export class EmployerDetailsFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    console.log(this.state);
-    this.setupEmployerDetailsForm();
     this.setInitialErrorMessages(this.employerDetailsForm);
     this.rePopulateEmployerDetailsForm();
   }

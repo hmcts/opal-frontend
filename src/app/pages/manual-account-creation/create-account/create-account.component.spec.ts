@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateAccountComponent } from './create-account.component';
 import { ManualAccountCreationRoutes } from '@enums';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
@@ -9,7 +10,7 @@ describe('CreateAccountComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateAccountComponent],
+      imports: [CreateAccountComponent, RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountComponent);

@@ -1,6 +1,6 @@
 <div class="govuk-grid-column-two-thirds">
   <app-employer-details-form
-    [state]="stateService.manualAccountCreation.employerDetails"
+    [employerDetailsForm]="employerDetailsForm"
     (employerDetailsFormSubmit)="handleEmployerDetailsSubmit($event)"
   ></app-employer-details-form>
 </div>

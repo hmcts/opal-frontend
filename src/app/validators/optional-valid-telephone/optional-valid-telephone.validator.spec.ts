@@ -35,7 +35,7 @@ describe('optionalPhoneNumberValidator', () => {
   it('should return an error object if control value contains spaces', () => {
     const control = new FormControl('123 456 7890');
     const result = optionalPhoneNumberValidator()(control);
-    expect(result).toEqual({ phoneNumberPattern: { value: '123 456 7890' } });
+    expect(result).toBeNull();
   });
 
   it('should return an error object if control value contains special characters', () => {

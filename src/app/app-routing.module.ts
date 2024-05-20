@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
-import { authGuard, routePermissionsGuard } from '@guards';
+import { authGuard, flowExitStateGuard, routePermissionsGuard, signedInGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
-import { FlowExitStateGuard } from './guards/flow-exit-state-guard/flow-exit-state.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -84,16 +83,15 @@ const routes: Routes = [
             (c) => c.EmployerDetailsComponent,
           ),
         canActivate: [authGuard],
-        canDeactivate: [FlowExitStateGuard],
+        canDeactivate: [flowExitStateGuard],
       },
       {
         path: RoutingPaths.manualAccountCreationEmployerDetails,
         loadComponent: () =>
-          import('./pages/manual-account-creation/employer-details/employer-details-form/employer-details-form.component').then(
-            (c) => c.EmployerDetailsFormComponent,
-          ),
+          import(
+            './pages/manual-account-creation/employer-details/employer-details-form/employer-details-form.component'
+          ).then((c) => c.EmployerDetailsFormComponent),
         canActivate: [authGuard],
-        canDeactivate: [FlowExitStateGuard],
       },
     ],
     resolve: { userState: userStateResolver },
@@ -107,7 +105,7 @@ const routes: Routes = [
   {
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    resolve: { userState: userStateResolver },
+    canActivate: [signedInGuard],
   },
 ];
 

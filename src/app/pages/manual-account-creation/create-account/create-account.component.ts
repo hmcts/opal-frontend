@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
   GovukBackLinkComponent,
@@ -24,6 +24,7 @@ import { StateService } from '@services';
     GovukBackLinkComponent,
   ],
   templateUrl: './create-account.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateAccountComponent {
   private readonly router = inject(Router);
@@ -34,7 +35,6 @@ export class CreateAccountComponent {
    * Handles back and navigates to the manual account creation page.
    */
   public handleBack(): void {
-    console.log(this.stateService.manualAccountCreation);
     this.router.navigate([ManualAccountCreationRoutes.accountDetails]);
   }
 }
