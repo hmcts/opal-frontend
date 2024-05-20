@@ -29,6 +29,7 @@ import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-l
 import { GovukCheckboxesNewComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-new.component';
 import { GovukCheckboxesItemComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { GovukCheckboxesConditionalComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
+import { GovukCheckboxesDividerComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-divider/govuk-checkboxes-divider.component';
 
 export {
   GovukButtonComponent,
@@ -62,4 +63,5 @@ export {
   GovukCheckboxesNewComponent,
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
+  GovukCheckboxesDividerComponent,
 };

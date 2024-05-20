@@ -5,7 +5,6 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '
   standalone: true,
   imports: [],
   templateUrl: './govuk-checkboxes-conditional.component.html',
-  styleUrl: './govuk-checkboxes-conditional.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukCheckboxesConditionalComponent implements OnInit {

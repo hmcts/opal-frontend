@@ -1,23 +1,56 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukCheckboxesNewComponent } from './govuk-checkboxes-new.component';
+import { Component } from '@angular/core';
 
+@Component({
+  template: `<app-govuk-checkboxes-new
+    fieldSetId="test"
+    legendText="Legend Text"
+    legendHint="Legend Hint"
+    legendClasses="legend-class"
+    checkboxClasses="checkbox-class"
+  >
+    Hello World</app-govuk-checkboxes-new
+  >`,
+})
+class TestHostComponent {}
 describe('GovukCheckboxesNewComponent', () => {
-  let component: GovukCheckboxesNewComponent;
-  let fixture: ComponentFixture<GovukCheckboxesNewComponent>;
+  let component: TestHostComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukCheckboxesNewComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(GovukCheckboxesNewComponent);
+      imports: [GovukCheckboxesNewComponent],
+      declarations: [TestHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render into the Legend Text', () => {
+    const element = fixture.nativeElement.querySelector('#test > .govuk-fieldset__legend ');
+    expect(element.innerText).toBe('Legend Text');
+  });
+
+  it('should render into the Legend Hint', () => {
+    const element = fixture.nativeElement.querySelector('#testHint');
+    expect(element.innerText).toBe('Legend Hint');
+  });
+
+  it('should add a legend class', () => {
+    const element = fixture.nativeElement.querySelector('#test > .govuk-fieldset__legend.legend-class');
+    expect(element.innerText).toBe('Legend Text');
+  });
+
+  it('should add a checkbox class', () => {
+    const element = fixture.nativeElement.querySelector('#test > .checkbox-class');
+    expect(element.innerText).toBe('Hello World');
   });
 });

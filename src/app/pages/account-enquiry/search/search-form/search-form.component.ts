@@ -12,6 +12,7 @@ import {
   GovukCheckboxesNewComponent,
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
+  GovukCheckboxesDividerComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -44,6 +45,7 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukCheckboxesNewComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
+    GovukCheckboxesDividerComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -332,7 +334,7 @@ export class SearchFormComponent implements OnInit {
         { validators: overEighteenValidator('dayOfMonth', 'monthOfYear', 'year') },
       ),
       addressLine: new FormControl(null),
-      niNumber: new FormControl(null),
+      niNumber: new FormControl(null, [Validators.required]),
       pcr: new FormControl(null),
       checkboxes: new FormGroup({
         checkbox1: new FormControl(null),

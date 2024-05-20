@@ -40,7 +40,7 @@
         inputClasses="govuk-!-width-one-quarter"
         [control]="searchForm.controls['initials']"
       ></app-govuk-text-input>
-      <app-govuk-date-input
+      <!-- <app-govuk-date-input
         [group]="searchForm.get('dateOfBirth')"
         [dateInputs]="dateInputs"
         fieldSetId="dateOfBirth"
@@ -49,7 +49,7 @@
         [errorDay]="formControlErrorMessages['dayOfMonth']"
         [errorMonth]="formControlErrorMessages['monthOfYear']"
         [errorYear]="formControlErrorMessages['year']"
-      ></app-govuk-date-input>
+      ></app-govuk-date-input> -->
       <app-govuk-text-input
         labelText="Address Line One"
         inputId="addressLine"
@@ -57,13 +57,13 @@
         inputClasses="govuk-!-width-one-half"
         [control]="searchForm.controls['addressLine']"
       ></app-govuk-text-input>
-      <!-- <app-govuk-text-input
+      <app-govuk-text-input
         labelText="NI Number"
         inputId="niNumber"
         inputName="niNumber"
         inputClasses="govuk-!-width-one-half"
         [control]="searchForm.controls['niNumber']"
-      ></app-govuk-text-input> -->
+      ></app-govuk-text-input>
       <app-govuk-text-input
         labelText="PCR"
         inputId="pcr"
@@ -87,37 +87,6 @@
   </div>
 
   <app-govuk-checkboxes-new fieldSetId="checkboxes" checkboxClasses="" legendText="Hello World">
-    <!-- <app-govuk-checkboxes-item
-      labelText="Checkbox 1"
-      inputId="checkbox1"
-      inputName="checkbox1"
-      itemClasses="govuk-!-margin-bottom-2"
-      [control]="searchForm.get('checkboxes.checkbox1')"
-    >
-      <div class="govuk-checkboxes__conditional" id="checkbox1Conditional">
-        <app-govuk-text-input
-          labelText="NI Number"
-          inputId="niNumber"
-          inputName="niNumber"
-          inputClasses="govuk-!-width-one-half"
-          [control]="searchForm.controls['niNumber']"
-        ></app-govuk-text-input>
-      </div>
-    </app-govuk-checkboxes-item> -->
-    <!-- <app-govuk-checkboxes-item
-      labelText="Checkbox 2"
-      inputId="checkbox2"
-      inputName="checkbox2"
-      [control]="searchForm.get('checkboxes.checkbox2')"
-    ></app-govuk-checkboxes-item> -->
-    <!-- <ng-container
-      app-govuk-checkboxes-item
-      labelText="Checkbox 2"
-      inputId="checkbox2"
-      inputName="checkbox2"
-      [control]="searchForm.get('checkboxes.checkbox2')"
-    ></ng-container> -->
-
     <div
       app-govuk-checkboxes-item
       labelText="Checkbox 1"
@@ -126,19 +95,22 @@
       [control]="searchForm.get('checkboxes.checkbox1')"
     ></div>
 
-    <!-- init -->
-
     @if (searchForm.get('checkboxes.checkbox1')?.value === true) {
       <div app-govuk-checkboxes-conditional conditionalId="checkbox1">
-        <app-govuk-text-input
-          labelText="NI Number"
-          inputId="niNumber"
-          inputName="niNumber"
-          inputClasses="govuk-!-width-one-half"
-          [control]="searchForm.controls['niNumber']"
-        ></app-govuk-text-input>
+        <app-govuk-date-input
+          [group]="searchForm.get('dateOfBirth')"
+          [dateInputs]="dateInputs"
+          fieldSetId="dateOfBirth"
+          legendText="Date of Birth"
+          legendHint="For example, 04 06 1991"
+          [errorDay]="formControlErrorMessages['dayOfMonth']"
+          [errorMonth]="formControlErrorMessages['monthOfYear']"
+          [errorYear]="formControlErrorMessages['year']"
+        ></app-govuk-date-input>
       </div>
     }
+
+    <app-govuk-checkboxes-divider>or</app-govuk-checkboxes-divider>
 
     <div
       app-govuk-checkboxes-item

@@ -44,14 +44,14 @@ describe('GovukTextInputComponent', () => {
 
   it('should have extra input classes', () => {
     const labelClass = 'govuk-input--width-20';
-    component.labelClasses = labelClass;
+    component.inputClasses = labelClass;
     fixture.detectChanges();
 
-    const label = fixture.debugElement.query(By.css('.govuk-label'));
+    const elem = fixture.debugElement.query(By.css('.govuk-input'));
 
     const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef);
     cdr.detectChanges();
 
-    expect(label.classes[labelClass]).toBeTruthy();
+    expect(elem.classes[labelClass]).toBeTruthy();
   });
 });

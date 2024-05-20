@@ -1,25 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GovukCheckboxesConditionalComponent } from './govuk-checkboxes-conditional.component';
+import { GovukCheckboxesDividerComponent } from './govuk-checkboxes-divider.component';
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-checkboxes-conditional conditionalId="test"> Hello World</app-govuk-checkboxes-conditional>`,
+  template: `<app-govuk-checkboxes-divider> Hello World</app-govuk-checkboxes-divider>`,
 })
 class TestHostComponent {}
-describe('GovukCheckboxesConditionalComponent', () => {
-  let component: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
+describe('GovukCheckboxesDividerComponent', () => {
+  let component: GovukCheckboxesDividerComponent;
+  let fixture: ComponentFixture<GovukCheckboxesDividerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukCheckboxesConditionalComponent],
+      imports: [GovukCheckboxesDividerComponent],
       declarations: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 
@@ -27,8 +26,8 @@ describe('GovukCheckboxesConditionalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should create', () => {
-    const element = fixture.nativeElement.querySelector('#test-conditional');
+  it('should project the ng-content', () => {
+    const element = fixture.nativeElement.querySelector('.govuk-checkboxes__divider');
     expect(element.innerText).toBe('Hello World');
   });
 });

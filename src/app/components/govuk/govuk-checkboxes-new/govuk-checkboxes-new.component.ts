@@ -6,7 +6,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './govuk-checkboxes-new.component.html',
-  styleUrl: './govuk-checkboxes-new.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukCheckboxesNewComponent {
