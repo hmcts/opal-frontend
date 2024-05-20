@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface ComponentCanDeactivate {
@@ -7,7 +7,7 @@ export interface ComponentCanDeactivate {
 }
 
 @Injectable()
-export class FlowExitStateGuard implements CanDeactivate<ComponentCanDeactivate> {
+export class flowExitStateGuard implements CanDeactivate<ComponentCanDeactivate> {
   canDeactivate(component: ComponentCanDeactivate): boolean | Observable<boolean> {
     // if there are no pending changes, just allow deactivation; else confirm first
     return component.canDeactivate()

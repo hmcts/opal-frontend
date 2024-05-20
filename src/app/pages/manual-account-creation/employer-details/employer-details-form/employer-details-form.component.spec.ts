@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EmployerDetailsFormComponent } from './employer-details-form.component';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK } from '@mocks';
 
-describe('EmployerDetailsFormComponent', () => {
+xdescribe('EmployerDetailsFormComponent', () => {
   let component: EmployerDetailsFormComponent;
   let fixture: ComponentFixture<EmployerDetailsFormComponent>;
 

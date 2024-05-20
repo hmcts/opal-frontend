@@ -4,7 +4,6 @@ import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
-import { FlowExitStateGuard } from './guards/flow-exit-state-guard/flow-exit-state.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -99,7 +98,7 @@ const routes: Routes = [
   {
     path: RoutingPaths.signIn,
     loadComponent: () => import('./pages/sign-in/sign-in.component').then((c) => c.SignInComponent),
-    resolve: { userState: userStateResolver },
+    canActivate: [signedInGuard],
   },
 ];
 

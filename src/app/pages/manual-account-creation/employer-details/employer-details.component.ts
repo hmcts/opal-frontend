@@ -37,4 +37,8 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }
+
+  public ngOnInit(): void {
+    this.setupEmployerDetailsForm();
+  }
 }
