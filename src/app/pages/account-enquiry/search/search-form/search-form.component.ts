@@ -446,9 +446,7 @@ export class SearchFormComponent implements OnInit {
       this.getDateFieldsToRemoveIndexes(),
     );
 
-    console.log(this.searchForm.value);
-
-    // this.formSubmit.emit(this.searchForm.value);
+    this.formSubmit.emit(this.searchForm.value);
   }
 
   /**
@@ -464,7 +462,5 @@ export class SearchFormComponent implements OnInit {
     this.setupSearchForm();
     this.setInitialErrorMessages(this.searchForm);
     this.rePopulateSearchForm();
-
-    // this.searchForm.get('checkboxes.checkbox1');
   }
 }
