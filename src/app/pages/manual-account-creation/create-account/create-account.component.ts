@@ -29,11 +29,13 @@ export class CreateAccountComponent {
   private readonly router = inject(Router);
   private readonly stateService = inject(StateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  public readonly stateService = inject(StateService);
 
   /**
    * Handles back and navigates to the manual account creation page.
    */
   public handleBack(): void {
+    console.log(this.stateService.manualAccountCreation);
     this.router.navigate([ManualAccountCreationRoutes.accountDetails]);
   }
 }
