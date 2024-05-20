@@ -26,10 +26,9 @@ import { GovukBackLinkComponent } from './govuk/govuk-back-link/govuk-back-link.
 import { GovukTagComponent } from './govuk/govuk-tag/govuk-tag.component';
 import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.component';
 import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
-import { GovukCheckboxesNewComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-new.component';
-import { GovukCheckboxesItemComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-item/govuk-checkboxes-item.component';
-import { GovukCheckboxesConditionalComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
-import { GovukCheckboxesDividerComponent } from './govuk/govuk-checkboxes-new/govuk-checkboxes-divider/govuk-checkboxes-divider.component';
+import { GovukCheckboxesItemComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
+import { GovukCheckboxesConditionalComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
+import { GovukCheckboxesDividerComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-divider/govuk-checkboxes-divider.component';
 
 export {
   GovukButtonComponent,
@@ -39,7 +38,6 @@ export {
   GovukFooterComponent,
   GovukTextInputComponent,
   GovukRadiosComponent,
-  GovukCheckboxesComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukPaginationComponent,
@@ -60,7 +58,7 @@ export {
   GovukTagComponent,
   GovukTaskListComponent,
   GovukTaskListItemComponent,
-  GovukCheckboxesNewComponent,
+  GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesDividerComponent,

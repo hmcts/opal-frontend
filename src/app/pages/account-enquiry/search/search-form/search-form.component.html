@@ -40,7 +40,7 @@
         inputClasses="govuk-!-width-one-quarter"
         [control]="searchForm.controls['initials']"
       ></app-govuk-text-input>
-      <!-- <app-govuk-date-input
+      <app-govuk-date-input
         [group]="searchForm.get('dateOfBirth')"
         [dateInputs]="dateInputs"
         fieldSetId="dateOfBirth"
@@ -49,7 +49,7 @@
         [errorDay]="formControlErrorMessages['dayOfMonth']"
         [errorMonth]="formControlErrorMessages['monthOfYear']"
         [errorYear]="formControlErrorMessages['year']"
-      ></app-govuk-date-input> -->
+      ></app-govuk-date-input>
       <app-govuk-text-input
         labelText="Address Line One"
         inputId="addressLine"
@@ -86,7 +86,7 @@
     </div>
   </div>
 
-  <app-govuk-checkboxes-new fieldSetId="checkboxes" checkboxClasses="" legendText="Hello World">
+  <!-- <app-govuk-checkboxes fieldSetId="checkboxes" checkboxClasses="" legendText="Hello World">
     <div
       app-govuk-checkboxes-item
       labelText="Checkbox 1"
@@ -119,5 +119,5 @@
       inputName="checkbox2"
       [control]="searchForm.get('checkboxes.checkbox2')"
     ></div>
-  </app-govuk-checkboxes-new>
+  </app-govuk-checkboxes> -->
 </form>

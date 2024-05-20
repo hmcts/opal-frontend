@@ -3,13 +3,12 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import {
   GovukTextInputComponent,
   GovukRadiosComponent,
-  GovukCheckboxesComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
   AlphagovAccessibleAutocompleteComponent,
   GovukErrorSummaryComponent,
-  GovukCheckboxesNewComponent,
+  GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesDividerComponent,
@@ -42,7 +41,7 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
     GovukErrorSummaryComponent,
-    GovukCheckboxesNewComponent,
+    GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCheckboxesDividerComponent,
@@ -336,10 +335,6 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null, [Validators.required]),
       pcr: new FormControl(null),
-      checkboxes: new FormGroup({
-        checkbox1: new FormControl(null),
-        checkbox2: new FormControl(null),
-      }),
     });
   }
 
