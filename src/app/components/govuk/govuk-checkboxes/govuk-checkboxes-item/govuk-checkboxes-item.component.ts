@@ -18,6 +18,7 @@ export class GovukCheckboxesItemComponent {
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
+  @Input({ required: false }) ariaControls!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl | null) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
