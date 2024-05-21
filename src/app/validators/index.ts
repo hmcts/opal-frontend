@@ -9,5 +9,5 @@ export {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
   optionalPhoneNumberValidator,
-  specialCharactersValidator
+  specialCharactersValidator,
 };

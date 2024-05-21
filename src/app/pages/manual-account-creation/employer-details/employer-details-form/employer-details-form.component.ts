@@ -99,7 +99,7 @@ export class EmployerDetailsFormComponent implements OnInit {
       specialCharactersPattern: {
         message: 'The employer address line 1 must not contain special characters',
         priority: 3,
-      }
+      },
     },
     employerAddress2: {
       maxlength: {
@@ -109,7 +109,7 @@ export class EmployerDetailsFormComponent implements OnInit {
       specialCharactersPattern: {
         message: 'The employer address line 2 must not contain special characters',
         priority: 2,
-      }
+      },
     },
     employerAddress3: {
       maxlength: {
@@ -119,7 +119,7 @@ export class EmployerDetailsFormComponent implements OnInit {
       specialCharactersPattern: {
         message: 'The employer address line 3 must not contain special characters',
         priority: 2,
-      }
+      },
     },
     employerAddress4: {
       maxlength: {
@@ -129,7 +129,7 @@ export class EmployerDetailsFormComponent implements OnInit {
       specialCharactersPattern: {
         message: 'The employer address line 4 must not contain special characters',
         priority: 2,
-      }
+      },
     },
     employerAddress5: {
       maxlength: {
@@ -139,7 +139,7 @@ export class EmployerDetailsFormComponent implements OnInit {
       specialCharactersPattern: {
         message: 'The employer address line 5 must not contain special characters',
         priority: 2,
-      }
+      },
     },
     employerPostcode: {
       maxlength: {
