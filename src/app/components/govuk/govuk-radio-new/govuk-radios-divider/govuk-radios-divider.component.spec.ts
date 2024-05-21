@@ -1,23 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukRadiosDividerComponent } from './govuk-radios-divider.component';
+import { Component } from '@angular/core';
 
-describe('GovukRadiosDividerComponent', () => {
-  let component: GovukRadiosDividerComponent;
-  let fixture: ComponentFixture<GovukRadiosDividerComponent>;
+@Component({
+  template: `<app-govuk-radios-divider> Hello World</app-govuk-radios-divider>`,
+})
+class TestHostComponent {}
+fdescribe('GovukRadiosDividerComponent', () => {
+  let component: TestHostComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukRadiosDividerComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(GovukRadiosDividerComponent);
+      imports: [GovukRadiosDividerComponent],
+      declarations: [TestHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should project the ng-content', () => {
+    const element = fixture.nativeElement.querySelector('.govuk-radios__divider');
+    expect(element.innerText).toBe('Hello World');
   });
 });

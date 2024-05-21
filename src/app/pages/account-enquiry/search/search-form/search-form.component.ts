@@ -450,7 +450,8 @@ export class SearchFormComponent implements OnInit {
       this.getDateFieldsToRemoveIndexes(),
     );
 
-    this.formSubmit.emit(this.searchForm.value);
+    console.log(this.searchForm.value);
+    // this.formSubmit.emit(this.searchForm.value);
   }
 
   /**

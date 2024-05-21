@@ -1,23 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukRadiosConditionalComponent } from './govuk-radios-conditional.component';
+import { Component } from '@angular/core';
 
+@Component({
+  template: `<app-govuk-radios-conditional conditionalId="test"> Hello World</app-govuk-radios-conditional>`,
+})
+class TestHostComponent {}
 describe('GovukRadiosConditionalComponent', () => {
-  let component: GovukRadiosConditionalComponent;
-  let fixture: ComponentFixture<GovukRadiosConditionalComponent>;
+  let component: TestHostComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukRadiosConditionalComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(GovukRadiosConditionalComponent);
+      imports: [GovukRadiosConditionalComponent],
+      declarations: [TestHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should create with id', () => {
+    const element = fixture.nativeElement.querySelector('#test-conditional');
+    expect(element.innerText).toBe('Hello World');
   });
 });
