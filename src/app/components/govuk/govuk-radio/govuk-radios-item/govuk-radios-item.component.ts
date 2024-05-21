@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,7 @@ import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/form
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-radios-item.component.html',
-  styleUrl: './govuk-radios-item.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukRadiosItemComponent {
   private _control!: FormControl;

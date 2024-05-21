@@ -1,27 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GovukRadioNewComponent } from './govuk-radio-new.component';
+import { GovukRadioComponent } from './govuk-radio.component';
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-radio-new
+  template: `<app-govuk-radio
     fieldSetId="test"
     legendText="Legend Text"
     legendHint="Legend Hint"
     legendClasses="legend-class"
     radioClasses="radio-class"
   >
-    Hello World</app-govuk-radio-new
+    Hello World</app-govuk-radio
   >`,
 })
 class TestHostComponent {}
-describe('GovukRadioNewComponent', () => {
+describe('GovukRadioComponent', () => {
   let component: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukRadioNewComponent],
+      imports: [GovukRadioComponent],
       declarations: [TestHostComponent],
     }).compileComponents();
 

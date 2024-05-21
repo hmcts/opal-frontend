@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-govuk-radio-new',
+  selector: 'app-govuk-radio',
   standalone: true,
   imports: [],
-  templateUrl: './govuk-radio-new.component.html',
-  styleUrl: './govuk-radio-new.component.scss',
+  templateUrl: './govuk-radio.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GovukRadioNewComponent {
+export class GovukRadioComponent {
   @Input({ required: true }) fieldSetId!: string;
 
   @Input({ required: true }) legendText!: string;

@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   template: `<app-govuk-radios-divider> Hello World</app-govuk-radios-divider>`,
 })
 class TestHostComponent {}
-fdescribe('GovukRadiosDividerComponent', () => {
+describe('GovukRadiosDividerComponent', () => {
   let component: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 

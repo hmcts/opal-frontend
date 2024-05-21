@@ -1,11 +1,11 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-radios-conditional, [app-govuk-radios-conditional]',
   standalone: true,
   imports: [],
   templateUrl: './govuk-radios-conditional.component.html',
-  styleUrl: './govuk-radios-conditional.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukRadiosConditionalComponent implements OnInit {
   @Input({ required: true }) conditionalId!: string;

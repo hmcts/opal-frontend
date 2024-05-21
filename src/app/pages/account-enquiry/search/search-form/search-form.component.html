@@ -40,7 +40,7 @@
         inputClasses="govuk-!-width-one-quarter"
         [control]="searchForm.controls['initials']"
       ></app-govuk-text-input>
-      <app-govuk-date-input
+      <!-- <app-govuk-date-input
         [group]="searchForm.get('dateOfBirth')"
         [dateInputs]="dateInputs"
         fieldSetId="dateOfBirth"
@@ -49,7 +49,7 @@
         [errorDay]="formControlErrorMessages['dayOfMonth']"
         [errorMonth]="formControlErrorMessages['monthOfYear']"
         [errorYear]="formControlErrorMessages['year']"
-      ></app-govuk-date-input>
+      ></app-govuk-date-input> -->
       <app-govuk-text-input
         labelText="Address Line One"
         inputId="addressLine"
@@ -121,7 +121,7 @@
     ></div>
   </app-govuk-checkboxes> -->
 
-  <app-govuk-radio-new fieldSetId="test" legendText="TEST" legendHint="HELLO WORLD">
+  <!-- <app-govuk-radio fieldSetId="test" legendText="TEST" legendHint="HELLO WORLD">
     <div
       app-govuk-radios-item
       labelText="Radio"
@@ -133,7 +133,18 @@
     ></div>
 
     @if (searchForm.get('radio')?.value === 'Test 1') {
-      <div app-govuk-radios-conditional conditionalId="radio">Hello World</div>
+      <div app-govuk-radios-conditional conditionalId="radio">
+        <app-govuk-date-input
+          [group]="searchForm.get('dateOfBirth')"
+          [dateInputs]="dateInputs"
+          fieldSetId="dateOfBirth"
+          legendText="Date of Birth"
+          legendHint="For example, 04 06 1991"
+          [errorDay]="formControlErrorMessages['dayOfMonth']"
+          [errorMonth]="formControlErrorMessages['monthOfYear']"
+          [errorYear]="formControlErrorMessages['year']"
+        ></app-govuk-date-input>
+      </div>
     }
 
     <app-govuk-radios-divider></app-govuk-radios-divider>
@@ -146,5 +157,5 @@
       inputValue="Test 2"
       [control]="searchForm.get('radio')"
     ></div>
-  </app-govuk-radio-new>
+  </app-govuk-radio> -->
 </form>

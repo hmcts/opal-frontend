@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
-  GovukRadiosComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
@@ -12,7 +11,7 @@ import {
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesDividerComponent,
-  GovukRadioNewComponent,
+  GovukRadioComponent,
   GovukRadiosItemComponent,
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
@@ -38,7 +37,7 @@ import { overEighteenValidator } from 'src/app/validators';
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-    GovukRadiosComponent,
+
     GovukCheckboxesComponent,
     GovukDateInputComponent,
     GovukSelectComponent,
@@ -49,7 +48,7 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCheckboxesDividerComponent,
-    GovukRadioNewComponent,
+    GovukRadioComponent,
     GovukRadiosItemComponent,
     GovukRadiosConditionalComponent,
     GovukRadiosDividerComponent,
@@ -343,7 +342,6 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null, [Validators.required]),
       pcr: new FormControl(null),
-      radio: new FormControl(null),
     });
   }
 
@@ -450,8 +448,7 @@ export class SearchFormComponent implements OnInit {
       this.getDateFieldsToRemoveIndexes(),
     );
 
-    console.log(this.searchForm.value);
-    // this.formSubmit.emit(this.searchForm.value);
+    this.formSubmit.emit(this.searchForm.value);
   }
 
   /**
