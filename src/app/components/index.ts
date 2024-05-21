@@ -40,6 +40,7 @@ import { FormParentBaseComponent } from './abstract/form-parent-base/form-parent
 import { GovukTagComponent } from './govuk/govuk-tag/govuk-tag.component';
 import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.component';
 import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
+import { FormBaseComponent } from './abstract/form-base/form-base.component';
 
 export {
   GovukButtonComponent,
