@@ -1,0 +1,10 @@
+<input
+  class="govuk-radios__input"
+  [id]="inputId"
+  [name]="inputName"
+  [formControl]="getControl"
+  type="radio"
+  [value]="inputValue"
+  [attr.data-aria-controls]="ariaControls"
+/>
+<label class="govuk-label govuk-radios__label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>

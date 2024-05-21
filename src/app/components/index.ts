@@ -29,6 +29,10 @@ import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-l
 import { GovukCheckboxesItemComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { GovukCheckboxesConditionalComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesDividerComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-divider/govuk-checkboxes-divider.component';
+import { GovukRadioNewComponent } from './govuk/govuk-radio-new/govuk-radio-new.component';
+import { GovukRadiosItemComponent } from './govuk/govuk-radio-new/govuk-radios-item/govuk-radios-item.component';
+import { GovukRadiosConditionalComponent } from './govuk/govuk-radio-new/govuk-radios-conditional/govuk-radios-conditional.component';
+import { GovukRadiosDividerComponent } from './govuk/govuk-radio-new/govuk-radios-divider/govuk-radios-divider.component';
 
 export {
   GovukButtonComponent,
@@ -62,4 +66,8 @@ export {
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesDividerComponent,
+  GovukRadioNewComponent,
+  GovukRadiosItemComponent,
+  GovukRadiosConditionalComponent,
+  GovukRadiosDividerComponent,
 };

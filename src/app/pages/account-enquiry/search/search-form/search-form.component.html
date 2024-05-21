@@ -120,4 +120,31 @@
       [control]="searchForm.get('checkboxes.checkbox2')"
     ></div>
   </app-govuk-checkboxes> -->
+
+  <app-govuk-radio-new fieldSetId="test" legendText="TEST" legendHint="HELLO WORLD">
+    <div
+      app-govuk-radios-item
+      labelText="Radio"
+      inputId="radio"
+      inputName="radio"
+      inputValue="Test 1"
+      [control]="searchForm.get('radio')"
+      ariaControl="radio-conditional"
+    ></div>
+
+    @if (searchForm.get('radio')?.value === 'Test 1') {
+      <div app-govuk-radios-conditional conditionalId="radio">Hello World</div>
+    }
+
+    <app-govuk-radios-divider></app-govuk-radios-divider>
+
+    <div
+      app-govuk-radios-item
+      labelText="Radio 2"
+      inputId="radio2"
+      inputName="radio"
+      inputValue="Test 2"
+      [control]="searchForm.get('radio')"
+    ></div>
+  </app-govuk-radio-new>
 </form>

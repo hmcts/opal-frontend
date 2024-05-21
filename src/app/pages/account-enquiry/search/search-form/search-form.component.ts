@@ -12,6 +12,10 @@ import {
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesDividerComponent,
+  GovukRadioNewComponent,
+  GovukRadiosItemComponent,
+  GovukRadiosConditionalComponent,
+  GovukRadiosDividerComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -45,6 +49,10 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCheckboxesDividerComponent,
+    GovukRadioNewComponent,
+    GovukRadiosItemComponent,
+    GovukRadiosConditionalComponent,
+    GovukRadiosDividerComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -335,6 +343,7 @@ export class SearchFormComponent implements OnInit {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null, [Validators.required]),
       pcr: new FormControl(null),
+      radio: new FormControl(null),
     });
   }
 
