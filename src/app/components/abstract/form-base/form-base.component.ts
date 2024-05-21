@@ -219,7 +219,9 @@ export abstract class FormBaseComponent {
 
   /**
    * Repopulates the search form with the data from the account enquiry search.
+   * @param state - The state object containing the search form data.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private rePopulateForm(state: any): void {
     this.form.patchValue(state);
   }
