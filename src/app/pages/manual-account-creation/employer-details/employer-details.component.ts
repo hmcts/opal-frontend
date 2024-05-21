@@ -30,16 +30,6 @@ export class EmployerDetailsComponent implements OnInit {
   // @HostListener allows us to also guard against browser refresh, close, etc.
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.employerDetailsForm.dirty && this.stateService.manualAccountCreation.employerDetails === null) {
-      const controls = this.employerDetailsForm.controls;
-      for (const controlName in controls) {
-        const control = controls[controlName];
-        if (control.dirty && control.value.trim() !== '') {
-          return false;
-        }
-      }
-    }
-
     if (
       JSON.stringify(this.stateService.manualAccountCreation.employerDetails) !==
       JSON.stringify(this.employerDetailsForm.value)
@@ -58,7 +48,7 @@ export class EmployerDetailsComponent implements OnInit {
       employerName: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
       employeeReference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
       employerEmailAddress: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      employerTelephone: new FormControl(null, [optionalMaxLengthValidator(13), optionalPhoneNumberValidator()]),
+      employerTelephone: new FormControl(null, [optionalMaxLengthValidator(20), optionalPhoneNumberValidator()]),
       employerAddress1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),

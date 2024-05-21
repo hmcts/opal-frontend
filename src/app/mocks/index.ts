@@ -23,6 +23,8 @@ import { FORM_CONTROL_ERROR_MOCK } from './form-control-error.mock';
 import { FORM_ERROR_SUMMARY_MOCK } from './form-error-summary-entry.mock';
 import { FORM_DATE_ERROR_SUMMARY_MOCK } from './form-date-error-summary.mock';
 import { FIELD_ERROR_MOCK } from './field-errors.mock';
+import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FORM_MOCK } from './manual-account-creation-employer-details-form.mock';
+import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK } from './manual-account-creation-employer-details-state.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -50,4 +52,6 @@ export {
   FORM_ERROR_SUMMARY_MOCK,
   FORM_DATE_ERROR_SUMMARY_MOCK,
   FIELD_ERROR_MOCK,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
 };

@@ -7,7 +7,7 @@
     inputId="employerName"
     inputName="employerName"
     labelClasses="govuk-label--s"
-    [control]="employerDetailsForm.controls['employerName']"
+    [control]="form.controls['employerName']"
     [errors]="formControlErrorMessages['employerName']"
   ></app-govuk-text-input>
   <app-govuk-text-input
@@ -17,7 +17,7 @@
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     hintText="If employee reference not known, add National Insurance number"
-    [control]="employerDetailsForm.controls['employeeReference']"
+    [control]="form.controls['employeeReference']"
     [errors]="formControlErrorMessages['employeeReference']"
   ></app-govuk-text-input>
   <app-govuk-text-input
@@ -25,7 +25,7 @@
     inputId="employerEmailAddress"
     inputName="employerEmailAddress"
     labelClasses="govuk-label--s"
-    [control]="employerDetailsForm.controls['employerEmailAddress']"
+    [control]="form.controls['employerEmailAddress']"
     [errors]="formControlErrorMessages['employerEmailAddress']"
   ></app-govuk-text-input>
   <app-govuk-text-input
@@ -35,7 +35,7 @@
     inputClasses="govuk-input--width-20"
     labelClasses="govuk-label--s"
     inputMode="numeric"
-    [control]="employerDetailsForm.controls['employerTelephone']"
+    [control]="form.controls['employerTelephone']"
     [errors]="formControlErrorMessages['employerTelephone']"
   ></app-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
@@ -46,7 +46,7 @@
       inputId="employerAddress1"
       inputName="employerAddress1"
       labelClasses="govuk-label--s"
-      [control]="employerDetailsForm.controls['employerAddress1']"
+      [control]="form.controls['employerAddress1']"
       [errors]="formControlErrorMessages['employerAddress1']"
       [errors]="formControlErrorMessages['employerAddress1']"
     ></app-govuk-text-input>
@@ -55,7 +55,7 @@
       inputId="employerAddress2"
       inputName="employerAddress2"
       labelClasses="govuk-label--s"
-      [control]="employerDetailsForm.controls['employerAddress2']"
+      [control]="form.controls['employerAddress2']"
       [errors]="formControlErrorMessages['employerAddress2']"
     ></app-govuk-text-input>
     <app-govuk-text-input
@@ -63,7 +63,7 @@
       inputId="employerAddress3"
       inputName="employerAddress3"
       labelClasses="govuk-label--s"
-      [control]="employerDetailsForm.controls['employerAddress3']"
+      [control]="form.controls['employerAddress3']"
       [errors]="formControlErrorMessages['employerAddress3']"
     ></app-govuk-text-input>
     <app-govuk-text-input
@@ -71,7 +71,7 @@
       inputId="employerAddress4"
       inputName="employerAddress4"
       labelClasses="govuk-label--s"
-      [control]="employerDetailsForm.controls['employerAddress4']"
+      [control]="form.controls['employerAddress4']"
       [errors]="formControlErrorMessages['employerAddress4']"
     ></app-govuk-text-input>
     <app-govuk-text-input
@@ -79,7 +79,7 @@
       inputId="employerAddress5"
       inputName="employerAddress5"
       labelClasses="govuk-label--s"
-      [control]="employerDetailsForm.controls['employerAddress5']"
+      [control]="form.controls['employerAddress5']"
       [errors]="formControlErrorMessages['employerAddress5']"
     ></app-govuk-text-input>
     <app-govuk-text-input
@@ -88,7 +88,7 @@
       inputName="employerPostcode"
       inputClasses="govuk-input--width-10"
       labelClasses="govuk-label--s"
-      [control]="employerDetailsForm.controls['employerPostcode']"
+      [control]="form.controls['employerPostcode']"
       [errors]="formControlErrorMessages['employerPostcode']"
     ></app-govuk-text-input>
   </fieldset>

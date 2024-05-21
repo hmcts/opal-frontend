@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   IFieldError,
@@ -12,7 +12,6 @@ import {
 @Component({
   standalone: true,
   template: '',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export abstract class FormBaseComponent {
   public form!: FormGroup;

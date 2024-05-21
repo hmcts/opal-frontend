@@ -2,45 +2,52 @@ import { FormControl } from '@angular/forms';
 import { optionalPhoneNumberValidator } from './optional-valid-telephone.validator';
 
 describe('optionalPhoneNumberValidator', () => {
-  it('should return null if control value is null', () => {
-    const control = new FormControl(null);
-    const result = optionalPhoneNumberValidator()(control);
-    expect(result).toBeNull();
-  });
-
-  it('should return null if control value is undefined', () => {
-    const control = new FormControl(undefined);
-    const result = optionalPhoneNumberValidator()(control);
-    expect(result).toBeNull();
-  });
-
-  it('should return null if control value is an empty string', () => {
+  it('should return null for empty input', () => {
     const control = new FormControl('');
-    const result = optionalPhoneNumberValidator()(control);
+    const validator = optionalPhoneNumberValidator();
+    const result = validator(control);
     expect(result).toBeNull();
   });
 
-  it('should return null if control value contains only digits', () => {
-    const control = new FormControl('1234567890');
-    const result = optionalPhoneNumberValidator()(control);
+  it('should return null for valid phone number with spaces', () => {
+    const control = new FormControl('123 456 789 01');
+    const validator = optionalPhoneNumberValidator();
+    const result = validator(control);
     expect(result).toBeNull();
   });
 
-  it('should return an error object if control value contains non-numeric characters', () => {
-    const control = new FormControl('123abc456');
-    const result = optionalPhoneNumberValidator()(control);
-    expect(result).toEqual({ phoneNumberPattern: { value: '123abc456' } });
+  it('should return null for valid phone number without spaces', () => {
+    const control = new FormControl('12345678901');
+    const validator = optionalPhoneNumberValidator();
+    const result = validator(control);
+    expect(result).toBeNull();
   });
 
-  it('should return an error object if control value contains spaces', () => {
+  it('should return error for invalid characters', () => {
+    const control = new FormControl('123 456 7890a');
+    const validator = optionalPhoneNumberValidator();
+    const result = validator(control);
+    expect(result).toEqual({ phoneNumberPattern: { value: '123 456 7890a' } });
+  });
+
+  it('should return error for less than 11 digits', () => {
     const control = new FormControl('123 456 7890');
-    const result = optionalPhoneNumberValidator()(control);
-    expect(result).toBeNull();
+    const validator = optionalPhoneNumberValidator();
+    const result = validator(control);
+    expect(result).toEqual({ phoneNumberPattern: { value: '123 456 7890' } });
   });
 
-  it('should return an error object if control value contains special characters', () => {
-    const control = new FormControl('123-456-7890');
-    const result = optionalPhoneNumberValidator()(control);
-    expect(result).toEqual({ phoneNumberPattern: { value: '123-456-7890' } });
+  it('should return error for more than 11 digits', () => {
+    const control = new FormControl('123 456 789 012');
+    const validator = optionalPhoneNumberValidator();
+    const result = validator(control);
+    expect(result).toEqual({ phoneNumberPattern: { value: '123 456 789 012' } });
+  });
+
+  it('should return null for exactly 11 digits with spaces', () => {
+    const control = new FormControl('123 456 78901');
+    const validator = optionalPhoneNumberValidator();
+    const result = validator(control);
+    expect(result).toBeNull();
   });
 });
