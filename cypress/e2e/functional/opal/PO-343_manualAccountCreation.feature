@@ -7,6 +7,6 @@ Feature: PO-343 Manual Account Creation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
-    Then I am on the manual account creation test page
+    Then I see "Account details" on the page header
 
     And I click the Sign out link

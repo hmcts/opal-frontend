@@ -57,8 +57,16 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: RoutingPaths.manualAccountCreation,
+        redirectTo: RoutingPaths.accountEnquiryDetails,
         pathMatch: 'full',
+      },
+      {
+        path: RoutingPaths.manualAccountCreationAccountDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/account-details/account-details.component').then(
+            (c) => c.AccountDetailsComponent,
+          ),
+        canActivate: [authGuard],
       },
     ],
     resolve: { userState: userStateResolver },
