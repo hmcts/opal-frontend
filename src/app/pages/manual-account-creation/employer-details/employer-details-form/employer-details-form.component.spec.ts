@@ -13,7 +13,6 @@ describe('EmployerDetailsFormComponent', () => {
 
     fixture = TestBed.createComponent(EmployerDetailsFormComponent);
     component = fixture.componentInstance;
-    
 
     component.form = MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FORM_MOCK;
     fixture.detectChanges();
