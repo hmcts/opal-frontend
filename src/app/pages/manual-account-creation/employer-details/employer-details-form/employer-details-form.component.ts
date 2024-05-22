@@ -9,10 +9,7 @@ import {
   FormBaseComponent,
 } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
-import {
-  IManualAccountCreationEmployerDetailsState,
-  IFieldErrors,
-} from '@interfaces';
+import { IManualAccountCreationEmployerDetailsState, IFieldErrors } from '@interfaces';
 import { StateService } from '@services';
 
 @Component({
