@@ -5278,14 +5278,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@redis/client@npm:1.5.14":
-  version: 1.5.14
-  resolution: "@redis/client@npm:1.5.14"
+"@redis/client@npm:1.5.16":
+  version: 1.5.16
+  resolution: "@redis/client@npm:1.5.16"
   dependencies:
     cluster-key-slot: 1.1.2
     generic-pool: 3.9.0
     yallist: 4.0.0
-  checksum: f401997c6df92055c1a59385ed2fed7ee9295860f39935821107ea2570f76168dd1b25b71a3b37b9bbfaba26a9d18080d6bcd101a4bfc3852f72cc20576c6e7d
+  checksum: 1da087737eae051b596e26cae6a980dd5678cdda3f95843e22731763e68e5f4214793f9224d39fa0c2e1021524bd152ef4061a39ecf78cd88f147bcfcea49e01
   languageName: node
   linkType: hard
 
@@ -6935,13 +6935,13 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.6.0, axios@npm:^1.6.2":
-  version: 1.6.8
-  resolution: "axios@npm:1.6.8"
+  version: 1.7.2
+  resolution: "axios@npm:1.7.2"
   dependencies:
     follow-redirects: ^1.15.6
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: bf007fa4b207d102459300698620b3b0873503c6d47bf5a8f6e43c0c64c90035a4f698b55027ca1958f61ab43723df2781c38a99711848d232cad7accbcdfcdd
+  checksum: e457e2b0ab748504621f6fa6609074ac08c824bf0881592209dfa15098ece7e88495300e02cd22ba50b3468fd712fe687e629dcb03d6a3f6a51989727405aedf
   languageName: node
   linkType: hard
 
@@ -10591,9 +10591,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.3.1
-  resolution: "govuk-frontend@npm:5.3.1"
-  checksum: b87c2208a7b971cc6ac1d0c19eb188fe1f40587af6e904d60a18ed9e5e9fef2ad9cec53734b38ad512c4fbd6c947677845d0afeff4594c59f18905485b0d0ae9
+  version: 5.4.0
+  resolution: "govuk-frontend@npm:5.4.0"
+  checksum: e0643f1ead727dd96b9524fad040476bd59e2670ca4e1ce8592a145628167150b16a46971ec77bdb8035819ab916f2a1a31b6a2d1ff7a374578dd785dd94f89d
   languageName: node
   linkType: hard
 
@@ -14616,16 +14616,16 @@ __metadata:
   linkType: hard
 
 "redis@npm:^4.6.11":
-  version: 4.6.13
-  resolution: "redis@npm:4.6.13"
+  version: 4.6.14
+  resolution: "redis@npm:4.6.14"
   dependencies:
     "@redis/bloom": 1.2.0
-    "@redis/client": 1.5.14
+    "@redis/client": 1.5.16
     "@redis/graph": 1.1.1
     "@redis/json": 1.0.6
     "@redis/search": 1.1.6
     "@redis/time-series": 1.0.5
-  checksum: 10150ec30f1f89e47cec41c27dc77a99c78a0b078735de4fc9b79c2a779787d52274c64c52004af161b95b9729067671a4cfca95257719968accb30057856a09
+  checksum: b32f8c7dc38bb570a895f6b5b520b8b3dd69381887709c5d5eb99c35d5cee4a8287aaa4ad7fcfcd8be4cb9e2d168c63ec3ebc6feb8016684925e1a6ff1f93e83
   languageName: node
   linkType: hard
 
