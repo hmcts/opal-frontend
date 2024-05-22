@@ -341,7 +341,6 @@ export class SearchFormComponent implements OnInit {
       ),
       addressLine: new FormControl(null),
       niNumber: new FormControl(null, [Validators.required]),
-      niNumber: new FormControl(null, [Validators.required]),
       pcr: new FormControl(null),
     });
   }
