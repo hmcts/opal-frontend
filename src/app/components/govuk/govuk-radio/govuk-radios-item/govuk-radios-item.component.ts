@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-govuk-checkboxes-item, [app-govuk-checkboxes-item]',
+  selector: 'app-govuk-radios-item, [app-govuk-radios-item]',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './govuk-checkboxes-item.component.html',
+  templateUrl: './govuk-radios-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GovukCheckboxesItemComponent {
+export class GovukRadiosItemComponent {
   private _control!: FormControl;
 
   @Input({ required: true }) labelText!: string;
@@ -17,6 +17,7 @@ export class GovukCheckboxesItemComponent {
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
+  @Input({ required: true }) inputValue!: string;
   @Input({ required: false }) ariaControls!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl | null) {
@@ -24,7 +25,7 @@ export class GovukCheckboxesItemComponent {
     this._control = abstractControl as FormControl;
   }
 
-  @HostBinding('class') class = 'govuk-checkboxes__item';
+  @HostBinding('class') class = 'govuk-radios__item';
 
   get getControl() {
     return this._control;

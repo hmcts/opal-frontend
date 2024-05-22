@@ -8,8 +8,8 @@ import { Component } from '@angular/core';
 })
 class TestHostComponent {}
 describe('GovukCheckboxesDividerComponent', () => {
-  let component: GovukCheckboxesDividerComponent;
-  let fixture: ComponentFixture<GovukCheckboxesDividerComponent>;
+  let component: TestHostComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

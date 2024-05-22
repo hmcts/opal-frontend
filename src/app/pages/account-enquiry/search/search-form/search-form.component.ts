@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
-  GovukRadiosComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
@@ -12,6 +11,10 @@ import {
   GovukCheckboxesItemComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesDividerComponent,
+  GovukRadioComponent,
+  GovukRadiosItemComponent,
+  GovukRadiosConditionalComponent,
+  GovukRadiosDividerComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -34,7 +37,7 @@ import { overEighteenValidator } from 'src/app/validators';
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-    GovukRadiosComponent,
+
     GovukCheckboxesComponent,
     GovukDateInputComponent,
     GovukSelectComponent,
@@ -45,6 +48,10 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCheckboxesDividerComponent,
+    GovukRadioComponent,
+    GovukRadiosItemComponent,
+    GovukRadiosConditionalComponent,
+    GovukRadiosDividerComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

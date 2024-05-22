@@ -4,6 +4,7 @@
   [name]="inputName"
   type="checkbox"
   [formControl]="getControl"
+  [attr.data-aria-controls]="ariaControls"
 />
 
 <label class="govuk-label govuk-checkboxes__label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>

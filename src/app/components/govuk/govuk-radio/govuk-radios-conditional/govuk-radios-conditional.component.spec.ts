@@ -1,25 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GovukCheckboxesConditionalComponent } from './govuk-checkboxes-conditional.component';
+import { GovukRadiosConditionalComponent } from './govuk-radios-conditional.component';
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-checkboxes-conditional conditionalId="test"> Hello World</app-govuk-checkboxes-conditional>`,
+  template: `<app-govuk-radios-conditional conditionalId="test"> Hello World</app-govuk-radios-conditional>`,
 })
 class TestHostComponent {}
-describe('GovukCheckboxesConditionalComponent', () => {
+describe('GovukRadiosConditionalComponent', () => {
   let component: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukCheckboxesConditionalComponent],
+      imports: [GovukRadiosConditionalComponent],
       declarations: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 
