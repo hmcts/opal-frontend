@@ -3,7 +3,7 @@ import { GovukButtonComponent } from './govuk/govuk-button/govuk-button.componen
 import { GovukHeaderComponent } from './govuk/govuk-header/govuk-header.component';
 import { GovukFooterComponent } from './govuk/govuk-footer/govuk-footer.component';
 import { GovukTextInputComponent } from './govuk/govuk-text-input/govuk-text-input.component';
-import { GovukRadiosComponent } from './govuk/govuk-radios/govuk-radios.component';
+
 import { GovukCheckboxesComponent } from './govuk/govuk-checkboxes/govuk-checkboxes.component';
 import { GovukDateInputComponent } from './govuk/govuk-date-input/govuk-date-input.component';
 import { GovukSelectComponent } from './govuk/govuk-select/govuk-select.component';
@@ -26,6 +26,13 @@ import { GovukBackLinkComponent } from './govuk/govuk-back-link/govuk-back-link.
 import { GovukTagComponent } from './govuk/govuk-tag/govuk-tag.component';
 import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.component';
 import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
+import { GovukCheckboxesItemComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
+import { GovukCheckboxesConditionalComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
+import { GovukCheckboxesDividerComponent } from './govuk/govuk-checkboxes/govuk-checkboxes-divider/govuk-checkboxes-divider.component';
+import { GovukRadioComponent } from './govuk/govuk-radio/govuk-radio.component';
+import { GovukRadiosItemComponent } from './govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
+import { GovukRadiosConditionalComponent } from './govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
+import { GovukRadiosDividerComponent } from './govuk/govuk-radio/govuk-radios-divider/govuk-radios-divider.component';
 import { FormBaseComponent } from './abstract/form-base/form-base.component';
 
 export {
@@ -35,8 +42,6 @@ export {
   GovukHeaderNavigationItemComponent,
   GovukFooterComponent,
   GovukTextInputComponent,
-  GovukRadiosComponent,
-  GovukCheckboxesComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukPaginationComponent,
@@ -57,5 +62,13 @@ export {
   GovukTagComponent,
   GovukTaskListComponent,
   GovukTaskListItemComponent,
+  GovukCheckboxesComponent,
+  GovukCheckboxesItemComponent,
+  GovukCheckboxesConditionalComponent,
+  GovukCheckboxesDividerComponent,
+  GovukRadioComponent,
+  GovukRadiosItemComponent,
+  GovukRadiosConditionalComponent,
+  GovukRadiosDividerComponent,
   FormBaseComponent,
 };

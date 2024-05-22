@@ -1,5 +1,5 @@
 Feature: PO-343 Manual Account Creation
-  Scenario: The user can navigate to the manual account creation link on the dashboard is clicked
+  Scenario: The user can navigate to the manual account creation when the link on the dashboard is clicked
     Given I am on the OPAL Frontend
     Then I see "Opal" in the header
 

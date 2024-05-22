@@ -2,13 +2,19 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
-  GovukRadiosComponent,
-  GovukCheckboxesComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
   AlphagovAccessibleAutocompleteComponent,
   GovukErrorSummaryComponent,
+  GovukCheckboxesComponent,
+  GovukCheckboxesItemComponent,
+  GovukCheckboxesConditionalComponent,
+  GovukCheckboxesDividerComponent,
+  GovukRadioComponent,
+  GovukRadiosItemComponent,
+  GovukRadiosConditionalComponent,
+  GovukRadiosDividerComponent,
   FormBaseComponent,
 } from '@components';
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
@@ -22,13 +28,21 @@ import { overEighteenValidator } from 'src/app/validators';
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-    GovukRadiosComponent,
+
     GovukCheckboxesComponent,
     GovukDateInputComponent,
     GovukSelectComponent,
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
     GovukErrorSummaryComponent,
+    GovukCheckboxesComponent,
+    GovukCheckboxesItemComponent,
+    GovukCheckboxesConditionalComponent,
+    GovukCheckboxesDividerComponent,
+    GovukRadioComponent,
+    GovukRadiosItemComponent,
+    GovukRadiosConditionalComponent,
+    GovukRadiosDividerComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,7 +117,7 @@ export class SearchFormComponent extends FormBaseComponent implements OnInit {
         { validators: overEighteenValidator('dayOfMonth', 'monthOfYear', 'year') },
       ),
       addressLine: new FormControl(null),
-      niNumber: new FormControl(null),
+      niNumber: new FormControl(null, [Validators.required]),
       pcr: new FormControl(null),
     });
   }

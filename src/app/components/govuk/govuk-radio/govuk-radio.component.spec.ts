@@ -1,33 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GovukCheckboxesComponent } from './govuk-checkboxes.component';
+import { GovukRadioComponent } from './govuk-radio.component';
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-checkboxes
+  template: `<app-govuk-radio
     fieldSetId="test"
     legendText="Legend Text"
     legendHint="Legend Hint"
     legendClasses="legend-class"
-    checkboxClasses="checkbox-class"
+    radioClasses="radio-class"
   >
-    Hello World</app-govuk-checkboxes
+    Hello World</app-govuk-radio
   >`,
 })
 class TestHostComponent {}
-describe('GovukCheckboxesNewComponent', () => {
+describe('GovukRadioComponent', () => {
   let component: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukCheckboxesComponent],
+      imports: [GovukRadioComponent],
       declarations: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
   it('should create', () => {
@@ -49,8 +53,8 @@ describe('GovukCheckboxesNewComponent', () => {
     expect(element.innerText).toBe('Legend Text');
   });
 
-  it('should add a checkbox class', () => {
-    const element = fixture.nativeElement.querySelector('#test > .checkbox-class');
+  it('should add a radio class', () => {
+    const element = fixture.nativeElement.querySelector('#test > .radio-class');
     expect(element.innerText).toBe('Hello World');
   });
 });

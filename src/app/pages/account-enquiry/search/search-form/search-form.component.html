@@ -85,4 +85,77 @@
       <app-govuk-button buttonId="submitForm" type="submit"> Search</app-govuk-button>
     </div>
   </div>
+
+  <!-- <app-govuk-checkboxes fieldSetId="checkboxes" checkboxClasses="" legendText="Hello World">
+    <div
+      app-govuk-checkboxes-item
+      labelText="Checkbox 1"
+      inputId="checkbox1"
+      inputName="checkbox1"
+      [control]="searchForm.get('checkboxes.checkbox1')"
+    ></div>
+
+    @if (searchForm.get('checkboxes.checkbox1')?.value === true) {
+      <div app-govuk-checkboxes-conditional conditionalId="checkbox1">
+        <app-govuk-date-input
+          [group]="searchForm.get('dateOfBirth')"
+          [dateInputs]="dateInputs"
+          fieldSetId="dateOfBirth"
+          legendText="Date of Birth"
+          legendHint="For example, 04 06 1991"
+          [errorDay]="formControlErrorMessages['dayOfMonth']"
+          [errorMonth]="formControlErrorMessages['monthOfYear']"
+          [errorYear]="formControlErrorMessages['year']"
+        ></app-govuk-date-input>
+      </div>
+    }
+
+    <app-govuk-checkboxes-divider>or</app-govuk-checkboxes-divider>
+
+    <div
+      app-govuk-checkboxes-item
+      labelText="Checkbox 2"
+      inputId="checkbox2"
+      inputName="checkbox2"
+      [control]="searchForm.get('checkboxes.checkbox2')"
+    ></div>
+  </app-govuk-checkboxes> -->
+
+  <!-- <app-govuk-radio fieldSetId="test" legendText="TEST" legendHint="HELLO WORLD">
+    <div
+      app-govuk-radios-item
+      labelText="Radio"
+      inputId="radio"
+      inputName="radio"
+      inputValue="Test 1"
+      [control]="searchForm.get('radio')"
+      ariaControl="radio-conditional"
+    ></div>
+
+    @if (searchForm.get('radio')?.value === 'Test 1') {
+      <div app-govuk-radios-conditional conditionalId="radio">
+        <app-govuk-date-input
+          [group]="searchForm.get('dateOfBirth')"
+          [dateInputs]="dateInputs"
+          fieldSetId="dateOfBirth"
+          legendText="Date of Birth"
+          legendHint="For example, 04 06 1991"
+          [errorDay]="formControlErrorMessages['dayOfMonth']"
+          [errorMonth]="formControlErrorMessages['monthOfYear']"
+          [errorYear]="formControlErrorMessages['year']"
+        ></app-govuk-date-input>
+      </div>
+    }
+
+    <app-govuk-radios-divider></app-govuk-radios-divider>
+
+    <div
+      app-govuk-radios-item
+      labelText="Radio 2"
+      inputId="radio2"
+      inputName="radio"
+      inputValue="Test 2"
+      [control]="searchForm.get('radio')"
+    ></div>
+  </app-govuk-radio> -->
 </form>
