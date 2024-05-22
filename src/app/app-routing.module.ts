@@ -58,6 +58,7 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: RoutingPaths.accountEnquiryDetails,
+        redirectTo: RoutingPaths.accountEnquiryDetails,
         pathMatch: 'full',
       },
       {
