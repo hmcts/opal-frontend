@@ -9,4 +9,6 @@ export enum RoutingPaths {
   dashboard = 'dashboard',
   manualAccountCreation = 'manual-account-creation',
   manualAccountCreationAccountDetails = 'account-details',
+  manualAccountCreationCreateAccount = 'create-account',
+  manualAccountCreationEmployerDetails = 'employer-details',
 }

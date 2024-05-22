@@ -68,6 +68,22 @@ const routes: Routes = [
           ),
         canActivate: [authGuard],
       },
+      {
+        path: RoutingPaths.manualAccountCreationCreateAccount,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/create-account/create-account.component').then(
+            (c) => c.CreateAccountComponent,
+          ),
+        canActivate: [authGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationEmployerDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/employer-details/employer-details.component').then(
+            (c) => c.EmployerDetailsComponent,
+          ),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
   },

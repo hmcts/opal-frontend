@@ -1,0 +1,8 @@
+<li class="govuk-task-list__item {{ taskListItemClasses }}" [id]="taskListItemId" role="listitem">
+  <div class="govuk-task-list__name-and-hint">
+    <ng-content select="[name]"></ng-content>
+  </div>
+  <div class="govuk-task-list__status" [id]="taskListStatusId">
+    <ng-content select="[status]"></ng-content>
+  </div>
+</li>

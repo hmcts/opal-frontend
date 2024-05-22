@@ -20,13 +20,13 @@ describe('GovukBackLinkComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call preventDefault and window.history.back when onBack is called', () => {
+  it('should call preventDefault and emit event when onBack is called', () => {
     const event = jasmine.createSpyObj('event', ['preventDefault']);
-    spyOn(window.history, 'back');
+    spyOn(component.clickEvent, 'emit');
 
     component.onBack(event);
 
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(window.history.back).toHaveBeenCalled();
+    expect(component.clickEvent.emit).toHaveBeenCalledWith(event);
   });
 });

@@ -23,6 +23,9 @@ import { GovukHeaderNavigationItemComponent } from './govuk/govuk-header/govuk-h
 import { ScotgovDatePickerComponent } from './scotgov/scotgov-date-picker/scotgov-date-picker.component';
 import { GovukErrorSummaryComponent } from './govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukBackLinkComponent } from './govuk/govuk-back-link/govuk-back-link.component';
+import { GovukTagComponent } from './govuk/govuk-tag/govuk-tag.component';
+import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.component';
+import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 
 export {
   GovukButtonComponent,
@@ -50,4 +53,7 @@ export {
   ScotgovDatePickerComponent,
   GovukErrorSummaryComponent,
   GovukBackLinkComponent,
+  GovukTagComponent,
+  GovukTaskListComponent,
+  GovukTaskListItemComponent,
 };
