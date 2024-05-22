@@ -85,4 +85,39 @@
       <app-govuk-button buttonId="submitForm" type="submit"> Search</app-govuk-button>
     </div>
   </div>
+
+  <!-- <app-govuk-checkboxes fieldSetId="checkboxes" checkboxClasses="" legendText="Hello World">
+    <div
+      app-govuk-checkboxes-item
+      labelText="Checkbox 1"
+      inputId="checkbox1"
+      inputName="checkbox1"
+      [control]="searchForm.get('checkboxes.checkbox1')"
+    ></div>
+
+    @if (searchForm.get('checkboxes.checkbox1')?.value === true) {
+      <div app-govuk-checkboxes-conditional conditionalId="checkbox1">
+        <app-govuk-date-input
+          [group]="searchForm.get('dateOfBirth')"
+          [dateInputs]="dateInputs"
+          fieldSetId="dateOfBirth"
+          legendText="Date of Birth"
+          legendHint="For example, 04 06 1991"
+          [errorDay]="formControlErrorMessages['dayOfMonth']"
+          [errorMonth]="formControlErrorMessages['monthOfYear']"
+          [errorYear]="formControlErrorMessages['year']"
+        ></app-govuk-date-input>
+      </div>
+    }
+
+    <app-govuk-checkboxes-divider>or</app-govuk-checkboxes-divider>
+
+    <div
+      app-govuk-checkboxes-item
+      labelText="Checkbox 2"
+      inputId="checkbox2"
+      inputName="checkbox2"
+      [control]="searchForm.get('checkboxes.checkbox2')"
+    ></div>
+  </app-govuk-checkboxes> -->
 </form>

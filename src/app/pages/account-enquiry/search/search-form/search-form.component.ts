@@ -3,12 +3,15 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import {
   GovukTextInputComponent,
   GovukRadiosComponent,
-  GovukCheckboxesComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukButtonComponent,
   AlphagovAccessibleAutocompleteComponent,
   GovukErrorSummaryComponent,
+  GovukCheckboxesComponent,
+  GovukCheckboxesItemComponent,
+  GovukCheckboxesConditionalComponent,
+  GovukCheckboxesDividerComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -38,6 +41,10 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukButtonComponent,
     AlphagovAccessibleAutocompleteComponent,
     GovukErrorSummaryComponent,
+    GovukCheckboxesComponent,
+    GovukCheckboxesItemComponent,
+    GovukCheckboxesConditionalComponent,
+    GovukCheckboxesDividerComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -326,7 +333,7 @@ export class SearchFormComponent implements OnInit {
         { validators: overEighteenValidator('dayOfMonth', 'monthOfYear', 'year') },
       ),
       addressLine: new FormControl(null),
-      niNumber: new FormControl(null),
+      niNumber: new FormControl(null, [Validators.required]),
       pcr: new FormControl(null),
     });
   }
