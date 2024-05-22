@@ -42,7 +42,3 @@ When('The button {string} is clicked, nothing happens', (linkText: string) => {
 When('{string} is clicked', (linkText: string) => {
   cy.get('a').contains(linkText).click();
 });
-
-Then('I see the temporary hello world page', () => {
-  cy.get('p').should('have.text', 'Hello world!');
-});
