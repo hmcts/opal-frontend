@@ -18,6 +18,25 @@
         [autoCompleteItems]="selectOptions"
         errorMsg="Please select a court"
       ></app-alphagov-accessible-autocomplete>
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">Account Enquiry</h1>
+    </legend>
+    <app-govuk-error-summary
+      [errors]="formErrorSummaryMessage"
+      (errorClick)="scrollTo($event)"
+    ></app-govuk-error-summary>
+    <div [formGroup]="searchForm">
+      <app-alphagov-accessible-autocomplete
+        [control]="searchForm.controls['court']"
+        labelText="Court"
+        inputId="court"
+        inputName="court"
+        inputClasses="govuk-!-width-one-half"
+        label="Search for a user"
+        [autoCompleteItems]="selectOptions"
+        errorMsg="Please select a court"
+      ></app-alphagov-accessible-autocomplete>
 
       <app-govuk-text-input
         labelText="Surname"
