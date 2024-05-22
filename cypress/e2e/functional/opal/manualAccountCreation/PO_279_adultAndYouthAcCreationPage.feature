@@ -47,7 +47,10 @@ Feature: PO-279 Manual account creation, Adult and Youth account creation page
 
     When I navigate to Manual Account Creation
     Then I see "Account details" on the page header
-    And I click continue to Create Account page
+
+    When I click continue to Create Account page
+    Then I see "Create account" on the page header
+
 
     When The button "Review account" is clicked, nothing happens
     When "Delete account" is clicked, nothing happens
