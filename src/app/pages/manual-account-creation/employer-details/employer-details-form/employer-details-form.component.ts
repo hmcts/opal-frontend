@@ -35,6 +35,7 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  private formSubmitted = false;
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR;
 
@@ -58,6 +59,15 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
       employerAddress5: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
       employerPostcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
+  }
+
+  /**
+   * Checks whether the form has been touched and submitted
+   * 
+   * @returns boolean
+   */
+  private hasUnsavedChanges(): boolean {
+    return this.form.dirty && !this.formSubmitted;
   }
 
   /**

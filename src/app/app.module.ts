@@ -14,7 +14,6 @@ import { MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterCompon
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors';
 import { AppInitializerService } from '@services';
-import { FlowExitStateGuard } from '@guards';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,7 +40,6 @@ import { FlowExitStateGuard } from '@guards';
       },
       deps: [AppInitializerService],
     },
-    [FlowExitStateGuard],
   ],
 
   bootstrap: [AppComponent],
