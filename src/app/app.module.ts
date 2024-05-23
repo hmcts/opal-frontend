@@ -1,6 +1,5 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
@@ -15,7 +14,6 @@ import { MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterCompon
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors';
 import { AppInitializerService } from '@services';
-import { FlowExitStateGuard } from '@guards';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,7 +40,6 @@ import { FlowExitStateGuard } from '@guards';
       },
       deps: [AppInitializerService],
     },
-    [FlowExitStateGuard],
   ],
 
   bootstrap: [AppComponent],

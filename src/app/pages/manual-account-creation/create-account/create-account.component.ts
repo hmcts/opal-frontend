@@ -9,6 +9,7 @@ import {
   GovukTaskListItemComponent,
 } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
+import { StateService } from '@services';
 
 @Component({
   selector: 'app-create-account',
@@ -26,6 +27,7 @@ import { ManualAccountCreationRoutes } from '@enums';
 })
 export class CreateAccountComponent {
   private readonly router = inject(Router);
+  private readonly stateService = inject(StateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   /**

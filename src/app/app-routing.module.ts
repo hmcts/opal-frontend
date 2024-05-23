@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
-import { authGuard, FlowExitStateGuard, routePermissionsGuard, signedInGuard } from '@guards';
+import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
 
@@ -83,18 +83,11 @@ const routes: Routes = [
             (c) => c.EmployerDetailsComponent,
           ),
         canActivate: [authGuard],
-        canDeactivate: [FlowExitStateGuard],
-      },
-      {
-        path: RoutingPaths.manualAccountCreationEmployerDetails,
-        loadComponent: () =>
-          import(
-            './pages/manual-account-creation/employer-details/employer-details-form/employer-details-form.component'
-          ).then((c) => c.EmployerDetailsFormComponent),
-        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
     ],
     resolve: { userState: userStateResolver },
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: RoutingPaths.accessDenied,

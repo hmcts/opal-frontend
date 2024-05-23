@@ -1,16 +1,22 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   GovukTextInputComponent,
-  GovukBackLinkComponent,
   GovukButtonComponent,
   GovukErrorSummaryComponent,
   FormBaseComponent,
+  GovukBackLinkComponent,
 } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationEmployerDetailsState, IFieldErrors } from '@interfaces';
 import { StateService } from '@services';
+import {
+  optionalMaxLengthValidator,
+  optionalEmailAddressValidator,
+  optionalPhoneNumberValidator,
+  specialCharactersValidator,
+} from 'src/app/validators';
 
 @Component({
   selector: 'app-employer-details-form',
@@ -19,21 +25,21 @@ import { StateService } from '@services';
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-    RouterModule,
-    GovukBackLinkComponent,
     GovukButtonComponent,
+    GovukBackLinkComponent,
     GovukErrorSummaryComponent,
   ],
   templateUrl: './employer-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployerDetailsFormComponent extends FormBaseComponent implements OnInit {
-  @Input() public override form!: FormGroup;
-  @Output() private employerDetailsFormSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
+  @Output() private formSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
+  @Output() private unsavedChanges = new EventEmitter<boolean>();
 
   private readonly router = inject(Router);
   public readonly stateService = inject(StateService).manualAccountCreation.employerDetails;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  private formSubmitted = false;
 
   // We will move this to a constant field in the future
   override fieldErrors: IFieldErrors = {
@@ -140,10 +146,42 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   };
 
   /**
+   * Sets up the employer details form with the necessary form controls.
+   */
+  private setupEmployerDetailsForm(): void {
+    this.form = new FormGroup({
+      employerName: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
+      employeeReference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
+      employerEmailAddress: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
+      employerTelephone: new FormControl(null, [optionalMaxLengthValidator(20), optionalPhoneNumberValidator()]),
+      employerAddress1: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(30),
+        specialCharactersValidator(),
+      ]),
+      employerAddress2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      employerAddress3: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      employerAddress4: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      employerAddress5: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      employerPostcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+    });
+  }
+
+  /**
    * Handles back and navigates to the manual account creation page.
    */
   public handleBack(): void {
+    this.unsavedChanges.emit(this.hasUnsavedChanges());
     this.router.navigate([ManualAccountCreationRoutes.createAccount]);
+  }
+
+  /**
+   * Checks whether the form has been touched and submitted
+   * 
+   * @returns boolean
+   */
+  private hasUnsavedChanges(): boolean {
+    return this.form.dirty && !this.formSubmitted;
   }
 
   /**
@@ -153,12 +191,20 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
     this['handleErrorMessages']();
 
     if (this.form.valid) {
-      this.employerDetailsFormSubmit.emit(this.form.value);
+      this.formSubmitted = true;
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+      this.formSubmit.emit(this.form.value);
     }
   }
 
   public ngOnInit(): void {
+    this.setupEmployerDetailsForm();
     this['setInitialErrorMessages']();
     this['rePopulateForm'](this.stateService);
+
+    this.form.valueChanges.subscribe(x => {
+      console.log(x);
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+    })
   }
 }
