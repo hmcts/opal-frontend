@@ -385,6 +385,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.formSub.unsubscribe();
+    if (this.formSub) {
+      this.formSub.unsubscribe();
+    }
   }
 }

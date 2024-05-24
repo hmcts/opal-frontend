@@ -133,7 +133,7 @@ export class SearchFormComponent extends FormBaseComponent implements OnInit, On
   public override ngOnInit(): void {
     this.setupSearchForm();
     this['setInitialErrorMessages']();
-    this['setupListener']();
     this['rePopulateForm'](this.state);
+    super.ngOnInit();
   }
 }

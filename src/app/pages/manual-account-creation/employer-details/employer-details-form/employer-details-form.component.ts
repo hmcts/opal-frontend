@@ -180,6 +180,6 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
     this.setupEmployerDetailsForm();
     this['setInitialErrorMessages']();
     this['rePopulateForm'](this.stateService.manualAccountCreation.employerDetails);
-    this['setupListener']();
+    super.ngOnInit();
   }
 }

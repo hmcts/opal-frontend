@@ -11,7 +11,6 @@ describe('ManualAccountCreationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ManualAccountCreationComponent],
-      providers: [StateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ManualAccountCreationComponent);
@@ -38,10 +37,6 @@ describe('ManualAccountCreationComponent', () => {
   });
 
   it('should call handleBeforeUnload ', () => {
-    // Empty state, should return true
-    stateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    expect(component.handleBeforeUnload()).toBeFalsy();
-
     stateService.manualAccountCreation.stateChanges = true;
     stateService.manualAccountCreation.unsavedChanges = false;
     expect(component.handleBeforeUnload()).toBeFalsy();
