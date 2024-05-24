@@ -15,6 +15,8 @@ describe('EmployerDetailsComponent', () => {
 
     mockStateService.manualAccountCreation = {
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+      unsavedChanges: false,
+      stateChanges: false,
     };
 
     await TestBed.configureTestingModule({
@@ -30,31 +32,6 @@ describe('EmployerDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  // describe('canDeactivate', () => {
-  //   it('should return false if the form value has changed from the initial state', () => {
-  //     mockStateService.manualAccountCreation.employerDetails = {
-  //       ...MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  //       employerName: 'Original',
-  //     };
-  //     component.employerDetailsForm.patchValue({ employerName: 'Changed' });
-
-  //     expect(component.canDeactivate()).toBe(false);
-  //   });
-
-  //   it('should return true if the form is not dirty and there are no changes', () => {
-  //     mockStateService.manualAccountCreation.employerDetails = {
-  //       ...MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  //       employerName: 'Test',
-  //     };
-  //     component.employerDetailsForm.setValue({
-  //       ...MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  //       employerName: 'Test',
-  //     });
-
-  //     expect(component.canDeactivate()).toBe(true);
-  //   });
-  // });
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
@@ -75,5 +52,15 @@ describe('EmployerDetailsComponent', () => {
 
     expect(mockStateService.manualAccountCreation.employerDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
+  });
+
+  it('should test handleUnsavedChanges', () => {
+    component.handleUnsavedChanges(true);
+    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeTruthy();
+    expect(component.stateUnsavedChanges).toBeTruthy();
+
+    component.handleUnsavedChanges(false);
+    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeFalsy();
+    expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

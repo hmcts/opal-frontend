@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { EmployerDetailsFormComponent } from './employer-details-form/employer-details-form.component';
 import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
@@ -14,8 +14,6 @@ import { FormParentBaseComponent, GovukBackLinkComponent } from '@components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployerDetailsComponent extends FormParentBaseComponent {
-  private readonly router = inject(Router);
-
   /**
    * Handles the form submission for employer details.
    * @param formData - The form data containing the search parameters.
@@ -27,10 +25,15 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    this.router.navigate([ManualAccountCreationRoutes.createAccount]);
+    this['routerNavigate'](ManualAccountCreationRoutes.createAccount);
   }
 
-  handleUnsavedChanges(unsavedChanges: boolean): void {
+  /**
+   * Handles unsaved changes coming from the child component
+   *
+   * @param unsavedChanges boolean value from child component
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }

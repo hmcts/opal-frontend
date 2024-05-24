@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
@@ -47,7 +47,7 @@ import { overEighteenValidator } from 'src/app/validators';
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchFormComponent extends FormBaseComponent implements OnInit {
+export class SearchFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Input({ required: true }) public selectOptions!: IGovUkSelectOptions[];
   @Input({ required: true }) public state!: IAccountEnquiryStateSearch;
 
@@ -130,9 +130,10 @@ export class SearchFormComponent extends FormBaseComponent implements OnInit {
     this.formSubmit.emit(this.form.value);
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     this.setupSearchForm();
     this['setInitialErrorMessages']();
+    this['setupListener']();
     this['rePopulateForm'](this.state);
   }
 }

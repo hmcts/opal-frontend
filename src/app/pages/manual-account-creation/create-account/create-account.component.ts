@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
   GovukBackLinkComponent,
@@ -25,14 +25,10 @@ import { StateService } from '@services';
   ],
   templateUrl: './create-account.component.html',
 })
-export class CreateAccountComponent implements OnInit {
+export class CreateAccountComponent {
   private readonly router = inject(Router);
   private readonly stateService = inject(StateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-
-  public ngOnInit(): void {
-    console.log(this.stateService);
-  }
 
   /**
    * Handles back and navigates to the manual account creation page.

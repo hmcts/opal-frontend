@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import {
   GovukTextInputComponent,
   GovukButtonComponent,
@@ -11,7 +10,6 @@ import {
 import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationEmployerDetailsState, IFieldErrors } from '@interfaces';
 import { StateService } from '@services';
-import { Subscription } from 'rxjs';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
@@ -35,13 +33,9 @@ import {
 })
 export class EmployerDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
-  @Output() private unsavedChanges = new EventEmitter<boolean>();
 
-  private readonly router = inject(Router);
-  public readonly stateService = inject(StateService).manualAccountCreation;
+  public readonly stateService = inject(StateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-  private formSubmitted = false;
-  private formSub!: Subscription;
 
   // We will move this to a constant field in the future
   override fieldErrors: IFieldErrors = {
@@ -170,49 +164,22 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
-   * Handles back and navigates to the manual account creation page.
-   */
-  public handleBack(): void {
-    this.unsavedChanges.emit(this.hasUnsavedChanges());
-    this.router.navigate([ManualAccountCreationRoutes.createAccount]);
-  }
-
-  /**
-   * Checks whether the form has been touched and submitted
-   *
-   * @returns boolean
-   */
-  private hasUnsavedChanges(): boolean {
-    return this.form.dirty && !this.formSubmitted;
-  }
-
-  private setupListener(): void {
-    this.formSub = this.form.valueChanges.subscribe(() => {
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-    });
-  }
-
-  /**
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
     this['handleErrorMessages']();
 
     if (this.form.valid) {
-      this.formSubmitted = true;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
+      this['formSubmitted'] = true;
+      this['unsavedChanges'].emit(this['hasUnsavedChanges']());
       this.formSubmit.emit(this.form.value);
     }
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
     this.setupEmployerDetailsForm();
     this['setInitialErrorMessages']();
-    this['rePopulateForm'](this.stateService.employerDetails);
-    this.setupListener();
-  }
-
-  public ngOnDestroy(): void {
-    this.formSub.unsubscribe();
+    this['rePopulateForm'](this.stateService.manualAccountCreation.employerDetails);
+    this['setupListener']();
   }
 }

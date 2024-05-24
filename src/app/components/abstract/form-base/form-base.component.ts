@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   IFieldError,
   IFieldErrors,
@@ -8,16 +9,23 @@ import {
   IFormErrorSummaryMessage,
   IHighPriorityFormError,
 } from '@interfaces';
+import { Subscription } from 'rxjs';
 
 @Component({
   standalone: true,
   template: '',
 })
-export abstract class FormBaseComponent {
+export abstract class FormBaseComponent implements OnInit, OnDestroy {
+  @Output() private unsavedChanges = new EventEmitter<boolean>();
+
+  private readonly router = inject(Router);
+
   public form!: FormGroup;
   public formControlErrorMessages!: IFormControlErrorMessage;
   public formErrorSummaryMessage!: IFormErrorSummaryMessage[];
   protected fieldErrors!: IFieldErrors;
+  private formSubmitted = false;
+  private formSub!: Subscription;
 
   constructor() {}
 
@@ -84,7 +92,7 @@ export abstract class FormBaseComponent {
       const fieldErrors = this.fieldErrors[controlKey] || {};
 
       if (errorKeys.length && Object.keys(fieldErrors).length) {
-        return this['getHighestPriorityError'](errorKeys, fieldErrors);
+        return this.getHighestPriorityError(errorKeys, fieldErrors);
       }
     }
     return null;
@@ -319,14 +327,14 @@ export abstract class FormBaseComponent {
    * Handles the error messages and populates the relevant variables
    */
   private handleErrorMessages(): void {
-    let errorSummary = this['getFormErrors'](this.form);
-    errorSummary = this['handleDateInputFormErrors'](errorSummary);
+    let errorSummary = this.getFormErrors(this.form);
+    errorSummary = this.handleDateInputFormErrors(errorSummary);
 
-    this['setErrorMessages'](errorSummary);
+    this.setErrorMessages(errorSummary);
 
-    this.formErrorSummaryMessage = this['removeErrorSummaryMessages'](
+    this.formErrorSummaryMessage = this.removeErrorSummaryMessages(
       this.formErrorSummaryMessage,
-      this['getDateFieldsToRemoveIndexes'](),
+      this.getDateFieldsToRemoveIndexes(),
     );
   }
 
@@ -344,5 +352,39 @@ export abstract class FormBaseComponent {
    */
   public scrollTo(fieldId: string): void {
     this['scroll'](fieldId);
+  }
+
+  /**
+   * Checks whether the form has been touched and submitted
+   *
+   * @returns boolean
+   */
+  private hasUnsavedChanges(): boolean {
+    return this.form.dirty && !this.formSubmitted;
+  }
+
+  /**
+   * Handles back and navigates to the manual account creation page.
+   */
+  public handleBack(route: string): void {
+    this.unsavedChanges.emit(this.hasUnsavedChanges());
+    this.router.navigate([route]);
+  }
+
+  /**
+   * Setup listener for the form value changes and to emit hasUnsavedChanges
+   */
+  private setupListener(): void {
+    this.formSub = this.form.valueChanges.subscribe(() => {
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+    });
+  }
+
+  public ngOnInit(): void {
+    this.setupListener();
+  }
+
+  public ngOnDestroy(): void {
+    this.formSub.unsubscribe();
   }
 }

@@ -446,4 +446,22 @@ describe('FormBaseComponent', () => {
     expect(component.formControlErrorMessages).toEqual({});
     expect(component.formErrorSummaryMessage).toEqual([]);
   });
+
+  it('should navigate to account-details page on handleBack', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.handleBack('test');
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+  });
+
+  it('should test hasUnsavedChanges', () => {
+    component['formSubmitted'] = false;
+    expect(component['hasUnsavedChanges']()).toBe(false);
+
+    component.form.controls['surname'].markAsDirty();
+    component['formSubmitted'] = true;
+    expect(component['hasUnsavedChanges']()).toBe(false);
+
+    component['formSubmitted'] = false;
+    expect(component['hasUnsavedChanges']()).toBe(true);
+  });
 });

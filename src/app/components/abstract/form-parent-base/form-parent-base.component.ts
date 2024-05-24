@@ -1,16 +1,16 @@
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { CanDeactivateType } from '@interfaces';
 import { StateService } from '@services';
-import { CanDeactivateType } from 'src/app/guards/can-deactivate/can-deactivate.guard';
 
 export abstract class FormParentBaseComponent {
+  private readonly router = inject(Router);
   public stateService = inject(StateService);
   public stateUnsavedChanges!: boolean;
 
-  constructor() {}
-
   /**
    * If the user navigates externally from the site or closes the tab
-   * Check if there is unsaved changes -> warning message
+   * Check if there is unsaved changes form state -> warning message
    * Otherwise -> no warning message
    *
    * @returns boolean
@@ -21,5 +21,9 @@ export abstract class FormParentBaseComponent {
     } else {
       return true;
     }
+  }
+
+  private routerNavigate(route: string): void {
+    this.router.navigate([route]);
   }
 }

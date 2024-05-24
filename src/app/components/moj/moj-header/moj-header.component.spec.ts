@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MojHeaderComponent } from './moj-header.component';
 import { Component } from '@angular/core';
 import { MojHeaderNavigationItemComponent } from './moj-header-navigation-item/moj-header-navigation-item.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 @Component({
   template: `<app-moj-header>
@@ -21,7 +22,7 @@ describe('MojHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent],
+      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent, RouterTestingModule],
       declarations: [TestHostComponent],
     }).compileComponents();
 
