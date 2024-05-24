@@ -18,5 +18,4 @@ export class StateService {
   public launchDarklyConfig: ILaunchDarklyConfig | null = null;
   public accountEnquiry: IAccountEnquiryState = ACCOUNT_ENQUIRY_DEFAULT_STATE;
   public manualAccountCreation: IManualAccountCreationState = MANUAL_ACCOUNT_CREATION_STATE;
-  
 }

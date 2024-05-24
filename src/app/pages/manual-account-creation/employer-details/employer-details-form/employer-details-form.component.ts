@@ -63,11 +63,17 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
 
   /**
    * Checks whether the form has been touched and submitted
-   * 
+   *
    * @returns boolean
    */
   private hasUnsavedChanges(): boolean {
     return this.form.dirty && !this.formSubmitted;
+  }
+
+  private setupListener(): void {
+    this.formSub = this.form.valueChanges.subscribe(() => {
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+    });
   }
 
   /**
