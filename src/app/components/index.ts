@@ -34,6 +34,7 @@ import { GovukRadiosItemComponent } from './govuk/govuk-radio/govuk-radios-item/
 import { GovukRadiosConditionalComponent } from './govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { GovukRadiosDividerComponent } from './govuk/govuk-radio/govuk-radios-divider/govuk-radios-divider.component';
 import { FormBaseComponent } from './abstract/form-base/form-base.component';
+import { FormParentBaseComponent } from './abstract/form-parent-base/form-parent-base.component';
 
 export {
   GovukButtonComponent,
@@ -71,4 +72,5 @@ export {
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
   FormBaseComponent,
+  FormParentBaseComponent,
 };

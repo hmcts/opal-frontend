@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } f
 import { RouterOutlet } from '@angular/router';
 import { MANUAL_ACCOUNT_CREATION_STATE } from '@constants';
 import { StateService } from '@services';
+import { CanDeactivateType } from 'src/app/guards/can-deactivate/can-deactivate.guard';
 
 @Component({
   selector: 'app-manual-account-creation',
@@ -13,10 +14,34 @@ import { StateService } from '@services';
 export class ManualAccountCreationComponent implements OnDestroy {
   private readonly stateService = inject(StateService);
 
-  // @HostListener allows us to also guard against browser refresh, close, etc.
+  /**
+   * If the user navigates externally from the site or closes the tab
+   * Check if there is unsaved changes -> warning message
+   * Check if the state has changes -> warning message
+   * Otherwise -> no warning message
+   * 
+   * @returns boolean
+   */
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(): boolean {
     if (this.stateService.manualAccountCreation.unsavedChanges) {
+      return false;
+    } else if (this.stateService.manualAccountCreation.stateChanges) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * If the user navigates externally from the site or closes the tab
+   * Check if there is unsaved changes -> warning message
+   * Otherwise -> no warning message
+   * 
+   * @returns boolean
+   */
+  canDeactivate(): CanDeactivateType {
+    if (this.stateService.manualAccountCreation.stateChanges) {
       return false;
     } else {
       return true;

@@ -37,7 +37,7 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   @Output() private unsavedChanges = new EventEmitter<boolean>();
 
   private readonly router = inject(Router);
-  public readonly stateService = inject(StateService).manualAccountCreation.employerDetails;
+  public readonly stateService = inject(StateService).manualAccountCreation;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   private formSubmitted = false;
 
@@ -200,10 +200,9 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   public ngOnInit(): void {
     this.setupEmployerDetailsForm();
     this['setInitialErrorMessages']();
-    this['rePopulateForm'](this.stateService);
+    this['rePopulateForm'](this.stateService.employerDetails);
 
-    this.form.valueChanges.subscribe(x => {
-      console.log(x);
+    this.form.valueChanges.subscribe(() => {
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     })
   }

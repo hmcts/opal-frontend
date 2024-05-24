@@ -3,4 +3,5 @@ import { IManualAccountCreationEmployerDetailsState } from './manual-account-cre
 export interface IManualAccountCreationState {
   employerDetails: IManualAccountCreationEmployerDetailsState;
   unsavedChanges: boolean;
+  stateChanges: boolean;
 }
