@@ -1,17 +1,17 @@
 export const FIELD_ERROR_MOCK = {
   court: {
     required: {
-      message: 'Select a court',
+      message: 'Select a court from the dropdown',
       priority: 1,
     },
   },
   dayOfMonth: {
     required: {
-      message: 'The date your passport was issued must include a day',
+      message: 'The date of birth must include a day',
       priority: 1,
     },
     maxlength: {
-      message: 'The day must be 2 characters or fewer',
+      message: 'The date of birth day must be 2 characters or fewer',
       priority: 2,
     },
     underEighteen: {
@@ -21,7 +21,7 @@ export const FIELD_ERROR_MOCK = {
   },
   monthOfYear: {
     required: {
-      message: 'The date your passport was issued must include a month',
+      message: 'The date of birth must include a month',
       priority: 1,
     },
     underEighteen: {
@@ -31,7 +31,7 @@ export const FIELD_ERROR_MOCK = {
   },
   year: {
     required: {
-      message: 'The date your passport was issued must include a year',
+      message: 'The date of birth must include a year',
       priority: 1,
     },
     underEighteen: {
