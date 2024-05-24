@@ -11,7 +11,6 @@ describe('ManualAccountCreationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ManualAccountCreationComponent],
-      providers: [StateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ManualAccountCreationComponent);
