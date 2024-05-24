@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } f
 import { RouterOutlet } from '@angular/router';
 import { MANUAL_ACCOUNT_CREATION_STATE } from '@constants';
 import { StateService } from '@services';
-import { CanDeactivateType } from '@interfaces'
+import { CanDeactivateType } from '@interfaces';
 
 @Component({
   selector: 'app-manual-account-creation',
