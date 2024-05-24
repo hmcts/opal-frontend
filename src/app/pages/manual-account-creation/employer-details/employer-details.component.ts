@@ -25,7 +25,7 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    this['routerNavigate'](ManualAccountCreationRoutes.createAccount);
+    this.routerNavigate(ManualAccountCreationRoutes.createAccount);
   }
 
   /**

@@ -126,14 +126,14 @@ export class SearchFormComponent extends FormBaseComponent implements OnInit, On
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
-    this['handleErrorMessages']();
+    this.handleErrorMessages();
     this.formSubmit.emit(this.form.value);
   }
 
   public override ngOnInit(): void {
     this.setupSearchForm();
-    this['setInitialErrorMessages']();
-    this['rePopulateForm'](this.state);
+    this.setInitialErrorMessages();
+    this.rePopulateForm(this.state);
     super.ngOnInit();
   }
 }

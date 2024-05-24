@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
@@ -9,7 +9,6 @@ import {
 } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationEmployerDetailsState, IFieldErrors } from '@interfaces';
-import { StateService } from '@services';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
@@ -34,7 +33,6 @@ import {
 export class EmployerDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
 
-  public readonly stateService = inject(StateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   // We will move this to a constant field in the future
@@ -167,19 +165,19 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
-    this['handleErrorMessages']();
+    this.handleErrorMessages();
 
     if (this.form.valid) {
-      this['formSubmitted'] = true;
-      this['unsavedChanges'].emit(this['hasUnsavedChanges']());
+      this.formSubmitted = true;
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
       this.formSubmit.emit(this.form.value);
     }
   }
 
   public override ngOnInit(): void {
     this.setupEmployerDetailsForm();
-    this['setInitialErrorMessages']();
-    this['rePopulateForm'](this.stateService.manualAccountCreation.employerDetails);
+    this.setInitialErrorMessages();
+    this.rePopulateForm(this.stateService.manualAccountCreation.employerDetails);
     super.ngOnInit();
   }
 }

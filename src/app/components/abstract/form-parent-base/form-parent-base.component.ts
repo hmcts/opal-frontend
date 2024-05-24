@@ -23,7 +23,7 @@ export abstract class FormParentBaseComponent {
     }
   }
 
-  private routerNavigate(route: string): void {
+  protected routerNavigate(route: string): void {
     this.router.navigate([route]);
   }
 }

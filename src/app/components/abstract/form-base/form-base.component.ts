@@ -9,6 +9,7 @@ import {
   IFormErrorSummaryMessage,
   IHighPriorityFormError,
 } from '@interfaces';
+import { StateService } from '@services';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,15 +17,16 @@ import { Subscription } from 'rxjs';
   template: '',
 })
 export abstract class FormBaseComponent implements OnInit, OnDestroy {
-  @Output() private unsavedChanges = new EventEmitter<boolean>();
+  @Output() protected unsavedChanges = new EventEmitter<boolean>();
 
   private readonly router = inject(Router);
+  public readonly stateService = inject(StateService);
 
   public form!: FormGroup;
   public formControlErrorMessages!: IFormControlErrorMessage;
   public formErrorSummaryMessage!: IFormErrorSummaryMessage[];
   protected fieldErrors!: IFieldErrors;
-  private formSubmitted = false;
+  protected formSubmitted = false;
   private formSub!: Subscription;
 
   constructor() {}
@@ -140,7 +142,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    *
    * @param form - The FormGroup instance.
    */
-  private setInitialErrorMessages(): void {
+  protected setInitialErrorMessages(): void {
     const formControls = this.form.controls;
     const initialFormControlErrorMessages: IFormControlErrorMessage = {};
 
@@ -229,7 +231,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param state - The state object containing the search form data.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private rePopulateForm(state: any): void {
+  protected rePopulateForm(state: any): void {
     this.form.patchValue(state);
   }
 
@@ -326,7 +328,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   /**
    * Handles the error messages and populates the relevant variables
    */
-  private handleErrorMessages(): void {
+  protected handleErrorMessages(): void {
     let errorSummary = this.getFormErrors(this.form);
     errorSummary = this.handleDateInputFormErrors(errorSummary);
 
@@ -359,7 +361,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    *
    * @returns boolean
    */
-  private hasUnsavedChanges(): boolean {
+  protected hasUnsavedChanges(): boolean {
     return this.form.dirty && !this.formSubmitted;
   }
 
