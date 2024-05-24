@@ -87,6 +87,7 @@ const routes: Routes = [
       },
     ],
     resolve: { userState: userStateResolver },
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: RoutingPaths.accessDenied,

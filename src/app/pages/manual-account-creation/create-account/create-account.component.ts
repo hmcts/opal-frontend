@@ -26,7 +26,7 @@ import { StateService } from '@services';
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateAccountComponent {
+export class CreateAccountComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly stateService = inject(StateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
