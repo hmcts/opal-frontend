@@ -26,11 +26,12 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
       unsavedChanges: false,
       stateChanges: true,
     };
-    console.log(this.stateService);
+
     this.router.navigate([ManualAccountCreationRoutes.createAccount]);
   }
 
   handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }

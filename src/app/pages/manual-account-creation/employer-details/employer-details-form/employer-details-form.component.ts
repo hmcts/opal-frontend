@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -11,6 +11,7 @@ import {
 import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationEmployerDetailsState, IFieldErrors } from '@interfaces';
 import { StateService } from '@services';
+import { Subscription } from 'rxjs';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
@@ -32,7 +33,7 @@ import {
   templateUrl: './employer-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EmployerDetailsFormComponent extends FormBaseComponent implements OnInit {
+export class EmployerDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
   @Output() private unsavedChanges = new EventEmitter<boolean>();
 
@@ -40,6 +41,7 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   public readonly stateService = inject(StateService).manualAccountCreation;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   private formSubmitted = false;
+  private formSub!: Subscription;
 
   // We will move this to a constant field in the future
   override fieldErrors: IFieldErrors = {
@@ -177,11 +179,17 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
 
   /**
    * Checks whether the form has been touched and submitted
-   * 
+   *
    * @returns boolean
    */
   private hasUnsavedChanges(): boolean {
     return this.form.dirty && !this.formSubmitted;
+  }
+
+  private setupListener(): void {
+    this.formSub = this.form.valueChanges.subscribe(() => {
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+    });
   }
 
   /**
@@ -201,9 +209,10 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
     this.setupEmployerDetailsForm();
     this['setInitialErrorMessages']();
     this['rePopulateForm'](this.stateService.employerDetails);
+    this.setupListener();
+  }
 
-    this.form.valueChanges.subscribe(() => {
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-    })
+  public ngOnDestroy(): void {
+    this.formSub.unsubscribe();
   }
 }
