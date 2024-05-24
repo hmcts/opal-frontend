@@ -2,13 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBaseComponent } from './form-base.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
-  FIELD_ERROR_MOCK,
   FORM_CONTROL_ERROR_MOCK,
   FORM_DATE_ERROR_SUMMARY_MOCK,
   FORM_ERROR_SUMMARY_MOCK,
   SEARCH_STATE_MOCK,
 } from '@mocks';
 import { IFieldError, IFormError, IFormErrorSummaryMessage } from '@interfaces';
+import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
 
 class TestFormBaseComponent extends FormBaseComponent {
   constructor() {
@@ -330,9 +330,9 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return the error summary entries', () => {
-    component['fieldErrors'] = FIELD_ERROR_MOCK;
+    component['fieldErrors'] = ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS;
     const errorMessage = component['getFieldErrorDetails'](['court']);
-    const expectedResp = { message: 'Select a court from the dropdown', priority: 1, type: 'required' };
+    const expectedResp = { message: 'Select a court', priority: 1, type: 'required' };
 
     expect(errorMessage).toEqual(expectedResp);
   });
