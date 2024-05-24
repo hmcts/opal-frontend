@@ -83,8 +83,8 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
     this.handleErrorMessages();
 
     if (this.form.valid) {
-      this.formSubmitted = true;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
+      this['formSubmitted'] = true;
+      this['unsavedChanges'].emit(this['hasUnsavedChanges']());
       this.formSubmit.emit(this.form.value);
     }
   }
