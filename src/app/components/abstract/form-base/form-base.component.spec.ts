@@ -332,7 +332,7 @@ describe('FormBaseComponent', () => {
   it('should return the error summary entries', () => {
     component['fieldErrors'] = ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS;
     const errorMessage = component['getFieldErrorDetails'](['court']);
-    const expectedResp = { message: 'Select a court', priority: 1, type: 'required' };
+    const expectedResp = { message: 'Select a court from the dropdown', priority: 1, type: 'required' };
 
     expect(errorMessage).toEqual(expectedResp);
   });
