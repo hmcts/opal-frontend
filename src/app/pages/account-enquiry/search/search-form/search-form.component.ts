@@ -15,6 +15,7 @@ import {
   GovukRadiosItemComponent,
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
+  GovukTextInputPrefixSuffixComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -37,7 +38,6 @@ import { overEighteenValidator } from 'src/app/validators';
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-
     GovukCheckboxesComponent,
     GovukDateInputComponent,
     GovukSelectComponent,
@@ -52,6 +52,7 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukRadiosItemComponent,
     GovukRadiosConditionalComponent,
     GovukRadiosDividerComponent,
+    GovukTextInputPrefixSuffixComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
