@@ -34,6 +34,8 @@ import { GovukRadiosItemComponent } from './govuk/govuk-radio/govuk-radios-item/
 import { GovukRadiosConditionalComponent } from './govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { GovukRadiosDividerComponent } from './govuk/govuk-radio/govuk-radios-divider/govuk-radios-divider.component';
 import { GovukTextInputPrefixSuffixComponent } from './govuk/govuk-text-input-prefix-suffix/govuk-text-input-prefix-suffix.component';
+import { GovukSummaryCardListComponent } from './govuk/govuk-summary-card-list/govuk-summary-card-list.component';
+import { GovukSummaryCardActionComponent } from './govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 
 export {
   GovukButtonComponent,
@@ -71,4 +73,6 @@ export {
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
   GovukTextInputPrefixSuffixComponent,
+  GovukSummaryCardListComponent,
+  GovukSummaryCardActionComponent,
 };

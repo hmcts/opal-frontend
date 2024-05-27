@@ -16,6 +16,10 @@ import {
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
   GovukTextInputPrefixSuffixComponent,
+  GovukSummaryCardListComponent,
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
+  GovukSummaryCardActionComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -53,6 +57,10 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukRadiosConditionalComponent,
     GovukRadiosDividerComponent,
     GovukTextInputPrefixSuffixComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
+    GovukSummaryCardListComponent,
+    GovukSummaryCardActionComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

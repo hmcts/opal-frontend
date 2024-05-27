@@ -169,4 +169,32 @@
         [control]="searchForm.controls['amountImposed']"
         [errors]="formControlErrorMessages['amountImposed']"
       ></app-govuk-text-input-prefix-suffix> -->
+
+  <!-- <app-govuk-summary-card-list cardTitle="Address information">
+        <app-govuk-summary-card-action
+          cardTitle="Address information"
+          [actions]="actions"
+          (clickEvent)="navigateToRoute($event)"
+        ></app-govuk-summary-card-action>
+        <app-govuk-summary-list content summaryListId="summaryListAccountDetails">
+          <div app-govuk-summary-list-row summaryListId="summaryListAccountDetails" summaryListRowId="listRowName">
+            <ng-container name>Name</ng-container>
+            <ng-container value>
+              <p class="govuk-body">Terrence Lovejoy</p>
+            </ng-container>
+          </div>
+          <div app-govuk-summary-list-row summaryListId="summaryListAccountDetails" summaryListRowId="listRowAddress">
+            <ng-container name>Address</ng-container>
+            <ng-container value>
+              <p class="govuk-body">28 High Street Twyford Berkshire RG10 5GH</p>
+            </ng-container>
+          </div>
+          <div app-govuk-summary-list-row summaryListId="summaryListAccountDetails" summaryListRowId="listRowPayment">
+            <ng-container name>Payment method</ng-container>
+            <ng-container value>
+              <p class="govuk-body">BACS</p>
+            </ng-container>
+          </div>
+        </app-govuk-summary-list>
+      </app-govuk-summary-card-list> -->
 </form>
