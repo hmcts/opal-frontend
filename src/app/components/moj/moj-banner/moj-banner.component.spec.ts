@@ -16,7 +16,7 @@ describe('MojBannerComponent', () => {
     fixture = TestBed.createComponent(MojBannerComponent);
     component = fixture.componentInstance;
 
-    component.text = "This is a test banner message";
+    component.text = 'This is a test banner message';
 
     fixture.detectChanges();
   });

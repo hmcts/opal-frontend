@@ -37,6 +37,7 @@ import { GovukTextInputPrefixSuffixComponent } from './govuk/govuk-text-input-pr
 import { GovukSummaryCardListComponent } from './govuk/govuk-summary-card-list/govuk-summary-card-list.component';
 import { GovukSummaryCardActionComponent } from './govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { MojBannerComponent } from './moj/moj-banner/moj-banner.component';
+import { GovukNotificationBannerComponent } from './govuk/govuk-notification-banner/govuk-notification-banner.component';
 
 export {
   GovukButtonComponent,
@@ -77,4 +78,5 @@ export {
   GovukSummaryCardListComponent,
   GovukSummaryCardActionComponent,
   MojBannerComponent,
+  GovukNotificationBannerComponent,
 };
