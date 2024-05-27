@@ -54,6 +54,6 @@ describe('ScotgovDatePickerComponent', () => {
 
   it('should test getDisabledDates when supplied', () => {
     component.disabledDates = ['01/01/2024', '01/02/2024'];
-    expect(component.getDisabledDates()).toEqual('01/01/2024 01/02/2024')
+    expect(component.getDisabledDates()).toEqual('01/01/2024 01/02/2024');
   });
 });
