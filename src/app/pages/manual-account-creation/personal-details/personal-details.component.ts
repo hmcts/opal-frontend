@@ -1,9 +1,8 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { ManualAccountCreationRoutes } from '@enums';
-import { StateService } from '@services';
 import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
 import { PersonalDetailsFormComponent } from './personal-details-form/personal-details-form.component';
+import { FormParentBaseComponent } from '@components';
 
 @Component({
   selector: 'app-personal-details',
@@ -11,12 +10,7 @@ import { PersonalDetailsFormComponent } from './personal-details-form/personal-d
   imports: [PersonalDetailsFormComponent],
   templateUrl: './personal-details.component.html',
 })
-export class PersonalDetailsComponent {
-  public readonly stateService = inject(StateService);
-  protected readonly router = inject(Router);
-
-  public stateUnsavedChanges!: boolean;
-
+export class PersonalDetailsComponent extends FormParentBaseComponent {
   /**
    * Handles the form submission for employer details.
    * @param formData - The form data containing the search parameters.
@@ -29,7 +23,7 @@ export class PersonalDetailsComponent {
       stateChanges: true,
     };
 
-    this.router.navigate([ManualAccountCreationRoutes.createAccount]);
+    this.routerNavigate(ManualAccountCreationRoutes.createAccount);
   }
 
   /**

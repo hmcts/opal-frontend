@@ -4,6 +4,14 @@
 <h1 class="govuk-heading-l">Personal details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit()">
+  <app-govuk-select
+    labelText="Title"
+    selectId="title"
+    selectName="title"
+    [options]="titleOptions"
+    [control]="form.controls['title']"
+    [errors]="formControlErrorMessages['title']"
+  ></app-govuk-select>
   <app-govuk-text-input
     labelText="First names"
     inputId="firstNames"
@@ -11,6 +19,7 @@
     labelClasses="govuk-label--s"
     hintText="This can include their middle names"
     [control]="form.controls['firstNames']"
+    [errors]="formControlErrorMessages['firstNames']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Last name"
@@ -18,6 +27,7 @@
     inputName="lastName"
     labelClasses="govuk-label--s"
     [control]="form.controls['lastName']"
+    [errors]="formControlErrorMessages['lastName']"
   ></app-govuk-text-input>
   <app-govuk-checkboxes fieldSetId="addAlias" checkboxClasses="" legendText="">
     <div
@@ -33,26 +43,34 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias 1</legend>
           <app-govuk-text-input
-          labelText="First names"
-          inputId="aliases.firstNames1"
-          inputName="aliases.firstNames1"
-          labelClasses="govuk-label--s"
-          [control]="form.controls['aliases.firstNames1']"
-        ></app-govuk-text-input>
-        <app-govuk-text-input
-          labelText="Last name"
-          inputId="aliases.lastName1"
-          inputName="aliases.lastName1"
-          labelClasses="govuk-label--s"
-          [control]="form.controls['aliases.lastName1']"
-        ></app-govuk-text-input>
+            labelText="First names"
+            inputId="aliases.firstNames1"
+            inputName="aliases.firstNames1"
+            labelClasses="govuk-label--s"
+            [control]="form.controls['aliases.firstNames1']"
+          ></app-govuk-text-input>
+          <app-govuk-text-input
+            labelText="Last name"
+            inputId="aliases.lastName1"
+            inputName="aliases.lastName1"
+            labelClasses="govuk-label--s"
+            [control]="form.controls['aliases.lastName1']"
+          ></app-govuk-text-input>
         </fieldset>
-        
       </div>
     }
   </app-govuk-checkboxes>
 
-  <app-scotgov-date-picker labelText="Date of birth"></app-scotgov-date-picker>
+  <app-scotgov-date-picker 
+    labelText="Date of birth"
+    labelClasses="govuk-label--s"
+    inputId="dateOfBirth"
+    inputName="dateOfBirth"
+    inputClasses="govuk-input--width-10"
+    hintText="For example, 31/01/2023"
+    [control]="form.controls['dateOfBirth']"
+    [maxDate]="today"
+  ></app-scotgov-date-picker>
   <app-govuk-text-input
     labelText="National Insurance number"
     inputId="nationalInsuranceNumber"
@@ -60,6 +78,7 @@
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     [control]="form.controls['nationalInsuranceNumber']"
+    [errors]="formControlErrorMessages['nationalInsuranceNumber']"
   ></app-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
@@ -68,8 +87,10 @@
       labelText="Address line 1"
       inputId="addressLine1"
       inputName="addressLine1"
+      inputClasses="govuk-input--width-8"
       labelClasses="govuk-label--s"
       [control]="form.controls['addressLine1']"
+      [errors]="formControlErrorMessages['addressLine1']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 2"
@@ -77,6 +98,7 @@
       inputName="addressLine2"
       labelClasses="govuk-label--s"
       [control]="form.controls['addressLine2']"
+      [errors]="formControlErrorMessages['addressLine2']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 3"
@@ -84,6 +106,7 @@
       inputName="addressLine3"
       labelClasses="govuk-label--s"
       [control]="form.controls['addressLine3']"
+      [errors]="formControlErrorMessages['addressLine3']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Postcode"
@@ -92,6 +115,7 @@
       inputClasses="govuk-input--width-10"
       labelClasses="govuk-label--s"
       [control]="form.controls['postcode']"
+      [errors]="formControlErrorMessages['postcode']"
     ></app-govuk-text-input>
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
@@ -102,6 +126,7 @@
     inputName="addressLine3"
     labelClasses="govuk-label--s"
     [control]="form.controls['makeOfCar']"
+    [errors]="formControlErrorMessages['makeOfCar']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Registration number"
@@ -110,6 +135,7 @@
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     [control]="form.controls['registrationNumber']"
+    [errors]="formControlErrorMessages['registrationNumber']"
   ></app-govuk-text-input>
 
   <div class="govuk-grid-row">

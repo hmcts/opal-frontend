@@ -1,9 +1,29 @@
-<div data-module="ds-datepicker" class="ds_datepicker">
-  <label class="ds_label" for="start-date">{{ labelText }}</label>
-  @if (hintText.length > 0) {
+<div
+  data-module="ds-datepicker"
+  class="ds_datepicker"
+  [attr.data-mindate]="minDate"
+  [attr.data-maxdate]="maxDate"
+  [attr.data-disableddates]="getDisabledDates()"
+  [class.govuk-form-group--error]="hasError()"
+>
+  <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
+  @if (hintText) {
     <p class="ds_hint-text">{{ hintText }}</p>
   }
+  @if (errors) {
+    <p id="{{ this.inputId }}-error-message" class="govuk-error-message">
+      <span class="govuk-visually-hidden">Error:</span> {{ errors }}
+    </p>
+  }
   <div class="ds_input__wrapper">
-    <input id="start-date" name="start-date" type="text" class="ds_input ds_input--fixed-10" />
+    <input
+      aria-label="Enter a date in dd/mm/yyyy format"
+      [id]="inputId"
+      [name]="inputName"
+      type="text"
+      class="ds_input {{ inputClasses }}"
+      [formControl]="getControl"
+      (change)="setDateValue($any($event).target.value)"
+    />
   </div>
 </div>
