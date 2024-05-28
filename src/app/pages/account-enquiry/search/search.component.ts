@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { CourtService, StateService } from '@services';
+import { RouterModule } from '@angular/router';
+import { CourtService } from '@services';
 
 import {
   IAccountEnquiryStateSearch,
@@ -14,6 +14,7 @@ import {
 import { AccountEnquiryRoutes } from '@enums';
 import { Observable, map } from 'rxjs';
 import { SearchFormComponent } from './search-form/search-form.component';
+import { FormParentBaseComponent } from '@components';
 
 const SEARCH_COURT_BODY: ISearchCourtBody = {
   courtId: null,
@@ -30,10 +31,8 @@ const SEARCH_COURT_BODY: ISearchCourtBody = {
   templateUrl: './search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent {
-  private readonly router = inject(Router);
+export class SearchComponent extends FormParentBaseComponent {
   private readonly courtService = inject(CourtService);
-  public readonly stateService = inject(StateService);
   public data$: Observable<IGovUkSelectOptions[]> = this.courtService.searchCourt(SEARCH_COURT_BODY).pipe(
     map((response: ISearchCourt[]) => {
       return this.mapSearchCourtToSelectOptions(response);
@@ -64,6 +63,6 @@ export class SearchComponent {
       search: formData,
     };
 
-    this.router.navigate([AccountEnquiryRoutes.matches]);
+    this['routerNavigate'](AccountEnquiryRoutes.matches);
   }
 }

@@ -24,6 +24,7 @@ export class PersonalDetailsComponent {
   public handlePersonalDetailsSubmit(formData: IManualAccountCreationPersonalDetailsState): void {
     this.stateService.manualAccountCreation = {
       personalDetails: formData,
+      employerDetails: this.stateService.manualAccountCreation.employerDetails,
       unsavedChanges: false,
       stateChanges: true,
     };

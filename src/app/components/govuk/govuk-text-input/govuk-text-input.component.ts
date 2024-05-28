@@ -18,6 +18,7 @@ export class GovukTextInputComponent {
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
   @Input({ required: false }) hintText!: string;
+  @Input({ required: false }) inputMode: string = 'text';
   @Input({ required: false }) errors: string | null = null;
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
@@ -26,5 +27,9 @@ export class GovukTextInputComponent {
 
   get getControl() {
     return this._control;
+  }
+
+  public hasError(): boolean {
+    return this.errors !== null && typeof this.errors !== 'undefined';
   }
 }

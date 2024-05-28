@@ -1,0 +1,102 @@
+<div class="govuk-!-margin-bottom-7">
+  <app-govuk-back-link (clickEvent)="handleBack(manualAccountCreationRoutes.createAccount)"></app-govuk-back-link>
+</div>
+<h1 class="govuk-heading-l">Employer details</h1>
+<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<form (submit)="handleFormSubmit()">
+  <app-govuk-text-input
+    labelText="Employer name"
+    inputId="employerName"
+    inputName="employerName"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['employerName']"
+    [errors]="formControlErrorMessages['employerName']"
+  ></app-govuk-text-input>
+  <app-govuk-text-input
+    labelText="Employee reference"
+    inputId="employeeReference"
+    inputName="employeeReference"
+    inputClasses="govuk-input--width-10"
+    labelClasses="govuk-label--s"
+    hintText="If employee reference not known, add National Insurance number"
+    [control]="form.controls['employeeReference']"
+    [errors]="formControlErrorMessages['employeeReference']"
+  ></app-govuk-text-input>
+  <app-govuk-text-input
+    labelText="Employer email address"
+    inputId="employerEmailAddress"
+    inputName="employerEmailAddress"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['employerEmailAddress']"
+    [errors]="formControlErrorMessages['employerEmailAddress']"
+  ></app-govuk-text-input>
+  <app-govuk-text-input
+    labelText="Employer telephone"
+    inputId="employerTelephone"
+    inputName="employerTelephone"
+    inputClasses="govuk-input--width-20"
+    labelClasses="govuk-label--s"
+    inputMode="numeric"
+    [control]="form.controls['employerTelephone']"
+    [errors]="formControlErrorMessages['employerTelephone']"
+  ></app-govuk-text-input>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+    <app-govuk-text-input
+      labelText="Address line 1"
+      inputId="employerAddress1"
+      inputName="employerAddress1"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['employerAddress1']"
+      [errors]="formControlErrorMessages['employerAddress1']"
+      [errors]="formControlErrorMessages['employerAddress1']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Address line 2"
+      inputId="employerAddress2"
+      inputName="employerAddress2"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['employerAddress2']"
+      [errors]="formControlErrorMessages['employerAddress2']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Address line 3"
+      inputId="employerAddress3"
+      inputName="employerAddress3"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['employerAddress3']"
+      [errors]="formControlErrorMessages['employerAddress3']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Address line 4"
+      inputId="employerAddress4"
+      inputName="employerAddress4"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['employerAddress4']"
+      [errors]="formControlErrorMessages['employerAddress4']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Address line 5"
+      inputId="employerAddress5"
+      inputName="employerAddress5"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['employerAddress5']"
+      [errors]="formControlErrorMessages['employerAddress5']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Postcode"
+      inputId="employerPostcode"
+      inputName="employerPostcode"
+      inputClasses="govuk-input--width-10"
+      labelClasses="govuk-label--s"
+      [control]="form.controls['employerPostcode']"
+      [errors]="formControlErrorMessages['employerPostcode']"
+    ></app-govuk-text-input>
+  </fieldset>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button buttonId="submitForm" type="submit">Save and return to tasks</app-govuk-button>
+    </div>
+  </div>
+</form>

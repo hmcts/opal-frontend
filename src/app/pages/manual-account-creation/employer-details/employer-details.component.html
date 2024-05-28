@@ -1,1 +1,6 @@
-<p>Hello world!</p>
+<div class="govuk-grid-column-two-thirds">
+  <app-employer-details-form
+    (formSubmit)="handleEmployerDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-employer-details-form>
+</div>
