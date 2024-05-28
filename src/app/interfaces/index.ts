@@ -24,6 +24,7 @@ import { IFormControlErrorMessage } from './form-control-error-message.interface
 import { IFormError } from './form-error.interface';
 import { IHighPriorityFormError } from './high-priority-form-error.interface';
 import { IFormErrorSummaryMessage } from './form-error-summary-message.interface';
+import { IManualAccountCreationState } from './manual-account-creation-state.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -55,4 +56,5 @@ export {
   IFormError,
   IHighPriorityFormError,
   IFormErrorSummaryMessage,
+  IManualAccountCreationState,
 };

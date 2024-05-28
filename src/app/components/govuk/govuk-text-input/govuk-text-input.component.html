@@ -7,6 +7,12 @@
     </p>
   }
 
+  @if (hintText) {
+    <div id="{{ inputId }}-hint" class="govuk-hint">
+      {{ hintText }}
+    </div>
+  }
+
   <input
     class="govuk-input {{ inputClasses }}"
     [id]="inputId"
