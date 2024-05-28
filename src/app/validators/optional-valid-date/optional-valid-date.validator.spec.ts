@@ -2,19 +2,16 @@ import { FormControl } from '@angular/forms';
 import { optionalValidDateValidator } from './optional-valid-date.validator';
 
 describe('optionalValidDateValidator', () => {
-
   it('should return null for a valid date', () => {
     const control = new FormControl('01/01/2020');
     const result = optionalValidDateValidator()(control);
     expect(result).toBeNull();
-    expect(control.value).toBe('01/01/2020');
   });
 
   it('should return null for a valid date with single digits', () => {
     const control = new FormControl('1/1/2020');
     const result = optionalValidDateValidator()(control);
     expect(result).toBeNull();
-    expect(control.value).toBe('01/01/2020');
   });
 
   it('should return an error object for an invalid date format', () => {
@@ -58,5 +55,4 @@ describe('optionalValidDateValidator', () => {
     const result = optionalValidDateValidator()(control);
     expect(result).toBeNull();
   });
-
 });

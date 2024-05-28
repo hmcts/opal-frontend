@@ -92,6 +92,7 @@ const routes: Routes = [
             (c) => c.PersonalDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
     ],
     resolve: { userState: userStateResolver },

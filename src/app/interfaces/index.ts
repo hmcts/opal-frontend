@@ -27,6 +27,7 @@ import { IFormErrorSummaryMessage } from './form-error-summary-message.interface
 import { IManualAccountCreationEmployerDetailsState } from './manual-account-creation-employer-details-state.interface';
 import { IManualAccountCreationState } from './manual-account-creation-state.interface';
 import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
+import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -62,4 +63,5 @@ export {
   IManualAccountCreationState,
   CanComponentDeactivate,
   CanDeactivateType,
+  IManualAccountCreationPersonalDetailsState,
 };

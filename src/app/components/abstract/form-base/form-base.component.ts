@@ -366,6 +366,17 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Sets the value of a specified form control and marks it as touched.
+   *
+   * @param {string} value - The value to set for the form control.
+   * @param {string} control - The name of the form control to update.
+   */
+  protected setInputValue(value: string, control: string) {
+    this.form.controls[control].patchValue(value);
+    this.form.controls[control].markAsTouched();
+  }
+
+  /**
    * Handles back and navigates to the manual account creation page.
    */
   public handleBack(route: string): void {

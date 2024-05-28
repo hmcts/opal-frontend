@@ -17,7 +17,7 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR = {
     alphabeticalTextPattern: {
       message: `The defendant's first name(s) must only contain alphabetical text`,
       priority: 2,
-    }
+    },
   },
   lastName: {
     required: {
@@ -31,7 +31,7 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR = {
     alphabeticalTextPattern: {
       message: `The defendant's first name(s) must only contain alphabetical text`,
       priority: 2,
-    }
+    },
   },
   dateOfBirth: {
     invalidDateFormat: {
@@ -45,7 +45,7 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR = {
     invalidDateOfBirth: {
       message: `Enter a valid date of birth in the past`,
       priority: 3,
-    }
+    },
   },
   nationalInsuranceNumber: {
     nationalInsuranceNumberPattern: {

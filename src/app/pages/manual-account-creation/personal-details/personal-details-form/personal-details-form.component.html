@@ -61,7 +61,7 @@
     }
   </app-govuk-checkboxes>
 
-  <app-scotgov-date-picker 
+  <app-scotgov-date-picker
     labelText="Date of birth"
     labelClasses="govuk-label--s"
     inputId="dateOfBirth"
@@ -69,7 +69,9 @@
     inputClasses="govuk-input--width-10"
     hintText="For example, 31/01/2023"
     [control]="form.controls['dateOfBirth']"
-    [maxDate]="today"
+    [maxDate]="yesterday"
+    (dateChange)="setInputValue($event, 'dateOfBirth')"
+    [errors]="formControlErrorMessages['dateOfBirth']"
   ></app-scotgov-date-picker>
   <app-govuk-text-input
     labelText="National Insurance number"
@@ -87,7 +89,7 @@
       labelText="Address line 1"
       inputId="addressLine1"
       inputName="addressLine1"
-      inputClasses="govuk-input--width-8"
+      inputClasses="govuk-input--width-20"
       labelClasses="govuk-label--s"
       [control]="form.controls['addressLine1']"
       [errors]="formControlErrorMessages['addressLine1']"
@@ -96,6 +98,7 @@
       labelText="Address line 2"
       inputId="addressLine2"
       inputName="addressLine2"
+      inputClasses="govuk-input--width-20"
       labelClasses="govuk-label--s"
       [control]="form.controls['addressLine2']"
       [errors]="formControlErrorMessages['addressLine2']"
@@ -104,6 +107,7 @@
       labelText="Address line 3"
       inputId="addressLine3"
       inputName="addressLine3"
+      inputClasses="govuk-input--width-20"
       labelClasses="govuk-label--s"
       [control]="form.controls['addressLine3']"
       [errors]="formControlErrorMessages['addressLine3']"

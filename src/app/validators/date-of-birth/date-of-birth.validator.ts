@@ -11,7 +11,7 @@ export function dateOfBirthValidator(): ValidatorFn {
       const today = new Date();
       // Set the time of today to the start of the day to avoid time comparison issues
       today.setHours(0, 0, 0, 0);
-      
+
       if (date >= today) {
         return { invalidDateOfBirth: { value: value } };
       }
