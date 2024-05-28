@@ -21,7 +21,7 @@ export class PersonalDetailsComponent {
    * Handles the form submission for employer details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleEmployerDetailsSubmit(formData: IManualAccountCreationPersonalDetailsState): void {
+  public handlePersonalDetailsSubmit(formData: IManualAccountCreationPersonalDetailsState): void {
     this.stateService.manualAccountCreation = {
       personalDetails: formData,
       unsavedChanges: false,
