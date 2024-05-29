@@ -20,4 +20,10 @@ describe('CreateAccountComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should navigate to account-details page on handleRoute', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.handleRoute('test');
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+  });
 });
