@@ -3,7 +3,7 @@
 </div>
 <h1 class="govuk-heading-l">Personal details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
-<form (submit)="handleFormSubmit()">
+<form (submit)="handleFormSubmit()" [formGroup]="form">
   <app-govuk-select
     labelText="Title"
     selectId="title"
@@ -39,29 +39,53 @@
     ></div>
 
     @if (form.get('addAlias')?.value === true) {
-      <div app-govuk-checkboxes-conditional conditionalId="addAlias">
-        <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias 1</legend>
-          <app-govuk-text-input
-            labelText="First names"
-            inputId="aliases.firstNames1"
-            inputName="aliases.firstNames1"
-            labelClasses="govuk-label--s"
-            [control]="form.controls['aliases.firstNames1']"
-          ></app-govuk-text-input>
-          <app-govuk-text-input
-            labelText="Last name"
-            inputId="aliases.lastName1"
-            inputName="aliases.lastName1"
-            labelClasses="govuk-label--s"
-            [control]="form.controls['aliases.lastName1']"
-          ></app-govuk-text-input>
-        </fieldset>
+      <div app-govuk-checkboxes-conditional conditionalId="addAlias" formArrayName="aliases">
+        @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+            <app-govuk-text-input
+              labelText="First names"
+              [inputId]="aliasControls[rowIndex].firstName.inputId"
+              [inputName]="aliasControls[rowIndex].firstName.inputName"
+              labelClasses="govuk-label--s"
+              [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex].firstName.controlName])"
+              [errors]="formControlErrorMessages[aliasControls[rowIndex].firstName.controlName]"
+            ></app-govuk-text-input>
+            <app-govuk-text-input
+              labelText="Last name"
+              [inputId]="aliasControls[rowIndex].lastName.inputId"
+              [inputName]="aliasControls[rowIndex].lastName.inputName"
+              labelClasses="govuk-label--s"
+              [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex].lastName.controlName])"
+              [errors]="formControlErrorMessages[aliasControls[rowIndex].lastName.controlName]"
+            ></app-govuk-text-input>
+          </fieldset>
+        }
+
+        @if (aliasControls.length > 1) {
+          <div class="govuk-!-margin-bottom-3">
+            <a
+              class="govuk-link govuk-link--no-visited-state"
+              (click)="removeAlias(aliasControls.length - 1)"
+              (keyup.enter)="removeAlias(aliasControls.length - 1)"
+              tabindex="0"
+            >
+              Remove Alias
+            </a>
+          </div>
+        }
+        <app-govuk-button
+          buttonId="addAlias"
+          buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+          type="button"
+          (buttonClickEvent)="addAliases(aliasControls.length)"
+          >Add Alias</app-govuk-button
+        >
       </div>
     }
   </app-govuk-checkboxes>
 
-  <app-scotgov-date-picker 
+  <app-scotgov-date-picker
     labelText="Date of birth"
     labelClasses="govuk-label--s"
     inputId="dateOfBirth"

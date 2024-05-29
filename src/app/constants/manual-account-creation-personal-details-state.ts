@@ -5,7 +5,7 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE = {
   firstNames: null,
   lastName: null,
   addAlias: false,
-  aliases: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_STATE,
+  aliases: [],
   dateOfBirth: null,
   nationalInsuranceNumber: null,
   addressLine1: null,
