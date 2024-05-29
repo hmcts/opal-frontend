@@ -33,6 +33,11 @@ import { GovukRadioComponent } from './govuk/govuk-radio/govuk-radio.component';
 import { GovukRadiosItemComponent } from './govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
 import { GovukRadiosConditionalComponent } from './govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { GovukRadiosDividerComponent } from './govuk/govuk-radio/govuk-radios-divider/govuk-radios-divider.component';
+import { GovukTextInputPrefixSuffixComponent } from './govuk/govuk-text-input-prefix-suffix/govuk-text-input-prefix-suffix.component';
+import { GovukSummaryCardListComponent } from './govuk/govuk-summary-card-list/govuk-summary-card-list.component';
+import { GovukSummaryCardActionComponent } from './govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
+import { MojBannerComponent } from './moj/moj-banner/moj-banner.component';
+import { GovukNotificationBannerComponent } from './govuk/govuk-notification-banner/govuk-notification-banner.component';
 import { FormBaseComponent } from './abstract/form-base/form-base.component';
 import { FormParentBaseComponent } from './abstract/form-parent-base/form-parent-base.component';
 import { GovukHeadingWithCaptionComponent } from './govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
@@ -73,6 +78,11 @@ export {
   GovukRadiosItemComponent,
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
+  GovukTextInputPrefixSuffixComponent,
+  GovukSummaryCardListComponent,
+  GovukSummaryCardActionComponent,
+  MojBannerComponent,
+  GovukNotificationBannerComponent,
   FormBaseComponent,
   FormParentBaseComponent,
   GovukHeadingWithCaptionComponent,
