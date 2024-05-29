@@ -158,4 +158,55 @@
       [control]="searchForm.get('radio')"
     ></div>
   </app-govuk-radio> -->
+
+  <!-- <app-govuk-text-input-prefix-suffix
+        labelText="Amount imposed"
+        inputClasses="govuk-input--width-10"
+        inputId="amountImposed"
+        inputName="amountImposed"
+        prefixText="£"
+        suffixText="per item"
+        [control]="searchForm.controls['amountImposed']"
+        [errors]="formControlErrorMessages['amountImposed']"
+      ></app-govuk-text-input-prefix-suffix> -->
+
+  <!-- <app-govuk-summary-card-list cardTitle="Address information">
+        <app-govuk-summary-card-action
+          cardTitle="Address information"
+          [actions]="actions"
+          (clickEvent)="navigateToRoute($event)"
+        ></app-govuk-summary-card-action>
+        <app-govuk-summary-list content summaryListId="summaryListAccountDetails">
+          <div app-govuk-summary-list-row summaryListId="summaryListAccountDetails" summaryListRowId="listRowName">
+            <ng-container name>Name</ng-container>
+            <ng-container value>
+              <p class="govuk-body">Terrence Lovejoy</p>
+            </ng-container>
+          </div>
+          <div app-govuk-summary-list-row summaryListId="summaryListAccountDetails" summaryListRowId="listRowAddress">
+            <ng-container name>Address</ng-container>
+            <ng-container value>
+              <p class="govuk-body">28 High Street Twyford Berkshire RG10 5GH</p>
+            </ng-container>
+          </div>
+          <div app-govuk-summary-list-row summaryListId="summaryListAccountDetails" summaryListRowId="listRowPayment">
+            <ng-container name>Payment method</ng-container>
+            <ng-container value>
+              <p class="govuk-body">BACS</p>
+            </ng-container>
+          </div>
+        </app-govuk-summary-list>
+      </app-govuk-summary-card-list> -->
+
+  <!-- <app-scotgov-date-picker
+        labelText="Date of birth"
+        inputId="dob"
+        inputName="dob"
+        [control]="searchForm.controls['dob']"
+        [errors]="formControlErrorMessages['dob']"
+        minDate="01/01/2022"
+        maxDate="27/05/2024"
+        [disabledDates]="['20/05/2024']"
+        (dateChange)="setInputValue($event, 'dob')"
+      ></app-scotgov-date-picker> -->
 </form>

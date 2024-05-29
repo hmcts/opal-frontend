@@ -15,6 +15,12 @@ import {
   GovukRadiosItemComponent,
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
+  GovukTextInputPrefixSuffixComponent,
+  GovukSummaryCardListComponent,
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
+  GovukSummaryCardActionComponent,
+  ScotgovDatePickerComponent,
 } from '@components';
 import {
   IAccountEnquiryStateSearch,
@@ -37,7 +43,6 @@ import { overEighteenValidator } from 'src/app/validators';
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-
     GovukCheckboxesComponent,
     GovukDateInputComponent,
     GovukSelectComponent,
@@ -52,6 +57,12 @@ import { overEighteenValidator } from 'src/app/validators';
     GovukRadiosItemComponent,
     GovukRadiosConditionalComponent,
     GovukRadiosDividerComponent,
+    GovukTextInputPrefixSuffixComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
+    GovukSummaryCardListComponent,
+    GovukSummaryCardActionComponent,
+    ScotgovDatePickerComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -215,6 +226,18 @@ export class SearchFormComponent implements OnInit {
     this.formControlErrorMessages = initialFormControlErrorMessages;
     this.formErrorSummaryMessage = [];
   }
+
+  // // This is something which will need abstracted for the scotgov date picker
+  // /**
+  //  * Sets the value of a specified form control and marks it as touched.
+  //  *
+  //  * @param {string} value - The value to set for the form control.
+  //  * @param {string} control - The name of the form control to update.
+  //  */
+  // protected setInputValue(value: string, control: string) {
+  //   this.searchForm.controls[control].patchValue(value);
+  //   this.searchForm.controls[control].markAsTouched();
+  // }
 
   /**
    * Sets the error messages for the form controls and error summary based on the provided form errors.
