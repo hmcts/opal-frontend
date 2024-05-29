@@ -28,6 +28,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   protected fieldErrors!: IFieldErrors;
   protected formSubmitted = false;
   private formSub!: Subscription;
+  public formErrors!: IFormError[];
 
   constructor() {}
 
@@ -264,9 +265,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formErrors - An array of form errors.
    * @returns An array of form errors with the manipulated error messages.
    */
-  private handleDateInputFormErrors(formErrors: IFormError[]) {
+  protected handleDateInputFormErrors() {
     const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
-    const splitFormErrors = this.splitFormErrors(dateInputFields, formErrors);
+    const splitFormErrors = this.splitFormErrors(dateInputFields, this.formErrors);
     const highPriorityDateControlErrors = this.getHighPriorityFormErrors(splitFormErrors[1]);
     let manipulatedFormErrors: IFormError[] = highPriorityDateControlErrors;
 
@@ -329,10 +330,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Handles the error messages and populates the relevant variables
    */
   protected handleErrorMessages(): void {
-    let errorSummary = this.getFormErrors(this.form);
-    errorSummary = this.handleDateInputFormErrors(errorSummary);
+    this.formErrors = this.getFormErrors(this.form);
 
-    this.setErrorMessages(errorSummary);
+    this.setErrorMessages(this.formErrors);
 
     this.formErrorSummaryMessage = this.removeErrorSummaryMessages(
       this.formErrorSummaryMessage,

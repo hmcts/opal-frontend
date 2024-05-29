@@ -380,10 +380,10 @@ describe('FormBaseComponent', () => {
   });
 
   it('should handle date input form errors', () => {
-    const errorSummary: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    component.formErrors = FORM_ERROR_SUMMARY_MOCK;
     const messageOverride = 'Please enter a DOB';
 
-    const result = component['handleDateInputFormErrors'](errorSummary);
+    const result = component['handleDateInputFormErrors']();
 
     expect(result).toEqual([
       FORM_ERROR_SUMMARY_MOCK[0],
