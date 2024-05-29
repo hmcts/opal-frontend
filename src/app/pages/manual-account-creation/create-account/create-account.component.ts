@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
-  GovukBackLinkComponent,
   GovukButtonComponent,
   GovukTagComponent,
   GovukTaskListComponent,
   GovukTaskListItemComponent,
 } from '@components';
-import { ManualAccountCreationRoutes } from '@enums';
+import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import { StateService } from '@services';
 
 @Component({
@@ -21,7 +20,6 @@ import { StateService } from '@services';
     GovukTaskListComponent,
     GovukTaskListItemComponent,
     GovukButtonComponent,
-    GovukBackLinkComponent,
   ],
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,13 +27,16 @@ import { StateService } from '@services';
 export class CreateAccountComponent {
   private readonly router = inject(Router);
   private readonly stateService = inject(StateService);
+  public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly stateService = inject(StateService);
 
   /**
-   * Handles back and navigates to the manual account creation page.
+   * Handles route with the supplied route
+   *
+   * @param route string of route
    */
-  public handleBack(): void {
-    this.router.navigate([ManualAccountCreationRoutes.accountDetails]);
+  public handleRoute(route: string): void {
+    this.router.navigate([route]);
   }
 }

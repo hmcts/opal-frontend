@@ -447,9 +447,9 @@ describe('FormBaseComponent', () => {
     expect(component.formErrorSummaryMessage).toEqual([]);
   });
 
-  it('should navigate to account-details page on handleBack', () => {
+  it('should navigate to account-details page on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.handleBack('test');
+    component.handleRoute('test');
     expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 

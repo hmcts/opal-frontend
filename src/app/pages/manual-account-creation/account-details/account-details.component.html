@@ -1,7 +1,6 @@
 <div class="govuk-grid-column-two-thirds">
-  <app-govuk-back-link (clickEvent)="handleBack()"></app-govuk-back-link>
-  <h1 class="govuk-heading-l">Account details</h1>
-  <app-govuk-button buttonId="accountDetailsContinue" (buttonClickEvent)="handleCreateAccount()"
-    >Continue</app-govuk-button
-  >
+  <app-account-details-form
+    (formSubmit)="handleAccountDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-account-details-form>
 </div>

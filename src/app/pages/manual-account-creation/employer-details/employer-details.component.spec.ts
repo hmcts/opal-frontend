@@ -3,7 +3,10 @@ import { EmployerDetailsComponent } from './employer-details.component';
 import { StateService } from '@services';
 import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
-import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from '@constants';
+import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+} from '@constants';
 
 describe('EmployerDetailsComponent', () => {
   let component: EmployerDetailsComponent;
@@ -14,6 +17,7 @@ describe('EmployerDetailsComponent', () => {
     mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
 
     mockStateService.manualAccountCreation = {
+      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       unsavedChanges: false,
       stateChanges: false,

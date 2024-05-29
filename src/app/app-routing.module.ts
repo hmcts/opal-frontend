@@ -67,6 +67,7 @@ const routes: Routes = [
             (c) => c.AccountDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
       {
         path: RoutingPaths.manualAccountCreationCreateAccount,

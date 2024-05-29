@@ -1,32 +1,41 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { GovukBackLinkComponent, GovukButtonComponent } from '@components';
-import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { StateService } from '@services';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { FormParentBaseComponent } from '@components';
+import { ManualAccountCreationRoutes } from '@enums';
+import { IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { AccountDetailsFormComponent } from './account-details-form/account-details-form.component';
 
 @Component({
   selector: 'app-account-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, GovukBackLinkComponent, GovukButtonComponent],
+  imports: [CommonModule, RouterModule, AccountDetailsFormComponent],
   templateUrl: './account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountDetailsComponent {
-  private readonly router = inject(Router);
-  public readonly stateService = inject(StateService);
-
+export class AccountDetailsComponent extends FormParentBaseComponent {
   /**
-   * Handles continue and navigates to the create account page.
+   * Handles the form submission for account details.
+   * @param formData - The form data containing the search parameters.
    */
-  public handleCreateAccount(): void {
-    this.router.navigate([ManualAccountCreationRoutes.createAccount]);
+  public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
+    this.stateService.manualAccountCreation = {
+      accountDetails: formData,
+      employerDetails: this.stateService.manualAccountCreation.employerDetails,
+      unsavedChanges: false,
+      stateChanges: true,
+    };
+
+    this.routerNavigate(ManualAccountCreationRoutes.createAccount);
   }
 
   /**
-   * Handles back and navigates to the dashboard page.
+   * Handles unsaved changes coming from the child component
+   *
+   * @param unsavedChanges boolean value from child component
    */
-  public handleBack(): void {
-    this.router.navigate([RoutingPaths.dashboard]);
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }
