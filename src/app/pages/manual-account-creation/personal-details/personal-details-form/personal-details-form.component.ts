@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import {
   FormBaseComponent,
@@ -57,7 +57,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   private aliasBaseErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_FIELD_ERROR;
 
   public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
-  public today: string = DateTime.now().setLocale('en-gb').toLocaleString();
+  public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 
   public aliasControls: IManualAccountCreationPersonalAlias[] = [];
 
@@ -78,11 +78,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      addressLine1: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        specialCharactersValidator(),
-      ]),
+
       addressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
       addressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
       postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
