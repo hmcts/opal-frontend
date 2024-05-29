@@ -85,6 +85,7 @@ export class SearchFormComponent extends FormBaseComponent implements OnInit, On
    */
   public handleFormSubmit(): void {
     this.handleErrorMessages();
+    this.handleDateInputFormErrors();
     this.formSubmit.emit(this.form.value);
   }
 

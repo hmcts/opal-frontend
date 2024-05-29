@@ -46,6 +46,7 @@ import {
     GovukSelectComponent,
   ],
   templateUrl: './personal-details-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsState>();
@@ -72,6 +73,11 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
       aliases: new FormArray([]),
       dateOfBirth: new FormControl(null, [optionalValidDateValidator()]),
       nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      addressLine1: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(30),
+        specialCharactersValidator(),
+      ]),
       addressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -162,7 +168,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     if (this.form.valid) {
       this.formSubmitted = true;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      //this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit(this.form.value);
     }
   }
 

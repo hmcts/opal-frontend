@@ -2,7 +2,6 @@ import { FormControl } from '@angular/forms';
 import { nationalInsuranceNumberValidator } from './national-insurance-number.validator';
 
 describe('nationalInsuranceNumberValidator', () => {
-
   it('should return null for a valid NINO with spaces', () => {
     const control = new FormControl('QQ 12 34 56 C');
     const result = nationalInsuranceNumberValidator()(control);
@@ -50,5 +49,4 @@ describe('nationalInsuranceNumberValidator', () => {
     const result = nationalInsuranceNumberValidator()(control);
     expect(result).toBeNull();
   });
-
 });

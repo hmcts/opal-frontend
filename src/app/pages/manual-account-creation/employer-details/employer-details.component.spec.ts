@@ -3,7 +3,10 @@ import { EmployerDetailsComponent } from './employer-details.component';
 import { StateService } from '@services';
 import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
-import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from '@constants';
+import {
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+} from '@constants';
 
 describe('EmployerDetailsComponent', () => {
   let component: EmployerDetailsComponent;
@@ -15,6 +18,7 @@ describe('EmployerDetailsComponent', () => {
 
     mockStateService.manualAccountCreation = {
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };

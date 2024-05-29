@@ -5,6 +5,7 @@ import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from './manual-a
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from './manual-account-creation-employer-detail-state';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_FIELD_ERROR } from './manual-account-creation-personal-detail-alias-field-errors';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR } from './manual-account-creation-personal-detail-field-errors';
+import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE } from './manual-account-creation-personal-details-state';
 import { MANUAL_ACCOUNT_CREATION_STATE } from './manual-account-creation-state';
 import { ROUTE_PERMISSIONS } from './route-permissions';
 import { TITLE_DROPDOWN_OPTIONS } from './title-dropdown-options';

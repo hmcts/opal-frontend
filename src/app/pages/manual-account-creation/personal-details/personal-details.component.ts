@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
 import { PersonalDetailsFormComponent } from './personal-details-form/personal-details-form.component';
@@ -9,6 +9,7 @@ import { FormParentBaseComponent } from '@components';
   standalone: true,
   imports: [PersonalDetailsFormComponent],
   templateUrl: './personal-details.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalDetailsComponent extends FormParentBaseComponent {
   /**

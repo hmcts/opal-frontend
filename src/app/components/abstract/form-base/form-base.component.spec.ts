@@ -380,10 +380,10 @@ describe('FormBaseComponent', () => {
   });
 
   it('should handle date input form errors', () => {
-    const errorSummary: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    component.formErrors = FORM_ERROR_SUMMARY_MOCK;
     const messageOverride = 'Please enter a DOB';
 
-    const result = component['handleDateInputFormErrors'](errorSummary);
+    const result = component['handleDateInputFormErrors']();
 
     expect(result).toEqual([
       FORM_ERROR_SUMMARY_MOCK[0],
@@ -463,5 +463,17 @@ describe('FormBaseComponent', () => {
 
     component['formSubmitted'] = false;
     expect(component['hasUnsavedChanges']()).toBe(true);
+  });
+
+  it('should set the value of the form control and mark it as touched', () => {
+    const testValue = 'newValue';
+    const controlName = 'surname';
+
+    // Set the input value
+    component['setInputValue'](testValue, controlName);
+
+    // Check updated state
+    expect(component.form.controls[controlName].value).toBe(testValue);
+    expect(component.form.controls[controlName].touched).toBeTrue();
   });
 });
