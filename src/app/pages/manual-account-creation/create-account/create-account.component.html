@@ -1,7 +1,3 @@
-<div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-7">
-  <app-govuk-back-link (clickEvent)="handleBack()"></app-govuk-back-link>
-</div>
-
 <div class="govuk-grid-column-two-thirds">
   <span class="govuk-caption-l">Cambridgeshire</span>
   <h1 class="govuk-heading-l">Create account</h1>
@@ -131,6 +127,8 @@
     <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
   </p>
   <p class="govuk-body">
-    <a href="#" class="govuk-link govuk-color__error" onclick="return false;">Delete account</a>
+    <a href="#" class="govuk-link govuk-color__error" (onclick)="handleRoute(routingPaths.dashboard)"
+      >Cancel account creation</a
+    >
   </p>
 </div>
