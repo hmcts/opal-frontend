@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StateService } from '@services';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
 } from '@constants';
 
@@ -19,6 +20,7 @@ describe('CreateAccountComponent', () => {
     mockStateService.manualAccountCreation = {
       accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };
