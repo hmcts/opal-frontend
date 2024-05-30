@@ -2,7 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactDetailsComponent } from './contact-details.component';
 import { StateService } from '@services';
-import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE } from '@constants';
+import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+} from '@constants';
 import { IManualAccountCreationContactDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 
@@ -21,7 +25,7 @@ describe('ContactDetailsComponent', () => {
       unsavedChanges: false,
       stateChanges: false,
     };
-    
+
     await TestBed.configureTestingModule({
       imports: [ContactDetailsComponent],
       providers: [{ provide: StateService, useValue: mockStateService }],
