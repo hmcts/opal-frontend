@@ -9,7 +9,7 @@ import {
   GovukCancelLinkComponent,
   GovukErrorSummaryComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from '@constants';
+import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import { IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
 
@@ -34,6 +34,10 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly routingPaths = RoutingPaths;
+
+  public readonly defendantTypes: { key: string; value: string }[] = Object.entries(DEFENDANT_TYPES_STATE).map(
+    ([key, value]) => ({ key, value }),
+  );
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR;
 

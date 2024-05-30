@@ -1,6 +1,26 @@
 <div class="govuk-grid-column-two-thirds">
-  <span class="govuk-caption-l">Cambridgeshire</span>
-  <h1 class="govuk-heading-l">Create account</h1>
+  <app-govuk-heading-with-caption
+    captionText="Create account"
+    headingText="Account details"
+  ></app-govuk-heading-with-caption>
+  <app-govuk-summary-list summaryListId="accountDetails">
+    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="businessUnit">
+      <ng-container name>Business unit</ng-container>
+      <ng-container value>
+        <p class="govuk-body">Cambridgeshire</p>
+      </ng-container>
+    </div>
+    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="defendantType">
+      <ng-container name>Defendant type</ng-container>
+      <ng-container value>
+        <p class="govuk-body">
+          @if (stateService.manualAccountCreation.accountDetails.defendantType) {
+            {{ defendantTypes[stateService.manualAccountCreation.accountDetails.defendantType] }}
+          }
+        </p>
+      </ng-container>
+    </div>
+  </app-govuk-summary-list>
   <h2 class="govuk-heading-m">Court details</h2>
   <app-govuk-task-list taskListId="courtDetails" taskListClasses="govuk-!-margin-left-0 ">
     <app-govuk-task-list-item
@@ -43,6 +63,24 @@
       </ng-container>
     </app-govuk-task-list-item>
     <app-govuk-task-list-item
+      taskListItemId="contactDetailsItem"
+      taskListStatusId="contactDetailsStatus"
+      taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+    >
+      <ng-container name>
+        <a
+          class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+          [routerLink]="manualAccountCreationRoutes.contactDetails"
+          aria-describedby="contactDetailsStatus"
+        >
+          Contact details
+        </a>
+      </ng-container>
+      <ng-container status>
+        <app-govuk-tag tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
+      </ng-container>
+    </app-govuk-task-list-item>
+    <app-govuk-task-list-item
       taskListItemId="employerDetailsItem"
       taskListStatusId="employerDetailsStatus"
       taskListItemClasses="govuk-task-list__item--with-link border-top__none"
@@ -58,25 +96,6 @@
       </ng-container>
       <ng-container status>
         <app-govuk-tag tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
-      </ng-container>
-    </app-govuk-task-list-item>
-    <app-govuk-task-list-item
-      taskListItemId="additionalDetailsItem"
-      taskListStatusId="additionalDetailsStatus"
-      taskListItemClasses="govuk-task-list__item--with-link border-top__none"
-    >
-      <ng-container name>
-        <a
-          class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-          [routerLink]="manualAccountCreationRoutes.additionalDetails"
-          aria-describedby="additionalDetailsStatus"
-          onclick="return false;"
-        >
-          Additional defendant details
-        </a>
-      </ng-container>
-      <ng-container status>
-        <app-govuk-tag tagId="additionalDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>

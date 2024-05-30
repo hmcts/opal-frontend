@@ -28,6 +28,7 @@ import { IManualAccountCreationEmployerDetailsState } from './manual-account-cre
 import { IManualAccountCreationState } from './manual-account-creation-state.interface';
 import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
 import { IManualAccountCreationAccountDetailsState } from './manual-account-creation-account-details-state.interface';
+import { IDefendantTypes } from './defendant-type.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -64,4 +65,5 @@ export {
   CanComponentDeactivate,
   CanDeactivateType,
   IManualAccountCreationAccountDetailsState,
+  IDefendantTypes,
 };

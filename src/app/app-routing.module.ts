@@ -86,6 +86,14 @@ const routes: Routes = [
         canActivate: [authGuard],
         canDeactivate: [canDeactivateGuard],
       },
+      {
+        path: RoutingPaths.manualAccountCreationContactDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/contact-details/contact-details.component').then(
+            (c) => c.ContactDetailsComponent,
+          ),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
     canDeactivate: [canDeactivateGuard],
