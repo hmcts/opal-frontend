@@ -1,18 +1,13 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { EmployerDetailsComponent } from './employer-details.component';
-import { StateService } from '@services';
-import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ParentGuardianDetailsComponent } from './parent-guardian-details.component';
+import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import {
-  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-} from '@constants';
+import { IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
+import { StateService } from '@services';
 
-describe('EmployerDetailsComponent', () => {
-  let component: EmployerDetailsComponent;
-  let fixture: ComponentFixture<EmployerDetailsComponent>;
+describe('ParentGuardianDetailsComponent', () => {
+  let component: ParentGuardianDetailsComponent;
+  let fixture: ComponentFixture<ParentGuardianDetailsComponent>;
   let mockStateService: jasmine.SpyObj<StateService>;
 
   beforeEach(async () => {
@@ -28,11 +23,11 @@ describe('EmployerDetailsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [EmployerDetailsComponent],
+      imports: [ParentGuardianDetailsComponent],
       providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EmployerDetailsComponent);
+    fixture = TestBed.createComponent(ParentGuardianDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -43,22 +38,18 @@ describe('EmployerDetailsComponent', () => {
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IManualAccountCreationEmployerDetailsState = {
-      employerName: 'Test',
-      employeeReference: null,
-      employerEmailAddress: null,
-      employerTelephone: null,
-      employerAddress1: null,
-      employerAddress2: null,
-      employerAddress3: null,
-      employerAddress4: null,
-      employerAddress5: null,
-      employerPostcode: null,
+    const formData: IManualAccountCreationParentGuardianDetailsState = {
+      fullName: 'Test test',
+      dateOfBirth: '',
+      nationalInsuranceNumber: '',
+      addressLine1: '',
+      addressLine2: '',
+      postcode: '',
     };
 
-    component.handleEmployerDetailsSubmit(formData);
+    component.handleParentGuardianDetailsSubmit(formData);
 
-    expect(mockStateService.manualAccountCreation.employerDetails).toEqual(formData);
+    expect(mockStateService.manualAccountCreation.parentGuardianDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
   });
 

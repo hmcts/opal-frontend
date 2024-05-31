@@ -6,8 +6,10 @@ import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from './manual-ac
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE } from './manual-account-creation-account-details-state';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR } from './manual-account-creation-contact-details-field-errors';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE } from './manual-account-creation-contact-details-state';
-import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from './manual-account-creation-employer-detail-field-errors';
-import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from './manual-account-creation-employer-detail-state';
+import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from './manual-account-creation-employer-details-field-errors';
+import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from './manual-account-creation-employer-details-state';
+import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from './manual-account-creation-parent-guardian-details-field-errors';
+import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE } from './manual-account-creation-parent-guardian-details-state';
 import { MANUAL_ACCOUNT_CREATION_STATE } from './manual-account-creation-state';
 import { ROUTE_PERMISSIONS } from './route-permissions';
 
@@ -25,4 +27,6 @@ export {
   DEFENDANT_TYPES_STATE,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
 };
