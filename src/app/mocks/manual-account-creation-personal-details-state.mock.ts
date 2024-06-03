@@ -2,19 +2,13 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK = {
   title: 'Mr',
   firstNames: 'Testing Test',
   lastName: 'Test',
-  addAlias: false,
-  aliases: {
-    firstNames1: null,
-    lastName1: null,
-    firstNames2: null,
-    lastName2: null,
-    firstNames3: null,
-    lastName3: null,
-    firstNames4: null,
-    lastName4: null,
-    firstNames5: null,
-    lastName5: null,
-  },
+  addAlias: true,
+  aliases: [
+    {
+      firstName_0: 'Test',
+      lastName_0: 'Testing'
+    }
+  ],
   dateOfBirth: '01/01/2022',
   nationalInsuranceNumber: 'QQ 12 34 56 C',
   addressLine1: 'Test Address 1',

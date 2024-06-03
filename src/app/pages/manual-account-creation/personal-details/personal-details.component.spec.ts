@@ -40,23 +40,13 @@ describe('PersonalDetailsComponent', () => {
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+
     const formData: IManualAccountCreationPersonalDetailsState = {
       title: 'Mr',
       firstNames: null,
       lastName: null,
       addAlias: false,
-      aliases: {
-        firstNames1: null,
-        lastName1: null,
-        firstNames2: null,
-        lastName2: null,
-        firstNames3: null,
-        lastName3: null,
-        firstNames4: null,
-        lastName4: null,
-        firstNames5: null,
-        lastName5: null,
-      },
+      aliases: [],
       dateOfBirth: null,
       nationalInsuranceNumber: null,
       addressLine1: null,
