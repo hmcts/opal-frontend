@@ -85,11 +85,34 @@
   }
   <h2 class="govuk-heading-m">Defendant details</h2>
   <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
-    <app-govuk-task-list-item
-      taskListItemId="personalDetailsItem"
-      taskListStatusId="personalDetailsStatus"
-      taskListItemClasses="govuk-task-list__item--with-link"
-    >
+
+    @if(isCompanyType()) {
+      <app-govuk-task-list-item
+          taskListItemId="companyDetailsItem"
+          taskListStatusId="companyDetailsStatus"
+          taskListItemClasses="govuk-task-list__item--with-link"
+        >
+      <ng-container name>
+        <a
+          class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+          [routerLink]="manualAccountCreationRoutes.companyDetails"
+          aria-describedby="companyDetailsStatus"
+          onclick="return false;"
+        >
+          Company details
+        </a>
+      </ng-container>
+      <ng-container status>
+        <app-govuk-tag tagId="companyDetailsStatusTag">Not provided</app-govuk-tag>
+      </ng-container>
+    </app-govuk-task-list-item>
+
+    } @else {
+      <app-govuk-task-list-item
+          taskListItemId="personalDetailsItem"
+          taskListStatusId="personalDetailsStatus"
+          taskListItemClasses="govuk-task-list__item--with-link"
+        >
       <ng-container name>
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
@@ -104,6 +127,7 @@
         <app-govuk-tag tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
+   }
     <app-govuk-task-list-item
       taskListItemId="contactDetailsItem"
       taskListStatusId="contactDetailsStatus"
