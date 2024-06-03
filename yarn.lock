@@ -2557,13 +2557,13 @@ __metadata:
   linkType: hard
 
 "@bahmutov/cypress-esbuild-preprocessor@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@bahmutov/cypress-esbuild-preprocessor@npm:2.2.0"
+  version: 2.2.1
+  resolution: "@bahmutov/cypress-esbuild-preprocessor@npm:2.2.1"
   dependencies:
-    debug: 4.3.4
+    debug: 4.3.5
   peerDependencies:
     esbuild: ">=0.17.0"
-  checksum: 473a2f237562d216dae7f922442d129e8c7743859b63165a73eb62dc76689918603d3847687a7ae2d817d392a1717ae12bcf4f1b0380a09ed5cbf16e2d81d337
+  checksum: 7c15da00bc7e96ac6568a431e3c137777874a671f007854023b3f6054b3bf81b83e965fba5c1daba1b18bc783b34f7b4da1d083430539bfc2f83302308170f5b
   languageName: node
   linkType: hard
 
@@ -8597,6 +8597,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
+  languageName: node
+  linkType: hard
+
+"debug@npm:4.3.5":
+  version: 4.3.5
+  resolution: "debug@npm:4.3.5"
+  dependencies:
+    ms: 2.1.2
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 7c002b51e256257f936dda09eb37167df952758c57badf6bf44bdc40b89a4bcb8e5a0a2e4c7b53f97c69e2970dd5272d33a757378a12c8f8e64ea7bf99e8e86e
   languageName: node
   linkType: hard
 
