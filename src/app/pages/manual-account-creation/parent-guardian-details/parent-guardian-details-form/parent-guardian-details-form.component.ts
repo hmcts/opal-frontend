@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   FormBaseComponent,
@@ -11,9 +11,7 @@ import {
 import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
-import { DefendantAccountService } from '@services';
 import { DateTime } from 'luxon';
-import { tap } from 'rxjs';
 import {
   optionalMaxLengthValidator,
   dateOfBirthValidator,
@@ -45,8 +43,6 @@ export class ParentGuardianDetailsFormComponent extends FormBaseComponent implem
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR;
 
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
-
-  private readonly defendantAccountService = inject(DefendantAccountService);
 
   /**
    * Sets up the parent/guardian details form with the necessary form controls.
