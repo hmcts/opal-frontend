@@ -94,6 +94,14 @@ const routes: Routes = [
           ),
         canActivate: [authGuard],
       },
+      {
+        path: RoutingPaths.manualAccountCreationCompanyDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/company-details/company-details.component').then(
+            (c) => c.CompanyDetailsComponent,
+          ),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
     canDeactivate: [canDeactivateGuard],
