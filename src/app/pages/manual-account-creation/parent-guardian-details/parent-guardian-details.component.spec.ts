@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ParentGuardianDetailsComponent } from './parent-guardian-details.component';
-import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE } from '@constants';
+import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
+} from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
 import { StateService } from '@services';
