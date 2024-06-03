@@ -1,6 +1,3 @@
-<div class="govuk-!-margin-bottom-7">
-  <app-govuk-back-link (clickEvent)="handleRoute(manualAccountCreationRoutes.createAccount)"></app-govuk-back-link>
-</div>
 <h1 class="govuk-heading-l">Employer details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit()">
@@ -96,7 +93,10 @@
   </fieldset>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <app-govuk-button buttonId="submitForm" type="submit">Save and return to tasks</app-govuk-button>
+      <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
+      <app-govuk-cancel-link
+        (linkClickEvent)="handleRoute(manualAccountCreationRoutes.createAccount)"
+      ></app-govuk-cancel-link>
     </div>
   </div>
 </form>

@@ -35,16 +35,13 @@ export class ManualAccountCreationComponent implements OnDestroy {
 
   /**
    * If the user navigates externally from the site or closes the tab
-   * Check if there is state changes but no unsaved changes -> warning message
+   * Check if there is state changes -> warning message
    * Otherwise -> no warning message
    *
    * @returns boolean
    */
   canDeactivate(): CanDeactivateType {
-    if (
-      this.stateService.manualAccountCreation.stateChanges &&
-      !this.stateService.manualAccountCreation.unsavedChanges
-    ) {
+    if (this.stateService.manualAccountCreation.stateChanges) {
       return false;
     } else {
       return true;
