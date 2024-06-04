@@ -340,7 +340,7 @@ describe('FormBaseComponent', () => {
     ]);
 
     const formGroup = new FormGroup({
-      formArray: formArray
+      formArray: formArray,
     });
 
     const result = component['getFormErrors'](formGroup);
@@ -357,7 +357,7 @@ describe('FormBaseComponent', () => {
     ]);
 
     const formGroup = new FormGroup({
-      formArray: formArray
+      formArray: formArray,
     });
 
     const result = component['getFormErrors'](formGroup);

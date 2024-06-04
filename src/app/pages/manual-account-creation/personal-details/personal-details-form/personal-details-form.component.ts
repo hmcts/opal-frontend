@@ -90,6 +90,34 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
+   * Activate/deactivate validators on alias checkbox change
+   */
+  public addAliasCheckboxChange(): void {
+    const aliasesFormArray = this.form.get('aliases') as FormArray;
+    const aliasFormGroups = aliasesFormArray.controls as FormGroup[];
+
+    aliasFormGroups.forEach((aliasFormGroup: FormGroup) => {
+      Object.keys(aliasFormGroup.controls).forEach((key) => {
+        if (this.form.controls['addAlias'].value) {
+          aliasFormGroup.controls[key].setValidators([
+            Validators.required,
+            Validators.maxLength(30),
+            alphabeticalTextValidator(),
+          ]);
+          aliasFormGroup.controls[key].updateValueAndValidity();
+        } else {
+          aliasFormGroup.controls[key].removeValidators([
+            Validators.required,
+            Validators.maxLength(30),
+            alphabeticalTextValidator(),
+          ]);
+          aliasFormGroup.controls[key].updateValueAndValidity();
+        }
+      });
+    });
+  }
+
+  /**
    * Adds aliases to the form.
    *
    * @param index - The index of the aliases.
@@ -116,8 +144,21 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     this.aliasControls.push(controls);
 
     // Add the controls to the form group
-    aliasesFormGroup.addControl(controls.firstName.controlName, new FormControl(null, [Validators.required]));
-    aliasesFormGroup.addControl(controls.lastName.controlName, new FormControl(null, [Validators.required]));
+    // If add alias checked enable validators, otherwise let addAliasCheckboxChange() method
+    // handle enabling/disabling validators
+    if (this.form.controls['addAlias'].value) {
+      aliasesFormGroup.addControl(
+        controls.firstName.controlName,
+        new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      );
+      aliasesFormGroup.addControl(
+        controls.lastName.controlName,
+        new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      );
+    } else {
+      aliasesFormGroup.addControl(controls.firstName.controlName, new FormControl(null));
+      aliasesFormGroup.addControl(controls.lastName.controlName, new FormControl(null));
+    }
 
     // Add the form group to the form array
     aliases.push(aliasesFormGroup);

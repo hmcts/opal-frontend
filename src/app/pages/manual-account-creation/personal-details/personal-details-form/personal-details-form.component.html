@@ -29,13 +29,14 @@
     [control]="form.controls['lastName']"
     [errors]="formControlErrorMessages['lastName']"
   ></app-govuk-text-input>
-  <app-govuk-checkboxes fieldSetId="addAlias" checkboxClasses="" legendText="">
+  <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
       app-govuk-checkboxes-item
       labelText="Add aliases"
       inputId="addAlias"
       inputName="addAlias"
       [control]="form.get('addAlias')"
+      (change)="addAliasCheckboxChange()"
     ></div>
 
     @if (form.get('addAlias')?.value === true) {
