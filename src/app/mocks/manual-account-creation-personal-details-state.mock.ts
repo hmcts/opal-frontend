@@ -5,8 +5,8 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK = {
   addAlias: true,
   aliases: [
     {
-      firstNames_0: 'Test',
-      lastName_0: 'Testing',
+      firstNames_0: 'Test one',
+      lastName_0: 'Testing one',
     },
   ],
   dateOfBirth: '01/01/2022',

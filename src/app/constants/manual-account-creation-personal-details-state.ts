@@ -1,5 +1,3 @@
-import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_STATE } from './manual-account-creation-personal-details-alias-state';
-
 export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE = {
   title: null,
   firstNames: null,

@@ -99,6 +99,8 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
         this.addAliases(index);
         index++;
       });
+      this.addAliasCheckboxChange();
+      this.rePopulateForm(this.stateService.manualAccountCreation.personalDetails);
     } else {
       this.addAliases(0);
     }
@@ -222,9 +224,9 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
-    this.buildAliasInputs();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.stateService.manualAccountCreation.personalDetails);
+    this.buildAliasInputs();
     super.ngOnInit();
   }
 }
