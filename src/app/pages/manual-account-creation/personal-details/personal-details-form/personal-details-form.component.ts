@@ -23,6 +23,7 @@ import { DateTime } from 'luxon';
 import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
 import {
   alphabeticalTextValidator,
+  dateOfBirthValidator,
   nationalInsuranceNumberValidator,
   optionalMaxLengthValidator,
   optionalValidDateValidator,
@@ -71,14 +72,13 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
       lastName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
       addAlias: new FormControl(null),
       aliases: new FormArray([]),
-      dateOfBirth: new FormControl(null, [optionalValidDateValidator()]),
+      dateOfBirth: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
       nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
       addressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-
       addressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
       addressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
       postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
