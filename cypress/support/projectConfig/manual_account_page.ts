@@ -1,9 +1,6 @@
 import { arrayBuffer } from 'stream/consumers';
 
 export default class manualAccountPageObjects {
-  employerNameErrorMessage = 'The employer name must be 35 characters or fewer';
-  employeeNinoErrorMessage = 'The employee reference must be 20 characters or fewer';
-
   static enterEmployerName(employerName: string) {
     cy.get('#employerName').should('be.visible').type(employerName);
   }
