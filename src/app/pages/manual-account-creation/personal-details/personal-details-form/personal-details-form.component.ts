@@ -85,8 +85,23 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
       makeOfCar: new FormControl(null, [optionalMaxLengthValidator(30)]),
       registrationNumber: new FormControl(null, [optionalMaxLengthValidator(11)]),
     });
+  }
 
-    this.addAliases(0);
+  /**
+   * Based on the add alias create the inputs based on amount of aliases
+   * Otherwise, build one alias as standard
+   */
+  private buildAliasInputs(): void {
+    const personalDetails = this.stateService.manualAccountCreation.personalDetails;
+    if (personalDetails.addAlias) {
+      let index = 0;
+      this.stateService.manualAccountCreation.personalDetails.aliases.forEach(() => {
+        this.addAliases(index);
+        index++;
+      });
+    } else {
+      this.addAliases(0);
+    }
   }
 
   /**
@@ -207,6 +222,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
+    this.buildAliasInputs();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.stateService.manualAccountCreation.personalDetails);
     super.ngOnInit();
