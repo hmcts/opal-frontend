@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Ou
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import {
   FormBaseComponent,
-  GovukBackLinkComponent,
   GovukButtonComponent,
+  GovukCancelLinkComponent,
   GovukCheckboxesComponent,
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesItemComponent,
@@ -37,13 +37,13 @@ import {
     ReactiveFormsModule,
     GovukTextInputComponent,
     GovukButtonComponent,
-    GovukBackLinkComponent,
     GovukErrorSummaryComponent,
     ScotgovDatePickerComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukSelectComponent,
+    GovukCancelLinkComponent,
   ],
   templateUrl: './personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -101,16 +101,12 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
         if (this.form.controls['addAlias'].value) {
           aliasFormGroup.controls[key].setValidators([
             Validators.required,
-            Validators.maxLength(30),
+            Validators.maxLength(20),
             alphabeticalTextValidator(),
           ]);
           aliasFormGroup.controls[key].updateValueAndValidity();
         } else {
-          aliasFormGroup.controls[key].removeValidators([
-            Validators.required,
-            Validators.maxLength(30),
-            alphabeticalTextValidator(),
-          ]);
+          aliasFormGroup.controls[key].clearValidators();
           aliasFormGroup.controls[key].updateValueAndValidity();
         }
       });
@@ -129,9 +125,9 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     // Create our controls...
     const controls = {
       firstName: {
-        inputId: `firstName_${index}`,
-        inputName: `firstName_${index}`,
-        controlName: `firstName_${index}`,
+        inputId: `firstNames_${index}`,
+        inputName: `firstNames_${index}`,
+        controlName: `firstNames_${index}`,
       },
       lastName: {
         inputId: `lastName_${index}`,
@@ -149,7 +145,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     if (this.form.controls['addAlias'].value) {
       aliasesFormGroup.addControl(
         controls.firstName.controlName,
-        new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+        new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
       );
       aliasesFormGroup.addControl(
         controls.lastName.controlName,
@@ -166,7 +162,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     // Add field errors for the new controls
     const fieldErrors = {
       [controls.firstName.controlName]: {
-        ...this.aliasBaseErrors['firstName'],
+        ...this.aliasBaseErrors['firstNames'],
       },
       [controls.lastName.controlName]: {
         ...this.aliasBaseErrors['lastName'],

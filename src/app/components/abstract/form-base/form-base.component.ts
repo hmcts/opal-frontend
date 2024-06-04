@@ -390,9 +390,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles back and navigates to the manual account creation page.
+   * Handles route and navigates to the manual account creation page.
    */
-  public handleBack(route: string): void {
+  public handleRoute(route: string): void {
     this.unsavedChanges.emit(this.hasUnsavedChanges());
     this.router.navigate([route]);
   }
