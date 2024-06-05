@@ -65,6 +65,16 @@ Then('I enter employer address line1 {string}', (employerAddress1: string) => {
 Then('I enter employer address line2 {string}', (employerAddress2: string) => {
   manualAccountPageObjects.enterEmployerAddressLine2(employerAddress2);
 });
+
+Then('I enter employer address line3 {string}', (employerAddress3: string) => {
+  manualAccountPageObjects.enterEmployerAddressLine3(employerAddress3);
+});
+Then('I enter employer address line4 {string}', (employerAddress4: string) => {
+  manualAccountPageObjects.enterEmployerAddressLine4(employerAddress4);
+});
+Then('I enter employer address line5 {string}', (employerAddress5: string) => {
+  manualAccountPageObjects.enterEmployerAddressLine5(employerAddress5);
+});
 Then('I enter employer postcode {string}', (employerPostCode: string) => {
   manualAccountPageObjects.enterEmployerPostcode(employerPostCode);
 });
@@ -82,11 +92,19 @@ Then('I click save and return to tasks', () => {
 });
 
 Then(
-  'I verify {string}, {string}, {string} values saved',
-  (employerName: string, employeeNino: string, employerAddress1: string) => {
+  'I verify {string},{string},{string},{string},{string} values saved',
+  (
+    employerName: string,
+    employeeNino: string,
+    employerAddress1: string,
+    employerEmail: string,
+    employerTelephone: string,
+  ) => {
     cy.get('#employerName').should('have.value', employerName);
     cy.get('#employeeReference').should('have.value', employeeNino);
     cy.get('#employerAddress1').should('have.value', employerAddress1);
+    cy.get('#employerEmailAddress').should('have.value', employerEmail);
+    cy.get('#employerTelephone').should('have.value', employerTelephone);
   },
 );
 
@@ -126,4 +144,45 @@ Then('I verify the error message', () => {
   manualAccountPageObjects.verifyErrorSummary();
   //cy.get('[class="govuk-error-message"]').should('have.text',errorMessage);
   manualAccountPageObjects.verifyEmployerDetailsErrorMessages();
+});
+
+When('I select OK on the pop up window', () => {
+  cy.get('a').contains('Back').click();
+  cy.on('window:confirm', (windowMessage: string) => {
+    cy.log('test1');
+    cy.log(windowMessage);
+    expect(windowMessage).to.equal('Test window');
+    return true;
+  });
+});
+
+When('I select cancel on the pop up window', () => {
+  cy.get('a').contains('Back').click();
+  cy.on('window:confirm', (windowMessage) => {
+    expect(windowMessage).to.equal(
+      'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.',
+    );
+    return false;
+  });
+});
+
+Then('I update employer name {string}', (employerName: string) => {
+  cy.get('#employerName').clear();
+  manualAccountPageObjects.enterEmployerName(employerName);
+});
+Then('I update employee reference number or nino {string}', (employeeNino: string) => {
+  cy.get('#employeeReference').clear();
+  manualAccountPageObjects.enterEmployeeReferenceNumber(employeeNino);
+});
+Then('I update employer email address {string}', (employerEmail: string) => {
+  cy.get('#employerEmailAddress').clear();
+  manualAccountPageObjects.enterEmployerEmail(employerEmail);
+});
+Then('I update employer telephone number {string}', (employerTelephone: string) => {
+  cy.get('#employerTelephone').clear();
+  manualAccountPageObjects.enterEmployerTelephone(employerTelephone);
+});
+Then('I update employer address line1 {string}', (employerAddress1: string) => {
+  cy.get('#employerAddress1').clear();
+  manualAccountPageObjects.enterEmployerAddressLine1(employerAddress1);
 });
