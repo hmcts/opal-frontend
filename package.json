@@ -106,7 +106,7 @@
     "browser-sync": "^3.0.2",
     "cypress": "^13.6.0",
     "cypress-axe": "^1.5.0",
-    "eslint": "^8.53.0",
+    "eslint": "^9.0.0",
     "jasmine-core": "~5.1.0",
     "junit-report-merger": "^7.0.0",
     "karma": "~6.4.0",
