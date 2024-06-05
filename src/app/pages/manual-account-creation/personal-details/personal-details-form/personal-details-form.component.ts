@@ -19,8 +19,8 @@ import {
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalAlias } from '@interfaces';
-import { DateTime } from 'luxon';
 import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
+import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
   dateOfBirthValidator,
@@ -88,59 +88,75 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
-   * Based on the add alias create the inputs based on amount of aliases
-   * Otherwise, build one alias as standard
+   * Builds the alias inputs based on the personal details of the manual account creation.
+   * If the addAlias flag is true, it adds the alias inputs based on the number of aliases in the personal details.
+   * Otherwise, it adds a single alias input.
+   * It also handles the checkbox change event and repopulates the form if necessary.
    */
   private buildAliasInputs(): void {
     const personalDetails = this.stateService.manualAccountCreation.personalDetails;
     if (personalDetails.addAlias) {
-      let index = 0;
-      this.stateService.manualAccountCreation.personalDetails.aliases.forEach(() => {
+      personalDetails.aliases.map((_, index) => {
         this.addAliases(index);
-        index++;
       });
       this.addAliasCheckboxChange();
-      this.rePopulateForm(this.stateService.manualAccountCreation.personalDetails);
+      this.rePopulateForm(personalDetails);
     } else {
       this.addAliases(0);
     }
   }
 
   /**
-   * Activate/deactivate validators on alias checkbox change
+   * Updates the validators for the controls in the aliasFormGroup based on the value of 'addAlias' control in the form.
+   * If 'addAlias' is true, sets the alias validators for each control.
+   * If 'addAlias' is false, clears the alias validators for each control.
+   *
+   * @param aliasFormGroup - The FormGroup containing the controls to update validators for.
    */
-  public addAliasCheckboxChange(): void {
-    const aliasesFormArray = this.form.get('aliases') as FormArray;
-    const aliasFormGroups = aliasesFormArray.controls as FormGroup[];
-
-    aliasFormGroups.forEach((aliasFormGroup: FormGroup) => {
-      Object.keys(aliasFormGroup.controls).forEach((key) => {
-        if (this.form.controls['addAlias'].value) {
-          aliasFormGroup.controls[key].setValidators([
-            Validators.required,
-            Validators.maxLength(20),
-            alphabeticalTextValidator(),
-          ]);
-          aliasFormGroup.controls[key].updateValueAndValidity();
-        } else {
-          aliasFormGroup.controls[key].clearValidators();
-          aliasFormGroup.controls[key].updateValueAndValidity();
-        }
-      });
+  private updateAliasFormGroupValidators(aliasFormGroup: FormGroup): void {
+    Object.keys(aliasFormGroup.controls).forEach((key) => {
+      if (this.form.controls['addAlias'].value) {
+        this.setAliasValidators(aliasFormGroup, key);
+      } else {
+        this.clearAliasValidators(aliasFormGroup, key);
+      }
     });
   }
 
   /**
-   * Adds aliases to the form.
+   * Sets the validators for the specified alias form control.
    *
-   * @param index - The index of the aliases.
+   * @param aliasFormGroup - The FormGroup containing the alias form control.
+   * @param key - The key of the alias form control.
    */
-  public addAliases(index: number): void {
-    const aliases = this.form.get('aliases') as FormArray;
-    const aliasesFormGroup = new FormGroup({});
+  private setAliasValidators(aliasFormGroup: FormGroup, key: string): void {
+    const validators = key.includes('firstNames')
+      ? [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]
+      : [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()];
 
-    // Create our controls...
-    const controls = {
+    aliasFormGroup.controls[key].setValidators(validators);
+    aliasFormGroup.controls[key].updateValueAndValidity();
+  }
+
+  /**
+   * Clears the validators for a specific control in the alias form group.
+   *
+   * @param aliasFormGroup - The alias form group.
+   * @param key - The key of the control to clear the validators for.
+   */
+  private clearAliasValidators(aliasFormGroup: FormGroup, key: string): void {
+    aliasFormGroup.controls[key].clearValidators();
+    aliasFormGroup.controls[key].updateValueAndValidity();
+  }
+
+  /**
+   * Creates the form controls for the personal details form.
+   *
+   * @param index - The index of the form control.
+   * @returns An object containing the form controls for the first name and last name.
+   */
+  private createControls(index: number) {
+    return {
       firstName: {
         inputId: `firstNames_${index}`,
         inputName: `firstNames_${index}`,
@@ -152,31 +168,37 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
         controlName: `lastName_${index}`,
       },
     };
+  }
 
-    // Add the controls to the aliasControls array
-    this.aliasControls.push(controls);
-
-    // Add the controls to the form group
-    // If add alias checked enable validators, otherwise let addAliasCheckboxChange() method
-    // handle enabling/disabling validators
+  /**
+   * Adds controls to the form group based on the provided controls object.
+   * If the 'addAlias' control is true, it adds controls for first name and last name with required validators.
+   * Otherwise, it adds controls for first name and last name without any validators.
+   *
+   * @param formGroup - The form group to which the controls will be added.
+   * @param controls - The object containing the control names for first name and last name.
+   */
+  private addControlsToFormGroup(formGroup: FormGroup, controls: IManualAccountCreationPersonalAlias): void {
     if (this.form.controls['addAlias'].value) {
-      aliasesFormGroup.addControl(
+      formGroup.addControl(
         controls.firstName.controlName,
         new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
       );
-      aliasesFormGroup.addControl(
+      formGroup.addControl(
         controls.lastName.controlName,
         new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
       );
     } else {
-      aliasesFormGroup.addControl(controls.firstName.controlName, new FormControl(null));
-      aliasesFormGroup.addControl(controls.lastName.controlName, new FormControl(null));
+      formGroup.addControl(controls.firstName.controlName, new FormControl(null));
+      formGroup.addControl(controls.lastName.controlName, new FormControl(null));
     }
+  }
 
-    // Add the form group to the form array
-    aliases.push(aliasesFormGroup);
-
-    // Add field errors for the new controls
+  /**
+   * Adds field errors to the component's `fieldErrors` property.
+   * @param controls - The controls object containing the control names.
+   */
+  private addFieldErrors(controls: IManualAccountCreationPersonalAlias): void {
     const fieldErrors = {
       [controls.firstName.controlName]: {
         ...this.aliasBaseErrors['firstNames'],
@@ -186,7 +208,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
       },
     };
 
-    // Add the new field errors to the existing field errors
     this.fieldErrors = {
       ...this.fieldErrors,
       ...fieldErrors,
@@ -194,19 +215,68 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
-   * Removes an alias from the form.
-   * @param index - The index of the alias to remove.
+   * Removes the field errors for a specific index in the aliasControls array.
+   * @param index - The index of the alias control.
+   */
+  private removeFieldErrors(index: number): void {
+    const alias = this.aliasControls[index];
+    delete this.fieldErrors[alias?.firstName?.controlName];
+    delete this.fieldErrors[alias?.lastName?.controlName];
+  }
+
+  /**
+   * Removes the alias control at the specified index from the aliasControls array.
+   *
+   * @param index - The index of the alias control to remove.
+   */
+  private removeAliasControls(index: number): void {
+    this.aliasControls.splice(index, 1);
+  }
+
+  /**
+   * Handles the change event of the add alias checkbox.
+   * Updates the validators of each alias form group in the aliases form array.
+   */
+  public addAliasCheckboxChange(): void {
+    const aliasesFormArray = this.form.get('aliases') as FormArray;
+    const aliasFormGroups = aliasesFormArray.controls as FormGroup[];
+
+    aliasFormGroups.forEach((aliasFormGroup: FormGroup) => {
+      this.updateAliasFormGroupValidators(aliasFormGroup);
+    });
+  }
+
+  /**
+   * Adds aliases to the form.
+   *
+   * @param index - The index of the aliases to add.
+   */
+  public addAliases(index: number): void {
+    const aliases = this.form.get('aliases') as FormArray;
+    const aliasesFormGroup = new FormGroup({});
+
+    const controls = this.createControls(index);
+    this.aliasControls.push(controls);
+
+    this.addControlsToFormGroup(aliasesFormGroup, controls);
+
+    aliases.push(aliasesFormGroup);
+
+    this.addFieldErrors(controls);
+  }
+
+  /**
+   * Removes an alias from the form array at the specified index.
+   * Also removes any field errors and alias controls associated with the removed alias.
+   *
+   * @param index - The index of the alias to be removed.
    */
   public removeAlias(index: number): void {
     const aliases = this.form.get('aliases') as FormArray;
     aliases.removeAt(index);
 
-    // Remove the field errors for the removed controls
-    delete this.fieldErrors[`${this.aliasControls[index].firstName.controlName}`];
-    delete this.fieldErrors[`${this.aliasControls[index].lastName.controlName}`];
-
-    // Remove the controls from the aliasControls array
-    this.aliasControls.splice(index, 1);
+    this.removeFieldErrors(index);
+    this.removeAliasControls(index);
   }
 
   /**
