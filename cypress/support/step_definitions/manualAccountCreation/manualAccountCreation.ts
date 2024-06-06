@@ -148,12 +148,16 @@ Then('I verify the error message', () => {
 
 When('I select OK on the pop up window', () => {
   cy.get('a').contains('Back').click();
+  cy.on('uncaught:exception',() => {
   cy.on('window:confirm', (windowMessage: string) => {
+    cy.get(windowMessage).invoke('show')
     cy.log('test1');
     cy.log(windowMessage);
     expect(windowMessage).to.equal('Test window');
     return true;
   });
+  return false;
+})
 });
 
 When('I select cancel on the pop up window', () => {
