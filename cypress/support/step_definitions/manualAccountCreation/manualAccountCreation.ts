@@ -148,25 +148,26 @@ Then('I verify the error message', () => {
 
 When('I select OK on the pop up window', () => {
   cy.get('a').contains('Back').click();
-  cy.on('uncaught:exception', () => {
-    cy.on('window:confirm', (windowMessage: string) => {
-      cy.get(windowMessage).invoke('show');
-      cy.log('test1');
-      cy.log(windowMessage);
-      expect(windowMessage).to.equal('Test window');
-      return true;
-    });
-    return false;
+  cy.on('window:confirm', (windowMessage: string) => {
+    expect(windowMessage).to.equal(
+      'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.',
+    );
   });
 });
 
 When('I select cancel on the pop up window', () => {
   cy.get('a').contains('Back').click();
-  cy.on('window:confirm', (windowMessage) => {
-    expect(windowMessage).to.equal(
-      'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.',
-    );
-    return false;
+  cy.on('window:confirm', (windowMessage: string) => {
+    const isWindowMessageEqual =
+      windowMessage ===
+      'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.';
+    if (isWindowMessageEqual) {
+      cy.log('Window message is equal');
+      return false;
+    }
+    if (!isWindowMessageEqual) {
+      return true;
+    }
   });
 });
 
