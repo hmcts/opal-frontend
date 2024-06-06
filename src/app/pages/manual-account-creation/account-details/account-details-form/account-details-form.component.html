@@ -10,30 +10,16 @@
     legendHint="If sole trader, choose 'Adult or youth only'"
     [errors]="formControlErrorMessages['defendantType']"
   >
-    <div
-      app-govuk-radios-item
-      labelText="Adult or youth only"
-      inputId="adultYouthOnly"
-      inputName="defendantType"
-      inputValue="adultYouthOnly"
-      [control]="form.get('defendantType')"
-    ></div>
-    <div
-      app-govuk-radios-item
-      labelText="Adult or youth with parent or guardian to pay"
-      inputId="adultYouthParentOrGuardian"
-      inputName="defendantType"
-      inputValue="adultYouthParentOrGuardian"
-      [control]="form.get('defendantType')"
-    ></div>
-    <div
-      app-govuk-radios-item
-      labelText="Company"
-      inputId="company"
-      inputName="defendantType"
-      inputValue="company"
-      [control]="form.get('defendantType')"
-    ></div>
+    @for (defendantType of defendantTypes; track defendantType) {
+      <div
+        app-govuk-radios-item
+        [labelText]="defendantType.value"
+        [inputId]="defendantType.key"
+        inputName="defendantType"
+        [inputValue]="defendantType.key"
+        [control]="form.get('defendantType')"
+      ></div>
+    }
   </app-govuk-radio>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
