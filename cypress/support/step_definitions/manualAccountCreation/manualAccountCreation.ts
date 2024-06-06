@@ -1,6 +1,5 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor/';
 import manualAccountPageObjects from '../../projectConfig/manual_account_page';
-import manualAccountPageObjects from '../../projectConfig/manual_account_page';
 
 Then('I navigate to Manual Account Creation', () => {
   cy.get('#manualAccountCreationLink').should('contain', 'Manually Create Account').click();
@@ -41,9 +40,6 @@ When('The button {string} is clicked, nothing happens', (linkText: string) => {
   });
 });
 
-Then('I click on {string} link', (linkText: string) => {
-  cy.get('a').contains(linkText).click();
-});
 Then('I click on {string} link', (linkText: string) => {
   cy.get('a').contains(linkText).click();
 });
