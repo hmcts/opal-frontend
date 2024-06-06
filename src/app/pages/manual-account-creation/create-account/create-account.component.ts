@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
+  GovukBackLinkComponent,
   GovukButtonComponent,
   GovukTagComponent,
   GovukTaskListComponent,
@@ -20,6 +21,7 @@ import { StateService } from '@services';
     GovukTaskListComponent,
     GovukTaskListItemComponent,
     GovukButtonComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,7 +31,6 @@ export class CreateAccountComponent {
   private readonly stateService = inject(StateService);
   public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-  public readonly stateService = inject(StateService);
 
   /**
    * Handles route with the supplied route
