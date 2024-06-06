@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
 import { SearchComponent } from './search.component';
-import { CourtService, StateService } from '@services';
+import { CourtService } from '@services';
 import { SEARCH_COURT_MOCK, SEARCH_COURT_SELECT_OPTIONS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 import { AccountEnquiryRoutes } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from '@constants';
@@ -13,8 +12,6 @@ import { of } from 'rxjs';
 describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
-  let stateService: StateService;
-  let router: Router;
   let mockCourtService: Partial<CourtService>;
 
   beforeEach(async () => {
@@ -29,9 +26,6 @@ describe('SearchComponent', () => {
 
     fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-    stateService = TestBed.inject(StateService);
-
     fixture.detectChanges();
   });
 
@@ -44,16 +38,16 @@ describe('SearchComponent', () => {
   });
 
   it('should submit the form', () => {
-    const navigateSpy = spyOn(router, 'navigate');
+    const navigateSpy = spyOn(component['router'], 'navigate');
 
-    stateService.accountEnquiry = { search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH };
-    expect(stateService.accountEnquiry.search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
+    component['stateService'].accountEnquiry = { search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH };
+    expect(component['stateService'].accountEnquiry.search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
 
     component.handleFormSubmit({
       ...SEARCH_STATE_MOCK,
     });
 
-    expect(stateService.accountEnquiry.search?.court).toBe('Bath');
+    expect(component['stateService'].accountEnquiry.search?.court).toBe('Bath');
 
     expect(navigateSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.matches]);
   });

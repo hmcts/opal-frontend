@@ -37,7 +37,7 @@
     </div>
     <div class="govuk-header__content">
       @if (headerLinks.serviceLink) {
-        <a [href]="headerLinks.serviceLink" class="govuk-header__link govuk-header__service-name">
+        <a [routerLink]="headerLinks.serviceLink" class="govuk-header__link govuk-header__service-name">
           <ng-content select="[serviceName]"></ng-content>
         </a>
       } @else {

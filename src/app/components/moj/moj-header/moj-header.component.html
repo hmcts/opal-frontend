@@ -20,11 +20,11 @@
       </a>
 
       @if (headerLinks.serviceLink) {
-        <a [href]="headerLinks.serviceLink" class="moj-header__link moj-header__link--organisation-name">
+        <a [routerLink]="headerLinks.serviceLink" class="moj-header__link moj-header__link--organisation-name">
           <ng-content select="[organisationName]"></ng-content>
         </a>
 
-        <a [href]="headerLinks.serviceLink" class="moj-header__link moj-header__link--service-name">
+        <a [routerLink]="headerLinks.serviceLink" class="moj-header__link moj-header__link--service-name">
           <ng-content select="[serviceName]"></ng-content>
         </a>
       } @else {

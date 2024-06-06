@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
+import { AccountEnquiryRoutes, ManualAccountCreationRoutes } from '@enums';
 import { StateService } from '@services';
 
 @Component({
@@ -13,5 +13,5 @@ import { StateService } from '@services';
 export class DashboardComponent {
   public readonly stateService = inject(StateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-  public readonly routingPaths = RoutingPaths;
+  public readonly accountEnquiryRoutes = AccountEnquiryRoutes;
 }

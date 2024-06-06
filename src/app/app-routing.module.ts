@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
-import { authGuard, routePermissionsGuard, signedInGuard } from '@guards';
+import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } from '@guards';
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
 
@@ -57,7 +57,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: RoutingPaths.accountEnquiryDetails,
+        redirectTo: RoutingPaths.manualAccountCreationAccountDetails,
         pathMatch: 'full',
       },
       {
@@ -83,9 +83,11 @@ const routes: Routes = [
             (c) => c.EmployerDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
     ],
     resolve: { userState: userStateResolver },
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: RoutingPaths.accessDenied,
