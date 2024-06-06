@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
+  GovukBackLinkComponent,
   GovukButtonComponent,
   GovukTagComponent,
   GovukTaskListComponent,
@@ -20,6 +21,7 @@ import { StateService } from '@services';
     GovukTaskListComponent,
     GovukTaskListItemComponent,
     GovukButtonComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
