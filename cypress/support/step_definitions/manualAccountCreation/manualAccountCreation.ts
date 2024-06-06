@@ -81,6 +81,11 @@ Then('I enter employer postcode {string}', (employerPostCode: string) => {
 Then('I save and return to tasks', () => {
   cy.get('submitForm').click();
 });
+Then('I verify employer name, employer postcode is empty', () => {
+  cy.get('#employerName').should('be.empty');
+  cy.get('#employerPostcode').should('be.empty');
+});
+
 Then('I verify employer name, employer reference, employer address is empty', () => {
   cy.get('#employerName').should('be.empty');
   cy.get('#employeeReference').should('be.empty');
@@ -92,19 +97,29 @@ Then('I click save and return to tasks', () => {
 });
 
 Then(
-  'I verify {string},{string},{string},{string},{string} values saved',
+  'I verify {string},{string},{string},{string},{string},{string},{string},{string},{string},{string} values saved',
   (
     employerName: string,
     employeeNino: string,
-    employerAddress1: string,
     employerEmail: string,
     employerTelephone: string,
+    employerAddress1: string,
+    employerAddress2: string,
+    employerAddress3: string,
+    employerAddress4: string,
+    employerAddress5: string,
+    employerPostCode: string,
   ) => {
     cy.get('#employerName').should('have.value', employerName);
     cy.get('#employeeReference').should('have.value', employeeNino);
-    cy.get('#employerAddress1').should('have.value', employerAddress1);
     cy.get('#employerEmailAddress').should('have.value', employerEmail);
     cy.get('#employerTelephone').should('have.value', employerTelephone);
+    cy.get('#employerAddress1').should('have.value', employerAddress1);
+    cy.get('#employerAddress2').should('have.value', employerAddress2);
+    cy.get('#employerAddress3').should('have.value', employerAddress3);
+    cy.get('#employerAddress4').should('have.value', employerAddress4);
+    cy.get('#employerAddress5').should('have.value', employerAddress5);
+    cy.get('#employerPostcode').should('have.value', employerPostCode);
   },
 );
 
@@ -190,4 +205,24 @@ Then('I update employer telephone number {string}', (employerTelephone: string) 
 Then('I update employer address line1 {string}', (employerAddress1: string) => {
   cy.get('#employerAddress1').clear();
   manualAccountPageObjects.enterEmployerAddressLine1(employerAddress1);
+});
+Then('I update employer address line2 {string}', (employerAddress2: string) => {
+  cy.get('#employerAddress2').clear();
+  manualAccountPageObjects.enterEmployerAddressLine2(employerAddress2);
+});
+Then('I update employer address line3 {string}', (employerAddress3: string) => {
+  cy.get('#employerAddress3').clear();
+  manualAccountPageObjects.enterEmployerAddressLine3(employerAddress3);
+});
+Then('I update employer address line4 {string}', (employerAddress4: string) => {
+  cy.get('#employerAddress4').clear();
+  manualAccountPageObjects.enterEmployerAddressLine4(employerAddress4);
+});
+Then('I update employer address line5 {string}', (employerAddress5: string) => {
+  cy.get('#employerAddress5').clear();
+  manualAccountPageObjects.enterEmployerAddressLine5(employerAddress5);
+});
+Then('I update employer postcode {string}', (employerPostCode: string) => {
+  cy.get('#employerPostcode').clear();
+  manualAccountPageObjects.enterEmployerPostcode(employerPostCode);
 });
