@@ -33,7 +33,7 @@ Feature: PO-279 Manual account creation, Adult and Youth account creation page
     When "Payment terms" is clicked, nothing happens
 
     When "Employer details" is clicked
-    Then I see the temporary hello world page
+    Then I see "Employer details" on the page header
 
     And I click the Sign out link
 

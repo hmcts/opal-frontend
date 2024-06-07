@@ -38,6 +38,8 @@ import { GovukSummaryCardListComponent } from './govuk/govuk-summary-card-list/g
 import { GovukSummaryCardActionComponent } from './govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { MojBannerComponent } from './moj/moj-banner/moj-banner.component';
 import { GovukNotificationBannerComponent } from './govuk/govuk-notification-banner/govuk-notification-banner.component';
+import { FormBaseComponent } from './abstract/form-base/form-base.component';
+import { FormParentBaseComponent } from './abstract/form-parent-base/form-parent-base.component';
 
 export {
   GovukButtonComponent,
@@ -79,4 +81,6 @@ export {
   GovukSummaryCardActionComponent,
   MojBannerComponent,
   GovukNotificationBannerComponent,
+  FormBaseComponent,
+  FormParentBaseComponent,
 };

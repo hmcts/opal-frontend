@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MojHeaderLinks } from '@enums';
 
 @Component({
   selector: 'app-moj-header',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './moj-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

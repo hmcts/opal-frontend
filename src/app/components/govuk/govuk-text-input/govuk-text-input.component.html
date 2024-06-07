@@ -1,7 +1,16 @@
-<div class="govuk-form-group" [class.govuk-form-group--error]="errors !== null">
-  <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
+<div class="govuk-form-group" [class.govuk-form-group--error]="hasError()">
+  <h1 class="govuk-label-wrapper">
+    <label class="govuk-label {{ labelClasses }}" [for]="inputId">
+      {{ labelText }}
+    </label>
+  </h1>
+  @if (hintText) {
+    <div id="{{ inputId }}-hint" class="govuk-hint">
+      {{ hintText }}
+    </div>
+  }
 
-  @if (errors) {
+  @if (hasError()) {
     <p id="{{ this.inputId }}-error-message" class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> {{ errors }}
     </p>
@@ -13,5 +22,6 @@
     [name]="inputName"
     type="text"
     [formControl]="getControl"
+    [inputMode]="inputMode"
   />
 </div>

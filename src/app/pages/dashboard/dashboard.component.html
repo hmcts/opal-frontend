@@ -5,10 +5,12 @@
       <span>{{ stateService.userState().userName }}</span>
     </li>
     <li>
-      <a class="govuk-link" [href]="routingPaths.accountEnquiry" id="accountEnquiryLink">Account Enquiry</a>
+      <a class="govuk-link" [routerLink]="accountEnquiryRoutes.accountEnquiry" id="accountEnquiryLink"
+        >Account Enquiry</a
+      >
     </li>
     <li>
-      <a class="govuk-link" [href]="manualAccountCreationRoutes.accountDetails" id="manualAccountCreationLink"
+      <a class="govuk-link" [routerLink]="manualAccountCreationRoutes.accountDetails" id="manualAccountCreationLink"
         >Manually Create Account</a
       >
     </li>
