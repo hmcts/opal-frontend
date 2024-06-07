@@ -2513,8 +2513,8 @@ __metadata:
   linkType: hard
 
 "@badeball/cypress-cucumber-preprocessor@npm:^20.0.0":
-  version: 20.0.5
-  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.5"
+  version: 20.0.6
+  resolution: "@badeball/cypress-cucumber-preprocessor@npm:20.0.6"
   dependencies:
     "@badeball/cypress-configuration": ^6.1.1
     "@cucumber/ci-environment": ^10.0.1
@@ -2552,7 +2552,7 @@ __metadata:
     cucumber-json-formatter: dist/bin/cucumber-json-formatter.js
     cucumber-merge-messages: dist/bin/cucumber-merge-messages.js
     cypress-cucumber-diagnostics: dist/bin/diagnostics.js
-  checksum: 12120d756f80a1c57201f38f805199e7ac533c40e1ec388d93a0fd240292877248566b0dae14d35f0928d9fa47391bb7eb294e14a7ca016eb2d9e0412c2d1e89
+  checksum: 46e429ae92721f2ccc14c5ee2d7b13e8093afdc7cdc31756a493ebe81c42b32c3ee635f7c7573b7f61714e68780ce0b3f77cf7b441fb388eababb0481884f4ce
   languageName: node
   linkType: hard
 
@@ -17359,8 +17359,8 @@ __metadata:
   linkType: hard
 
 "zone.js@npm:~0.14.2":
-  version: 0.14.6
-  resolution: "zone.js@npm:0.14.6"
-  checksum: eec8802ce73ce08401a214f7e5819f5ff7b324f26a8c36ba829f9bd822e50034824889ec58bfdb5360da3bc326f15e831125a016f8ab2cefbcffd6601fdddd68
+  version: 0.14.7
+  resolution: "zone.js@npm:0.14.7"
+  checksum: 8b5cd4fd615c367d81c06840fcdde690f3c82e3e1f8ff799c045daac34cbedf9b4b3b53140404db61baf484af5c0fc049cb60cf195580aaf69ba522879e1acd9
   languageName: node
   linkType: hard
