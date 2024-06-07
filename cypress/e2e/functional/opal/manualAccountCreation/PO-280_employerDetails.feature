@@ -104,7 +104,7 @@ Feature: Verifying Employer details page for defendant accounts
 
 
     #AC9
-    Scenario Outline: verifying if user selects the 'Back' button and the user has entered data into one or more fields, a warning message will be displayed
+    Scenario Outline: verifying if user selects the 'Cancel' button and the user has entered data into one or more fields, a warning message will be displayed
         When I enter employer name "<employerName>"
         When I enter employer postcode "<employerPostcode>"
 
@@ -116,7 +116,7 @@ Feature: Verifying Employer details page for defendant accounts
             | employerName    | employerPostcode |
             | testWindowPopUP | AB12 7HN         |
 
-    Scenario Outline: verifying if user selects the 'Back' button and the user has entered data into one or more fields, a warning message will be displayed
+    Scenario Outline: verifying if user selects the 'Cancel' button and the user has entered data into one or more fields, a warning message will be displayed
         When I enter employer name "<employerName>"
         When I enter incorrect employer address line 2 "<incorrectAddressLine2>"
 
@@ -168,8 +168,8 @@ Feature: Verifying Employer details page for defendant accounts
         Then I see "Employer details" on the page header
 
     #AC8
-    Scenario: verifying If a user selects the 'Back' button and the user has not entered data into any fields
-        When "Back" is clicked
+    Scenario: verifying If a user selects the 'Cancel' button and the user has not entered data into any fields
+        When "Cancel" is clicked
         Then I see "Create account" on the page header
 
 

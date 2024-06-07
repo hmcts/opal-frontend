@@ -162,7 +162,7 @@ Then('I verify the error message', () => {
 });
 
 When('I select OK on the pop up window', () => {
-  cy.get('a').contains('Back').click();
+  cy.get('a').contains('Cancel').click();
   cy.on('window:confirm', (windowMessage: string) => {
     expect(windowMessage).to.equal(
       'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.',
@@ -171,7 +171,7 @@ When('I select OK on the pop up window', () => {
 });
 
 When('I select cancel on the pop up window', () => {
-  cy.get('a').contains('Back').click();
+  cy.get('a').contains('Cancel').click();
   cy.on('window:confirm', (windowMessage: string) => {
     const isWindowMessageEqual =
       windowMessage ===

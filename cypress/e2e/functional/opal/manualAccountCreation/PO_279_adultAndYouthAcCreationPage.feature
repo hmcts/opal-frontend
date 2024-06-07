@@ -27,13 +27,18 @@ Feature: PO-279 Manual account creation, Adult and Youth account creation page
     And I click continue to Create Account page
 
     When "Court details" is clicked, nothing happens
-    When "Personal details" is clicked, nothing happens
     When "Additional defendant details" is clicked, nothing happens
     When "Offence details" is clicked, nothing happens
     When "Payment terms" is clicked, nothing happens
 
     When "Employer details" is clicked
     Then I see "Employer details" on the page header
+    
+    When "Cancel" is clicked
+    Then I see "Create account" on the page header
+
+    When "Personal details" is clicked
+    Then I see "Personal details" on the page header
 
     And I click the Sign out link
 
