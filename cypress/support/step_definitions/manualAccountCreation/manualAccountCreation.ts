@@ -226,3 +226,54 @@ Then('I update employer postcode {string}', (employerPostCode: string) => {
   cy.get('#employerPostcode').clear();
   manualAccountPageObjects.enterEmployerPostcode(employerPostCode);
 });
+
+When('I try to trigger re-routing {string}', (reRouting: string) => {
+  switch (reRouting) {
+    case 'browserBackButton': {
+      cy.go('back');
+      cy.wait(200);
+      break;
+    }
+    case 'refreshPage': {
+      cy.reload();
+      break;
+    }
+    case 'closingTab': {
+      break;
+    }
+    case 'closingBrowser': {
+      break;
+    }
+    case 'signOutButton': {
+      cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out').click();
+      break;
+    }
+  }
+});
+Then('I select {string} to continue', (option: string) => {
+  switch (option) {
+    case 'Ok': {
+      cy.on('window:confirm', (windowMessage: string) => {
+        expect(windowMessage).to.equal(
+          'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.',
+        );
+      });
+      break;
+    }
+    case 'Cancel': {
+      cy.on('window:confirm', (windowMessage: string) => {
+        const isWindowMessageEqual =
+          windowMessage ===
+          'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.';
+        if (isWindowMessageEqual) {
+          cy.log('Window message is equal');
+          return false;
+        }
+        if (!isWindowMessageEqual) {
+          return true;
+        }
+      });
+      break;
+    }
+  }
+});

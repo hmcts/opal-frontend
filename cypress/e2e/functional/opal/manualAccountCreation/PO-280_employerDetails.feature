@@ -171,6 +171,27 @@ Feature: Verifying Employer details page for defendant accounts
     Scenario: verifying If a user selects the 'Back' button and the user has not entered data into any fields
         When "Back" is clicked
         Then I see "Create account" on the page header
+    #AC1
+    Scenario Outline: verifying re-routing triggers when user clicks on browser back button
+        When I enter employer name "Steve Matthew"
+        Then I try to trigger re-routing "<reRouting>"
+        Then I select "<option>" to continue
+        Then I see "<pageName>" on the page header
+        Examples:
+            | reRouting         | pageName         | option |
+            | browserBackButton | Create account   | Ok     |
+            | browserBackButton | Employer details | Cancel |
+            | refreshPage       | Create account   | Reload    |
+            | refreshPage       | Employer details | Cancel |
+            | closingTab        | Create account   | Ok     |
+            | closingTab        | Employer details | Cancel |
+            | closingBrowser    | Create account   | Ok     |
+            | closingBrowser    | Employer details | Cancel |
+            | signOutButton     | Create account   | Ok     |
+            | signOutButton     | Employer details | Cancel |
+            | amendingURL       | Create account   | Ok     |
+            | amendingURL       | Employer details | Cancel |
+
 
 
 
