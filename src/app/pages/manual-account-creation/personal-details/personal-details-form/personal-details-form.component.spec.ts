@@ -386,13 +386,12 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    const formValue = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
+    component.stateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
-
-    component['rePopulateForm'](formValue);
+    component['rePopulateForm'](component.stateService.manualAccountCreation.personalDetails);
 
     component.handleFormSubmit();
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formValue);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(component.stateService.manualAccountCreation.personalDetails);
   });
 });
