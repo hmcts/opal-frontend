@@ -1,5 +1,4 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { EmployerDetailsComponent } from './employer-details.component';
 import { StateService } from '@services';
 import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
@@ -12,7 +11,6 @@ import {
 describe('EmployerDetailsComponent', () => {
   let component: EmployerDetailsComponent;
   let fixture: ComponentFixture<EmployerDetailsComponent>;
-  let mockStateService: jasmine.SpyObj<StateService>;
   let mockStateService: jasmine.SpyObj<StateService>;
 
   beforeEach(async () => {
@@ -27,7 +25,6 @@ describe('EmployerDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [EmployerDetailsComponent],
-      providers: [{ provide: StateService, useValue: mockStateService }],
       providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 

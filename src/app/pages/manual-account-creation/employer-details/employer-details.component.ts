@@ -5,21 +5,12 @@ import { EmployerDetailsFormComponent } from './employer-details-form/employer-d
 import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { FormParentBaseComponent, GovukBackLinkComponent } from '@components';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { EmployerDetailsFormComponent } from './employer-details-form/employer-details-form.component';
-import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
-import { ManualAccountCreationRoutes } from '@enums';
-import { FormParentBaseComponent, GovukBackLinkComponent } from '@components';
 
 @Component({
   selector: 'app-employer-details',
   standalone: true,
   imports: [CommonModule, RouterModule, EmployerDetailsFormComponent, GovukBackLinkComponent],
-  imports: [CommonModule, RouterModule, EmployerDetailsFormComponent, GovukBackLinkComponent],
   templateUrl: './employer-details.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployerDetailsComponent extends FormParentBaseComponent {

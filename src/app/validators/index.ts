@@ -7,7 +7,6 @@ import { optionalEmailAddressValidator } from './optional-valid-email-address/op
 import { optionalPhoneNumberValidator } from './optional-valid-telephone/optional-valid-telephone.validator';
 import { overEighteenValidator } from './over-eighteen/over-eighteen.validator';
 import { specialCharactersValidator } from './special-characters/special-characters.validator';
-import { specialCharactersValidator } from './special-characters/special-characters.validator';
 
 export {
   overEighteenValidator,
