@@ -233,29 +233,6 @@ describe('PersonalDetailsFormComponent', () => {
     expect(aliasesFormArray.length).toBe(1);
   });
 
-  it('should add field errors to the alias controls', () => {
-    const aliasesFormArray = new FormArray([]);
-
-    component.form = new FormGroup({
-      addAlias: new FormControl(null),
-      aliases: aliasesFormArray,
-    });
-    component.form.controls['addAlias'].setValue(true);
-
-    const index = 0;
-    const aliasesFormGroup = new FormGroup({});
-    const controls = component['createControls'](index);
-    component.aliasControls.push(controls);
-    component['addControlsToFormGroup'](aliasesFormGroup, controls);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const addFieldErrorsSpy = spyOn<any>(component, 'addFieldErrors');
-
-    component.addAliases(index);
-
-    expect(addFieldErrorsSpy).toHaveBeenCalledWith(controls);
-  });
-
   it('should create controls with unique input IDs, input names, and control names', () => {
     const index = 0;
 
@@ -328,40 +305,6 @@ describe('PersonalDetailsFormComponent', () => {
     expect((formGroup.controls as { [key: string]: any })[controls.firstName.controlName].validator).toBeNull();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((formGroup.controls as { [key: string]: any })[controls.lastName.controlName].validator).toBeNull();
-  });
-
-  it('should add field errors to the alias controls', () => {
-    const aliasesFormArray = new FormArray([]);
-
-    component.form = new FormGroup({
-      addAlias: new FormControl(null),
-      aliases: aliasesFormArray,
-    });
-    component.form.controls['addAlias'].setValue(true);
-
-    const index = 0;
-    const aliasesFormGroup = new FormGroup({});
-    const controls = component['createControls'](index);
-    component.aliasControls.push(controls);
-    component['addControlsToFormGroup'](aliasesFormGroup, controls);
-
-    const fieldErrors = {
-      [controls.firstName.controlName]: {
-        ...component['aliasBaseErrors']['firstNames'],
-      },
-      [controls.lastName.controlName]: {
-        ...component['aliasBaseErrors']['lastName'],
-      },
-    };
-
-    const expectedFieldErrors = {
-      ...component.fieldErrors,
-      ...fieldErrors,
-    };
-
-    component['addFieldErrors'](controls);
-
-    expect(component.fieldErrors).toEqual(expectedFieldErrors);
   });
 
   it('should remove alias at the specified index', () => {

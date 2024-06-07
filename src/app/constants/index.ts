@@ -3,7 +3,6 @@ import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from './account-enquiry-sear
 import { API_PATHS } from './api-paths';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from './manual-account-creation-employer-detail-field-errors';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from './manual-account-creation-employer-detail-state';
-import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_FIELD_ERROR } from './manual-account-creation-personal-detail-alias-field-errors';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR } from './manual-account-creation-personal-detail-field-errors';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE } from './manual-account-creation-personal-details-state';
 import { MANUAL_ACCOUNT_CREATION_STATE } from './manual-account-creation-state';
@@ -21,6 +20,5 @@ export {
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR,
   TITLE_DROPDOWN_OPTIONS,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_FIELD_ERROR,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 };

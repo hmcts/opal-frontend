@@ -12,11 +12,7 @@ import {
   GovukTextInputComponent,
   ScotgovDatePickerComponent,
 } from '@components';
-import {
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_FIELD_ERROR,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
-  TITLE_DROPDOWN_OPTIONS,
-} from '@constants';
+import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR, TITLE_DROPDOWN_OPTIONS } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalAlias } from '@interfaces';
 import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
@@ -55,7 +51,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR;
-  private aliasBaseErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_FIELD_ERROR;
 
   public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
@@ -195,26 +190,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
-   * Adds field errors to the component's `fieldErrors` property.
-   * @param controls - The controls object containing the control names.
-   */
-  private addFieldErrors(controls: IManualAccountCreationPersonalAlias): void {
-    const fieldErrors = {
-      [controls.firstName.controlName]: {
-        ...this.aliasBaseErrors['firstNames'],
-      },
-      [controls.lastName.controlName]: {
-        ...this.aliasBaseErrors['lastName'],
-      },
-    };
-
-    this.fieldErrors = {
-      ...this.fieldErrors,
-      ...fieldErrors,
-    };
-  }
-
-  /**
    * Removes the field errors for a specific index in the aliasControls array.
    * @param index - The index of the alias control.
    */
@@ -261,8 +236,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     this.addControlsToFormGroup(aliasesFormGroup, controls);
 
     aliases.push(aliasesFormGroup);
-
-    this.addFieldErrors(controls);
   }
 
   /**
