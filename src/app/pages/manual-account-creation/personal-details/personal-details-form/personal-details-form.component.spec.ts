@@ -392,6 +392,8 @@ describe('PersonalDetailsFormComponent', () => {
 
     component.handleFormSubmit();
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(component.stateService.manualAccountCreation.personalDetails);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      component.stateService.manualAccountCreation.personalDetails,
+    );
   });
 });
