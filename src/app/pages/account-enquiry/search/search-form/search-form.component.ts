@@ -15,6 +15,12 @@ import {
   GovukRadiosItemComponent,
   GovukRadiosConditionalComponent,
   GovukRadiosDividerComponent,
+  GovukTextInputPrefixSuffixComponent,
+  GovukSummaryCardListComponent,
+  GovukSummaryListComponent,
+  GovukSummaryListRowComponent,
+  GovukSummaryCardActionComponent,
+  ScotgovDatePickerComponent,
   FormBaseComponent,
 } from '@components';
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
@@ -29,7 +35,6 @@ import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
     FormsModule,
     ReactiveFormsModule,
     GovukTextInputComponent,
-
     GovukCheckboxesComponent,
     GovukDateInputComponent,
     GovukSelectComponent,
@@ -44,6 +49,12 @@ import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
     GovukRadiosItemComponent,
     GovukRadiosConditionalComponent,
     GovukRadiosDividerComponent,
+    GovukTextInputPrefixSuffixComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
+    GovukSummaryCardListComponent,
+    GovukSummaryCardActionComponent,
+    ScotgovDatePickerComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

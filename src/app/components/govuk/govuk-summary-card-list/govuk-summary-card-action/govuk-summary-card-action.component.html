@@ -1,0 +1,12 @@
+@for (action of actions; track action) {
+  <li class="govuk-summary-card__action" role="listitem">
+    <a
+      href="#"
+      class="govuk-link"
+      (click)="onClick($event, action.route)"
+      (keyup.enter)="onClick($event, action.route)"
+    >
+      {{ action.text }}<span class="govuk-visually-hidden"> {{ cardTitle }}</span>
+    </a>
+  </li>
+}

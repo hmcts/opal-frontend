@@ -1,5 +1,6 @@
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE, ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from './account-enquiry-default-state';
 import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from './account-enquiry-search-form-field-errors';
+import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from './account-enquiry-search-form-field-errors';
 import { API_PATHS } from './api-paths';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from './manual-account-creation-employer-detail-field-errors';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from './manual-account-creation-employer-detail-state';
