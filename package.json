@@ -120,5 +120,8 @@
   "packageManager": "yarn@3.8.2",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
+  },
+  "resolutions": {
+    "braces": "3.0.3"
   }
 }
