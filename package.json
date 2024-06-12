@@ -122,6 +122,7 @@
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
-    "braces": "3.0.3"
+    "braces": "3.0.3",
+    "@azure/msal-node": "2.9.2"
   }
 }
