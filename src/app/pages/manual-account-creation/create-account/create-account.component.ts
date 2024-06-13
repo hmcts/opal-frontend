@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {
   GovukButtonComponent,
@@ -30,6 +31,7 @@ import { StateService } from '@services';
   ],
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateAccountComponent {
   private readonly router = inject(Router);
@@ -43,7 +45,12 @@ export class CreateAccountComponent {
    * Handles route with the supplied route
    *
    * @param route string of route
+   * Handles route with the supplied route
+   *
+   * @param route string of route
    */
+  public handleRoute(route: string): void {
+    this.router.navigate([route]);
   public handleRoute(route: string): void {
     this.router.navigate([route]);
   }

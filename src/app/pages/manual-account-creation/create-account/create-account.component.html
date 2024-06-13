@@ -32,6 +32,7 @@
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.courtDetails"
+          [routerLink]="manualAccountCreationRoutes.courtDetails"
           aria-describedby="courtDetailsStatus"
           onclick="return false;"
         >
@@ -53,6 +54,7 @@
       <ng-container name>
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+          [routerLink]="manualAccountCreationRoutes.personalDetails"
           [routerLink]="manualAccountCreationRoutes.personalDetails"
           aria-describedby="personalDetailsStatus"
           onclick="return false;"
@@ -112,6 +114,7 @@
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.offenceDetails"
+          [routerLink]="manualAccountCreationRoutes.offenceDetails"
           aria-describedby="offenceDetailsStatus"
           onclick="return false;"
         >
@@ -131,6 +134,7 @@
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.paymentDetails"
+          [routerLink]="manualAccountCreationRoutes.paymentDetails"
           aria-describedby="paymentTermsStatus"
           onclick="return false;"
         >
@@ -148,6 +152,9 @@
     <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
   </p>
   <p class="govuk-body">
+    <a href="#" class="govuk-link govuk-color__error" (onclick)="handleRoute(routingPaths.dashboard)"
+      >Cancel account creation</a
+    >
     <a href="#" class="govuk-link govuk-color__error" (onclick)="handleRoute(routingPaths.dashboard)"
       >Cancel account creation</a
     >
