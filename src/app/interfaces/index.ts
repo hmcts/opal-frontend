@@ -66,10 +66,4 @@ export {
   CanDeactivateType,
   IManualAccountCreationAccountDetailsState,
   IDefendantTypes,
-  IManualAccountCreationEmployerDetailsState,
-  IManualAccountCreationState,
-  CanComponentDeactivate,
-  CanDeactivateType,
-  IManualAccountCreationAccountDetailsState,
-  IDefendantTypes,
 };
