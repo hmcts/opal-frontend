@@ -32,11 +32,15 @@
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.courtDetails"
+          [routerLink]="manualAccountCreationRoutes.courtDetails"
           aria-describedby="courtDetailsStatus"
           onclick="return false;"
         >
           Court details
         </a>
+      </ng-container>
+      <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
       <ng-container status>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
@@ -96,6 +100,7 @@
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.personalDetails"
+          [routerLink]="manualAccountCreationRoutes.personalDetails"
           aria-describedby="personalDetailsStatus"
           onclick="return false;"
         >
@@ -103,6 +108,7 @@
         </a>
       </ng-container>
       <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
@@ -121,6 +127,7 @@
         </a>
       </ng-container>
       <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
@@ -156,6 +163,7 @@
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.offenceDetails"
+          [routerLink]="manualAccountCreationRoutes.offenceDetails"
           aria-describedby="offenceDetailsStatus"
           onclick="return false;"
         >
@@ -163,6 +171,7 @@
         </a>
       </ng-container>
       <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
@@ -175,6 +184,7 @@
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.paymentDetails"
+          [routerLink]="manualAccountCreationRoutes.paymentDetails"
           aria-describedby="paymentTermsStatus"
           onclick="return false;"
         >
@@ -182,6 +192,7 @@
         </a>
       </ng-container>
       <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
