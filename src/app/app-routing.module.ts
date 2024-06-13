@@ -107,6 +107,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
+      canceledNavigationResolution: 'computed',
     }),
   ],
   exports: [RouterModule],
