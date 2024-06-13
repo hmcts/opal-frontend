@@ -38,6 +38,7 @@ Feature: Verifying the business unit and defendant type
         When I select adults and youth only
         Then I click on continue button
         Then I see "Create account" on the page header
+        When "Back" is clicked
         Then I verify if adults and youth only checked
 
     #AC6
@@ -53,6 +54,7 @@ Feature: Verifying the business unit and defendant type
         When I select parent or guardian to pay
         Then I click on continue button
         Then I see "Create account" on the page header
+        When "Back" is clicked
         Then I verify if parent or guardian to pay checked
 
     #AC7
@@ -68,6 +70,7 @@ Feature: Verifying the business unit and defendant type
         When I select company
         Then I click on continue button
         Then I see "Create account" on the page header
+        When "Back" is clicked
         Then I verify company radio button checked
 
     # #AC8
