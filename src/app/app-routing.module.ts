@@ -67,6 +67,7 @@ const routes: Routes = [
             (c) => c.AccountDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
       {
         path: RoutingPaths.manualAccountCreationCreateAccount,
@@ -106,6 +107,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
+      canceledNavigationResolution: 'computed',
     }),
   ],
   exports: [RouterModule],

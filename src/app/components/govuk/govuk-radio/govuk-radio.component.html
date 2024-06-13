@@ -1,4 +1,4 @@
-<div class="govuk-form-group">
+<div class="govuk-form-group" [class.govuk-form-group--error]="hasError()">
   <fieldset class="govuk-fieldset" [id]="fieldSetId" [attr.aria-describedby]="fieldSetId ? fieldSetId + 'Hint' : ''">
     <legend
       class="govuk-fieldset__legend {{ legendClasses }}"
@@ -10,6 +10,12 @@
       <div [id]="fieldSetId ? fieldSetId + 'Hint' : ''" class="govuk-hint">
         {{ legendHint }}
       </div>
+    }
+
+    @if (hasError()) {
+      <p id="{{ this.fieldSetId }}-error-message" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span> {{ errors }}
+      </p>
     }
     <div class="govuk-radios {{ radioClasses }}" data-module="govuk-radios">
       <ng-content></ng-content>

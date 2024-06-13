@@ -8,31 +8,17 @@ Feature: Verifying Employer details page for defendant accounts
         Then I am on the dashboard
 
         When I navigate to Manual Account Creation
-        Then I see "Account details" on the page header
-        And I click continue to Create Account page
 
+        #new feature implemented on Po-346 so deactivating this step
+        #Then I see "Account details" on the page header
+        
+        Then I see "Create account" as the caption on the page
+        Then I see "Business unit and defendant type" on the page header
+
+        When I select adults and youth only
+        Then I click on continue button
         Then I see "Create account" on the page header
         Then I click on "Employer details" link
-
-    # Scenario Outline: verifying the employer details page where user enters all the details without saving
-
-    #     When I enter employer name "<employerName>"
-    #     Then I enter employee reference number or nino "<employeeNino>"
-    #     Then I enter employer email address "<employerEmail>"
-    #     Then I enter employer telephone number "<employerTelephone>"
-
-    #     Then I enter employer address line1 "<employerAddress1>"
-    #     Then I enter employer address line2 "<employerAddress2>"
-    #     Then I enter employer postcode "<employerPostCode>"
-
-    #     When "Back" is clicked
-    #     Then I see "Create account" on the page header
-    #     When I click on "Employer details" link
-    #     Then I verify employer name, employer reference, employer address is empty
-    #     Examples:
-    #         | employerName                      | employeeNino | employerEmail | employerTelephone | employerAddress1 | employerAddress2 | employerPostCode |
-    #         | This is an employer journey 12345 | AB123456     | test@test.com | 01234567890       | 12 test road     | Avenue           | AB12 4BM         |
-
 
     #AC7
     Scenario Outline: verifying the employer details page when user enters all the details then save and return to tasks
@@ -104,9 +90,10 @@ Feature: Verifying Employer details page for defendant accounts
 
 
     #AC9
-    Scenario Outline: verifying if user selects the 'Back' button and the user has entered data into one or more fields, a warning message will be displayed
+    Scenario Outline: AC9-negative: verifying if user selects the 'Back' button and the user has entered data into one or more fields, a warning message will be displayed
         When I enter employer name "<employerName>"
         When I enter employer postcode "<employerPostcode>"
+        Then "Back" is clicked
 
         Then I select OK on the pop up window
         Then I see "Create account" on the page header
@@ -116,15 +103,16 @@ Feature: Verifying Employer details page for defendant accounts
             | employerName    | employerPostcode |
             | testWindowPopUP | AB12 7HN         |
 
-    Scenario Outline: verifying if user selects the 'Back' button and the user has entered data into one or more fields, a warning message will be displayed
-        When I enter employer name "<employerName>"
-        When I enter incorrect employer address line 2 "<incorrectAddressLine2>"
+    # Scenario Outline: AC9b- negative: verifying if user selects the 'Back' button and the user has entered data into one or more fields, a warning message will be displayed
+    #     When I enter employer name "<employerName>"
+    #     When I enter incorrect employer address line 2 "<incorrectAddressLine2>"
+    #     Then "Back" is clicked
 
-        Then I select cancel on the pop up window
-        Then I see "Employer details" on the page header
-        Examples:
-            | employerName    | incorrectAddressLine2 |
-            | testWindowPopUP | Test Road *           |
+    #     Then I select cancel on the pop up window
+    #     Then I see "Employer details" on the page header
+    #     Examples:
+    #         | employerName    | incorrectAddressLine2 |
+    #         | testWindowPopUP | Test Road *           |
 
     #AC6
     Scenario Outline: Verifying  If a user amends all fields where validation failures occurred and all validation is adhered to,

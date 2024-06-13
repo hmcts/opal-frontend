@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateAccountComponent } from './create-account.component';
-import { ManualAccountCreationRoutes } from '@enums';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('CreateAccountComponent', () => {
@@ -22,9 +21,9 @@ describe('CreateAccountComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to account-details page on handleBack', () => {
+  it('should navigate to account-details page on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.handleBack();
-    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
+    component.handleRoute('test');
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 });

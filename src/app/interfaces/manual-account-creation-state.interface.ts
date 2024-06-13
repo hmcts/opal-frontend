@@ -1,7 +1,8 @@
-import { IManualAccountCreationEmployerDetailsState } from './manual-account-creation-employer-details-state.interface';
+import { IManualAccountCreationAccountDetailsState, IManualAccountCreationEmployerDetailsState } from '@interfaces';
 
 export interface IManualAccountCreationState {
   employerDetails: IManualAccountCreationEmployerDetailsState;
+  accountDetails: IManualAccountCreationAccountDetailsState;
   unsavedChanges: boolean;
   stateChanges: boolean;
 }
