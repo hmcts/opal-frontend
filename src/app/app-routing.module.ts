@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } from '@guards';
+
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
 
@@ -58,6 +59,7 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: RoutingPaths.manualAccountCreationAccountDetails,
+
         pathMatch: 'full',
       },
       {
@@ -116,6 +118,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
+      canceledNavigationResolution: 'computed',
     }),
   ],
   exports: [RouterModule],

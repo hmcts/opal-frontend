@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+
 import { Router, RouterModule } from '@angular/router';
 import {
   GovukButtonComponent,
@@ -40,6 +41,9 @@ export class CreateAccountComponent {
   public readonly defendantTypes = DEFENDANT_TYPES_STATE;
 
   /**
+   * Handles route with the supplied route
+   *
+   * @param route string of route
    * Handles route with the supplied route
    *
    * @param route string of route
