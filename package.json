@@ -36,12 +36,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.0.1",
-    "@angular/cdk": "18.0.0",
+    "@angular/cdk": "18.0.3",
     "@angular/common": "^17.0.1",
     "@angular/compiler": "^17.0.1",
     "@angular/core": "^17.0.1",
     "@angular/forms": "^17.0.1",
-    "@angular/material": "18.0.0",
+    "@angular/material": "18.0.3",
     "@angular/platform-browser": "^17.0.1",
     "@angular/platform-browser-dynamic": "^17.0.1",
     "@angular/platform-server": "^17.0.1",
@@ -82,11 +82,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.0",
-    "@angular-eslint/builder": "17.5.2",
-    "@angular-eslint/eslint-plugin": "17.5.2",
-    "@angular-eslint/eslint-plugin-template": "17.5.2",
-    "@angular-eslint/schematics": "17.5.2",
-    "@angular-eslint/template-parser": "17.5.2",
+    "@angular-eslint/builder": "18.0.1",
+    "@angular-eslint/eslint-plugin": "18.0.1",
+    "@angular-eslint/eslint-plugin-template": "18.0.1",
+    "@angular-eslint/schematics": "18.0.1",
+    "@angular-eslint/template-parser": "18.0.1",
     "@angular/cli": "^17.0.0",
     "@angular/compiler-cli": "^17.0.1",
     "@cypress/browserify-preprocessor": "^3.0.2",
@@ -100,13 +100,13 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.11.5",
     "@types/session-file-store": "^1.2.5",
-    "@typescript-eslint/eslint-plugin": "7.11.0",
-    "@typescript-eslint/parser": "7.11.0",
+    "@typescript-eslint/eslint-plugin": "7.13.0",
+    "@typescript-eslint/parser": "7.13.0",
     "axe-core": "^4.8.4",
     "browser-sync": "^3.0.2",
     "cypress": "^13.6.0",
     "cypress-axe": "^1.5.0",
-    "eslint": "^8.53.0",
+    "eslint": "^9.0.0",
     "jasmine-core": "~5.1.0",
     "junit-report-merger": "^7.0.0",
     "karma": "~6.4.0",
@@ -120,5 +120,10 @@
   "packageManager": "yarn@3.8.2",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
+  },
+  "resolutions": {
+    "braces": "3.0.3",
+    "@azure/msal-node": "2.9.2",
+    "@azure/identity": "4.2.1"
   }
 }

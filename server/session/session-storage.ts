@@ -38,9 +38,25 @@ export default class SessionStorage {
       logger.info('Using Redis session store', config.get('secrets.opal.redis-connection-string'));
       const client = createClient({
         url: config.get('secrets.opal.redis-connection-string'),
+        socket: {
+          reconnectStrategy: function (retries) {
+            if (retries > 20) {
+              logger.log('Too many attempts to reconnect. Redis connection was terminated');
+              return new Error('Too many retries.');
+            } else {
+              return retries * 500;
+            }
+          },
+        },
       });
 
-      client.connect().catch(logger.error);
+      client.on('error', (err) => {
+        logger.error('Redis Client Error', err);
+      });
+
+      client.connect().catch(() => {
+        process.exit();
+      });
 
       app.locals['redisClient'] = client;
       return new RedisStore({ client });
