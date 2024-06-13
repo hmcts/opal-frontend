@@ -24,6 +24,7 @@ import { FORM_ERROR_SUMMARY_MOCK } from './form-error-summary-entry.mock';
 import { FORM_DATE_ERROR_SUMMARY_MOCK } from './form-date-error-summary.mock';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK } from './manual-account-creation-employer-details-state.mock';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK } from './manual-account-creation-account-details-state.mock';
+import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK } from './manual-account-creation-contact-details-state.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -52,4 +53,5 @@ export {
   FORM_DATE_ERROR_SUMMARY_MOCK,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
 };

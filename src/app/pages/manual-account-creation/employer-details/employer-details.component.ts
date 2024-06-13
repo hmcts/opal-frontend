@@ -22,6 +22,7 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
     this.stateService.manualAccountCreation = {
       accountDetails: this.stateService.manualAccountCreation.accountDetails,
       employerDetails: formData,
+      contactDetails: this.stateService.manualAccountCreation.contactDetails,
       unsavedChanges: false,
       stateChanges: true,
     };

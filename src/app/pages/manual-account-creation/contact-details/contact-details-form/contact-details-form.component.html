@@ -1,0 +1,52 @@
+<h1 class="govuk-heading-l">Contact details</h1>
+<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<form (submit)="handleFormSubmit()">
+  <app-govuk-text-input
+    labelText="Primary Email Address"
+    inputId="primaryEmailAddress"
+    inputName="primaryEmailAddress"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['primaryEmailAddress']"
+    [errors]="formControlErrorMessages['primaryEmailAddress']"
+  ></app-govuk-text-input>
+  <app-govuk-text-input
+    labelText="Secondary Email Address"
+    inputId="secondaryEmailAddress"
+    inputName="secondaryEmailAddress"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['secondaryEmailAddress']"
+    [errors]="formControlErrorMessages['secondaryEmailAddress']"
+  ></app-govuk-text-input>
+  <app-govuk-text-input
+    labelText="Mobile telephone number"
+    inputId="mobileTelephoneNumber"
+    inputName="mobileTelephoneNumber"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['mobileTelephoneNumber']"
+    [errors]="formControlErrorMessages['mobileTelephoneNumber']"
+  ></app-govuk-text-input>
+  <app-govuk-text-input
+    labelText="Home telephone number"
+    inputId="homeTelephoneNumber"
+    inputName="homeTelephoneNumber"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['homeTelephoneNumber']"
+    [errors]="formControlErrorMessages['homeTelephoneNumber']"
+  ></app-govuk-text-input>
+  <app-govuk-text-input
+    labelText="Business telephone number"
+    inputId="businessTelephoneNumber"
+    inputName="businessTelephoneNumber"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['businessTelephoneNumber']"
+    [errors]="formControlErrorMessages['businessTelephoneNumber']"
+  ></app-govuk-text-input>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
+      <app-govuk-cancel-link
+        (linkClickEvent)="handleRoute(manualAccountCreationRoutes.createAccount)"
+      ></app-govuk-cancel-link>
+    </div>
+  </div>
+</form>
