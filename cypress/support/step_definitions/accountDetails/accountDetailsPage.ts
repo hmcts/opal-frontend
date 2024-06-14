@@ -15,22 +15,21 @@ Then('I see {string} on the section heading', (sectionHeading: string) => {
 });
 When('I check text under review and publish', (sectionText: string) => {
   //cy.get('p').should('contain', sectionText);
-  cy.contains('p').should('contain',sectionText)
+  cy.contains('p').should('contain', sectionText);
   // .then(txt=>{
   //  const versionTxt = txt.find('p').text()
   //  expect(versionTxt).to.equal(sectionText)
   // })
 });
 
+Then('I click cancel on Contact details page', () => {
+  cy.get('a').contains('Cancel').click();
+});
 
-Then('I click cancel on Contact details page',() => {
-    cy.get('a').contains('Cancel').click()
-})
+Then('{string} button is clicked, nothing happens', (button: string) => {
+  cy.get('#reviewAccountButton').should('contain', button).click();
+});
 
-Then('{string} button is clicked, nothing happens', (button:string) => {
-    cy.get('#reviewAccountButton').should('contain',button).click()
-})
-
-When('{string} link is clicked, nothing happens',(linkText:string) => {
-    cy.contains('Cancel account creation').should('contain',linkText).click()
-})
+When('{string} link is clicked, nothing happens', (linkText: string) => {
+  cy.contains('Cancel account creation').should('contain', linkText).click();
+});

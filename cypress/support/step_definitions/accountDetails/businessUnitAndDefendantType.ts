@@ -17,7 +17,7 @@ Then('I see {string} on the defendant type header', (defendantTypeHeader: string
 });
 Then('I check and verify radio buttons', () => {
   cy.get('[type="radio"]').should('have.length', '3');
-  cy.get('input').invoke('attr','radio').log
+  cy.get('input').invoke('attr', 'radio').log;
   cy.get('input[id="adultOrYouthOnly"]').check().should('be.checked');
   cy.get('input[id="parentOrGuardianToPay"]').check().should('be.checked');
   cy.get('input[id="company"]').check().should('be.checked');
