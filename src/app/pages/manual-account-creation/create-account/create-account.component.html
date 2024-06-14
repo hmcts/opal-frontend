@@ -14,9 +14,11 @@
       <ng-container name>Defendant type</ng-container>
       <ng-container value>
         <p class="govuk-body">
-          @if (stateService.manualAccountCreation.accountDetails.defendantType) {
-            {{ defendantTypes[stateService.manualAccountCreation.accountDetails.defendantType] }}
-          }
+          {{
+            stateService.manualAccountCreation.accountDetails.defendantType
+              ? defendantTypes[stateService.manualAccountCreation.accountDetails.defendantType]
+              : ''
+          }}
         </p>
       </ng-container>
     </div>
