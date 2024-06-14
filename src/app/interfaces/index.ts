@@ -29,6 +29,8 @@ import { IManualAccountCreationState } from './manual-account-creation-state.int
 import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
 import { IManualAccountCreationAccountDetailsState } from './manual-account-creation-account-details-state.interface';
 import { IDefendantTypes } from './defendant-types.interface';
+import { IBusinessUnitRefData } from './business-unit-ref-data.interface';
+
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -66,4 +68,5 @@ export {
   CanDeactivateType,
   IManualAccountCreationAccountDetailsState,
   IDefendantTypes,
+  IBusinessUnitRefData,
 };
