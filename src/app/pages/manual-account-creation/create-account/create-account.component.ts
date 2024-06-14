@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 
 import { Router, RouterModule } from '@angular/router';
 import {
@@ -32,13 +32,22 @@ import { StateService } from '@services';
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateAccountComponent {
+export class CreateAccountComponent implements OnInit {
   private readonly router = inject(Router);
   public readonly stateService = inject(StateService);
   public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   public readonly defendantTypes = DEFENDANT_TYPES_STATE;
+
+  public defendantType!: string;
+
+  public setDefendantType(): void {
+    if (this.stateService.manualAccountCreation.accountDetails.defendantType) {
+      const df = this.defendantTypes[this.stateService.manualAccountCreation.accountDetails.defendantType];
+      this.defendantType = df;
+    }
+  }
 
   /**
    * Handles route with the supplied route
@@ -50,5 +59,9 @@ export class CreateAccountComponent {
    */
   public handleRoute(route: string): void {
     this.router.navigate([route]);
+  }
+
+  ngOnInit(): void {
+    this.setDefendantType();
   }
 }
