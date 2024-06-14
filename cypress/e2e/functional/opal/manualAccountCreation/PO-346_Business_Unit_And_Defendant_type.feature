@@ -37,7 +37,11 @@ Feature: Verifying the business unit and defendant type
 
         When I select adults and youth only
         Then I click on continue button
-        Then I see "Create account" on the page header
+
+        # as per the new design process in PO-366 this step is descoped
+        #Then I see "Create account" on the page header
+
+        Then I see "Account details" on the page header
         When "Back" is clicked
         Then I verify if adults and youth only checked
 
@@ -53,7 +57,11 @@ Feature: Verifying the business unit and defendant type
 
         When I select parent or guardian to pay
         Then I click on continue button
-        Then I see "Create account" on the page header
+
+        # as per the new design process in PO-366 this step is descoped
+        #Then I see "Create account" on the page header
+
+        Then I see "Account details" on the page header
         When "Back" is clicked
         Then I verify if parent or guardian to pay checked
 
@@ -69,7 +77,11 @@ Feature: Verifying the business unit and defendant type
 
         When I select company
         Then I click on continue button
-        Then I see "Create account" on the page header
+
+        # as per the new design process in PO-366 this step is descoped
+        #Then I see "Create account" on the page header
+
+        Then I see "Account details" on the page header
         When "Back" is clicked
         Then I verify company radio button checked
 
@@ -82,7 +94,11 @@ Feature: Verifying the business unit and defendant type
         Then I see "If sole trader, choose 'Adult or youth only'" on the defendant type header
         When I select adults and youth only
         Then I click on continue button
-        Then I see "Create account" on the page header
+
+        # as per the new design process in PO-366 this step is descoped
+        #Then I see "Create account" on the page header
+
+        Then I see "Account details" on the page header
 
     # #AC9
     Scenario: AC-09 positive: When user navigating to Business unit and defendant type screen and selecting parent or guardian to pay then continue
@@ -92,7 +108,10 @@ Feature: Verifying the business unit and defendant type
         Then I see "If sole trader, choose 'Adult or youth only'" on the defendant type header
         When I select parent or guardian to pay
         Then I click on continue button
-        Then I see "Create account" on the page header
+
+        #as per the new design process in PO-366 this step is descoped
+        #Then I see "Create account" on the page header
+        Then I see "Account details" on the page header
 
     #AC
     Scenario: AC-10 positive: When user navigating to Business unit and defendant type screen and selecting company then continue
@@ -102,7 +121,9 @@ Feature: Verifying the business unit and defendant type
         Then I see "If sole trader, choose 'Adult or youth only'" on the defendant type header
         When I select company
         Then I click on continue button
-        Then I see "Create account" on the page header
+        #as per the new design process in PO-366 this step is descoped
+        #Then I see "Create account" on the page header
+        Then I see "Account details" on the page header
 
     # #AC1 #AC1
     Scenario: AC-11-negative: When user selects cancel button without selecting defendant type

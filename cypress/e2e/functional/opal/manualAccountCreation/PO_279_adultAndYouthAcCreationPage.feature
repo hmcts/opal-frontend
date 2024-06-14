@@ -14,8 +14,8 @@ Feature: PO-279 Manual account creation, Adult and Youth account creation page
 
     When I select adults and youth only
     Then I click on continue button
-    #new feature implemented on Po-346 so deactivating this step
-    #And I click continue to Create Account page
+  #new feature implemented on Po-346 so deactivating this step
+  #And I click continue to Create Account page
 
 
   Scenario: Business unit above 'Create Account' heading

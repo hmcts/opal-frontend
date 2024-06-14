@@ -19,6 +19,7 @@ Feature: Verifying Employer details page for defendant accounts
         Then I click on continue button
         Then I see "Create account" on the page header
         Then I click on "Employer details" link
+        Then I see "Employer details" on the page header
 
     #AC7
     Scenario Outline: verifying the employer details page when user enters all the details then save and return to tasks
