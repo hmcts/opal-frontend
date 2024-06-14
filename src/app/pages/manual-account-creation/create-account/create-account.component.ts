@@ -40,12 +40,17 @@ export class CreateAccountComponent implements OnInit {
 
   public readonly defendantTypes = DEFENDANT_TYPES_STATE;
 
-  public defendantType!: string;
+  public defendantType = '';
 
-  public setDefendantType(): void {
-    if (this.stateService.manualAccountCreation.accountDetails.defendantType) {
-      const df = this.defendantTypes[this.stateService.manualAccountCreation.accountDetails.defendantType];
-      this.defendantType = df;
+  /**
+   * Sets the defendant type based on the value stored in the account details.
+   * If the defendant type is found in the `defendantTypes` array, it is assigned to `this.defendantType`.
+   */
+  private setDefendantType(): void {
+    // Moved to here as inline was adding extra spaces in HTML...
+    const { defendantType } = this.stateService.manualAccountCreation.accountDetails;
+    if (defendantType) {
+      this.defendantType = this.defendantTypes[defendantType] || '';
     }
   }
 
