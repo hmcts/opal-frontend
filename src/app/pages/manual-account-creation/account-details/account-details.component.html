@@ -1,6 +1,9 @@
-<div class="govuk-grid-column-two-thirds">
-  <app-account-details-form
-    (formSubmit)="handleAccountDetailsSubmit($event)"
-    (unsavedChanges)="handleUnsavedChanges($event)"
-  ></app-account-details-form>
-</div>
+@if (data$ | async; as data) {
+  <div class="govuk-grid-column-two-thirds">
+    <app-account-details-form
+      [businessUnitRefData]="data"
+      (formSubmit)="handleAccountDetailsSubmit($event)"
+      (unsavedChanges)="handleUnsavedChanges($event)"
+    ></app-account-details-form>
+  </div>
+}

@@ -3,9 +3,10 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { RouterModule } from '@angular/router';
 import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { IBusinessUnitRefData, IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { AccountDetailsFormComponent } from './account-details-form/account-details-form.component';
 import { BusinessUnitService } from '@services';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-account-details',
   standalone: true,
@@ -13,8 +14,9 @@ import { BusinessUnitService } from '@services';
   templateUrl: './account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountDetailsComponent extends FormParentBaseComponent implements OnInit {
+export class AccountDetailsComponent extends FormParentBaseComponent {
   private businessUnitService = inject(BusinessUnitService);
+  public data$: Observable<IBusinessUnitRefData> = this.businessUnitService.getBusinessUnits('MANUAL_ACCOUNT_CREATION');
 
   /**
    * Handles the form submission for account details.
@@ -39,11 +41,5 @@ export class AccountDetailsComponent extends FormParentBaseComponent implements 
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
-  }
-
-  ngOnInit(): void {
-    this.businessUnitService.getBusinessUnits('MANUAL_ACCOUNT_CREATION').subscribe((response) => {
-      console.log(response);
-    });
   }
 }

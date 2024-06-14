@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   FormBaseComponent,
@@ -11,7 +11,7 @@ import {
 } from '@components';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { IBusinessUnitRefData, IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
 
 @Component({
@@ -32,6 +32,7 @@ import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
 })
 export class AccountDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationAccountDetailsState>();
+  @Input({ required: true }) public businessUnitRefData!: IBusinessUnitRefData;
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly routingPaths = RoutingPaths;
@@ -53,6 +54,19 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
   }
 
   /**
+   * Sets the business unit for the account details if there is only one available and it hasn't been set yet.
+   */
+  private setBusinessUnit(): void {
+    const { count, refData } = this.businessUnitRefData;
+    const setBusinessUnit =
+      count === 1 && refData.length > 0 && this.stateService.manualAccountCreation.accountDetails.businessUnit === null;
+
+    if (setBusinessUnit) {
+      this.form.get('businessUnit')?.setValue(refData[0].businessUnitName);
+    }
+  }
+
+  /**
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
@@ -69,6 +83,7 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
     this.setupAccountDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails);
+    this.setBusinessUnit();
     super.ngOnInit();
   }
 }

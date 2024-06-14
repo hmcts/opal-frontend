@@ -8,6 +8,7 @@ import {
 } from '@constants';
 import { StateService } from '@services';
 import { IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -25,7 +26,7 @@ describe('AccountDetailsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [AccountDetailsComponent],
+      imports: [AccountDetailsComponent, HttpClientTestingModule],
       providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 

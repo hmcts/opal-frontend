@@ -28,7 +28,7 @@ import { StateService } from '@services';
 })
 export class CreateAccountComponent {
   private readonly router = inject(Router);
-  private readonly stateService = inject(StateService);
+  public readonly businessUnit = inject(StateService).manualAccountCreation.accountDetails.businessUnit;
   public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 

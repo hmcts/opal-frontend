@@ -4,6 +4,7 @@ interface BusinessUnit {
   accountNumberPrefix: null | string;
   opalDomain: null | string;
   businessUnitId: number;
+  businessUnitName: string;
 }
 
 export interface IBusinessUnitRefData {
