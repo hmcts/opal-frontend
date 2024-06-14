@@ -13,13 +13,7 @@
     <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="defendantType">
       <ng-container name>Defendant type</ng-container>
       <ng-container value>
-        <p class="govuk-body">
-          {{
-            stateService.manualAccountCreation.accountDetails.defendantType
-              ? defendantTypes[stateService.manualAccountCreation.accountDetails.defendantType]
-              : ''
-          }}
-        </p>
+        <p class="govuk-body">{{ defendantType }}</p>
       </ng-container>
     </div>
   </app-govuk-summary-list>
