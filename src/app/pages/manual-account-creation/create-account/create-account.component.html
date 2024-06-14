@@ -7,7 +7,7 @@
     <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="businessUnit">
       <ng-container name>Business unit</ng-container>
       <ng-container value>
-        <p class="govuk-body">Cambridgeshire</p>
+        <p class="govuk-body">{{ stateService.manualAccountCreation.accountDetails.businessUnit }}</p>
       </ng-container>
     </div>
     <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="defendantType">
