@@ -7,6 +7,7 @@ Feature: updating the account details page to manage the account creation proces
         When I sign in as "opal-test@HMCTS.NET"
         Then I am on the dashboard
         When I navigate to Manual Account Creation
+        
         Then I see "Create account" as the caption on the page
         Then I see "Business unit and defendant type" on the page header
         When I select adults and youth only

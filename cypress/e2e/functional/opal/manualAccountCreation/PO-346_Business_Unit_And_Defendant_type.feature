@@ -42,8 +42,9 @@ Feature: Verifying the business unit and defendant type
         #Then I see "Create account" on the page header
 
         Then I see "Account details" on the page header
-        When "Back" is clicked
-        Then I verify if adults and youth only checked
+    #The below 2 steps de-scoped on PO-366
+    #When "Back" is clicked
+    #Then I verify if adults and youth only checked
 
     #AC6
     Scenario: AC-06 negative: verify if user resolves the error and selecting parent or guardian to pay then continues to the next page
@@ -62,8 +63,9 @@ Feature: Verifying the business unit and defendant type
         #Then I see "Create account" on the page header
 
         Then I see "Account details" on the page header
-        When "Back" is clicked
-        Then I verify if parent or guardian to pay checked
+    #The below 2 steps de-scoped on PO-366
+    #When "Back" is clicked
+    #Then I verify if parent or guardian to pay checked
 
     #AC7
     Scenario: AC-07 negative: verify if user resolves the error and selecting company then continues to the next page
@@ -82,8 +84,9 @@ Feature: Verifying the business unit and defendant type
         #Then I see "Create account" on the page header
 
         Then I see "Account details" on the page header
-        When "Back" is clicked
-        Then I verify company radio button checked
+    # as per the new design process in PO-366 this step is descoped
+    #When "Back" is clicked
+    #Then I verify company radio button checked
 
     # #AC8
 
