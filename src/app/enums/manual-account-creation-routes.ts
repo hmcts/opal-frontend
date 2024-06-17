@@ -7,4 +7,5 @@ export enum ManualAccountCreationRoutes {
   employerDetails = '/manual-account-creation/employer-details',
   offenceDetails = '/manual-account-creation/offence-details',
   paymentDetails = '/manual-account-creation/payment-terms',
+  contactDetails = '/manual-account-creation/contact-details',
 }

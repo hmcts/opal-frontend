@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } from '@guards';
+
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
 
@@ -58,6 +59,7 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: RoutingPaths.manualAccountCreationAccountDetails,
+
         pathMatch: 'full',
       },
       {
@@ -85,6 +87,14 @@ const routes: Routes = [
           ),
         canActivate: [authGuard],
         canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationContactDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/contact-details/contact-details.component').then(
+            (c) => c.ContactDetailsComponent,
+          ),
+        canActivate: [authGuard],
       },
     ],
     resolve: { userState: userStateResolver },
