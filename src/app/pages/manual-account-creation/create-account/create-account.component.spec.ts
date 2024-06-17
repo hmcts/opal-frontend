@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateAccountComponent } from './create-account.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StateService } from '@services';
 
 import { DEFENDANT_TYPES_STATE } from '@constants';
 import { StateService } from '@services';
