@@ -2,7 +2,21 @@
 </app-govuk-heading-with-caption>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit()">
-  <p>The account will be created in {{ form.get('businessUnit')?.value }}</p>
+  @if (autoCompleteItems.length === 1) {
+    <p>The account will be created in {{ form.get('businessUnit')?.value }}</p>
+  } @else {
+    <app-alphagov-accessible-autocomplete
+      [control]="form.controls['businessUnit']"
+      labelText="Business unit"
+      inputId="businessUnit"
+      inputName="businessUnit"
+      inputClasses="govuk-!-width-one-half"
+      label="Search for a user"
+      [autoCompleteItems]="autoCompleteItems"
+      errorMsg="Please select a court"
+    ></app-alphagov-accessible-autocomplete>
+  }
+
   <app-govuk-radio
     fieldSetId="defendantType"
     legendText="Defendant type"
