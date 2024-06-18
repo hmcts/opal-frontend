@@ -23,6 +23,7 @@ import { ManualAccountCreationRoutes } from '@enums';
 export class ManualAccountCreationComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private stateService = inject(StateService);
+  private overrideExitPage = false;
   deactivateResult = new EventEmitter<boolean>();
 
   /**
@@ -55,7 +56,7 @@ export class ManualAccountCreationComponent implements OnInit, OnDestroy {
     if (
       this.stateService.manualAccountCreation.stateChanges &&
       !this.stateService.manualAccountCreation.unsavedChanges &&
-      !this.stateService.overrideExitPage
+      !this.overrideExitPage
     ) {
       return false;
     } else {
@@ -70,8 +71,7 @@ export class ManualAccountCreationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.deactivateResult.subscribe((result: boolean) => {
       if (!result) {
-        this.stateService.overrideExitPage = true;
-        this.stateService.currentRoute = this.router.url;
+        this.overrideExitPage = true;
         this.routerNavigate(ManualAccountCreationRoutes.exitPage);
       }
     });
@@ -87,7 +87,6 @@ export class ManualAccountCreationComponent implements OnInit, OnDestroy {
       message: '',
     });
 
-    this.stateService.overrideExitPage = false;
     this.deactivateResult.unsubscribe();
   }
 }

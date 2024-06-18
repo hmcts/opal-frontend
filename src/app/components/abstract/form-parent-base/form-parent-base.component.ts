@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
+import { RoutingPaths } from '@enums';
 import { CanDeactivateType } from '@interfaces';
 import { StateService } from '@services';
 
@@ -11,6 +11,7 @@ import { StateService } from '@services';
 export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private overrideExitPage = false;
   public stateService = inject(StateService);
   public stateUnsavedChanges!: boolean;
   deactivateResult = new EventEmitter<boolean>();
@@ -23,7 +24,7 @@ export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
    * @returns boolean
    */
   canDeactivate(): CanDeactivateType {
-    if (this.stateUnsavedChanges && !this.stateService.overrideExitPage) {
+    if (this.stateUnsavedChanges && !this.overrideExitPage) {
       return false;
     } else {
       return true;
@@ -37,15 +38,13 @@ export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.deactivateResult.subscribe((result: boolean) => {
       if (!result) {
-        this.stateService.overrideExitPage = true;
-        this.stateService.currentRoute = this.router.url;
+        this.overrideExitPage = true;
         this.router.navigate([RoutingPaths.exitPage], { relativeTo: this.activatedRoute.parent });
       }
     });
   }
 
   ngOnDestroy() {
-    this.stateService.overrideExitPage = false;
     this.deactivateResult.unsubscribe();
   }
 }
