@@ -1,8 +1,8 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor/';
 
-Then('should display business unit account I selected from Business unit and defendant type page', () => {
+Then('should display business unit account {string} I selected from Business unit and defendant type page', (businessUnit:string) => {
   cy.get('#accountDetailsBusinessUnitKey').should('have.text', 'Business unit');
-  cy.get('#accountDetailsBusinessUnitValue').should('have.text', 'Cambridgeshire');
+  cy.get('#accountDetailsBusinessUnitValue').should('have.text', businessUnit);
 });
 
 Then(
