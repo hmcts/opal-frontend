@@ -1,10 +1,24 @@
+import { EventEmitter } from '@angular/core';
 import { CanDeactivateFn } from '@angular/router';
-import { CanComponentDeactivate } from '@interfaces';
+import { Observable, of } from 'rxjs';
 
-export const canDeactivateGuard: CanDeactivateFn<CanComponentDeactivate> = (component: CanComponentDeactivate) => {
-  return component.canDeactivate()
-    ? true
-    : confirm(
-        'WARNING: You have unsaved changes. Press Cancel to go back and save these changes, or OK to lose these changes.',
-      );
+export interface CanComponentDeactivate {
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean;
+  deactivateResult: EventEmitter<boolean>;
+}
+
+export const canDeactivateGuard: CanDeactivateFn<CanComponentDeactivate> = (
+  component: CanComponentDeactivate
+): Observable<boolean> | Promise<boolean> | boolean => {
+  const result = component.canDeactivate ? component.canDeactivate() : true;
+  
+  if (result instanceof Observable) {
+    result.subscribe(res => component.deactivateResult.emit(res));
+  } else if (result instanceof Promise) {
+    result.then(res => component.deactivateResult.emit(res));
+  } else {
+    component.deactivateResult.emit(result);
+  }
+
+  return result;
 };

@@ -96,6 +96,12 @@ const routes: Routes = [
           ),
         canActivate: [authGuard],
       },
+      {
+        path: RoutingPaths.exitPage,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/exit-page/exit-page.component').then((c) => c.ExitPageComponent),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
     canDeactivate: [canDeactivateGuard],

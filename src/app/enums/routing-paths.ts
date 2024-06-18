@@ -7,6 +7,7 @@ export enum RoutingPaths {
   signIn = 'sign-in',
   signInStub = 'sign-in-stub',
   dashboard = 'dashboard',
+  exitPage = 'exit-page',
   manualAccountCreation = 'manual-account-creation',
   manualAccountCreationAccountDetails = 'account-details',
   manualAccountCreationCreateAccount = 'create-account',
