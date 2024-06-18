@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { GovukButtonComponent } from '@components';
 import { MANUAL_ACCOUNT_CREATION_EXIT_ROUTES } from '@constants';

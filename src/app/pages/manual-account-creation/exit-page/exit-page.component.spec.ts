@@ -8,10 +8,9 @@ describe('ExitPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExitPageComponent]
-    })
-    .compileComponents();
-    
+      imports: [ExitPageComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ExitPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
