@@ -122,6 +122,26 @@
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
+    @if (isAdultOrYouthOnlyDefendantType()) {
+      <app-govuk-task-list-item
+        taskListItemId="employerDetailsItem"
+        taskListStatusId="employerDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+      >
+        <ng-container name>
+          <a
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [routerLink]="manualAccountCreationRoutes.employerDetails"
+            aria-describedby="employerDetailsStatus"
+          >
+            Employer details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+    }
   </app-govuk-task-list>
   <h2 class="govuk-heading-m">Offence and imposition details</h2>
   <app-govuk-task-list taskListId="offenceAndImpositionDetails" taskListClasses="govuk-!-margin-left-0 ">
