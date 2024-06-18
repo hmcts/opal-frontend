@@ -5,9 +5,9 @@ Then('should display business unit account I selected from Business unit and def
   cy.get('#accountDetailsBusinessUnitValue').should('have.text', 'Cambridgeshire');
 });
 
-Then('should display defendant type I selected from Business unit and defendant type page', () => {
+Then('should display defendant type {string} I selected from Business unit and defendant type page', (defendantType) => {
   cy.get('#accountDetailsDefendantTypeKey').should('have.text', 'Defendant type');
-  cy.get('#accountDetailsDefendantTypeValue').should('have.text', 'Adult or youth only');
+  cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
 });
 
 Then('I see {string} on the section heading', (sectionHeading: string) => {
@@ -33,3 +33,6 @@ Then('{string} button is clicked, nothing happens', (button: string) => {
 When('{string} link is clicked, nothing happens', (linkText: string) => {
   cy.contains('Cancel account creation').should('contain', linkText).click();
 });
+Then('I see {string} button above {string}',(buttonText:string,linkText:string) => {
+  cy.get('p').should('have.text', linkText).prev().should('have.text', buttonText);
+})
