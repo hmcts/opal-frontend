@@ -20,7 +20,7 @@ Feature: create the account details for adult or youth with parent or guardian t
   Scenario: AC2-positive: verifying the account details page where account being created and defendant type text
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
-    Then should display business unit account I selected from Business unit and defendant type page
+    Then I see the business unit is "Cambridgeshire"
     And I see the defendant type is "Adult or youth with parent or guardian to pay"
 
 
