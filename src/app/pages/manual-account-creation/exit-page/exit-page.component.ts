@@ -17,11 +17,11 @@ export class ExitPageComponent {
 
   public handleOkClick(): void {
     // For now, test page will act as our 'Dashboard' page
-    this.router.navigate([MANUAL_ACCOUNT_CREATION_EXIT_ROUTES[this.stateService.currentRoute]]);
+    this.router.navigate([MANUAL_ACCOUNT_CREATION_EXIT_ROUTES[this.stateService.currentRoute]], { replaceUrl: true });
   }
 
   public handleCancelClick(): void {
     // For now, test page will act as our 'Dashboard' page
-    this.router.navigate([this.stateService.currentRoute]);
+    this.router.navigate([this.stateService.currentRoute], { replaceUrl: true });
   }
 }
