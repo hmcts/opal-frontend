@@ -423,8 +423,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     When I enter "Fname Lname" into the "Full name" field
     And I enter "Address line 1" into the "Address line 1" field
 
-    When "Cancel" is clicked
-    Then A window pops up and I click Ok
+    Then I click Cancel, a window pops up and I click Ok
 
     Then I see "Account details" on the page header
     And "Parent or guardian details" is clicked
