@@ -7,13 +7,19 @@ import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
 } from '@constants';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('EmployerDetailsComponent', () => {
   let component: EmployerDetailsComponent;
   let fixture: ComponentFixture<EmployerDetailsComponent>;
   let mockStateService: jasmine.SpyObj<StateService>;
+  let activatedRouteSpy: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(async () => {
+    activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', [], {
+      parent: of({}), // Mocking the parent as an observable
+    });
     mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
 
     mockStateService.manualAccountCreation = {
@@ -25,7 +31,10 @@ describe('EmployerDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [EmployerDetailsComponent],
-      providers: [{ provide: StateService, useValue: mockStateService }],
+      providers: [
+        { provide: StateService, useValue: mockStateService },
+        { provide: ActivatedRoute, useValue: activatedRouteSpy },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EmployerDetailsComponent);
