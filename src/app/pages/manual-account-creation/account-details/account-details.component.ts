@@ -36,12 +36,6 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
-    this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
-  }
-
-  public override ngOnInit(): void {
-    super.ngOnInit();
-    this.stateUnsavedChanges = this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges;
   }
 }

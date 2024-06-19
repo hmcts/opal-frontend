@@ -48,7 +48,7 @@ export class CreateAccountComponent implements OnInit {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { defendantType } = this.stateService.manualAccountCreation.accountDetails.formData;
+    const { defendantType } = this.stateService.manualAccountCreation.accountDetails;
     if (defendantType) {
       this.defendantType = this.defendantTypes[defendantType] || '';
     }

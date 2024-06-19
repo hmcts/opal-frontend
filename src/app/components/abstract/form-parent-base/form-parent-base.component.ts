@@ -12,7 +12,7 @@ export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private overrideExitPage = false;
-  public readonly stateService = inject(StateService);
+  public stateService = inject(StateService);
   public stateUnsavedChanges!: boolean;
   deactivateResult = new EventEmitter<boolean>();
 
