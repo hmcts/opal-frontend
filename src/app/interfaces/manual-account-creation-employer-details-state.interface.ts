@@ -1,4 +1,10 @@
 export interface IManualAccountCreationEmployerDetailsState {
+  formData: IManualAccountCreationEmployerDetailsFields;
+  snapshotFormData: IManualAccountCreationEmployerDetailsFields;
+  stateUnsavedChanges: boolean;
+}
+
+interface IManualAccountCreationEmployerDetailsFields {
   employerName: string | null;
   employeeReference: string | null;
   employerEmailAddress: string | null;

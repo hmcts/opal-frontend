@@ -69,14 +69,18 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
     if (this.form.valid) {
       this.formSubmitted = true;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit({
+        formData: this.form.value,
+        snapshotFormData: {} as any,
+        stateUnsavedChanges: false,
+      });
     }
   }
 
   public override ngOnInit(): void {
     this.setupEmployerDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.employerDetails);
+    this.rePopulateForm(this.stateService.manualAccountCreation.employerDetails.formData);
     super.ngOnInit();
   }
 }

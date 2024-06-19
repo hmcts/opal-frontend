@@ -61,14 +61,18 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
     if (this.form.valid) {
       this.formSubmitted = true;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit({
+        formData: this.form.value,
+        snapshotFormData: {} as any,
+        stateUnsavedChanges: false,
+      });
     }
   }
 
   public override ngOnInit(): void {
     this.setupAccountDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails);
+    this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails.formData);
     super.ngOnInit();
   }
 }
