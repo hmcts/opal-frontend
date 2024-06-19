@@ -238,3 +238,40 @@ Then('I update employer postcode {string}', (employerPostCode: string) => {
   cy.get('#employerPostcode').clear();
   manualAccountPageObjects.enterEmployerPostcode(employerPostCode);
 });
+Then('I enter more than 30 characters into the {string} field', (fieldName: string) => {
+  cy.contains('app-govuk-text-input', fieldName).find('input').clear().type('Test'.repeat(10));
+});
+Then('I click the {string} button', (buttonText: string) => {
+  cy.get('button').contains(buttonText).click();
+});
+Then('I see the error message {string} at the top of the page', (errorMessage: string) => {
+  cy.get('.govuk-error-summary').should('contain', errorMessage);
+});
+Then('I see the error message {string} above the {string} field', (errorMessage: string, fieldName: string) => {
+  cy.contains('.govuk-error-message', errorMessage).prev().should('contain', fieldName);
+});
+Then('I see the error message {string} above the Date of birth field', (errorMessage: string) => {
+  cy.contains('.govuk-error-message', errorMessage).siblings('label').should('contain', 'Date of birth');
+});
+Then('I enter {string} into the {string} field', (value: string, fieldName: string) => {
+  cy.contains('app-govuk-text-input', fieldName).find('input').clear().type(value);
+});
+Then('I enter {string} into the Date of birth field', (dob: string) => {
+  cy.get('app-scotgov-date-picker').find('input').clear().type(dob);
+});
+Then('I see {string} in the {string} field', (value: string, fieldName: string) => {
+  cy.contains('app-govuk-text-input', fieldName).find('input').should('have.value', value);
+});
+Then('I see {string} in the Date of birth field', (dob: string) => {
+  cy.get('app-scotgov-date-picker').find('input').should('have.value', dob);
+});
+Then('I click Cancel, a window pops up and I click Ok', () => {
+  cy.contains('a', 'Cancel').click();
+  cy.on('window:confirm', () => {});
+});
+Then('I click Cancel, a window pops up and I click Cancel', () => {
+  cy.contains('a', 'Cancel').click();
+  cy.on('window:confirm', () => {
+    return false;
+  });
+});
