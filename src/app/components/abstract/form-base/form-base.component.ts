@@ -29,6 +29,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   protected formSubmitted = false;
   private formSub!: Subscription;
   public formErrors!: IFormError[];
+  public stateModel!: any;
 
   constructor() {}
 
@@ -234,6 +235,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected rePopulateForm(state: any): void {
     this.form.patchValue(state);
+    this.form.markAsDirty();
+    this.unsavedChanges.emit(this.hasUnsavedChanges());
   }
 
   /**
@@ -380,6 +383,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    */
   private setupListener(): void {
     this.formSub = this.form.valueChanges.subscribe(() => {
+      this.stateModel.snapshotFormData = this.form.value;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     });
   }
@@ -391,6 +395,10 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.formSub) {
       this.formSub.unsubscribe();
+    }
+
+    if (!this.stateModel.stateUnsavedChanges) {
+      this.stateModel.snapshotFormData = {};
     }
   }
 }
