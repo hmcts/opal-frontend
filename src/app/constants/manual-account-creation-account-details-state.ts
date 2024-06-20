@@ -1,4 +1,4 @@
-const MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELDS = {
+export const MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELDS = {
   businessUnit: null,
   defendantType: null,
 };

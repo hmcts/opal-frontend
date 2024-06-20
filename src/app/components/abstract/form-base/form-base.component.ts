@@ -29,6 +29,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   protected formSubmitted = false;
   private formSub!: Subscription;
   public formErrors!: IFormError[];
+  public stateModel!: any;
 
   constructor() {}
 
@@ -391,6 +392,12 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.formSub) {
       this.formSub.unsubscribe();
+    }
+
+    if (this.stateModel.stateUnsavedChanges) {
+      this.stateModel.snapshotFormData = this.form.value;
+    } else {
+      this.stateModel.snapshotFormData = {};
     }
   }
 }

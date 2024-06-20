@@ -41,6 +41,7 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
   );
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR;
+  override stateModel = this.stateService.manualAccountCreation.accountDetails;
 
   /**
    * Sets up the employer details form with the necessary form controls.
@@ -50,6 +51,15 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
       businessUnit: new FormControl(null),
       defendantType: new FormControl(null, [Validators.required]),
     });
+  }
+
+  private repopulateSnapshotFormData(): void {
+    if (this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges) {
+      this.form.markAsDirty();
+      this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails.snapshotFormData);
+    } else {
+      this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails.formData);
+    }
   }
 
   /**
@@ -72,7 +82,7 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
   public override ngOnInit(): void {
     this.setupAccountDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails.formData);
     super.ngOnInit();
+    this.repopulateSnapshotFormData();
   }
 }

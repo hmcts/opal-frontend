@@ -37,5 +37,6 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
+    this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = unsavedChanges;
   }
 }
