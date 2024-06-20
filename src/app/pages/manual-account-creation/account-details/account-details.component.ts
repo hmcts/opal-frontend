@@ -20,8 +20,8 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
    */
   public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
     this.stateService.manualAccountCreation = {
+      ...this.stateService.manualAccountCreation,
       accountDetails: formData,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
       unsavedChanges: false,
       stateChanges: true,
     };
@@ -36,7 +36,6 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
-    this.stateUnsavedChanges = unsavedChanges;
-    this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = unsavedChanges;
+    this.unsavedChanges = unsavedChanges;
   }
 }

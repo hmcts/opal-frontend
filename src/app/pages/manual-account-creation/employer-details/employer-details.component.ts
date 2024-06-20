@@ -36,6 +36,6 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
-    this.stateUnsavedChanges = unsavedChanges;
+    this.unsavedChanges = unsavedChanges;
   }
 }

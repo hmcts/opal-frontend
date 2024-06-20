@@ -13,7 +13,7 @@ export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   private overrideExitPage = false;
   public stateService = inject(StateService);
-  public stateUnsavedChanges!: boolean;
+  public unsavedChanges!: boolean;
   deactivateResult = new EventEmitter<boolean>();
 
   /**
@@ -24,7 +24,7 @@ export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
    * @returns boolean
    */
   canDeactivate(): CanDeactivateType {
-    if (this.stateUnsavedChanges && !this.overrideExitPage) {
+    if (this.unsavedChanges && !this.overrideExitPage) {
       return false;
     } else {
       return true;

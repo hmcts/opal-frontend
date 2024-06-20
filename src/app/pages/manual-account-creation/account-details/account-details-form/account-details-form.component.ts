@@ -54,12 +54,18 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
   }
 
   private repopulateSnapshotFormData(): void {
-    if (this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges) {
-      this.form.markAsDirty();
-      this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails.snapshotFormData);
+    const { snapshotFormData, formData } = this.stateService.manualAccountCreation.accountDetails;
+    if (this.stateUnsavedChanges) {
+      this.rePopulateForm(snapshotFormData, true);
     } else {
-      this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails.formData);
+      this.rePopulateForm(formData);
     }
+  }
+
+  private setStateUnsavedChanges(): void {
+    const { snapshotFormData } = this.stateService.manualAccountCreation.accountDetails;
+    this.stateUnsavedChanges = snapshotFormData.defendantType ? true : false;
+    this.unsavedChanges.emit(this.stateUnsavedChanges);
   }
 
   /**
@@ -74,7 +80,6 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
       this.formSubmit.emit({
         formData: this.form.value,
         snapshotFormData: {} as any,
-        stateUnsavedChanges: false,
       });
     }
   }
@@ -82,7 +87,8 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
   public override ngOnInit(): void {
     this.setupAccountDetailsForm();
     this.setInitialErrorMessages();
-    super.ngOnInit();
+    this.setStateUnsavedChanges();
     this.repopulateSnapshotFormData();
+    super.ngOnInit();
   }
 }

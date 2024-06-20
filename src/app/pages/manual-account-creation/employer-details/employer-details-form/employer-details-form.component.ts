@@ -72,7 +72,6 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
       this.formSubmit.emit({
         formData: this.form.value,
         snapshotFormData: {} as any,
-        stateUnsavedChanges: false,
       });
     }
   }

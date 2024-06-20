@@ -27,7 +27,7 @@ export class ExitPageComponent {
     // For now, test page will act as our 'Dashboard' page
     this.stateService.manualAccountCreation.accountDetails.snapshotFormData =
       MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELDS;
-    this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = false;
+    // this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = false;
     this.router.navigate([MANUAL_ACCOUNT_CREATION_EXIT_ROUTES[this.finalUrl]], { replaceUrl: true });
   }
 
@@ -37,7 +37,7 @@ export class ExitPageComponent {
    */
   public handleCancelClick(): void {
     // For now, test page will act as our 'Dashboard' page
-    this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = true;
+    // this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = true;
     this.router.navigate([this.finalUrl], { replaceUrl: true });
   }
 }

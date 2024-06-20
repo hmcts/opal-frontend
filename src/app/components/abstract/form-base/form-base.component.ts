@@ -30,6 +30,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   private formSub!: Subscription;
   public formErrors!: IFormError[];
   public stateModel!: any;
+  public stateUnsavedChanges!: boolean;
 
   constructor() {}
 
@@ -233,8 +234,12 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param state - The state object containing the search form data.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected rePopulateForm(state: any): void {
+  protected rePopulateForm(state: any, dirty = false): void {
     this.form.patchValue(state);
+
+    if (dirty) {
+      this.form.markAsDirty();
+    }
   }
 
   /**
@@ -381,7 +386,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    */
   private setupListener(): void {
     this.formSub = this.form.valueChanges.subscribe(() => {
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
+      this.stateUnsavedChanges = this.hasUnsavedChanges();
+      this.unsavedChanges.emit(this.stateUnsavedChanges);
     });
   }
 
@@ -394,7 +400,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
       this.formSub.unsubscribe();
     }
 
-    if (this.stateModel.stateUnsavedChanges) {
+    if (this.stateUnsavedChanges) {
       this.stateModel.snapshotFormData = this.form.value;
     } else {
       this.stateModel.snapshotFormData = {};

@@ -1,7 +1,6 @@
 export interface IManualAccountCreationEmployerDetailsState {
   formData: IManualAccountCreationEmployerDetailsFields;
   snapshotFormData: IManualAccountCreationEmployerDetailsFields;
-  stateUnsavedChanges: boolean;
 }
 
 interface IManualAccountCreationEmployerDetailsFields {
