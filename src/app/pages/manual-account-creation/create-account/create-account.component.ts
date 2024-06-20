@@ -60,16 +60,9 @@ export class CreateAccountComponent implements OnInit {
   }
 
   /**
-   * Handles route with the supplied route
+   * Navigates to the specified route.
    *
-   * @param route string of route
-  /**
-   * Handles route with the supplied route
-   *
-   * @param route string of route
-   * Handles route with the supplied route
-   *
-   * @param route string of route
+   * @param route - The route to navigate to.
    */
   public handleRoute(route: string): void {
     this.router.navigate([route]);
