@@ -95,6 +95,7 @@ const routes: Routes = [
             (c) => c.ContactDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
     ],
     resolve: { userState: userStateResolver },
