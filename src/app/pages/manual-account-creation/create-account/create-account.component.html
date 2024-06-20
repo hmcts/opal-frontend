@@ -13,11 +13,7 @@
     <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="defendantType">
       <ng-container name>Defendant type</ng-container>
       <ng-container value>
-        <p class="govuk-body">
-          @if (stateService.manualAccountCreation.accountDetails.defendantType) {
-            {{ defendantTypes[stateService.manualAccountCreation.accountDetails.defendantType] }}
-          }
-        </p>
+        <p class="govuk-body">{{ defendantType }}</p>
       </ng-container>
     </div>
   </app-govuk-summary-list>
@@ -42,12 +38,10 @@
       <ng-container status>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
-      <ng-container status>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
-      </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>
-  @if (isParentOrGuardianDefendantType()) {
+
+  @if (defendantType === 'Adult or youth with parent or guardian to pay') {
     <h2 class="govuk-heading-m">Parent or guardian details</h2>
     <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
       <app-govuk-task-list-item
@@ -91,7 +85,7 @@
   }
   <h2 class="govuk-heading-m">Defendant details</h2>
   <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
-    @if (isCompanyType()) {
+    @if (defendantType === 'Company') {
       <app-govuk-task-list-item
         taskListItemId="companyDetailsItem"
         taskListStatusId="companyDetailsStatus"
@@ -132,6 +126,7 @@
         </ng-container>
       </app-govuk-task-list-item>
     }
+
     <app-govuk-task-list-item
       taskListItemId="contactDetailsItem"
       taskListStatusId="contactDetailsStatus"
@@ -148,10 +143,10 @@
       </ng-container>
       <ng-container status>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
-    @if (isAdultOrYouthOnlyDefendantType()) {
+
+    @if (defendantType === 'Adult or youth only') {
       <app-govuk-task-list-item
         taskListItemId="employerDetailsItem"
         taskListStatusId="employerDetailsStatus"
@@ -192,7 +187,6 @@
       </ng-container>
       <ng-container status>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
     <app-govuk-task-list-item
@@ -212,7 +206,6 @@
         </a>
       </ng-container>
       <ng-container status>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
