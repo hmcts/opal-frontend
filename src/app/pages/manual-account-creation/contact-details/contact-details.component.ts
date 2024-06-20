@@ -1,26 +1,41 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { GovukButtonComponent, GovukCancelLinkComponent } from '@components';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
+import { IManualAccountCreationContactDetailsState } from '@interfaces';
+import { ContactDetailsFormComponent } from './contact-details-form/contact-details-form.component';
 
 @Component({
   selector: 'app-contact-details',
   standalone: true,
-  imports: [GovukCancelLinkComponent, GovukButtonComponent],
+  imports: [ContactDetailsFormComponent],
   templateUrl: './contact-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContactDetailsComponent {
-  private readonly router = inject(Router);
+export class ContactDetailsComponent extends FormParentBaseComponent {
+  /**
+   * Handles the form submission for contact details.
+   * @param formData - The form data containing the search parameters.
+   */
+  public handleContactDetailsSubmit(formData: IManualAccountCreationContactDetailsState): void {
+    this.stateService.manualAccountCreation = {
+      accountDetails: this.stateService.manualAccountCreation.accountDetails,
+      employerDetails: this.stateService.manualAccountCreation.employerDetails,
+      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
+      contactDetails: formData,
+      unsavedChanges: false,
+      stateChanges: true,
+    };
 
-  public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+    this.routerNavigate(ManualAccountCreationRoutes.createAccount);
+  }
 
   /**
-   * Handles route with the supplied route
+   * Handles unsaved changes coming from the child component
    *
-   * @param route string of route
+   * @param unsavedChanges boolean value from child component
    */
-  public handleRoute(route: string): void {
-    this.router.navigate([route]);
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }

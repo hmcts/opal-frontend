@@ -12,6 +12,7 @@ import {
   GovukTaskListItemComponent,
 } from '@components';
 import { DEFENDANT_TYPES_STATE } from '@constants';
+
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import { StateService } from '@services';
 
@@ -28,6 +29,9 @@ import { StateService } from '@services';
     GovukHeadingWithCaptionComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
+    GovukHeadingWithCaptionComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
   ],
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +39,7 @@ import { StateService } from '@services';
 export class CreateAccountComponent implements OnInit {
   private readonly router = inject(Router);
   public readonly stateService = inject(StateService);
+
   public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
@@ -55,12 +60,9 @@ export class CreateAccountComponent implements OnInit {
   }
 
   /**
-   * Handles route with the supplied route
+   * Navigates to the specified route.
    *
-   * @param route string of route
-   * Handles route with the supplied route
-   *
-   * @param route string of route
+   * @param route - The route to navigate to.
    */
   public handleRoute(route: string): void {
     this.router.navigate([route]);

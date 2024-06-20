@@ -28,6 +28,9 @@ import { IManualAccountCreationEmployerDetailsState } from './manual-account-cre
 import { IManualAccountCreationState } from './manual-account-creation-state.interface';
 import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
 import { IManualAccountCreationAccountDetailsState } from './manual-account-creation-account-details-state.interface';
+import { IDefendantTypes } from './defendant-type.interface';
+import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
+import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
 import { IDefendantTypes } from './defendant-types.interface';
 import { IBusinessUnitRefData } from './business-unit-ref-data.interface';
 
@@ -68,5 +71,7 @@ export {
   CanDeactivateType,
   IManualAccountCreationAccountDetailsState,
   IDefendantTypes,
+  IManualAccountCreationContactDetailsState,
+  IManualAccountCreationParentGuardianDetailsState,
   IBusinessUnitRefData,
 };

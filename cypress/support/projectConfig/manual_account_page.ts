@@ -1,5 +1,3 @@
-import { arrayBuffer } from 'stream/consumers';
-
 export default class manualAccountPageObjects {
   static enterEmployerName(employerName: string) {
     cy.get('#employerName').should('be.visible').type(employerName);

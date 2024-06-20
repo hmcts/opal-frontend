@@ -1,5 +1,4 @@
 Feature: updating the account details page to manage the account creation process
-
     Background:
         Given I am on the OPAL Frontend
         Then I see "Opal" in the header
@@ -7,7 +6,7 @@ Feature: updating the account details page to manage the account creation proces
         When I sign in as "opal-test@HMCTS.NET"
         Then I am on the dashboard
         When I navigate to Manual Account Creation
-        
+
         Then I see "Create account" as the caption on the page
         Then I see "Business unit and defendant type" on the page header
         When I select adults and youth only
@@ -20,8 +19,8 @@ Feature: updating the account details page to manage the account creation proces
     Scenario: AC2-positive: verifying the account details page where account being created and defendant type text
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        Then should display business unit account I selected from Business unit and defendant type page
-        Then should display defendant type I selected from Business unit and defendant type page
+        Then should display business unit account "Cambridgeshire" I selected from Business unit and defendant type page
+        Then should display defendant type "Adult or youth only" I selected from Business unit and defendant type page
 
     Scenario: AC3-positive: verify Court details section heading and sub-section link is not configured
         Then I see "Create account" as the caption on the page
