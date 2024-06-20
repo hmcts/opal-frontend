@@ -1,6 +1,7 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor/';
 import manualAccountPageObjects from '../../projectConfig/manual_account_page';
 import contactDetails from '../../projectConfig/contact_details_page';
+import contactDetails from '../../projectConfig/contact_details_page';
 
 Then('I navigate to Manual Account Creation', () => {
   cy.get('#manualAccountCreationLink').should('contain', 'Manually Create Account').click();
