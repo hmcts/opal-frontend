@@ -30,6 +30,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
+  @Input({ required: false }) hintText!: string;
   @Input({ required: true }) autoCompleteItems: IAutoCompleteItem[] = [];
   @Input() showAllValues = false;
   @Input() errorMsg: string = 'Generic error message';

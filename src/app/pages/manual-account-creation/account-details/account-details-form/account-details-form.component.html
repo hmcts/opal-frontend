@@ -8,10 +8,11 @@
     <app-alphagov-accessible-autocomplete
       [control]="form.controls['businessUnit']"
       labelText="Business unit"
+      labelClasses="govuk-fieldset__legend--m"
       inputId="businessUnit"
       inputName="businessUnit"
-      inputClasses="govuk-!-width-one-half"
       label="Search for a user"
+      hintText="Enter area where the account is to be created (such as Sussex or London)"
       [autoCompleteItems]="autoCompleteItems"
       errorMsg="Please select a court"
     ></app-alphagov-accessible-autocomplete>
