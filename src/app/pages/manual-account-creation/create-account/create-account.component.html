@@ -21,6 +21,24 @@
       </ng-container>
     </div>
   </app-govuk-summary-list>
+  <app-govuk-heading-with-caption
+    captionText="Create account"
+    headingText="Account details"
+  ></app-govuk-heading-with-caption>
+  <app-govuk-summary-list summaryListId="accountDetails">
+    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="businessUnit">
+      <ng-container name>Business unit</ng-container>
+      <ng-container value>
+        <p class="govuk-body">Cambridgeshire</p>
+      </ng-container>
+    </div>
+    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="defendantType">
+      <ng-container name>Defendant type</ng-container>
+      <ng-container value>
+        <p class="govuk-body">{{ defendantType }}</p>
+      </ng-container>
+    </div>
+  </app-govuk-summary-list>
   <h2 class="govuk-heading-m">Court details</h2>
   <app-govuk-task-list taskListId="courtDetails" taskListClasses="govuk-!-margin-left-0 ">
     <app-govuk-task-list-item
@@ -31,6 +49,7 @@
       <ng-container name>
         <a
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+          [routerLink]="manualAccountCreationRoutes.courtDetails"
           [routerLink]="manualAccountCreationRoutes.courtDetails"
           [routerLink]="manualAccountCreationRoutes.courtDetails"
           aria-describedby="courtDetailsStatus"
@@ -45,9 +64,55 @@
       <ng-container status>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
+      <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
+      </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>
   @if (isParentOrGuardianDefendantType()) {
+    <h2 class="govuk-heading-m">Parent or guardian details</h2>
+    <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <app-govuk-task-list-item
+        taskListItemId="parentOrGuardianDetailsItem"
+        taskListStatusId="parentOrGuardianDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link"
+      >
+        <ng-container name>
+          <a
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [routerLink]="manualAccountCreationRoutes.parentOrGuardianDetails"
+            aria-describedby="parentOrGuardianDetailsStatus"
+            onclick="return false;"
+          >
+            Parent or guardian details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+      <app-govuk-task-list-item
+        taskListItemId="employerDetailsItem"
+        taskListStatusId="employerDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+      >
+        <ng-container name>
+          <a
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [routerLink]="manualAccountCreationRoutes.employerDetails"
+            aria-describedby="employerDetailsStatus"
+          >
+            Employer details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+    </app-govuk-task-list>
+  }
+
+  @if (defendantType === 'Adult or youth with parent or guardian to pay') {
     <h2 class="govuk-heading-m">Parent or guardian details</h2>
     <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
       <app-govuk-task-list-item
@@ -149,9 +214,88 @@
       <ng-container status>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
+    @if (defendantType === 'Company') {
+      <app-govuk-task-list-item
+        taskListItemId="companyDetailsItem"
+        taskListStatusId="companyDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link"
+      >
+        <ng-container name>
+          <a
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [routerLink]="manualAccountCreationRoutes.companyDetails"
+            aria-describedby="companyDetailsStatus"
+            onclick="return false;"
+          >
+            Company details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="companyDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+    } @else {
+      <app-govuk-task-list-item
+        taskListItemId="personalDetailsItem"
+        taskListStatusId="personalDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link"
+      >
+        <ng-container name>
+          <a
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [routerLink]="manualAccountCreationRoutes.personalDetails"
+            aria-describedby="personalDetailsStatus"
+            onclick="return false;"
+          >
+            Personal details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+    }
+
+    <app-govuk-task-list-item
+      taskListItemId="contactDetailsItem"
+      taskListStatusId="contactDetailsStatus"
+      taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+    >
+      <ng-container name>
+        <a
+          class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+          [routerLink]="manualAccountCreationRoutes.contactDetails"
+          aria-describedby="contactDetailsStatus"
+        >
+          Contact details
+        </a>
+      </ng-container>
+      <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
     @if (isAdultOrYouthOnlyDefendantType()) {
+      <app-govuk-task-list-item
+        taskListItemId="employerDetailsItem"
+        taskListStatusId="employerDetailsStatus"
+        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+      >
+        <ng-container name>
+          <a
+            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+            [routerLink]="manualAccountCreationRoutes.employerDetails"
+            aria-describedby="employerDetailsStatus"
+          >
+            Employer details
+          </a>
+        </ng-container>
+        <ng-container status>
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+        </ng-container>
+      </app-govuk-task-list-item>
+    }
+
+    @if (defendantType === 'Adult or youth only') {
       <app-govuk-task-list-item
         taskListItemId="employerDetailsItem"
         taskListStatusId="employerDetailsStatus"
@@ -184,6 +328,7 @@
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.offenceDetails"
           [routerLink]="manualAccountCreationRoutes.offenceDetails"
+          [routerLink]="manualAccountCreationRoutes.offenceDetails"
           aria-describedby="offenceDetailsStatus"
           onclick="return false;"
         >
@@ -191,6 +336,7 @@
         </a>
       </ng-container>
       <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
@@ -205,6 +351,7 @@
           class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
           [routerLink]="manualAccountCreationRoutes.paymentDetails"
           [routerLink]="manualAccountCreationRoutes.paymentDetails"
+          [routerLink]="manualAccountCreationRoutes.paymentDetails"
           aria-describedby="paymentTermsStatus"
           onclick="return false;"
         >
@@ -212,6 +359,7 @@
         </a>
       </ng-container>
       <ng-container status>
+        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
       </ng-container>

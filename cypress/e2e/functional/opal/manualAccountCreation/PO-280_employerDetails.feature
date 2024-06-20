@@ -11,17 +11,18 @@ Feature: Verifying Employer details page for defendant accounts
 
         #new feature implemented on Po-346 so deactivating this step
         #Then I see "Account details" on the page header
-        
+
         Then I see "Create account" as the caption on the page
         Then I see "Business unit and defendant type" on the page header
 
         When I select adults and youth only
         Then I click on continue button
-        Then I see "Create account" on the page header
+        Then I see "Account details" on the page header
         Then I click on "Employer details" link
+        Then I see "Employer details" on the page header
 
     #AC7
-    Scenario Outline: verifying the employer details page when user enters all the details then save and return to tasks
+    Scenario Outline:AC7- positive: verifying the employer details page when user enters all the details then save and return to tasks
         When I enter employer name "<employerName>"
         Then I enter employee reference number or nino "<employeeNino>"
         Then I enter employer email address "<employerEmail>"
@@ -35,7 +36,9 @@ Feature: Verifying Employer details page for defendant accounts
         Then I enter employer postcode "<employerPostCode>"
 
         Then I click save and return to tasks
-        Then I see "Create account" on the page header
+        #The page header changed according to PO-366
+        #Then I see "Create account" on the page header
+        Then I see "Account details" on the page header
         When I click on "Employer details" link
         Then I see "Employer details" on the page header
         Then I verify "<employerName>","<employeeNino>","<employerEmail>","<employerTelephone>","<employerAddress1>","<employerAddress2>","<employerAddress3>","<employerAddress4>","<employerAddress5>","<employerPostCode>" values saved
@@ -44,7 +47,7 @@ Feature: Verifying Employer details page for defendant accounts
             | Steve Mach7  | AB123456     | test@test.com | 01234567890       | 12 test road     | Avenue           | Slough           | Burnham          | London           | AB12 4BM         |
     #AC4, #AC1b, #AC1c, #AC5
 
-    Scenario Outline: verifying the error messages when user enters incorrect format
+    Scenario Outline: AC1c,1b,4 & 5:verifying the error messages when user enters incorrect format
         When I enter incorrect employer name "<incorrectEmployerName>"
         When I enter incorrect employee reference number of nino "<incorrectEmpNino>"
         When I enter incorrect employer email address "<incorrectEmail>"
@@ -70,7 +73,7 @@ Feature: Verifying Employer details page for defendant accounts
             | This is an employer journey                                   | AB123NM12                        | testtest.com                                                                                                                             | 12evr45mni3            | test road number\34                                   | Alpha-Road Street                                     | test road # 7                                         | test road                                             | test road                                             | 12acsd            |
 
     #AC3
-    Scenario Outline: verifying the employer details page when user not enters all the mandatory fields where filling the details on optional fields then save and return to tasks
+    Scenario Outline:AC3-unhappy: verifying the employer details page when user not enters all the mandatory fields where filling the details on optional fields then save and return to tasks
         Then I enter employer email address "<employerEmail>"
         Then I enter employer telephone number "<employerTelephone>"
 
@@ -96,7 +99,9 @@ Feature: Verifying Employer details page for defendant accounts
         Then "Back" is clicked
 
         Then I select OK on the pop up window
-        Then I see "Create account" on the page header
+        #The page header changed according to PO-366
+        #Then I see "Create account" on the page header
+        Then I see "Account details" on the page header
         Then I click on "Employer details" link
         Then I verify employer name, employer postcode is empty
         Examples:
@@ -115,7 +120,7 @@ Feature: Verifying Employer details page for defendant accounts
     #         | testWindowPopUP | Test Road *           |
 
     #AC6
-    Scenario Outline: Verifying  If a user amends all fields where validation failures occurred and all validation is adhered to,
+    Scenario Outline:AC6-Unhappy: Verifying  If a user amends all fields where validation failures occurred and all validation is adhered to,
         #then upon selecting the 'Save and return to tasks' button
         When I enter incorrect employer email address "<incorrectEmail>"
         When I enter incorrect employer telephone number "<incorrectTelephone>"
@@ -138,7 +143,9 @@ Feature: Verifying Employer details page for defendant accounts
         Then I update employer postcode "<employerPostCode>"
 
         Then I click save and return to tasks
-        Then I see "Create account" on the page header
+        #The page header changed according to PO-366
+        #Then I see "Create account" on the page header
+        Then I see "Account details" on the page header
 
         Then I click on "Employer details" link
         Then I see "Employer details" on the page header
@@ -150,15 +157,15 @@ Feature: Verifying Employer details page for defendant accounts
             | test-test-com  | 1234567            | This is a test for address line  in employer details | 14 test road *        | avenue*               | test*                 | testing@test.com | 07534567856       | 12 Duechar Street | avenue           | whitleybay       | tyne and wear    | Test1        | AB123456     | 12               | SL7 1NH          |
 
     #AC2
-    Scenario: verifying the error messages when user saves employer details without entering the values
+    Scenario: Ac2- Unahappy: verifying the error messages when user saves employer details without entering the values
         When I click save and return to tasks
         Then I verify the error message
         Then I see "Employer details" on the page header
 
     #AC8
-    Scenario: verifying If a user selects the 'Back' button and the user has not entered data into any fields
+    Scenario: AC8 - Unhappy: verifying If a user selects the 'Back' button and the user has not entered data into any fields
         When "Back" is clicked
-        Then I see "Create account" on the page header
+        Then I see "Account details" on the page header
 
 
 
