@@ -16,7 +16,6 @@ describe('CreateAccountComponent', () => {
   let fixture: ComponentFixture<CreateAccountComponent>;
   let stateService: StateService;
   let mockStateService: jasmine.SpyObj<StateService>;
-  let mockStateService: jasmine.SpyObj<StateService>;
 
   beforeEach(async () => {
     mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
@@ -31,7 +30,6 @@ describe('CreateAccountComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [CreateAccountComponent, RouterTestingModule],
-      providers: [{ provide: StateService, useValue: mockStateService }],
       providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 
