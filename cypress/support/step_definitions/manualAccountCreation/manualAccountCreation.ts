@@ -1,6 +1,6 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor/';
 import manualAccountPageObjects from '../../projectConfig/manual_account_page';
-import { contains } from 'cypress/types/jquery';
+import contactDetails from '../../projectConfig/contact_details_page';
 
 Then('I navigate to Manual Account Creation', () => {
   cy.get('#manualAccountCreationLink').should('contain', 'Manually Create Account').click();
@@ -239,28 +239,84 @@ Then('I update employer postcode {string}', (employerPostCode: string) => {
   cy.get('#employerPostcode').clear();
   manualAccountPageObjects.enterEmployerPostcode(employerPostCode);
 });
-Then('I see the business unit is {string}', (businessUnit: string) => {
-  cy.get('#accountDetailsBusinessUnitValue > p').should('contain.text', businessUnit);
+
+When('I enter primary email address {string}', (primaryEmail: string) => {
+  contactDetails.enterPrimaryEmail(primaryEmail);
 });
-Then('I see the defendant type is {string}', (defendantType: string) => {
-  cy.get('#accountDetailsDefendantTypeValue > p').should('contain.text', defendantType);
+
+When('I enter secondary email address {string}', (secondaryEmail: string) => {
+  contactDetails.enterSecondaryEmail(secondaryEmail);
 });
-Then('I see the {string} section heading', (sectionName: string) => {
-  cy.contains('h2', sectionName);
+When('I enter mobile telephone number {string}', (mobileTelephone: string) => {
+  contactDetails.enterMobileTelephone(mobileTelephone);
 });
-Then('I see the {string} link under the {string} section', (linkName: string, sectionName: string) => {
-  cy.contains('h2', sectionName).next().contains('a', linkName);
+When('I enter home telephone number {string}', (homeTelephone: string) => {
+  contactDetails.enterHomeTelephone(homeTelephone);
 });
-Then('I see the {string} text under the {string} section', (text: string, sectionName: string) => {
-  cy.contains('h2', sectionName).next().contains('p', text);
+When('I enter business telephone number {string}', (businessTelephone: string) => {
+  contactDetails.enterBusinessTelephone(businessTelephone);
 });
-Then('I see the {string} button under the {string} section', (buttonName: string, sectionName: string) => {
-  cy.contains('h2', sectionName).next().next().contains('button', buttonName);
+
+Then(
+  'I verify {string},{string},{string},{string},{string} on contact details page',
+  (primaryEmail, secondaryEmail, mobileTelephone, homeTelephone, businessTelephone: string) => {
+    cy.get('#primaryEmailAddress').should('have.value', primaryEmail);
+    cy.get('#secondaryEmailAddress').should('have.value', secondaryEmail);
+    cy.get('#mobileTelephoneNumber').should('have.value', mobileTelephone);
+    cy.get('#homeTelephoneNumber').should('have.value', homeTelephone);
+    cy.get('#businessTelephoneNumber').should('have.value', businessTelephone);
+  },
+);
+
+Then(
+  'I verify {string},{string},{string} on contact details page',
+  (primaryEmail, secondaryEmail, homeTelephone: string) => {
+    cy.get('#primaryEmailAddress').should('have.value', primaryEmail);
+    cy.get('#secondaryEmailAddress').should('have.value', secondaryEmail);
+    cy.get('#homeTelephoneNumber').should('have.value', homeTelephone);
+  },
+);
+
+When('I enter incorrect primary email address {string}', (incorrectPrimaryEmail: string) => {
+  contactDetails.enterPrimaryEmail(incorrectPrimaryEmail);
 });
-Then('I see the {string} link', (linkName: string) => {
-  cy.contains('a', linkName);
+
+When('I enter incorrect secondary email address {string}', (incorrectSecondaryEmail: string) => {
+  contactDetails.enterSecondaryEmail(incorrectSecondaryEmail);
 });
-Then('I do not see a back button or back link', () => {
-  cy.contains('a', /back/i).should('not.exist');
-  cy.contains('button', /back/i).should('not.exist');
+
+When('I enter incorrect mobile telephone number {string}', (incorrectMobileNumber: string) => {
+  contactDetails.enterMobileTelephone(incorrectMobileNumber);
+});
+
+When('I enter incorrect home telephone number {string}', (incorrectHomeTelephone: string) => {
+  contactDetails.enterHomeTelephone(incorrectHomeTelephone);
+});
+
+When('I enter incorrect business telephone number {string}', (incorrectBusinessTelephone: string) => {
+  contactDetails.enterBusinessTelephone(incorrectBusinessTelephone);
+});
+When('I update primary email address {string}', (updatePrimaryEmail: string) => {
+  cy.get('#primaryEmailAddress').clear();
+  contactDetails.enterPrimaryEmail(updatePrimaryEmail);
+});
+When('I update secondary email address {string}', (updateSecondaryEmail: string) => {
+  cy.get('#secondaryEmailAddress').clear();
+  contactDetails.enterSecondaryEmail(updateSecondaryEmail);
+});
+When('I update mobile telephone number {string}', (updateMobileNumber: string) => {
+  cy.get('#mobileTelephoneNumber').clear();
+  contactDetails.enterMobileTelephone(updateMobileNumber);
+});
+When('I update home telephone number {string}', (updateHomeTelephone: string) => {
+  cy.get('#homeTelephoneNumber').clear();
+  contactDetails.enterHomeTelephone(updateHomeTelephone);
+});
+When('I update business telephone number {string}', (updateBusinessTelephone: string) => {
+  cy.get('#businessTelephoneNumber').clear();
+  contactDetails.enterBusinessTelephone(updateBusinessTelephone);
+});
+When('I verify primary email, home telephone is empty', () => {
+  cy.get('#primaryEmailAddress').should('have.value', '');
+  cy.get('#homeTelephoneNumber').should('have.value', '');
 });
