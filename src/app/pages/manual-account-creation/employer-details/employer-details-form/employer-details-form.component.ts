@@ -5,7 +5,7 @@ import {
   GovukButtonComponent,
   GovukErrorSummaryComponent,
   FormBaseComponent,
-  GovukBackLinkComponent,
+  GovukCancelLinkComponent,
 } from '@components';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
@@ -25,7 +25,7 @@ import {
     ReactiveFormsModule,
     GovukTextInputComponent,
     GovukButtonComponent,
-    GovukBackLinkComponent,
+    GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
   ],
   templateUrl: './employer-details-form.component.html',

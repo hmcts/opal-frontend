@@ -95,6 +95,16 @@ const routes: Routes = [
             (c) => c.ContactDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationParentGuardianDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/parent-guardian-details/parent-guardian-details.component').then(
+            (c) => c.ParentGuardianDetailsComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
     ],
     resolve: { userState: userStateResolver },

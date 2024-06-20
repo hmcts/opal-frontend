@@ -2,18 +2,36 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateAccountComponent } from './create-account.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StateService } from '@services';
 
-import { DEFENDANT_TYPES_STATE } from '@constants';
+import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE } from '@constants';
+import { StateService } from '@services';
+import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+} from '@constants';
 
 describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
   let fixture: ComponentFixture<CreateAccountComponent>;
   let stateService: StateService;
+  let mockStateService: jasmine.SpyObj<StateService>;
 
   beforeEach(async () => {
+    mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
+
+    mockStateService.manualAccountCreation = {
+      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
+      unsavedChanges: false,
+      stateChanges: false,
+    };
+
     await TestBed.configureTestingModule({
       imports: [CreateAccountComponent, RouterTestingModule],
+      providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountComponent);

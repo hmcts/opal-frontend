@@ -5,7 +5,9 @@ import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
 } from '@constants';
 
 describe('EmployerDetailsComponent', () => {
@@ -19,6 +21,8 @@ describe('EmployerDetailsComponent', () => {
     mockStateService.manualAccountCreation = {
       accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };
