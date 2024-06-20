@@ -40,7 +40,8 @@
       </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>
-  @if (isParentOrGuardianDefendantType()) {
+
+  @if (defendantType === 'Adult or youth with parent or guardian to pay') {
     <h2 class="govuk-heading-m">Parent or guardian details</h2>
     <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
       <app-govuk-task-list-item
@@ -84,7 +85,7 @@
   }
   <h2 class="govuk-heading-m">Defendant details</h2>
   <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
-    @if (isCompanyType()) {
+    @if (defendantType === 'Company') {
       <app-govuk-task-list-item
         taskListItemId="companyDetailsItem"
         taskListStatusId="companyDetailsStatus"
@@ -144,7 +145,8 @@
         <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
       </ng-container>
     </app-govuk-task-list-item>
-    @if (isAdultOrYouthOnlyDefendantType()) {
+
+    @if (defendantType === 'Adult or youth only') {
       <app-govuk-task-list-item
         taskListItemId="employerDetailsItem"
         taskListStatusId="employerDetailsStatus"

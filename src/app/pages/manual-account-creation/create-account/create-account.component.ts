@@ -78,31 +78,4 @@ export class CreateAccountComponent implements OnInit {
   ngOnInit(): void {
     this.setDefendantType();
   }
-
-  /**
-   * Checks if the defendant type is 'parentOrGuardianToPay'.
-   *
-   * @returns {boolean} - Returns true if the defendant type is 'parentOrGuardianToPay', otherwise false.
-   */
-  public isParentOrGuardianDefendantType(): boolean {
-    return this.stateService.manualAccountCreation.accountDetails.defendantType === 'parentOrGuardianToPay';
-  }
-
-  /**
-   * Checks if the defendant type is 'adultOrYouthOnly'.
-   *
-   * @returns {boolean} - Returns true if the defendant type is 'adultOrYouthOnly', otherwise false.
-   */
-  public isAdultOrYouthOnlyDefendantType(): boolean {
-    return this.stateService.manualAccountCreation.accountDetails.defendantType === 'adultOrYouthOnly';
-  }
-
-  /**
-   * Checks if the defendant type is 'company'.
-   *
-   * @returns {boolean} - Returns true if the defendant type is 'company', otherwise false.
-   */
-  public isCompanyType(): boolean {
-    return this.stateService.manualAccountCreation.accountDetails.defendantType === 'company';
-  }
 }
