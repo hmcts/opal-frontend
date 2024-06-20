@@ -16,6 +16,7 @@ describe('CreateAccountComponent', () => {
   let fixture: ComponentFixture<CreateAccountComponent>;
   let stateService: StateService;
   let mockStateService: jasmine.SpyObj<StateService>;
+  let mockStateService: jasmine.SpyObj<StateService>;
 
   beforeEach(async () => {
     mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
@@ -30,6 +31,7 @@ describe('CreateAccountComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [CreateAccountComponent, RouterTestingModule],
+      providers: [{ provide: StateService, useValue: mockStateService }],
       providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 
@@ -71,6 +73,36 @@ describe('CreateAccountComponent', () => {
 
     component['setDefendantType']();
     expect(component.defendantType).toBe('');
+  });
+
+  it('should test isParentOrGuardianDefendantType to be true', () => {
+    mockStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
+    expect(component.isParentOrGuardianDefendantType()).toBeTruthy();
+  });
+
+  it('should test isParentOrGuardianDefendantType to be false', () => {
+    mockStateService.manualAccountCreation.accountDetails.defendantType = 'company';
+    expect(component.isParentOrGuardianDefendantType()).toBeFalsy();
+  });
+
+  it('should test isAdultOrYouthOnlyDefendantType to be true', () => {
+    mockStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    expect(component.isAdultOrYouthOnlyDefendantType()).toBeTruthy();
+  });
+
+  it('should test isParentOrGuardianDefendantType to be false', () => {
+    mockStateService.manualAccountCreation.accountDetails.defendantType = 'company';
+    expect(component.isAdultOrYouthOnlyDefendantType()).toBeFalsy();
+  });
+
+  it('should test isCompanyType to be true', () => {
+    mockStateService.manualAccountCreation.accountDetails.defendantType = 'company';
+    expect(component.isCompanyType()).toBeTruthy();
+  });
+
+  it('should test isCompanyType to be false', () => {
+    mockStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    expect(component.isCompanyType()).toBeFalsy();
   });
 
   it('should test isParentOrGuardianDefendantType to be true', () => {

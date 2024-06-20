@@ -19,7 +19,7 @@ Feature: updating the account details page to manage the account creation proces
     Scenario: AC2-positive: verifying the account details page where account being created and defendant type text
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        Then should display business unit account "Cambridge" I selected from Business unit and defendant type page
+        Then should display business unit account "Cambridgeshire" I selected from Business unit and defendant type page
         Then should display defendant type "Adult or youth only" I selected from Business unit and defendant type page
 
     Scenario: AC3-positive: verify Court details section heading and sub-section link is not configured
