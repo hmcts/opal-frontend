@@ -1,5 +1,4 @@
 Feature: updating the account details page to manage the account creation process
-
     Background:
         Given I am on the OPAL Frontend
         Then I see "Opal" in the header

@@ -8,5 +8,6 @@ export enum ManualAccountCreationRoutes {
   offenceDetails = '/manual-account-creation/offence-details',
   paymentDetails = '/manual-account-creation/payment-terms',
   contactDetails = '/manual-account-creation/contact-details',
+  companyDetails = '/manual-account-creation/company-details',
   parentOrGuardianDetails = '/manual-account-creation/parent-guardian-details',
 }

@@ -1,6 +1,7 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor/';
 import manualAccountPageObjects from '../../projectConfig/manual_account_page';
 import contactDetails from '../../projectConfig/contact_details_page';
+import contactDetails from '../../projectConfig/contact_details_page';
 
 Then('I navigate to Manual Account Creation', () => {
   cy.get('#manualAccountCreationLink').should('contain', 'Manually Create Account').click();
@@ -319,4 +320,29 @@ When('I update business telephone number {string}', (updateBusinessTelephone: st
 When('I verify primary email, home telephone is empty', () => {
   cy.get('#primaryEmailAddress').should('have.value', '');
   cy.get('#homeTelephoneNumber').should('have.value', '');
+});
+Then('I see the business unit is {string}', (businessUnit: string) => {
+  cy.get('#accountDetailsBusinessUnitValue').should('have.text', businessUnit);
+});
+Then('I see the defendant type is {string}', (defendantType: string) => {
+  cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
+});
+Then('I see the {string} section heading', (sectionName: string) => {
+  cy.contains('h2', sectionName);
+});
+Then('I see the {string} link under the {string} section', (linkName: string, sectionName: string) => {
+  cy.contains('h2', sectionName).next().contains('a', linkName);
+});
+Then('I see the {string} text under the {string} section', (text: string, sectionName: string) => {
+  cy.contains('h2', sectionName).next().contains('p', text);
+});
+Then('I see the {string} button under the {string} section', (buttonName: string, sectionName: string) => {
+  cy.contains('h2', sectionName).next().next().contains('button', buttonName);
+});
+Then('I see the {string} link', (linkName: string) => {
+  cy.contains('a', linkName);
+});
+Then('I do not see a back button or back link', () => {
+  cy.contains('a', /back/i).should('not.exist');
+  cy.contains('button', /back/i).should('not.exist');
 });
