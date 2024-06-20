@@ -96,7 +96,7 @@ Feature: Verifying Employer details page for defendant accounts
     Scenario Outline: AC9-negative: verifying if user selects the 'Back' button and the user has entered data into one or more fields, a warning message will be displayed
         When I enter employer name "<employerName>"
         When I enter employer postcode "<employerPostcode>"
-        Then "Back" is clicked
+        Then "Cancel" is clicked
 
         Then I select OK on the pop up window
         #The page header changed according to PO-366
@@ -164,7 +164,7 @@ Feature: Verifying Employer details page for defendant accounts
 
     #AC8
     Scenario: AC8 - Unhappy: verifying If a user selects the 'Back' button and the user has not entered data into any fields
-        When "Back" is clicked
+        When "Cancel" is clicked
         Then I see "Account details" on the page header
 
 
