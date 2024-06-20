@@ -238,3 +238,44 @@ Then('I update employer postcode {string}', (employerPostCode: string) => {
   cy.get('#employerPostcode').clear();
   manualAccountPageObjects.enterEmployerPostcode(employerPostCode);
 });
+Then('I see {string} above the defendant type heading', (businessUnitText: string) => {
+  cy.get('#defendantType')
+    .should('contain.text', 'Defendant type')
+    .parent()
+    .parent()
+    .parent()
+    .find('p')
+    .should('have.text', businessUnitText);
+});
+Then('I see the business unit is {string}', (businessUnit: string) => {
+  cy.get('#accountDetailsBusinessUnitValue').should('have.text', businessUnit);
+});
+Then('I see the defendant type is {string}', (defendantType: string) => {
+  cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
+});
+Then('I see the business unit heading is {string}', (businessUnitHeading: string) => {
+  cy.get('#businessUnitHint').prev().should('contains.text', businessUnitHeading);
+});
+Then('I see the business unit help text is {string}', (businessUnitHelpText: string) => {
+  cy.get('#businessUnitHint').should('contains.text', businessUnitHelpText);
+});
+Then('I see the search box below the business unit help text', () => {
+  cy.get('#businessUnitHint').next().next().should('have.attr', 'id', 'businessUnit-autocomplete');
+});
+Then('I enter {string} into the business unit search box', (businessUnit: string) => {
+  cy.get('#businessUnit-autocomplete').type(businessUnit);
+  cy.get('#businessUnit-autocomplete__listbox').should('not.contain', 'No results found');
+  cy.get('#businessUnit-autocomplete').type('{downArrow}{enter}');
+});
+Then('I see the value {string} in the business unit search box', (businessUnit: string) => {
+  cy.get('#businessUnit-autocomplete').should('have.value', businessUnit);
+});
+Then('I see the defendant type heading is {string}', (businessUnitHeading: string) => {
+  cy.get('#defendantTypeHint').prev().should('contains.text', businessUnitHeading);
+});
+Then('I see the defendant type help text is {string}', (businessUnitHelpText: string) => {
+  cy.get('#defendantTypeHint').should('contains.text', businessUnitHelpText);
+});
+Then('I see the {string} radio button below the defendant type help text', (radioButton: string) => {
+  cy.get('#defendantTypeHint').next().contains('label', radioButton);
+});
