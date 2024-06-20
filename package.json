@@ -36,12 +36,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.0.1",
-    "@angular/cdk": "18.0.3",
+    "@angular/cdk": "18.0.4",
     "@angular/common": "^17.0.1",
     "@angular/compiler": "^17.0.1",
     "@angular/core": "^17.0.1",
     "@angular/forms": "^17.0.1",
-    "@angular/material": "18.0.3",
+    "@angular/material": "18.0.4",
     "@angular/platform-browser": "^17.0.1",
     "@angular/platform-browser-dynamic": "^17.0.1",
     "@angular/platform-server": "^17.0.1",
@@ -124,6 +124,6 @@
   "resolutions": {
     "braces": "3.0.3",
     "@azure/msal-node": "2.9.2",
-    "@azure/identity": "4.2.1"
+    "@azure/identity": "4.3.0"
   }
 }
