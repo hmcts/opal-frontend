@@ -3,7 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PersonalDetailsComponent } from './personal-details.component';
 import { StateService } from '@services';
 import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
 import { IManualAccountCreationPersonalDetailsState } from '@interfaces';
@@ -18,7 +21,10 @@ describe('PersonalDetailsComponent', () => {
     mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
 
     mockStateService.manualAccountCreation = {
+      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
       unsavedChanges: false,
       stateChanges: false,

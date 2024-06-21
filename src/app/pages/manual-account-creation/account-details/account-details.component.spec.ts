@@ -7,11 +7,13 @@ import {
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
 import { StateService } from '@services';
 import { IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
+import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS_STATE } from 'src/app/constants/manual-account-creation-personal-details-alias-state';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -26,6 +28,7 @@ describe('AccountDetailsComponent', () => {
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
+      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };
