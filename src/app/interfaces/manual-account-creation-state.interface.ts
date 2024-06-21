@@ -3,9 +3,8 @@ import {
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationEmployerDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
+  IManualAccountCreationPersonalDetailsState,
 } from '@interfaces';
-import { IManualAccountCreationEmployerDetailsState } from './manual-account-creation-employer-details-state.interface';
-import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
 
 export interface IManualAccountCreationState {
   employerDetails: IManualAccountCreationEmployerDetailsState;

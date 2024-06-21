@@ -18,8 +18,8 @@ export class PersonalDetailsComponent extends FormParentBaseComponent {
    */
   public handlePersonalDetailsSubmit(formData: IManualAccountCreationPersonalDetailsState): void {
     this.stateService.manualAccountCreation = {
+      ...this.stateService.manualAccountCreation,
       personalDetails: formData,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
       unsavedChanges: false,
       stateChanges: true,
     };

@@ -20,9 +20,7 @@ export class ParentGuardianDetailsComponent extends FormParentBaseComponent {
    */
   public handleParentGuardianDetailsSubmit(formData: IManualAccountCreationParentGuardianDetailsState): void {
     this.stateService.manualAccountCreation = {
-      accountDetails: this.stateService.manualAccountCreation.accountDetails,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
-      contactDetails: this.stateService.manualAccountCreation.contactDetails,
+      ...this.stateService.manualAccountCreation,
       parentGuardianDetails: formData,
       unsavedChanges: false,
       stateChanges: true,

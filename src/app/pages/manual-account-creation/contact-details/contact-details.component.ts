@@ -18,9 +18,7 @@ export class ContactDetailsComponent extends FormParentBaseComponent {
    */
   public handleContactDetailsSubmit(formData: IManualAccountCreationContactDetailsState): void {
     this.stateService.manualAccountCreation = {
-      accountDetails: this.stateService.manualAccountCreation.accountDetails,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
-      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
+      ...this.stateService.manualAccountCreation,
       contactDetails: formData,
       unsavedChanges: false,
       stateChanges: true,
