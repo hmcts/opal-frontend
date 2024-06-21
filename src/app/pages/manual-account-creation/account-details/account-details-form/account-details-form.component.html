@@ -14,7 +14,7 @@
       label="Search for a user"
       hintText="Enter area where the account is to be created (such as Sussex or London)"
       [autoCompleteItems]="autoCompleteItems"
-      errorMsg="Please select a court"
+      [errors]="formControlErrorMessages['businessUnit']"
     ></app-alphagov-accessible-autocomplete>
   }
 
