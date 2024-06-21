@@ -74,7 +74,7 @@ Feature: PO-362 Company task list screen
     When I select company
     And I click on continue button
 
-    Then I see the "Defendant details" section heading
+    Then I see the "Court details" section heading
     And I see the "Company details" link under the "Defendant details" section
 
   ##When "Company details" is clicked

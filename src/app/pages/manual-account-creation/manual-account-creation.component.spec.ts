@@ -56,11 +56,9 @@ describe('ManualAccountCreationComponent', () => {
     expect(component.canDeactivate()).toBeTruthy();
 
     stateService.manualAccountCreation.stateChanges = true;
-    stateService.manualAccountCreation.unsavedChanges = false;
     expect(component.canDeactivate()).toBeFalsy();
 
     stateService.manualAccountCreation.stateChanges = false;
-    stateService.manualAccountCreation.unsavedChanges = true;
     expect(component.canDeactivate()).toBeTruthy();
   });
 });
