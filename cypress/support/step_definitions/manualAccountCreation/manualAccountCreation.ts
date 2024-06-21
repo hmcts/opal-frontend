@@ -255,13 +255,17 @@ Then('I see the defendant type is {string}', (defendantType: string) => {
   cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
 });
 Then('I see the business unit heading is {string}', (businessUnitHeading: string) => {
-  cy.get('#businessUnitHint').prev().should('contains.text', businessUnitHeading);
+  cy.get('#businessUnit-hint').prev().should('contains.text', businessUnitHeading);
 });
 Then('I see the business unit help text is {string}', (businessUnitHelpText: string) => {
-  cy.get('#businessUnitHint').should('contains.text', businessUnitHelpText);
+  cy.get('#businessUnit-hint').should('contains.text', businessUnitHelpText);
 });
 Then('I see the search box below the business unit help text', () => {
-  cy.get('#businessUnitHint').next().next().should('have.attr', 'id', 'businessUnit-autocomplete');
+  cy.get('#businessUnit-hint')
+    .next()
+    .children()
+    .children('input')
+    .should('have.attr', 'id', 'businessUnit-autocomplete');
 });
 Then('I enter {string} into the business unit search box', (businessUnit: string) => {
   cy.get('#businessUnit-autocomplete').type(businessUnit);
@@ -361,12 +365,6 @@ When('I verify primary email, home telephone is empty', () => {
   cy.get('#primaryEmailAddress').should('have.value', '');
   cy.get('#homeTelephoneNumber').should('have.value', '');
 });
-Then('I see the business unit is {string}', (businessUnit: string) => {
-  cy.get('#accountDetailsBusinessUnitValue').should('have.text', businessUnit);
-});
-Then('I see the defendant type is {string}', (defendantType: string) => {
-  cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
-});
 Then('I see the {string} section heading', (sectionName: string) => {
   cy.contains('h2', sectionName);
 });
@@ -388,9 +386,6 @@ Then('I do not see a back button or back link', () => {
 });
 Then('I enter more than 30 characters into the {string} field', (fieldName: string) => {
   cy.contains('app-govuk-text-input', fieldName).find('input').clear().type('Test'.repeat(10));
-});
-Then('I click the {string} button', (buttonText: string) => {
-  cy.get('button').contains(buttonText).click();
 });
 Then('I see the error message {string} at the top of the page', (errorMessage: string) => {
   cy.get('.govuk-error-summary').should('contain', errorMessage);
