@@ -11933,23 +11933,23 @@ __metadata:
   linkType: hard
 
 "launchdarkly-js-client-sdk@npm:^3.1.4":
-  version: 3.3.0
-  resolution: "launchdarkly-js-client-sdk@npm:3.3.0"
+  version: 3.4.0
+  resolution: "launchdarkly-js-client-sdk@npm:3.4.0"
   dependencies:
     escape-string-regexp: ^4.0.0
-    launchdarkly-js-sdk-common: 5.2.0
-  checksum: 7b56450c390a2eff36c9d98c2d7de55a50fb565a168943d19bd0284d18717f96b117858933acb53bab4a1debdab343cf81e41fd07e301f1275d3f72b94a01ede
+    launchdarkly-js-sdk-common: 5.3.0
+  checksum: 611d9abaf280f858c037a1fc71834e53496ee6df1a3709af1e45d1e0649cc2495192922ad4c29f7b2258c527b7af637bb87dc328751022d6a4112861f6d83f06
   languageName: node
   linkType: hard
 
-"launchdarkly-js-sdk-common@npm:5.2.0":
-  version: 5.2.0
-  resolution: "launchdarkly-js-sdk-common@npm:5.2.0"
+"launchdarkly-js-sdk-common@npm:5.3.0":
+  version: 5.3.0
+  resolution: "launchdarkly-js-sdk-common@npm:5.3.0"
   dependencies:
     base64-js: ^1.3.0
     fast-deep-equal: ^2.0.1
     uuid: ^8.0.0
-  checksum: c4eab1818834748133e976ace96995c9451c00cfe8923960bbcd2ad333e6578a35e145dace3cd03885d2a7b57be0af53c72dee3a4d61f4d09bf8468a2600e58f
+  checksum: 7b8be6528188492e6f1822122a390a3ef6e0696b9a552aa97142bdfdef333e0a4182b02c6498d668eddbd6d16aebe6432f950fee537cbc1c656a4e39765a71c9
   languageName: node
   linkType: hard
 
