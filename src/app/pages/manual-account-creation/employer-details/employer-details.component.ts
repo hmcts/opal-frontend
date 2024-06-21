@@ -4,12 +4,12 @@ import { RouterModule } from '@angular/router';
 import { EmployerDetailsFormComponent } from './employer-details-form/employer-details-form.component';
 import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
-import { FormParentBaseComponent, GovukBackLinkComponent } from '@components';
+import { FormParentBaseComponent } from '@components';
 
 @Component({
   selector: 'app-employer-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, EmployerDetailsFormComponent, GovukBackLinkComponent],
+  imports: [CommonModule, RouterModule, EmployerDetailsFormComponent],
   templateUrl: './employer-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -20,7 +20,10 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
    */
   public handleEmployerDetailsSubmit(formData: IManualAccountCreationEmployerDetailsState): void {
     this.stateService.manualAccountCreation = {
+      accountDetails: this.stateService.manualAccountCreation.accountDetails,
       employerDetails: formData,
+      contactDetails: this.stateService.manualAccountCreation.contactDetails,
+      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
       personalDetails: this.stateService.manualAccountCreation.personalDetails,
       unsavedChanges: false,
       stateChanges: true,

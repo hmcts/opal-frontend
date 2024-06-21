@@ -27,6 +27,12 @@ import { IFormErrorSummaryMessage } from './form-error-summary-message.interface
 import { IManualAccountCreationEmployerDetailsState } from './manual-account-creation-employer-details-state.interface';
 import { IManualAccountCreationState } from './manual-account-creation-state.interface';
 import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
+import { IManualAccountCreationAccountDetailsState } from './manual-account-creation-account-details-state.interface';
+import { IDefendantTypes } from './defendant-type.interface';
+import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
+import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
+import { IBusinessUnitRefData } from './business-unit-ref-data.interface';
+
 import { IManualAccountCreationPersonalAlias } from './manual-account-creation-personal-details-alias.interface';
 import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
 import { IManualAccountCreationPersonalDetailsAliasState } from './manual-account-creation-personal-details-alias-state.interface';
@@ -65,6 +71,11 @@ export {
   IManualAccountCreationState,
   CanComponentDeactivate,
   CanDeactivateType,
+  IManualAccountCreationAccountDetailsState,
+  IDefendantTypes,
+  IManualAccountCreationContactDetailsState,
+  IManualAccountCreationParentGuardianDetailsState,
+  IBusinessUnitRefData,
   IManualAccountCreationPersonalAlias,
   IManualAccountCreationPersonalDetailsState,
   IManualAccountCreationPersonalDetailsAliasState,

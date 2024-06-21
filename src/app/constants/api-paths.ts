@@ -1,6 +1,7 @@
 const baseUrl = '/api/';
 const defendantAccountPath = 'defendant-account/';
 const courtPath = 'court/';
+const businessUnit = 'business-unit/';
 
 export const API_PATHS = {
   defendantAccount: `${baseUrl}${defendantAccountPath}`,
@@ -8,4 +9,5 @@ export const API_PATHS = {
   defendantAccountAddNote: `${baseUrl}${defendantAccountPath}addNote`,
   defendantAccountNotes: `${baseUrl}${defendantAccountPath}notes`,
   courtSearch: `${baseUrl}${courtPath}search`,
+  businessUnitRefData: `${baseUrl}${businessUnit}ref-data`,
 };

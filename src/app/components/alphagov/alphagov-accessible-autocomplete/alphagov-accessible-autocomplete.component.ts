@@ -30,9 +30,10 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
+  @Input({ required: false }) hintText!: string;
   @Input({ required: true }) autoCompleteItems: IAutoCompleteItem[] = [];
   @Input() showAllValues = false;
-  @Input() errorMsg: string = 'Generic error message';
+  @Input({ required: false }) errors: string | null = null;
 
   @ViewChild('autocomplete') autocompleteContainer!: ElementRef<HTMLElement>;
 
@@ -59,6 +60,10 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
    */
   get getControl() {
     return this._control;
+  }
+
+  public hasError(): boolean {
+    return this.errors !== null && typeof this.errors !== 'undefined';
   }
 
   /**

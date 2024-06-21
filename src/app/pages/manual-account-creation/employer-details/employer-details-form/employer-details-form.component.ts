@@ -25,6 +25,7 @@ import {
     ReactiveFormsModule,
     GovukTextInputComponent,
     GovukButtonComponent,
+    GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukCancelLinkComponent,
   ],

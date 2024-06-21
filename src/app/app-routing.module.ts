@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } from '@guards';
+
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
 
@@ -58,6 +59,7 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: RoutingPaths.manualAccountCreationAccountDetails,
+
         pathMatch: 'full',
       },
       {
@@ -67,6 +69,7 @@ const routes: Routes = [
             (c) => c.AccountDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
       {
         path: RoutingPaths.manualAccountCreationCreateAccount,
@@ -81,6 +84,24 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/manual-account-creation/employer-details/employer-details.component').then(
             (c) => c.EmployerDetailsComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationContactDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/contact-details/contact-details.component').then(
+            (c) => c.ContactDetailsComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationParentGuardianDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/parent-guardian-details/parent-guardian-details.component').then(
+            (c) => c.ParentGuardianDetailsComponent,
           ),
         canActivate: [authGuard],
         canDeactivate: [canDeactivateGuard],
@@ -115,6 +136,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
+      canceledNavigationResolution: 'computed',
     }),
   ],
   exports: [RouterModule],

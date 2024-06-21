@@ -19,8 +19,6 @@ export function optionalValidDateValidator(): ValidatorFn {
       month = month.padStart(2, '0');
       year = year.padStart(4, '0');
 
-      //const formattedDate = `${day}/${month}/${year}`;
-
       // Check if the date is valid
       const date = new Date(`${year}-${month}-${day}`);
       if (
@@ -30,8 +28,6 @@ export function optionalValidDateValidator(): ValidatorFn {
       ) {
         return { invalidDate: { value: value } };
       }
-
-      //control.setValue(formattedDate, { emitEvent: false });
     }
     return null;
   };
