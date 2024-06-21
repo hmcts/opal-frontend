@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { GovukButtonComponent } from '@components';
-import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELDS, MANUAL_ACCOUNT_CREATION_EXIT_ROUTES } from '@constants';
+import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELDS,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELDS,
+} from '@constants';
 import { StateService } from '@services';
 
 @Component({
@@ -12,32 +15,34 @@ import { StateService } from '@services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExitPageComponent {
-  constructor(private router: Router) {
+  public finalUrl!: string;
+
+  constructor(
+    @Inject(Router) private readonly router: Router,
+    public stateService: StateService,
+  ) {
     const finalUrl = this.router.getCurrentNavigation()?.previousNavigation?.finalUrl;
     this.finalUrl = finalUrl ? finalUrl.toString() : '';
   }
-  public finalUrl!: string;
-  public readonly stateService = inject(StateService);
 
   /**
-   * Handles the click event when the 'Ok' button is clicked.
-   * Navigates to the corresponding route based on the final URL.
+   * Handles the click event when the "Ok" button is clicked.
+   * Sets the snapshot form data for account details and employer details,
+   * and navigates to the target URL specified in the manual account creation state.
    */
   public handleOkClick(): void {
-    // For now, test page will act as our 'Dashboard' page
-    this.stateService.manualAccountCreation.accountDetails.snapshotFormData =
-      MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELDS;
-    // this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = false;
-    this.router.navigate([MANUAL_ACCOUNT_CREATION_EXIT_ROUTES[this.finalUrl]], { replaceUrl: true });
+    const { accountDetails, employerDetails } = this.stateService.manualAccountCreation;
+    accountDetails.snapshotFormData = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELDS;
+    employerDetails.snapshotFormData = MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELDS;
+
+    this.router.navigate([this.stateService.manualAccountCreation.targetUrl], { replaceUrl: true });
   }
 
   /**
-   * Handles the click event when the cancel button is clicked.
-   * Navigates to the final URL, replacing the current URL in the browser history.
+   * Handles the cancel button click event.
+   * Navigates to the final URL with replaceUrl set to true.
    */
   public handleCancelClick(): void {
-    // For now, test page will act as our 'Dashboard' page
-    // this.stateService.manualAccountCreation.accountDetails.stateUnsavedChanges = true;
     this.router.navigate([this.finalUrl], { replaceUrl: true });
   }
 }

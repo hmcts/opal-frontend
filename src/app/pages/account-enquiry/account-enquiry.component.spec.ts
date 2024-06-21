@@ -43,7 +43,7 @@ describe('AccountEnquiryComponent', () => {
     stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     expect(component.handleBeforeUnload()).toBeTruthy();
 
-    stateService.accountEnquiry.search.court = 'test';
+    stateService.accountEnquiry.search.formData.court = 'test';
     expect(component.handleBeforeUnload()).toBeFalsy();
   });
 });

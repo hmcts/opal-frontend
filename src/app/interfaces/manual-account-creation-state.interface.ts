@@ -5,4 +5,5 @@ export interface IManualAccountCreationState {
   accountDetails: IManualAccountCreationAccountDetailsState;
   unsavedChanges: boolean;
   stateChanges: boolean;
+  targetUrl: string;
 }

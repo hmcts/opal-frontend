@@ -1,4 +1,4 @@
-const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELDS = {
+export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELDS = {
   employerName: null,
   employeeReference: null,
   employerEmailAddress: null,

@@ -33,24 +33,24 @@ describe('CreateAccountComponent', () => {
   });
 
   it('should set defendantType correctly', () => {
-    stateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    stateService.manualAccountCreation.accountDetails.formData.defendantType = 'adultOrYouthOnly';
 
     component['setDefendantType']();
 
     expect(component.defendantType).toEqual(
-      DEFENDANT_TYPES_STATE[stateService.manualAccountCreation.accountDetails.defendantType],
+      DEFENDANT_TYPES_STATE[stateService.manualAccountCreation.accountDetails.formData.defendantType],
     );
   });
 
   it('should set defendantType to be empty', () => {
-    stateService.manualAccountCreation.accountDetails.defendantType = 'test';
+    stateService.manualAccountCreation.accountDetails.formData.defendantType = 'test';
     component['setDefendantType']();
     expect(component.defendantType).toBe('');
   });
 
   it('should not set defendantType', () => {
     component.defendantType = '';
-    stateService.manualAccountCreation.accountDetails.defendantType = null;
+    stateService.manualAccountCreation.accountDetails.formData.defendantType = null;
 
     component['setDefendantType']();
     expect(component.defendantType).toBe('');

@@ -52,8 +52,11 @@ describe('AccountDetailsComponent', () => {
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const formData: IManualAccountCreationAccountDetailsState = {
-      businessUnit: 'Test',
-      defendantType: 'Test',
+      ...mockStateService.manualAccountCreation.accountDetails,
+      formData: {
+        businessUnit: 'Test',
+        defendantType: 'Test',
+      },
     };
 
     component.handleAccountDetailsSubmit(formData);
@@ -65,10 +68,10 @@ describe('AccountDetailsComponent', () => {
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
     expect(component.stateService.manualAccountCreation.unsavedChanges).toBeTruthy();
-    expect(component.stateUnsavedChanges).toBeTruthy();
+    expect(component.unsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
     expect(component.stateService.manualAccountCreation.unsavedChanges).toBeFalsy();
-    expect(component.stateUnsavedChanges).toBeFalsy();
+    expect(component.unsavedChanges).toBeFalsy();
   });
 });

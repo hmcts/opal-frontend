@@ -14,7 +14,7 @@ export class AccountEnquiryComponent implements OnDestroy {
   private readonly stateService = inject(StateService);
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(): boolean {
-    return this.stateService.accountEnquiry.search.court === null;
+    return this.stateService.accountEnquiry.search.formData.court === null;
   }
 
   ngOnDestroy(): void {

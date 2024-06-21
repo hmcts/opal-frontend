@@ -400,7 +400,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
       this.formSub.unsubscribe();
     }
 
-    if (this.stateUnsavedChanges) {
+    if (this.hasUnsavedChanges()) {
       this.stateModel.snapshotFormData = this.form.value;
     } else {
       this.stateModel.snapshotFormData = {};

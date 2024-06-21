@@ -14,7 +14,7 @@ export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
   private overrideExitPage = false;
   public stateService = inject(StateService);
   public unsavedChanges!: boolean;
-  deactivateResult = new EventEmitter<boolean>();
+  deactivateResult = new EventEmitter<Object>();
 
   /**
    * If the user navigates externally from the site or closes the tab
@@ -36,10 +36,14 @@ export abstract class FormParentBaseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.deactivateResult.subscribe((result: boolean) => {
-      if (!result) {
+    this.deactivateResult.subscribe((obj: any) => {
+      if (!obj.canDeactivate) {
+        this.stateService.manualAccountCreation.targetUrl = obj.target;
         this.overrideExitPage = true;
-        this.router.navigate([RoutingPaths.exitPage], { relativeTo: this.activatedRoute.parent });
+        //this.stateService.manualAccountCreation.unsavedChanges = true;
+        this.router.navigate([RoutingPaths.exitPage], {
+          relativeTo: this.activatedRoute.parent,
+        });
       }
     });
   }

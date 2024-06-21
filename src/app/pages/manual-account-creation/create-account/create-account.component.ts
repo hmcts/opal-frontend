@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import {
+  FormParentBaseComponent,
   GovukButtonComponent,
   GovukHeadingWithCaptionComponent,
   GovukSummaryListComponent,
@@ -13,7 +14,7 @@ import {
 } from '@components';
 import { DEFENDANT_TYPES_STATE } from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { StateService } from '@services';
+import { CanDeactivateType } from '@interfaces';
 
 @Component({
   selector: 'app-create-account',
@@ -32,9 +33,7 @@ import { StateService } from '@services';
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateAccountComponent implements OnInit {
-  private readonly router = inject(Router);
-  public readonly stateService = inject(StateService);
+export class CreateAccountComponent extends FormParentBaseComponent {
   public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
@@ -54,19 +53,10 @@ export class CreateAccountComponent implements OnInit {
     }
   }
 
-  /**
-   * Handles route with the supplied route
-   *
-   * @param route string of route
-   * Handles route with the supplied route
-   *
-   * @param route string of route
-   */
-  public handleRoute(route: string): void {
-    this.router.navigate([route]);
-  }
-
-  ngOnInit(): void {
+  public override ngOnInit(): void {
     this.setDefendantType();
+    super.ngOnInit();
+    // const { unsavedChanges } = this.stateService.manualAccountCreation;
+    // this.unsavedChanges = true;
   }
 }

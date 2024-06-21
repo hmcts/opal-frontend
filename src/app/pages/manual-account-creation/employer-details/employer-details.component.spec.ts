@@ -49,18 +49,20 @@ describe('EmployerDetailsComponent', () => {
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const formData: IManualAccountCreationEmployerDetailsState = {
-      employerName: 'Test',
-      employeeReference: null,
-      employerEmailAddress: null,
-      employerTelephone: null,
-      employerAddress1: null,
-      employerAddress2: null,
-      employerAddress3: null,
-      employerAddress4: null,
-      employerAddress5: null,
-      employerPostcode: null,
+      ...mockStateService.manualAccountCreation.employerDetails,
+      formData: {
+        employerName: 'Test',
+        employeeReference: null,
+        employerEmailAddress: null,
+        employerTelephone: null,
+        employerAddress1: null,
+        employerAddress2: null,
+        employerAddress3: null,
+        employerAddress4: null,
+        employerAddress5: null,
+        employerPostcode: null,
+      },
     };
-
     component.handleEmployerDetailsSubmit(formData);
 
     expect(mockStateService.manualAccountCreation.employerDetails).toEqual(formData);
@@ -70,10 +72,10 @@ describe('EmployerDetailsComponent', () => {
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
     expect(component.stateService.manualAccountCreation.unsavedChanges).toBeTruthy();
-    expect(component.stateUnsavedChanges).toBeTruthy();
+    expect(component.unsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
     expect(component.stateService.manualAccountCreation.unsavedChanges).toBeFalsy();
-    expect(component.stateUnsavedChanges).toBeFalsy();
+    expect(component.unsavedChanges).toBeFalsy();
   });
 });

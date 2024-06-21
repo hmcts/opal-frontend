@@ -50,18 +50,34 @@ describe('DefendantAccountService', () => {
 
   it('should RETURN the defendant account search', () => {
     const body: ISearchDefendantAccountBody = {
-      court: 'Bath',
-      surname: 'Test',
-      forename: 'Test',
-      initials: 'TT',
-      dateOfBirth: {
-        dayOfMonth: '12',
-        monthOfYear: '12',
-        year: '1981',
+      formData: {
+        court: 'Bath',
+        surname: 'Test',
+        forename: 'Test',
+        initials: 'TT',
+        dateOfBirth: {
+          dayOfMonth: '12',
+          monthOfYear: '12',
+          year: '1981',
+        },
+        addressLine: 'Test',
+        niNumber: 'TT1234',
+        pcr: '1234',
       },
-      addressLine: 'Test',
-      niNumber: 'TT1234',
-      pcr: '1234',
+      snapshotFormData: {
+        court: null,
+        surname: null,
+        forename: null,
+        initials: null,
+        dateOfBirth: {
+          dayOfMonth: null,
+          monthOfYear: null,
+          year: null,
+        },
+        addressLine: null,
+        niNumber: null,
+        pcr: null,
+      },
     };
     const apiUrl = API_PATHS.defendantAccountSearch;
 

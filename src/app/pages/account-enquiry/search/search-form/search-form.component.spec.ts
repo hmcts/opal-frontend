@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchFormComponent } from './search-form.component';
 import { AUTO_COMPLETE_ITEMS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
+import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 describe('SearchFormComponent', () => {
   let component: SearchFormComponent;
@@ -15,6 +16,7 @@ describe('SearchFormComponent', () => {
     fixture = TestBed.createComponent(SearchFormComponent);
     component = fixture.componentInstance;
     component.selectOptions = AUTO_COMPLETE_ITEMS_MOCK;
+    component.state = SEARCH_STATE_MOCK;
     fixture.detectChanges();
   });
 
@@ -26,15 +28,11 @@ describe('SearchFormComponent', () => {
     expect(component.form).not.toBeNull();
   });
 
-  it('should repopulate if there are any initials values', () => {
-    expect(component.form.value.court).toBeNull();
-  });
-
   it('should emit form submit event with form value', () => {
     const formValue = SEARCH_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
 
-    component.form.patchValue(formValue);
+    component.form.patchValue(formValue.formData);
 
     component.handleFormSubmit();
 
@@ -51,8 +49,10 @@ describe('SearchFormComponent', () => {
 
     component.ngOnInit();
 
+    console.log();
+
     expect(component['setupSearchForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(component.state);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(ACCOUNT_ENQUIRY_DEFAULT_STATE.search.formData);
   });
 });

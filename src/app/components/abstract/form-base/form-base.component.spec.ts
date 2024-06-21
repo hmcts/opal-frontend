@@ -13,6 +13,7 @@ import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
 class TestFormBaseComponent extends FormBaseComponent {
   constructor() {
     super();
+    this.stateModel = SEARCH_STATE_MOCK;
     this.form = new FormGroup({
       court: new FormControl(null, [Validators.required]),
       surname: new FormControl(null),
@@ -43,6 +44,9 @@ describe('FormBaseComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestFormBaseComponent);
     component = fixture.componentInstance;
+
+    component.stateModel = SEARCH_STATE_MOCK;
+
     fixture.detectChanges();
   });
 
@@ -204,9 +208,15 @@ describe('FormBaseComponent', () => {
     ]);
   });
 
-  it('should repopulate the form', () => {
-    component['rePopulateForm'](SEARCH_STATE_MOCK);
+  it('should repopulate the form with formData', () => {
+    component['rePopulateForm'](SEARCH_STATE_MOCK.formData);
     expect(component.form.value.forename).toBe('Test');
+  });
+
+  it('should repopulate the form with snapshotFormData', () => {
+    component['rePopulateForm'](SEARCH_STATE_MOCK.snapshotFormData, true);
+    expect(component.form.value.forename).toBe(null);
+    expect(component.form.dirty).toBeTruthy();
   });
 
   it('should remove error summary messages', () => {
@@ -314,7 +324,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return an empty array if the form is valid', () => {
-    component.form.patchValue(SEARCH_STATE_MOCK);
+    component.form.patchValue(SEARCH_STATE_MOCK.formData);
     const result = component['getFormErrors'](component.form);
 
     expect(result).toEqual([]);
@@ -439,7 +449,7 @@ describe('FormBaseComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const formValue = SEARCH_STATE_MOCK;
-    component['rePopulateForm'](formValue);
+    component['rePopulateForm'](formValue.formData);
 
     component['handleErrorMessages']();
 
@@ -463,5 +473,26 @@ describe('FormBaseComponent', () => {
 
     component['formSubmitted'] = false;
     expect(component['hasUnsavedChanges']()).toBe(true);
+  });
+
+  it('should unsubscribe from formSub if it exists', () => {
+    component['formSub'] = jasmine.createSpyObj('Subscription', ['unsubscribe']);
+    component.ngOnDestroy();
+    expect(component['formSub'].unsubscribe).toHaveBeenCalled();
+  });
+
+  it('should set stateModel.snapshotFormData to form value if stateUnsavedChanges is true', () => {
+    component.form.setValue(SEARCH_STATE_MOCK.formData);
+    component.form.markAsDirty();
+    component.stateUnsavedChanges = true;
+    component.ngOnDestroy();
+
+    expect(component.stateModel.snapshotFormData).toEqual(SEARCH_STATE_MOCK.formData);
+  });
+
+  it('should set stateModel.snapshotFormData to an empty object if stateUnsavedChanges is false', () => {
+    component.stateUnsavedChanges = false;
+    component.ngOnDestroy();
+    expect(component.stateModel.snapshotFormData).toEqual({});
   });
 });

@@ -1,4 +1,12 @@
 export interface IAccountEnquiryStateSearch {
+  formData: IAccountEnquiryStateSearchFields;
+  snapshotFormData: IAccountEnquiryStateSearchFields;
+}
+export interface IAccountEnquiryState {
+  search: IAccountEnquiryStateSearch;
+}
+
+interface IAccountEnquiryStateSearchFields {
   court: string | null;
   surname: string | null;
   forename: string | null;
@@ -11,7 +19,4 @@ export interface IAccountEnquiryStateSearch {
   addressLine: string | null;
   niNumber: string | null;
   pcr: string | null;
-}
-export interface IAccountEnquiryState {
-  search: IAccountEnquiryStateSearch;
 }

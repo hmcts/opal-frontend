@@ -69,10 +69,11 @@ export class ManualAccountCreationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.deactivateResult.subscribe((result: boolean) => {
-      if (!result) {
+    this.deactivateResult.subscribe((obj: any) => {
+      if (!obj.canDeactivate) {
+        this.stateService.manualAccountCreation.targetUrl = obj.target;
         this.overrideExitPage = true;
-        this.routerNavigate(ManualAccountCreationRoutes.exitPage);
+        this.router.navigate([ManualAccountCreationRoutes.exitPage]);
       }
     });
   }

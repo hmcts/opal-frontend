@@ -25,7 +25,7 @@ describe('AccountDetailsFormComponent', () => {
     const formValue = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
 
-    component['rePopulateForm'](formValue);
+    component['rePopulateForm'](formValue.formData);
 
     component.handleFormSubmit();
 

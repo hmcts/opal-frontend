@@ -54,29 +54,29 @@ describe('FormParentBaseComponent', () => {
     expect(routerSpy).not.toHaveBeenCalled();
   });
 
-  it('should return true if stateUnsavedChanges is false and overrideExitPage is false', () => {
-    component.stateUnsavedChanges = false;
+  it('should return true if unsavedChanges is false and overrideExitPage is false', () => {
+    component.unsavedChanges = false;
     component['overrideExitPage'] = false;
     const result = component.canDeactivate();
     expect(result).toBeTrue();
   });
   
-  it('should return false if stateUnsavedChanges is true and overrideExitPage is false', () => {
-    component.stateUnsavedChanges = true;
+  it('should return false if unsavedChanges is true and overrideExitPage is false', () => {
+    component.unsavedChanges = true;
     component['overrideExitPage'] = false;
     const result = component.canDeactivate();
     expect(result).toBeFalse();
   });
   
-  it('should return true if stateUnsavedChanges is false and overrideExitPage is true', () => {
-    component.stateUnsavedChanges = false;
+  it('should return true if unsavedChanges is false and overrideExitPage is true', () => {
+    component.unsavedChanges = false;
     component['overrideExitPage'] = true;
     const result = component.canDeactivate();
     expect(result).toBeTrue();
   });
   
-  it('should return true if stateUnsavedChanges is true and overrideExitPage is true', () => {
-    component.stateUnsavedChanges = true;
+  it('should return true if unsavedChanges is true and overrideExitPage is true', () => {
+    component.unsavedChanges = true;
     component['overrideExitPage'] = true;
     const result = component.canDeactivate();
     expect(result).toBeTrue();

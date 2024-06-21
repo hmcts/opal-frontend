@@ -67,6 +67,7 @@ export class SearchFormComponent extends FormBaseComponent implements OnInit, On
 
   public readonly dateInputs: IGovUkDateInput = DATE_INPUTS;
   override fieldErrors = ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS;
+  override stateModel = this.stateService.accountEnquiry.search;
 
   /**
    * Sets up the search form with the necessary form controls.
@@ -92,18 +93,44 @@ export class SearchFormComponent extends FormBaseComponent implements OnInit, On
   }
 
   /**
+   * Repopulates the form data with either the snapshot form data or the regular form data,
+   * depending on whether there are unsaved changes.
+   */
+  private repopulateSnapshotFormData(): void {
+    const { snapshotFormData, formData } = this.stateService.accountEnquiry.search;
+    if (this.stateUnsavedChanges) {
+      this.rePopulateForm(snapshotFormData, true);
+    } else {
+      this.rePopulateForm(formData);
+    }
+  }
+
+  /**
+   * Sets the state of unsaved changes based on the snapshot form data.
+   */
+  private setStateUnsavedChanges(): void {
+    const { snapshotFormData } = this.stateService.accountEnquiry.search;
+    this.stateUnsavedChanges = !!snapshotFormData.court;
+    this.unsavedChanges.emit(this.stateUnsavedChanges);
+  }
+
+  /**
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
     this.handleErrorMessages();
     this.handleDateInputFormErrors();
-    this.formSubmit.emit(this.form.value);
+    this.formSubmit.emit({
+      formData: this.form.value,
+      snapshotFormData: {} as any,
+    });
   }
 
   public override ngOnInit(): void {
     this.setupSearchForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.state);
+    this.setStateUnsavedChanges();
+    this.repopulateSnapshotFormData();
     super.ngOnInit();
   }
 }

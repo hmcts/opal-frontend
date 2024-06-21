@@ -20,7 +20,7 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
    */
   public handleEmployerDetailsSubmit(formData: IManualAccountCreationEmployerDetailsState): void {
     this.stateService.manualAccountCreation = {
-      accountDetails: this.stateService.manualAccountCreation.accountDetails,
+      ...this.stateService.manualAccountCreation,
       employerDetails: formData,
       unsavedChanges: false,
       stateChanges: true,

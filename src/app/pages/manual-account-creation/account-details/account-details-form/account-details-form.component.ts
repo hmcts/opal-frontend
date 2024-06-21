@@ -53,6 +53,10 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
     });
   }
 
+  /**
+   * Repopulates the form data with either the snapshot form data or the regular form data,
+   * depending on whether there are unsaved changes.
+   */
   private repopulateSnapshotFormData(): void {
     const { snapshotFormData, formData } = this.stateService.manualAccountCreation.accountDetails;
     if (this.stateUnsavedChanges) {
@@ -62,9 +66,12 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
     }
   }
 
+  /**
+   * Sets the state of unsaved changes based on the snapshot form data.
+   */
   private setStateUnsavedChanges(): void {
     const { snapshotFormData } = this.stateService.manualAccountCreation.accountDetails;
-    this.stateUnsavedChanges = snapshotFormData.defendantType ? true : false;
+    this.stateUnsavedChanges = !!snapshotFormData.defendantType;
     this.unsavedChanges.emit(this.stateUnsavedChanges);
   }
 

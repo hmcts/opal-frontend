@@ -37,6 +37,7 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR;
+  override stateModel = this.stateService.manualAccountCreation.employerDetails;
 
   /**
    * Sets up the employer details form with the necessary form controls.
@@ -61,6 +62,28 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
+   * Repopulates the form data with either the snapshot form data or the regular form data,
+   * depending on whether there are unsaved changes.
+   */
+  private repopulateSnapshotFormData(): void {
+    const { snapshotFormData, formData } = this.stateService.manualAccountCreation.employerDetails;
+    if (this.stateUnsavedChanges) {
+      this.rePopulateForm(snapshotFormData, true);
+    } else {
+      this.rePopulateForm(formData);
+    }
+  }
+
+  /**
+   * Sets the state of unsaved changes based on the snapshot form data.
+   */
+  private setStateUnsavedChanges(): void {
+    const { snapshotFormData } = this.stateService.manualAccountCreation.employerDetails;
+    this.stateUnsavedChanges = !!snapshotFormData.employerName;
+    this.unsavedChanges.emit(this.stateUnsavedChanges);
+  }
+
+  /**
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
@@ -79,7 +102,8 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   public override ngOnInit(): void {
     this.setupEmployerDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.employerDetails.formData);
+    this.setStateUnsavedChanges();
+    this.repopulateSnapshotFormData();
     super.ngOnInit();
   }
 }

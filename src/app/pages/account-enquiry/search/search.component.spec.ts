@@ -47,7 +47,7 @@ describe('SearchComponent', () => {
       ...SEARCH_STATE_MOCK,
     });
 
-    expect(component['stateService'].accountEnquiry.search?.court).toBe('Bath');
+    expect(component['stateService'].accountEnquiry.search?.formData.court).toBe('Bath');
 
     expect(navigateSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.matches]);
   });
