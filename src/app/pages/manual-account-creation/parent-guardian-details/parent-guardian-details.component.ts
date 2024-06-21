@@ -1,29 +1,29 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationAccountDetailsState } from '@interfaces';
-import { AccountDetailsFormComponent } from './account-details-form/account-details-form.component';
+import { IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
+import { ParentGuardianDetailsFormComponent } from './parent-guardian-details-form/parent-guardian-details-form.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-account-details',
+  selector: 'app-parent-guardian-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, AccountDetailsFormComponent],
-  templateUrl: './account-details.component.html',
+  imports: [CommonModule, RouterModule, ParentGuardianDetailsFormComponent],
+  templateUrl: './parent-guardian-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountDetailsComponent extends FormParentBaseComponent {
+export class ParentGuardianDetailsComponent extends FormParentBaseComponent {
   /**
-   * Handles the form submission for account details.
+   * Handles the form submission for parent/guardian details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
+  public handleParentGuardianDetailsSubmit(formData: IManualAccountCreationParentGuardianDetailsState): void {
     this.stateService.manualAccountCreation = {
-      accountDetails: formData,
+      accountDetails: this.stateService.manualAccountCreation.accountDetails,
       employerDetails: this.stateService.manualAccountCreation.employerDetails,
       contactDetails: this.stateService.manualAccountCreation.contactDetails,
-      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
+      parentGuardianDetails: formData,
       unsavedChanges: false,
       stateChanges: true,
     };

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateAccountComponent } from './create-account.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { DEFENDANT_TYPES_STATE } from '@constants';
+import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE } from '@constants';
 import { StateService } from '@services';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
@@ -24,6 +24,7 @@ describe('CreateAccountComponent', () => {
       accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };

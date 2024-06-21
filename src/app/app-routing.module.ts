@@ -98,12 +98,13 @@ const routes: Routes = [
         canDeactivate: [canDeactivateGuard],
       },
       {
-        path: RoutingPaths.manualAccountCreationCompanyDetails,
+        path: RoutingPaths.manualAccountCreationParentGuardianDetails,
         loadComponent: () =>
-          import('./pages/manual-account-creation/company-details/company-details.component').then(
-            (c) => c.CompanyDetailsComponent,
+          import('./pages/manual-account-creation/parent-guardian-details/parent-guardian-details.component').then(
+            (c) => c.ParentGuardianDetailsComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
     ],
     resolve: { userState: userStateResolver },
