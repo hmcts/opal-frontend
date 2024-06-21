@@ -10,7 +10,7 @@ import {
   IHighPriorityFormError,
 } from '@interfaces';
 import { StateService } from '@services';
-import { Subscription, find } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   standalone: true,
