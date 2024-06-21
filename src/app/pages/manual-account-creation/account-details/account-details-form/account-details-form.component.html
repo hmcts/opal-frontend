@@ -2,7 +2,22 @@
 </app-govuk-heading-with-caption>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit()">
-  <p>The account will be created in Cambridgeshire</p>
+  @if (autoCompleteItems.length === 1) {
+    <p>The account will be created in {{ form.get('businessUnit')?.value }}</p>
+  } @else {
+    <app-alphagov-accessible-autocomplete
+      [control]="form.controls['businessUnit']"
+      labelText="Business unit"
+      labelClasses="govuk-fieldset__legend--m"
+      inputId="businessUnit"
+      inputName="businessUnit"
+      label="Search for a user"
+      hintText="Enter area where the account is to be created (such as Sussex or London)"
+      [autoCompleteItems]="autoCompleteItems"
+      [errors]="formControlErrorMessages['businessUnit']"
+    ></app-alphagov-accessible-autocomplete>
+  }
+
   <app-govuk-radio
     fieldSetId="defendantType"
     legendText="Defendant type"

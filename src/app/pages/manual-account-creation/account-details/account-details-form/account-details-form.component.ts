@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   FormBaseComponent,
@@ -8,10 +8,11 @@ import {
   GovukRadiosItemComponent,
   GovukCancelLinkComponent,
   GovukErrorSummaryComponent,
+  AlphagovAccessibleAutocompleteComponent,
 } from '@components';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { IAutoCompleteItem, IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
 
 @Component({
@@ -26,12 +27,14 @@ import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
     GovukHeadingWithCaptionComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
+    AlphagovAccessibleAutocompleteComponent,
   ],
   templateUrl: './account-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationAccountDetailsState>();
+  @Input({ required: true }) public autoCompleteItems!: IAutoCompleteItem[];
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly routingPaths = RoutingPaths;
@@ -47,7 +50,7 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
    */
   private setupAccountDetailsForm(): void {
     this.form = new FormGroup({
-      businessUnit: new FormControl(null),
+      businessUnit: new FormControl(null, [Validators.required]),
       defendantType: new FormControl(null, [Validators.required]),
     });
   }

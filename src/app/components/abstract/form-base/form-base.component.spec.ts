@@ -102,7 +102,7 @@ describe('FormBaseComponent', () => {
   it('should scroll to label[for=fieldId-autocomplete] if present', () => {
     const fieldId = 'testField';
     const fieldElement = document.createElement('input');
-    fieldElement.id = fieldId;
+    fieldElement.id = `${fieldId}-autocomplete`;
     document.body.appendChild(fieldElement);
 
     const autocompleteLabelElement = document.createElement('label');

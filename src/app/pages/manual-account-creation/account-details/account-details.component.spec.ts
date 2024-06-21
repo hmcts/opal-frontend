@@ -10,6 +10,8 @@ import {
 } from '@constants';
 import { StateService } from '@services';
 import { IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -29,12 +31,15 @@ describe('AccountDetailsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [AccountDetailsComponent],
+      imports: [AccountDetailsComponent, HttpClientTestingModule],
       providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountDetailsComponent);
     component = fixture.componentInstance;
+
+    component.stateService.manualAccountCreation.accountDetails.businessUnit = null;
+
     fixture.detectChanges();
   });
 
@@ -63,5 +68,40 @@ describe('AccountDetailsComponent', () => {
     component.handleUnsavedChanges(false);
     expect(component.stateService.manualAccountCreation.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
+  });
+
+  it('should set the business unit for account details when there is only one business unit available and the current business unit is null', () => {
+    const response = { count: 1, refData: [BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+
+    component['setBusinessUnit'](response);
+
+    expect(component.stateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+      BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
+    );
+  });
+
+  it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
+    const response = { count: 1, refData: [BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+
+    component.stateService.manualAccountCreation.accountDetails.businessUnit =
+      BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
+
+    fixture.detectChanges();
+
+    component['setBusinessUnit'](response);
+
+    expect(component.stateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+      BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
+    );
+  });
+
+  it('should not set the business unit for account details when there are multiple business units available', () => {
+    const response = BUSINESS_UNIT_REF_DATA_MOCK;
+
+    component.stateService.manualAccountCreation.accountDetails.businessUnit = null;
+
+    component['setBusinessUnit'](response);
+
+    expect(component.stateService.manualAccountCreation.accountDetails.businessUnit).toBeNull();
   });
 });

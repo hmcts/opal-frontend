@@ -12,6 +12,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -30,6 +31,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -48,6 +50,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -66,6 +69,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -84,6 +88,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -102,6 +107,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -121,6 +127,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -139,6 +146,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -157,6 +165,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -175,6 +184,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -197,6 +207,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -214,6 +225,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -231,6 +243,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -249,6 +262,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -286,6 +300,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -304,6 +319,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -322,6 +338,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -372,6 +389,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -401,6 +419,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -417,6 +436,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
@@ -439,6 +459,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
+    And I enter "London South" into the business unit search box
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked

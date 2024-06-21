@@ -9,6 +9,8 @@ import { AppInitializerService } from './app-initializer-service/app-initializer
 import { PermissionsService } from './permissions-service/permissions.service';
 import { TransferStateService } from './transfer-state-service/transfer-state.service';
 import { SessionService } from './session-service/session.service';
+import { BusinessUnitService } from './business-unit/business-unit.service';
+
 export {
   DefendantAccountService,
   AuthService,
@@ -20,4 +22,5 @@ export {
   PermissionsService,
   TransferStateService,
   SessionService,
+  BusinessUnitService,
 };

@@ -38,12 +38,22 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param fieldId - Field id of the component
    */
   private scroll(fieldId: string): void {
-    const fieldElement = document.getElementById(fieldId);
+    let labelTarget;
+    let fieldElement;
+
+    const autocompleteLabel = document.querySelector(`label[for=${fieldId}-autocomplete]`);
+    const regularLabel = document.querySelector(`label[for=${fieldId}]`);
+    const fieldsetLegend = document.querySelector(`#${fieldId} .govuk-fieldset__legend`);
+
+    if (autocompleteLabel) {
+      labelTarget = autocompleteLabel;
+      fieldElement = document.getElementById(`${fieldId}-autocomplete`);
+    } else {
+      labelTarget = regularLabel || fieldsetLegend;
+      fieldElement = document.getElementById(fieldId);
+    }
+
     if (fieldElement) {
-      const labelTarget =
-        document.querySelector(`label[for=${fieldId}]`) ||
-        document.querySelector(`#${fieldId} .govuk-fieldset__legend`) ||
-        document.querySelector(`label[for=${fieldId}-autocomplete]`);
       if (labelTarget) {
         labelTarget.scrollIntoView({ behavior: 'smooth' });
       }
