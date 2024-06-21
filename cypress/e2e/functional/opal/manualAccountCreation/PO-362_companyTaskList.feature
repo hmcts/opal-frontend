@@ -25,6 +25,7 @@ Feature: PO-362 Company task list screen
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -40,10 +41,11 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
-    Then I see the business unit is "Cambridgeshire"
+    Then I see the business unit is "London South West"
     And I see the defendant type is "Company"
 
   Scenario: AC3 company task list court details section
@@ -55,6 +57,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -71,6 +74,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -89,6 +93,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -107,6 +112,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -123,6 +129,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -139,6 +146,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -156,6 +164,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
@@ -186,6 +195,7 @@ Feature: PO-362 Company task list screen
 
     When I navigate to Manual Account Creation
 
+    And I enter "London South" into the business unit search box
     When I select company
     And I click on continue button
 
