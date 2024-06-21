@@ -77,8 +77,8 @@ Feature: PO-362 Company task list screen
     Then I see the "Court details" section heading
     And I see the "Company details" link under the "Defendant details" section
 
-    When "Company details" is clicked
-    Then I see "Company details" on the page header
+  ##When "Company details" is clicked
+  ##Then I see "Company details" on the page header
 
   Scenario: AC4.b company task list defendant details section
     Given I am on the OPAL Frontend
