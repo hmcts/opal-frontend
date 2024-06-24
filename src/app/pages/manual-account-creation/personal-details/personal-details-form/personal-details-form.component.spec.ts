@@ -6,6 +6,7 @@ import {
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_STATE,
 } from '@constants';
 import { StateService } from '@services';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -392,12 +393,13 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    component.stateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    const formValue = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
-    component['rePopulateForm'](MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK);
-    fixture.detectChanges();
 
+    component['rePopulateForm'](formValue);
     component.handleFormSubmit();
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formValue);
   });
 });

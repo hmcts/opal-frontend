@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AccountDetailsComponent } from './account-details.component';
 import { ManualAccountCreationRoutes } from '@enums';
 import {
@@ -9,17 +8,23 @@ import {
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
-import { StateService } from '@services';
-import { IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { BusinessUnitService, StateService } from '@services';
+import { IAutoCompleteItem, IBusinessUnitRefData, IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
+import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
+import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
   let fixture: ComponentFixture<AccountDetailsComponent>;
   let mockStateService: jasmine.SpyObj<StateService>;
+  let businessUnitService: Partial<BusinessUnitService>;
 
   beforeEach(async () => {
+    businessUnitService = {
+      getBusinessUnits: jasmine.createSpy('getBusinessUnits').and.returnValue(of(BUSINESS_UNIT_REF_DATA_MOCK)),
+    };
     mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
 
     mockStateService.manualAccountCreation = {
@@ -33,8 +38,11 @@ describe('AccountDetailsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [AccountDetailsComponent, HttpClientTestingModule],
-      providers: [{ provide: StateService, useValue: mockStateService }],
+      imports: [AccountDetailsComponent, RouterTestingModule, HttpClientTestingModule],
+      providers: [
+        { provide: StateService, useValue: mockStateService },
+        { provide: BusinessUnitService, useValue: businessUnitService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountDetailsComponent);
@@ -47,6 +55,10 @@ describe('AccountDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have state and populate data$', () => {
+    expect(component.data$).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate', () => {
@@ -105,5 +117,40 @@ describe('AccountDetailsComponent', () => {
     component['setBusinessUnit'](response);
 
     expect(component.stateService.manualAccountCreation.accountDetails.businessUnit).toBeNull();
+  });
+
+  it('should create an array of autocomplete items from the response', () => {
+    // Arrange
+    const response: IBusinessUnitRefData = BUSINESS_UNIT_REF_DATA_MOCK;
+    const expectedAutoCompleteItems: IAutoCompleteItem[] = BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
+
+    // Act
+    const autoCompleteItems = component['createAutoCompleteItems'](response);
+
+    // Assert
+    expect(autoCompleteItems).toEqual(expectedAutoCompleteItems);
+  });
+
+  it('should return an empty array if the response does not contain any business units', () => {
+    // Arrange
+    const response: IBusinessUnitRefData = {
+      count: 0,
+      refData: [],
+    };
+
+    const expectedAutoCompleteItems: IAutoCompleteItem[] = [];
+
+    // Act
+    const autoCompleteItems = component['createAutoCompleteItems'](response);
+
+    // Assert
+    expect(autoCompleteItems).toEqual(expectedAutoCompleteItems);
+  });
+
+  it('should transform business unit reference data results into select options', () => {
+    component.data$.subscribe((result) => {
+      expect(result).toEqual(BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
+      expect(businessUnitService.getBusinessUnits).toHaveBeenCalled();
+    });
   });
 });
