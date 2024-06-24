@@ -116,7 +116,7 @@
     "mocha": "^10.2.0",
     "typescript": "~5.4.0"
   },
-  "packageManager": "yarn@3.8.2",
+  "packageManager": "yarn@3.8.3",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
