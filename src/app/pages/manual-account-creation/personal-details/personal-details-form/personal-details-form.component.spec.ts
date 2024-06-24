@@ -392,16 +392,12 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    component.stateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
-    fixture.detectChanges();
-
     spyOn(component['formSubmit'], 'emit');
-    component['rePopulateForm'](component.stateService.manualAccountCreation.personalDetails);
+    component['rePopulateForm'](MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK);
+    fixture.detectChanges();
 
     component.handleFormSubmit();
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      component.stateService.manualAccountCreation.personalDetails,
-    );
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK);
   });
 });
