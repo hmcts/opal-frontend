@@ -12,7 +12,16 @@ import {
   GovukTextInputComponent,
   ScotgovDatePickerComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR, TITLE_DROPDOWN_OPTIONS } from '@constants';
+import {
+  ADDRESS_LINE_ONE_FIELD_ERRORS,
+  ADDRESS_LINE_THREE_FIELD_ERRORS,
+  ADDRESS_LINE_TWO_FIELD_ERRORS,
+  DATE_OF_BIRTH_FIELD_ERRORS,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
+  NATIONAL_INSURANCE_FIELD_ERRORS,
+  POST_CODE_FIELD_ERRORS,
+  TITLE_DROPDOWN_OPTIONS,
+} from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalAlias } from '@interfaces';
 import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
@@ -50,7 +59,15 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
-  override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR;
+  override fieldErrors: IFieldErrors = {
+    ...MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
+    ...DATE_OF_BIRTH_FIELD_ERRORS,
+    ...NATIONAL_INSURANCE_FIELD_ERRORS,
+    ...ADDRESS_LINE_ONE_FIELD_ERRORS,
+    ...ADDRESS_LINE_TWO_FIELD_ERRORS,
+    ...ADDRESS_LINE_THREE_FIELD_ERRORS,
+    ...POST_CODE_FIELD_ERRORS,
+  };
 
   public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();

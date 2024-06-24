@@ -3,6 +3,7 @@
 <form (submit)="handleFormSubmit()" [formGroup]="form">
   <app-govuk-select
     labelText="Title"
+    labelClasses="govuk-label--s"
     selectId="title"
     selectName="title"
     [options]="titleOptions"
