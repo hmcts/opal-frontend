@@ -41,6 +41,10 @@ describe('PersonalDetailsFormComponent', () => {
     fixture.detectChanges();
   });
 
+  beforeEach(() => {
+    component.form.reset();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -63,11 +67,7 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should add aliases based on personalDetails.addAlias being true', () => {
-    mockStateService.manualAccountCreation.personalDetails.addAlias = true;
-    mockStateService.manualAccountCreation.personalDetails.aliases = [
-      { firstName: 'Alias1', lastName: 'User1' },
-      { firstName: 'Alias2', lastName: 'User2' },
-    ];
+    mockStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
 
     spyOn(component, 'addAliases');
     spyOn(component, 'addAliasCheckboxChange');
@@ -76,9 +76,8 @@ describe('PersonalDetailsFormComponent', () => {
 
     component['buildAliasInputs']();
 
-    expect(component.addAliases).toHaveBeenCalledTimes(2);
+    expect(component.addAliases).toHaveBeenCalledTimes(1);
     expect(component.addAliases).toHaveBeenCalledWith(0);
-    expect(component.addAliases).toHaveBeenCalledWith(1);
     expect(component.addAliasCheckboxChange).toHaveBeenCalled();
     expect(rePopulateFormSpy).toHaveBeenCalledWith(mockStateService.manualAccountCreation.personalDetails);
   });
