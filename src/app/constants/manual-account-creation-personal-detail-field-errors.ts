@@ -29,7 +29,7 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `The defendant's last name(s) must only contain alphabetical text`,
+      message: `The defendant's last name must only contain alphabetical text`,
       priority: 2,
     },
   },
