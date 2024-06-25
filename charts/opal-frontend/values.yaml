@@ -9,6 +9,8 @@ nodejs:
         - app-insights-connection-string
         - redis-connection-string
         - opal-frontend-session-secret
+        - opal-frontend-cookie-secret
+        - opal-frontend-csrf-secret
         - launch-darkly-client-id
   environment:
     ALLOW_CONFIG_MUTATIONS: true
