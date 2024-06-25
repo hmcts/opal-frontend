@@ -9,6 +9,8 @@ nodejs:
         - app-insights-connection-string
         - redis-connection-string
         - opal-frontend-session-secret
+        - opal-frontend-cookie-secret
+        - opal-frontend-csrf-secret
         - launch-darkly-client-id
   environment:
     ALLOW_CONFIG_MUTATIONS: true
@@ -16,6 +18,7 @@ nodejs:
     OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
     SESSION_SECURE_ENABLED: true
+    CSRF_SECURE_ENABLED: true
     FEATURES_HELMET_ENABLED: true
     FEATURES_LAUNCH_DARKLY_ENABLED: true
     FEATURES_LAUNCH_DARKLY_STREAM: false
