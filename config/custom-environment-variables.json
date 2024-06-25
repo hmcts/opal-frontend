@@ -39,6 +39,9 @@
   "session": {
     "secure": { "__name": "SESSION_SECURE_ENABLED", "__format": "json" }
   },
+  "csrf": {
+    "secure": { "__name": "CSRF_SECURE_ENABLED", "__format": "json" }
+  },
   "secrets": {
     "opal": {
       "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",

@@ -15,11 +15,12 @@ export class CSRFToken {
     ];
 
     const { doubleCsrfProtection } = doubleCsrf({
-      getSecret: () => 'this is a test', // NEVER DO THIS
-      cookieName: 'XSRF-TOKEN', // Prefer "__Host-" prefixed names if possible
-      cookieOptions: { sameSite: 'lax', secure: false, path: '/' },
+      getSecret: () => config.get('secrets.opal.opal-frontend-csrf-secret'),
+      cookieName: config.get('csrf.cookieName'),
+      cookieOptions: { sameSite: 'lax', secure: config.get('csrf.secure'), path: '/' },
       getTokenFromRequest: (req) => {
-        return req.cookies['XSRF-TOKEN'].split('|')[0] || null;
+        const cookieName = config.get('csrf.cookieName');
+        return req.cookies[cookieName as string].split('|')[0] || null;
       },
     });
 
