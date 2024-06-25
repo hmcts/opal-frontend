@@ -29,10 +29,16 @@
     "maxAge": null,
     "secure": false
   },
+  "csrf": {
+    "cookieName": "XSRF-TOKEN",
+    "secure": false
+  },
   "secrets": {
     "opal": {
       "redis-connection-string": "redis://localhost:6379",
-      "opal-frontend-session-secret": "supersecret"
+      "opal-frontend-session-secret": "supersecret",
+      "opal-frontend-cookie-secret": "supersecret",
+      "opal-frontend-csrf-secret": "supersecret"
     }
   }
 }
