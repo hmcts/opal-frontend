@@ -16,4 +16,10 @@ export default class manualAccountPageObjects {
   static enterBusinessTelephone(businessTelephone: string) {
     cy.get('#businessTelephoneNumber').should('be.visible').type(businessTelephone);
   }
+  static enterFirstNames(firstName: string) {
+    cy.get('#firstNames').type(firstName);
+  }
+  static enterLastName(lastName: string) {
+    cy.get('#lastName').type(lastName);
+  }
 }

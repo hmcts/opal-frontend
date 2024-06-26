@@ -187,7 +187,8 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     Then I enter employer address line5 "<employerAddress5>"
     Then I enter employer postcode "<employerPostCode>"
 
-    Then I click save and return to tasks
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Account details" on the page header
     When I click on "Employer details" link
     Then I see "Employer details" on the page header

@@ -63,7 +63,7 @@ Feature: create the account details for adult or youth with parent or guardian t
 
   Scenario: AC7-positive: verify review and publish Review account
     When I see "Review and publish" on the section heading
-    #When I check text under review and publish "Check that all required fields have been entered before you publish"
+    And I see the "Check that all required fields have been entered before you publish" text under the "Review and publish" section
     When "Review account" button is clicked, nothing happens
     When "Cancel account creation" link is clicked, nothing happens
 
