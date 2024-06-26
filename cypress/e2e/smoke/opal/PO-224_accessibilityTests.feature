@@ -51,7 +51,7 @@ Feature: PO-224 Accesibility Tests
     Then I am on the dashboard
 
     When I navigate to Account Enquiry
-
+    Then I see "Account Enquiry" in the page body header
     When I populate the form with the following search criteria
       | court    |             |
       | surname  | John        |
@@ -66,6 +66,8 @@ Feature: PO-224 Accesibility Tests
     And I click the search button
 
     When I view the first result
+    Then I see "Account" on the page header
+
     Then I check accessibility
 
     Then I click the Sign out link
