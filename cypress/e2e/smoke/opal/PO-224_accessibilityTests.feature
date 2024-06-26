@@ -15,6 +15,7 @@ Feature: PO-224 Accesibility Tests
     Then I am on the dashboard
 
     When I navigate to Account Enquiry
+    Then I see "Account Enquiry" in the page body header
     Then I check accessibility
 
     Then I click the Sign out link
@@ -25,6 +26,7 @@ Feature: PO-224 Accesibility Tests
     Then I am on the dashboard
 
     When I navigate to Account Enquiry
+    Then I see "Account Enquiry" in the page body header
     When I populate the form with the following search criteria
       | court    |             |
       | surname  | John        |
@@ -71,13 +73,15 @@ Feature: PO-224 Accesibility Tests
     Given I am on the OPAL Frontend
     When I sign in as "opal-test-3@hmcts.net"
     When I navigate to "<url>" URL
+    And I see "<header>" on the page header
+
     Then I check accessibility
 
     Then I click the Sign out link
 
     Examples:
-      | page          | url                                      |
-      | createAccount | /manual-account-creation/account-details |
+      | page          | header                           | url                                      |
+      | createAccount | Business unit and defendant type | /manual-account-creation/account-details |
 
 
 
@@ -85,17 +89,18 @@ Feature: PO-224 Accesibility Tests
     Given I am on the OPAL Frontend
     When I sign in as "opal-test@hmcts.net"
     When I navigate to "<url>" URL
+    And I see "<header>" on the page header
     Then I check accessibility
 
     Then I click the Sign out link
 
     Examples:
-      | page                  | url                                              |
-      | createAccount         | /manual-account-creation/account-details         |
-      | taskList              | /manual-account-creation/create-account          |
-      | contactDetails        | /manual-account-creation/contact-details         |
-      | employerDetails       | /manual-account-creation/employer-details        |
-      | parentGuardianDetails | /manual-account-creation/parent-guardian-details |
+      | page                  | header                           | url                                              |
+      | createAccount         | Business unit and defendant type | /manual-account-creation/account-details         |
+      | taskList              | Account details                  | /manual-account-creation/create-account          |
+      | contactDetails        | Contact details                  | /manual-account-creation/contact-details         |
+      | employerDetails       | Employer details                 | /manual-account-creation/employer-details        |
+      | parentGuardianDetails | Parent or guardian details       | /manual-account-creation/parent-guardian-details |
 
 
 
