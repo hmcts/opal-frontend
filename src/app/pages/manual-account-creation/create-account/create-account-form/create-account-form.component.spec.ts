@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateAccountFormComponent } from './create-account-form.component';
 import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK } from '@mocks';
+import { MacStateService } from '@services';
 
 describe('CreateAccountFormComponent', () => {
   let component: CreateAccountFormComponent;
@@ -10,6 +11,7 @@ describe('CreateAccountFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateAccountFormComponent],
+      providers: [MacStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountFormComponent);

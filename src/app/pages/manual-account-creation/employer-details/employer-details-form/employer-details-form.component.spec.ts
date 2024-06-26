@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EmployerDetailsFormComponent } from './employer-details-form.component';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK } from '@mocks';
+import { MacStateService } from '@services';
 
 describe('EmployerDetailsFormComponent', () => {
   let component: EmployerDetailsFormComponent;
@@ -9,6 +10,7 @@ describe('EmployerDetailsFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EmployerDetailsFormComponent],
+      providers: [MacStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EmployerDetailsFormComponent);

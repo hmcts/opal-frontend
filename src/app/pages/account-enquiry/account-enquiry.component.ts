@@ -7,6 +7,7 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 @Component({
   standalone: true,
   imports: [CommonModule, RouterOutlet],
+  providers: [MacStateService],
   templateUrl: './account-enquiry.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

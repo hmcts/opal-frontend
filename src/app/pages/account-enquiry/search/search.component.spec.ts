@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SearchComponent } from './search.component';
-import { CourtService } from '@services';
+import { CourtService, MacStateService } from '@services';
 import { SEARCH_COURT_MOCK, SEARCH_COURT_SELECT_OPTIONS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 import { AccountEnquiryRoutes } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from '@constants';
@@ -21,7 +21,7 @@ describe('SearchComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [SearchComponent, HttpClientTestingModule],
-      providers: [{ provide: CourtService, useValue: mockCourtService }, provideRouter([])],
+      providers: [{ provide: CourtService, useValue: mockCourtService }, provideRouter([]), MacStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);

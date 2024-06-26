@@ -12,7 +12,7 @@ describe('AccountEnquiryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountEnquiryComponent],
-      providers: [GlobalStateService],
+      providers: [GlobalStateService, MacStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountEnquiryComponent);

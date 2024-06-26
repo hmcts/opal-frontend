@@ -34,6 +34,7 @@ describe('DetailsComponent', () => {
             params: of({ defendantAccountId: 123 }), // Mock the route params
           },
         },
+        MacStateService,
       ],
     }).compileComponents();
 

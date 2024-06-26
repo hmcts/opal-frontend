@@ -16,7 +16,7 @@ describe('MatchesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatchesComponent, HttpClientTestingModule, BrowserAnimationsModule],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), MacStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MatchesComponent);
