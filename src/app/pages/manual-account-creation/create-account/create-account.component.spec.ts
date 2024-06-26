@@ -1,14 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { CreateAccountComponent } from './create-account.component';
+import { ManualAccountCreationRoutes } from '@enums';
 import {
-  DEFENDANT_TYPES_STATE,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
 } from '@constants';
 import { MacStateService } from '@services';
-import { provideRouter } from '@angular/router';
+import { IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
 
 describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
@@ -28,13 +31,15 @@ describe('CreateAccountComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CreateAccountComponent],
-      providers: [{ provide: MacStateService, useValue: mockMacStateService }, provideRouter([])],
+      imports: [CreateAccountComponent, HttpClientTestingModule],
+      providers: [{ provide: MacStateService, useValue: mockMacStateService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountComponent);
     component = fixture.componentInstance;
-    mockMacStateService = TestBed.inject(MacStateService);
+
+    component.macStateService.manualAccountCreation.accountDetails.businessUnit = null;
+
     fixture.detectChanges();
   });
 
@@ -42,33 +47,61 @@ describe('CreateAccountComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to account-details page on handleRoute', () => {
+  it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.handleRoute('test');
-    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    const formData: IManualAccountCreationAccountDetailsState = {
+      businessUnit: 'Test',
+      defendantType: 'Test',
+    };
+
+    component.handleAccountDetailsSubmit(formData);
+
+    expect(mockMacStateService.manualAccountCreation.accountDetails).toEqual(formData);
+    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
   });
 
-  it('should set defendantType correctly', () => {
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+  it('should test handleUnsavedChanges', () => {
+    component.handleUnsavedChanges(true);
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeTruthy();
+    expect(component.stateUnsavedChanges).toBeTruthy();
 
-    component['setDefendantType']();
+    component.handleUnsavedChanges(false);
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeFalsy();
+    expect(component.stateUnsavedChanges).toBeFalsy();
+  });
 
-    expect(component.defendantType).toEqual(
-      DEFENDANT_TYPES_STATE[mockMacStateService.manualAccountCreation.accountDetails.defendantType],
+  it('should set the business unit for account details when there is only one business unit available and the current business unit is null', () => {
+    const response = { count: 1, refData: [BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+
+    component['setBusinessUnit'](response);
+
+    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+      BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
     );
   });
 
-  it('should set defendantType to be empty', () => {
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'test';
-    component['setDefendantType']();
-    expect(component.defendantType).toBe('');
+  it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
+    const response = { count: 1, refData: [BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+
+    component.macStateService.manualAccountCreation.accountDetails.businessUnit =
+      BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
+
+    fixture.detectChanges();
+
+    component['setBusinessUnit'](response);
+
+    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+      BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
+    );
   });
 
-  it('should not set defendantType', () => {
-    component.defendantType = '';
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = null;
+  it('should not set the business unit for account details when there are multiple business units available', () => {
+    const response = BUSINESS_UNIT_REF_DATA_MOCK;
 
-    component['setDefendantType']();
-    expect(component.defendantType).toBe('');
+    component.macStateService.manualAccountCreation.accountDetails.businessUnit = null;
+
+    component['setBusinessUnit'](response);
+
+    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toBeNull();
   });
 });

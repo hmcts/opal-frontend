@@ -55,7 +55,7 @@ describe('ParentGuardianDetailsComponent', () => {
     component.handleParentGuardianDetailsSubmit(formData);
 
     expect(mockMacStateService.manualAccountCreation.parentGuardianDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
+    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
   });
 
   it('should test handleUnsavedChanges', () => {

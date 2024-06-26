@@ -55,7 +55,7 @@ describe('ContactDetailsComponent', () => {
     component.handleContactDetailsSubmit(formData);
 
     expect(mockMacStateService.manualAccountCreation.contactDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
+    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
   });
 
   it('should test handleUnsavedChanges', () => {

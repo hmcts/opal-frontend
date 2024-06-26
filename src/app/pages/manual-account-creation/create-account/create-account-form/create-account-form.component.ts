@@ -16,7 +16,7 @@ import { IAutoCompleteItem, IFieldErrors, IManualAccountCreationAccountDetailsSt
 import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
 
 @Component({
-  selector: 'app-account-details-form',
+  selector: 'app-create-account-form',
   standalone: true,
   imports: [
     FormsModule,
@@ -29,10 +29,10 @@ import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
     GovukErrorSummaryComponent,
     AlphagovAccessibleAutocompleteComponent,
   ],
-  templateUrl: './account-details-form.component.html',
+  templateUrl: './create-account-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+export class CreateAccountFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationAccountDetailsState>();
   @Input({ required: true }) public autoCompleteItems!: IAutoCompleteItem[];
 

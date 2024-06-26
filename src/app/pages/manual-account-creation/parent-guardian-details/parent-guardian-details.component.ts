@@ -26,7 +26,7 @@ export class ParentGuardianDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    this.routerNavigate(ManualAccountCreationRoutes.createAccount);
+    this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
   }
 
   /**
