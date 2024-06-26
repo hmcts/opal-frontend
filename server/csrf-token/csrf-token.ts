@@ -4,15 +4,7 @@ import { doubleCsrf } from 'csrf-csrf';
 
 export class CSRFToken {
   public enableFor(app: Application): void {
-    const ignore = [
-      '/sso/login',
-      '/sso/logout',
-      '/sso/authenticated',
-      '/sso/login-callback',
-      '/sso/logout-callback',
-      '/styles.css.map',
-      '/',
-    ];
+    const ignore = ['/sso/login-callback'];
 
     const { doubleCsrfProtection } = doubleCsrf({
       getSecret: () => config.get('secrets.opal.opal-frontend-csrf-secret'),
