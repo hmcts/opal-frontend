@@ -46,6 +46,11 @@ export class CreateAccountComponent extends FormParentBaseComponent {
     }
   }
 
+  /**
+   * Creates an array of autocomplete items based on the response from the server.
+   * @param response - The response object containing the business unit reference data.
+   * @returns An array of autocomplete items.
+   */
   private createAutoCompleteItems(response: IBusinessUnitRefData): IAutoCompleteItem[] {
     const businessUnits = response.refData;
 

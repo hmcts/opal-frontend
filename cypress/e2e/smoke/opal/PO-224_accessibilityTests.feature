@@ -83,7 +83,7 @@ Feature: PO-224 Accesibility Tests
 
     Examples:
       | page          | header                           | url                                      |
-      | createAccount | Business unit and defendant type | /manual-account-creation/account-details |
+      | createAccount | Business unit and defendant type | /manual-account-creation/create-account |
 
 
 
@@ -98,8 +98,8 @@ Feature: PO-224 Accesibility Tests
 
     Examples:
       | page                  | header                           | url                                              |
-      | createAccount         | Business unit and defendant type | /manual-account-creation/account-details         |
-      | taskList              | Account details                  | /manual-account-creation/create-account          |
+      | createAccount         | Business unit and defendant type | /manual-account-creation/create-account         |
+      | taskList              | Account details                  | /manual-account-creation/account-details          |
       | contactDetails        | Contact details                  | /manual-account-creation/contact-details         |
       | employerDetails       | Employer details                 | /manual-account-creation/employer-details        |
       | parentGuardianDetails | Parent or guardian details       | /manual-account-creation/parent-guardian-details |
