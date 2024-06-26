@@ -27,6 +27,7 @@ import {
     GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
+    GovukCancelLinkComponent,
   ],
   templateUrl: './employer-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

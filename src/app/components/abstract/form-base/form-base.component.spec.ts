@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBaseComponent } from './form-base.component';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   FORM_CONTROL_ERROR_MOCK,
   FORM_DATE_ERROR_SUMMARY_MOCK,
@@ -327,6 +327,42 @@ describe('FormBaseComponent', () => {
       test: new FormControl(null, Validators.required),
     });
     const result = component['getFormErrors'](invalidField);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should return an empty array if the form array does not have any field errors', () => {
+    const formArray = new FormArray([
+      new FormGroup({
+        test: new FormControl(null, Validators.required),
+      }),
+      new FormGroup({
+        test: new FormControl('valid value'),
+      }),
+    ]);
+
+    const formGroup = new FormGroup({
+      formArray: formArray,
+    });
+
+    const result = component['getFormErrors'](formGroup);
+
+    expect(result).toEqual([]);
+  });
+
+  it('should handle FormArray containing non-FormGroup controls', () => {
+    const formArray = new FormArray([
+      new FormControl(null, Validators.required),
+      new FormGroup({
+        test: new FormControl('valid value'),
+      }),
+    ]);
+
+    const formGroup = new FormGroup({
+      formArray: formArray,
+    });
+
+    const result = component['getFormErrors'](formGroup);
 
     expect(result).toEqual([]);
   });

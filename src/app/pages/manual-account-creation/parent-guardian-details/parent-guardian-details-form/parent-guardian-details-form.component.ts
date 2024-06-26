@@ -8,7 +8,14 @@ import {
   GovukTextInputComponent,
   ScotgovDatePickerComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants';
+import {
+  ADDRESS_LINE_ONE_FIELD_ERRORS,
+  ADDRESS_LINE_TWO_FIELD_ERRORS,
+  DATE_OF_BIRTH_FIELD_ERRORS,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
+  NATIONAL_INSURANCE_FIELD_ERRORS,
+  POST_CODE_FIELD_ERRORS,
+} from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
 import { DateTime } from 'luxon';
@@ -40,7 +47,14 @@ export class ParentGuardianDetailsFormComponent extends FormBaseComponent implem
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
-  override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR;
+  override fieldErrors: IFieldErrors = {
+    ...MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
+    ...DATE_OF_BIRTH_FIELD_ERRORS,
+    ...NATIONAL_INSURANCE_FIELD_ERRORS,
+    ...ADDRESS_LINE_ONE_FIELD_ERRORS,
+    ...ADDRESS_LINE_TWO_FIELD_ERRORS,
+    ...POST_CODE_FIELD_ERRORS,
+  };
 
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 

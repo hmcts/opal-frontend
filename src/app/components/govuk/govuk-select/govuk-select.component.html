@@ -1,4 +1,4 @@
-<div class="govuk-form-group">
+<div class="govuk-form-group" [class.govuk-form-group--error]="hasError()">
   <label class="govuk-label {{ labelClasses }}" [for]="selectId"> {{ labelText }} </label>
 
   @if (selectHint) {
@@ -6,6 +6,13 @@
       {{ selectHint }}
     </div>
   }
+
+  @if (hasError()) {
+    <p id="{{ this.selectId }}-error-message" class="govuk-error-message">
+      <span class="govuk-visually-hidden">Error:</span> {{ errors }}
+    </p>
+  }
+
   <select
     class="govuk-select {{ selectClasses }}"
     [id]="selectId"

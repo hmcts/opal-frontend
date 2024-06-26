@@ -107,6 +107,15 @@ const routes: Routes = [
         canDeactivate: [canDeactivateGuard],
       },
       {
+        path: RoutingPaths.manualAccountCreationPersonalDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/personal-details/personal-details.component').then(
+            (c) => c.PersonalDetailsComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
         path: RoutingPaths.manualAccountCreationOffenceDetails,
         loadComponent: () =>
           import('./pages/manual-account-creation/offence-details/offence-details.component').then(

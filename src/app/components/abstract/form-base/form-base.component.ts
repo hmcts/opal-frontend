@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IFieldError,
@@ -92,7 +92,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param controlPath - The path to the control in the form.
    * @returns The details of the highest priority form error, or null if there are no errors.
    */
-  private getFieldErrorDetails(controlPath: string[]): IHighPriorityFormError | null {
+  private getFieldErrorDetails(controlPath: (string | number)[]): IHighPriorityFormError | null {
     // Get the control
     const control = this.form.get(controlPath);
 
@@ -119,7 +119,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param controlPath - An optional array representing the path to the current control within the form group.
    * @returns An array of form errors, each containing the field ID, error message, priority, and type.
    */
-  private getFormErrors(form: FormGroup, controlPath: string[] = []): IFormError[] {
+  private getFormErrors(form: FormGroup, controlPath: (string | number)[] = []): IFormError[] {
     // recursively get all errors from all controls in the form including nested form group controls
     const formControls = form.controls;
 
@@ -130,6 +130,19 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
 
         if (control instanceof FormGroup) {
           return this.getFormErrors(control, [...controlPath, controlName]);
+        }
+
+        if (control instanceof FormArray) {
+          return control.controls
+            .map((controlItem, index) => {
+              // We only support FormGroups in FormArrays
+              if (controlItem instanceof FormGroup) {
+                return this.getFormErrors(controlItem, [...controlPath, controlName, index]);
+              }
+
+              return [];
+            })
+            .flat();
         }
 
         const getFieldErrorDetails = this.getFieldErrorDetails([...controlPath, controlName]);
@@ -146,7 +159,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
       .flat();
 
     // Remove any null errors
-    return errorSummary.filter((item) => item.message !== null);
+    return errorSummary.filter((item) => item?.message !== null);
   }
 
   /**

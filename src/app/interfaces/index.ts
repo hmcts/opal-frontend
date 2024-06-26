@@ -33,6 +33,9 @@ import { IManualAccountCreationContactDetailsState } from './manual-account-crea
 import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
 import { IBusinessUnitRefData } from './business-unit-ref-data.interface';
 
+import { IManualAccountCreationPersonalAlias } from './manual-account-creation-personal-details-alias.interface';
+import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
+import { IManualAccountCreationPersonalDetailsAliasState } from './manual-account-creation-personal-details-alias-state.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -73,4 +76,7 @@ export {
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
   IBusinessUnitRefData,
+  IManualAccountCreationPersonalAlias,
+  IManualAccountCreationPersonalDetailsState,
+  IManualAccountCreationPersonalDetailsAliasState,
 };

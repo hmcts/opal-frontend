@@ -20,7 +20,7 @@ export class GovukSelectComponent {
   @Input({ required: true }) selectName!: string;
   @Input({ required: false }) selectClasses!: string;
   @Input({ required: false }) selectHint!: string;
-
+  @Input({ required: false }) errors: string | null = null;
   @Input({ required: true }) options!: IGovUkSelectOptions[];
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
@@ -29,5 +29,9 @@ export class GovukSelectComponent {
 
   get getControl() {
     return this._control;
+  }
+
+  public hasError(): boolean {
+    return this.errors !== null && typeof this.errors !== 'undefined';
   }
 }

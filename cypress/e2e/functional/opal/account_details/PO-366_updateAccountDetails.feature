@@ -34,7 +34,8 @@ Feature: updating the account details page to manage the account creation proces
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
     Then I see "Defendant details" on the section heading
-    When "Personal details" is clicked, nothing happens
+    #De-scoped by PO-360
+    #When "Personal details" is clicked, nothing happens
     When I click on "Contact details" link
     Then I see "Contact details" on the page header
     Then I click cancel on Contact details page

@@ -41,7 +41,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
   },
   employerAddress1: {
     required: {
-      message: 'Enter address line 1, typically the building and street',
+      message: 'Enter employer address line 1, typically the building and street',
       priority: 1,
     },
     maxlength: {

@@ -47,7 +47,9 @@ Feature: create the account details for adult or youth with parent or guardian t
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
     Then I see "Defendant details" on the section heading
-    When "Personal details" is clicked, nothing happens
+    When I click on "Personal details" link
+    Then I see "Personal details" on the page header
+    Then I click on "Cancel" link
     When I click on "Contact details" link
     Then I see "Contact details" on the page header
     Then I click cancel on Contact details page
