@@ -4,11 +4,11 @@ import { AuthService } from './auth.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { SsoEndpoints } from 'src/app/enums/sso-endpoints';
-import { StateService } from '../state-service/state.service';
+import { GlobalStateService } from '../global-state-service/global-state.service';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let stateService: StateService;
+  let globalStateService: GlobalStateService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('AuthService', () => {
       imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(AuthService);
-    stateService = TestBed.inject(StateService);
+    globalStateService = TestBed.inject(GlobalStateService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -27,7 +27,7 @@ describe('AuthService', () => {
   it('should be authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(true);
-      expect(stateService.authenticated()).toEqual(true);
+      expect(globalStateService.authenticated()).toEqual(true);
     });
 
     const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
@@ -39,7 +39,7 @@ describe('AuthService', () => {
   it('should be not authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(false);
-      expect(stateService.authenticated()).toEqual(false);
+      expect(globalStateService.authenticated()).toEqual(false);
     });
 
     const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
@@ -52,7 +52,7 @@ describe('AuthService', () => {
     service.checkAuthenticated().subscribe(
       () => {},
       () => {
-        expect(stateService.authenticated()).toEqual(false);
+        expect(globalStateService.authenticated()).toEqual(false);
       },
     );
 

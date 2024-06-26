@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { MacStateService, StateService } from '@services';
+import { GlobalStateService, MacStateService } from '@services';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 @Component({
@@ -11,7 +11,7 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountEnquiryComponent implements OnDestroy {
-  private readonly stateService = inject(StateService);
+  private readonly globalStateService = inject(GlobalStateService);
   private readonly macStateService = inject(MacStateService);
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(): boolean {
@@ -23,7 +23,7 @@ export class AccountEnquiryComponent implements OnDestroy {
     this.macStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
 
     // Clear any errors...
-    this.stateService.error.set({
+    this.globalStateService.error.set({
       error: false,
       message: '',
     });

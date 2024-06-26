@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-
 import { GovukButtonComponent } from '@components';
 import { AccountEnquiryRoutes } from '@enums';
-import { DefendantAccountService, MacStateService, StateService } from '@services';
+import { DefendantAccountService, GlobalStateService, MacStateService } from '@services';
 import { Observable } from 'rxjs';
 import { ISearchDefendantAccounts } from '@interfaces';
 import { MatchesTableComponent } from './matches-table/matches-table.component';
@@ -19,13 +18,13 @@ import { MatchesTableComponent } from './matches-table/matches-table.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchesComponent {
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
   public readonly macStateService = inject(MacStateService);
   private readonly router = inject(Router);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
   private readonly searchState = this.macStateService.accountEnquiry.search;
-  public readonly error = this.stateService.error();
+  public readonly error = this.globalStateService.error();
 
   public data$: Observable<ISearchDefendantAccounts> = this.defendantAccountService.searchDefendantAccounts({
     ...this.searchState,

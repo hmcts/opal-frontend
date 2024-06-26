@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MacStateService, StateService } from '@services';
+import { MacStateService, GlobalStateService } from '@services';
 import { MANUAL_ACCOUNT_CREATION_STATE } from '@constants';
 import { ManualAccountCreationComponent } from './manual-account-creation.component';
 
@@ -7,7 +7,7 @@ describe('ManualAccountCreationComponent', () => {
   let component: ManualAccountCreationComponent;
   let fixture: ComponentFixture<ManualAccountCreationComponent>;
   let macStateService: MacStateService;
-  let stateService: StateService;
+  let globalStateService: GlobalStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -20,7 +20,7 @@ describe('ManualAccountCreationComponent', () => {
 
     macStateService = TestBed.inject(MacStateService);
     macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    stateService = TestBed.inject(StateService);
+    globalStateService = TestBed.inject(GlobalStateService);
   });
 
   it('should create', () => {
@@ -35,7 +35,7 @@ describe('ManualAccountCreationComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(macStateService.manualAccountCreation).toEqual(MANUAL_ACCOUNT_CREATION_STATE);
-    expect(stateService.error()).toEqual({ error: false, message: '' });
+    expect(globalStateService.error()).toEqual({ error: false, message: '' });
   });
 
   it('should call handleBeforeUnload ', () => {

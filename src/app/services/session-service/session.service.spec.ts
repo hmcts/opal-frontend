@@ -1,25 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
-
 import { SessionEndpoints } from '@enums';
 import { USER_STATE_MOCK } from '@mocks';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
 import { IUserState } from '@interfaces';
 
 describe('SessionService', () => {
   let service: SessionService;
   let httpMock: HttpTestingController;
-  let stateService: StateService;
+  let globalStateService: GlobalStateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [StateService],
+      providers: [GlobalStateService],
     });
     service = TestBed.inject(SessionService);
     httpMock = TestBed.inject(HttpTestingController);
-    stateService = TestBed.inject(StateService);
+    globalStateService = TestBed.inject(GlobalStateService);
   });
 
   afterEach(() => {
@@ -35,7 +34,7 @@ describe('SessionService', () => {
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(stateService.userState()).toEqual(mockUserState);
+      expect(globalStateService.userState()).toEqual(mockUserState);
     });
 
     const req = httpMock.expectOne(SessionEndpoints.userState);
@@ -48,7 +47,7 @@ describe('SessionService', () => {
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(stateService.userState()).toEqual(mockUserState);
+      expect(globalStateService.userState()).toEqual(mockUserState);
     });
 
     const req = httpMock.expectOne(SessionEndpoints.userState);
@@ -58,7 +57,7 @@ describe('SessionService', () => {
     // Make a second call
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(stateService.userState()).toEqual(mockUserState);
+      expect(globalStateService.userState()).toEqual(mockUserState);
     });
 
     // No new request should be made since the response is cached
@@ -70,7 +69,7 @@ describe('SessionService', () => {
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(stateService.userState()).toEqual(mockUserState);
+      expect(globalStateService.userState()).toEqual(mockUserState);
     });
 
     let req = httpMock.expectOne(SessionEndpoints.userState);
@@ -80,14 +79,14 @@ describe('SessionService', () => {
     // Make a second call
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(stateService.userState()).toEqual(mockUserState);
+      expect(globalStateService.userState()).toEqual(mockUserState);
     });
 
     // No new request should be made since the response is cached
     httpMock.expectNone(SessionEndpoints.userState);
 
     // Clear the cache
-    stateService.userState.set({} as IUserState);
+    globalStateService.userState.set({} as IUserState);
 
     // Make a third call
     service.getUserState().subscribe((response) => {

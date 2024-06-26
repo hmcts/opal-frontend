@@ -1,4 +1,4 @@
-{{ stateService.error().message }}
+{{ globalStateService.error().message }}
 
 @if (data$ | async; as data) {
   <div class="govuk-grid-column-two-thirds">
@@ -239,7 +239,7 @@
           <h2 class="govuk-heading-m">Imposition</h2></app-govuk-tab-panel
         ><app-govuk-tab-panel tabsId="tabsAccount" tabsPanelId="panelAccountHistory">
           <h2 class="govuk-heading-m">History</h2>
-          @if (stateService.featureFlags()['add-note'] !== false) {
+          @if (globalStateService.featureFlags()['add-note'] !== false) {
             @if (permissions[permissionsMap.accountEnquiryAddNote] !== false) {
               <form (submit)="handleNotesFormSubmit()">
                 <ng-container [formGroup]="addNoteForm">

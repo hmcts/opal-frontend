@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AccountEnquiryRoutes, ManualAccountCreationRoutes } from '@enums';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +11,7 @@ import { StateService } from '@services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly accountEnquiryRoutes = AccountEnquiryRoutes;
 }

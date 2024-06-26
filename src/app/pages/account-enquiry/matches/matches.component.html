@@ -2,8 +2,8 @@
   <h1 class="govuk-heading-l">Account Enquiry Matches</h1>
 </div>
 
-{{ stateService.error().message }}
-@if (!stateService.error().error) {
+{{ globalStateService.error().message }}
+@if (!globalStateService.error().error) {
   @if (data$ | async; as data) {
     <div class="govuk-grid-column-full">
       <app-matches-table [data]="data" (view)="handleViewDefendantAccount($event)"></app-matches-table>

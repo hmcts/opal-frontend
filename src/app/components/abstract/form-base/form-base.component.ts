@@ -9,7 +9,7 @@ import {
   IFormErrorSummaryMessage,
   IHighPriorityFormError,
 } from '@interfaces';
-import { MacStateService, StateService } from '@services';
+import { MacStateService, GlobalStateService } from '@services';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -20,7 +20,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   @Output() protected unsavedChanges = new EventEmitter<boolean>();
 
   private readonly router = inject(Router);
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
   public readonly macStateService = inject(MacStateService);
 
   public form!: FormGroup;

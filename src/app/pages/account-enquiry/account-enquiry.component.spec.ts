@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountEnquiryComponent } from './account-enquiry.component';
-import { MacStateService, StateService } from '@services';
+import { MacStateService, GlobalStateService } from '@services';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 describe('AccountEnquiryComponent', () => {
   let component: AccountEnquiryComponent;
   let fixture: ComponentFixture<AccountEnquiryComponent>;
   let macStateService: MacStateService;
-  let stateService: StateService;
+  let globalStateService: GlobalStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountEnquiryComponent],
-      providers: [StateService],
+      providers: [GlobalStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountEnquiryComponent);
@@ -21,7 +21,7 @@ describe('AccountEnquiryComponent', () => {
 
     macStateService = TestBed.inject(MacStateService);
     macStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
-    stateService = TestBed.inject(StateService);
+    globalStateService = TestBed.inject(GlobalStateService);
   });
 
   it('should create', () => {
@@ -36,7 +36,7 @@ describe('AccountEnquiryComponent', () => {
 
     expect(destroy).toHaveBeenCalled();
     expect(macStateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
-    expect(stateService.error()).toEqual({ error: false, message: '' });
+    expect(globalStateService.error()).toEqual({ error: false, message: '' });
   });
 
   it('should call handleBeforeUnload ', () => {

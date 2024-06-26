@@ -1,6 +1,6 @@
 import { DefendantAccountService } from './defendant-account-service/defendant-account.service';
 import { AuthService } from './auth-service/auth.service';
-import { StateService } from './state-service/state.service';
+import { GlobalStateService } from './global-state-service/global-state.service';
 import { UtilsService } from './utils/utils.service';
 import { CourtService } from './court-service/court.service';
 import { LaunchDarklyService } from './launch-darkly/launch-darkly.service';
@@ -15,7 +15,7 @@ import { MacStateService } from './mac-state-service/mac-state.service';
 export {
   DefendantAccountService,
   AuthService,
-  StateService,
+  GlobalStateService,
   UtilsService,
   CourtService,
   LaunchDarklyService,

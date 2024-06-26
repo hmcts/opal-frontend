@@ -1,5 +1,5 @@
 import { Component, NgZone, OnInit, inject } from '@angular/core';
-import { LaunchDarklyService, StateService } from '@services';
+import { LaunchDarklyService, GlobalStateService } from '@services';
 import { from, tap } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT } from '@angular/common';
@@ -10,7 +10,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class AppComponent implements OnInit {
   private readonly launchDarklyService = inject(LaunchDarklyService);
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
   private readonly document = inject(DOCUMENT);
 
   constructor(private readonly ngZone: NgZone) {
@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
    * Handles the authentication dependent on whether the user is already authenticated
    */
   handleAuthentication(): void {
-    if (!this.stateService.authenticated()) {
+    if (!this.globalStateService.authenticated()) {
       this.handleRedirect(SsoEndpoints.login);
     } else {
       this.handleRedirect(SsoEndpoints.logout);

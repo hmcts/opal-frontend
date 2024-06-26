@@ -11,9 +11,8 @@ import {
   GovukTabsComponent,
   GovukTextInputComponent,
 } from '@components';
-
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
-import { DefendantAccountService, MacStateService, PermissionsService, StateService } from '@services';
+import { DefendantAccountService, GlobalStateService, MacStateService, PermissionsService } from '@services';
 import { EMPTY, Observable, switchMap, tap } from 'rxjs';
 import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
@@ -46,11 +45,11 @@ export class DetailsComponent implements OnInit {
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
 
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
   public readonly macStateService = inject(MacStateService);
 
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: IUserStateRole[] = this.stateService.userState()?.roles || [];
+  private readonly userStateRoles: IUserStateRole[] = this.globalStateService.userState()?.roles || [];
 
   private defendantAccountId!: number;
 

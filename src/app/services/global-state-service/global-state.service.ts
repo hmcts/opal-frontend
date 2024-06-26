@@ -5,7 +5,7 @@ import { LDFlagSet } from 'launchdarkly-js-client-sdk';
 @Injectable({
   providedIn: 'root',
 })
-export class StateService {
+export class GlobalStateService {
   // Reactive state
   public readonly authenticated = signal<boolean>(false);
   public readonly error = signal({ error: false, message: '' });

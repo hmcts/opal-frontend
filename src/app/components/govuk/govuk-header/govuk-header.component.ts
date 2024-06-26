@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
 import { GovukHeaderLinks } from '@enums';
 @Component({
   selector: 'app-govuk-header',
@@ -12,5 +12,5 @@ import { GovukHeaderLinks } from '@enums';
 })
 export class GovukHeaderComponent {
   public readonly headerLinks = GovukHeaderLinks;
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
 }
