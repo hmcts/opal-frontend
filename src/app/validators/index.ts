@@ -1,3 +1,4 @@
+import { alphabeticalTextValidator } from './alphabetical-text/alphabetical-text.validator';
 import { dateOfBirthValidator } from './date-of-birth/date-of-birth.validator';
 import { nationalInsuranceNumberValidator } from './national-insurance-number/national-insurance-number.validator';
 import { optionalMaxLengthValidator } from './optional-max-length/optional-max-length.validator';
@@ -16,4 +17,5 @@ export {
   optionalValidDateValidator,
   nationalInsuranceNumberValidator,
   dateOfBirthValidator,
+  alphabeticalTextValidator,
 };

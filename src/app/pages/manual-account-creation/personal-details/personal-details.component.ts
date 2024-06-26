@@ -1,27 +1,25 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
-import { ParentGuardianDetailsFormComponent } from './parent-guardian-details-form/parent-guardian-details-form.component';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
+import { PersonalDetailsFormComponent } from './personal-details-form/personal-details-form.component';
+import { FormParentBaseComponent } from '@components';
 
 @Component({
-  selector: 'app-parent-guardian-details',
+  selector: 'app-personal-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, ParentGuardianDetailsFormComponent],
-  templateUrl: './parent-guardian-details.component.html',
+  imports: [PersonalDetailsFormComponent],
+  templateUrl: './personal-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ParentGuardianDetailsComponent extends FormParentBaseComponent {
+export class PersonalDetailsComponent extends FormParentBaseComponent {
   /**
-   * Handles the form submission for parent/guardian details.
+   * Handles the form submission for employer details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleParentGuardianDetailsSubmit(formData: IManualAccountCreationParentGuardianDetailsState): void {
+  public handlePersonalDetailsSubmit(formData: IManualAccountCreationPersonalDetailsState): void {
     this.stateService.manualAccountCreation = {
       ...this.stateService.manualAccountCreation,
-      parentGuardianDetails: formData,
+      personalDetails: formData,
       unsavedChanges: false,
       stateChanges: true,
     };

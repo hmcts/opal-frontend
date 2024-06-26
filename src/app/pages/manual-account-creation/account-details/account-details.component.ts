@@ -46,6 +46,11 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
     }
   }
 
+  /**
+   * Creates an array of autocomplete items based on the response from the server.
+   * @param response - The response object containing the business unit reference data.
+   * @returns An array of autocomplete items.
+   */
   private createAutoCompleteItems(response: IBusinessUnitRefData): IAutoCompleteItem[] {
     const businessUnits = response.refData;
 
@@ -63,10 +68,8 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
    */
   public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
     this.stateService.manualAccountCreation = {
+      ...this.stateService.manualAccountCreation,
       accountDetails: formData,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
-      contactDetails: this.stateService.manualAccountCreation.contactDetails,
-      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
       unsavedChanges: false,
       stateChanges: true,
     };

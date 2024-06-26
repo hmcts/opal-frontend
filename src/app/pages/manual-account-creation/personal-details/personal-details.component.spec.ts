@@ -1,19 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ParentGuardianDetailsComponent } from './parent-guardian-details.component';
+
+import { PersonalDetailsComponent } from './personal-details.component';
+import { StateService } from '@services';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
+import { IManualAccountCreationPersonalDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
-import { StateService } from '@services';
 
-describe('ParentGuardianDetailsComponent', () => {
-  let component: ParentGuardianDetailsComponent;
-  let fixture: ComponentFixture<ParentGuardianDetailsComponent>;
+describe('PersonalDetailsComponent', () => {
+  let component: PersonalDetailsComponent;
+  let fixture: ComponentFixture<PersonalDetailsComponent>;
   let mockStateService: jasmine.SpyObj<StateService>;
 
   beforeEach(async () => {
@@ -30,11 +31,11 @@ describe('ParentGuardianDetailsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ParentGuardianDetailsComponent],
+      imports: [PersonalDetailsComponent],
       providers: [{ provide: StateService, useValue: mockStateService }],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ParentGuardianDetailsComponent);
+    fixture = TestBed.createComponent(PersonalDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -45,18 +46,26 @@ describe('ParentGuardianDetailsComponent', () => {
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IManualAccountCreationParentGuardianDetailsState = {
-      fullName: 'Test test',
-      dateOfBirth: '',
-      nationalInsuranceNumber: '',
-      addressLine1: '',
-      addressLine2: '',
-      postcode: '',
+
+    const formData: IManualAccountCreationPersonalDetailsState = {
+      title: 'Mr',
+      firstNames: null,
+      lastName: null,
+      addAlias: false,
+      aliases: [],
+      dateOfBirth: null,
+      nationalInsuranceNumber: null,
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+      makeOfCar: null,
+      registrationNumber: null,
     };
 
-    component.handleParentGuardianDetailsSubmit(formData);
+    component.handlePersonalDetailsSubmit(formData);
 
-    expect(mockStateService.manualAccountCreation.parentGuardianDetails).toEqual(formData);
+    expect(mockStateService.manualAccountCreation.personalDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
   });
 
