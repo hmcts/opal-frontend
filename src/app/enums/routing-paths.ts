@@ -14,4 +14,5 @@ export enum RoutingPaths {
   manualAccountCreationContactDetails = 'contact-details',
   manualAccountCreationCompanyDetails = 'company-details',
   manualAccountCreationParentGuardianDetails = 'parent-guardian-details',
+  manualAccountCreationOffenceDetails = 'offence-details',
 }
