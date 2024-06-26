@@ -6,7 +6,6 @@ import { Router, ActivatedRoute } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './moj-sub-navigation-item.component.html',
-  styleUrl: './moj-sub-navigation-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojSubNavigationItemComponent {

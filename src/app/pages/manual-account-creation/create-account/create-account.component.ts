@@ -1,74 +1,89 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-
-import { Router, RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { FormParentBaseComponent } from '@components';
+import { ManualAccountCreationRoutes } from '@enums';
 import {
-  GovukButtonComponent,
-  GovukHeadingWithCaptionComponent,
-  GovukSummaryListComponent,
-  GovukSummaryListRowComponent,
-  GovukTagComponent,
-  GovukTaskListComponent,
-  GovukTaskListItemComponent,
-} from '@components';
-import { DEFENDANT_TYPES_STATE } from '@constants';
-
-import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { StateService } from '@services';
-
+  IAutoCompleteItem,
+  IBusinessUnitRefData,
+  IGovUkSelectOptions,
+  IManualAccountCreationAccountDetailsState,
+} from '@interfaces';
+import { CreateAccountFormComponent } from './create-account-form/create-account-form.component';
+import { BusinessUnitService } from '@services';
+import { Observable, map, tap } from 'rxjs';
 @Component({
   selector: 'app-create-account',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    GovukTagComponent,
-    GovukTaskListComponent,
-    GovukTaskListItemComponent,
-    GovukButtonComponent,
-    GovukHeadingWithCaptionComponent,
-    GovukSummaryListComponent,
-    GovukSummaryListRowComponent,
-    GovukHeadingWithCaptionComponent,
-    GovukSummaryListComponent,
-    GovukSummaryListRowComponent,
-  ],
+  imports: [CommonModule, RouterModule, CreateAccountFormComponent],
   templateUrl: './create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateAccountComponent implements OnInit {
-  private readonly router = inject(Router);
-  public readonly stateService = inject(StateService);
-
-  public readonly routingPaths = RoutingPaths;
-  public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-
-  public readonly defendantTypes = DEFENDANT_TYPES_STATE;
-
-  public defendantType = '';
+export class CreateAccountComponent extends FormParentBaseComponent {
+  private businessUnitService = inject(BusinessUnitService);
+  public data$: Observable<IGovUkSelectOptions[]> = this.businessUnitService
+    .getBusinessUnits('MANUAL_ACCOUNT_CREATION')
+    .pipe(
+      tap((response: IBusinessUnitRefData) => this.setBusinessUnit(response)),
+      map((response: IBusinessUnitRefData) => {
+        return this.createAutoCompleteItems(response);
+      }),
+    );
 
   /**
-   * Sets the defendant type based on the value stored in the account details.
-   * If the defendant type is found in the `defendantTypes` array, it is assigned to `this.defendantType`.
+   * Sets the business unit for the account details.
+   * If there is only one business unit available and the current business unit is null,
+   * it sets the business unit to the first available business unit.
+   *
+   * @param response - The response containing the business unit reference data.
    */
-  private setDefendantType(): void {
-    // Moved to here as inline was adding extra spaces in HTML...
-    const { defendantType } = this.stateService.manualAccountCreation.accountDetails;
-    if (defendantType) {
-      this.defendantType = this.defendantTypes[defendantType] || '';
+  private setBusinessUnit(response: IBusinessUnitRefData): void {
+    const { count, refData } = response;
+    const { accountDetails } = this.macStateService.manualAccountCreation;
+
+    if (count === 1 && accountDetails.businessUnit === null) {
+      this.macStateService.manualAccountCreation.accountDetails.businessUnit = refData[0].businessUnitName;
     }
   }
 
   /**
-   * Navigates to the specified route.
-   *
-   * @param route - The route to navigate to.
+   * Creates an array of autocomplete items based on the response from the server.
+   * @param response - The response object containing the business unit reference data.
+   * @returns An array of autocomplete items.
    */
-  public handleRoute(route: string): void {
-    this.router.navigate([route]);
+  private createAutoCompleteItems(response: IBusinessUnitRefData): IAutoCompleteItem[] {
+    const businessUnits = response.refData;
+
+    return businessUnits.map((item) => {
+      return {
+        value: item.businessUnitName,
+        name: item.businessUnitName,
+      };
+    });
   }
 
-  ngOnInit(): void {
-    this.setDefendantType();
+  /**
+   * Handles the form submission for account details.
+   * @param formData - The form data containing the search parameters.
+   */
+  public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
+    this.macStateService.manualAccountCreation = {
+      ...this.macStateService.manualAccountCreation,
+      accountDetails: formData,
+      unsavedChanges: false,
+      stateChanges: true,
+    };
+
+    this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
+  }
+
+  /**
+   * Handles unsaved changes coming from the child component
+   *
+   * @param unsavedChanges boolean value from child component
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.macStateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }

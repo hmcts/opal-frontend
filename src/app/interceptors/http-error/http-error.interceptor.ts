@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
 import { catchError, tap, throwError } from 'rxjs';
 
 /**
@@ -10,15 +10,15 @@ import { catchError, tap, throwError } from 'rxjs';
  * @returns An Observable of the HTTP response.
  */
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
-  const stateService = inject(StateService);
+  const globalStateService = inject(GlobalStateService);
 
   return next(req).pipe(
     tap(() => {
       // Clear the state service on new requests
-      stateService.error.set({ error: false, message: '' });
+      globalStateService.error.set({ error: false, message: '' });
     }),
     catchError((error) => {
-      stateService.error.set({
+      globalStateService.error.set({
         error: true,
         message: error.error instanceof ErrorEvent ? `Error: ${error.error.message}` : `Error: ${error.message}`,
       });

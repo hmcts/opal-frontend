@@ -3,14 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { catchError, tap, throwError } from 'rxjs';
 
 import { SsoEndpoints } from 'src/app/enums/sso-endpoints';
-import { StateService } from '../state-service/state.service';
+import { GlobalStateService } from '../global-state-service/global-state.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly stateService = inject(StateService);
+  private readonly globalStateService = inject(GlobalStateService);
 
   public checkAuthenticated() {
     return this.http
@@ -23,12 +23,12 @@ export class AuthService {
       })
       .pipe(
         tap((resp) => {
-          this.stateService.authenticated.set(resp);
+          this.globalStateService.authenticated.set(resp);
         }),
       )
       .pipe(
         catchError((error) => {
-          this.stateService.authenticated.set(false);
+          this.globalStateService.authenticated.set(false);
           return throwError(() => error);
         }),
       );

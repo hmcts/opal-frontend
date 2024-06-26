@@ -58,24 +58,24 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: RoutingPaths.manualAccountCreationAccountDetails,
+        redirectTo: RoutingPaths.manualAccountCreationCreateAccount,
 
         pathMatch: 'full',
-      },
-      {
-        path: RoutingPaths.manualAccountCreationAccountDetails,
-        loadComponent: () =>
-          import('./pages/manual-account-creation/account-details/account-details.component').then(
-            (c) => c.AccountDetailsComponent,
-          ),
-        canActivate: [authGuard],
-        canDeactivate: [canDeactivateGuard],
       },
       {
         path: RoutingPaths.manualAccountCreationCreateAccount,
         loadComponent: () =>
           import('./pages/manual-account-creation/create-account/create-account.component').then(
             (c) => c.CreateAccountComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationAccountDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/account-details/account-details.component').then(
+            (c) => c.AccountDetailsComponent,
           ),
         canActivate: [authGuard],
       },

@@ -1,26 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AccountEnquiryComponent } from './account-enquiry.component';
-import { StateService } from '@services';
+import { GlobalStateService, AeStateService } from '@services';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 describe('AccountEnquiryComponent', () => {
   let component: AccountEnquiryComponent;
   let fixture: ComponentFixture<AccountEnquiryComponent>;
-  let stateService: StateService;
+  let aeStateService: AeStateService;
+  let globalStateService: GlobalStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountEnquiryComponent],
-      providers: [StateService],
+      providers: [GlobalStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountEnquiryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    stateService = TestBed.inject(StateService);
-    stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    aeStateService = TestBed.inject(AeStateService);
+    aeStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    globalStateService = TestBed.inject(GlobalStateService);
   });
 
   it('should create', () => {
@@ -34,16 +35,16 @@ describe('AccountEnquiryComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(stateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
-    expect(stateService.error()).toEqual({ error: false, message: '' });
+    expect(aeStateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(globalStateService.error()).toEqual({ error: false, message: '' });
   });
 
   it('should call handleBeforeUnload ', () => {
     // Empty state, should return true
-    stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    aeStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     expect(component.handleBeforeUnload()).toBeTruthy();
 
-    stateService.accountEnquiry.search.court = 'test';
+    aeStateService.accountEnquiry.search.court = 'test';
     expect(component.handleBeforeUnload()).toBeFalsy();
   });
 });

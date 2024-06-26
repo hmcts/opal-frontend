@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { CanActivateFn, Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 
-import { AuthService, StateService } from '@services';
+import { AuthService, GlobalStateService } from '@services';
 
 import { authGuard } from './auth.guard';
 import { of, throwError } from 'rxjs';
@@ -11,7 +11,7 @@ describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => authGuard(...guardParameters));
 
-  let mockStateService: jasmine.SpyObj<StateService>;
+  let mockStateService: jasmine.SpyObj<GlobalStateService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
@@ -40,7 +40,7 @@ describe('authGuard', () => {
           useValue: mockAuthService,
         },
         {
-          provide: StateService,
+          provide: GlobalStateService,
           useValue: mockStateService,
         },
       ],

@@ -92,7 +92,7 @@ export class ParentGuardianDetailsFormComponent extends FormBaseComponent implem
   public override ngOnInit(): void {
     this.setupParentGuardianDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.parentGuardianDetails);
+    this.rePopulateForm(this.macStateService.manualAccountCreation.parentGuardianDetails);
     super.ngOnInit();
   }
 }

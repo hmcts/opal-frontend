@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { SearchComponent } from './search.component';
 import { CourtService } from '@services';
 import { SEARCH_COURT_MOCK, SEARCH_COURT_SELECT_OPTIONS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
@@ -8,6 +7,7 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from '@constants';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { IGovUkSelectOptions, ISearchCourt } from '@interfaces';
 import { of } from 'rxjs';
+import { provideRouter } from '@angular/router';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -20,8 +20,8 @@ describe('SearchComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SearchComponent, RouterTestingModule, HttpClientTestingModule],
-      providers: [{ provide: CourtService, useValue: mockCourtService }],
+      imports: [SearchComponent, HttpClientTestingModule],
+      providers: [{ provide: CourtService, useValue: mockCourtService }, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);
@@ -40,14 +40,14 @@ describe('SearchComponent', () => {
   it('should submit the form', () => {
     const navigateSpy = spyOn(component['router'], 'navigate');
 
-    component['stateService'].accountEnquiry = { search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH };
-    expect(component['stateService'].accountEnquiry.search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
+    component['aeStateService'].accountEnquiry = { search: ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH };
+    expect(component['aeStateService'].accountEnquiry.search).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH);
 
     component.handleFormSubmit({
       ...SEARCH_STATE_MOCK,
     });
 
-    expect(component['stateService'].accountEnquiry.search?.court).toBe('Bath');
+    expect(component['aeStateService'].accountEnquiry.search?.court).toBe('Bath');
 
     expect(navigateSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.matches]);
   });

@@ -2,14 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignInComponent } from './sign-in.component';
 import { ISignInStubForm } from '@interfaces';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
 import { ChangeDetectorRef } from '@angular/core';
 import { SsoEndpoints } from '@enums';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
   let fixture: ComponentFixture<SignInComponent>;
-  let stateService: StateService;
+  let globalStateService: GlobalStateService;
   const mockDocumentLocation = {
     location: {
       href: '',
@@ -22,7 +22,7 @@ describe('SignInComponent', () => {
       providers: [],
     }).compileComponents();
 
-    stateService = TestBed.inject(StateService);
+    globalStateService = TestBed.inject(GlobalStateService);
 
     fixture = TestBed.createComponent(SignInComponent);
     component = fixture.componentInstance;
@@ -39,7 +39,7 @@ describe('SignInComponent', () => {
 
     expect(component.ssoEnabled).toBeTrue();
 
-    stateService.ssoEnabled = false;
+    globalStateService.ssoEnabled = false;
 
     const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef);
     const detectChangesSpy = spyOn(cdr.constructor.prototype, 'detectChanges');

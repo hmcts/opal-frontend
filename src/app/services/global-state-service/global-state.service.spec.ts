@@ -1,23 +1,16 @@
 import { TestBed } from '@angular/core/testing';
+import { GlobalStateService } from './global-state.service';
 
-import { StateService } from './state.service';
-import { SEARCH_STATE_MOCK } from '@mocks';
-
-describe('StateService', () => {
-  let service: StateService;
+describe('GlobalStateService', () => {
+  let service: GlobalStateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(StateService);
+    service = TestBed.inject(GlobalStateService);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-  });
-
-  it('should store search state', () => {
-    service.accountEnquiry = { search: SEARCH_STATE_MOCK };
-    expect(service.accountEnquiry.search).toEqual(SEARCH_STATE_MOCK);
   });
 
   it('should store error state', () => {

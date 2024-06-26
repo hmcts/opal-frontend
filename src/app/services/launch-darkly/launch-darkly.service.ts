@@ -1,12 +1,12 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
 import { initialize, LDClient, LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LaunchDarklyService implements OnDestroy {
-  private readonly stateService = inject(StateService);
+  private readonly globalStateService = inject(GlobalStateService);
   private ldClient!: LDClient;
 
   /**
@@ -14,7 +14,7 @@ export class LaunchDarklyService implements OnDestroy {
    */
   private setLaunchDarklyFlags() {
     if (this.ldClient) {
-      this.stateService.featureFlags.set(this.ldClient.allFlags());
+      this.globalStateService.featureFlags.set(this.ldClient.allFlags());
     }
   }
 
@@ -45,10 +45,10 @@ export class LaunchDarklyService implements OnDestroy {
    * This method listens for changes in feature flags and updates the state accordingly.
    */
   public initializeLaunchDarklyChangeListener() {
-    if (this.ldClient && this.stateService.launchDarklyConfig?.stream) {
+    if (this.ldClient && this.globalStateService.launchDarklyConfig?.stream) {
       this.ldClient.on('change', (flags: LDFlagChangeset) => {
-        const updatedFlags = { ...this.stateService.featureFlags(), ...this.formatChangeFlags(flags) };
-        this.stateService.featureFlags.set(updatedFlags);
+        const updatedFlags = { ...this.globalStateService.featureFlags(), ...this.formatChangeFlags(flags) };
+        this.globalStateService.featureFlags.set(updatedFlags);
       });
     }
   }
@@ -77,8 +77,8 @@ export class LaunchDarklyService implements OnDestroy {
    * If a stored LaunchDarkly client ID exists, it initializes the client with the ID and anonymous mode enabled.
    */
   public initializeLaunchDarklyClient(): void {
-    if (this.stateService.launchDarklyConfig) {
-      const { enabled, clientId } = this.stateService.launchDarklyConfig;
+    if (this.globalStateService.launchDarklyConfig) {
+      const { enabled, clientId } = this.globalStateService.launchDarklyConfig;
 
       if (enabled && clientId) {
         this.ldClient = initialize(clientId, {

@@ -3,7 +3,7 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { GovukButtonComponent } from '@components';
 import { SignInSsoComponent } from './sign-in-sso/sign-in-sso.component';
 import { SignInStubComponent } from './sign-in-stub/sign-in-stub.component';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
 import { ISignInStubForm } from '@interfaces';
 import { SsoEndpoints } from '@enums';
 
@@ -16,7 +16,7 @@ import { SsoEndpoints } from '@enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent implements OnInit {
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
   public ssoEnabled: boolean | null = true;
   private readonly document = inject(DOCUMENT);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -39,7 +39,7 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
     // This is to prevent a load flicker when switching between sso/stub sign in
-    this.ssoEnabled = this.stateService.ssoEnabled;
+    this.ssoEnabled = this.globalStateService.ssoEnabled;
     this.changeDetectorRef.detectChanges();
   }
 }

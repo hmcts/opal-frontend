@@ -19,17 +19,14 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleEmployerDetailsSubmit(formData: IManualAccountCreationEmployerDetailsState): void {
-    this.stateService.manualAccountCreation = {
-      accountDetails: this.stateService.manualAccountCreation.accountDetails,
+    this.macStateService.manualAccountCreation = {
+      ...this.macStateService.manualAccountCreation,
       employerDetails: formData,
-      contactDetails: this.stateService.manualAccountCreation.contactDetails,
-      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
-      personalDetails: this.stateService.manualAccountCreation.personalDetails,
       unsavedChanges: false,
       stateChanges: true,
     };
 
-    this.routerNavigate(ManualAccountCreationRoutes.createAccount);
+    this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
   }
 
   /**
@@ -38,7 +35,7 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.macStateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

@@ -11,9 +11,8 @@ import {
   GovukTabsComponent,
   GovukTextInputComponent,
 } from '@components';
-
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
-import { DefendantAccountService, PermissionsService, StateService } from '@services';
+import { AeStateService, DefendantAccountService, GlobalStateService, PermissionsService } from '@services';
 import { EMPTY, Observable, switchMap, tap } from 'rxjs';
 import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
@@ -46,10 +45,11 @@ export class DetailsComponent implements OnInit {
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
 
-  public readonly stateService = inject(StateService);
+  public readonly globalStateService = inject(GlobalStateService);
+  public readonly aeStateService = inject(AeStateService);
 
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: IUserStateRole[] = this.stateService.userState()?.roles || [];
+  private readonly userStateRoles: IUserStateRole[] = this.globalStateService.userState()?.roles || [];
 
   private defendantAccountId!: number;
 
@@ -137,7 +137,7 @@ export class DetailsComponent implements OnInit {
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */
   public handleNewSearch(): void {
-    this.stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    this.aeStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 

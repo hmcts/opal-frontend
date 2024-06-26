@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-
 import { DetailsComponent } from './details.component';
-
 import {
   ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
   DEFENDANT_ACCOUNT_DETAILS_MOCK,
@@ -12,7 +10,7 @@ import {
   LAUNCH_DARKLY_FLAGS_MOCK,
   USER_STATE_MOCK,
 } from '@mocks';
-import { DefendantAccountService, StateService } from '@services';
+import { DefendantAccountService, GlobalStateService, AeStateService } from '@services';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
@@ -21,7 +19,8 @@ import { IUserState } from '@interfaces';
 describe('DetailsComponent', () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
-  let stateService: StateService;
+  let globalStateService: GlobalStateService;
+  let aeStateService: AeStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -39,9 +38,10 @@ describe('DetailsComponent', () => {
     }).compileComponents();
 
     // We need the data available before the component creates
-    stateService = TestBed.inject(StateService);
-    stateService.userState.set(USER_STATE_MOCK);
-    stateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
+    globalStateService = TestBed.inject(GlobalStateService);
+    globalStateService.userState.set(USER_STATE_MOCK);
+    globalStateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
+    aeStateService = TestBed.inject(AeStateService);
 
     fixture = TestBed.createComponent(DetailsComponent);
     component = fixture.componentInstance;
@@ -53,7 +53,7 @@ describe('DetailsComponent', () => {
   });
 
   it('should populate with an empty roles array', () => {
-    stateService.userState.set({} as IUserState);
+    globalStateService.userState.set({} as IUserState);
     fixture = TestBed.createComponent(DetailsComponent);
     component = fixture.componentInstance;
 
@@ -92,7 +92,7 @@ describe('DetailsComponent', () => {
 
     component.handleNewSearch();
 
-    expect(stateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(aeStateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
   });
 

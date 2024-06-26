@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AccountDetailsFormComponent } from './account-details-form.component';
+import { CreateAccountFormComponent } from './create-account-form.component';
 import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK } from '@mocks';
 
-describe('AccountDetailsFormComponent', () => {
-  let component: AccountDetailsFormComponent;
-  let fixture: ComponentFixture<AccountDetailsFormComponent>;
+describe('CreateAccountFormComponent', () => {
+  let component: CreateAccountFormComponent;
+  let fixture: ComponentFixture<CreateAccountFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountDetailsFormComponent],
+      imports: [CreateAccountFormComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AccountDetailsFormComponent);
+    fixture = TestBed.createComponent(CreateAccountFormComponent);
     component = fixture.componentInstance;
 
     component.autoCompleteItems = BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;

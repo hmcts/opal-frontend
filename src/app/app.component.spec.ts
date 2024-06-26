@@ -4,9 +4,9 @@ import { GovukFooterComponent } from './components/govuk/govuk-footer/govuk-foot
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MojHeaderComponent } from './components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from './components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { SsoEndpoints } from '@enums';
-import { StateService } from '@services';
+import { GlobalStateService } from '@services';
+import { RouterModule, provideRouter } from '@angular/router';
 
 describe('AppComponent', () => {
   const mockDocumentLocation = {
@@ -14,22 +14,22 @@ describe('AppComponent', () => {
       href: '',
     },
   };
-  let stateService: StateService;
+  let globalStateService: GlobalStateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
         MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
         HttpClientTestingModule,
+        RouterModule.forRoot([]),
       ],
       declarations: [AppComponent],
-      providers: [],
+      providers: [provideRouter([])],
     });
 
-    stateService = TestBed.inject(StateService);
+    globalStateService = TestBed.inject(GlobalStateService);
   });
 
   it('should create the app', () => {
@@ -51,7 +51,7 @@ describe('AppComponent', () => {
 
   describe('handleAuthentication', () => {
     it('should test handle authentication when authenticated is false', () => {
-      stateService.authenticated.set(false);
+      globalStateService.authenticated.set(false);
 
       const fixture = TestBed.createComponent(AppComponent);
       const component = fixture.componentInstance;
@@ -66,7 +66,7 @@ describe('AppComponent', () => {
     });
 
     it('should test handle authentication when authenticated is true', () => {
-      stateService.authenticated.set(true);
+      globalStateService.authenticated.set(true);
 
       const fixture = TestBed.createComponent(AppComponent);
       const component = fixture.componentInstance;

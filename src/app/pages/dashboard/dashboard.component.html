@@ -2,7 +2,7 @@
   <h1 class="govuk-heading-m">Dashboard</h1>
   <ul class="govuk-list">
     <li>
-      <span>{{ stateService.userState().userName }}</span>
+      <span>{{ globalStateService.userState().userName }}</span>
     </li>
     <li>
       <a class="govuk-link" [routerLink]="accountEnquiryRoutes.accountEnquiry" id="accountEnquiryLink"
@@ -10,7 +10,7 @@
       >
     </li>
     <li>
-      <a class="govuk-link" [routerLink]="manualAccountCreationRoutes.accountDetails" id="manualAccountCreationLink"
+      <a class="govuk-link" [routerLink]="manualAccountCreationRoutes.createAccount" id="manualAccountCreationLink"
         >Manually Create Account</a
       >
     </li>

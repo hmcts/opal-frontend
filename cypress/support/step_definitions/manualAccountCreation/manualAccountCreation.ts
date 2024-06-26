@@ -27,7 +27,6 @@ When('{string} is clicked, nothing happens', (linkText: string) => {
   let initialUrl: string;
   cy.url().then((url) => {
     initialUrl = url.toString();
-    cy.get('a').contains(linkText).should('have.attr', 'onclick', 'return false;');
     cy.get('a').contains(linkText).click();
     cy.url().should('eq', initialUrl);
   });
