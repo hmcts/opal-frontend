@@ -106,6 +106,14 @@ const routes: Routes = [
         canActivate: [authGuard],
         canDeactivate: [canDeactivateGuard],
       },
+      {
+        path: RoutingPaths.manualAccountCreationOffenceDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/offence-details/offence-details.component').then(
+            (c) => c.OffenceDetailsComponent,
+          ),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
     canDeactivate: [canDeactivateGuard],
