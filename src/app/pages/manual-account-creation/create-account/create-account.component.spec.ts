@@ -6,6 +6,7 @@ import {
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
 import { BusinessUnitService, MacStateService } from '@services';
 import { IAutoCompleteItem, IBusinessUnitRefData, IManualAccountCreationAccountDetailsState } from '@interfaces';
@@ -142,7 +143,6 @@ describe('CreateAccountComponent', () => {
   });
 
   it('should transform business unit reference data results into select options', () => {
-    //expect(component.data$).not.toBeUndefined();
     component.data$.subscribe((result) => {
       expect(result).toEqual(BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
       expect(businessUnitService.getBusinessUnits).toHaveBeenCalled();

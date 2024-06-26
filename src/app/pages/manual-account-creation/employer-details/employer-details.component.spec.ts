@@ -91,17 +91,17 @@ describe('EmployerDetailsComponent', () => {
 
     component.handleEmployerDetailsSubmit(formData);
 
-    expect(mockStateService.manualAccountCreation.employerDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
+    expect(mockMacStateService.manualAccountCreation.employerDetails).toEqual(formData);
+    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
   });
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeTruthy();
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeFalsy();
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

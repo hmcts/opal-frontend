@@ -6,6 +6,7 @@ import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
 import { MacStateService } from '@services';
 import { provideRouter } from '@angular/router';

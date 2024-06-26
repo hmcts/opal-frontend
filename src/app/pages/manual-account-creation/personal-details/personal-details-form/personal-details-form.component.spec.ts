@@ -8,7 +8,7 @@ import {
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_STATE,
 } from '@constants';
-import { StateService } from '@services';
+import { MacStateService } from '@services';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IManualAccountCreationPersonalAlias } from '@interfaces';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK } from '@mocks';
@@ -16,12 +16,12 @@ import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK } from '@mocks';
 describe('PersonalDetailsFormComponent', () => {
   let component: PersonalDetailsFormComponent;
   let fixture: ComponentFixture<PersonalDetailsFormComponent>;
-  let mockStateService: jasmine.SpyObj<StateService>;
+  let mockMacStateService: jasmine.SpyObj<MacStateService>;
 
   beforeEach(async () => {
-    mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
+    mockMacStateService = jasmine.createSpyObj('macStateService', ['manualAccountCreation']);
 
-    mockStateService.manualAccountCreation = {
+    mockMacStateService.manualAccountCreation = {
       accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
@@ -33,7 +33,7 @@ describe('PersonalDetailsFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [PersonalDetailsFormComponent],
-      providers: [{ provide: StateService, useValue: mockStateService }],
+      providers: [{ provide: MacStateService, useValue: mockMacStateService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PersonalDetailsFormComponent);
@@ -50,8 +50,8 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should add a single alias when personalDetails.addAlias is false', () => {
-    mockStateService.manualAccountCreation.personalDetails.addAlias = false;
-    mockStateService.manualAccountCreation.personalDetails.aliases = [{ firstName: 'Alias1', lastName: 'User1' }];
+    mockMacStateService.manualAccountCreation.personalDetails.addAlias = false;
+    mockMacStateService.manualAccountCreation.personalDetails.aliases = [{ firstName: 'Alias1', lastName: 'User1' }];
 
     spyOn(component, 'addAliases');
     spyOn(component, 'addAliasCheckboxChange');
@@ -67,7 +67,7 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should add aliases based on personalDetails.addAlias being true', () => {
-    mockStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
+    mockMacStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
 
     spyOn(component, 'addAliases');
     spyOn(component, 'addAliasCheckboxChange');
@@ -79,7 +79,7 @@ describe('PersonalDetailsFormComponent', () => {
     expect(component.addAliases).toHaveBeenCalledTimes(1);
     expect(component.addAliases).toHaveBeenCalledWith(0);
     expect(component.addAliasCheckboxChange).toHaveBeenCalled();
-    expect(rePopulateFormSpy).toHaveBeenCalledWith(mockStateService.manualAccountCreation.personalDetails);
+    expect(rePopulateFormSpy).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.personalDetails);
   });
 
   it('should call updateAliasFormGroupValidators for each alias form group', () => {
@@ -392,7 +392,7 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    component.stateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
     const formValue = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
 

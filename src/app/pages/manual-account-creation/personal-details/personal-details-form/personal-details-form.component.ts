@@ -106,7 +106,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
    * It also handles the checkbox change event and repopulates the form if necessary.
    */
   private buildAliasInputs(): void {
-    const personalDetails = this.stateService.manualAccountCreation.personalDetails;
+    const personalDetails = this.macStateService.manualAccountCreation.personalDetails;
     if (personalDetails.addAlias) {
       personalDetails.aliases.map((_, index) => {
         this.addAliases(index);
@@ -285,7 +285,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.personalDetails);
+    this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
     this.buildAliasInputs();
     super.ngOnInit();
   }
