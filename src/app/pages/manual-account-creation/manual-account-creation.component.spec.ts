@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StateService } from '@services';
+import { MacStateService, StateService } from '@services';
 import { MANUAL_ACCOUNT_CREATION_STATE } from '@constants';
 import { ManualAccountCreationComponent } from './manual-account-creation.component';
 
 describe('ManualAccountCreationComponent', () => {
   let component: ManualAccountCreationComponent;
   let fixture: ComponentFixture<ManualAccountCreationComponent>;
+  let macStateService: MacStateService;
   let stateService: StateService;
 
   beforeEach(async () => {
@@ -17,8 +18,9 @@ describe('ManualAccountCreationComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
+    macStateService = TestBed.inject(MacStateService);
+    macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
     stateService = TestBed.inject(StateService);
-    stateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
   });
 
   it('should create', () => {
@@ -32,33 +34,33 @@ describe('ManualAccountCreationComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(stateService.manualAccountCreation).toEqual(MANUAL_ACCOUNT_CREATION_STATE);
+    expect(macStateService.manualAccountCreation).toEqual(MANUAL_ACCOUNT_CREATION_STATE);
     expect(stateService.error()).toEqual({ error: false, message: '' });
   });
 
   it('should call handleBeforeUnload ', () => {
-    stateService.manualAccountCreation.stateChanges = true;
-    stateService.manualAccountCreation.unsavedChanges = false;
+    macStateService.manualAccountCreation.stateChanges = true;
+    macStateService.manualAccountCreation.unsavedChanges = false;
     expect(component.handleBeforeUnload()).toBeFalsy();
 
-    stateService.manualAccountCreation.stateChanges = false;
-    stateService.manualAccountCreation.unsavedChanges = true;
+    macStateService.manualAccountCreation.stateChanges = false;
+    macStateService.manualAccountCreation.unsavedChanges = true;
     expect(component.handleBeforeUnload()).toBeFalsy();
 
-    stateService.manualAccountCreation.stateChanges = false;
-    stateService.manualAccountCreation.unsavedChanges = false;
+    macStateService.manualAccountCreation.stateChanges = false;
+    macStateService.manualAccountCreation.unsavedChanges = false;
     expect(component.handleBeforeUnload()).toBeTruthy();
   });
 
   it('should call canDeactivate ', () => {
     // Empty state, should return true
-    stateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
     expect(component.canDeactivate()).toBeTruthy();
 
-    stateService.manualAccountCreation.stateChanges = true;
+    macStateService.manualAccountCreation.stateChanges = true;
     expect(component.canDeactivate()).toBeFalsy();
 
-    stateService.manualAccountCreation.stateChanges = false;
+    macStateService.manualAccountCreation.stateChanges = false;
     expect(component.canDeactivate()).toBeTruthy();
   });
 });

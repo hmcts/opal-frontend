@@ -17,10 +17,8 @@ export class ContactDetailsComponent extends FormParentBaseComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleContactDetailsSubmit(formData: IManualAccountCreationContactDetailsState): void {
-    this.stateService.manualAccountCreation = {
-      accountDetails: this.stateService.manualAccountCreation.accountDetails,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
-      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
+    this.macStateService.manualAccountCreation = {
+      ...this.macStateService.manualAccountCreation,
       contactDetails: formData,
       unsavedChanges: false,
       stateChanges: true,
@@ -35,7 +33,7 @@ export class ContactDetailsComponent extends FormParentBaseComponent {
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.macStateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

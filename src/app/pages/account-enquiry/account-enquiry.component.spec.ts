@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AccountEnquiryComponent } from './account-enquiry.component';
-import { StateService } from '@services';
+import { MacStateService, StateService } from '@services';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 describe('AccountEnquiryComponent', () => {
   let component: AccountEnquiryComponent;
   let fixture: ComponentFixture<AccountEnquiryComponent>;
+  let macStateService: MacStateService;
   let stateService: StateService;
 
   beforeEach(async () => {
@@ -19,8 +19,9 @@ describe('AccountEnquiryComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
+    macStateService = TestBed.inject(MacStateService);
+    macStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     stateService = TestBed.inject(StateService);
-    stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
   });
 
   it('should create', () => {
@@ -34,16 +35,16 @@ describe('AccountEnquiryComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(stateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(macStateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(stateService.error()).toEqual({ error: false, message: '' });
   });
 
   it('should call handleBeforeUnload ', () => {
     // Empty state, should return true
-    stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    macStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     expect(component.handleBeforeUnload()).toBeTruthy();
 
-    stateService.accountEnquiry.search.court = 'test';
+    macStateService.accountEnquiry.search.court = 'test';
     expect(component.handleBeforeUnload()).toBeFalsy();
   });
 });

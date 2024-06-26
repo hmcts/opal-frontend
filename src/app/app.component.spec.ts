@@ -4,9 +4,9 @@ import { GovukFooterComponent } from './components/govuk/govuk-footer/govuk-foot
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MojHeaderComponent } from './components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from './components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { SsoEndpoints } from '@enums';
 import { StateService } from '@services';
+import { RouterModule, provideRouter } from '@angular/router';
 
 describe('AppComponent', () => {
   const mockDocumentLocation = {
@@ -18,15 +18,9 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        MojHeaderComponent,
-        MojHeaderNavigationItemComponent,
-        GovukFooterComponent,
-        HttpClientTestingModule,
-      ],
+      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterComponent, HttpClientTestingModule, RouterModule.forRoot([])],
       declarations: [AppComponent],
-      providers: [],
+      providers: [provideRouter([])],
     });
 
     stateService = TestBed.inject(StateService);

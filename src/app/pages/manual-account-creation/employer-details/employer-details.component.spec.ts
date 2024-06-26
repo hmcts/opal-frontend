@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { EmployerDetailsComponent } from './employer-details.component';
-import { StateService } from '@services';
+import { MacStateService } from '@services';
 import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import {
@@ -13,12 +13,12 @@ import {
 describe('EmployerDetailsComponent', () => {
   let component: EmployerDetailsComponent;
   let fixture: ComponentFixture<EmployerDetailsComponent>;
-  let mockStateService: jasmine.SpyObj<StateService>;
+  let mockMacStateService: jasmine.SpyObj<MacStateService>;
 
   beforeEach(async () => {
-    mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
+    mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
-    mockStateService.manualAccountCreation = {
+    mockMacStateService.manualAccountCreation = {
       accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
@@ -29,7 +29,7 @@ describe('EmployerDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [EmployerDetailsComponent],
-      providers: [{ provide: StateService, useValue: mockStateService }],
+      providers: [{ provide: MacStateService, useValue: mockMacStateService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EmployerDetailsComponent);
@@ -58,17 +58,17 @@ describe('EmployerDetailsComponent', () => {
 
     component.handleEmployerDetailsSubmit(formData);
 
-    expect(mockStateService.manualAccountCreation.employerDetails).toEqual(formData);
+    expect(mockMacStateService.manualAccountCreation.employerDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
   });
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeTruthy();
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeFalsy();
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

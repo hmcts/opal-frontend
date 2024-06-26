@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { StateService } from '@services';
+import { MacStateService, StateService } from '@services';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 
 @Component({
@@ -12,14 +12,15 @@ import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 })
 export class AccountEnquiryComponent implements OnDestroy {
   private readonly stateService = inject(StateService);
+  private readonly macStateService = inject(MacStateService);
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(): boolean {
-    return this.stateService.accountEnquiry.search.court === null;
+    return this.macStateService.accountEnquiry.search.court === null;
   }
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    this.macStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
 
     // Clear any errors...
     this.stateService.error.set({

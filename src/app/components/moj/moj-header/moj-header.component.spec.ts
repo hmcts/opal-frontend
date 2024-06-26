@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MojHeaderComponent } from './moj-header.component';
 import { Component } from '@angular/core';
 import { MojHeaderNavigationItemComponent } from './moj-header-navigation-item/moj-header-navigation-item.component';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 
 @Component({
   template: `<app-moj-header>
@@ -22,7 +21,8 @@ describe('MojHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent, RouterTestingModule],
+      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent],
+      providers: [provideRouter([])],
       declarations: [TestHostComponent],
     }).compileComponents();
 
@@ -50,3 +50,6 @@ describe('MojHeaderComponent', () => {
     expect(element.innerText).toBe('Test Link');
   });
 });
+function withRouterTesting(): import('@angular/router').RouterFeatures {
+  throw new Error('Function not implemented.');
+}

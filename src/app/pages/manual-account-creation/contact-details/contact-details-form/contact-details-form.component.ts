@@ -66,7 +66,7 @@ export class ContactDetailsFormComponent extends FormBaseComponent implements On
   public override ngOnInit(): void {
     this.setupContactDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.contactDetails);
+    this.rePopulateForm(this.macStateService.manualAccountCreation.contactDetails);
     super.ngOnInit();
   }
 }

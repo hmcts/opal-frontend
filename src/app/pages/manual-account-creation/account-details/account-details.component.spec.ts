@@ -8,7 +8,7 @@ import {
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
 } from '@constants';
-import { StateService } from '@services';
+import { MacStateService } from '@services';
 import { IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
@@ -16,12 +16,12 @@ import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
   let fixture: ComponentFixture<AccountDetailsComponent>;
-  let mockStateService: jasmine.SpyObj<StateService>;
+  let mockMacStateService: jasmine.SpyObj<MacStateService>;
 
   beforeEach(async () => {
-    mockStateService = jasmine.createSpyObj('StateService', ['manualAccountCreation']);
+    mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
-    mockStateService.manualAccountCreation = {
+    mockMacStateService.manualAccountCreation = {
       accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
@@ -32,13 +32,13 @@ describe('AccountDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [AccountDetailsComponent, HttpClientTestingModule],
-      providers: [{ provide: StateService, useValue: mockStateService }],
+      providers: [{ provide: MacStateService, useValue: mockMacStateService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountDetailsComponent);
     component = fixture.componentInstance;
 
-    component.stateService.manualAccountCreation.accountDetails.businessUnit = null;
+    component.macStateService.manualAccountCreation.accountDetails.businessUnit = null;
 
     fixture.detectChanges();
   });
@@ -56,17 +56,17 @@ describe('AccountDetailsComponent', () => {
 
     component.handleAccountDetailsSubmit(formData);
 
-    expect(mockStateService.manualAccountCreation.accountDetails).toEqual(formData);
+    expect(mockMacStateService.manualAccountCreation.accountDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.createAccount]);
   });
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeTruthy();
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(component.stateService.manualAccountCreation.unsavedChanges).toBeFalsy();
+    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 
@@ -75,7 +75,7 @@ describe('AccountDetailsComponent', () => {
 
     component['setBusinessUnit'](response);
 
-    expect(component.stateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
       BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
     );
   });
@@ -83,14 +83,14 @@ describe('AccountDetailsComponent', () => {
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
     const response = { count: 1, refData: [BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
-    component.stateService.manualAccountCreation.accountDetails.businessUnit =
+    component.macStateService.manualAccountCreation.accountDetails.businessUnit =
       BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
 
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
-    expect(component.stateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
       BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
     );
   });
@@ -98,10 +98,10 @@ describe('AccountDetailsComponent', () => {
   it('should not set the business unit for account details when there are multiple business units available', () => {
     const response = BUSINESS_UNIT_REF_DATA_MOCK;
 
-    component.stateService.manualAccountCreation.accountDetails.businessUnit = null;
+    component.macStateService.manualAccountCreation.accountDetails.businessUnit = null;
 
     component['setBusinessUnit'](response);
 
-    expect(component.stateService.manualAccountCreation.accountDetails.businessUnit).toBeNull();
+    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toBeNull();
   });
 });

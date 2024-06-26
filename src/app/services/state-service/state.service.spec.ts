@@ -15,11 +15,6 @@ describe('StateService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should store search state', () => {
-    service.accountEnquiry = { search: SEARCH_STATE_MOCK };
-    expect(service.accountEnquiry.search).toEqual(SEARCH_STATE_MOCK);
-  });
-
   it('should store error state', () => {
     const message = 'Test message';
     service.error.set({ error: true, message: message });

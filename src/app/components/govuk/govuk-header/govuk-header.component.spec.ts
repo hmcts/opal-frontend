@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GovukHeaderComponent } from './govuk-header.component';
 import { Component } from '@angular/core';
 import { GovukHeaderNavigationItemComponent } from './govuk-header-navigation-item/govuk-header-navigation-item.component';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 
 @Component({
   template: `<app-govuk-header>
@@ -21,8 +21,9 @@ describe('GovukHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukHeaderComponent, GovukHeaderNavigationItemComponent, RouterTestingModule],
+      imports: [GovukHeaderComponent, GovukHeaderNavigationItemComponent],
       declarations: [TestHostComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

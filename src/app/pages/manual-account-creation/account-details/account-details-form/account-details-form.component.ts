@@ -71,7 +71,7 @@ export class AccountDetailsFormComponent extends FormBaseComponent implements On
   public override ngOnInit(): void {
     this.setupAccountDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.accountDetails);
+    this.rePopulateForm(this.macStateService.manualAccountCreation.accountDetails);
     super.ngOnInit();
   }
 }

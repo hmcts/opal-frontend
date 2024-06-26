@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MANUAL_ACCOUNT_CREATION_STATE } from '@constants';
-import { StateService } from '@services';
+import { MacStateService, StateService } from '@services';
 import { CanDeactivateType } from '@interfaces';
 
 @Component({
@@ -12,7 +12,8 @@ import { CanDeactivateType } from '@interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ManualAccountCreationComponent implements OnDestroy {
-  private readonly stateService = inject(StateService);
+  public readonly macStateService = inject(MacStateService);
+  public readonly stateService = inject(StateService);
 
   /**
    * If the user navigates externally from the site or closes the tab
@@ -24,9 +25,9 @@ export class ManualAccountCreationComponent implements OnDestroy {
    */
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(): boolean {
-    if (this.stateService.manualAccountCreation.unsavedChanges) {
+    if (this.macStateService.manualAccountCreation.unsavedChanges) {
       return false;
-    } else if (this.stateService.manualAccountCreation.stateChanges) {
+    } else if (this.macStateService.manualAccountCreation.stateChanges) {
       return false;
     } else {
       return true;
@@ -41,7 +42,7 @@ export class ManualAccountCreationComponent implements OnDestroy {
    * @returns boolean
    */
   canDeactivate(): CanDeactivateType {
-    if (this.stateService.manualAccountCreation.stateChanges) {
+    if (this.macStateService.manualAccountCreation.stateChanges) {
       return false;
     } else {
       return true;
@@ -50,7 +51,7 @@ export class ManualAccountCreationComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.stateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    this.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
 
     // Clear any errors...
     this.stateService.error.set({

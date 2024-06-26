@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MojSubNavigationItemComponent } from './moj-sub-navigation-item.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 
 describe('MojSubNavigationItemComponent', () => {
@@ -13,7 +11,8 @@ describe('MojSubNavigationItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojSubNavigationItemComponent, RouterTestingModule],
+      imports: [MojSubNavigationItemComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MojSubNavigationItemComponent);
@@ -72,3 +71,6 @@ describe('MojSubNavigationItemComponent', () => {
     });
   });
 });
+function withRouterTesting(): import('@angular/router').RouterFeatures {
+  throw new Error('Function not implemented.');
+}

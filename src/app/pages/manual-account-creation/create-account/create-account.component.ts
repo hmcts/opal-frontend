@@ -14,7 +14,7 @@ import {
 import { DEFENDANT_TYPES_STATE } from '@constants';
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { StateService } from '@services';
+import { MacStateService } from '@services';
 
 @Component({
   selector: 'app-create-account',
@@ -38,7 +38,7 @@ import { StateService } from '@services';
 })
 export class CreateAccountComponent implements OnInit {
   private readonly router = inject(Router);
-  public readonly stateService = inject(StateService);
+  public readonly macStateService = inject(MacStateService);
 
   public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
@@ -53,7 +53,7 @@ export class CreateAccountComponent implements OnInit {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { defendantType } = this.stateService.manualAccountCreation.accountDetails;
+    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
     if (defendantType) {
       this.defendantType = this.defendantTypes[defendantType] || '';
     }

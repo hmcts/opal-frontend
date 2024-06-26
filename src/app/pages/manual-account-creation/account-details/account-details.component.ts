@@ -39,10 +39,10 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
    */
   private setBusinessUnit(response: IBusinessUnitRefData): void {
     const { count, refData } = response;
-    const { accountDetails } = this.stateService.manualAccountCreation;
+    const { accountDetails } = this.macStateService.manualAccountCreation;
 
     if (count === 1 && accountDetails.businessUnit === null) {
-      this.stateService.manualAccountCreation.accountDetails.businessUnit = refData[0].businessUnitName;
+      this.macStateService.manualAccountCreation.accountDetails.businessUnit = refData[0].businessUnitName;
     }
   }
 
@@ -62,11 +62,9 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
-    this.stateService.manualAccountCreation = {
+    this.macStateService.manualAccountCreation = {
+      ...this.macStateService.manualAccountCreation,
       accountDetails: formData,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
-      contactDetails: this.stateService.manualAccountCreation.contactDetails,
-      parentGuardianDetails: this.stateService.manualAccountCreation.parentGuardianDetails,
       unsavedChanges: false,
       stateChanges: true,
     };
@@ -80,7 +78,7 @@ export class AccountDetailsComponent extends FormParentBaseComponent {
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.macStateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

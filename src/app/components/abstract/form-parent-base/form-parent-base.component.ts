@@ -1,11 +1,12 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CanDeactivateType } from '@interfaces';
-import { StateService } from '@services';
+import { MacStateService, StateService } from '@services';
 
 export abstract class FormParentBaseComponent {
   private readonly router = inject(Router);
-  public stateService = inject(StateService);
+  public readonly stateService = inject(StateService);
+  public readonly macStateService = inject(MacStateService);
   public stateUnsavedChanges!: boolean;
 
   /**

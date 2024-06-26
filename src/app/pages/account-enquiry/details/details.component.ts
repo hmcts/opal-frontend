@@ -13,7 +13,7 @@ import {
 } from '@components';
 
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
-import { DefendantAccountService, PermissionsService, StateService } from '@services';
+import { DefendantAccountService, MacStateService, PermissionsService, StateService } from '@services';
 import { EMPTY, Observable, switchMap, tap } from 'rxjs';
 import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
@@ -47,6 +47,7 @@ export class DetailsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   public readonly stateService = inject(StateService);
+  public readonly macStateService = inject(MacStateService);
 
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
   private readonly userStateRoles: IUserStateRole[] = this.stateService.userState()?.roles || [];
@@ -137,7 +138,7 @@ export class DetailsComponent implements OnInit {
    * Handles a new search by resetting the account enquiry state and navigating to the search page.
    */
   public handleNewSearch(): void {
-    this.stateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
+    this.macStateService.accountEnquiry = ACCOUNT_ENQUIRY_DEFAULT_STATE;
     this.router.navigate([AccountEnquiryRoutes.search]);
   }
 

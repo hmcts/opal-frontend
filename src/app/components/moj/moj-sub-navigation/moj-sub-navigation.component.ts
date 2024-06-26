@@ -16,7 +16,6 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [],
   templateUrl: './moj-sub-navigation.component.html',
-  styleUrl: './moj-sub-navigation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojSubNavigationComponent implements OnInit, OnDestroy {

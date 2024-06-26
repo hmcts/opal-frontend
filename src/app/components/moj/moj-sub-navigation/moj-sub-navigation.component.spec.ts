@@ -1,11 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MojSubNavigationComponent } from './moj-sub-navigation.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-
-const fragment = 'test';
+import { MojSubNavigationComponent } from './moj-sub-navigation.component';
 
 describe('MojSubNavigationComponent', () => {
   let component: MojSubNavigationComponent;
@@ -13,12 +9,12 @@ describe('MojSubNavigationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojSubNavigationComponent, RouterTestingModule],
+      imports: [MojSubNavigationComponent],
       providers: [
         {
           provide: ActivatedRoute,
           useValue: {
-            fragment: of(fragment), // Mock the route params
+            fragment: of('test'),
           },
         },
       ],
@@ -26,15 +22,17 @@ describe('MojSubNavigationComponent', () => {
 
     fixture = TestBed.createComponent(MojSubNavigationComponent);
     component = fixture.componentInstance;
-    component.subNavId = 'example';
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should have an id', () => {
+    component.subNavId = 'example';
+    fixture.detectChanges();
+
     const element = fixture.nativeElement.querySelector('#example');
     expect(element).toBeTruthy();
   });
@@ -43,8 +41,10 @@ describe('MojSubNavigationComponent', () => {
     spyOn(component.activeSubNavItemFragment, 'emit');
 
     component.ngOnInit();
+    fixture.detectChanges();
+
     expect(component['routeFragmentSub']).toBeDefined();
 
-    expect(component.activeSubNavItemFragment.emit).toHaveBeenCalledWith(fragment);
+    expect(component.activeSubNavItemFragment.emit).toHaveBeenCalledWith('test');
   });
 });

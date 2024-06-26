@@ -19,10 +19,8 @@ export class ParentGuardianDetailsComponent extends FormParentBaseComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleParentGuardianDetailsSubmit(formData: IManualAccountCreationParentGuardianDetailsState): void {
-    this.stateService.manualAccountCreation = {
-      accountDetails: this.stateService.manualAccountCreation.accountDetails,
-      employerDetails: this.stateService.manualAccountCreation.employerDetails,
-      contactDetails: this.stateService.manualAccountCreation.contactDetails,
+    this.macStateService.manualAccountCreation = {
+      ...this.macStateService.manualAccountCreation,
       parentGuardianDetails: formData,
       unsavedChanges: false,
       stateChanges: true,
@@ -37,7 +35,7 @@ export class ParentGuardianDetailsComponent extends FormParentBaseComponent {
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.stateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.macStateService.manualAccountCreation.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

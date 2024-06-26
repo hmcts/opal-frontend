@@ -10,6 +10,7 @@ import { PermissionsService } from './permissions-service/permissions.service';
 import { TransferStateService } from './transfer-state-service/transfer-state.service';
 import { SessionService } from './session-service/session.service';
 import { BusinessUnitService } from './business-unit/business-unit.service';
+import { MacStateService } from './mac-state-service/mac-state.service';
 
 export {
   DefendantAccountService,
@@ -23,4 +24,5 @@ export {
   TransferStateService,
   SessionService,
   BusinessUnitService,
+  MacStateService,
 };

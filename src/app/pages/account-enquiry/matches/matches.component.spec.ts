@@ -1,30 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MatchesComponent } from './matches.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { AccountEnquiryRoutes } from '@enums';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StateService } from '@services';
+import { MacStateService } from '@services';
 import { SEARCH_STATE_MOCK } from '@mocks';
 
 describe('MatchesComponent', () => {
   let component: MatchesComponent;
   let fixture: ComponentFixture<MatchesComponent>;
   let router: Router;
-  let stateService: StateService;
+  let macStateService: MacStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatchesComponent, RouterTestingModule, HttpClientTestingModule, BrowserAnimationsModule],
+      imports: [MatchesComponent, HttpClientTestingModule, BrowserAnimationsModule],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MatchesComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    stateService = TestBed.inject(StateService);
-    stateService.accountEnquiry = { search: SEARCH_STATE_MOCK };
+    macStateService = TestBed.inject(MacStateService);
+    macStateService.accountEnquiry = { search: SEARCH_STATE_MOCK };
 
     fixture.detectChanges();
   });

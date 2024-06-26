@@ -76,7 +76,7 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
   public override ngOnInit(): void {
     this.setupEmployerDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.stateService.manualAccountCreation.employerDetails);
+    this.rePopulateForm(this.macStateService.manualAccountCreation.employerDetails);
     super.ngOnInit();
   }
 }
