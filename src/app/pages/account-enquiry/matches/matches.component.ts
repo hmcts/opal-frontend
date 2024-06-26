@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { GovukButtonComponent } from '@components';
 import { AccountEnquiryRoutes } from '@enums';
-import { DefendantAccountService, GlobalStateService, MacStateService } from '@services';
+import { AeStateService, DefendantAccountService, GlobalStateService } from '@services';
 import { Observable } from 'rxjs';
 import { ISearchDefendantAccounts } from '@interfaces';
 import { MatchesTableComponent } from './matches-table/matches-table.component';
@@ -19,11 +19,11 @@ import { MatchesTableComponent } from './matches-table/matches-table.component';
 })
 export class MatchesComponent {
   public readonly globalStateService = inject(GlobalStateService);
-  public readonly macStateService = inject(MacStateService);
+  public readonly aeStateService = inject(AeStateService);
   private readonly router = inject(Router);
   private readonly defendantAccountService = inject(DefendantAccountService);
 
-  private readonly searchState = this.macStateService.accountEnquiry.search;
+  private readonly searchState = this.aeStateService.accountEnquiry.search;
   public readonly error = this.globalStateService.error();
 
   public data$: Observable<ISearchDefendantAccounts> = this.defendantAccountService.searchDefendantAccounts({

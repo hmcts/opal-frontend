@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ContactDetailsFormComponent } from './contact-details-form.component';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK } from '@mocks';
-import { MacStateService } from '@services';
 
 describe('ContactDetailsFormComponent', () => {
   let component: ContactDetailsFormComponent;
@@ -11,7 +9,6 @@ describe('ContactDetailsFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ContactDetailsFormComponent],
-      providers: [MacStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContactDetailsFormComponent);

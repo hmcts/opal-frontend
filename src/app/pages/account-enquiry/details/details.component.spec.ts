@@ -10,7 +10,7 @@ import {
   LAUNCH_DARKLY_FLAGS_MOCK,
   USER_STATE_MOCK,
 } from '@mocks';
-import { DefendantAccountService, MacStateService, GlobalStateService } from '@services';
+import { DefendantAccountService, GlobalStateService, AeStateService } from '@services';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
@@ -20,7 +20,7 @@ describe('DetailsComponent', () => {
   let component: DetailsComponent;
   let fixture: ComponentFixture<DetailsComponent>;
   let globalStateService: GlobalStateService;
-  let macStateService: MacStateService;
+  let aeStateService: AeStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,7 +34,6 @@ describe('DetailsComponent', () => {
             params: of({ defendantAccountId: 123 }), // Mock the route params
           },
         },
-        MacStateService,
       ],
     }).compileComponents();
 
@@ -42,7 +41,7 @@ describe('DetailsComponent', () => {
     globalStateService = TestBed.inject(GlobalStateService);
     globalStateService.userState.set(USER_STATE_MOCK);
     globalStateService.featureFlags.set(LAUNCH_DARKLY_FLAGS_MOCK);
-    macStateService = TestBed.inject(MacStateService);
+    aeStateService = TestBed.inject(AeStateService);
 
     fixture = TestBed.createComponent(DetailsComponent);
     component = fixture.componentInstance;
@@ -93,7 +92,7 @@ describe('DetailsComponent', () => {
 
     component.handleNewSearch();
 
-    expect(macStateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
+    expect(aeStateService.accountEnquiry).toEqual(ACCOUNT_ENQUIRY_DEFAULT_STATE);
     expect(routerSpy).toHaveBeenCalledWith([AccountEnquiryRoutes.search]);
   });
 

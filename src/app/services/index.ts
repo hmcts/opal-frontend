@@ -11,6 +11,7 @@ import { TransferStateService } from './transfer-state-service/transfer-state.se
 import { SessionService } from './session-service/session.service';
 import { BusinessUnitService } from './business-unit/business-unit.service';
 import { MacStateService } from './mac-state-service/mac-state.service';
+import { AeStateService } from './ae-state-service/ae-state.service';
 
 export {
   DefendantAccountService,
@@ -25,4 +26,5 @@ export {
   SessionService,
   BusinessUnitService,
   MacStateService,
+  AeStateService,
 };

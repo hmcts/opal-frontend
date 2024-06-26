@@ -4,26 +4,26 @@ import { Router, provideRouter } from '@angular/router';
 import { AccountEnquiryRoutes } from '@enums';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MacStateService } from '@services';
 import { SEARCH_STATE_MOCK } from '@mocks';
+import { AeStateService } from '@services';
 
 describe('MatchesComponent', () => {
   let component: MatchesComponent;
   let fixture: ComponentFixture<MatchesComponent>;
   let router: Router;
-  let macStateService: MacStateService;
+  let aeStateService: AeStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatchesComponent, HttpClientTestingModule, BrowserAnimationsModule],
-      providers: [provideRouter([]), MacStateService],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MatchesComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    macStateService = TestBed.inject(MacStateService);
-    macStateService.accountEnquiry = { search: SEARCH_STATE_MOCK };
+    aeStateService = TestBed.inject(AeStateService);
+    aeStateService.accountEnquiry = { search: SEARCH_STATE_MOCK };
 
     fixture.detectChanges();
   });

@@ -59,7 +59,7 @@ export class SearchComponent extends FormParentBaseComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleFormSubmit(formData: IAccountEnquiryStateSearch): void {
-    this.macStateService.accountEnquiry = {
+    this.aeStateService.accountEnquiry = {
       search: formData,
     };
 

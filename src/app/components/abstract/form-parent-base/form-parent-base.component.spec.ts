@@ -1,7 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormParentBaseComponent } from './form-parent-base.component';
 import { Component } from '@angular/core';
-import { MacStateService } from '@services';
 
 @Component({
   selector: 'app-test-form-parent-base',
@@ -20,7 +19,6 @@ describe('FormParentBaseComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestFormParentBaseComponent],
-      providers: [MacStateService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestFormParentBaseComponent);

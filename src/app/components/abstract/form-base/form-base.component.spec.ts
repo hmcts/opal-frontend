@@ -9,7 +9,6 @@ import {
 } from '@mocks';
 import { IFieldError, IFormError, IFormErrorSummaryMessage } from '@interfaces';
 import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
-import { MacStateService } from '@services';
 
 class TestFormBaseComponent extends FormBaseComponent {
   constructor() {
@@ -38,7 +37,6 @@ describe('FormBaseComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TestFormBaseComponent],
-      providers: [MacStateService],
     }).compileComponents();
   });
 
