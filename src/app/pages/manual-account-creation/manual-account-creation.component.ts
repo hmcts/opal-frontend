@@ -8,6 +8,7 @@ import { CanDeactivateType } from '@interfaces';
   selector: 'app-manual-account-creation',
   standalone: true,
   imports: [RouterOutlet],
+  providers: [MacStateService],
   templateUrl: './manual-account-creation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
