@@ -1,7 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-
 import { StateService } from './state.service';
-import { SEARCH_STATE_MOCK } from '@mocks';
 
 describe('StateService', () => {
   let service: StateService;

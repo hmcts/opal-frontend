@@ -71,6 +71,3 @@ describe('MojSubNavigationItemComponent', () => {
     });
   });
 });
-function withRouterTesting(): import('@angular/router').RouterFeatures {
-  throw new Error('Function not implemented.');
-}

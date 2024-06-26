@@ -18,7 +18,13 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterComponent, HttpClientTestingModule, RouterModule.forRoot([])],
+      imports: [
+        MojHeaderComponent,
+        MojHeaderNavigationItemComponent,
+        GovukFooterComponent,
+        HttpClientTestingModule,
+        RouterModule.forRoot([]),
+      ],
       declarations: [AppComponent],
       providers: [provideRouter([])],
     });
