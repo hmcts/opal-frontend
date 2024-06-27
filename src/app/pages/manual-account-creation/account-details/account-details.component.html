@@ -117,7 +117,11 @@
           </a>
         </ng-container>
         <ng-container status>
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
+          @if (personalDetailsPopulated) {
+            <app-govuk-tag tagClasses="govuk-tag" tagId="personalDetailsStatusTag">Provided</app-govuk-tag>
+          } @else {
+            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
+          }
         </ng-container>
       </app-govuk-task-list-item>
     }

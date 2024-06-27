@@ -308,8 +308,8 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     When I enter "NInumber1234" into the "National Insurance number" field
     And I click the "Return to account details" button
 
-    Then I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" at the top of the page
-    And I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" above the "National Insurance number" field
+    Then I see the error message "Enter a National Insurance number in the format AANNNNNNA" at the top of the page
+    And I see the error message "Enter a National Insurance number in the format AANNNNNNA" above the "National Insurance number" field
 
   Scenario: AC4 - NI number - invalid final character validation
     Given I am on the OPAL Frontend
@@ -327,8 +327,8 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     When I enter "AB123456Z" into the "National Insurance number" field
     And I click the "Return to account details" button
 
-    Then I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" at the top of the page
-    And I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" above the "National Insurance number" field
+    Then I see the error message "Enter a National Insurance number in the format AANNNNNNA" at the top of the page
+    And I see the error message "Enter a National Insurance number in the format AANNNNNNA" above the "National Insurance number" field
 
   Scenario: AC5 - All fields - correcting validation allows user to progress
     Given I am on the OPAL Frontend
@@ -358,8 +358,8 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     And I see the error message "Enter date of birth in the format DD/MM/YYYY" at the top of the page
     And I see the error message "Enter date of birth in the format DD/MM/YYYY" above the Date of birth field
 
-    And I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" at the top of the page
-    And I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" above the "National Insurance number" field
+    And I see the error message "Enter a National Insurance number in the format AANNNNNNA" at the top of the page
+    And I see the error message "Enter a National Insurance number in the format AANNNNNNA" above the "National Insurance number" field
 
     And I see the error message "The address line 1 must not contain special characters" at the top of the page
     And I see the error message "The address line 1 must not contain special characters" above the "Address line 1" field

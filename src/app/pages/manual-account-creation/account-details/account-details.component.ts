@@ -44,6 +44,7 @@ export class AccountDetailsComponent implements OnInit {
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   public readonly defendantTypes = DEFENDANT_TYPES_STATE;
+  public personalDetailsPopulated!: boolean;
 
   public defendantType = '';
 
@@ -60,6 +61,19 @@ export class AccountDetailsComponent implements OnInit {
   }
 
   /**
+   * Checks the status of the personal details in the manual account creation.
+   * Sets the `personalDetailsPopulated` property based on the presence of required personal details.
+   */
+  private checkStatus(): void {
+    const { personalDetails } = this.macStateService.manualAccountCreation;
+    this.personalDetailsPopulated =
+      !!personalDetails?.title &&
+      !!personalDetails?.firstNames &&
+      !!personalDetails?.lastName &&
+      !!personalDetails?.addressLine1;
+  }
+
+  /**
    * Navigates to the specified route.
    *
    * @param route - The route to navigate to.
@@ -70,5 +84,6 @@ export class AccountDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDefendantType();
+    this.checkStatus();
   }
 }

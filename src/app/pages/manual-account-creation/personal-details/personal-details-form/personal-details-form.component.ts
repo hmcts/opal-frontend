@@ -23,8 +23,12 @@ import {
   TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalAlias } from '@interfaces';
-import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
+import {
+  IFieldErrors,
+  IGovUkSelectOptions,
+  IManualAccountCreationPersonalAlias,
+  IManualAccountCreationPersonalDetailsForm,
+} from '@interfaces';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
@@ -55,7 +59,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsState>();
+  @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
@@ -159,6 +163,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   private clearAliasValidators(aliasFormGroup: FormGroup, key: string): void {
     aliasFormGroup.controls[key].clearValidators();
     aliasFormGroup.controls[key].updateValueAndValidity();
+    aliasFormGroup.controls[key].reset();
   }
 
   /**
@@ -271,14 +276,18 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   /**
    * Handles the form submission event.
+   *
+   * @param event - The form submission event.
+   * @returns void
    */
-  public handleFormSubmit(): void {
+  public handleFormSubmit(event: SubmitEvent): void {
     this.handleErrorMessages();
 
     if (this.form.valid) {
       this.formSubmitted = true;
+      const continueFlow = event.submitter ? event.submitter.className.includes('continue-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit({ formData: this.form.value, continueFlow: continueFlow });
     }
   }
 

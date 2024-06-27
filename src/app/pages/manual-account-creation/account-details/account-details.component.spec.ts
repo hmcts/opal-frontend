@@ -73,4 +73,26 @@ describe('AccountDetailsComponent', () => {
     component['setDefendantType']();
     expect(component.defendantType).toBe('');
   });
+
+  it('should check status and set personalDetailsPopulated to true when all personal details are populated', () => {
+    component.macStateService.manualAccountCreation.personalDetails.title = 'Mr';
+    component.macStateService.manualAccountCreation.personalDetails.firstNames = 'John';
+    component.macStateService.manualAccountCreation.personalDetails.lastName = 'Doe';
+    component.macStateService.manualAccountCreation.personalDetails.addressLine1 = '123 Main St';
+
+    component['checkStatus']();
+
+    expect(component.personalDetailsPopulated).toBe(true);
+  });
+
+  it('should check status and set personalDetailsPopulated to false when any personal detail is missing', () => {
+    component.macStateService.manualAccountCreation.personalDetails.title = 'Mr';
+    component.macStateService.manualAccountCreation.personalDetails.firstNames = 'John';
+    component.macStateService.manualAccountCreation.personalDetails.lastName = 'Doe';
+    component.macStateService.manualAccountCreation.personalDetails.addressLine1 = null;
+
+    component['checkStatus']();
+
+    expect(component.personalDetailsPopulated).toBe(false);
+  });
 });
