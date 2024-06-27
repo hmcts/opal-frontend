@@ -426,7 +426,7 @@ Then('I click Cancel, a window pops up and I click Cancel', () => {
 });
 
 When('I select title {string}', (title: string) => {
-  personalDetails.enterTitle(title);
+  personalDetails.selectTitle(title);
 });
 When('I enter data into first names and last name in personal details screen', (table: DataTable) => {
   const data = table.rowsHash();
@@ -436,7 +436,7 @@ When('I enter data into first names and last name in personal details screen', (
       cy.get(selector).type(value);
     }
   }
-  typeIfNotBlank('#firstNames', data['firstName']);
+  typeIfNotBlank('#firstNames', data['firstNames']);
   typeIfNotBlank('#lastName', data['lastName']);
 });
 Then('I select add aliases check box', () => {
@@ -448,24 +448,29 @@ When('I enter alias1 details {string},{string}', (firstName: string, lastName: s
 });
 When('I enter alias2 details {string},{string}', (firstName: string, lastName: string) => {
   cy.get('#firstNames_1').type(firstName);
-  cy.get('#lastName_0').type(lastName);
+  cy.get('#lastName_1').type(lastName);
 });
 When('I enter alias3 details {string},{string}', (firstName: string, lastName: string) => {
   cy.get('#firstNames_2').type(firstName);
-  cy.get('#lastName_0').type(lastName);
+  cy.get('#lastName_2').type(lastName);
 });
 When('I enter alias4 details {string},{string}', (firstName: string, lastName: string) => {
   cy.get('#firstNames_3').type(firstName);
-  cy.get('#lastName_0').type(lastName);
+  cy.get('#lastName_3').type(lastName);
 });
 When('I enter alias5 details {string},{string}', (firstName: string, lastName: string) => {
   cy.get('#firstNames_4').type(firstName);
-  cy.get('#lastName_0').type(lastName);
+  cy.get('#lastName_4').type(lastName);
 });
 When('I select add another alias', () => {
   cy.get('#addAlias-conditional > app-govuk-button > button').click();
 });
-When('I enter date of birth from date picker', () => {});
+When('I enter make of the car {string}', (carBrand: string) => {
+  cy.get('#makeOfCar').clear().type(carBrand);
+});
+When('I enter registration number of the car {string}', (carRegistration: string) => {
+  cy.get('#registrationNumber').clear().type(carRegistration);
+});
 When('I enter National insurance number {string}', (nino: string) => {
   personalDetails.enterNINO(nino);
 });
@@ -480,9 +485,7 @@ When('I enter address line 2 {string}', (addressLine2: string) => {
 When('I enter address line 3 {string}', (addressLine3: string) => {
   cy.get('#addressLine3').should('be.empty').type(addressLine3);
 });
-When('I enter postcode', () => {});
-When('I enter make of the car', () => {});
-When('I enter registration number of the car', () => {});
+When('I enter postcode {string}', (postcode:string) => { personalDetails.enterPostcode(postcode);});
 
 Then('I verify {string} sub heading', (aliasText: string) => {
   //cy.get('#addAlias-conditional > fieldset > legend').invoke('text').should('be.equal',aliasText);
