@@ -2,10 +2,10 @@ import { arrayBuffer } from 'stream/consumers';
 
 export default class personalDetails {
   static enterFirstNames(firstName: string) {
-    cy.get('#firstNames').find('input').clear().type(firstName);
+    cy.get('#firstNames').clear().type(firstName);
   }
   static enterLastName(lastName: string) {
-    cy.get('#lastName').find('input').clear().type(lastName);
+    cy.get('#lastName').clear().type(lastName);
   }
   static enterNINO(nino: string) {
     cy.get('#nationalInsuranceNumber').clear().type(nino);
@@ -26,16 +26,9 @@ export default class personalDetails {
     cy.get('#addressLine1').find('input').clear().type(addLine3);
   }
   static enterFirstNamesInAlias(firstNameAlias: string) {
-    cy.get('.form').within(() => {
-      cy.get('name').should('be.visible');
-    });
-    cy.get('#addAlias-conditional > fieldset >app-govuk-text-input > div > input').within(() => {
-      cy.get('id').type(firstNameAlias);
-    });
+    cy.get('#addAlias-conditional > fieldset >app-govuk-text-input > div > input').find('input').type(firstNameAlias);
   }
   static enterLastNamesInAlias(lastNameAlias: string) {
-    cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').within(() => {
-      cy.get('id').type(lastNameAlias);
-    });
+    cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').type(lastNameAlias);
   }
 }
