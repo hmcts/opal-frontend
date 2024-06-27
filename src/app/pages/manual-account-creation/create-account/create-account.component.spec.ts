@@ -39,15 +39,15 @@ describe('CreateAccountComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-    imports: [CreateAccountComponent],
-    providers: [
+      imports: [CreateAccountComponent],
+      providers: [
         { provide: MacStateService, useValue: mockMacStateService },
         { provide: BusinessUnitService, useValue: businessUnitService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountComponent);
     component = fixture.componentInstance;

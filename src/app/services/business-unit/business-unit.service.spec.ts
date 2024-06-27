@@ -14,9 +14,9 @@ describe('BusinessUnitService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [BusinessUnitService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [BusinessUnitService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    });
     service = TestBed.inject(BusinessUnitService);
     httpMock = TestBed.inject(HttpTestingController);
   });

@@ -25,19 +25,19 @@ describe('DetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [DetailsComponent],
-    providers: [
+      imports: [DetailsComponent],
+      providers: [
         DefendantAccountService,
         {
-            provide: ActivatedRoute,
-            useValue: {
-                params: of({ defendantAccountId: 123 }), // Mock the route params
-            },
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({ defendantAccountId: 123 }), // Mock the route params
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-}).compileComponents();
+      ],
+    }).compileComponents();
 
     // We need the data available before the component creates
     globalStateService = TestBed.inject(GlobalStateService);

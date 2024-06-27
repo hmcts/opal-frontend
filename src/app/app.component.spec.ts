@@ -19,13 +19,10 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    declarations: [AppComponent],
-    imports: [MojHeaderComponent,
-        MojHeaderNavigationItemComponent,
-        GovukFooterComponent,
-        RouterModule.forRoot([])],
-    providers: [provideRouter([]), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      declarations: [AppComponent],
+      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterComponent, RouterModule.forRoot([])],
+      providers: [provideRouter([]), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    });
 
     globalStateService = TestBed.inject(GlobalStateService);
   });

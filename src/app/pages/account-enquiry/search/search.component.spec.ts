@@ -21,9 +21,14 @@ describe('SearchComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-    imports: [SearchComponent],
-    providers: [{ provide: CourtService, useValue: mockCourtService }, provideRouter([]), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      imports: [SearchComponent],
+      providers: [
+        { provide: CourtService, useValue: mockCourtService },
+        provideRouter([]),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;

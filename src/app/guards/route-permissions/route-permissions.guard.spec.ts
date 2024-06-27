@@ -56,24 +56,24 @@ describe('routePermissionsGuard', () => {
     });
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         {
-            provide: Router,
-            useValue: mockRouter,
+          provide: Router,
+          useValue: mockRouter,
         },
         {
-            provide: PermissionsService,
-            useValue: mockPermissionsService,
+          provide: PermissionsService,
+          useValue: mockPermissionsService,
         },
         {
-            provide: SessionService,
-            useValue: mockSessionService,
+          provide: SessionService,
+          useValue: mockSessionService,
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-    ]
-});
+      ],
+    });
   });
 
   it('should return true if user has permission id', fakeAsync(async () => {

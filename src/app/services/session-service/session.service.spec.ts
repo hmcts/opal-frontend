@@ -14,9 +14,9 @@ describe('SessionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [GlobalStateService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [GlobalStateService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    });
     service = TestBed.inject(SessionService);
     httpMock = TestBed.inject(HttpTestingController);
     globalStateService = TestBed.inject(GlobalStateService);
