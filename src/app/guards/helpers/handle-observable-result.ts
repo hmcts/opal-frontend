@@ -1,4 +1,4 @@
-import { UrlTree } from '@angular/router';
+import { RedirectCommand, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 
 /**
@@ -6,8 +6,10 @@ import { Observable } from 'rxjs';
  * @param result The Observable result to handle.
  * @returns A Promise that resolves with the value of the Observable.
  */
-export function handleObservableResult(result: Observable<boolean | UrlTree>): Promise<boolean | UrlTree> {
-  return new Promise<boolean | UrlTree>((resolve) => {
+export function handleObservableResult(
+  result: Observable<boolean | UrlTree | RedirectCommand>,
+): Promise<boolean | UrlTree | RedirectCommand> {
+  return new Promise<boolean | UrlTree | RedirectCommand>((resolve) => {
     result.subscribe((value) => {
       resolve(value);
     });
