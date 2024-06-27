@@ -12,10 +12,11 @@ import { routePermissionsGuard } from './route-permissions.guard';
 import { PermissionsService, SessionService } from '@services';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { RoutingPaths } from '@enums';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { USER_STATE_MOCK } from '@mocks';
 import { Observable, of, throwError } from 'rxjs';
 import { handleObservableResult } from '../helpers';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 async function runRoutePermissionGuard(
   guard: typeof routePermissionsGuard,
@@ -55,22 +56,24 @@ describe('routePermissionsGuard', () => {
     });
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         {
-          provide: Router,
-          useValue: mockRouter,
+            provide: Router,
+            useValue: mockRouter,
         },
         {
-          provide: PermissionsService,
-          useValue: mockPermissionsService,
+            provide: PermissionsService,
+            useValue: mockPermissionsService,
         },
         {
-          provide: SessionService,
-          useValue: mockSessionService,
+            provide: SessionService,
+            useValue: mockSessionService,
         },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
   });
 
   it('should return true if user has permission id', fakeAsync(async () => {

@@ -11,10 +11,11 @@ import {
   USER_STATE_MOCK,
 } from '@mocks';
 import { DefendantAccountService, GlobalStateService, AeStateService } from '@services';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { IUserState } from '@interfaces';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DetailsComponent', () => {
   let component: DetailsComponent;
@@ -24,18 +25,19 @@ describe('DetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetailsComponent, HttpClientTestingModule],
-
-      providers: [
+    imports: [DetailsComponent],
+    providers: [
         DefendantAccountService,
         {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({ defendantAccountId: 123 }), // Mock the route params
-          },
+            provide: ActivatedRoute,
+            useValue: {
+                params: of({ defendantAccountId: 123 }), // Mock the route params
+            },
         },
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     // We need the data available before the component creates
     globalStateService = TestBed.inject(GlobalStateService);

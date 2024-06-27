@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { GovukFooterComponent } from './components/govuk/govuk-footer/govuk-footer.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MojHeaderComponent } from './components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from './components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { SsoEndpoints } from '@enums';
 import { GlobalStateService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AppComponent', () => {
   const mockDocumentLocation = {
@@ -18,16 +19,13 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MojHeaderComponent,
+    declarations: [AppComponent],
+    imports: [MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,
-        HttpClientTestingModule,
-        RouterModule.forRoot([]),
-      ],
-      declarations: [AppComponent],
-      providers: [provideRouter([])],
-    });
+        RouterModule.forRoot([])],
+    providers: [provideRouter([]), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
 
     globalStateService = TestBed.inject(GlobalStateService);
   });

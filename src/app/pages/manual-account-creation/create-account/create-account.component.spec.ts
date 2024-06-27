@@ -10,10 +10,11 @@ import {
 } from '@constants';
 import { BusinessUnitService, MacStateService } from '@services';
 import { IAutoCompleteItem, IBusinessUnitRefData, IManualAccountCreationAccountDetailsState } from '@interfaces';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
 import { of } from 'rxjs';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;
@@ -38,13 +39,15 @@ describe('CreateAccountComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CreateAccountComponent, HttpClientTestingModule],
-      providers: [
+    imports: [CreateAccountComponent],
+    providers: [
         { provide: MacStateService, useValue: mockMacStateService },
         { provide: BusinessUnitService, useValue: businessUnitService },
         provideRouter([]),
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(CreateAccountComponent);
     component = fixture.componentInstance;
