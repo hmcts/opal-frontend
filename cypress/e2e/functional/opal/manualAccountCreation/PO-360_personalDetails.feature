@@ -1,81 +1,109 @@
 Feature: verifying the personal details screen for adult or youth only defendant type
 
-    Background:
-        Given I am on the OPAL Frontend
-        Then I see "Opal" in the header
+  Background:
+    Given I am on the OPAL Frontend
+    Then I see "Opal" in the header
 
-        When I sign in as "opal-test@HMCTS.NET"
-        Then I am on the dashboard
-        When I navigate to Manual Account Creation
+    When I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+    When I navigate to Manual Account Creation
 
-        Then I see "Create account" as the caption on the page
-        Then I see "Business unit and defendant type" on the page header
-        And I enter "London South" into the business unit search box
-        And I select adults and youth only
-        Then I click on continue button
+    Then I see "Create account" as the caption on the page
+    Then I see "Business unit and defendant type" on the page header
+    And I enter "London South" into the business unit search box
+    And I select adults and youth only
+    Then I click on continue button
 
-        Then I see "Create account" as the caption on the page
-        Then I see "Account details" on the page header
+    Then I see "Create account" as the caption on the page
+    Then I see "Account details" on the page header
 
-        Then I see the "Defendant details" section heading
-        And I see the "Personal details" link under the "Defendant details" section
-        And I click on "Personal details" link
-        Then I see "Personal details" on the page header
+    Then I see the "Defendant details" section heading
+    And I see the "Personal details" link under the "Defendant details" section
+    And I click on "Personal details" link
+    Then I see "Personal details" on the page header
 
-    # Scenario: AC1-positive: Personal details page will be created with all fields
-    #     When I select title "Mr"
-    #     When I enter data into first names and last name in personal details screen
-    #         | firstNames | John Smithy Michaele         |
-    #         | lastName   | Astridge Lamsden Langley Treen |
-    #     And I select add aliases check box
+  Scenario Outline: test scenario
+    When I select "<title>" from the "Title" dropdown
+    Then I see "<title>" selected in the "Title" dropdown
 
-    #     And I enter alias1 details "first names in alias","Last name in aliases"
-    #     And I select add another alias
+    When I select the "Add aliases" checkbox
+    Then I set the "Alias 1", "First names" to "test"
+    And I set the "Alias 1", "Last name" to "testLname"
 
-    #     And I enter alias2 details "first names in alias","Last name in aliases"
-    #     And I select add another alias
+    And I click the "Add another alias" button
+    Then I set the "Alias 2", "First names" to "test2"
+    And I set the "Alias 2", "Last name" to "testLname2"
 
-    #     And I enter alias3 details "first names in alias","Last name in aliases"
-    #     And I select add another alias
+    Then I see "Alias 1", "First names" is set to "test"
+    And I see "Alias 1", "Last name" is set to "testLname"
+    And I see "Alias 2", "First names" is set to "test2"
+    And I see "Alias 2", "Last name" is set to "testLname2"
 
-    #     And I enter alias4 details "first names in alias","Last name in aliases"
-    #     And I select add another alias
+    Then I see the "Remove" link below the "Alias 2", "Last name" input
+    And I click the "Add another alias" button
 
-    #     And I enter alias5 details "first names in alias","Last name in aliases"
+    Then I see the "Remove" link below the "Alias 3", "Last name" input
+    And I do not see the "Remove" link below the "Alias 2", "Last name" input
 
-    #     And I enter "10/10/2000" into the Date of birth field
-    #     And I enter National insurance number "QQ 12 34 56 C"
+    Examples:
+      | title |
+      | Mr    |
+      | Mrs   |
 
-    #     And I enter address line 1 "12 test road checking address1"
-    #     And I enter address line 2 "12 test road checking address2"
-    #     And I enter address line 3 "London city chec"
-    #     And I enter postcode "AB12 7MH"
+# Scenario: AC1-positive: Personal details page will be created with all fields
+#     When I select title "Mr"
+#     When I enter data into first names and last name in personal details screen
+#         | firstNames | John Smithy Michaele         |
+#         | lastName   | Astridge Lamsden Langley Treen |
+#     And I select add aliases check box
 
-    #     And I enter make of the car "Ambassdor Volkswagen"
-    #     And I enter registration number of the car "AP28 AAR"
+#     And I enter alias1 details "first names in alias","Last name in aliases"
+#     And I select add another alias
 
-    #     Then I click return to account details
+#     And I enter alias2 details "first names in alias","Last name in aliases"
+#     And I select add another alias
+
+#     And I enter alias3 details "first names in alias","Last name in aliases"
+#     And I select add another alias
+
+#     And I enter alias4 details "first names in alias","Last name in aliases"
+#     And I select add another alias
+
+#     And I enter alias5 details "first names in alias","Last name in aliases"
+
+#     And I enter "10/10/2000" into the Date of birth field
+#     And I enter National insurance number "QQ 12 34 56 C"
+
+#     And I enter address line 1 "12 test road checking address1"
+#     And I enter address line 2 "12 test road checking address2"
+#     And I enter address line 3 "London city chec"
+#     And I enter postcode "AB12 7MH"
+
+#     And I enter make of the car "Ambassdor Volkswagen"
+#     And I enter registration number of the car "AP28 AAR"
+
+#     Then I click return to account details
 
 
-    Scenario Outline: AC1b-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
-        When I select title "Mr"
-        When I enter data into first names and last name in personal details screen
-            | firstName | John Smith Michael             |
-            | lastName  | Astridge Lamsden Langley Treen |
-        And I enter address line 1 "<addressLine1>"
-        And I enter address line 2 "<addressLine2>"
-        And I enter address line 3 "<addressLine3>"
+# Scenario Outline: AC1b-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
+#     When I select title "Mr"
+#     When I enter data into first names and last name in personal details screen
+#         | firstName | John Smith Michael             |
+#         | lastName  | Astridge Lamsden Langley Treen |
+#     And I enter address line 1 "<addressLine1>"
+#     And I enter address line 2 "<addressLine2>"
+#     And I enter address line 3 "<addressLine3>"
 
-        Then I click return to account details
-        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
-        Then I see the error message "The address line 2 must not contain special characters" at the top of the page
-        Then I see the error message "The address line 3 must not contain special characters" at the top of the page
+#     Then I click return to account details
+#     Then I see the error message "The address line 1 must not contain special characters" at the top of the page
+#     Then I see the error message "The address line 2 must not contain special characters" at the top of the page
+#     Then I see the error message "The address line 3 must not contain special characters" at the top of the page
 
 
 
-        Examples:
-            | addressLine1 | addressLine2 | addressLine3 |
-            | 92 * Avenue  | test road *  | test* city   |
+#     Examples:
+#         | addressLine1 | addressLine2 | addressLine3 |
+#         | 92 * Avenue  | test road *  | test* city   |
 
 # Scenario: AC2- negative: If a user does not enter any data into any field and selects the 'Return to account details' button
 #     Then I click return to account details
