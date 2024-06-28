@@ -421,4 +421,28 @@ describe('PersonalDetailsFormComponent', () => {
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
   });
+
+  it('should set nestedRouteButtonText to "Add contact details" when defendantType is adultOrYouthOnly', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('Add contact details');
+  });
+
+  it('should set nestedRouteButtonText to "Add offence details" when defendantType is parentOrGuardianToPay', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('Add offence details');
+  });
+
+  it('should set nestedRouteButtonText to an empty string when defendantType is company', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('');
+  });
 });
