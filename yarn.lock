@@ -357,7 +357,6 @@ __metadata:
     parse5:
       optional: true
   checksum: d2f8cf66edb185484100f5ce13f5f500f3548f1cb8e01f04338ecd5ed4f9e28ee6313fcbea43719d4800c83d4dd979d6ffc95be964003fd78b1e55a686c79635
-  checksum: d2f8cf66edb185484100f5ce13f5f500f3548f1cb8e01f04338ecd5ed4f9e28ee6313fcbea43719d4800c83d4dd979d6ffc95be964003fd78b1e55a686c79635
   languageName: node
   linkType: hard
 
@@ -466,9 +465,6 @@ __metadata:
 "@angular/material@npm:18.0.5":
   version: 18.0.5
   resolution: "@angular/material@npm:18.0.5"
-"@angular/material@npm:18.0.5":
-  version: 18.0.5
-  resolution: "@angular/material@npm:18.0.5"
   dependencies:
     "@material/animation": 15.0.0-canary.7f224ddd4.0
     "@material/auto-init": 15.0.0-canary.7f224ddd4.0
@@ -522,13 +518,11 @@ __metadata:
   peerDependencies:
     "@angular/animations": ^18.0.0 || ^19.0.0
     "@angular/cdk": 18.0.5
-    "@angular/cdk": 18.0.5
     "@angular/common": ^18.0.0 || ^19.0.0
     "@angular/core": ^18.0.0 || ^19.0.0
     "@angular/forms": ^18.0.0 || ^19.0.0
     "@angular/platform-browser": ^18.0.0 || ^19.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 7f574a517f55b987f3add0fc9c52ff75718af2dffa773d08886a87e3cc81232d3d8db3608383bc2efa2cf497728ef94b79279bedc96d04f5ce9a541830d3f6e7
   checksum: 7f574a517f55b987f3add0fc9c52ff75718af2dffa773d08886a87e3cc81232d3d8db3608383bc2efa2cf497728ef94b79279bedc96d04f5ce9a541830d3f6e7
   languageName: node
   linkType: hard
