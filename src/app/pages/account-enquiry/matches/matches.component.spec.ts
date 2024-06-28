@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatchesComponent } from './matches.component';
 import { Router, provideRouter } from '@angular/router';
 import { AccountEnquiryRoutes } from '@enums';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SEARCH_STATE_MOCK } from '@mocks';
 import { AeStateService } from '@services';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('MatchesComponent', () => {
   let component: MatchesComponent;
@@ -15,8 +16,8 @@ describe('MatchesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatchesComponent, HttpClientTestingModule, BrowserAnimationsModule],
-      providers: [provideRouter([])],
+      imports: [MatchesComponent, BrowserAnimationsModule],
+      providers: [provideRouter([]), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MatchesComponent);

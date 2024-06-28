@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CourtService } from './court.service';
 import { ISearchCourt, ISearchCourtBody } from '@interfaces';
 import { SEARCH_COURT_BODY_MOCK, SEARCH_COURT_MOCK } from '@mocks';
 import { API_PATHS } from '@constants';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('CourtService', () => {
   let service: CourtService;
@@ -11,8 +12,8 @@ describe('CourtService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [CourtService],
+      imports: [],
+      providers: [CourtService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(CourtService);
     httpMock = TestBed.inject(HttpTestingController);
