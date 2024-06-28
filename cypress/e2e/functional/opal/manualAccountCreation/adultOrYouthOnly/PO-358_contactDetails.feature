@@ -28,7 +28,9 @@ Feature: tests for contact details page for all the defendant types (adult tor y
     When I enter home telephone number "<homeTelephone>"
     When I enter business telephone number "<businessTelephone>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link
@@ -40,7 +42,9 @@ Feature: tests for contact details page for all the defendant types (adult tor y
       | testing_primary-email_for_contact-details-adult-or-youth123@adultoryouth.com | testing_secondary-email_for_contact-details-adult-or-youth123@test123.com | 0 7 7 0 0 9 0 0  9  8   2 | 01632 960 001 | 07700 900 982     |
 
   Scenario: AC2- positive: verifying if user doesn't enter any values and selecting retun to account details
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link
@@ -51,7 +55,9 @@ Feature: tests for contact details page for all the defendant types (adult tor y
     When I enter secondary email address "<secondaryEmail>"
     When I enter home telephone number "<homeTelephone>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link
@@ -68,7 +74,9 @@ Feature: tests for contact details page for all the defendant types (adult tor y
     When I enter incorrect primary email address "<incorrectPrimaryEmail>"
     When I enter incorrect secondary email address "<incorrectSecondaryEmail>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Contact details" on the page header
 
     Then I verify the error message
@@ -83,7 +91,9 @@ Feature: tests for contact details page for all the defendant types (adult tor y
     When I enter incorrect home telephone number "<incorrectHomeTelephone>"
     When I enter incorrect business telephone number "<incorrectBusinessTelephone>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Contact details" on the page header
 
     Then I verify the error message
@@ -100,7 +110,9 @@ Feature: tests for contact details page for all the defendant types (adult tor y
     When I enter incorrect home telephone number "<incorrectHomeTelephone>"
     When I enter incorrect business telephone number "<incorrectBusinessTelephone>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Contact details" on the page header
 
     Then I verify the error message
@@ -112,7 +124,9 @@ Feature: tests for contact details page for all the defendant types (adult tor y
     When I update home telephone number "<homeTelephone>"
     When I update business telephone number "<businessTelephone>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link

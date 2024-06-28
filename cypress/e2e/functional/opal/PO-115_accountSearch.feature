@@ -44,7 +44,7 @@
 #     When I navigate to Account Enquiry
 #     Then I see "Account Enquiry" in the page body header
 
-      When I populate the form with the following search criteria
+#When I populate the form with the following search criteria
 #       | court    | Kingston-upon-Thames Mags Court |
 #       | surname  | testSurname                     |
 #       | forename | testForename                    |

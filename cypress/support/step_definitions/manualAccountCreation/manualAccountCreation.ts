@@ -383,7 +383,7 @@ Then('I click Cancel, a window pops up and I click Cancel', () => {
   });
 });
 
-When('I select title {string}', (title: string) => {
+When('I select title {string} from dropdown', (title: string) => {
   personalDetails.selectTitle(title);
 });
 When('I enter data into first names and last name in personal details screen', (table: DataTable) => {
@@ -462,18 +462,12 @@ Then('I see {string} link below the {string} field', (removeLink: string, lastNa
   cy.get('#addAlias-conditional > fieldset >app-govuk-text-input > div >h1 ').
   find('#addAlias-conditional>div > a').invoke('text').should('contains',removeLink);
 });
-Then('I see {string} button below the {string} link', (addAnotherAliasButton: string, removeLink: string) => {
-  cy.contains('#addAlias-conditional > app-govuk-button > button', addAnotherAliasButton)
-    .invoke('text')
-    .prev()
-    .contains('a', removeLink)
-    .should('have.text', removeLink);
-});
+
 Then('I select {string} button', (removeButton: string) => {
   cy.contains('a', removeButton).click();
 });
 
-Then('I cannot see {string} sub heading', (aliasText: string) => {
+Then('I no longer see {string} sub heading', (aliasText: string) => {
   cy.contains('#addAlias-conditional > fieldset > legend', aliasText).should('not.exist', aliasText);
 });
 Then('I verify the {string} text box below the {string} sub heading', (firstName: string, aliasText: string) => {
@@ -573,3 +567,5 @@ When('I verify the text boxes {string},{string} below the sub heading {string}',
   .children('#addAlias-conditional > fieldset >app-govuk-text-input >').invoke('text').should('contains',lastName)
 
 })
+
+

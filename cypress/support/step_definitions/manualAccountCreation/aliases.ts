@@ -53,3 +53,20 @@ Then(
       .should('not.exist');
   },
 );
+
+Then('I see {string} button below the {string} link', (addAnotherAliasButton: string, removeLink: string) => {
+  cy.contains('a', removeLink)
+    .siblings()
+    .contains('#addAlias', addAnotherAliasButton)
+    .should('have.text', addAnotherAliasButton);
+});
+Then(
+  'I see data entered in {string},{string} and {string}',
+  (alias: string, aliasField: string, aliasValue: string) => {
+    cy.contains('legend', alias)
+      .siblings()
+      .contains('app-govuk-text-input', aliasField)
+      .find('input')
+      .should('have.value', aliasValue);
+  },
+);

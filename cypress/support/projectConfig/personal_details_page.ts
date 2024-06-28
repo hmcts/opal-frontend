@@ -1,3 +1,4 @@
+import { should } from 'chai';
 import { arrayBuffer } from 'stream/consumers';
 
 export default class personalDetails {
@@ -26,7 +27,11 @@ export default class personalDetails {
     cy.get('#addressLine1').find('input').clear().type(addLine3);
   }
   static enterFirstNamesInAlias(firstNameAlias: string) {
-    cy.get('#addAlias-conditional > fieldset >app-govuk-text-input > div > input').find('input').type(firstNameAlias);
+    cy.get('#addAlias-conditional > fieldset >legend')
+      .siblings()
+      .get('#addAlias-conditional > fieldset >app-govuk-text-input > div > input')
+      .should('be.visible')
+      .type(firstNameAlias);
   }
   static enterLastNamesInAlias(lastNameAlias: string) {
     cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').type(lastNameAlias);

@@ -33,7 +33,9 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     Then I enter employer address line5 "<employerAddress5>"
     Then I enter employer postcode "<employerPostCode>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Account details" on the page header
     When I click on "Employer details" link
     Then I see "Employer details" on the page header
@@ -57,7 +59,10 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     Then I enter employer address line5 "<employerAddress5>"
     Then I enter employer postcode "<employerPostCode>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
+
     Then I verify the error message
 
     Examples:
@@ -65,7 +70,9 @@ Feature: tests for employer details page for Adult or youth with parent or guard
       | Steve Max5 testing employer details | AB1234NUT987MNHIJLOP | CheeckEmpDetails@test.com | 07528 828441      | checkingAddress* | checkingAddress2* | checkingAddress3* | checkingAddress* 4 | checkingAddress5 * | AB12 4BM         |
 
   Scenario:AC2- negative: verifying the error messages when user saves employer details without entering the values
-    When I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I verify the error message
     Then I see "Employer details" on the page header
 
@@ -78,7 +85,9 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     When I enter employer address line4 "<employerAddress4>"
     When I enter employer address line5 "<employerAddress5>"
     Then I enter employer postcode "<employerPostCode>"
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
 
     Then I verify the error message
     Then I see "Employer details" on the page header
@@ -102,9 +111,13 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     Then I enter employer address line5 "<employerAddress5>"
     Then I enter employer postcode "<employerPostCode>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I verify the error message
-    When I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I verify the error message
     Then I see "Employer details" on the page header
 
@@ -125,9 +138,13 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     Then I enter employer address line5 "<employerAddress5>"
     Then I enter employer postcode "<employerPostCode>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I verify the error message
-    When I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I verify the error message
     Then I see "Employer details" on the page header
 
@@ -147,7 +164,9 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     When I enter incorrect employer address line 4 "<incorrectAddressLine4>"
     When I enter incorrect employer address line 5 "<incorrectAddressLine5>"
     When I enter incorrect employer postcode "<incorrectPostCode>"
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I verify the error message
 
     Then I update employer name "<employerName>"
@@ -161,7 +180,9 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     Then I update employer address line5 "<employerAddress5>"
     Then I update employer postcode "<employerPostCode>"
 
-    Then I click save and return to tasks
+    #Due to changes in design the below step de-scoped
+    #Then I click save and return to tasks
+    Then I click return to account details
     Then I see "Account details" on the page header
 
     Then I click on "Employer details" link
