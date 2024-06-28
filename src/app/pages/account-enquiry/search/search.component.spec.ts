@@ -4,10 +4,11 @@ import { CourtService } from '@services';
 import { SEARCH_COURT_MOCK, SEARCH_COURT_SELECT_OPTIONS_MOCK, SEARCH_STATE_MOCK } from '@mocks';
 import { AccountEnquiryRoutes } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from '@constants';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { IGovUkSelectOptions, ISearchCourt } from '@interfaces';
 import { of } from 'rxjs';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -20,8 +21,13 @@ describe('SearchComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SearchComponent, HttpClientTestingModule],
-      providers: [{ provide: CourtService, useValue: mockCourtService }, provideRouter([])],
+      imports: [SearchComponent],
+      providers: [
+        { provide: CourtService, useValue: mockCourtService },
+        provideRouter([]),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);

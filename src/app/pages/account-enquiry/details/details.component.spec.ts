@@ -11,10 +11,11 @@ import {
   USER_STATE_MOCK,
 } from '@mocks';
 import { DefendantAccountService, GlobalStateService, AeStateService } from '@services';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { IUserState } from '@interfaces';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DetailsComponent', () => {
   let component: DetailsComponent;
@@ -24,8 +25,7 @@ describe('DetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetailsComponent, HttpClientTestingModule],
-
+      imports: [DetailsComponent],
       providers: [
         DefendantAccountService,
         {
@@ -34,6 +34,8 @@ describe('DetailsComponent', () => {
             params: of({ defendantAccountId: 123 }), // Mock the route params
           },
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
 import { SessionEndpoints } from '@enums';
 import { USER_STATE_MOCK } from '@mocks';
 import { GlobalStateService } from '@services';
 import { IUserState } from '@interfaces';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -13,8 +14,8 @@ describe('SessionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [GlobalStateService],
+      imports: [],
+      providers: [GlobalStateService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(SessionService);
     httpMock = TestBed.inject(HttpTestingController);

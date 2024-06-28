@@ -1,16 +1,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild,
-  signal,
-} from '@angular/core';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output, signal } from '@angular/core';
+
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { GovukButtonComponent, GovukPaginationComponent } from '@components';
@@ -19,16 +10,13 @@ import { ISearchDefendantAccount, ISearchDefendantAccounts } from '@interfaces';
 @Component({
   selector: 'app-matches-table',
   standalone: true,
-  imports: [CommonModule, RouterModule, GovukButtonComponent, GovukPaginationComponent, CdkTableModule, MatSortModule],
+  imports: [CommonModule, RouterModule, GovukButtonComponent, GovukPaginationComponent, CdkTableModule],
   templateUrl: './matches-table.component.html',
-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatchesTableComponent implements AfterViewInit {
   @Input({ required: true }) data!: ISearchDefendantAccounts;
   @Output() view = new EventEmitter<number>();
-
-  @ViewChild(MatSort) sort!: MatSort;
 
   public currentPage = signal(1);
   public pageLimit = signal(10);
@@ -54,7 +42,6 @@ export class MatchesTableComponent implements AfterViewInit {
    */
   private wrapTableDataSource(source: ISearchDefendantAccount[]): MatTableDataSource<ISearchDefendantAccount> {
     const wrappedTableDataSource = new MatTableDataSource<ISearchDefendantAccount>(source);
-    wrappedTableDataSource.sort = this.sort;
     return wrappedTableDataSource;
   }
 
