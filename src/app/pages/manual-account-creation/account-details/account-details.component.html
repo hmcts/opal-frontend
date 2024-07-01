@@ -34,7 +34,11 @@
         </a>
       </ng-container>
       <ng-container status>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
+        @if (accountCreationStatus['courtDetails']) {
+          <app-govuk-tag tagClasses="govuk-tag" tagId="courtDetailsStatusTag">Provided</app-govuk-tag>
+        } @else {
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
+        }
       </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>
@@ -57,7 +61,13 @@
           </a>
         </ng-container>
         <ng-container status>
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
+          @if (accountCreationStatus['parentOrGuardianDetails']) {
+            <app-govuk-tag tagClasses="govuk-tag" tagId="parentOrGuardianDetailsStatusTag">Provided</app-govuk-tag>
+          } @else {
+            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="parentOrGuardianDetailsStatusTag"
+              >Not provided</app-govuk-tag
+            >
+          }
         </ng-container>
       </app-govuk-task-list-item>
       <app-govuk-task-list-item
@@ -75,7 +85,11 @@
           </a>
         </ng-container>
         <ng-container status>
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+          @if (accountCreationStatus['employerDetails']) {
+            <app-govuk-tag tagClasses="govuk-tag" tagId="employerDetailsStatusTag">Provided</app-govuk-tag>
+          } @else {
+            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+          }
         </ng-container>
       </app-govuk-task-list-item>
     </app-govuk-task-list>
@@ -98,7 +112,11 @@
           </a>
         </ng-container>
         <ng-container status>
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="companyDetailsStatusTag">Not provided</app-govuk-tag>
+          @if (accountCreationStatus['companyDetails']) {
+            <app-govuk-tag tagClasses="govuk-tag" tagId="companyDetailsStatusTag">Provided</app-govuk-tag>
+          } @else {
+            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="companyDetailsStatusTag">Not provided</app-govuk-tag>
+          }
         </ng-container>
       </app-govuk-task-list-item>
     } @else {
@@ -117,7 +135,7 @@
           </a>
         </ng-container>
         <ng-container status>
-          @if (personalDetailsPopulated) {
+          @if (accountCreationStatus['personalDetails']) {
             <app-govuk-tag tagClasses="govuk-tag" tagId="personalDetailsStatusTag">Provided</app-govuk-tag>
           } @else {
             <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
@@ -141,7 +159,11 @@
         </a>
       </ng-container>
       <ng-container status>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
+        @if (accountCreationStatus['contactDetails']) {
+          <app-govuk-tag tagClasses="govuk-tag" tagId="contactDetailsStatusTag">Provided</app-govuk-tag>
+        } @else {
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
+        }
       </ng-container>
     </app-govuk-task-list-item>
 
@@ -161,7 +183,11 @@
           </a>
         </ng-container>
         <ng-container status>
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+          @if (accountCreationStatus['employerDetails']) {
+            <app-govuk-tag tagClasses="govuk-tag" tagId="employerDetailsStatusTag">Provided</app-govuk-tag>
+          } @else {
+            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
+          }
         </ng-container>
       </app-govuk-task-list-item>
     }
@@ -183,7 +209,11 @@
         </a>
       </ng-container>
       <ng-container status>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
+        @if (accountCreationStatus['offenceDetails']) {
+          <app-govuk-tag tagClasses="govuk-tag" tagId="offenceDetailsStatusTag">Provided</app-govuk-tag>
+        } @else {
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
+        }
       </ng-container>
     </app-govuk-task-list-item>
     <app-govuk-task-list-item
@@ -201,7 +231,11 @@
         </a>
       </ng-container>
       <ng-container status>
-        <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
+        @if (accountCreationStatus['paymentTerms']) {
+          <app-govuk-tag tagClasses="govuk-tag" tagId="paymentTermsStatusTag">Provided</app-govuk-tag>
+        } @else {
+          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
+        }
       </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>

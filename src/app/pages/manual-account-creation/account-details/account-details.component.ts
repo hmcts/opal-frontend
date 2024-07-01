@@ -11,9 +11,10 @@ import {
   GovukTaskListComponent,
   GovukTaskListItemComponent,
 } from '@components';
-import { DEFENDANT_TYPES_STATE } from '@constants';
+import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from '@constants';
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
+import { IManualAccountCreationAccountStatus, IManualAccountCreationState } from '@interfaces';
 import { MacStateService } from '@services';
 
 @Component({
@@ -42,6 +43,7 @@ export class AccountDetailsComponent implements OnInit {
 
   public readonly routingPaths = RoutingPaths;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  public accountCreationStatus: IManualAccountCreationAccountStatus = MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS;
 
   public readonly defendantTypes = DEFENDANT_TYPES_STATE;
   public personalDetailsPopulated!: boolean;
@@ -61,16 +63,36 @@ export class AccountDetailsComponent implements OnInit {
   }
 
   /**
-   * Checks the status of the personal details in the manual account creation.
-   * Sets the `personalDetailsPopulated` property based on the presence of required personal details.
+   * Checks if a value is truthy.
+   * @param subFieldValue - The value to check.
+   * @returns A boolean indicating whether the value is truthy or not.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private isTruthy(subFieldValue: any): boolean {
+    if (typeof subFieldValue === 'string') {
+      return !!subFieldValue;
+    } else if (Array.isArray(subFieldValue)) {
+      return false;
+    } else {
+      return !!subFieldValue;
+    }
+  }
+
+  /**
+   * Checks the status of the manual account creation process.
+   * Updates the `accountCreationStatus` object based on the values in `manualAccountCreation`.
    */
   private checkStatus(): void {
-    const { personalDetails } = this.macStateService.manualAccountCreation;
-    this.personalDetailsPopulated =
-      !!personalDetails?.title &&
-      !!personalDetails?.firstNames &&
-      !!personalDetails?.lastName &&
-      !!personalDetails?.addressLine1;
+    const accountCreationKeys = Object.keys(
+      this.macStateService.manualAccountCreation,
+    ) as (keyof IManualAccountCreationState)[];
+
+    accountCreationKeys.forEach((key: keyof IManualAccountCreationState) => {
+      if (typeof this.macStateService.manualAccountCreation[key] !== 'boolean') {
+        const subFields = this.macStateService.manualAccountCreation[key];
+        this.accountCreationStatus[key] = Object.values(subFields).some(this.isTruthy);
+      }
+    });
   }
 
   /**
