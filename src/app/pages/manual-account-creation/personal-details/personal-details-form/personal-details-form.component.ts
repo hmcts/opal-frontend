@@ -239,12 +239,16 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
     if (defendantType) {
       const nestedRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['personalDetails'];
-      if (nestedRoute === ManualAccountCreationRoutes.contactDetails) {
-        this.nestedRouteButtonText = 'Add contact details';
-      } else if (nestedRoute === ManualAccountCreationRoutes.offenceDetails) {
-        this.nestedRouteButtonText = 'Add offence details';
-      } else {
-        this.nestedRouteButtonText = '';
+      switch (nestedRoute) {
+        case ManualAccountCreationRoutes.contactDetails:
+          this.nestedRouteButtonText = 'Add contact details';
+          break;
+        case ManualAccountCreationRoutes.offenceDetails:
+          this.nestedRouteButtonText = 'Add offence details';
+          break;
+        default:
+          this.nestedRouteButtonText = '';
+          break;
       }
     }
   }
