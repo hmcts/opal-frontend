@@ -34,11 +34,16 @@
         </a>
       </ng-container>
       <ng-container status>
-        @if (accountCreationStatus['courtDetails']) {
-          <app-govuk-tag tagClasses="govuk-tag" tagId="courtDetailsStatusTag">Provided</app-govuk-tag>
-        } @else {
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="courtDetailsStatusTag">Not provided</app-govuk-tag>
-        }
+        <app-govuk-tag
+          *ngIf="accountCreationStatus['courtDetails']; else notProvidedTag"
+          tagClasses="govuk-tag"
+          tagId="courtDetailsStatusTag"
+          >Provided</app-govuk-tag
+        >
+
+        <ng-template #notProvidedTag>
+          <ng-container *ngTemplateOutlet="notProvided; context: { $implicit: 'courtDetailsStatusTag' }"></ng-container>
+        </ng-template>
       </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>
@@ -61,13 +66,18 @@
           </a>
         </ng-container>
         <ng-container status>
-          @if (accountCreationStatus['parentOrGuardianDetails']) {
-            <app-govuk-tag tagClasses="govuk-tag" tagId="parentOrGuardianDetailsStatusTag">Provided</app-govuk-tag>
-          } @else {
-            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="parentOrGuardianDetailsStatusTag"
-              >Not provided</app-govuk-tag
-            >
-          }
+          <app-govuk-tag
+            *ngIf="accountCreationStatus['parentGuardianDetails']; else notProvidedTag"
+            tagClasses="govuk-tag"
+            tagId="parentOrGuardianDetailsStatusTag"
+            >Provided</app-govuk-tag
+          >
+
+          <ng-template #notProvidedTag>
+            <ng-container
+              *ngTemplateOutlet="notProvided; context: { $implicit: 'parentOrGuardianDetailsStatusTag' }"
+            ></ng-container>
+          </ng-template>
         </ng-container>
       </app-govuk-task-list-item>
       <app-govuk-task-list-item
@@ -85,11 +95,18 @@
           </a>
         </ng-container>
         <ng-container status>
-          @if (accountCreationStatus['employerDetails']) {
-            <app-govuk-tag tagClasses="govuk-tag" tagId="employerDetailsStatusTag">Provided</app-govuk-tag>
-          } @else {
-            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
-          }
+          <app-govuk-tag
+            *ngIf="accountCreationStatus['employerDetails']; else notProvidedTag"
+            tagClasses="govuk-tag"
+            tagId="employerDetailsStatusTag"
+            >Provided</app-govuk-tag
+          >
+
+          <ng-template #notProvidedTag>
+            <ng-container
+              *ngTemplateOutlet="notProvided; context: { $implicit: 'employerDetailsStatusTag' }"
+            ></ng-container>
+          </ng-template>
         </ng-container>
       </app-govuk-task-list-item>
     </app-govuk-task-list>
@@ -112,11 +129,18 @@
           </a>
         </ng-container>
         <ng-container status>
-          @if (accountCreationStatus['companyDetails']) {
-            <app-govuk-tag tagClasses="govuk-tag" tagId="companyDetailsStatusTag">Provided</app-govuk-tag>
-          } @else {
-            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="companyDetailsStatusTag">Not provided</app-govuk-tag>
-          }
+          <app-govuk-tag
+            *ngIf="accountCreationStatus['companyDetails']; else notProvidedTag"
+            tagClasses="govuk-tag"
+            tagId="companyDetailsStatusTag"
+            >Provided</app-govuk-tag
+          >
+
+          <ng-template #notProvidedTag>
+            <ng-container
+              *ngTemplateOutlet="notProvided; context: { $implicit: 'companyDetailsStatusTag' }"
+            ></ng-container>
+          </ng-template>
         </ng-container>
       </app-govuk-task-list-item>
     } @else {
@@ -135,11 +159,18 @@
           </a>
         </ng-container>
         <ng-container status>
-          @if (accountCreationStatus['personalDetails']) {
-            <app-govuk-tag tagClasses="govuk-tag" tagId="personalDetailsStatusTag">Provided</app-govuk-tag>
-          } @else {
-            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="personalDetailsStatusTag">Not provided</app-govuk-tag>
-          }
+          <app-govuk-tag
+            *ngIf="accountCreationStatus['personalDetails']; else notProvidedTag"
+            tagClasses="govuk-tag"
+            tagId="personalDetailsStatusTag"
+            >Provided</app-govuk-tag
+          >
+
+          <ng-template #notProvidedTag>
+            <ng-container
+              *ngTemplateOutlet="notProvided; context: { $implicit: 'personalDetailsStatusTag' }"
+            ></ng-container>
+          </ng-template>
         </ng-container>
       </app-govuk-task-list-item>
     }
@@ -159,11 +190,18 @@
         </a>
       </ng-container>
       <ng-container status>
-        @if (accountCreationStatus['contactDetails']) {
-          <app-govuk-tag tagClasses="govuk-tag" tagId="contactDetailsStatusTag">Provided</app-govuk-tag>
-        } @else {
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="contactDetailsStatusTag">Not provided</app-govuk-tag>
-        }
+        <app-govuk-tag
+          *ngIf="accountCreationStatus['contactDetails']; else notProvidedTag"
+          tagClasses="govuk-tag"
+          tagId="contactDetailsStatusTag"
+          >Provided</app-govuk-tag
+        >
+
+        <ng-template #notProvidedTag>
+          <ng-container
+            *ngTemplateOutlet="notProvided; context: { $implicit: 'contactDetailsStatusTag' }"
+          ></ng-container>
+        </ng-template>
       </ng-container>
     </app-govuk-task-list-item>
 
@@ -183,11 +221,18 @@
           </a>
         </ng-container>
         <ng-container status>
-          @if (accountCreationStatus['employerDetails']) {
-            <app-govuk-tag tagClasses="govuk-tag" tagId="employerDetailsStatusTag">Provided</app-govuk-tag>
-          } @else {
-            <app-govuk-tag tagClasses="govuk-tag--grey" tagId="employerDetailsStatusTag">Not provided</app-govuk-tag>
-          }
+          <app-govuk-tag
+            *ngIf="accountCreationStatus['employerDetails']; else notProvidedTag"
+            tagClasses="govuk-tag"
+            tagId="employerDetailsStatusTag"
+            >Provided</app-govuk-tag
+          >
+
+          <ng-template #notProvidedTag>
+            <ng-container
+              *ngTemplateOutlet="notProvided; context: { $implicit: 'employerDetailsStatusTag' }"
+            ></ng-container>
+          </ng-template>
         </ng-container>
       </app-govuk-task-list-item>
     }
@@ -209,11 +254,18 @@
         </a>
       </ng-container>
       <ng-container status>
-        @if (accountCreationStatus['offenceDetails']) {
-          <app-govuk-tag tagClasses="govuk-tag" tagId="offenceDetailsStatusTag">Provided</app-govuk-tag>
-        } @else {
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="offenceDetailsStatusTag">Not provided</app-govuk-tag>
-        }
+        <app-govuk-tag
+          *ngIf="accountCreationStatus['offenceDetails']; else notProvidedTag"
+          tagClasses="govuk-tag"
+          tagId="offenceDetailsStatusTag"
+          >Provided</app-govuk-tag
+        >
+
+        <ng-template #notProvidedTag>
+          <ng-container
+            *ngTemplateOutlet="notProvided; context: { $implicit: 'offenceDetailsStatusTag' }"
+          ></ng-container>
+        </ng-template>
       </ng-container>
     </app-govuk-task-list-item>
     <app-govuk-task-list-item
@@ -231,11 +283,16 @@
         </a>
       </ng-container>
       <ng-container status>
-        @if (accountCreationStatus['paymentTerms']) {
-          <app-govuk-tag tagClasses="govuk-tag" tagId="paymentTermsStatusTag">Provided</app-govuk-tag>
-        } @else {
-          <app-govuk-tag tagClasses="govuk-tag--grey" tagId="paymentTermsStatusTag">Not provided</app-govuk-tag>
-        }
+        <app-govuk-tag
+          *ngIf="accountCreationStatus['paymentTerms']; else notProvidedTag"
+          tagClasses="govuk-tag"
+          tagId="paymentTermsStatusTag"
+          >Provided</app-govuk-tag
+        >
+
+        <ng-template #notProvidedTag>
+          <ng-container *ngTemplateOutlet="notProvided; context: { $implicit: 'paymentTermsStatusTag' }"></ng-container>
+        </ng-template>
       </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>
@@ -250,3 +307,7 @@
     >
   </p>
 </div>
+
+<ng-template #notProvided let-tagId>
+  <app-govuk-tag [tagClasses]="'govuk-tag--grey'" [tagId]="tagId">Not provided</app-govuk-tag>
+</ng-template>
