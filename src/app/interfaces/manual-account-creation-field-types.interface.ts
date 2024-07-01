@@ -1,3 +1,3 @@
 export interface IManualAccountCreationFieldTypes {
-    fieldType: string | boolean | [];
+  fieldType: string | boolean | [];
 }
