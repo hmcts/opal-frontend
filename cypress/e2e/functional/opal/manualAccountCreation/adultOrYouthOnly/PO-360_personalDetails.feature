@@ -251,11 +251,11 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I enter address line 1 "120 Deuchar street"
 
         Then I click return to account details
-        Then I verify the error message
+        Then I see the error message "<errorMessage>" at the top of the page
         Examples:
-            | dateOfBirth |
-            | 01/01/2500  |
-            | 01/92       |
+            | dateOfBirth | errorMessage                                 |
+            | 01/01/2500  | Enter a valid date of birth in the past      |
+            | 01/92       | Enter date of birth in the format DD/MM/YYYY |
 
     Scenario: AC10a- negative: User ticks Add aliases box but does not input any data into Alias 1
         When I select title "Mr" from dropdown
@@ -536,11 +536,17 @@ Feature: verifying the personal details screen for adult or youth only defendant
             | ABCD1234      |
 
     Scenario: AC12- positive: When user amends all fields where validation fails (Mandatory fields)
-        When I enter incorrect data into "<incorrectFirstNames>","<incorrectLastName>"
+        When I enter data into first names and last name in personal details screen
+            | firstNames | Stuart Philips aarogyam Gucci Coach VII      |
+            | lastName   | Chicago bulls Burberry Redbull 2345 PizzaHut |
         And I enter incorrect address line 1 "<incorrectAddressLine1>"
 
         Then I click return to account details
-        And I verify the error message
+        Then I see the error message "Select a title" at the top of the page
+        Then I see the error message "The defendant's first name(s) must be 20 characters or fewer" at the top of the page
+        Then I see the error message "The defendant's last name must be 30 characters or fewer" at the top of the page
+        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
+
         Then I see "Personal details" on the page header
 
         Then I update title "<title>"
@@ -555,8 +561,8 @@ Feature: verifying the personal details screen for adult or youth only defendant
 
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
         Examples:
-            | incorrectAddressLine1 | title | firstNames | lastName    | title | addressLine1 | incorrectFirstNames                     | incorrectLastName                            |
-            | test Road *12         | Mr    | Coca Cola  | Cola Family | Mr    | Pepsi Road   | Stuart Philips aarogyam Gucci Coach VII | Chicago bulls Burberry Redbull 2345 PizzaHut |
+            | incorrectAddressLine1 | title | firstNames | lastName    | title | addressLine1 |
+            | test Road *12         | Mr    | Coca Cola  | Cola Family | Mr    | Pepsi Road   |
 
 
     Scenario Outline: AC13-positive: When user enters data into mandatory fields only
