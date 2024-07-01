@@ -423,6 +423,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     And I select parent or guardian to pay
     And I click on continue button
     And "Parent or guardian details" is clicked
+    Then I see "Parent or guardian details" on the page header
 
     When "Cancel" is clicked
 
