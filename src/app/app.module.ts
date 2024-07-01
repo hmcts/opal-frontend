@@ -3,11 +3,11 @@ import { BrowserModule, provideClientHydration, withNoHttpTransferCache } from '
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
-  HttpClientModule,
-  HttpClientXsrfModule,
   provideHttpClient,
   withFetch,
   withInterceptors,
+  withInterceptorsFromDi,
+  withXsrfConfiguration,
 } from '@angular/common/http';
 
 import { MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterComponent } from '@components';
@@ -17,11 +17,10 @@ import { AppInitializerService } from '@services';
 
 @NgModule({
   declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
-    HttpClientXsrfModule,
     MojHeaderComponent,
     MojHeaderNavigationItemComponent,
     GovukFooterComponent,
@@ -40,8 +39,13 @@ import { AppInitializerService } from '@services';
       },
       deps: [AppInitializerService],
     },
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withXsrfConfiguration({
+        headerName: 'X-XSRF-TOKEN',
+        cookieName: 'XSRF-TOKEN',
+      }),
+    ),
   ],
-
-  bootstrap: [AppComponent],
 })
 export class AppModule {}

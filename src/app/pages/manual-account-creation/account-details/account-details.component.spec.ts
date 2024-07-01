@@ -10,6 +10,13 @@ import {
 } from '@constants';
 import { MacStateService } from '@services';
 import { provideRouter } from '@angular/router';
+import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
+} from '@mocks';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -40,6 +47,10 @@ describe('AccountDetailsComponent', () => {
     fixture.detectChanges();
   });
 
+  beforeEach(() => {
+    mockMacStateService.manualAccountCreation.accountDetails = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE;
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -62,7 +73,9 @@ describe('AccountDetailsComponent', () => {
 
   it('should set defendantType to be empty', () => {
     mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'test';
+
     component['setDefendantType']();
+
     expect(component.defendantType).toBe('');
   });
 
@@ -74,25 +87,43 @@ describe('AccountDetailsComponent', () => {
     expect(component.defendantType).toBe('');
   });
 
-  it('should check status and set personalDetailsPopulated to true when all personal details are populated', () => {
-    component.macStateService.manualAccountCreation.personalDetails.title = 'Mr';
-    component.macStateService.manualAccountCreation.personalDetails.firstNames = 'John';
-    component.macStateService.manualAccountCreation.personalDetails.lastName = 'Doe';
-    component.macStateService.manualAccountCreation.personalDetails.addressLine1 = '123 Main St';
+  it('should correctly update accountCreationStatus based on manualAccountCreation state', () => {
+    component.macStateService.manualAccountCreation = {
+      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
+      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
+      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
+      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
+      unsavedChanges: true,
+      stateChanges: false,
+    };
 
     component['checkStatus']();
 
-    expect(component.personalDetailsPopulated).toBe(true);
+    expect(component.accountCreationStatus['employerDetails']).toBe(true);
+    expect(component.accountCreationStatus['accountDetails']).toBe(true);
+    expect(component.accountCreationStatus['contactDetails']).toBe(true);
+    expect(component.accountCreationStatus['parentGuardianDetails']).toBe(true);
+    expect(component.accountCreationStatus['personalDetails']).toBe(true);
   });
 
-  it('should check status and set personalDetailsPopulated to false when any personal detail is missing', () => {
-    component.macStateService.manualAccountCreation.personalDetails.title = 'Mr';
-    component.macStateService.manualAccountCreation.personalDetails.firstNames = 'John';
-    component.macStateService.manualAccountCreation.personalDetails.lastName = 'Doe';
-    component.macStateService.manualAccountCreation.personalDetails.addressLine1 = null;
+  it('should correctly update accountCreationStatus based on empty manualAccountCreation state', () => {
+    component.macStateService.manualAccountCreation = {
+      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
+      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
+      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
+      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+      unsavedChanges: false,
+      stateChanges: false,
+    };
 
     component['checkStatus']();
 
-    expect(component.personalDetailsPopulated).toBe(false);
+    expect(component.accountCreationStatus['employerDetails']).toBeFalsy();
+    expect(component.accountCreationStatus['accountDetails']).toBeTruthy();
+    expect(component.accountCreationStatus['contactDetails']).toBeFalsy();
+    expect(component.accountCreationStatus['parentGuardianDetails']).toBeFalsy();
+    expect(component.accountCreationStatus['personalDetails']).toBeFalsy();
   });
 });

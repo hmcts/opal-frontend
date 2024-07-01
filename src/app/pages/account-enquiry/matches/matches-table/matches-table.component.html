@@ -4,31 +4,31 @@
 
   <!-- Position Column -->
   <ng-container cdkColumnDef="accountNo">
-    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header" mat-sort-header>Account No.</th>
+    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Account No.</th>
     <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.accountNo }}</td>
   </ng-container>
 
   <!-- Name Column -->
   <ng-container cdkColumnDef="name">
-    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header" mat-sort-header>Name</th>
+    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Name</th>
     <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.name }}</td>
   </ng-container>
 
   <!-- Weight Column -->
   <ng-container cdkColumnDef="dateOfBirth">
-    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header" mat-sort-header>Date of Birth</th>
+    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Date of Birth</th>
     <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.dateOfBirth }}</td>
   </ng-container>
 
   <!-- Symbol Column -->
   <ng-container cdkColumnDef="addressLine1">
-    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header" mat-sort-header>Address Line 1</th>
+    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Address Line 1</th>
     <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.addressLine1 }}</td>
   </ng-container>
 
   <!-- Symbol Column -->
   <ng-container cdkColumnDef="balance">
-    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header" mat-sort-header>Balance</th>
+    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Balance</th>
     <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">
       {{ element.balance | currency: 'GBP' }}
     </td>
@@ -36,7 +36,7 @@
 
   <!-- Symbol Column -->
   <ng-container cdkColumnDef="court">
-    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header" mat-sort-header>Court</th>
+    <th cdk-header-cell *cdkHeaderCellDef class="govuk-table__header">Court</th>
     <td cdk-cell *cdkCellDef="let element" class="govuk-table__cell">{{ element.court }}</td>
   </ng-container>
 

@@ -23,6 +23,7 @@ import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE } from './manual-account
 import { MANUAL_ACCOUNT_CREATION_STATE } from './manual-account-creation-state';
 import { ROUTE_PERMISSIONS } from './route-permissions';
 import { TITLE_DROPDOWN_OPTIONS } from './title-dropdown-options';
+import { MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from './manual-account-creation-account-status';
 
 export {
   ACCOUNT_ENQUIRY_DEFAULT_STATE,
@@ -50,4 +51,5 @@ export {
   DATE_OF_BIRTH_FIELD_ERRORS,
   NATIONAL_INSURANCE_FIELD_ERRORS,
   MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS,
 };

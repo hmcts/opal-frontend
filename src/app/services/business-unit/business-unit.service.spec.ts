@@ -2,10 +2,11 @@ import { TestBed } from '@angular/core/testing';
 
 import { BusinessUnitService } from './business-unit.service';
 
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { API_PATHS } from '@constants';
 import { IBusinessUnitRefData } from '@interfaces';
 import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('BusinessUnitService', () => {
   let service: BusinessUnitService;
@@ -13,8 +14,8 @@ describe('BusinessUnitService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [BusinessUnitService],
+      imports: [],
+      providers: [BusinessUnitService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(BusinessUnitService);
     httpMock = TestBed.inject(HttpTestingController);
