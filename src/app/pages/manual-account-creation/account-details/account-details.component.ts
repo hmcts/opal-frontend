@@ -14,7 +14,11 @@ import {
 import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from '@constants';
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { IManualAccountCreationAccountStatus, IManualAccountCreationState } from '@interfaces';
+import {
+  IManualAccountCreationAccountStatus,
+  IManualAccountCreationFieldTypes,
+  IManualAccountCreationState,
+} from '@interfaces';
 import { MacStateService } from '@services';
 
 @Component({
@@ -67,8 +71,7 @@ export class AccountDetailsComponent implements OnInit {
    * @param subFieldValue - The value to check.
    * @returns A boolean indicating whether the value is truthy or not.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private isTruthy(subFieldValue: any): boolean {
+  private isTruthy(subFieldValue: IManualAccountCreationFieldTypes): boolean {
     if (typeof subFieldValue === 'string') {
       return !!subFieldValue;
     } else if (Array.isArray(subFieldValue)) {
