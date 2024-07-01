@@ -1,5 +1,3 @@
-
-
 export default class personalDetails {
   static enterFirstNames(firstName: string) {
     cy.get('#firstNames').clear().type(firstName);

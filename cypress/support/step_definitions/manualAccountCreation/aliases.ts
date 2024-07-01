@@ -1,4 +1,3 @@
-
 import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor/';
 
 Then('I select the add aliases checkbox', () => {
@@ -61,7 +60,8 @@ Then('I see {string} button below the {string} link', (addAnotherAliasButton: st
     .contains('#addAlias', addAnotherAliasButton)
     .should('have.text', addAnotherAliasButton);
 });
-Then('I see data entered in {string},{string} and {string}',
+Then(
+  'I see data entered in {string},{string} and {string}',
   (alias: string, aliasField: string, aliasValue: string) => {
     cy.contains('legend', alias)
       .siblings()

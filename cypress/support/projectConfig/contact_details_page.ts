@@ -1,5 +1,3 @@
-
-
 export default class manualAccountPageObjects {
   static enterPrimaryEmail(primaryEmail: string) {
     cy.get('#primaryEmailAddress').should('be.visible').type(primaryEmail);
