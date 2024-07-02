@@ -37,6 +37,7 @@ import { IManualAccountCreationPersonalAlias } from './manual-account-creation-p
 import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
 import { IManualAccountCreationPersonalDetailsAliasState } from './manual-account-creation-personal-details-alias-state.interface';
 import { ITimeRemaining } from './time-remaining.interface';
+import { ITokenExpiry } from './token-expiry.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -81,4 +82,5 @@ export {
   IManualAccountCreationPersonalDetailsState,
   IManualAccountCreationPersonalDetailsAliasState,
   ITimeRemaining,
+  ITokenExpiry,
 };
