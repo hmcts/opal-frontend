@@ -1,8 +1,8 @@
-import { Component, NgZone, OnInit, afterNextRender, inject } from '@angular/core';
+import { Component, NgZone, OnInit, PLATFORM_ID, afterNextRender, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService } from '@services';
 import { Observable, from, interval, map, tap } from 'rxjs';
 import { SsoEndpoints } from '@enums';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { DateTime } from 'luxon';
 import { ITimeRemaining } from './interfaces/time-remaining.interface';
 
@@ -16,20 +16,31 @@ export class AppComponent implements OnInit {
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
   public timeLeft$!: Observable<ITimeRemaining>;
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private readonly ngZone: NgZone) {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
     // https://angular.io/errors/NG0506
     this.ngZone.runOutsideAngular(() => {
       this.launchDarklyService.initializeLaunchDarklyClient();
+      if (isPlatformBrowser(this.platformId)) {
+        interval(1000)
+          // .pipe(map((x) => this.calcDateDiff()))
+          .subscribe(() => {
+            this.ngZone.run(() => {
+              // console.log('running in the zone');
+              // here you can handle the result inside Angular zone if needed
+              console.log(this.calcDateDiff());
+            });
+          });
+      }
     });
 
     afterNextRender(() => {
-      // Only trigger the render of the component in the browser
+      //Only trigger the render of the component in the browser
       this.sessionService.getTokenExpiry().subscribe((data) => {
         this.globalStateService.sessionTimeout.set(DateTime.fromISO(data));
         this.checkExpiry();
-        this.timeLeft$ = interval(1000).pipe(map((x) => this.calcDateDiff()));
       });
     });
   }
@@ -70,7 +81,7 @@ export class AppComponent implements OnInit {
    */
   private calcDateDiff(): ITimeRemaining {
     const dDay = this.globalStateService.sessionTimeout().valueOf();
-
+    console.log('dDay', dDay);
     const milliSecondsInASecond = 1000;
     const minutesInAnHour = 60;
     const secondsInAMinute = 60;
