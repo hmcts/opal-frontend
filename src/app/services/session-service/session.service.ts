@@ -42,6 +42,12 @@ export class SessionService {
     return this.userStateCache$;
   }
 
+  /**
+   * Retrieves the token expiry information.
+   * If the token expiry information is not available in the cache, it makes an HTTP request to fetch it.
+   * The token expiry information is stored in the cache for subsequent calls.
+   * @returns An Observable that emits the token expiry information.
+   */
   public getTokenExpiry(): Observable<ITokenExpiry> {
     if (!this.tokenExpiryCache$) {
       this.tokenExpiryCache$ = this.http

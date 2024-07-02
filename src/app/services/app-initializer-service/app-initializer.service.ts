@@ -24,6 +24,11 @@ export class AppInitializerService {
     this.transferStateService.initializeLaunchDarklyConfig();
   }
 
+  /**
+   * Initializes the session timeout.
+   *
+   * @returns A promise that resolves when the session timeout is initialized.
+   */
   private async initializeSessionTimeout(): Promise<void> {
     await firstValueFrom(this.sessionService.getTokenExpiry());
     return Promise.resolve();

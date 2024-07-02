@@ -16,5 +16,5 @@ export class GlobalStateService {
   // Non reactive state
   public ssoEnabled: boolean | null = false;
   public launchDarklyConfig: ILaunchDarklyConfig | null = null;
-  public sessionTimeout!: string;
+  public sessionTimeout!: string | null;
 }
