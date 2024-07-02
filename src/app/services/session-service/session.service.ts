@@ -40,4 +40,9 @@ export class SessionService {
 
     return this.userStateCache$;
   }
+
+  public getTokenExpiry(): Observable<any> {
+    console.log('getTokenExpiry', SessionEndpoints.expiry);
+    return this.http.get(SessionEndpoints.expiry);
+  }
 }

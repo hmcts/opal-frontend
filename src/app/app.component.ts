@@ -1,5 +1,5 @@
-import { Component, NgZone, OnInit, inject } from '@angular/core';
-import { LaunchDarklyService, GlobalStateService } from '@services';
+import { Component, NgZone, OnInit, afterNextRender, inject } from '@angular/core';
+import { LaunchDarklyService, GlobalStateService, SessionService } from '@services';
 import { from, tap } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT } from '@angular/common';
@@ -12,12 +12,20 @@ export class AppComponent implements OnInit {
   private readonly launchDarklyService = inject(LaunchDarklyService);
   public readonly globalStateService = inject(GlobalStateService);
   private readonly document = inject(DOCUMENT);
+  public readonly sessionService = inject(SessionService);
 
   constructor(private readonly ngZone: NgZone) {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
     // https://angular.io/errors/NG0506
     this.ngZone.runOutsideAngular(() => {
       this.launchDarklyService.initializeLaunchDarklyClient();
+    });
+
+    afterNextRender(() => {
+      // Only trigger the render of the component in the browser
+      this.sessionService.getTokenExpiry().subscribe((data) => {
+        console.log(data);
+      });
     });
   }
 
