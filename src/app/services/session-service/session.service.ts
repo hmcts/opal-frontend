@@ -42,7 +42,6 @@ export class SessionService {
   }
 
   public getTokenExpiry(): Observable<any> {
-    console.log('getTokenExpiry', SessionEndpoints.expiry);
     return this.http.get(SessionEndpoints.expiry);
   }
 }

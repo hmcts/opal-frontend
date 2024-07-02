@@ -1,6 +1,6 @@
 import { Component, NgZone, OnInit, PLATFORM_ID, afterNextRender, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService } from '@services';
-import { Observable, from, interval, map, tap } from 'rxjs';
+import { Observable, from, interval, map, of, tap } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { DateTime } from 'luxon';
@@ -24,15 +24,12 @@ export class AppComponent implements OnInit {
     this.ngZone.runOutsideAngular(() => {
       this.launchDarklyService.initializeLaunchDarklyClient();
       if (isPlatformBrowser(this.platformId)) {
-        interval(1000)
-          // .pipe(map((x) => this.calcDateDiff()))
-          .subscribe(() => {
-            this.ngZone.run(() => {
-              // console.log('running in the zone');
-              // here you can handle the result inside Angular zone if needed
-              console.log(this.calcDateDiff());
-            });
+        interval(1000).subscribe(() => {
+          this.ngZone.run(() => {
+            // here you can handle the result inside Angular zone if needed
+            this.timeLeft$ = of(this.calcDateDiff());
           });
+        });
       }
     });
 
@@ -69,7 +66,6 @@ export class AppComponent implements OnInit {
 
     if (minutesDifference.minutes < 30) {
       this.globalStateService.sessionTimeoutWarning.set(true);
-      this.calcDateDiff();
     } else {
       this.globalStateService.sessionTimeoutWarning.set(false);
     }
@@ -81,7 +77,6 @@ export class AppComponent implements OnInit {
    */
   private calcDateDiff(): ITimeRemaining {
     const dDay = this.globalStateService.sessionTimeout().valueOf();
-    console.log('dDay', dDay);
     const milliSecondsInASecond = 1000;
     const minutesInAnHour = 60;
     const secondsInAMinute = 60;
