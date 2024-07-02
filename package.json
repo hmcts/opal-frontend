@@ -113,7 +113,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "mocha": "^10.2.0",
-    "typescript": "~5.4.0"
+    "typescript": "~5.5.0"
   },
   "packageManager": "yarn@3.8.3",
   "cypress-cucumber-preprocessor": {
