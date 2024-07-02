@@ -1,4 +1,4 @@
-import { Then } from '@badeball/cypress-cucumber-preprocessor/';
+import { DataTable, Then } from '@badeball/cypress-cucumber-preprocessor/';
 
 Then('I click the {string} button', (buttonName: string) => {
   cy.contains('button', buttonName).click();
@@ -72,4 +72,6 @@ Then('I select {string} from the {string} dropdown', (option: string, dropdown: 
 });
 Then('I see {string} selected in the {string} dropdown', (option: string, dropdown: string) => {
   cy.contains('app-govuk-select', dropdown).find('select').should('have.value', option);
-});
+})
+
+

@@ -238,8 +238,8 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I select add aliases check box
         Then I see "Alias 1" sub heading
 
-        Then I see data entered in "Alias 1","First names" and "First names in alias"
-        Then I see data entered in "Alias 1","Last name" and "Last name in aliases"
+        Then I see "Alias 1", "First names" is set to ""
+        Then I see "Alias 1", "Last name" is set to ""
 
 
     Scenario Outline: AC9 - negative: If a user is selecting a date of birth using the date picker
@@ -526,7 +526,9 @@ Feature: verifying the personal details screen for adult or youth only defendant
         Then I click return to account details
 
         Then I see "Personal details" on the page header
-        Then I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" at the top of the page
+        #NINO validation has lessen so the error message has changed
+        #Then I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" at the top of the page
+        Then I see the error message "Enter a National Insurance number in the format AANNNNNNA" at the top of the page
         Examples:
             | NInumber      |
             | AB 12 34 45 6 |
