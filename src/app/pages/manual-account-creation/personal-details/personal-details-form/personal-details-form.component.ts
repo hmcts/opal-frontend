@@ -17,14 +17,19 @@ import {
   ADDRESS_LINE_THREE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
   DATE_OF_BIRTH_FIELD_ERRORS,
+  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
   NATIONAL_INSURANCE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
   TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalAlias } from '@interfaces';
-import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
+import {
+  IFieldErrors,
+  IGovUkSelectOptions,
+  IManualAccountCreationPersonalAlias,
+  IManualAccountCreationPersonalDetailsForm,
+} from '@interfaces';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
@@ -55,9 +60,10 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsState>();
+  @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  public nestedRouteButtonText!: string;
 
   override fieldErrors: IFieldErrors = {
     ...MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
@@ -159,6 +165,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   private clearAliasValidators(aliasFormGroup: FormGroup, key: string): void {
     aliasFormGroup.controls[key].clearValidators();
     aliasFormGroup.controls[key].updateValueAndValidity();
+    aliasFormGroup.controls[key].reset();
   }
 
   /**
@@ -226,6 +233,27 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
+   * Retrieves the nested route based on the defendant type and sets the nested route button text accordingly.
+   */
+  private getNestedRoute(): void {
+    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
+    if (defendantType) {
+      const nestedRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['personalDetails'];
+      switch (nestedRoute) {
+        case ManualAccountCreationRoutes.contactDetails:
+          this.nestedRouteButtonText = 'Add contact details';
+          break;
+        case ManualAccountCreationRoutes.offenceDetails:
+          this.nestedRouteButtonText = 'Add offence details';
+          break;
+        default:
+          this.nestedRouteButtonText = '';
+          break;
+      }
+    }
+  }
+
+  /**
    * Handles the change event of the add alias checkbox.
    * Updates the validators of each alias form group in the aliases form array.
    */
@@ -271,20 +299,25 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   /**
    * Handles the form submission event.
+   *
+   * @param event - The form submission event.
+   * @returns void
    */
-  public handleFormSubmit(): void {
+  public handleFormSubmit(event: SubmitEvent): void {
     this.handleErrorMessages();
 
     if (this.form.valid) {
       this.formSubmitted = true;
+      const continueFlow = event.submitter ? event.submitter.className.includes('continue-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit({ formData: this.form.value, continueFlow: continueFlow });
     }
   }
 
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
     this.setInitialErrorMessages();
+    this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
     this.buildAliasInputs();
     super.ngOnInit();
