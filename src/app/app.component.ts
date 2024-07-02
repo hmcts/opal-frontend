@@ -31,6 +31,10 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Initializes the timeout interval for the session.
+   * If the platform is browser and the session timeout is set, it starts a timer that updates the remaining minutes.
+   */
   private initializeTimeoutInterval(): void {
     if (isPlatformBrowser(this.platformId) && this.globalStateService.sessionTimeout) {
       this.timeOutIntervalSub = interval(this.POLL_INTERVAL * 1000).subscribe(() => {

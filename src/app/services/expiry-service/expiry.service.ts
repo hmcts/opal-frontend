@@ -8,6 +8,9 @@ import { DateTime } from 'luxon';
 export class ExpiryService {
   private readonly globalStateService = inject(GlobalStateService);
 
+  /**
+   * Checks the expiry of the session and sets the session timeout warning accordingly.
+   */
   public checkExpiry(): void {
     const minutesDifference = this.calculateMinuteDifference();
 
@@ -18,12 +21,16 @@ export class ExpiryService {
     }
   }
 
+  /**
+   * Calculates the difference in minutes between the current timestamp and the expiry timestamp.
+   * @returns The difference in minutes.
+   */
   public calculateMinuteDifference(): number {
     if (this.globalStateService.sessionTimeout) {
       const expiryTimestamp = DateTime.fromISO(this.globalStateService.sessionTimeout);
 
-      //const timestamp = DateTime.now();
-      const timestamp = DateTime.now().plus({ hours: 9, minutes: 30 });
+      const timestamp = DateTime.now();
+      //const timestamp = DateTime.now().plus({ hours: 9, minutes: 30 });
 
       if (expiryTimestamp) {
         const minuteDifference = expiryTimestamp.diff(timestamp, 'minutes');

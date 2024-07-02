@@ -8,6 +8,7 @@ import { SsoEndpoints } from '@enums';
 import { GlobalStateService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 describe('AppComponent', () => {
   const mockDocumentLocation = {
@@ -44,35 +45,44 @@ describe('AppComponent', () => {
     expect(app['launchDarklyService'].initializeLaunchDarklyFlags).toHaveBeenCalled();
   });
 
-  describe('handleAuthentication', () => {
-    it('should test handle authentication when authenticated is false', () => {
-      globalStateService.authenticated.set(false);
+  it('should test handle authentication when authenticated is false', () => {
+    globalStateService.authenticated.set(false);
 
-      const fixture = TestBed.createComponent(AppComponent);
-      const component = fixture.componentInstance;
-      const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
-        mockDocumentLocation.location.href = SsoEndpoints.login;
-      });
-
-      component.handleAuthentication();
-
-      expect(spy).toHaveBeenCalled();
-      expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.login);
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
+      mockDocumentLocation.location.href = SsoEndpoints.login;
     });
 
-    it('should test handle authentication when authenticated is true', () => {
-      globalStateService.authenticated.set(true);
+    component.handleAuthentication();
 
-      const fixture = TestBed.createComponent(AppComponent);
-      const component = fixture.componentInstance;
-      const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
-        mockDocumentLocation.location.href = SsoEndpoints.logout;
-      });
+    expect(spy).toHaveBeenCalled();
+    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.login);
+  });
 
-      component.handleAuthentication();
+  it('should test handle authentication when authenticated is true', () => {
+    globalStateService.authenticated.set(true);
 
-      expect(spy).toHaveBeenCalled();
-      expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.logout);
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
+      mockDocumentLocation.location.href = SsoEndpoints.logout;
     });
+
+    component.handleAuthentication();
+
+    expect(spy).toHaveBeenCalled();
+    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.logout);
+  });
+
+  it('should unsubscribe from the timeout interval subscription', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    component['timeOutIntervalSub'] = new Subscription();
+    spyOn(component['timeOutIntervalSub'], 'unsubscribe');
+
+    component.ngOnDestroy();
+
+    expect(component['timeOutIntervalSub'].unsubscribe).toHaveBeenCalled();
   });
 });
