@@ -1,6 +1,6 @@
-import { Component, NgZone, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService, ExpiryService } from '@services';
-import { Observable, from, interval, of, tap } from 'rxjs';
+import { Observable, Subscription, from, interval, of, tap } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
@@ -8,7 +8,7 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   private readonly launchDarklyService = inject(LaunchDarklyService);
   public readonly globalStateService = inject(GlobalStateService);
   private readonly document = inject(DOCUMENT);
@@ -16,24 +16,30 @@ export class AppComponent implements OnInit {
   public expiryService = inject(ExpiryService);
   public minutesRemaining$!: Observable<number>;
   private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
+  private timeOutIntervalSub!: Subscription;
 
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;
 
-  constructor(private readonly ngZone: NgZone) {
+  constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
     // https://angular.io/errors/NG0506
     this.ngZone.runOutsideAngular(() => {
       this.launchDarklyService.initializeLaunchDarklyClient();
-      if (isPlatformBrowser(this.platformId) && this.globalStateService.sessionTimeout) {
-        interval(this.POLL_INTERVAL * 1000).subscribe(() => {
-          this.ngZone.run(() => {
-            // here you can handle the result inside Angular zone if needed
-            this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
-          });
-        });
-      }
+      this.initializeTimeoutInterval();
     });
+  }
+
+  private initializeTimeoutInterval(): void {
+    if (isPlatformBrowser(this.platformId) && this.globalStateService.sessionTimeout) {
+      this.timeOutIntervalSub = interval(this.POLL_INTERVAL * 1000).subscribe(() => {
+        this.ngZone.run(() => {
+          // here you can handle the result inside Angular zone if needed
+          this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
+        });
+      });
+    }
   }
 
   /**
@@ -47,6 +53,12 @@ export class AppComponent implements OnInit {
 
     this.expiryService.checkExpiry();
     this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeOutIntervalSub) {
+      this.timeOutIntervalSub.unsubscribe();
+    }
   }
 
   /**
