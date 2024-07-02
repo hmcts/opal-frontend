@@ -14,6 +14,16 @@
   <div class="content-wrapper">
     <div class="govuk-width-container">
       <main class="govuk-main-wrapper" id="main-content" role="main">
+        @if (globalStateService.sessionTimeoutWarning()) {
+          @if (timeLeft$ | async; as t) {
+            <div>
+              <app-moj-banner
+                text="Warning: session is about to expire in {{ t.minutes }} minutes and {{ t.seconds }} seconds"
+                type="warning"
+              ></app-moj-banner>
+            </div>
+          }
+        }
         <div class="govuk-grid-row">
           <router-outlet></router-outlet>
         </div>

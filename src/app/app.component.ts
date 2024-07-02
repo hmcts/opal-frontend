@@ -1,8 +1,10 @@
 import { Component, NgZone, OnInit, afterNextRender, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService } from '@services';
-import { from, tap } from 'rxjs';
+import { Observable, from, interval, map, tap } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT } from '@angular/common';
+import { DateTime } from 'luxon';
+import { ITimeRemaining } from './interfaces/time-remaining.interface';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +15,7 @@ export class AppComponent implements OnInit {
   public readonly globalStateService = inject(GlobalStateService);
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
+  public timeLeft$!: Observable<ITimeRemaining>;
 
   constructor(private readonly ngZone: NgZone) {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
@@ -24,7 +27,9 @@ export class AppComponent implements OnInit {
     afterNextRender(() => {
       // Only trigger the render of the component in the browser
       this.sessionService.getTokenExpiry().subscribe((data) => {
-        console.log(data);
+        this.globalStateService.sessionTimeout.set(DateTime.fromISO(data));
+        this.checkExpiry();
+        this.timeLeft$ = interval(1000).pipe(map((x) => this.calcDateDiff()));
       });
     });
   }
@@ -37,6 +42,46 @@ export class AppComponent implements OnInit {
     from(this.launchDarklyService.initializeLaunchDarklyFlags())
       .pipe(tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()))
       .subscribe();
+  }
+
+  /**
+   * Checks the expiry of the session and sets the session timeout warning accordingly.
+   */
+  private checkExpiry() {
+    const expiryTimestamp = this.globalStateService.sessionTimeout();
+    // Below would not be commented out
+    //const timestamp = DateTime.now();
+
+    // Below is for testing it
+    const timestamp = DateTime.now().plus({ hours: 9, minutes: 30 });
+    const minutesDifference = expiryTimestamp.diff(timestamp, 'minutes');
+
+    if (minutesDifference.minutes < 30) {
+      this.globalStateService.sessionTimeoutWarning.set(true);
+      this.calcDateDiff();
+    } else {
+      this.globalStateService.sessionTimeoutWarning.set(false);
+    }
+  }
+
+  /**
+   * Calculates the time difference between the current date and a specified date.
+   * @returns An object containing the remaining seconds and minutes.
+   */
+  private calcDateDiff(): ITimeRemaining {
+    const dDay = this.globalStateService.sessionTimeout().valueOf();
+
+    const milliSecondsInASecond = 1000;
+    const minutesInAnHour = 60;
+    const secondsInAMinute = 60;
+
+    const timeDifference = dDay - Date.now();
+
+    const minutes = Math.floor((timeDifference / (milliSecondsInASecond * minutesInAnHour)) % secondsInAMinute);
+
+    const seconds = Math.floor(timeDifference / milliSecondsInASecond) % secondsInAMinute;
+
+    return { seconds, minutes };
   }
 
   /**
