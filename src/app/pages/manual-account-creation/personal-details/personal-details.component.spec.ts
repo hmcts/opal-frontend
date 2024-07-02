@@ -9,7 +9,7 @@ import {
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
-import { IManualAccountCreationPersonalDetailsState } from '@interfaces';
+import { IManualAccountCreationPersonalDetailsForm, IManualAccountCreationPersonalDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 
 describe('PersonalDetailsComponent', () => {
@@ -44,7 +44,7 @@ describe('PersonalDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle form submission and navigate', () => {
+  it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     const formData: IManualAccountCreationPersonalDetailsState = {
@@ -63,10 +63,47 @@ describe('PersonalDetailsComponent', () => {
       registrationNumber: null,
     };
 
-    component.handlePersonalDetailsSubmit(formData);
+    const personalDetailsFormSubmit: IManualAccountCreationPersonalDetailsForm = {
+      formData: formData,
+      continueFlow: false,
+    };
+
+    component.handlePersonalDetailsSubmit(personalDetailsFormSubmit);
 
     expect(mockMacStateService.manualAccountCreation.personalDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
+  });
+
+  it('should handle form submission and navigate next route', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+
+    const formData: IManualAccountCreationPersonalDetailsState = {
+      title: 'Mr',
+      firstNames: null,
+      lastName: null,
+      addAlias: false,
+      aliases: [],
+      dateOfBirth: null,
+      nationalInsuranceNumber: null,
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+      makeOfCar: null,
+      registrationNumber: null,
+    };
+
+    const personalDetailsFormSubmit: IManualAccountCreationPersonalDetailsForm = {
+      formData: formData,
+      continueFlow: true,
+    };
+
+    component.handlePersonalDetailsSubmit(personalDetailsFormSubmit);
+
+    expect(mockMacStateService.manualAccountCreation.personalDetails).toEqual(formData);
+    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.contactDetails]);
   });
 
   it('should test handleUnsavedChanges', () => {
