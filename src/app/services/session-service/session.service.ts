@@ -50,7 +50,7 @@ export class SessionService {
         .pipe(
           tap((expiry) => {
             if (expiry.tokenExpiry) {
-              this.globalStateService.sessionTimeout.set(expiry.tokenExpiry);
+              this.globalStateService.sessionTimeout = expiry.tokenExpiry;
             }
           }),
         );

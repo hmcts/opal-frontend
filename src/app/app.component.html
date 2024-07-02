@@ -15,10 +15,13 @@
     <div class="govuk-width-container">
       <main class="govuk-main-wrapper" id="main-content" role="main">
         @if (globalStateService.sessionTimeoutWarning()) {
-          @if (timeLeft$ | async; as t) {
+          @if (minutesRemaining$ | async; as minutes) {
             <div>
               <app-moj-banner
-                text="Warning: session is about to expire in {{ t.minutes }} minutes and {{ t.seconds }} seconds"
+                text="Warning: Your session will expire in {{
+                  minutes
+                }} minutes. Please save your work and log out, then log back in to continue.
+                "
                 type="warning"
               ></app-moj-banner>
             </div>

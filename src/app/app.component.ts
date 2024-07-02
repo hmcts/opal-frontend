@@ -1,10 +1,8 @@
-import { Component, NgZone, OnInit, PLATFORM_ID, afterNextRender, inject } from '@angular/core';
-import { LaunchDarklyService, GlobalStateService, SessionService } from '@services';
-import { Observable, from, interval, map, of, tap } from 'rxjs';
+import { Component, NgZone, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { LaunchDarklyService, GlobalStateService, SessionService, ExpiryService } from '@services';
+import { Observable, from, interval, of, tap } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { DateTime } from 'luxon';
-import { ITimeRemaining } from './interfaces/time-remaining.interface';
 
 @Component({
   selector: 'app-root',
@@ -15,30 +13,26 @@ export class AppComponent implements OnInit {
   public readonly globalStateService = inject(GlobalStateService);
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
-  public timeLeft$!: Observable<ITimeRemaining>;
+  public expiryService = inject(ExpiryService);
+  public minutesRemaining$!: Observable<number>;
   private platformId = inject(PLATFORM_ID);
+
+  // Defined in seconds
+  private readonly POLL_INTERVAL = 60;
 
   constructor(private readonly ngZone: NgZone) {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
     // https://angular.io/errors/NG0506
     this.ngZone.runOutsideAngular(() => {
       this.launchDarklyService.initializeLaunchDarklyClient();
-      if (isPlatformBrowser(this.platformId)) {
-        interval(1000).subscribe(() => {
+      if (isPlatformBrowser(this.platformId) && this.globalStateService.sessionTimeout) {
+        interval(this.POLL_INTERVAL * 1000).subscribe(() => {
           this.ngZone.run(() => {
             // here you can handle the result inside Angular zone if needed
-            this.timeLeft$ = of(this.calcDateDiff());
+            this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
           });
         });
       }
-    });
-
-    afterNextRender(() => {
-      //Only trigger the render of the component in the browser
-      this.sessionService.getTokenExpiry().subscribe((data) => {
-        this.globalStateService.sessionTimeout.set(DateTime.fromISO(data));
-        this.checkExpiry();
-      });
     });
   }
 
@@ -50,44 +44,9 @@ export class AppComponent implements OnInit {
     from(this.launchDarklyService.initializeLaunchDarklyFlags())
       .pipe(tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()))
       .subscribe();
-  }
 
-  /**
-   * Checks the expiry of the session and sets the session timeout warning accordingly.
-   */
-  private checkExpiry() {
-    const expiryTimestamp = this.globalStateService.sessionTimeout();
-    // Below would not be commented out
-    //const timestamp = DateTime.now();
-
-    // Below is for testing it
-    const timestamp = DateTime.now().plus({ hours: 9, minutes: 30 });
-    const minutesDifference = expiryTimestamp.diff(timestamp, 'minutes');
-
-    if (minutesDifference.minutes < 30) {
-      this.globalStateService.sessionTimeoutWarning.set(true);
-    } else {
-      this.globalStateService.sessionTimeoutWarning.set(false);
-    }
-  }
-
-  /**
-   * Calculates the time difference between the current date and a specified date.
-   * @returns An object containing the remaining seconds and minutes.
-   */
-  private calcDateDiff(): ITimeRemaining {
-    const dDay = this.globalStateService.sessionTimeout().valueOf();
-    const milliSecondsInASecond = 1000;
-    const minutesInAnHour = 60;
-    const secondsInAMinute = 60;
-
-    const timeDifference = dDay - Date.now();
-
-    const minutes = Math.floor((timeDifference / (milliSecondsInASecond * minutesInAnHour)) % secondsInAMinute);
-
-    const seconds = Math.floor(timeDifference / milliSecondsInASecond) % secondsInAMinute;
-
-    return { seconds, minutes };
+    this.expiryService.checkExpiry();
+    this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
   }
 
   /**
