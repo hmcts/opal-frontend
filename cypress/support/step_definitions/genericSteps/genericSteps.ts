@@ -72,6 +72,4 @@ Then('I select {string} from the {string} dropdown', (option: string, dropdown: 
 });
 Then('I see {string} selected in the {string} dropdown', (option: string, dropdown: string) => {
   cy.contains('app-govuk-select', dropdown).find('select').should('have.value', option);
-})
-
-
+});

@@ -593,4 +593,3 @@ Then('I verify the status of {string} to {string}', (linkText: string, status: s
     .next()
     .contains('[class="govuk-task-list__status"]', status);
 });
-
