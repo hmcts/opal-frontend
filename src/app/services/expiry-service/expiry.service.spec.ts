@@ -55,10 +55,36 @@ describe('ExpiryService', () => {
 
   it('should return 0 when expiryTimestamp is not available', () => {
     const expectedMinuteDifference = 0;
-    globalStateService.sessionTimeout = '';
+    globalStateService.sessionTimeout = null;
 
     const minuteDifference = service.calculateMinuteDifference();
 
     expect(minuteDifference).toEqual(expectedMinuteDifference);
+  });
+
+  it('should return 0 when expiryTimestamp is in the past', () => {
+    const expectedNow = DateTime.fromISO('2023-07-03T13:00:00Z');
+    Settings.now = () => expectedNow.toMillis();
+
+    const mockGlobalStateService = {
+      sessionTimeout: '2023-07-03T12:30:00Z'
+    };
+
+    const result = service.calculateMinuteDifference.call({ globalStateService: mockGlobalStateService });
+
+    expect(result).toBe(0);
+  });
+
+  it('should return 0 when expiryTimestamp is exactly the same as the current time', () => {
+    const expectedNow = DateTime.fromISO('2023-07-03T12:30:00Z');
+    Settings.now = () => expectedNow.toMillis();
+
+    const mockGlobalStateService = {
+      sessionTimeout: '2023-07-03T12:30:00Z'
+    };
+
+    const result = service.calculateMinuteDifference.call({ globalStateService: mockGlobalStateService });
+
+    expect(result).toBe(0);
   });
 });

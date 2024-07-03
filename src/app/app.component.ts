@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService, ExpiryService } from '@services';
-import { Observable, Subscription, from, interval, of, tap } from 'rxjs';
+import { Observable, Subscription, from, of, tap, timer } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public minutesRemaining$!: Observable<number>;
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
-  private timeOutIntervalSub!: Subscription;
+  private timerSub!: Subscription;
 
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;
@@ -37,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   private initializeTimeoutInterval(): void {
     if (isPlatformBrowser(this.platformId) && this.globalStateService.sessionTimeout) {
-      this.timeOutIntervalSub = interval(this.POLL_INTERVAL * 1000).subscribe(() => {
+      this.timerSub = timer(0, this.POLL_INTERVAL * 1000).subscribe(() => {
         this.ngZone.run(() => {
           // here you can handle the result inside Angular zone if needed
           this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
@@ -56,12 +56,11 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this.expiryService.checkExpiry();
-    this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
   }
 
   ngOnDestroy(): void {
-    if (this.timeOutIntervalSub) {
-      this.timeOutIntervalSub.unsubscribe();
+    if (this.timerSub) {
+      this.timerSub.unsubscribe();
     }
   }
 

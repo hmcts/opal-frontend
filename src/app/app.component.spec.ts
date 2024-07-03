@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { GovukFooterComponent } from './components/govuk/govuk-footer/govuk-footer.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -78,11 +78,33 @@ describe('AppComponent', () => {
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    component['timeOutIntervalSub'] = new Subscription();
-    spyOn(component['timeOutIntervalSub'], 'unsubscribe');
+    component['timerSub'] = new Subscription();
+    spyOn(component['timerSub'], 'unsubscribe');
 
     component.ngOnDestroy();
 
-    expect(component['timeOutIntervalSub'].unsubscribe).toHaveBeenCalled();
+    expect(component['timerSub'].unsubscribe).toHaveBeenCalled();
   });
+
+  it('should initialize the timeout interval and update minutesRemaining$', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    globalStateService.sessionTimeout = '2023-07-03T12:30:00Z';
+    spyOn(component['expiryService'], 'calculateMinuteDifference').and.returnValue(10);
+
+    component['initializeTimeoutInterval']();
+
+    tick(60000); // Simulate 1 minute passing
+
+    component.minutesRemaining$.subscribe((minutes) => {
+      expect(minutes).toBe(10);
+    });
+
+    // Clean up the interval
+    if (component['timerSub']) {
+      component['timerSub'].unsubscribe();
+    }
+
+    flush(); // Ensure all timers are cleared
+  }));
 });
