@@ -42,7 +42,7 @@
     }
   },
   "expiry": {
-    "testMode": true,
+    "testMode": false,
     "default": {
       "expiryTimeInMin": 30,
       "warningThresholdInMin": 30

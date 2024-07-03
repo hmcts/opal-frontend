@@ -1,28 +1,25 @@
 import { Request, Response } from 'express';
 import { DateTime } from 'luxon';
-import { Jwt } from '../utils';
 import config from 'config';
+import { Jwt } from '../utils';
 
 export default (req: Request, res: Response) => {
-  if (req.session.securityToken?.accessToken) {
-    const testMode = config.get('expiry.testMode');
-    const expiryTimeInMin: number = testMode
-      ? config.get('expiry.test.expiryTimeInMin')
-      : config.get('expiry.default.expiryTimeInMin');
-    const expiryWarningThresholdInMin: number = testMode
-      ? config.get('expiry.test.warningThresholdInMin')
-      : config.get('expiry.default.warningThresholdInMin');
+  const accessToken = req.session.securityToken?.accessToken;
+  if (accessToken) {
+    const testMode = config.get<boolean>('expiry.testMode');
+    const expiryConfigPath = testMode ? 'expiry.test' : 'expiry.default';
 
-    const payload = Jwt.parseJwt(req.session.securityToken?.accessToken);
+    const expiryTimeInMin = config.get<number>(`${expiryConfigPath}.expiryTimeInMin`);
+    const warningThresholdInMin = config.get<number>(`${expiryConfigPath}.warningThresholdInMin`);
 
-    //Create date from expiry, argument must be in ms so multiply by 1000
+    const payload = Jwt.parseJwt(accessToken);
     const jwtExpiry = testMode
       ? DateTime.now().plus({ minutes: expiryTimeInMin }).toISO()
-      : new Date(payload.exp * 1000);
+      : DateTime.fromMillis(payload.exp * 1000).toISO();
 
     res.status(200).send({
       expiry: jwtExpiry,
-      expiryWarningThresholdInMin,
+      expiryWarningThresholdInMin: warningThresholdInMin,
     });
   } else {
     res.status(200).send({
