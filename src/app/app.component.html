@@ -14,17 +14,25 @@
   <div class="content-wrapper">
     <div class="govuk-width-container">
       <main class="govuk-main-wrapper" id="main-content" role="main">
-        @if (globalStateService.sessionTimeoutWarning()) {
-          @if (minutesRemaining$ | async; as minutes) {
+        @if (minutesRemaining$ | async; as minutes) {
+          @if (thresholdInMinutes > minutes && minutes > 0) {
             <div>
               <app-moj-banner
                 text="Warning: Your session will expire in {{
                   minutes
-                }} minutes. Please save your work and log out, then log back in to continue.
-                "
+                }} minute(s). Please save your work and log out, then log back in to continue."
                 type="warning"
               ></app-moj-banner>
             </div>
+          } @else {
+            @if (minutes === 0) {
+              <div>
+                <app-moj-banner
+                  text="Warning: Your session has expired. Please log back in."
+                  type="warning"
+                ></app-moj-banner>
+              </div>
+            }
           }
         }
         <div class="govuk-grid-row">

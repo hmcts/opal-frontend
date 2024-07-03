@@ -44,12 +44,12 @@
   "expiry": {
     "testMode": false,
     "default": {
-      "expiryTimeInMin": 30,
-      "warningThresholdInMin": 30
+      "expiryTimeInMilliseconds": 1800000,
+      "warningThresholdInMilliseconds": 1800000
     },
     "test": {
-      "expiryTimeInMin": 5,
-      "warningThresholdInMin": 5
+      "expiryTimeInMilliseconds": 120000,
+      "warningThresholdInMilliseconds": 120000
     }
   }
 }

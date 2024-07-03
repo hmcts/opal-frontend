@@ -1,8 +1,9 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { LaunchDarklyService, GlobalStateService, SessionService, ExpiryService } from '@services';
+import { LaunchDarklyService, GlobalStateService, SessionService, UtilsService } from '@services';
 import { Observable, Subscription, from, of, tap, timer } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public readonly globalStateService = inject(GlobalStateService);
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
-  public expiryService = inject(ExpiryService);
+  public utilsService = inject(UtilsService);
   public minutesRemaining$!: Observable<number>;
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;
+  public thresholdInMinutes!: number;
 
   constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
@@ -37,10 +39,26 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   private initializeTimeoutInterval(): void {
     if (isPlatformBrowser(this.platformId) && this.globalStateService.tokenExpiry) {
+      const { expiry, warningThresholdInMilliseconds } = this.globalStateService.tokenExpiry;
+      if (warningThresholdInMilliseconds) {
+        this.thresholdInMinutes = this.utilsService.convertMillisecondsToMinutes(warningThresholdInMilliseconds);
+      }
       this.timerSub = timer(0, this.POLL_INTERVAL * 1000).subscribe(() => {
         this.ngZone.run(() => {
           // here you can handle the result inside Angular zone if needed
-          this.minutesRemaining$ = of(this.expiryService.calculateMinuteDifference());
+          if (expiry) {
+            const remainingMinutes = this.utilsService.calculateMinutesDifference(
+              DateTime.now(),
+              DateTime.fromISO(expiry),
+            );
+            let threshold = 0;
+            if (warningThresholdInMilliseconds) {
+              threshold = this.utilsService.convertMillisecondsToMinutes(warningThresholdInMilliseconds);
+            }
+            this.minutesRemaining$ = of(remainingMinutes);
+            console.log('threshold: ', threshold);
+            console.log('minutes remaining: ', remainingMinutes);
+          }
         });
       });
     }
@@ -54,8 +72,6 @@ export class AppComponent implements OnInit, OnDestroy {
     from(this.launchDarklyService.initializeLaunchDarklyFlags())
       .pipe(tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()))
       .subscribe();
-
-    this.expiryService.checkExpiry();
   }
 
   ngOnDestroy(): void {

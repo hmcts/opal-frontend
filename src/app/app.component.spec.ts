@@ -98,7 +98,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     globalStateService.tokenExpiry = mockTokenExpiry;
-    spyOn(component['expiryService'], 'calculateMinuteDifference').and.returnValue(10);
+    spyOn(component['utilsService'], 'calculateMinutesDifference').and.returnValue(10);
 
     component['initializeTimeoutInterval']();
 

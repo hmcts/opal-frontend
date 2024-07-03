@@ -11,7 +11,6 @@ export class GlobalStateService {
   public readonly error = signal({ error: false, message: '' });
   public readonly featureFlags = signal<LDFlagSet>({});
   public readonly userState = signal<IUserState>({} as IUserState);
-  public readonly sessionTimeoutWarning = signal<boolean>(false);
 
   // Non reactive state
   public ssoEnabled: boolean | null = false;
