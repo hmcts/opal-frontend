@@ -1,4 +1,4 @@
 export interface ITokenExpiry {
-  tokenExpiry: string | null;
-  warningThresholdInMin: number | null;
+  expiry: string | null;
+  expiryWarningThresholdInMin: number | null;
 }

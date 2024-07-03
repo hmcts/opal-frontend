@@ -1,8 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-
 import { ExpiryService } from './expiry.service';
 import { GlobalStateService } from '@services';
 import { DateTime, Settings } from 'luxon';
+import { ITokenExpiry } from '@interfaces';
+import { TOKEN_EXPIRY_MOCK } from '@mocks';
+
+const tokenExpiry: ITokenExpiry = TOKEN_EXPIRY_MOCK;
 
 describe('ExpiryService', () => {
   let service: ExpiryService;
@@ -46,7 +49,8 @@ describe('ExpiryService', () => {
 
   it('should calculate minute difference correctly', () => {
     const expectedMinuteDifference = 10;
-    globalStateService.sessionTimeout = DateTime.now().plus({ minutes: 10 }).toISO();
+    globalStateService.tokenExpiry = tokenExpiry;
+    globalStateService.tokenExpiry.expiry = DateTime.now().plus({ minutes: 10 }).toISO();
 
     const minuteDifference = service.calculateMinuteDifference();
 
@@ -55,7 +59,8 @@ describe('ExpiryService', () => {
 
   it('should return 0 when expiryTimestamp is not available', () => {
     const expectedMinuteDifference = 0;
-    globalStateService.sessionTimeout = null;
+    globalStateService.tokenExpiry = tokenExpiry;
+    globalStateService.tokenExpiry.expiry = null;
 
     const minuteDifference = service.calculateMinuteDifference();
 
@@ -63,14 +68,12 @@ describe('ExpiryService', () => {
   });
 
   it('should return 0 when expiryTimestamp is in the past', () => {
+    globalStateService.tokenExpiry = tokenExpiry;
+    globalStateService.tokenExpiry.expiry = '2023-07-03T12:30:00Z';
     const expectedNow = DateTime.fromISO('2023-07-03T13:00:00Z');
     Settings.now = () => expectedNow.toMillis();
 
-    const mockGlobalStateService = {
-      sessionTimeout: '2023-07-03T12:30:00Z'
-    };
-
-    const result = service.calculateMinuteDifference.call({ globalStateService: mockGlobalStateService });
+    const result = service.calculateMinuteDifference.call({ globalStateService });
 
     expect(result).toBe(0);
   });
@@ -80,7 +83,7 @@ describe('ExpiryService', () => {
     Settings.now = () => expectedNow.toMillis();
 
     const mockGlobalStateService = {
-      sessionTimeout: '2023-07-03T12:30:00Z'
+      sessionTimeout: '2023-07-03T12:30:00Z',
     };
 
     const result = service.calculateMinuteDifference.call({ globalStateService: mockGlobalStateService });

@@ -29,6 +29,7 @@ import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from './ma
 import { BUSINESS_UNIT_REF_DATA_MOCK } from './business-unit-ref-data.mock';
 import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from './business-unit-autocomplete-items.mock';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK } from './manual-account-creation-personal-details-state.mock';
+import { TOKEN_EXPIRY_MOCK } from './token-expiry.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -62,4 +63,5 @@ export {
   BUSINESS_UNIT_REF_DATA_MOCK,
   BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
+  TOKEN_EXPIRY_MOCK,
 };

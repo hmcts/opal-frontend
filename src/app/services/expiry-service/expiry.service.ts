@@ -26,15 +26,19 @@ export class ExpiryService {
    * @returns The difference in minutes.
    */
   public calculateMinuteDifference(): number {
-    if (this.globalStateService.sessionTimeout) {
-      const expiryTimestamp = DateTime.fromISO(this.globalStateService.sessionTimeout);
+    if (this.globalStateService.tokenExpiry) {
+      const { expiry } = this.globalStateService.tokenExpiry;
+      if (expiry) {
+        const expiryTimestamp = DateTime.fromISO(expiry);
 
-      const timestamp = DateTime.now();
+        const timestamp = DateTime.now();
 
-      const minuteDifference = expiryTimestamp.diff(timestamp, 'minutes');
-      return minuteDifference.minutes > 0 ? Math.floor(minuteDifference.minutes) : 0;
+        const minuteDifference = expiryTimestamp.diff(timestamp, 'minutes');
+        return minuteDifference.minutes > 0 ? Math.floor(minuteDifference.minutes) : 0;
+      }
+
+      return 0;
     }
-
     return 0;
   }
 }

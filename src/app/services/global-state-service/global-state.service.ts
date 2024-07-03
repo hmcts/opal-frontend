@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { ILaunchDarklyConfig, IUserState } from '@interfaces';
+import { ILaunchDarklyConfig, ITokenExpiry, IUserState } from '@interfaces';
 import { LDFlagSet } from 'launchdarkly-js-client-sdk';
 
 @Injectable({
@@ -16,6 +16,5 @@ export class GlobalStateService {
   // Non reactive state
   public ssoEnabled: boolean | null = false;
   public launchDarklyConfig: ILaunchDarklyConfig | null = null;
-  public sessionTimeout!: string | null;
-  public sessionWarningThreshold!: number | null;
+  public tokenExpiry!: ITokenExpiry;
 }

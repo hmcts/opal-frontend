@@ -9,6 +9,10 @@ import { GlobalStateService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { ITokenExpiry } from './interfaces/token-expiry.interface';
+import { TOKEN_EXPIRY_MOCK } from '@mocks';
+
+const mockTokenExpiry: ITokenExpiry = TOKEN_EXPIRY_MOCK;
 
 describe('AppComponent', () => {
   const mockDocumentLocation = {
@@ -26,6 +30,10 @@ describe('AppComponent', () => {
     });
 
     globalStateService = TestBed.inject(GlobalStateService);
+  });
+
+  beforeEach(() => {
+    mockTokenExpiry.expiry = '2023-07-03T12:30:00Z';
   });
 
   it('should create the app', () => {
@@ -89,7 +97,7 @@ describe('AppComponent', () => {
   it('should initialize the timeout interval and update minutesRemaining$', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    globalStateService.sessionTimeout = '2023-07-03T12:30:00Z';
+    globalStateService.tokenExpiry = mockTokenExpiry;
     spyOn(component['expiryService'], 'calculateMinuteDifference').and.returnValue(10);
 
     component['initializeTimeoutInterval']();

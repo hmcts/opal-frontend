@@ -9,7 +9,7 @@ export default (req: Request, res: Response) => {
     const expiryTimeInMin: number = testMode
       ? config.get('expiry.test.expiryTimeInMin')
       : config.get('expiry.default.expiryTimeInMin');
-    const warningThresholdInMin: number = testMode
+    const expiryWarningThresholdInMin: number = testMode
       ? config.get('expiry.test.warningThresholdInMin')
       : config.get('expiry.default.warningThresholdInMin');
 
@@ -21,13 +21,13 @@ export default (req: Request, res: Response) => {
       : new Date(payload.exp * 1000);
 
     res.status(200).send({
-      tokenExpiry: jwtExpiry,
-      warningThresholdInMin,
+      expiry: jwtExpiry,
+      expiryWarningThresholdInMin,
     });
   } else {
     res.status(200).send({
-      tokenExpiry: null,
-      warningThresholdInMin: null,
+      expiry: null,
+      expiryWarningThresholdInMin: null,
     });
   }
 };

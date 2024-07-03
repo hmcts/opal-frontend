@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-
 import { AppInitializerService } from './app-initializer.service';
-
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ITokenExpiry } from '@interfaces';
+import { TOKEN_EXPIRY_MOCK } from '@mocks';
 
-const tokenExpiry: ITokenExpiry = { tokenExpiry: 'test', warningThresholdInMin: 5 };
+const tokenExpiry: ITokenExpiry = TOKEN_EXPIRY_MOCK;
 
 describe('AppInitializerService', () => {
   let service: AppInitializerService;

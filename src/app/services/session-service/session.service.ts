@@ -55,8 +55,7 @@ export class SessionService {
         .pipe(shareReplay(1))
         .pipe(
           tap((expiry) => {
-            this.globalStateService.sessionTimeout = expiry.tokenExpiry;
-            this.globalStateService.sessionWarningThreshold = expiry.warningThresholdInMin;
+            this.globalStateService.tokenExpiry = expiry;
           }),
         );
     }

@@ -36,7 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * If the platform is browser and the session timeout is set, it starts a timer that updates the remaining minutes.
    */
   private initializeTimeoutInterval(): void {
-    if (isPlatformBrowser(this.platformId) && this.globalStateService.sessionTimeout) {
+    if (isPlatformBrowser(this.platformId) && this.globalStateService.tokenExpiry) {
       this.timerSub = timer(0, this.POLL_INTERVAL * 1000).subscribe(() => {
         this.ngZone.run(() => {
           // here you can handle the result inside Angular zone if needed
