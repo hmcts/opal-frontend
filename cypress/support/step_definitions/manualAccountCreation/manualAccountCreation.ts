@@ -93,13 +93,6 @@ Then('I verify employer name, employer reference, employer address is empty', ()
   cy.get('#employerAddress1').should('be.empty');
 });
 
-// Then('I click save and return to tasks', () => {
-//   cy.get('#submitForm').click();
-// });
-
-Then('I click return to account details', () => {
-  cy.get('#submitForm').click();
-});
 Then(
   'I verify {string},{string},{string},{string},{string},{string},{string},{string},{string},{string} values saved',
   (
@@ -582,3 +575,14 @@ When(
       .should('contains', lastName);
   },
 );
+
+When('{string} is verified as grey', (addContactDetailsButton: string) => {
+  cy.get('#submitForm').should('be.visible', addContactDetailsButton);
+  cy.get('#submitForm').should('be.enabled', addContactDetailsButton);
+});
+
+Then('I verify the status of {string} to {string}', (linkText: string, status: string) => {
+  cy.contains('[class="govuk-task-list__name-and-hint"]', linkText)
+    .next()
+    .contains('[class="govuk-task-list__status"]', status);
+});
