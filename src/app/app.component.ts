@@ -23,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;
   public thresholdInMinutes!: number;
+  public showExpiredWarning = false;
 
   constructor() {
     // There is something odd with the launch darkly lib that requires us to run it outside of the angular zone to initialize
@@ -58,6 +59,9 @@ export class AppComponent implements OnInit, OnDestroy {
             this.minutesRemaining$ = of(remainingMinutes);
             console.log('threshold: ', threshold);
             console.log('minutes remaining: ', remainingMinutes);
+            if (remainingMinutes === 0) {
+              this.showExpiredWarning = true;
+            }
           }
         });
       });
