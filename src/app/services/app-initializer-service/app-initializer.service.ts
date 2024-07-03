@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { TransferStateService, SessionService } from '@services';
-import { firstValueFrom, from } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

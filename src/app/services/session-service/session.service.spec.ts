@@ -138,7 +138,7 @@ describe('SessionService', () => {
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
     });
-    let req = httpMock.expectOne(SessionEndpoints.expiry);
+    const req = httpMock.expectOne(SessionEndpoints.expiry);
     expect(req.request.method).toBe('GET');
     req.flush(mockTokenExpiry);
 
