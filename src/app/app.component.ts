@@ -35,9 +35,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initializes the timeout interval for checking token expiry.
-   * This method is responsible for setting up a timer that periodically checks the remaining time until token expiry.
-   * If the token is about to expire, it shows a warning message.
+   * Initializes the timeout interval for token expiry.
+   * If the platform is not browser or the token expiry is not available, the method returns early.
+   * Otherwise, it sets up the timer subscription based on the expiry time.
    */
   private initializeTimeoutInterval(): void {
     if (!isPlatformBrowser(this.platformId) || !this.globalStateService.tokenExpiry) {
@@ -51,6 +51,14 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.setupTimerSub(expiry);
+  }
+
+  /**
+   * Sets up a timer subscription to calculate the remaining minutes until the specified expiry time.
+   * @param expiry - The expiry time in ISO format.
+   */
+  private setupTimerSub(expiry: string) {
     const expiryTime = DateTime.fromISO(expiry);
     this.timerSub = timer(0, this.POLL_INTERVAL * 1000)
       .pipe(
@@ -70,13 +78,13 @@ export class AppComponent implements OnInit, OnDestroy {
    * Initializes the component after Angular has initialized all data-bound properties.
    * This method is called once after the first `ngOnChanges` method is called.
    */
-  ngOnInit(): void {
+  public ngOnInit(): void {
     from(this.launchDarklyService.initializeLaunchDarklyFlags())
       .pipe(tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()))
       .subscribe();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.timerSub) {
       this.timerSub.unsubscribe();
     }
@@ -92,7 +100,7 @@ export class AppComponent implements OnInit, OnDestroy {
   /**
    * Handles the authentication dependent on whether the user is already authenticated
    */
-  handleAuthentication(): void {
+  public handleAuthentication(): void {
     if (!this.globalStateService.authenticated()) {
       this.handleRedirect(SsoEndpoints.login);
     } else {
