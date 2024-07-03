@@ -333,18 +333,18 @@ Feature: Verifying the tests for the 'Add contact details' button on Personal de
             | firstNames | John Smith |
             | lastName   | Astridge   |
         And I enter address line 1 "456 Lamburgh Street"
-        When I enter incorrect National insurance number "<NInumber>"
+        When I enter National insurance number "<incorrectNInumber>"
         Then I click the "Add contact details" button
 
         Then I see "Personal details" on the page header
         Then I see the error message "Enter a National Insurance number in the format AANNNNNNA" at the top of the page
         Examples:
-            | NInumber      |
-            | AB 12 34 45 6 |
-            | 1234GH6       |
-            | 1234567       |
-            | ABCFER        |
-            | ABCD1234      |
+            | incorrectNInumber |
+            | AB 12 34 45 6     |
+            | 1234GH6           |
+            | 1234567           |
+            | ABCFER            |
+            | ABCD1234          |
 
     Scenario Outline: AC6- positive: When user amends all fields where validation fails (Mandatory fields)
         When I enter data into first names and last name in personal details screen
