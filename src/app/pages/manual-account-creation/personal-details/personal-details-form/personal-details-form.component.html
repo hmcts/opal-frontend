@@ -1,6 +1,7 @@
 <h1 class="govuk-heading-l">Personal details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-select
     labelText="Title"
     labelClasses="govuk-label--s"
@@ -145,6 +146,7 @@
   <app-govuk-text-input
     labelText="Make of the car"
     inputId="makeOfCar"
+    inputName="makeOfCar"
     inputName="makeOfCar"
     labelClasses="govuk-label--s"
     [control]="form.controls['makeOfCar']"

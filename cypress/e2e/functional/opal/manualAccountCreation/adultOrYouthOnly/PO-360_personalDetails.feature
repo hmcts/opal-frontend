@@ -68,7 +68,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I enter make of the car "Ambassdor Volkswagen"
         And I enter registration number of the car "AP28 AAR"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
 
 
     Scenario Outline: AC1b-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
@@ -80,7 +80,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I enter address line 2 "<addressLine2>"
         And I enter address line 3 "<addressLine3>"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "The address line 1 must not contain special characters" at the top of the page
         Then I see the error message "The address line 1 must not contain special characters" at the top of the page
         Then I see the error message "The address line 1 must not contain special characters" at the top of the page
@@ -97,7 +97,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I enter address line 2 "<addressLine2>"
         And I enter address line 3 "<addressLine3>"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "The address line 1 must be 30 characters or fewer" at the top of the page
         Then I see the error message "The address line 2 must be 30 characters or fewe" at the top of the page
         Then I see the error message "The address line 3 must be 16 characters or fewer" at the top of the page
@@ -109,7 +109,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
             | 278 Maidenhead Road, Maidenhead | John's Road, Near by London City Circle | London And United Kingdom |
 
     Scenario: AC2- negative: If a user does not enter any data into any field and selects the 'Return to account details' button
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Select a title" at the top of the page
         Then I see the error message "Enter defendant's first name(s)" at the top of the page
         Then I see the error message "Enter defendant's last name" at the top of the page
@@ -119,7 +119,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I enter address line 2 "<addressLine2>"
         And I enter address line 3 "<addressLine3>"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Select a title" at the top of the page
         Then I see the error message "Enter defendant's first name(s)" at the top of the page
         Then I see the error message "Enter defendant's last name" at the top of the page
@@ -250,7 +250,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I enter "<dateOfBirth>" into the Date of birth field
         And I enter address line 1 "120 Deuchar street"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "<errorMessage>" at the top of the page
         Examples:
             | dateOfBirth | errorMessage                                 |
@@ -265,7 +265,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
 
         When I select add aliases check box
         And I enter address line 1 "456 Lamburgh Street"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
 
@@ -277,7 +277,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I select add aliases check box
         Then I set the "Alias 1", "First names" to "Micheal Kores"
         And I enter address line 1 "456 Lamburgh Street"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter last name for alias 1" at the top of the page
 
     Scenario: AC10aii- negative: User adds data into Alias 1 - Last name, but does enter any data into First names
@@ -288,7 +288,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I select add aliases check box
         And I set the "Alias 1", "Last name" to "Guccio gucci "
         And I enter address line 1 "456 Lamburgh Street"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
 
     Scenario: AC10b -negative: User does not add any data into either Alias 2 fields
@@ -300,7 +300,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I select add aliases check box
         And I click the "Add another alias" button
         And I enter address line 1 "456 Lamburgh Street"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -315,7 +315,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I select add aliases check box
         And I click the "Add another alias" button
         Then I set the "Alias 2", "First names" to "Gucci Gucci "
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 2" at the top of the page
@@ -329,7 +329,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I select add aliases check box
         And I click the "Add another alias" button
         And I set the "Alias 2", "Last name" to "Holland and Barrates"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -344,7 +344,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -362,7 +362,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         And I set the "Alias 3", "First names" to "Holland and Barrates"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -380,7 +380,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         And I set the "Alias 3", "Last name" to "Holland and Barrates"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -397,7 +397,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         And I click the "Add another alias" button
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -417,7 +417,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         Then I set the "Alias 4", "First names" to "Holland and Barrates"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -437,7 +437,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         Then I set the "Alias 4", "Last name" to "Holland and Barrates"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -458,7 +458,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         And I click the "Add another alias" button
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -482,7 +482,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         Then I set the "Alias 5", "First names" to "Holland and Barrates"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -505,7 +505,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         Then I set the "Alias 5", "Last name" to "Holland and Barrates"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -523,7 +523,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
             | lastName   | Astridge   |
         And I enter address line 1 "456 Lamburgh Street"
         When I enter incorrect National insurance number "<NInumber>"
-        Then I click return to account details
+        Then I click the "Return to account details" button
 
         Then I see "Personal details" on the page header
         #NINO validation has lessen so the error message has changed
@@ -543,7 +543,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
             | lastName   | Chicago bulls Burberry Redbull 2345 PizzaHut |
         And I enter incorrect address line 1 "<incorrectAddressLine1>"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see the error message "Select a title" at the top of the page
         Then I see the error message "The defendant's first name(s) must be 20 characters or fewer" at the top of the page
         Then I see the error message "The defendant's last name must be 30 characters or fewer" at the top of the page
@@ -555,7 +555,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         And I update the first names "<firstNames>"
         And I update the last name "<lastName>"
         And I update address line 1 "<addressLine1>"
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see "Account details" on the page header
 
         Then I click on "Personal details" link
@@ -574,7 +574,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
             | lastName   | Astridge Lamsden Langley Treen |
         And I enter address line 1 "<addressLine1>"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 
@@ -586,7 +586,7 @@ Feature: verifying the personal details screen for adult or youth only defendant
         Then I set the "Alias 1", "First names" to "<firstNames>"
         Then I set the "Alias 1", "Last name" to "<lastName>"
 
-        Then I click return to account details
+        Then I click the "Return to account details" button
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 

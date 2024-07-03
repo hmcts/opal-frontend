@@ -333,18 +333,18 @@ Feature: Verifying the tests for the 'Add contact details' button on Personal de
             | firstNames | John Smith |
             | lastName   | Astridge   |
         And I enter address line 1 "456 Lamburgh Street"
-        When I enter incorrect National insurance number "<NInumber>"
+        When I enter National insurance number "<incorrectNInumber>"
         Then I click the "Add contact details" button
 
         Then I see "Personal details" on the page header
         Then I see the error message "Enter a National Insurance number in the format AANNNNNNA" at the top of the page
         Examples:
-            | NInumber      |
-            | AB 12 34 45 6 |
-            | 1234GH6       |
-            | 1234567       |
-            | ABCFER        |
-            | ABCD1234      |
+            | incorrectNInumber |
+            | AB 12 34 45 6     |
+            | 1234GH6           |
+            | 1234567           |
+            | ABCFER            |
+            | ABCD1234          |
 
     Scenario Outline: AC6- positive: When user amends all fields where validation fails (Mandatory fields)
         When I enter data into first names and last name in personal details screen
@@ -432,7 +432,7 @@ Feature: Verifying the tests for the 'Add contact details' button on Personal de
         Then I click the "Add contact details" button
         Then I see "Contact details" on the page header
 
-        And I click return to account details
+        And I click the "Return to account details" button
 
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
@@ -451,6 +451,31 @@ Feature: Verifying the tests for the 'Add contact details' button on Personal de
         Then I see "London city" in the "Address line 3" field
         Then I see "Ambassdor Volkswagen" in the "Make of the car" field
         Then I see "AP28 AAR" in the "Registration number" field
+
+        When I select the "Add aliases" checkbox
+
+        Then I see "Alias 1", "First names" is set to ""
+        Then I see "Alias 1", "Last name" is set to ""
+
+        And I click the "Add another alias" button
+
+        Then I see "Alias 2", "First names" is set to ""
+        Then I see "Alias 2", "First names" is set to ""
+
+        And I click the "Add another alias" button
+
+        Then I see "Alias 3", "First names" is set to ""
+        Then I see "Alias 3", "First names" is set to ""
+
+        And I click the "Add another alias" button
+
+        Then I see "Alias 4", "First names" is set to ""
+        Then I see "Alias 4", "First names" is set to ""
+
+        And I click the "Add another alias" button
+
+        Then I see "Alias 5", "First names" is set to ""
+        Then I see "Alias 5", "First names" is set to ""
 
 
     Scenario: AC8-negative: When user has selected the 'Cancel' button and has not entered any data, the status remain as 'Not Provided'
@@ -472,8 +497,19 @@ Feature: Verifying the tests for the 'Add contact details' button on Personal de
         When I enter data into first names and last name in personal details screen
             | firstNames | John Smith |
             | lastName   | Astridge   |
-    When "Cancel" is clicked
-    Then I click Cancel, a window pops up and I click Cancel
+        And I enter address line 1 "12 test's road"
+        Then I click the "Return to account details" button
+
+        Then I see "Create account" as the caption on the page
+        Then I see "Account details" on the page header
+
+        Then I verify the status of "Personal details" to "Provided"
+
+        And I click on "Personal details" link
+        Then I see "Personal details" on the page header
+
+        When "Cancel" is clicked
+        Then I verify the status of "Personal details" to "Provided"
 
     Scenario: AC9-positive: If the user unticks the 'Add aliases' tick box, after entering data in one or more fields
         When I select the "Add aliases" checkbox

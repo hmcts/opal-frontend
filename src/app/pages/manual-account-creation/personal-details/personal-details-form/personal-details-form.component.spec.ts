@@ -409,6 +409,20 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
+    personalDetailsForm.continueFlow = true;
+    spyOn(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+  });
+
+  it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
@@ -416,6 +430,8 @@ describe('PersonalDetailsFormComponent', () => {
     personalDetailsForm.continueFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
     component['rePopulateForm'](personalDetailsForm.formData);
     component.handleFormSubmit(event);
 
