@@ -11,7 +11,10 @@ import {
 import { MacStateService } from '@services';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IManualAccountCreationPersonalAlias } from '@interfaces';
-import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK } from '@mocks';
+import {
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
+} from '@mocks';
 
 describe('PersonalDetailsFormComponent', () => {
   let component: PersonalDetailsFormComponent;
@@ -392,13 +395,30 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    const formValue = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
+    personalDetailsForm.continueFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
-    component['rePopulateForm'](formValue);
-    component.handleFormSubmit();
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formValue);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+  });
+
+  it('should emit form submit event with form value', () => {
+    const event = {} as SubmitEvent;
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
+    personalDetailsForm.continueFlow = false;
+    spyOn(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
   });
 });

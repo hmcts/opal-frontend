@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationPersonalDetailsState } from 'src/app/interfaces/manual-account-creation-personal-details-state.interface';
 import { PersonalDetailsFormComponent } from './personal-details-form/personal-details-form.component';
 import { FormParentBaseComponent } from '@components';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
+import { IManualAccountCreationPersonalDetailsForm } from '@interfaces';
 
 @Component({
   selector: 'app-personal-details',
@@ -13,18 +14,26 @@ import { FormParentBaseComponent } from '@components';
 })
 export class PersonalDetailsComponent extends FormParentBaseComponent {
   /**
-   * Handles the form submission for employer details.
-   * @param formData - The form data containing the search parameters.
+   * Handles the submission of personal details form in the manual account creation process.
+   * Updates the `manualAccountCreation` state with the form data and navigates to the appropriate route.
+   *
+   * @param personalDetailsForm - The form data for the personal details.
    */
-  public handlePersonalDetailsSubmit(formData: IManualAccountCreationPersonalDetailsState): void {
+  public handlePersonalDetailsSubmit(personalDetailsForm: IManualAccountCreationPersonalDetailsForm): void {
+    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
+
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
-      personalDetails: formData,
+      personalDetails: personalDetailsForm.formData,
       unsavedChanges: false,
       stateChanges: true,
     };
 
-    this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
+    if (personalDetailsForm.continueFlow && defendantType) {
+      this.routerNavigate(MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['personalDetails']);
+    } else {
+      this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
+    }
   }
 
   /**

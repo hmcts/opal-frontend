@@ -1,4 +1,4 @@
-import { Then } from '@badeball/cypress-cucumber-preprocessor/';
+import { DataTable, Then } from '@badeball/cypress-cucumber-preprocessor/';
 
 Then('I click the {string} button', (buttonName: string) => {
   cy.contains('button', buttonName).click();
