@@ -30,7 +30,7 @@ Feature: tests for contact details page for all the defendant types (adult tor y
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click return to account details
+    Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link
@@ -44,7 +44,7 @@ Feature: tests for contact details page for all the defendant types (adult tor y
   Scenario: AC2- positive: verifying if user doesn't enter any values and selecting retun to account details
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click return to account details
+    Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link
@@ -57,7 +57,7 @@ Feature: tests for contact details page for all the defendant types (adult tor y
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click return to account details
+    Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link
@@ -76,7 +76,7 @@ Feature: tests for contact details page for all the defendant types (adult tor y
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click return to account details
+    Then I click the "Return to account details" button
     Then I see "Contact details" on the page header
 
     Then I verify the error message
@@ -93,7 +93,7 @@ Feature: tests for contact details page for all the defendant types (adult tor y
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click return to account details
+    Then I click the "Return to account details" button
     Then I see "Contact details" on the page header
 
     Then I verify the error message
@@ -112,7 +112,7 @@ Feature: tests for contact details page for all the defendant types (adult tor y
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click return to account details
+    Then I click the "Return to account details" button
     Then I see "Contact details" on the page header
 
     Then I verify the error message
@@ -126,7 +126,7 @@ Feature: tests for contact details page for all the defendant types (adult tor y
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click return to account details
+    Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
     Then I click on "Contact details" link

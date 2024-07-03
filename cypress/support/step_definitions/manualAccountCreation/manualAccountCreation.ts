@@ -93,13 +93,6 @@ Then('I verify employer name, employer reference, employer address is empty', ()
   cy.get('#employerAddress1').should('be.empty');
 });
 
-// Then('I click save and return to tasks', () => {
-//   cy.get('#submitForm').click();
-// });
-
-Then('I click return to account details', () => {
-  cy.get('#submitForm').click();
-});
 Then(
   'I verify {string},{string},{string},{string},{string},{string},{string},{string},{string},{string} values saved',
   (
