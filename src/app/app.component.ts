@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService, UtilsService } from '@services';
-import { Observable, Subscription, from, of, tap, timer } from 'rxjs';
+import { Observable, Subscription, from, map, of, takeWhile, tap, timer } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { DateTime } from 'luxon';
@@ -35,37 +35,35 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initializes the timeout interval for the session.
-   * If the platform is browser and the session timeout is set, it starts a timer that updates the remaining minutes.
+   * Initializes the timeout interval for checking token expiry.
+   * This method is responsible for setting up a timer that periodically checks the remaining time until token expiry.
+   * If the token is about to expire, it shows a warning message.
    */
   private initializeTimeoutInterval(): void {
-    if (isPlatformBrowser(this.platformId) && this.globalStateService.tokenExpiry) {
-      const { expiry, warningThresholdInMilliseconds } = this.globalStateService.tokenExpiry;
-      if (warningThresholdInMilliseconds) {
-        this.thresholdInMinutes = this.utilsService.convertMillisecondsToMinutes(warningThresholdInMilliseconds);
-      }
-      this.timerSub = timer(0, this.POLL_INTERVAL * 1000).subscribe(() => {
-        this.ngZone.run(() => {
-          // here you can handle the result inside Angular zone if needed
-          if (expiry) {
-            const remainingMinutes = this.utilsService.calculateMinutesDifference(
-              DateTime.now(),
-              DateTime.fromISO(expiry),
-            );
-            let threshold = 0;
-            if (warningThresholdInMilliseconds) {
-              threshold = this.utilsService.convertMillisecondsToMinutes(warningThresholdInMilliseconds);
-            }
-            this.minutesRemaining$ = of(remainingMinutes);
-            console.log('threshold: ', threshold);
-            console.log('minutes remaining: ', remainingMinutes);
-            if (remainingMinutes === 0) {
-              this.showExpiredWarning = true;
-            }
-          }
-        });
-      });
+    if (!isPlatformBrowser(this.platformId) || !this.globalStateService.tokenExpiry) {
+      return;
     }
+
+    const { expiry, warningThresholdInMilliseconds } = this.globalStateService.tokenExpiry;
+    this.thresholdInMinutes = this.utilsService.convertMillisecondsToMinutes(warningThresholdInMilliseconds ?? 0);
+
+    if (!expiry) {
+      return;
+    }
+
+    const expiryTime = DateTime.fromISO(expiry);
+    this.timerSub = timer(0, this.POLL_INTERVAL * 1000)
+      .pipe(
+        map(() => this.utilsService.calculateMinutesDifference(DateTime.now(), expiryTime)),
+        tap((remainingMinutes) => {
+          this.ngZone.run(() => {
+            this.minutesRemaining$ = of(remainingMinutes);
+            this.showExpiredWarning = remainingMinutes === 0;
+          });
+        }),
+        takeWhile((remainingMinutes) => remainingMinutes > 0, true),
+      )
+      .subscribe();
   }
 
   /**

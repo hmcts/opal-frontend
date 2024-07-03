@@ -22,7 +22,7 @@ export class UtilsService {
    */
   public calculateMinutesDifference(startDate: DateTime, endDate: DateTime): number {
     const minuteDifference = endDate.diff(startDate, 'minutes');
-    return Math.max(0, Math.floor(minuteDifference.minutes));
+    return Math.max(0, Math.ceil(minuteDifference.minutes));
   }
 
   /**
@@ -32,6 +32,6 @@ export class UtilsService {
    */
   public convertMillisecondsToMinutes(milliseconds: number): number {
     const minutes = Duration.fromMillis(milliseconds).as('minutes');
-    return Math.max(0, Math.floor(minutes));
+    return Math.max(0, Math.ceil(minutes));
   }
 }

@@ -15,7 +15,7 @@
     <div class="govuk-width-container">
       <main class="govuk-main-wrapper" id="main-content" role="main">
         @if (minutesRemaining$ | async; as minutes) {
-          @if (thresholdInMinutes > minutes && minutes > 0) {
+          @if (thresholdInMinutes >= minutes && minutes > 0) {
             <div>
               <app-moj-banner
                 text="Warning: Your session will expire in {{
@@ -28,10 +28,7 @@
         }
 
         @if (showExpiredWarning) {
-          <app-moj-banner
-            text="Warning: Your session has expired. Please save your work and log out, then log back in to continue."
-            type="warning"
-          ></app-moj-banner>
+          <app-moj-banner text="Warning: Your session has expired. Please log back in." type="warning"></app-moj-banner>
         }
         <div class="govuk-grid-row">
           <router-outlet></router-outlet>

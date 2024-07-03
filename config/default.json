@@ -48,8 +48,8 @@
       "warningThresholdInMilliseconds": 1800000
     },
     "test": {
-      "expiryTimeInMilliseconds": 120000,
-      "warningThresholdInMilliseconds": 120000
+      "expiryTimeInMilliseconds": 300000,
+      "warningThresholdInMilliseconds": 300000
     }
   }
 }
