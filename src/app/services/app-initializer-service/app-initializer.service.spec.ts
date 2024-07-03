@@ -5,6 +5,9 @@ import { AppInitializerService } from './app-initializer.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { of } from 'rxjs';
+import { ITokenExpiry } from '@interfaces';
+
+const tokenExpiry: ITokenExpiry = { tokenExpiry: 'test', warningThresholdInMin: 5 };
 
 describe('AppInitializerService', () => {
   let service: AppInitializerService;
@@ -36,7 +39,7 @@ describe('AppInitializerService', () => {
   });
 
   it('should initialize the session timeout', async () => {
-    spyOn(service['sessionService'], 'getTokenExpiry').and.returnValue(of({ tokenExpiry: 'test' }));
+    spyOn(service['sessionService'], 'getTokenExpiry').and.returnValue(of(tokenExpiry));
     await service['initializeSessionTimeout']();
     expect(service['sessionService'].getTokenExpiry).toHaveBeenCalled();
   });
@@ -44,7 +47,7 @@ describe('AppInitializerService', () => {
   it('should initialize the SSO enabled, LaunchDarkly, and session timeout', async () => {
     spyOn(service['transferStateService'], 'initializeLaunchDarklyConfig');
     spyOn(service['transferStateService'], 'initializeSsoEnabled');
-    spyOn(service['sessionService'], 'getTokenExpiry').and.returnValue(of({ tokenExpiry: 'test' }));
+    spyOn(service['sessionService'], 'getTokenExpiry').and.returnValue(of(tokenExpiry));
 
     await service.initializeApp();
 

@@ -17,4 +17,5 @@ export class GlobalStateService {
   public ssoEnabled: boolean | null = false;
   public launchDarklyConfig: ILaunchDarklyConfig | null = null;
   public sessionTimeout!: string | null;
+  public sessionWarningThreshold!: number | null;
 }
