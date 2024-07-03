@@ -13,32 +13,18 @@ export class ExpiryService {
    */
   public checkExpiry(): void {
     const minutesDifference = this.calculateMinuteDifference();
-
-    if (minutesDifference < 30) {
-      this.globalStateService.sessionTimeoutWarning.set(true);
-    } else {
-      this.globalStateService.sessionTimeoutWarning.set(false);
-    }
+    this.globalStateService.sessionTimeoutWarning.set(minutesDifference < 30);
   }
 
   /**
-   * Calculates the difference in minutes between the current timestamp and the expiry timestamp.
-   * @returns The difference in minutes.
+   * Calculates the difference in minutes between the current timestamp and the token expiry timestamp.
+   * @returns The minute difference between the timestamps. Returns 0 if the difference is negative.
    */
   public calculateMinuteDifference(): number {
-    if (this.globalStateService.tokenExpiry) {
-      const { expiry } = this.globalStateService.tokenExpiry;
-      if (expiry) {
-        const expiryTimestamp = DateTime.fromISO(expiry);
-
-        const timestamp = DateTime.now();
-
-        const minuteDifference = expiryTimestamp.diff(timestamp, 'minutes');
-        return minuteDifference.minutes > 0 ? Math.floor(minuteDifference.minutes) : 0;
-      }
-
-      return 0;
-    }
-    return 0;
+    const expiry = this.globalStateService.tokenExpiry?.expiry;
+    const expiryTimestamp = DateTime.fromISO(expiry ?? '');
+    const timestamp = DateTime.now();
+    const minuteDifference = expiryTimestamp.diff(timestamp, 'minutes');
+    return minuteDifference.minutes > 0 ? Math.floor(minuteDifference.minutes) : 0;
   }
 }
