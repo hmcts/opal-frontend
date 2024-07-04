@@ -3,5 +3,5 @@ export const MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE = {
   secondaryEmailAddress: null,
   mobileTelephoneNumber: null,
   homeTelephoneNumber: null,
-  businessTelephoneNumber: null,
+  workTelephoneNumber: null,
 };

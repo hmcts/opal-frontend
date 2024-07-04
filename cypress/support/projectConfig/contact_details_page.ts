@@ -11,7 +11,7 @@ export default class manualAccountPageObjects {
   static enterHomeTelephone(homeTelephone: string) {
     cy.get('#homeTelephoneNumber').should('be.visible').type(homeTelephone);
   }
-  static enterBusinessTelephone(businessTelephone: string) {
-    cy.get('#businessTelephoneNumber').should('be.visible').type(businessTelephone);
+  static enterWorkTelephone(workTelephone: string) {
+    cy.get('#workTelephoneNumber').should('be.visible').type(workTelephone);
   }
 }
