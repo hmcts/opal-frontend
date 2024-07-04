@@ -168,6 +168,7 @@ Feature: PO-362 Company task list screen
     When I select company
     And I click on continue button
 
+    Then I see "Account details" on the page header
     When The button "Review account" is clicked, nothing happens
 
 

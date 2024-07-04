@@ -38,7 +38,7 @@ Feature: Verifying Employer details page for defendant accounts
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     #The page header changed according to PO-366
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
@@ -64,11 +64,11 @@ Feature: Verifying Employer details page for defendant accounts
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     Then I see "Employer details" on the page header
 
@@ -91,7 +91,7 @@ Feature: Verifying Employer details page for defendant accounts
     Then I enter employer postcode "<employerPostCode>"
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
 
     Then I verify the error message
     Then I see "Employer details" on the page header
@@ -139,7 +139,7 @@ Feature: Verifying Employer details page for defendant accounts
     When I enter incorrect employer address line 5 "<incorrectAddressLine5>"
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
 
     Then I update employer name "<employerName>"
@@ -155,7 +155,7 @@ Feature: Verifying Employer details page for defendant accounts
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     #The page header changed according to PO-366
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
@@ -173,7 +173,7 @@ Feature: Verifying Employer details page for defendant accounts
   Scenario: Ac2- Unahappy: verifying the error messages when user saves employer details without entering the values
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     Then I see "Employer details" on the page header
 
