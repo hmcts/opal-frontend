@@ -14,9 +14,9 @@ export const MANUAL_ACCOUNT_CREATION_NESTED_ROUTES: NextRoutes = {
   parentOrGuardianToPay: {
     courtDetails: ManualAccountCreationRoutes.parentOrGuardianDetails,
     parentOrGuardianDetails: ManualAccountCreationRoutes.employerDetails,
+    contactDetails: ManualAccountCreationRoutes.employerDetails,
     employerDetails: ManualAccountCreationRoutes.personalDetails,
-    personalDetails: ManualAccountCreationRoutes.contactDetails,
-    contactDetails: ManualAccountCreationRoutes.offenceDetails,
+    personalDetails: ManualAccountCreationRoutes.offenceDetails,
     offenceDetails: ManualAccountCreationRoutes.paymentDetails,
   },
   company: {

@@ -1,4 +1,5 @@
-Feature: tests for contact details page for all the defendant types (adult tor youth only, adult or youth with parent or guardian and company)
+Feature: PO-358_Contact Details for adult or youth only
+
 
   Background:
     Given I am on the OPAL Frontend

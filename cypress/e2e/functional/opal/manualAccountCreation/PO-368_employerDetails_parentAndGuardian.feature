@@ -1,4 +1,4 @@
-Feature: tests for employer details page for Adult or youth with parent or guardian to pay
+Feature: PO-368 employer details page for Adult or youth with parent or guardian to pay
 
   Background:
     Given I am on the OPAL Frontend
@@ -35,7 +35,7 @@ Feature: tests for employer details page for Adult or youth with parent or guard
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I see "Account details" on the page header
     When I click on "Employer details" link
     Then I see "Employer details" on the page header
@@ -61,7 +61,7 @@ Feature: tests for employer details page for Adult or youth with parent or guard
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
 
     Examples:
@@ -71,7 +71,7 @@ Feature: tests for employer details page for Adult or youth with parent or guard
   Scenario:AC2- negative: verifying the error messages when user saves employer details without entering the values
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     Then I see "Employer details" on the page header
 
@@ -86,7 +86,7 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     Then I enter employer postcode "<employerPostCode>"
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
 
     Then I verify the error message
     Then I see "Employer details" on the page header
@@ -112,11 +112,11 @@ Feature: tests for employer details page for Adult or youth with parent or guard
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     Then I see "Employer details" on the page header
 
@@ -139,11 +139,11 @@ Feature: tests for employer details page for Adult or youth with parent or guard
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
     Then I see "Employer details" on the page header
 
@@ -165,7 +165,7 @@ Feature: tests for employer details page for Adult or youth with parent or guard
     When I enter incorrect employer postcode "<incorrectPostCode>"
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I verify the error message
 
     Then I update employer name "<employerName>"
@@ -181,7 +181,7 @@ Feature: tests for employer details page for Adult or youth with parent or guard
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
     Then I click on "Employer details" link
@@ -209,7 +209,7 @@ Feature: tests for employer details page for Adult or youth with parent or guard
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    I click the "Return to account details" button
+    Then I click the "Return to account details" button
     Then I see "Account details" on the page header
     When I click on "Employer details" link
     Then I see "Employer details" on the page header

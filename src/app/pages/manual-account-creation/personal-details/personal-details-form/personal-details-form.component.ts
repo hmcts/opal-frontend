@@ -17,6 +17,7 @@ import {
   ADDRESS_LINE_THREE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
   DATE_OF_BIRTH_FIELD_ERRORS,
+  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
   NATIONAL_INSURANCE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
@@ -62,6 +63,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  public nestedRouteButtonText!: string;
 
   override fieldErrors: IFieldErrors = {
     ...MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
@@ -231,6 +233,27 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
+   * Retrieves the nested route based on the defendant type and sets the nested route button text accordingly.
+   */
+  private getNestedRoute(): void {
+    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
+    if (defendantType) {
+      const nestedRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['personalDetails'];
+      switch (nestedRoute) {
+        case ManualAccountCreationRoutes.contactDetails:
+          this.nestedRouteButtonText = 'Add contact details';
+          break;
+        case ManualAccountCreationRoutes.offenceDetails:
+          this.nestedRouteButtonText = 'Add offence details';
+          break;
+        default:
+          this.nestedRouteButtonText = '';
+          break;
+      }
+    }
+  }
+
+  /**
    * Handles the change event of the add alias checkbox.
    * Updates the validators of each alias form group in the aliases form array.
    */
@@ -294,6 +317,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
     this.setInitialErrorMessages();
+    this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
     this.buildAliasInputs();
     super.ngOnInit();
