@@ -12,7 +12,7 @@ Feature: Verifying the tests for the 'Add contact details' button on Personal de
         Then I see "Create account" as the caption on the page
         Then I see "Business unit and defendant type" on the page header
         And I enter "London South" into the business unit search box
-        And I select adults and youth only
+        When I select the "Adult or youth only" radio button
         Then I click on continue button
 
         Then I see "Create account" as the caption on the page

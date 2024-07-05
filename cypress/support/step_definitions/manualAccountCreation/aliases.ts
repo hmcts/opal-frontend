@@ -1,4 +1,5 @@
 import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor/';
+import { SrvRecord } from 'dns';
 
 Then('I select the add aliases checkbox', () => {
   cy.get('[data-cy=add-aliases-checkbox]').click();
@@ -39,6 +40,9 @@ Then(
       .contains('a', linkName);
   },
 );
+Then('I do not see the {string} link below the {string}', (linkName: string, alias: string) => {
+  cy.contains('legend', alias).parent().next().contains('a', linkName).should('not.exist', linkName);
+});
 
 //Example usage: I do not see the "Remove" link below the "Alias 1", "Last name" input
 Then(
@@ -53,6 +57,18 @@ Then(
       .should('not.exist');
   },
 );
+// Then(
+//   'I see the {string} link below the {string}, {string} input',
+//   (removeLink: string, aliasField: string, lastNameAlias: string) => {
+//     cy.contains('a', removeLink)
+//       .siblings()
+//       .contains('app-govuk-text-input', aliasField)
+//       .parent()
+//       .next()
+//       .contains('a', lastNameAlias)
+//       .should('exist');
+//   },
+// );
 
 Then('I see {string} button below the {string} link', (addAnotherAliasButton: string, removeLink: string) => {
   cy.contains('a', removeLink)
