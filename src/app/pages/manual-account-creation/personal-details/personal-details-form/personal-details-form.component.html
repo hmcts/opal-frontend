@@ -164,7 +164,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit"> Return to account details </app-govuk-button>
-      @if (nestedRouteButtonText) {
+      @if (nestedRouteButtonText !== '') {
         <app-govuk-button
           buttonId="submitForm"
           type="submit"

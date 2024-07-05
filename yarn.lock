@@ -343,9 +343,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:18.0.5":
-  version: 18.0.5
-  resolution: "@angular/cdk@npm:18.0.5"
+"@angular/cdk@npm:18.0.6":
+  version: 18.0.6
+  resolution: "@angular/cdk@npm:18.0.6"
   dependencies:
     parse5: ^7.1.2
     tslib: ^2.3.0
@@ -356,7 +356,7 @@ __metadata:
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: d2f8cf66edb185484100f5ce13f5f500f3548f1cb8e01f04338ecd5ed4f9e28ee6313fcbea43719d4800c83d4dd979d6ffc95be964003fd78b1e55a686c79635
+  checksum: 69beb91af12061357e1b890dabcf10bd072a96250c4792a7603b8a4a0f0b1237ac181445f87b2af0aa8a399e699a636c2c9893f74583b31001157ab0bbab3647
   languageName: node
   linkType: hard
 
@@ -462,9 +462,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:18.0.5":
-  version: 18.0.5
-  resolution: "@angular/material@npm:18.0.5"
+"@angular/material@npm:18.0.6":
+  version: 18.0.6
+  resolution: "@angular/material@npm:18.0.6"
   dependencies:
     "@material/animation": 15.0.0-canary.7f224ddd4.0
     "@material/auto-init": 15.0.0-canary.7f224ddd4.0
@@ -517,13 +517,13 @@ __metadata:
     tslib: ^2.3.0
   peerDependencies:
     "@angular/animations": ^18.0.0 || ^19.0.0
-    "@angular/cdk": 18.0.5
+    "@angular/cdk": 18.0.6
     "@angular/common": ^18.0.0 || ^19.0.0
     "@angular/core": ^18.0.0 || ^19.0.0
     "@angular/forms": ^18.0.0 || ^19.0.0
     "@angular/platform-browser": ^18.0.0 || ^19.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 7f574a517f55b987f3add0fc9c52ff75718af2dffa773d08886a87e3cc81232d3d8db3608383bc2efa2cf497728ef94b79279bedc96d04f5ce9a541830d3f6e7
+  checksum: 038b210781634a8fe329154ccd127ca5def1f1c324832aaf7ea7f596a3616fe42cb67179f01fdaca204643d995d77afbdfb79a0ff7840d289d0c9310dbcce673
   languageName: node
   linkType: hard
 
@@ -13708,14 +13708,14 @@ __metadata:
     "@angular-eslint/schematics": 18.1.0
     "@angular-eslint/template-parser": 18.1.0
     "@angular/animations": ^18.0.5
-    "@angular/cdk": 18.0.5
+    "@angular/cdk": 18.0.6
     "@angular/cli": ^18.0.6
     "@angular/common": ^18.0.5
     "@angular/compiler": ^18.0.5
     "@angular/compiler-cli": ^18.0.5
     "@angular/core": ^18.0.5
     "@angular/forms": ^18.0.5
-    "@angular/material": 18.0.5
+    "@angular/material": 18.0.6
     "@angular/platform-browser": ^18.0.5
     "@angular/platform-browser-dynamic": ^18.0.5
     "@angular/platform-server": ^18.0.5
