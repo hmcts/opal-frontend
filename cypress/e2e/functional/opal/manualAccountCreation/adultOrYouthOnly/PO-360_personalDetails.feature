@@ -1,4 +1,4 @@
-Feature: verifying the personal details screen for adult or youth only defendant type
+Feature: PO-360 personal details screen for adult or youth only defendant type
 
     Background:
         Given I am on the OPAL Frontend

@@ -1,4 +1,4 @@
-Feature: Verifying the tests for the 'Add contact details' button on Personal details screen
+Feature: PO-433 Add contact details button on Personal details screen for Adult or youth only
 
     Background:
 
