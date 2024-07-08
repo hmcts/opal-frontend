@@ -581,7 +581,7 @@ When('{string} is verified as grey', (addContactDetailsButton: string) => {
   cy.get('#submitForm').should('be.enabled', addContactDetailsButton);
 });
 
-Then('I verify the status of {string} to {string}', (linkText: string, status: string) => {
+Then('I see the status of {string} to {string}', (linkText: string, status: string) => {
   cy.contains('[class="govuk-task-list__name-and-hint"]', linkText)
     .next()
     .contains('[class="govuk-task-list__status"]', status);

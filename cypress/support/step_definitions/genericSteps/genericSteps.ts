@@ -1,5 +1,19 @@
 import { DataTable, Then } from '@badeball/cypress-cucumber-preprocessor/';
 
+Then('I click the {string} button and see {string} on the page header', (buttonName: string, bodyHeader: string) => {
+  switch (buttonName) {
+    case 'Return to account details': {
+      cy.contains('button', buttonName).click();
+      cy.get('h1').should('contain', bodyHeader);
+      break;
+    }
+    case 'Add employer details': {
+      cy.contains('button', buttonName).click();
+      cy.get('h1').should('contain', bodyHeader);
+      cy.get('a').contains('Cancel').click();
+    }
+  }
+});
 Then('I click the {string} button', (buttonName: string) => {
   cy.contains('button', buttonName).click();
 });
