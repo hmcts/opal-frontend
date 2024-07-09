@@ -39,6 +39,7 @@ import { IManualAccountCreationPersonalDetailsAliasState } from './manual-accoun
 import { IManualAccountCreationPersonalDetailsForm } from './manual-account-creation-personal-details-form.interface';
 import { IManualAccountCreationAccountStatus } from './manual-account-creation-account-status.interface';
 import { IManualAccountCreationFieldTypes } from './manual-account-creation-field-types.interface';
+import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -71,6 +72,7 @@ export {
   IHighPriorityFormError,
   IFormErrorSummaryMessage,
   IManualAccountCreationEmployerDetailsState,
+  IManualAccountCreationEmployerDetailsForm,
   IManualAccountCreationState,
   CanComponentDeactivate,
   CanDeactivateType,

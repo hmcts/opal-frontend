@@ -24,6 +24,5 @@ export const MANUAL_ACCOUNT_CREATION_NESTED_ROUTES: NextRoutes = {
     companyDetails: ManualAccountCreationRoutes.contactDetails,
     contactDetails: ManualAccountCreationRoutes.offenceDetails,
     offenceDetails: ManualAccountCreationRoutes.paymentDetails,
-    employerDetails: ManualAccountCreationRoutes.offenceDetails,
   },
 };

@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { EmployerDetailsFormComponent } from './employer-details-form/employer-details-form.component';
-import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
+import { IManualAccountCreationEmployerDetailsForm } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { FormParentBaseComponent } from '@components';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
 
 @Component({
   selector: 'app-employer-details',
@@ -18,15 +19,21 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
    * Handles the form submission for employer details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleEmployerDetailsSubmit(formData: IManualAccountCreationEmployerDetailsState): void {
+  public handleEmployerDetailsSubmit(employerDetailsForm: IManualAccountCreationEmployerDetailsForm): void {
+    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
+
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
-      employerDetails: formData,
+      employerDetails: employerDetailsForm.formData,
       unsavedChanges: false,
       stateChanges: true,
     };
 
-    this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
+    if (employerDetailsForm.continueFlow && defendantType) {
+      this.routerNavigate(MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['employerDetails']);
+    } else {
+      this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
+    }
   }
 
   /**
