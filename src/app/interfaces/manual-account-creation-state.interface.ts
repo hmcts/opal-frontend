@@ -1,5 +1,6 @@
 import {
   IManualAccountCreationAccountDetailsState,
+  IManualAccountCreationCompanyDetailsState,
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationEmployerDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
@@ -12,6 +13,7 @@ export interface IManualAccountCreationState {
   contactDetails: IManualAccountCreationContactDetailsState;
   parentGuardianDetails: IManualAccountCreationParentGuardianDetailsState;
   personalDetails: IManualAccountCreationPersonalDetailsState;
+  companyDetails: IManualAccountCreationCompanyDetailsState;
   unsavedChanges: boolean;
   stateChanges: boolean;
 }

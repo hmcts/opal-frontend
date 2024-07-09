@@ -30,6 +30,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   protected formSubmitted = false;
   private formSub!: Subscription;
   public formErrors!: IFormError[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public aliasControls: any[] = [];
 
   constructor() {}
 
@@ -163,23 +165,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sets the initial error messages for the form controls.
-   *
-   * @param form - The FormGroup instance.
-   */
-  protected setInitialErrorMessages(): void {
-    const formControls = this.form.controls;
-    const initialFormControlErrorMessages: IFormControlErrorMessage = {};
-
-    Object.keys(formControls).map((controlName) => {
-      initialFormControlErrorMessages[controlName] = null;
-    });
-
-    this.formControlErrorMessages = initialFormControlErrorMessages;
-    this.formErrorSummaryMessage = [];
-  }
-
-  /**
    * Sets the error messages for the form controls and error summary based on the provided form errors.
    * @param formErrors - An array of form errors containing field IDs and error messages.
    */
@@ -252,15 +237,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Repopulates the search form with the data from the account enquiry search.
-   * @param state - The state object containing the search form data.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected rePopulateForm(state: any): void {
-    this.form.patchValue(state);
-  }
-
-  /**
    * Splits the form errors into two arrays based on the provided field IDs.
    * Errors with field IDs included in the fieldIds array will be moved to the removedFormErrors array,
    * while the remaining errors will be moved to the cleanFormErrors array.
@@ -282,30 +258,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     });
 
     return [cleanFormErrors, removedFormErrors];
-  }
-
-  /**
-   * Handles the form errors for the date input fields.
-   * @param formErrors - An array of form errors.
-   * @returns An array of form errors with the manipulated error messages.
-   */
-  protected handleDateInputFormErrors() {
-    const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
-    const splitFormErrors = this.splitFormErrors(dateInputFields, this.formErrors);
-    const highPriorityDateControlErrors = this.getHighPriorityFormErrors(splitFormErrors[1]);
-    let manipulatedFormErrors: IFormError[] = highPriorityDateControlErrors;
-
-    // If we have more than one error then we want to manipulate the error message
-    if (highPriorityDateControlErrors.length > 1) {
-      manipulatedFormErrors = this.manipulateFormErrorMessage(
-        dateInputFields,
-        'Please enter a DOB',
-        'required',
-        manipulatedFormErrors,
-      );
-    }
-
-    return [...splitFormErrors[0], ...manipulatedFormErrors];
   }
 
   /**
@@ -351,6 +303,36 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Setup listener for the form value changes and to emit hasUnsavedChanges
+   */
+  private setupListener(): void {
+    this.formSub = this.form.valueChanges.subscribe(() => {
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+    });
+  }
+
+  /**
+   * Clears the validators for a specific control in the alias form group.
+   *
+   * @param aliasFormGroup - The alias form group.
+   * @param key - The key of the control to clear the validators for.
+   */
+  protected clearAliasValidators(aliasFormGroup: FormGroup, key: string): void {
+    aliasFormGroup.controls[key].clearValidators();
+    aliasFormGroup.controls[key].updateValueAndValidity();
+    aliasFormGroup.controls[key].reset();
+  }
+
+  /**
+   * Removes the alias control at the specified index from the aliasControls array.
+   *
+   * @param index - The index of the alias control to remove.
+   */
+  protected removeAliasControls(index: number): void {
+    this.aliasControls.splice(index, 1);
+  }
+
+  /**
    * Handles the error messages and populates the relevant variables
    */
   protected handleErrorMessages(): void {
@@ -362,22 +344,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
       this.formErrorSummaryMessage,
       this.getDateFieldsToRemoveIndexes(),
     );
-  }
-
-  /**
-   * Clears the search form.
-   */
-  public handleClearForm(): void {
-    this.form.reset();
-  }
-
-  /**
-   * Handles the scroll of the component error from the summary
-   *
-   * @param fieldId - Field id of the component
-   */
-  public scrollTo(fieldId: string): void {
-    this['scroll'](fieldId);
   }
 
   /**
@@ -401,6 +367,72 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handles the form errors for the date input fields.
+   * @param formErrors - An array of form errors.
+   * @returns An array of form errors with the manipulated error messages.
+   */
+  protected handleDateInputFormErrors() {
+    const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
+    const splitFormErrors = this.splitFormErrors(dateInputFields, this.formErrors);
+    const highPriorityDateControlErrors = this.getHighPriorityFormErrors(splitFormErrors[1]);
+    let manipulatedFormErrors: IFormError[] = highPriorityDateControlErrors;
+
+    // If we have more than one error then we want to manipulate the error message
+    if (highPriorityDateControlErrors.length > 1) {
+      manipulatedFormErrors = this.manipulateFormErrorMessage(
+        dateInputFields,
+        'Please enter a DOB',
+        'required',
+        manipulatedFormErrors,
+      );
+    }
+
+    return [...splitFormErrors[0], ...manipulatedFormErrors];
+  }
+
+  /**
+   * Sets the initial error messages for the form controls.
+   *
+   * @param form - The FormGroup instance.
+   */
+  protected setInitialErrorMessages(): void {
+    const formControls = this.form.controls;
+    const initialFormControlErrorMessages: IFormControlErrorMessage = {};
+
+    Object.keys(formControls).map((controlName) => {
+      initialFormControlErrorMessages[controlName] = null;
+    });
+
+    this.formControlErrorMessages = initialFormControlErrorMessages;
+    this.formErrorSummaryMessage = [];
+  }
+
+  /**
+   * Repopulates the search form with the data from the account enquiry search.
+   * @param state - The state object containing the search form data.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected rePopulateForm(state: any): void {
+    this.form.patchValue(state);
+  }
+
+  /**
+   * Clears the search form.
+   */
+  public handleClearForm(): void {
+    this.form.reset();
+  }
+
+  /**
+   * Handles the scroll of the component error from the summary
+   *
+   * @param fieldId - Field id of the component
+   */
+  public scrollTo(fieldId: string): void {
+    this['scroll'](fieldId);
+  }
+
+  /**
    * Handles route with the supplied route
    *
    * @param route string of route
@@ -408,15 +440,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   public handleRoute(route: string): void {
     this.unsavedChanges.emit(this.hasUnsavedChanges());
     this.router.navigate([route]);
-  }
-
-  /**
-   * Setup listener for the form value changes and to emit hasUnsavedChanges
-   */
-  private setupListener(): void {
-    this.formSub = this.form.valueChanges.subscribe(() => {
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-    });
   }
 
   public ngOnInit(): void {

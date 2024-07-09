@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   FormBaseComponent,
   GovukButtonComponent,
@@ -8,40 +8,25 @@ import {
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesItemComponent,
   GovukErrorSummaryComponent,
-  GovukSelectComponent,
   GovukTextInputComponent,
-  ScotgovDatePickerComponent,
 } from '@components';
 import {
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR,
   ADDRESS_LINE_ONE_FIELD_ERRORS,
-  ADDRESS_LINE_THREE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
-  DATE_OF_BIRTH_FIELD_ERRORS,
-  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
-  NATIONAL_INSURANCE_FIELD_ERRORS,
+  ADDRESS_LINE_THREE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
-  TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import {
   IFieldErrors,
-  IGovUkSelectOptions,
-  IManualAccountCreationPersonalAlias,
-  IManualAccountCreationPersonalDetailsForm,
+  IManualAccountCreationCompanyAlias,
+  IManualAccountCreationCompanyDetailsForm,
 } from '@interfaces';
-import { DateTime } from 'luxon';
-import {
-  alphabeticalTextValidator,
-  dateOfBirthValidator,
-  nationalInsuranceNumberValidator,
-  optionalMaxLengthValidator,
-  optionalValidDateValidator,
-  specialCharactersValidator,
-} from 'src/app/validators';
+import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from 'src/app/validators';
 
 @Component({
-  selector: 'app-personal-details-form',
+  selector: 'app-company-details-form',
   standalone: true,
   imports: [
     FormsModule,
@@ -49,49 +34,37 @@ import {
     GovukTextInputComponent,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    ScotgovDatePickerComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
-    GovukSelectComponent,
     GovukCancelLinkComponent,
   ],
-  templateUrl: './personal-details-form.component.html',
+  templateUrl: './company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PersonalDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
+export class CompanyDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+  @Output() private formSubmit = new EventEmitter<IManualAccountCreationCompanyDetailsForm>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-  public nestedRouteButtonText!: string;
 
   override fieldErrors: IFieldErrors = {
-    ...MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
-    ...DATE_OF_BIRTH_FIELD_ERRORS,
-    ...NATIONAL_INSURANCE_FIELD_ERRORS,
+    ...MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR,
     ...ADDRESS_LINE_ONE_FIELD_ERRORS,
     ...ADDRESS_LINE_TWO_FIELD_ERRORS,
     ...ADDRESS_LINE_THREE_FIELD_ERRORS,
     ...POST_CODE_FIELD_ERRORS,
   };
 
-  public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
-  public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
-
-  public override aliasControls: IManualAccountCreationPersonalAlias[] = [];
+  public override aliasControls: IManualAccountCreationCompanyAlias[] = [];
 
   /**
-   * Sets up the personal details form with the necessary form controls.
+   * Sets up the company details form with the necessary form controls.
    */
-  private setupPersonalDetailsForm(): void {
+  private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
-      title: new FormControl(null, [Validators.required]),
-      firstNames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      lastName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      companyName: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
       addAlias: new FormControl(null),
       aliases: new FormArray([]),
-      dateOfBirth: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
       addressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -100,25 +73,23 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
       addressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
       addressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
       postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-      makeOfCar: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      registrationNumber: new FormControl(null, [optionalMaxLengthValidator(11)]),
     });
   }
 
   /**
-   * Builds the alias inputs based on the personal details of the manual account creation.
-   * If the addAlias flag is true, it adds the alias inputs based on the number of aliases in the personal details.
+   * Builds the alias inputs based on the company details of the manual account creation.
+   * If the addAlias flag is true, it adds the alias inputs based on the number of aliases in the company details.
    * Otherwise, it adds a single alias input.
    * It also handles the checkbox change event and repopulates the form if necessary.
    */
   private buildAliasInputs(): void {
-    const personalDetails = this.macStateService.manualAccountCreation.personalDetails;
-    if (personalDetails.addAlias) {
-      personalDetails.aliases.map((_, index) => {
+    const companyDetails = this.macStateService.manualAccountCreation.companyDetails;
+    if (companyDetails.addAlias) {
+      companyDetails.aliases.map((_, index) => {
         this.addAliases(index);
       });
       this.addAliasCheckboxChange();
-      this.rePopulateForm(personalDetails);
+      this.rePopulateForm(companyDetails);
     } else {
       this.addAliases(0);
     }
@@ -148,56 +119,46 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
    * @param key - The key of the alias form control.
    */
   private setAliasValidators(aliasFormGroup: FormGroup, key: string): void {
-    const validators = key.includes('firstNames')
-      ? [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]
-      : [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()];
-
-    aliasFormGroup.controls[key].setValidators(validators);
+    aliasFormGroup.controls[key].setValidators([
+      Validators.required,
+      Validators.maxLength(30),
+      alphabeticalTextValidator(),
+    ]);
     aliasFormGroup.controls[key].updateValueAndValidity();
   }
 
   /**
-   * Creates the form controls for the personal details form.
+   * Creates the form controls for the company details form.
    *
    * @param index - The index of the form control.
-   * @returns An object containing the form controls for the first name and last name.
+   * @returns An object containing the form controls for the company name.
    */
   private createControls(index: number) {
     return {
-      firstName: {
-        inputId: `firstNames_${index}`,
-        inputName: `firstNames_${index}`,
-        controlName: `firstNames_${index}`,
-      },
-      lastName: {
-        inputId: `lastName_${index}`,
-        inputName: `lastName_${index}`,
-        controlName: `lastName_${index}`,
+      companyName: {
+        inputId: `companyName_${index}`,
+        inputName: `companyName_${index}`,
+        controlName: `companyName_${index}`,
       },
     };
   }
 
   /**
    * Adds controls to the form group based on the provided controls object.
-   * If the 'addAlias' control is true, it adds controls for first name and last name with required validators.
-   * Otherwise, it adds controls for first name and last name without any validators.
+   * If the 'addAlias' control is true, it adds controls for company name with required validators.
+   * Otherwise, it adds controls for company name without any validators.
    *
    * @param formGroup - The form group to which the controls will be added.
-   * @param controls - The object containing the control names for first name and last name.
+   * @param controls - The object containing the control names for company name.
    */
-  private addControlsToFormGroup(formGroup: FormGroup, controls: IManualAccountCreationPersonalAlias): void {
+  private addControlsToFormGroup(formGroup: FormGroup, controls: IManualAccountCreationCompanyAlias): void {
     if (this.form.controls['addAlias'].value) {
       formGroup.addControl(
-        controls.firstName.controlName,
-        new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      );
-      formGroup.addControl(
-        controls.lastName.controlName,
+        controls.companyName.controlName,
         new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
       );
     } else {
-      formGroup.addControl(controls.firstName.controlName, new FormControl(null));
-      formGroup.addControl(controls.lastName.controlName, new FormControl(null));
+      formGroup.addControl(controls.companyName.controlName, new FormControl(null));
     }
   }
 
@@ -207,29 +168,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
    */
   private removeFieldErrors(index: number): void {
     const alias = this.aliasControls[index];
-    delete this.fieldErrors[alias?.firstName?.controlName];
-    delete this.fieldErrors[alias?.lastName?.controlName];
-  }
-
-  /**
-   * Retrieves the nested route based on the defendant type and sets the nested route button text accordingly.
-   */
-  private getNestedRoute(): void {
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-    if (defendantType) {
-      const nestedRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['personalDetails'];
-      switch (nestedRoute) {
-        case ManualAccountCreationRoutes.contactDetails:
-          this.nestedRouteButtonText = 'Add contact details';
-          break;
-        case ManualAccountCreationRoutes.offenceDetails:
-          this.nestedRouteButtonText = 'Add offence details';
-          break;
-        default:
-          this.nestedRouteButtonText = '';
-          break;
-      }
-    }
+    delete this.fieldErrors[alias?.companyName?.controlName];
   }
 
   /**
@@ -294,10 +233,9 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   public override ngOnInit(): void {
-    this.setupPersonalDetailsForm();
+    this.setupCompanyDetailsForm();
     this.setInitialErrorMessages();
-    this.getNestedRoute();
-    this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
+    this.rePopulateForm(this.macStateService.manualAccountCreation.companyDetails);
     this.buildAliasInputs();
     super.ngOnInit();
   }

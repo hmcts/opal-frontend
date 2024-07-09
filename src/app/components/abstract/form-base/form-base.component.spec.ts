@@ -512,4 +512,47 @@ describe('FormBaseComponent', () => {
     expect(component.form.controls[controlName].value).toBe(testValue);
     expect(component.form.controls[controlName].touched).toBeTrue();
   });
+
+  it('should clear alias validators', () => {
+    const aliasFormGroup = new FormGroup({
+      firstName: new FormControl('', Validators.required),
+      lastName: new FormControl('', Validators.required),
+    });
+
+    const firstNameControl = aliasFormGroup.controls['firstName'];
+    const lastNameControl = aliasFormGroup.controls['lastName'];
+
+    firstNameControl.setValidators(Validators.required);
+    lastNameControl.setValidators(Validators.required);
+
+    component['clearAliasValidators'](aliasFormGroup, 'firstName');
+    component['clearAliasValidators'](aliasFormGroup, 'lastName');
+
+    expect(firstNameControl.validator).toBeNull();
+    expect(lastNameControl.validator).toBeNull();
+    expect(firstNameControl.errors).toBeNull();
+    expect(lastNameControl.errors).toBeNull();
+  });
+
+  it('should remove alias controls', () => {
+    const index = 0;
+    component.aliasControls = [
+      {
+        firstName: {
+          controlName: 'firstNames_0',
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+        },
+        lastName: {
+          controlName: 'lastName_0',
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+        },
+      },
+    ];
+
+    component['removeAliasControls'](index);
+
+    expect(component.aliasControls.length).toBe(0);
+  });
 });

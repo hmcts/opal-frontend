@@ -1,10 +1,6 @@
-<h1 class="govuk-heading-l">Company details</h1>
-
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <app-govuk-button buttonId="submitForm" type="submit">Continue</app-govuk-button>
-    <app-govuk-cancel-link
-      (linkClickEvent)="handleRoute(manualAccountCreationRoutes.accountDetails)"
-    ></app-govuk-cancel-link>
-  </div>
+<div class="govuk-grid-column-two-thirds">
+  <app-company-details-form
+    (formSubmit)="handleCompanyDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-company-details-form>
 </div>

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PersonalDetailsFormComponent } from './personal-details-form.component';
-import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_STATE } from '@constants';
-import { MacStateService } from '@services';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { IManualAccountCreationPersonalAlias } from '@interfaces';
+import { CompanyDetailsFormComponent } from './company-details-form.component';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_MOCK,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
+import { MacStateService } from '@services';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE } from '@constants';
+import { IManualAccountCreationCompanyAlias } from '@interfaces';
 
-describe('PersonalDetailsFormComponent', () => {
-  let component: PersonalDetailsFormComponent;
-  let fixture: ComponentFixture<PersonalDetailsFormComponent>;
+describe('CompanyDetailsFormComponent', () => {
+  let component: CompanyDetailsFormComponent;
+  let fixture: ComponentFixture<CompanyDetailsFormComponent>;
   let mockMacStateService: jasmine.SpyObj<MacStateService>;
 
   beforeEach(async () => {
@@ -22,11 +22,11 @@ describe('PersonalDetailsFormComponent', () => {
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     await TestBed.configureTestingModule({
-      imports: [PersonalDetailsFormComponent],
+      imports: [CompanyDetailsFormComponent],
       providers: [{ provide: MacStateService, useValue: mockMacStateService }],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PersonalDetailsFormComponent);
+    fixture = TestBed.createComponent(CompanyDetailsFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -34,7 +34,7 @@ describe('PersonalDetailsFormComponent', () => {
   beforeEach(() => {
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
     mockMacStateService.manualAccountCreation.accountDetails = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
-    mockMacStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE;
+    mockMacStateService.manualAccountCreation.companyDetails = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE;
 
     component.form.reset();
   });
@@ -47,9 +47,9 @@ describe('PersonalDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add a single alias when personalDetails.addAlias is false', () => {
-    mockMacStateService.manualAccountCreation.personalDetails.addAlias = false;
-    mockMacStateService.manualAccountCreation.personalDetails.aliases = [{ firstName: 'Alias1', lastName: 'User1' }];
+  it('should add a single alias when companyDetails.addAlias is false', () => {
+    mockMacStateService.manualAccountCreation.companyDetails.addAlias = false;
+    mockMacStateService.manualAccountCreation.companyDetails.aliases = [{ companyName_0: 'Alias1' }];
 
     spyOn(component, 'addAliases');
     spyOn(component, 'addAliasCheckboxChange');
@@ -64,8 +64,8 @@ describe('PersonalDetailsFormComponent', () => {
     expect(rePopulateFormSpy).not.toHaveBeenCalled();
   });
 
-  it('should add aliases based on personalDetails.addAlias being true', () => {
-    mockMacStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
+  it('should add aliases based on companyDetails.addAlias being true', () => {
+    mockMacStateService.manualAccountCreation.companyDetails = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK;
 
     spyOn(component, 'addAliases');
     spyOn(component, 'addAliasCheckboxChange');
@@ -77,7 +77,7 @@ describe('PersonalDetailsFormComponent', () => {
     expect(component.addAliases).toHaveBeenCalledTimes(1);
     expect(component.addAliases).toHaveBeenCalledWith(0);
     expect(component.addAliasCheckboxChange).toHaveBeenCalled();
-    expect(rePopulateFormSpy).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.personalDetails);
+    expect(rePopulateFormSpy).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.companyDetails);
   });
 
   it('should call updateAliasFormGroupValidators for each alias form group', () => {
@@ -116,8 +116,7 @@ describe('PersonalDetailsFormComponent', () => {
 
   it('should set alias validators when addAlias is true', () => {
     const aliasFormGroup = new FormGroup({
-      firstName: new FormControl(''),
-      lastName: new FormControl(''),
+      companyName: new FormControl(''),
     });
 
     component.form = new FormGroup({
@@ -140,8 +139,7 @@ describe('PersonalDetailsFormComponent', () => {
 
   it('should clear alias validators when addAlias is false', () => {
     const aliasFormGroup = new FormGroup({
-      firstName: new FormControl(''),
-      lastName: new FormControl(''),
+      companyName: new FormControl(''),
     });
 
     component.form = new FormGroup({
@@ -162,31 +160,14 @@ describe('PersonalDetailsFormComponent', () => {
     expect(setAliasValidatorsSpy).not.toHaveBeenCalled();
   });
 
-  it('should set validators for firstNames control', () => {
+  it('should set validators for companyName control', () => {
     const aliasFormGroup = new FormGroup({
-      firstNames: new FormControl(''),
+      companyName: new FormControl(''),
     });
 
-    const control = aliasFormGroup.controls['firstNames'];
+    const control = aliasFormGroup.controls['companyName'];
 
-    component['setAliasValidators'](aliasFormGroup, 'firstNames');
-
-    expect(control.validator).toBeTruthy();
-
-    const validators = control.validator ? control.validator({} as AbstractControl) : null;
-    expect(validators).toEqual({
-      required: true,
-    });
-  });
-
-  it('should set validators for other controls', () => {
-    const aliasFormGroup = new FormGroup({
-      lastName: new FormControl(''),
-    });
-
-    const control = aliasFormGroup.controls['lastName'];
-
-    component['setAliasValidators'](aliasFormGroup, 'lastName');
+    component['setAliasValidators'](aliasFormGroup, 'companyName');
 
     expect(control.validator).toBeTruthy();
 
@@ -221,27 +202,18 @@ describe('PersonalDetailsFormComponent', () => {
 
     const controls = component['createControls'](index);
 
-    expect(controls.firstName.inputId).toBe(`firstNames_${index}`);
-    expect(controls.firstName.inputName).toBe(`firstNames_${index}`);
-    expect(controls.firstName.controlName).toBe(`firstNames_${index}`);
-
-    expect(controls.lastName.inputId).toBe(`lastName_${index}`);
-    expect(controls.lastName.inputName).toBe(`lastName_${index}`);
-    expect(controls.lastName.controlName).toBe(`lastName_${index}`);
+    expect(controls.companyName.inputId).toBe(`companyName_${index}`);
+    expect(controls.companyName.inputName).toBe(`companyName_${index}`);
+    expect(controls.companyName.controlName).toBe(`companyName_${index}`);
   });
 
   it('should add alias controls with validators when addAlias is true', () => {
     const formGroup = new FormGroup({});
-    const controls: IManualAccountCreationPersonalAlias = {
-      firstName: {
+    const controls: IManualAccountCreationCompanyAlias = {
+      companyName: {
         controlName: 'firstNames_0',
         inputId: 'firstNames_0',
         inputName: 'firstNames_0',
-      },
-      lastName: {
-        controlName: 'lastName_0',
-        inputId: 'lastName_0',
-        inputName: 'lastName_0',
       },
     };
     component.form.controls['addAlias'].setValue(true);
@@ -249,18 +221,10 @@ describe('PersonalDetailsFormComponent', () => {
     component['addControlsToFormGroup'](formGroup, controls);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((formGroup.controls as { [key: string]: any })[controls.firstName.controlName].validator).not.toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((formGroup.controls as { [key: string]: any })[controls.lastName.controlName].validator).not.toBeNull();
+    expect((formGroup.controls as { [key: string]: any })[controls.companyName.controlName].validator).not.toBeNull();
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (formGroup.controls as { [key: string]: any })[controls.firstName.controlName].validator({} as AbstractControl),
-    ).toEqual({
-      required: true,
-    });
-    expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (formGroup.controls as { [key: string]: any })[controls.lastName.controlName].validator({} as AbstractControl),
+      (formGroup.controls as { [key: string]: any })[controls.companyName.controlName].validator({} as AbstractControl),
     ).toEqual({
       required: true,
     });
@@ -268,16 +232,11 @@ describe('PersonalDetailsFormComponent', () => {
 
   it('should add alias controls without validators when addAlias is false', () => {
     const formGroup = new FormGroup({});
-    const controls: IManualAccountCreationPersonalAlias = {
-      firstName: {
+    const controls: IManualAccountCreationCompanyAlias = {
+      companyName: {
         controlName: 'firstNames_0',
         inputId: 'firstNames_0',
         inputName: 'firstNames_0',
-      },
-      lastName: {
-        controlName: 'lastName_0',
-        inputId: 'lastName_0',
-        inputName: 'lastName_0',
       },
     };
     component.form.controls['addAlias'].setValue(false);
@@ -285,16 +244,14 @@ describe('PersonalDetailsFormComponent', () => {
     component['addControlsToFormGroup'](formGroup, controls);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((formGroup.controls as { [key: string]: any })[controls.firstName.controlName].validator).toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((formGroup.controls as { [key: string]: any })[controls.lastName.controlName].validator).toBeNull();
+    expect((formGroup.controls as { [key: string]: any })[controls.companyName.controlName].validator).toBeNull();
   });
 
   it('should remove alias at the specified index', () => {
     const aliasesFormArray = new FormArray([
-      new FormGroup({ firstName: new FormControl('Alias1'), lastName: new FormControl('User1') }),
-      new FormGroup({ firstName: new FormControl('Alias2'), lastName: new FormControl('User2') }),
-      new FormGroup({ firstName: new FormControl('Alias3'), lastName: new FormControl('User3') }),
+      new FormGroup({ companyName: new FormControl('Alias1') }),
+      new FormGroup({ companyName: new FormControl('Alias2') }),
+      new FormGroup({ companyName: new FormControl('Alias3') }),
     ]);
 
     component.form = new FormGroup({
@@ -304,15 +261,15 @@ describe('PersonalDetailsFormComponent', () => {
     component.removeAlias(1);
 
     expect(aliasesFormArray.length).toBe(2);
-    expect(aliasesFormArray.at(0).value).toEqual({ firstName: 'Alias1', lastName: 'User1' });
-    expect(aliasesFormArray.at(1).value).toEqual({ firstName: 'Alias3', lastName: 'User3' });
+    expect(aliasesFormArray.at(0).value).toEqual({ companyName: 'Alias1' });
+    expect(aliasesFormArray.at(1).value).toEqual({ companyName: 'Alias3' });
   });
 
   it('should remove field errors for the removed alias', () => {
     const aliasesFormArray = new FormArray([
-      new FormGroup({ firstName: new FormControl('Alias1'), lastName: new FormControl('User1') }),
-      new FormGroup({ firstName: new FormControl('Alias2'), lastName: new FormControl('User2') }),
-      new FormGroup({ firstName: new FormControl('Alias3'), lastName: new FormControl('User3') }),
+      new FormGroup({ companyName: new FormControl('Alias1') }),
+      new FormGroup({ companyName: new FormControl('Alias2') }),
+      new FormGroup({ companyName: new FormControl('Alias3') }),
     ]);
 
     component.form = new FormGroup({
@@ -329,9 +286,9 @@ describe('PersonalDetailsFormComponent', () => {
 
   it('should remove alias controls for the removed alias', () => {
     const aliasesFormArray = new FormArray([
-      new FormGroup({ firstName: new FormControl('Alias1'), lastName: new FormControl('User1') }),
-      new FormGroup({ firstName: new FormControl('Alias2'), lastName: new FormControl('User2') }),
-      new FormGroup({ firstName: new FormControl('Alias3'), lastName: new FormControl('User3') }),
+      new FormGroup({ companyName: new FormControl('Alias1') }),
+      new FormGroup({ companyName: new FormControl('Alias2') }),
+      new FormGroup({ companyName: new FormControl('Alias3') }),
     ]);
 
     component.form = new FormGroup({
@@ -346,71 +303,29 @@ describe('PersonalDetailsFormComponent', () => {
     expect(removeFieldErrorsSpy).toHaveBeenCalledWith(1);
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit form submit event with form value - continueFlow true', () => {
     const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-    personalDetailsForm.continueFlow = true;
+    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const companyDetailsForm = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK;
+    companyDetailsForm.continueFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
-    component['rePopulateForm'](personalDetailsForm.formData);
+    component['rePopulateForm'](companyDetailsForm.formData);
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(companyDetailsForm);
   });
 
-  it('should emit form submit event with form value', () => {
-    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-    personalDetailsForm.continueFlow = true;
-    spyOn(component['formSubmit'], 'emit');
-
-    component['rePopulateForm'](personalDetailsForm.formData);
-    component.handleFormSubmit(event);
-
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
-  });
-
-  it('should emit form submit event with form value', () => {
+  it('should emit form submit event with form value - continueFlow false', () => {
     const event = {} as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-    personalDetailsForm.continueFlow = false;
+    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const companyDetailsForm = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK;
+    companyDetailsForm.continueFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
-    component['rePopulateForm'](personalDetailsForm.formData);
-    component.handleFormSubmit(event);
-    component['rePopulateForm'](personalDetailsForm.formData);
+    component['rePopulateForm'](companyDetailsForm.formData);
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
-  });
-
-  it('should set nestedRouteButtonText to "Add contact details" when defendantType is adultOrYouthOnly', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('Add contact details');
-  });
-
-  it('should set nestedRouteButtonText to "Add offence details" when defendantType is parentOrGuardianToPay', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('Add offence details');
-  });
-
-  it('should set nestedRouteButtonText to an empty string when defendantType is company', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('');
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(companyDetailsForm);
   });
 });
