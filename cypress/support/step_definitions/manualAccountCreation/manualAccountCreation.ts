@@ -298,16 +298,9 @@ When('I enter work telephone number {string}', (workTelephone: string) => {
   contactDetails.enterWorkTelephone(workTelephone);
 });
 
-Then(
-  'I verify {string},{string},{string},{string},{string} on contact details page',
-  (primaryEmail, secondaryEmail, mobileTelephone, homeTelephone, workTelephone: string) => {
-    cy.get('#primaryEmailAddress').should('have.value', primaryEmail);
-    cy.get('#secondaryEmailAddress').should('have.value', secondaryEmail);
-    cy.get('#mobileTelephoneNumber').should('have.value', mobileTelephone);
-    cy.get('#homeTelephoneNumber').should('have.value', homeTelephone);
-    cy.get('#workTelephoneNumber').should('have.value', workTelephone);
-  },
-);
+Then('I see {string} value on {string} field', (inputValue: string,inputField: string) => {
+  cy.contains('[class="govuk-form-group"]', inputField).find('input').should('have.value', inputValue);
+});
 
 Then(
   'I verify {string},{string},{string} on contact details page',
