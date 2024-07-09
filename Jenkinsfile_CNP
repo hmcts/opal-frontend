@@ -31,24 +31,4 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('build')
   }
 }
-afterAlways('test:smoke'){
-  publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "smoke-output/prod/cucumber/",
-      reportFiles          : "smoke-report.html",
-      reportName           : "Cucumber Smoke Test Report"
-  ]
-}
-afterAlways('test:functional'){
-  publishHTML target: [
-      allowMissing         : true,
-      alwaysLinkToLastBuild: true,
-      keepAll              : true,
-      reportDir            : "functional-output/prod/cucumber/",
-      reportFiles          : "functional-report.html",
-      reportName           : "Cucumber Functional Test Report"
-  ]
-}
 

@@ -1,5 +1,5 @@
 Feature: PO-346 business unit and defendant type Users associated to one and only one BU
-
+  #this feature file is messy and needs sorting out removing overlap with other tests
 
   Background:
     Given I am on the OPAL Frontend
@@ -25,7 +25,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
 
   #AC4,  #AC5
   #For AC5, AC6, AC7 verifying Create account page until PO-366 implemented
-  Scenario: AC-04 negative: verify if user select Continue button without selecting any radio button options
+  #Scenario: AC-04 negative: verify if user select Continue button without selecting any radio button options
   Scenario: AC-05 negative: verify if user resolves the error and selecting adults and youth only then continues to the next page
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
