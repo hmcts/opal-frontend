@@ -409,6 +409,20 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
+    personalDetailsForm.continueFlow = true;
+    spyOn(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+  });
+
+  it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
@@ -418,7 +432,33 @@ describe('PersonalDetailsFormComponent', () => {
 
     component['rePopulateForm'](personalDetailsForm.formData);
     component.handleFormSubmit(event);
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+  });
+
+  it('should set nestedRouteButtonText to "Add contact details" when defendantType is adultOrYouthOnly', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('Add contact details');
+  });
+
+  it('should set nestedRouteButtonText to "Add offence details" when defendantType is parentOrGuardianToPay', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('Add offence details');
+  });
+
+  it('should set nestedRouteButtonText to an empty string when defendantType is company', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('');
   });
 });

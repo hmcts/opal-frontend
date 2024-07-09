@@ -1,4 +1,4 @@
-Feature:PO-346 Business unit and defendant type
+Feature: PO-346 business unit and defendant type Users associated to one and only one BU
 
 
   Background:

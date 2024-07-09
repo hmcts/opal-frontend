@@ -1,4 +1,4 @@
-Feature:PO-280 Employer details page for defendant accounts
+Feature: PO-280 Employer details page for defendant accounts for Adult or Youth Only configuration
 
   Background:
     Given I am on the OPAL Frontend
