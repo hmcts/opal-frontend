@@ -18,6 +18,158 @@
     </div>
   </app-govuk-summary-list>
   <h2 class="govuk-heading-m">Court details</h2>
+  <ng-container *ngTemplateOutlet="courtDetails"></ng-container>
+  @if (defendantType === 'Adult or youth with parent or guardian to pay') {
+    <h2 class="govuk-heading-m">Parent or guardian details</h2>
+    <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
+      <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
+      <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
+      <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
+    </app-govuk-task-list>
+  }
+  <h2 class="govuk-heading-m">Defendant details</h2>
+  <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+    @if (defendantType === 'Company') {
+      <ng-container *ngTemplateOutlet="companyDetails"></ng-container>
+      <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
+    } @else if (defendantType === 'Adult or youth with parent or guardian to pay') {
+      <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+    } @else {
+      <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+      <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
+      <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
+    }
+  </app-govuk-task-list>
+  <h2 class="govuk-heading-m">Offence and imposition details</h2>
+  <app-govuk-task-list taskListId="offenceAndImpositionDetails" taskListClasses="govuk-!-margin-left-0 ">
+    <ng-container *ngTemplateOutlet="offenceDetails"></ng-container>
+    <ng-container *ngTemplateOutlet="paymentTerms"></ng-container>
+  </app-govuk-task-list>
+  <h2 class="govuk-heading-m">Review and publish</h2>
+  <p class="govuk-body">Check that all required fields have been entered before you publish</p>
+  <p class="govuk-body">
+    <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
+  </p>
+  <p class="govuk-body">
+    <a href="#" class="govuk-link govuk-color__error" (onclick)="handleRoute(routingPaths.dashboard)"
+      >Cancel account creation</a
+    >
+  </p>
+</div>
+
+<ng-template #notProvided let-tagId>
+  <app-govuk-tag tagClasses="govuk-tag--grey" [tagId]="tagId">Not provided</app-govuk-tag>
+</ng-template>
+
+<ng-template #provided let-tagId>
+  <app-govuk-tag tagClasses="govuk-tag" [tagId]="tagId">Provided</app-govuk-tag>
+</ng-template>
+
+<ng-template #contactDetails>
+  <app-govuk-task-list-item
+    taskListItemId="contactDetailsItem"
+    taskListStatusId="contactDetailsStatus"
+    taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]="manualAccountCreationRoutes.contactDetails"
+        aria-describedby="contactDetailsStatus"
+      >
+        Contact details
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['contactDetails'] ? provided : notProvided;
+          context: { $implicit: 'contactDetailsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #employerDetails>
+  <app-govuk-task-list-item
+    taskListItemId="employerDetailsItem"
+    taskListStatusId="employerDetailsStatus"
+    taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]="manualAccountCreationRoutes.employerDetails"
+        aria-describedby="employerDetailsStatus"
+      >
+        Employer details
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['employerDetails'] ? provided : notProvided;
+          context: { $implicit: 'employerDetailsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #companyDetails>
+  <app-govuk-task-list-item
+    taskListItemId="companyDetailsItem"
+    taskListStatusId="companyDetailsStatus"
+    taskListItemClasses="govuk-task-list__item--with-link"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]="manualAccountCreationRoutes.companyDetails"
+        aria-describedby="companyDetailsStatus"
+      >
+        Company details
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['companyDetails'] ? provided : notProvided;
+          context: { $implicit: 'companyDetailsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #personalDetails>
+  <app-govuk-task-list-item
+    taskListItemId="personalDetailsItem"
+    taskListStatusId="personalDetailsStatus"
+    taskListItemClasses="govuk-task-list__item--with-link"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]="manualAccountCreationRoutes.personalDetails"
+        aria-describedby="personalDetailsStatus"
+      >
+        Personal details
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['personalDetails'] ? provided : notProvided;
+          context: { $implicit: 'personalDetailsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #courtDetails>
   <app-govuk-task-list taskListId="courtDetails" taskListClasses="govuk-!-margin-left-0 ">
     <app-govuk-task-list-item
       taskListItemId="courtDetailsItem"
@@ -43,225 +195,82 @@
       </ng-container>
     </app-govuk-task-list-item>
   </app-govuk-task-list>
-
-  @if (defendantType === 'Adult or youth with parent or guardian to pay') {
-    <h2 class="govuk-heading-m">Parent or guardian details</h2>
-    <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
-      <app-govuk-task-list-item
-        taskListItemId="parentOrGuardianDetailsItem"
-        taskListStatusId="parentOrGuardianDetailsStatus"
-        taskListItemClasses="govuk-task-list__item--with-link"
-      >
-        <ng-container name>
-          <a
-            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-            [routerLink]="manualAccountCreationRoutes.parentOrGuardianDetails"
-            aria-describedby="parentOrGuardianDetailsStatus"
-          >
-            Parent or guardian details
-          </a>
-        </ng-container>
-        <ng-container status>
-          <ng-container
-            *ngTemplateOutlet="
-              accountCreationStatus['parentGuardianDetails'] ? provided : notProvided;
-              context: { $implicit: 'parentGuardianDetailsStatusTag' }
-            "
-          ></ng-container>
-        </ng-container>
-      </app-govuk-task-list-item>
-      <app-govuk-task-list-item
-        taskListItemId="employerDetailsItem"
-        taskListStatusId="employerDetailsStatus"
-        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
-      >
-        <ng-container name>
-          <a
-            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-            [routerLink]="manualAccountCreationRoutes.employerDetails"
-            aria-describedby="employerDetailsStatus"
-          >
-            Employer details
-          </a>
-        </ng-container>
-        <ng-container status>
-          <ng-container
-            *ngTemplateOutlet="
-              accountCreationStatus['employerDetails'] ? provided : notProvided;
-              context: { $implicit: 'employerDetailsStatusTag' }
-            "
-          ></ng-container>
-        </ng-container>
-      </app-govuk-task-list-item>
-    </app-govuk-task-list>
-  }
-  <h2 class="govuk-heading-m">Defendant details</h2>
-  <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
-    @if (defendantType === 'Company') {
-      <app-govuk-task-list-item
-        taskListItemId="companyDetailsItem"
-        taskListStatusId="companyDetailsStatus"
-        taskListItemClasses="govuk-task-list__item--with-link"
-      >
-        <ng-container name>
-          <a
-            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-            [routerLink]="manualAccountCreationRoutes.companyDetails"
-            aria-describedby="companyDetailsStatus"
-          >
-            Company details
-          </a>
-        </ng-container>
-        <ng-container status>
-          <ng-container
-            *ngTemplateOutlet="
-              accountCreationStatus['companyDetails'] ? provided : notProvided;
-              context: { $implicit: 'companyDetailsStatusTag' }
-            "
-          ></ng-container>
-        </ng-container>
-      </app-govuk-task-list-item>
-    } @else {
-      <app-govuk-task-list-item
-        taskListItemId="personalDetailsItem"
-        taskListStatusId="personalDetailsStatus"
-        taskListItemClasses="govuk-task-list__item--with-link"
-      >
-        <ng-container name>
-          <a
-            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-            [routerLink]="manualAccountCreationRoutes.personalDetails"
-            aria-describedby="personalDetailsStatus"
-          >
-            Personal details
-          </a>
-        </ng-container>
-        <ng-container status>
-          <ng-container
-            *ngTemplateOutlet="
-              accountCreationStatus['personalDetails'] ? provided : notProvided;
-              context: { $implicit: 'personalDetailsStatusTag' }
-            "
-          ></ng-container>
-        </ng-container>
-      </app-govuk-task-list-item>
-    }
-
-    <app-govuk-task-list-item
-      taskListItemId="contactDetailsItem"
-      taskListStatusId="contactDetailsStatus"
-      taskListItemClasses="govuk-task-list__item--with-link border-top__none"
-    >
-      <ng-container name>
-        <a
-          class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-          [routerLink]="manualAccountCreationRoutes.contactDetails"
-          aria-describedby="contactDetailsStatus"
-        >
-          Contact details
-        </a>
-      </ng-container>
-      <ng-container status>
-        <ng-container
-          *ngTemplateOutlet="
-            accountCreationStatus['contactDetails'] ? provided : notProvided;
-            context: { $implicit: 'contactDetailsStatusTag' }
-          "
-        ></ng-container>
-      </ng-container>
-    </app-govuk-task-list-item>
-
-    @if (defendantType === 'Adult or youth only') {
-      <app-govuk-task-list-item
-        taskListItemId="employerDetailsItem"
-        taskListStatusId="employerDetailsStatus"
-        taskListItemClasses="govuk-task-list__item--with-link border-top__none"
-      >
-        <ng-container name>
-          <a
-            class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-            [routerLink]="manualAccountCreationRoutes.employerDetails"
-            aria-describedby="employerDetailsStatus"
-          >
-            Employer details
-          </a>
-        </ng-container>
-        <ng-container status>
-          <ng-container
-            *ngTemplateOutlet="
-              accountCreationStatus['employerDetails'] ? provided : notProvided;
-              context: { $implicit: 'employerDetailsStatusTag' }
-            "
-          ></ng-container>
-        </ng-container>
-      </app-govuk-task-list-item>
-    }
-  </app-govuk-task-list>
-  <h2 class="govuk-heading-m">Offence and imposition details</h2>
-  <app-govuk-task-list taskListId="offenceAndImpositionDetails" taskListClasses="govuk-!-margin-left-0 ">
-    <app-govuk-task-list-item
-      taskListItemId="offenceDetailsItem"
-      taskListStatusId="offenceDetailsStatus"
-      taskListItemClasses="govuk-task-list__item--with-link"
-    >
-      <ng-container name>
-        <a
-          class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-          [routerLink]=""
-          aria-describedby="offenceDetailsStatus"
-        >
-          Offence details
-        </a>
-      </ng-container>
-      <ng-container status>
-        <ng-container
-          *ngTemplateOutlet="
-            accountCreationStatus['offenceDetails'] ? provided : notProvided;
-            context: { $implicit: 'offenceDetailsStatusTag' }
-          "
-        ></ng-container>
-      </ng-container>
-    </app-govuk-task-list-item>
-    <app-govuk-task-list-item
-      taskListItemId="paymentTermsItem"
-      taskListStatusId="paymentTermsStatus"
-      taskListItemClasses="govuk-task-list__item--with-link border-top__none"
-    >
-      <ng-container name>
-        <a
-          class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-          [routerLink]=""
-          aria-describedby="paymentTermsStatus"
-        >
-          Payment terms
-        </a>
-      </ng-container>
-      <ng-container status>
-        <ng-container
-          *ngTemplateOutlet="
-            accountCreationStatus['paymentTerms'] ? provided : notProvided;
-            context: { $implicit: 'paymentTermsStatusTag' }
-          "
-        ></ng-container>
-      </ng-container>
-    </app-govuk-task-list-item>
-  </app-govuk-task-list>
-  <h2 class="govuk-heading-m">Review and publish</h2>
-  <p class="govuk-body">Check that all required fields have been entered before you publish</p>
-  <p class="govuk-body">
-    <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
-  </p>
-  <p class="govuk-body">
-    <a href="#" class="govuk-link govuk-color__error" (onclick)="handleRoute(routingPaths.dashboard)"
-      >Cancel account creation</a
-    >
-  </p>
-</div>
-
-<ng-template #notProvided let-tagId>
-  <app-govuk-tag tagClasses="govuk-tag--grey" [tagId]="tagId">Not provided</app-govuk-tag>
 </ng-template>
 
-<ng-template #provided let-tagId>
-  <app-govuk-tag tagClasses="govuk-tag" [tagId]="tagId">Provided</app-govuk-tag>
+<ng-template #parentGuardianDetails>
+  <app-govuk-task-list-item
+    taskListItemId="parentOrGuardianDetailsItem"
+    taskListStatusId="parentOrGuardianDetailsStatus"
+    taskListItemClasses="govuk-task-list__item--with-link"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]="manualAccountCreationRoutes.parentOrGuardianDetails"
+        aria-describedby="parentOrGuardianDetailsStatus"
+      >
+        Parent or guardian details
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['parentGuardianDetails'] ? provided : notProvided;
+          context: { $implicit: 'parentGuardianDetailsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #offenceDetails>
+  <app-govuk-task-list-item
+    taskListItemId="offenceDetailsItem"
+    taskListStatusId="offenceDetailsStatus"
+    taskListItemClasses="govuk-task-list__item--with-link"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]=""
+        aria-describedby="offenceDetailsStatus"
+      >
+        Offence details
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['offenceDetails'] ? provided : notProvided;
+          context: { $implicit: 'offenceDetailsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #paymentTerms>
+  <app-govuk-task-list-item
+    taskListItemId="paymentTermsItem"
+    taskListStatusId="paymentTermsStatus"
+    taskListItemClasses="govuk-task-list__item--with-link border-top__none"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]=""
+        aria-describedby="paymentTermsStatus"
+      >
+        Payment terms
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['paymentTerms'] ? provided : notProvided;
+          context: { $implicit: 'paymentTermsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
 </ng-template>
