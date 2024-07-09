@@ -20,7 +20,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
         Then I see the "Defendant details" section heading
         And I see the "Personal details" link under the "Defendant details" section
-        Then I see the status of "Personal details" to "Not provided"
+        Then I see the status of "Personal details" as "Not provided"
         And I click on "Personal details" link
         Then I see "Personal details" on the page header
 
@@ -372,7 +372,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 
-        Then I see the status of "Personal details" to "Provided"
+        Then I see the status of "Personal details" as "Provided"
 
         Then I click on "Personal details" link
         Then I see "Personal details" on the page header
@@ -437,7 +437,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 
-        Then I see the status of "Personal details" to "Provided"
+        Then I see the status of "Personal details" as "Provided"
 
         Then I click on "Personal details" link
         Then I see "Personal details" on the page header
@@ -482,7 +482,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
         When "Cancel" is clicked
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        Then I see the status of "Personal details" to "Not provided"
+        Then I see the status of "Personal details" as "Not provided"
 
     Scenario: AC8a-negative: When user has selected the 'Cancel' button and has entered data into some fields, then selects 'Ok' on the warning message
         When I select title "Ms" from dropdown
@@ -503,13 +503,13 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 
-        Then I see the status of "Personal details" to "Provided"
+        Then I see the status of "Personal details" as "Provided"
 
         And I click on "Personal details" link
         Then I see "Personal details" on the page header
 
         When "Cancel" is clicked
-        Then I see the status of "Personal details" to "Provided"
+        Then I see the status of "Personal details" as "Provided"
 
     Scenario: AC9-positive: If the user unticks the 'Add aliases' tick box, after entering data in one or more fields
         When I select the "Add aliases" checkbox

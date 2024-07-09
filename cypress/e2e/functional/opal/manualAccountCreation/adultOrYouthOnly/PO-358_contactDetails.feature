@@ -18,7 +18,7 @@ Feature: PO-358 & PO-419 Contact Details for adult or youth only
 
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
-    Then I see the status of "Contact details" to "Not provided"
+    Then I see the status of "Contact details" as "Not provided"
 
     Then I click on "Contact details" link
     Then I see "Contact details" on the page header
@@ -33,7 +33,7 @@ Feature: PO-358 & PO-419 Contact Details for adult or youth only
     # Due to changes in PO-360
     #Then I click save and return to tasks
     Then I click the "<returnPageButton>" button and see "<pageHeader>" on the page header
-    And I see the status of "Contact details" to "Provided"
+    And I see the status of "Contact details" as "Provided"
 
     Then I click on "Contact details" link
     Then I see "Contact details" on the page header
@@ -143,7 +143,7 @@ Feature: PO-358 & PO-419 Contact Details for adult or youth only
     Then I see the error message "Enter a mobile telephone number, like 07700 900 982" at the top of the page
     Then I see "Contact details" on the page header
 
-    #When I enter "<updatePrimaryEmail>" into "Primary Email Address"
+    When I enter "<updatePrimaryEmail>" into "Primary Email Address"
     When I enter "<updateSecondaryEmail>" into "Secondary Email Address"
     When I enter "<updateMobileTelephone>" into "Mobile telephone number"
     When I enter "<updateHomeTelephone>" into "Home telephone number"
@@ -151,8 +151,7 @@ Feature: PO-358 & PO-419 Contact Details for adult or youth only
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click the "<returnPageButton>" button
-    Then I see "Account details" on the page header
+    Then I click the "<returnPageButton>" button and and see "<pageHeader>" on the page header
 
     Then I click on "Contact details" link
     Then I see "Contact details" on the page header
