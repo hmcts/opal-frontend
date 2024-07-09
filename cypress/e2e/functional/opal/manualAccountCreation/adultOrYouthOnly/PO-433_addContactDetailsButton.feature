@@ -21,7 +21,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
         Then I see the "Defendant details" section heading
         And I see the "Personal details" link under the "Defendant details" section
         Then I see the status of "Personal details" is "Not provided"
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
     Scenario: AC1-positive: A grey 'Add contact details' button will be introduced onto the Personal Details screen
@@ -374,7 +374,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
         Then I see the status of "Personal details" is "Provided"
 
-        Then I click on "Personal details" link
+        Then I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
@@ -439,7 +439,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
         Then I see the status of "Personal details" is "Provided"
 
-        Then I click on "Personal details" link
+        Then I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
         Then I see "John Smith" in the "First names" field
@@ -505,7 +505,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
         Then I see the status of "Personal details" is "Provided"
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
         When "Cancel" is clicked

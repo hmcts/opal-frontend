@@ -41,7 +41,7 @@ When('The button {string} is clicked, nothing happens', (linkText: string) => {
   });
 });
 
-Then('I click on {string} link', (linkText: string) => {
+Then('I click on the {string} link', (linkText: string) => {
   cy.get('a').contains(linkText).click();
 });
 When('{string} is clicked', (linkText: string) => {

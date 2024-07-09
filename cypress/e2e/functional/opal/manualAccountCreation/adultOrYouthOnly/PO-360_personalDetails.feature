@@ -19,7 +19,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
         Then I see the "Defendant details" section heading
         And I see the "Personal details" link under the "Defendant details" section
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
     Scenario: AC1-positive: Personal details page will be created with all fields
@@ -555,7 +555,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
         Then I click the "Return to account details" button
         Then I see "Account details" on the page header
 
-        Then I click on "Personal details" link
+        Then I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
@@ -575,7 +575,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
 
@@ -587,7 +587,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
         When I select add aliases check box
         Then I see data entered in "Alias 1","First names" and "<firstNames>"
