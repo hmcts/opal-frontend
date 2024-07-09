@@ -18,7 +18,7 @@ Feature: PO-358 & PO-419 Contact Details for adult or youth only
 
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
-    Then I see the status of "Contact details" as "Not provided"
+    Then I see the status of "Contact details" is "Not provided"
 
     Then I click on "Contact details" link
     Then I see "Contact details" on the page header
@@ -33,7 +33,7 @@ Feature: PO-358 & PO-419 Contact Details for adult or youth only
     # Due to changes in PO-360
     #Then I click save and return to tasks
     Then I click the "<returnPageButton>" button and see "<pageHeader>" on the page header
-    And I see the status of "Contact details" as "Provided"
+    And I see the status of "Contact details" is "Provided"
 
     Then I click on "Contact details" link
     Then I see "Contact details" on the page header

@@ -654,7 +654,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
         Then I click the "Return to account details" button
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        Then I see the status of "Personal details" to "Provided"
+        Then I see the status of "Personal details" is "Provided"
 
         And I click on "Personal details" link
         Then I see "Personal details" on the page header
@@ -689,7 +689,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
         Then I click the "Add offence details" button
         Then I see "Offence details" on the page header
         Then I click the "Return to account details" button
-        Then I see the status of "Personal details" as "Provided"
+        Then I see the status of "Personal details" is "Provided"
 
         And I click on "Personal details" link
         Then I see "Personal details" on the page header
@@ -707,7 +707,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
         When "Cancel" is clicked
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        Then I see the status of "Personal details" as "Not provided"
+        Then I see the status of "Personal details" is "Not provided"
 
     Scenario: AC15a-negative: If a user selects the 'Cancel' button and the user has entered data into one or more fields, a warning message will be displayed and user selects 'OK'
         When I select title "Mrs" from dropdown

@@ -1,4 +1,4 @@
-import { DataTable, Then,When } from '@badeball/cypress-cucumber-preprocessor/';
+import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor/';
 
 Then('I click the {string} button and see {string} on the page header', (buttonName: string, bodyHeader: string) => {
   switch (buttonName) {
@@ -87,6 +87,6 @@ Then('I select {string} from the {string} dropdown', (option: string, dropdown: 
 Then('I see {string} selected in the {string} dropdown', (option: string, dropdown: string) => {
   cy.contains('app-govuk-select', dropdown).find('select').should('have.value', option);
 });
-When('I enter {string} into {string}',(inputValue:string,inputField:string) => {
-  cy.contains('[class="govuk-form-group"]',inputField).find('input').clear().type(inputValue)
-  })
+When('I enter {string} into {string}', (inputValue: string, inputField: string) => {
+  cy.contains('[class="govuk-form-group"]', inputField).find('input').clear().type(inputValue);
+});

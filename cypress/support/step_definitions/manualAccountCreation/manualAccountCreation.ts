@@ -298,7 +298,7 @@ When('I enter work telephone number {string}', (workTelephone: string) => {
   contactDetails.enterWorkTelephone(workTelephone);
 });
 
-Then('I see {string} value on {string} field', (inputValue: string,inputField: string) => {
+Then('I see {string} value on {string} field', (inputValue: string, inputField: string) => {
   cy.contains('[class="govuk-form-group"]', inputField).find('input').should('have.value', inputValue);
 });
 
@@ -574,7 +574,7 @@ When('{string} is verified as grey', (addContactDetailsButton: string) => {
   cy.get('#submitForm').should('be.enabled', addContactDetailsButton);
 });
 
-Then('I see the status of {string} as {string}', (linkText: string, status: string) => {
+Then('I see the status of {string} is {string}', (linkText: string, status: string) => {
   cy.contains('[class="govuk-task-list__name-and-hint"]', linkText)
     .next()
     .contains('[class="govuk-task-list__status"]', status);
