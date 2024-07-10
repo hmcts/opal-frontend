@@ -39,6 +39,7 @@ import { IManualAccountCreationPersonalDetailsAliasState } from './manual-accoun
 import { IManualAccountCreationPersonalDetailsForm } from './manual-account-creation-personal-details-form.interface';
 import { IManualAccountCreationAccountStatus } from './manual-account-creation-account-status.interface';
 import { IManualAccountCreationFieldTypes } from './manual-account-creation-field-types.interface';
+import { IManualAccountCreationParentGuardianForm } from './manual-account-creation-parent-guardian-form.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -78,6 +79,7 @@ export {
   IDefendantTypes,
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
+  IManualAccountCreationParentGuardianForm,
   IBusinessUnitRefData,
   IManualAccountCreationPersonalAlias,
   IManualAccountCreationPersonalDetailsState,

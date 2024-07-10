@@ -4,5 +4,6 @@ export const MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE = {
   nationalInsuranceNumber: null,
   addressLine1: null,
   addressLine2: null,
+  addressLine3: null,
   postcode: null,
 };

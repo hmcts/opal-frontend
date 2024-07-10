@@ -8,7 +8,10 @@ import {
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
+import {
+  IManualAccountCreationParentGuardianDetailsState,
+  IManualAccountCreationParentGuardianForm,
+} from '@interfaces';
 import { MacStateService } from '@services';
 
 describe('ParentGuardianDetailsComponent', () => {
@@ -51,13 +54,44 @@ describe('ParentGuardianDetailsComponent', () => {
       nationalInsuranceNumber: '',
       addressLine1: '',
       addressLine2: '',
+      addressLine3: '',
       postcode: '',
     };
 
-    component.handleParentGuardianDetailsSubmit(formData);
+    const parentGuardianFormSubmit: IManualAccountCreationParentGuardianForm = {
+      formData: formData,
+      continueFlow: false,
+    };
+
+    component.handleParentGuardianDetailsSubmit(parentGuardianFormSubmit);
 
     expect(mockMacStateService.manualAccountCreation.parentGuardianDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
+  });
+
+  it('should handle form submission and navigate', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
+
+    const formData: IManualAccountCreationParentGuardianDetailsState = {
+      fullName: 'Test test',
+      dateOfBirth: '',
+      nationalInsuranceNumber: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    };
+
+    const parentGuardianFormSubmit: IManualAccountCreationParentGuardianForm = {
+      formData: formData,
+      continueFlow: true,
+    };
+
+    component.handleParentGuardianDetailsSubmit(parentGuardianFormSubmit);
+
+    expect(mockMacStateService.manualAccountCreation.parentGuardianDetails).toEqual(formData);
+    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.contactDetails]);
   });
 
   it('should test handleUnsavedChanges', () => {
