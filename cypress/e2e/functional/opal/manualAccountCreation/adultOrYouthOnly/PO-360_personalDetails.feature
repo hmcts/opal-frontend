@@ -1,12 +1,12 @@
 Feature: PO-360 personal details screen for adult or youth only defendant type
 
-    Background:
-        Given I am on the OPAL Frontend
-        Then I see "Opal" in the header
+  Background:
+    Given I am on the OPAL Frontend
+    Then I see "Opal" in the header
 
-        When I sign in as "opal-test@HMCTS.NET"
-        Then I am on the dashboard
-        When I navigate to Manual Account Creation
+    When I sign in as "opal-test@HMCTS.NET"
+    Then I am on the dashboard
+    When I navigate to Manual Account Creation
 
         Then I see "Create account" as the caption on the page
         Then I see "Business unit and defendant type" on the page header
@@ -220,9 +220,6 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
         Then I no longer see "Alias 2" sub heading
         Then I verify "Alias 1" sub heading
     #And I do not see the "Remove" link below the "Alias1", "Last name" input
-
-
-
 
     Scenario: AC8- positive: If the user unticks the 'Add aliases' tick box
         When I select add aliases check box
@@ -603,3 +600,4 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
         When "Cancel" is clicked
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
+
