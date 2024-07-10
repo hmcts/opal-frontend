@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
+  CustomAddressBlockComponent,
   FormBaseComponent,
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -16,6 +17,7 @@ import {
   ADDRESS_LINE_TWO_FIELD_ERRORS,
   ADDRESS_LINE_THREE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
+  CUSTOM_ADDRESS_FIELD_IDS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import {
@@ -38,6 +40,7 @@ import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengt
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCancelLinkComponent,
+    CustomAddressBlockComponent,
   ],
   templateUrl: './company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +48,7 @@ import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengt
 export class CompanyDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationCompanyDetailsForm>();
 
+  public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   override fieldErrors: IFieldErrors = {

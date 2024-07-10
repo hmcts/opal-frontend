@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import {
+  CustomAddressBlockComponent,
   FormBaseComponent,
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -16,6 +17,7 @@ import {
   ADDRESS_LINE_ONE_FIELD_ERRORS,
   ADDRESS_LINE_THREE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
+  CUSTOM_ADDRESS_FIELD_IDS,
   DATE_OF_BIRTH_FIELD_ERRORS,
   MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
@@ -55,6 +57,7 @@ import {
     GovukCheckboxesConditionalComponent,
     GovukSelectComponent,
     GovukCancelLinkComponent,
+    CustomAddressBlockComponent,
   ],
   templateUrl: './personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,6 +65,7 @@ import {
 export class PersonalDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
 
+  public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public nestedRouteButtonText!: string;
 

@@ -42,6 +42,8 @@ import { IManualAccountCreationCompanyDetailsAliasState } from './manual-account
 import { IManualAccountCreationCompanyDetailsState } from './manual-account-creation-company-details-state.interface';
 import { IManualAccountCreationCompanyDetailsForm } from './manual-account-creation-company-details-form.interface';
 import { IManualAccountCreationCompanyAlias } from './manual-account-creation-company-details-alias.interface';
+import { ICustomAddressFieldIds } from './custom-address-field-ids';
+
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -92,4 +94,5 @@ export {
   IManualAccountCreationCompanyDetailsState,
   IManualAccountCreationCompanyDetailsAliasState,
   IManualAccountCreationCompanyDetailsForm,
+  ICustomAddressFieldIds,
 };

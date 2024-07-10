@@ -42,6 +42,7 @@ import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.
 import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 import { GovukHeadingWithCaptionComponent } from './govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
 import { GovukCancelLinkComponent } from './govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { CustomAddressBlockComponent } from './custom/custom-address-block/custom-address-block/custom-address-block.component';
 
 export {
   GovukButtonComponent,
@@ -87,4 +88,5 @@ export {
   FormParentBaseComponent,
   GovukHeadingWithCaptionComponent,
   GovukCancelLinkComponent,
+  CustomAddressBlockComponent,
 };
