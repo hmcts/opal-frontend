@@ -24,7 +24,7 @@ export default class SessionStorage {
         cookie: {
           httpOnly: true,
           maxAge: config.get('session.maxAge'),
-          sameSite: 'lax',
+          sameSite: 'strict',
           secure: config.get('session.secure'),
         },
         rolling: true,
