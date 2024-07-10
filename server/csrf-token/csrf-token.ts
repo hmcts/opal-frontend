@@ -9,7 +9,7 @@ export class CSRFToken {
     const { doubleCsrfProtection } = doubleCsrf({
       getSecret: () => config.get('secrets.opal.opal-frontend-csrf-secret'),
       cookieName: config.get('csrf.cookieName'),
-      cookieOptions: { sameSite: 'strict', secure: config.get('csrf.secure'), path: '/' },
+      cookieOptions: { sameSite: config.get('csrf.sameSite'), secure: config.get('csrf.secure'), path: '/' },
       getTokenFromRequest: (req) => {
         const cookieName = config.get('csrf.cookieName');
         return req.cookies[cookieName as string].split('|')[0] || null;
