@@ -1,4 +1,4 @@
-<h1 class="govuk-heading-l">Company details</h1>
+<!-- <h1 class="govuk-heading-l">Company details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-text-input
@@ -26,10 +26,10 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="Company name"
-            [inputId]="aliasControls[rowIndex].companyName.inputId"
-            [inputName]="aliasControls[rowIndex].companyName.inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex].companyName.controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex].companyName.controlName]"
+            [inputId]="aliasControls[rowIndex]['companyName'].inputId"
+            [inputName]="aliasControls[rowIndex]['companyName'].inputName"
+            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['companyName'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['companyName'].controlName]"
           ></app-govuk-text-input>
         </fieldset>
       }
@@ -79,4 +79,4 @@
       ></app-govuk-cancel-link>
     </div>
   </div>
-</form>
+</form> -->

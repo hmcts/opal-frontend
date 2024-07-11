@@ -101,12 +101,12 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
     }
   }
 
-  public override ngOnInit(): void {
-    this.setupCompanyDetailsForm();
-    this.setupAliasConfiguration();
-    this.setInitialErrorMessages();
-    this.rePopulateForm(this.macStateService.manualAccountCreation.companyDetails);
-    this.buildAliasInputs(this.macStateService.manualAccountCreation.companyDetails);
-    super.ngOnInit();
-  }
+  // public override ngOnInit(): void {
+  //   this.setupCompanyDetailsForm();
+  //   this.setupAliasConfiguration();
+  //   this.setInitialErrorMessages();
+  //   this.rePopulateForm(this.macStateService.manualAccountCreation.companyDetails);
+  //   this.buildAliasInputs(this.macStateService.manualAccountCreation.companyDetails);
+  //   super.ngOnInit();
+  // }
 }

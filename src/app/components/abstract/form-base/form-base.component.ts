@@ -32,8 +32,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   protected formSubmitted = false;
   private formSub!: Subscription;
   public formErrors!: IFormError[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public aliasControls: any[] = [];
+  public aliasControls: { [key: string]: IFormAliasConfiguration }[] = [];
   public aliasControlsValidation: IFormAliasConfigurationValidation[] = [];
   public aliasFields: string[] = [];
 
@@ -310,7 +309,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Setup listener for the form value changes and to emit hasUnsavedChanges
    */
   private setupListener(): void {
-    this.formSub = this.form.valueChanges.subscribe(() => {
+    this.formSub = this.form.valueChanges.subscribe((values) => {
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     });
   }
@@ -339,11 +338,11 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param aliasFormGroup - The alias form group.
    * @param key - The key of the control to clear the validators for.
    */
-  protected clearAliasValidators(aliasFormGroup: FormGroup, key: string): void {
-    aliasFormGroup.controls[key].clearValidators();
-    aliasFormGroup.controls[key].updateValueAndValidity();
-    aliasFormGroup.controls[key].reset();
-  }
+  // protected clearAliasValidators(aliasFormGroup: FormGroup, key: string): void {
+  //   aliasFormGroup.controls[key].clearValidators();
+  //   aliasFormGroup.controls[key].updateValueAndValidity();
+  //   aliasFormGroup.controls[key].reset();
+  // }
 
   /**
    * Removes the alias control at the specified index from the aliasControls array.
@@ -352,6 +351,11 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    */
   protected removeAliasControls(index: number): void {
     this.aliasControls.splice(index, 1);
+  }
+
+  protected removeFormArrayControl(index: number, formArrayControls: any[]): any[] {
+    formArrayControls.splice(index, 1);
+    return formArrayControls;
   }
 
   /**
@@ -462,16 +466,42 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * If `state.addAlias` is false, it adds a single alias input.
    * @param state - The state object containing information about whether to add aliases and the aliases themselves.
    */
-  protected buildAliasInputs(state: any): void {
-    if (state.addAlias) {
-      state.aliases.map((_element: any, index: number) => {
-        this.addAliases(index);
-      });
-      this.addAliasCheckboxChange();
-      this.rePopulateForm(state);
-    } else {
-      this.addAliases(0);
-    }
+  // protected buildAliasInputs(state: any): void {
+  //   if (state.addAlias) {
+  //     state.aliases.map((_element: any, index: number) => {
+  //       this.addAliases(index);
+  //     });
+  //     this.addAliasCheckboxChange();
+  //     this.rePopulateForm(state);
+  //   } else {
+  //     this.addAliases(0);
+  //   }
+  // }
+
+  protected buildFormArrayControls(
+    formControlCount: number[],
+    formArrayName: string,
+    fieldNames: string[],
+    controlValidation: IFormAliasConfigurationValidation[],
+  ): any {
+    const controls: any[] = [];
+
+    formControlCount.forEach((_element: any, index: number) => {
+      controls.push(this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation));
+    });
+
+    return controls;
+  }
+
+  protected removeAllFormArrayControls(formArrayControls: any[], formArrayName: string, fieldNames: string[]): any[] {
+    const control = this.form.get(formArrayName) as FormArray;
+
+    [...formArrayControls].forEach((_element, index) => {
+      this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
+    });
+
+    control.clear();
+    return [];
   }
 
   /**
@@ -483,6 +513,15 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     if (alias) {
       this.aliasFields.forEach((field) => {
         delete this.fieldErrors[alias[field].controlName];
+      });
+    }
+  }
+
+  protected removeFormArrayControlsErrors(index: number, formArrayControls: any[], fieldNames: string[]): void {
+    const formArrayControl = formArrayControls[index];
+    if (formArrayControl) {
+      fieldNames.forEach((field) => {
+        delete this.formControlErrorMessages[formArrayControl[field].controlName];
       });
     }
   }
@@ -518,31 +557,51 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * If the checkbox is unchecked, it clears the alias controls and aliases form array,
    * and adds a new alias control.
    */
-  public addAliasCheckboxChange(): void {
-    const aliasesFormArray = this.form.get('aliases') as FormArray;
+  // public addAliasCheckboxChange(): void {
+  //   const aliasesFormArray = this.form.get('aliases') as FormArray;
 
-    if (!this.form.controls['addAlias'].value) {
-      this.aliasControls = [];
-      aliasesFormArray.clear();
-      this.addAliases(0);
-    }
-  }
+  //   if (!this.form.controls['addAlias'].value) {
+  //     this.aliasControls = [];
+  //     aliasesFormArray.clear();
+  //     this.addAliases(0);
+  //   }
+  // }
 
   /**
    * Adds aliases to the form at the specified index.
    *
    * @param index - The index at which to add the aliases.
    */
-  public addAliases(index: number): void {
-    const aliases = this.form.get('aliases') as FormArray;
-    const aliasesFormGroup = new FormGroup({});
+  // public addAliases(index: number): void {
+  //   const aliases = this.form.get('aliases') as FormArray;
+  //   const aliasesFormGroup = new FormGroup({});
 
-    const controls = this.createControls(this.aliasFields, index);
-    this.aliasControls.push(controls);
+  //   const controls = this.createControls(this.aliasFields, index);
+  //   this.aliasControls.push(controls);
 
-    this.addControlsToFormGroup(aliasesFormGroup, this.aliasControlsValidation, index);
+  //   this.addControlsToFormGroup(aliasesFormGroup, this.aliasControlsValidation, index);
 
-    aliases.push(aliasesFormGroup);
+  //   aliases.push(aliasesFormGroup);
+  // }
+
+  public addFormArrayControls(
+    index: number,
+    formArrayName: string,
+    fieldNames: string[],
+    controlValidation: IFormAliasConfigurationValidation[],
+  ): any {
+    const formArray = this.form.get(formArrayName) as FormArray;
+    const formArrayFormGroup = new FormGroup({});
+
+    const controls = this.createControls(fieldNames, index);
+
+    this.addControlsToFormGroup(formArrayFormGroup, controlValidation, index);
+
+    formArray.push(formArrayFormGroup);
+
+    console.log(formArray);
+    console.log(controls);
+    return controls;
   }
 
   /**
@@ -550,12 +609,25 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    *
    * @param index - The index of the alias to remove.
    */
-  public removeAlias(index: number): void {
-    const aliases = this.form.get('aliases') as FormArray;
-    aliases.removeAt(index);
+  // public removeAlias(index: number): void {
+  //   const aliases = this.form.get('aliases') as FormArray;
+  //   aliases.removeAt(index);
 
-    this.removeFieldErrors(index);
-    this.removeAliasControls(index);
+  //   this.removeFieldErrors(index);
+  //   this.removeAliasControls(index);
+  // }
+
+  public removeFormArrayControls(
+    index: number,
+    formArrayName: string,
+    formArrayControls: any[],
+    fieldNames: string[],
+  ): any {
+    const control = this.form.get(formArrayName) as FormArray;
+    control.removeAt(index);
+
+    this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
+    return this.removeFormArrayControl(index, formArrayControls);
   }
 
   public ngOnInit(): void {

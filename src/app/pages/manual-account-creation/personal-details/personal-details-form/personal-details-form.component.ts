@@ -29,6 +29,7 @@ import {
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalDetailsForm } from '@interfaces';
 import { DateTime } from 'luxon';
+import { Subscription } from 'rxjs';
 import {
   alphabeticalTextValidator,
   dateOfBirthValidator,
@@ -77,6 +78,8 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
+
+  private addAliasListener!: Subscription | undefined;
 
   /**
    * Sets up the personal details form with the necessary form controls.
@@ -150,13 +153,50 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     }
   }
 
+  private setUpAliasCheckboxListener(): void {
+    this.addAliasListener = this.form.get('addAlias')?.valueChanges.subscribe((value) => {
+      if (value) {
+        this.aliasControls = this.buildFormArrayControls(
+          [0],
+          'aliases',
+          this.aliasFields,
+          this.aliasControlsValidation,
+        );
+      } else {
+        this.aliasControls = this.removeAllFormArrayControls(this.aliasControls, 'aliases', this.aliasFields);
+      }
+    });
+  }
+
+  private getAliasCount(): number[] {
+    const length = this.macStateService.manualAccountCreation.personalDetails.aliases.length;
+    return Array.from({ length }, (_, i) => i);
+  }
+
+  public addNewAlias(index: number): void {
+    this.aliasControls.push(
+      this.addFormArrayControls(index, 'aliases', this.aliasFields, this.aliasControlsValidation),
+    );
+  }
+
+  public removeNewAlias(index: number): void {
+    this.aliasControls = this.removeFormArrayControls(index, 'aliases', this.aliasControls, this.aliasFields);
+    console.log(this.aliasControls);
+  }
+
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
+    this.buildFormArrayControls(this.getAliasCount(), 'aliases', this.aliasFields, this.aliasControlsValidation);
     this.setInitialErrorMessages();
     this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
-    this.buildAliasInputs(this.macStateService.manualAccountCreation.personalDetails);
+    this.setUpAliasCheckboxListener();
     super.ngOnInit();
+  }
+
+  public override ngOnDestroy(): void {
+    this.addAliasListener?.unsubscribe();
+    super.ngOnDestroy();
   }
 }
