@@ -7,9 +7,9 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR } from '@constants';
+import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR, MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IManualAccountCreationContactDetailsState } from '@interfaces';
+import { IFieldErrors, IManualAccountCreationContactDetailsForm } from '@interfaces';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
@@ -31,9 +31,10 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IManualAccountCreationContactDetailsState>();
+  @Output() private formSubmit = new EventEmitter<IManualAccountCreationContactDetailsForm>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  public nestedRouteButtonText!: string;
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR;
 
@@ -46,26 +47,49 @@ export class ContactDetailsFormComponent extends FormBaseComponent implements On
       secondaryEmailAddress: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
       mobileTelephoneNumber: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
       homeTelephoneNumber: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
-      businessTelephoneNumber: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
+      workTelephoneNumber: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
     });
+  }
+
+  /**
+   * Retrieves the nested route based on the defendant type and sets the nested route button text accordingly.
+   */
+  private getNestedRoute(): void {
+    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
+    if (defendantType) {
+      const nestedRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['contactDetails'];
+      switch (nestedRoute) {
+        case ManualAccountCreationRoutes.employerDetails:
+          this.nestedRouteButtonText = 'Add employer details';
+          break;
+        case ManualAccountCreationRoutes.offenceDetails:
+          this.nestedRouteButtonText = 'Add offence details';
+          break;
+        default:
+          this.nestedRouteButtonText = '';
+          break;
+      }
+    }
   }
 
   /**
    * Handles the form submission event.
    */
-  public handleFormSubmit(): void {
+  public handleFormSubmit(event: SubmitEvent): void {
     this.handleErrorMessages();
 
     if (this.form.valid) {
       this.formSubmitted = true;
+      const continueFlow = event.submitter ? event.submitter.className.includes('continue-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit({ formData: this.form.value, continueFlow: continueFlow });
     }
   }
 
   public override ngOnInit(): void {
     this.setupContactDetailsForm();
     this.setInitialErrorMessages();
+    this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.contactDetails);
     super.ngOnInit();
   }
