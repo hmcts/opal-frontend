@@ -185,7 +185,15 @@ Feature: PO-371 Contact Details for company
 
     And I click Cancel, a window pops up and I click Ok
     Then I see "Account details" on the page header
-    And I see the status of "Contact details" is "Provided"
+    And I see the status of "Contact details" is "Not provided"
+
+    When I click on the "Contact details" link
+    Then I see "Contact details" on the page header
+    And I see "" in the "Primary Email Address" field
+    And I see "" in the "Secondary Email Address" field
+    And I see "" in the "Mobile telephone number" field
+    And I see "" in the "Home telephone number" field
+    And I see "" in the "Work telephone number" field
 
 
     Examples:
