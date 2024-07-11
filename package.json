@@ -44,12 +44,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.0.5",
-    "@angular/cdk": "18.0.6",
+    "@angular/cdk": "18.1.0",
     "@angular/common": "^18.0.5",
     "@angular/compiler": "^18.0.5",
     "@angular/core": "^18.0.5",
     "@angular/forms": "^18.0.5",
-    "@angular/material": "18.0.6",
+    "@angular/material": "18.1.0",
     "@angular/platform-browser": "^18.0.5",
     "@angular/platform-browser-dynamic": "^18.0.5",
     "@angular/platform-server": "^18.0.5",
@@ -124,7 +124,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
-    "typescript": "~5.4.0"
+    "typescript": "~5.5.0"
   },
   "packageManager": "yarn@3.8.3",
   "cypress-cucumber-preprocessor": {

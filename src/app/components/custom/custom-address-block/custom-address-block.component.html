@@ -1,0 +1,49 @@
+@if (divider) {
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+}
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ legendText }}</legend>
+  @if (addressFieldIds.addressLineOneFieldId) {
+    <app-govuk-text-input
+      labelText="Address line 1"
+      inputId="{{ addressFieldIds.addressLineOneFieldId }}"
+      inputName="{{ addressFieldIds.addressLineOneFieldId }}"
+      inputClasses="govuk-input--width-20"
+      [control]="form.controls[addressFieldIds.addressLineOneFieldId]"
+      [errors]="formControlErrorMessages[addressFieldIds.addressLineOneFieldId]"
+    ></app-govuk-text-input>
+  }
+
+  @if (addressFieldIds.addressLineTwoFieldId) {
+    <app-govuk-text-input
+      labelText="Address line 2"
+      inputId="{{ addressFieldIds.addressLineTwoFieldId }}"
+      inputName="{{ addressFieldIds.addressLineTwoFieldId }}"
+      inputClasses="govuk-input--width-20"
+      [control]="form.controls[addressFieldIds.addressLineTwoFieldId]"
+      [errors]="formControlErrorMessages[addressFieldIds.addressLineTwoFieldId]"
+    ></app-govuk-text-input>
+  }
+
+  @if (addressFieldIds.addressLineThreeFieldId) {
+    <app-govuk-text-input
+      labelText="Address line 3"
+      inputId="{{ addressFieldIds.addressLineThreeFieldId }}"
+      inputName="{{ addressFieldIds.addressLineThreeFieldId }}"
+      inputClasses="govuk-input--width-20"
+      [control]="form.controls[addressFieldIds.addressLineThreeFieldId]"
+      [errors]="formControlErrorMessages[addressFieldIds.addressLineThreeFieldId]"
+    ></app-govuk-text-input>
+  }
+
+  @if (addressFieldIds.postcodeFieldId) {
+    <app-govuk-text-input
+      labelText="Postcode"
+      inputId="{{ addressFieldIds.postcodeFieldId }}"
+      inputName="{{ addressFieldIds.postcodeFieldId }}"
+      inputClasses="govuk-input--width-10"
+      [control]="form.controls[addressFieldIds.postcodeFieldId]"
+      [errors]="formControlErrorMessages[addressFieldIds.postcodeFieldId]"
+    ></app-govuk-text-input>
+  }
+</fieldset>
