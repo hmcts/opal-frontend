@@ -2,7 +2,7 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   <app-govuk-text-input
-    labelText="Primary Email Address"
+    labelText="Primary email address"
     inputId="primaryEmailAddress"
     inputName="primaryEmailAddress"
     labelClasses="govuk-label--s"
@@ -10,7 +10,7 @@
     [errors]="formControlErrorMessages['primaryEmailAddress']"
   ></app-govuk-text-input>
   <app-govuk-text-input
-    labelText="Secondary Email Address"
+    labelText="Secondary email address"
     inputId="secondaryEmailAddress"
     inputName="secondaryEmailAddress"
     labelClasses="govuk-label--s"
