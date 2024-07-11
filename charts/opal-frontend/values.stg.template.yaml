@@ -7,6 +7,8 @@ nodejs:
     OPAL_API_URL: http://${SERVICE_NAME}-opal-fines-service
     FEATURES_LAUNCH_DARKLY_ENABLED: false
     FEATURES_SSO_ENABLED: true
+    SESSION_SAME_SITE: 'lax'
+    CSRF_SAME_SITE: 'lax'
 opal-fines-service:
   enabled: true
   java:
@@ -34,8 +36,6 @@ opal-fines-service:
       OPAL_FINES_DB_PORT: 5432
       RUN_DB_MIGRATION_ON_STARTUP: true
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
-      SESSION_SAME_SITE: 'lax'
-      CSRF_SAME_SITE: 'lax'
 postgresql:
   enabled: true
   image:
