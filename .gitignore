@@ -59,3 +59,4 @@ cypress/downloads
 cypress/results
 functional-output
 smoke-output
+runner-results

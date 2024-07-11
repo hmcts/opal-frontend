@@ -3,5 +3,5 @@ export const MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK = {
   secondaryEmailAddress: 'abc@def.co.uk',
   homeTelephoneNumber: '12345678910',
   mobileTelephoneNumber: '12345678910',
-  businessTelephoneNumber: '12345678910',
+  workTelephoneNumber: '12345678910',
 };

@@ -3,5 +3,5 @@ export interface IManualAccountCreationContactDetailsState {
   secondaryEmailAddress: string | null;
   mobileTelephoneNumber: string | null;
   homeTelephoneNumber: string | null;
-  businessTelephoneNumber: string | null;
+  workTelephoneNumber: string | null;
 }

@@ -19,7 +19,7 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     When I select adults and youth only
     Then I click on continue button
     Then I see "Account details" on the page header
-    Then I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I see "Employer details" on the page header
 
   #AC7
@@ -42,7 +42,7 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #The page header changed according to PO-366
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
-    When I click on "Employer details" link
+    When I click on the "Employer details" link
     Then I see "Employer details" on the page header
     Then I verify "<employerName>","<employeeNino>","<employerEmail>","<employerTelephone>","<employerAddress1>","<employerAddress2>","<employerAddress3>","<employerAddress4>","<employerAddress5>","<employerPostCode>" values saved
     Examples:
@@ -111,7 +111,7 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #The page header changed according to PO-366
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
-    Then I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I verify employer name, employer postcode is empty
     Examples:
       | employerName    | employerPostcode |
@@ -160,7 +160,7 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
 
-    Then I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I see "Employer details" on the page header
 
     Then I verify "<employerName>","<employeeNino>","<employerEmail>","<employerTelephone>","<employerAddress1>","<employerAddress2>","<employerAddress3>","<employerAddress4>","<employerAddress5>","<employerPostCode>" values saved
