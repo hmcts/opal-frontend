@@ -24,6 +24,7 @@ import { MANUAL_ACCOUNT_CREATION_STATE } from './manual-account-creation-state';
 import { ROUTE_PERMISSIONS } from './route-permissions';
 import { TITLE_DROPDOWN_OPTIONS } from './title-dropdown-options';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from './manual-account-creation-account-status';
+import { CUSTOM_ADDRESS_FIELD_IDS } from './common/custom-address-field-ids';
 
 export {
   ACCOUNT_ENQUIRY_DEFAULT_STATE,
@@ -52,4 +53,5 @@ export {
   NATIONAL_INSURANCE_FIELD_ERRORS,
   MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS,
+  CUSTOM_ADDRESS_FIELD_IDS,
 };

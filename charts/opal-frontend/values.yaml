@@ -23,6 +23,8 @@ nodejs:
     FEATURES_LAUNCH_DARKLY_ENABLED: true
     FEATURES_LAUNCH_DARKLY_STREAM: false
     FEATURES_SSO_ENABLED: true
+    SESSION_SAME_SITE: 'strict'
+    CSRF_SAME_SITE: 'strict'
 redis:
   enabled: false
 

@@ -39,13 +39,13 @@ export const MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  businessTelephoneNumber: {
+  workTelephoneNumber: {
     maxlength: {
-      message: 'Enter a business telephone number, like 01632 960 001 or 07700 900 982',
+      message: 'Enter a work telephone number, like 01632 960 001 or 07700 900 982',
       priority: 1,
     },
     phoneNumberPattern: {
-      message: 'Enter a business telephone number, like 01632 960 001 or 07700 900 982',
+      message: 'Enter a work telephone number, like 01632 960 001 or 07700 900 982',
       priority: 2,
     },
   },

@@ -27,11 +27,13 @@
     "prefix": "opal-session",
     "ttlInSeconds": 1200,
     "maxAge": null,
-    "secure": false
+    "secure": false,
+    "sameSite": "strict"
   },
   "csrf": {
     "cookieName": "XSRF-TOKEN",
-    "secure": false
+    "secure": false,
+    "sameSite": "strict"
   },
   "secrets": {
     "opal": {

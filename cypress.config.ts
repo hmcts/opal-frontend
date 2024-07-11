@@ -40,6 +40,8 @@ async function setupNodeEvents(
 
     return launchOptions;
   });
+  config.env['messagesOutput'] =
+    `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   return config;
 }
 export default defineConfig({

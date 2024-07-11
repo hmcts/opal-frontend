@@ -37,10 +37,12 @@
     }
   },
   "session": {
-    "secure": { "__name": "SESSION_SECURE_ENABLED", "__format": "json" }
+    "secure": { "__name": "SESSION_SECURE_ENABLED", "__format": "json" },
+    "sameSite": "SESSION_SAME_SITE"
   },
   "csrf": {
-    "secure": { "__name": "CSRF_SECURE_ENABLED", "__format": "json" }
+    "secure": { "__name": "CSRF_SECURE_ENABLED", "__format": "json" },
+    "sameSite": "CSRF_SAME_SITE"
   },
   "secrets": {
     "opal": {
