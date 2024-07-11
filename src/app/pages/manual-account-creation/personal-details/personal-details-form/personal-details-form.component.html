@@ -45,10 +45,10 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="First names"
-            [inputId]="aliasControls[rowIndex].firstName.inputId"
-            [inputName]="aliasControls[rowIndex].firstName.inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex].firstName.controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex].firstName.controlName]"
+            [inputId]="aliasControls[rowIndex].firstNames.inputId"
+            [inputName]="aliasControls[rowIndex].firstNames.inputName"
+            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex].firstNames.controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex].firstNames.controlName]"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Last name"

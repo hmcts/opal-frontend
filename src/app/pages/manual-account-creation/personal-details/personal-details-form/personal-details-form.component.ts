@@ -20,18 +20,14 @@ import {
   CUSTOM_ADDRESS_FIELD_IDS,
   DATE_OF_BIRTH_FIELD_ERRORS,
   MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
   NATIONAL_INSURANCE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
   TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import {
-  IFieldErrors,
-  IGovUkSelectOptions,
-  IManualAccountCreationPersonalAlias,
-  IManualAccountCreationPersonalDetailsForm,
-} from '@interfaces';
+import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalDetailsForm } from '@interfaces';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
@@ -82,8 +78,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 
-  public override aliasControls: IManualAccountCreationPersonalAlias[] = [];
-
   /**
    * Sets up the personal details form with the necessary form controls.
    */
@@ -110,109 +104,12 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
-   * Builds the alias inputs based on the personal details of the manual account creation.
-   * If the addAlias flag is true, it adds the alias inputs based on the number of aliases in the personal details.
-   * Otherwise, it adds a single alias input.
-   * It also handles the checkbox change event and repopulates the form if necessary.
+   * Sets up the alias configuration for the personal details form.
+   * The alias configuration includes the alias fields and their corresponding validation rules.
    */
-  private buildAliasInputs(): void {
-    const personalDetails = this.macStateService.manualAccountCreation.personalDetails;
-    if (personalDetails.addAlias) {
-      personalDetails.aliases.map((_, index) => {
-        this.addAliases(index);
-      });
-      this.addAliasCheckboxChange();
-      this.rePopulateForm(personalDetails);
-    } else {
-      this.addAliases(0);
-    }
-  }
-
-  /**
-   * Updates the validators for the controls in the aliasFormGroup based on the value of 'addAlias' control in the form.
-   * If 'addAlias' is true, sets the alias validators for each control.
-   * If 'addAlias' is false, clears the alias validators for each control.
-   *
-   * @param aliasFormGroup - The FormGroup containing the controls to update validators for.
-   */
-  private updateAliasFormGroupValidators(aliasFormGroup: FormGroup): void {
-    Object.keys(aliasFormGroup.controls).forEach((key) => {
-      if (this.form.controls['addAlias'].value) {
-        this.setAliasValidators(aliasFormGroup, key);
-      } else {
-        this.clearAliasValidators(aliasFormGroup, key);
-      }
-    });
-  }
-
-  /**
-   * Sets the validators for the specified alias form control.
-   *
-   * @param aliasFormGroup - The FormGroup containing the alias form control.
-   * @param key - The key of the alias form control.
-   */
-  private setAliasValidators(aliasFormGroup: FormGroup, key: string): void {
-    const validators = key.includes('firstNames')
-      ? [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]
-      : [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()];
-
-    aliasFormGroup.controls[key].setValidators(validators);
-    aliasFormGroup.controls[key].updateValueAndValidity();
-  }
-
-  /**
-   * Creates the form controls for the personal details form.
-   *
-   * @param index - The index of the form control.
-   * @returns An object containing the form controls for the first name and last name.
-   */
-  private createControls(index: number) {
-    return {
-      firstName: {
-        inputId: `firstNames_${index}`,
-        inputName: `firstNames_${index}`,
-        controlName: `firstNames_${index}`,
-      },
-      lastName: {
-        inputId: `lastName_${index}`,
-        inputName: `lastName_${index}`,
-        controlName: `lastName_${index}`,
-      },
-    };
-  }
-
-  /**
-   * Adds controls to the form group based on the provided controls object.
-   * If the 'addAlias' control is true, it adds controls for first name and last name with required validators.
-   * Otherwise, it adds controls for first name and last name without any validators.
-   *
-   * @param formGroup - The form group to which the controls will be added.
-   * @param controls - The object containing the control names for first name and last name.
-   */
-  private addControlsToFormGroup(formGroup: FormGroup, controls: IManualAccountCreationPersonalAlias): void {
-    if (this.form.controls['addAlias'].value) {
-      formGroup.addControl(
-        controls.firstName.controlName,
-        new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      );
-      formGroup.addControl(
-        controls.lastName.controlName,
-        new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      );
-    } else {
-      formGroup.addControl(controls.firstName.controlName, new FormControl(null));
-      formGroup.addControl(controls.lastName.controlName, new FormControl(null));
-    }
-  }
-
-  /**
-   * Removes the field errors for a specific index in the aliasControls array.
-   * @param index - The index of the alias control.
-   */
-  private removeFieldErrors(index: number): void {
-    const alias = this.aliasControls[index];
-    delete this.fieldErrors[alias?.firstName?.controlName];
-    delete this.fieldErrors[alias?.lastName?.controlName];
+  private setupAliasConfiguration(): void {
+    this.aliasFields = ['firstNames', 'lastName'];
+    this.aliasControlsValidation = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS;
   }
 
   /**
@@ -237,50 +134,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
-   * Handles the change event of the add alias checkbox.
-   * Updates the validators of each alias form group in the aliases form array.
-   */
-  public addAliasCheckboxChange(): void {
-    const aliasesFormArray = this.form.get('aliases') as FormArray;
-    const aliasFormGroups = aliasesFormArray.controls as FormGroup[];
-
-    aliasFormGroups.forEach((aliasFormGroup: FormGroup) => {
-      this.updateAliasFormGroupValidators(aliasFormGroup);
-    });
-  }
-
-  /**
-   * Adds aliases to the form.
-   *
-   * @param index - The index of the aliases to add.
-   */
-  public addAliases(index: number): void {
-    const aliases = this.form.get('aliases') as FormArray;
-    const aliasesFormGroup = new FormGroup({});
-
-    const controls = this.createControls(index);
-    this.aliasControls.push(controls);
-
-    this.addControlsToFormGroup(aliasesFormGroup, controls);
-
-    aliases.push(aliasesFormGroup);
-  }
-
-  /**
-   * Removes an alias from the form array at the specified index.
-   * Also removes any field errors and alias controls associated with the removed alias.
-   *
-   * @param index - The index of the alias to be removed.
-   */
-  public removeAlias(index: number): void {
-    const aliases = this.form.get('aliases') as FormArray;
-    aliases.removeAt(index);
-
-    this.removeFieldErrors(index);
-    this.removeAliasControls(index);
-  }
-
-  /**
    * Handles the form submission event.
    *
    * @param event - The form submission event.
@@ -299,10 +152,11 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
+    this.setupAliasConfiguration();
     this.setInitialErrorMessages();
     this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
-    this.buildAliasInputs();
+    this.buildAliasInputs(this.macStateService.manualAccountCreation.personalDetails);
     super.ngOnInit();
   }
 }
