@@ -349,9 +349,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    *
    * @param index - The index of the alias control to remove.
    */
-  protected removeAliasControls(index: number): void {
-    this.aliasControls.splice(index, 1);
-  }
+  // protected removeAliasControls(index: number): void {
+  //   this.aliasControls.splice(index, 1);
+  // }
 
   protected removeFormArrayControl(index: number, formArrayControls: any[]): any[] {
     formArrayControls.splice(index, 1);
@@ -486,21 +486,28 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   ): any {
     const controls: any[] = [];
 
+    // Create the form array controls...
     formControlCount.forEach((_element: any, index: number) => {
+      // Add the form array controls...
       controls.push(this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation));
     });
 
+    // Return the form array controls...
     return controls;
   }
 
   protected removeAllFormArrayControls(formArrayControls: any[], formArrayName: string, fieldNames: string[]): any[] {
     const control = this.form.get(formArrayName) as FormArray;
 
+    // Clear the error messages...
     [...formArrayControls].forEach((_element, index) => {
       this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
     });
 
+    // Reset the form array controls...
     control.clear();
+
+    // Return en empty array of form array controls...
     return [];
   }
 
@@ -508,18 +515,20 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Removes the field errors for a specific index in the form.
    * @param index - The index of the field to remove errors for.
    */
-  protected removeFieldErrors(index: number): void {
-    const alias = this.aliasControls[index];
-    if (alias) {
-      this.aliasFields.forEach((field) => {
-        delete this.fieldErrors[alias[field].controlName];
-      });
-    }
-  }
+  // protected removeFieldErrors(index: number): void {
+  //   const alias = this.aliasControls[index];
+  //   if (alias) {
+  //     this.aliasFields.forEach((field) => {
+  //       delete this.fieldErrors[alias[field].controlName];
+  //     });
+  //   }
+  // }
 
   protected removeFormArrayControlsErrors(index: number, formArrayControls: any[], fieldNames: string[]): void {
+    // Get the controls from the form array...
     const formArrayControl = formArrayControls[index];
     if (formArrayControl) {
+      // Loop over the field names and remove the field errors...
       fieldNames.forEach((field) => {
         delete this.formControlErrorMessages[formArrayControl[field].controlName];
       });
@@ -593,14 +602,16 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     const formArray = this.form.get(formArrayName) as FormArray;
     const formArrayFormGroup = new FormGroup({});
 
+    // Create the form controls...
     const controls = this.createControls(fieldNames, index);
 
+    // Add the controls to the form group...
     this.addControlsToFormGroup(formArrayFormGroup, controlValidation, index);
 
+    // Add the form group to the form array...
     formArray.push(formArrayFormGroup);
 
-    console.log(formArray);
-    console.log(controls);
+    // Return the form controls...
     return controls;
   }
 
@@ -623,10 +634,16 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     formArrayControls: any[],
     fieldNames: string[],
   ): any {
+    // Get the form array...
     const control = this.form.get(formArrayName) as FormArray;
+
+    // Remove the form array control based on index
     control.removeAt(index);
 
+    // Then remove the form array controls errors...
     this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
+
+    // Return the new list of form array controls...
     return this.removeFormArrayControl(index, formArrayControls);
   }
 
