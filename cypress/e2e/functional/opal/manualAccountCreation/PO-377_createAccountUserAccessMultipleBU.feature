@@ -164,7 +164,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
-    And I click on "Cancel" link
+    And I click on the "Cancel" link
 
     Then I am on the dashboard
 
