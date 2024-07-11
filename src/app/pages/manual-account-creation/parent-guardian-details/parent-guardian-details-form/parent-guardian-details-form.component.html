@@ -9,55 +9,22 @@
     [control]="form.controls['fullName']"
     [errors]="formControlErrorMessages['fullName']"
   ></app-govuk-text-input>
-  <app-scotgov-date-picker
-    labelText="Date of birth"
-    labelClasses="govuk-label--s"
-    inputId="dateOfBirth"
-    inputName="dateOfBirth"
-    inputClasses="govuk-input--width-10"
-    hintText="For example, 31/01/2023"
-    [control]="form.controls['dateOfBirth']"
-    [maxDate]="yesterday"
+  <app-custom-date-of-birth
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
     (dateChange)="setInputValue($event, 'dateOfBirth')"
-    [errors]="formControlErrorMessages['dateOfBirth']"
-  ></app-scotgov-date-picker>
-  <app-govuk-text-input
-    labelText="National Insurance number"
-    inputId="nationalInsuranceNumber"
-    inputName="nationalInsuranceNumber"
-    inputClasses="govuk-input--width-10"
-    labelClasses="govuk-label--s"
-    [control]="form.controls['nationalInsuranceNumber']"
-    [errors]="formControlErrorMessages['nationalInsuranceNumber']"
-  ></app-govuk-text-input>
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-  <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
-    <app-govuk-text-input
-      labelText="Address line 1"
-      inputId="addressLine1"
-      inputName="addressLine1"
-      inputClasses="govuk-input--width-20"
-      [control]="form.controls['addressLine1']"
-      [errors]="formControlErrorMessages['addressLine1']"
-    ></app-govuk-text-input>
-    <app-govuk-text-input
-      labelText="Address line 2"
-      inputId="addressLine2"
-      inputName="addressLine2"
-      inputClasses="govuk-input--width-20"
-      [control]="form.controls['addressLine2']"
-      [errors]="formControlErrorMessages['addressLine2']"
-    ></app-govuk-text-input>
-    <app-govuk-text-input
-      labelText="Postcode"
-      inputId="postcode"
-      inputName="postcode"
-      inputClasses="govuk-input--width-10"
-      [control]="form.controls['postcode']"
-      [errors]="formControlErrorMessages['postcode']"
-    ></app-govuk-text-input>
-  </fieldset>
+  ></app-custom-date-of-birth>
+  <app-custom-national-insurance-number
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
+  ></app-custom-national-insurance-number>
+  <app-custom-address-block
+    [divider]="true"
+    legendText="Address"
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
+    [addressFieldIds]="customAddressFieldIds"
+  ></app-custom-address-block>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
