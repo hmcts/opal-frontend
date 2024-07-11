@@ -41,7 +41,7 @@ When('The button {string} is clicked, nothing happens', (linkText: string) => {
   });
 });
 
-Then('I click on {string} link', (linkText: string) => {
+Then('I click on the {string} link', (linkText: string) => {
   cy.get('a').contains(linkText).click();
 });
 When('{string} is clicked', (linkText: string) => {
@@ -294,20 +294,13 @@ When('I enter mobile telephone number {string}', (mobileTelephone: string) => {
 When('I enter home telephone number {string}', (homeTelephone: string) => {
   contactDetails.enterHomeTelephone(homeTelephone);
 });
-When('I enter business telephone number {string}', (businessTelephone: string) => {
-  contactDetails.enterBusinessTelephone(businessTelephone);
+When('I enter work telephone number {string}', (workTelephone: string) => {
+  contactDetails.enterWorkTelephone(workTelephone);
 });
 
-Then(
-  'I verify {string},{string},{string},{string},{string} on contact details page',
-  (primaryEmail, secondaryEmail, mobileTelephone, homeTelephone, businessTelephone: string) => {
-    cy.get('#primaryEmailAddress').should('have.value', primaryEmail);
-    cy.get('#secondaryEmailAddress').should('have.value', secondaryEmail);
-    cy.get('#mobileTelephoneNumber').should('have.value', mobileTelephone);
-    cy.get('#homeTelephoneNumber').should('have.value', homeTelephone);
-    cy.get('#businessTelephoneNumber').should('have.value', businessTelephone);
-  },
-);
+Then('I see {string} value on {string} field', (inputValue: string, inputField: string) => {
+  cy.contains('[class="govuk-form-group"]', inputField).find('input').should('have.value', inputValue);
+});
 
 Then(
   'I verify {string},{string},{string} on contact details page',
@@ -334,8 +327,8 @@ When('I enter incorrect home telephone number {string}', (incorrectHomeTelephone
   contactDetails.enterHomeTelephone(incorrectHomeTelephone);
 });
 
-When('I enter incorrect business telephone number {string}', (incorrectBusinessTelephone: string) => {
-  contactDetails.enterBusinessTelephone(incorrectBusinessTelephone);
+When('I enter incorrect work telephone number {string}', (incorrectWorkTelephone: string) => {
+  contactDetails.enterWorkTelephone(incorrectWorkTelephone);
 });
 When('I update primary email address {string}', (updatePrimaryEmail: string) => {
   cy.get('#primaryEmailAddress').clear();
@@ -353,9 +346,9 @@ When('I update home telephone number {string}', (updateHomeTelephone: string) =>
   cy.get('#homeTelephoneNumber').clear();
   contactDetails.enterHomeTelephone(updateHomeTelephone);
 });
-When('I update business telephone number {string}', (updateBusinessTelephone: string) => {
-  cy.get('#businessTelephoneNumber').clear();
-  contactDetails.enterBusinessTelephone(updateBusinessTelephone);
+When('I update work telephone number {string}', (updateWorkTelephone: string) => {
+  cy.get('#workTelephoneNumber').clear();
+  contactDetails.enterWorkTelephone(updateWorkTelephone);
 });
 When('I verify primary email, home telephone is empty', () => {
   cy.get('#primaryEmailAddress').should('have.value', '');
@@ -581,7 +574,7 @@ When('{string} is verified as grey', (addContactDetailsButton: string) => {
   cy.get('#submitForm').should('be.enabled', addContactDetailsButton);
 });
 
-Then('I verify the status of {string} to {string}', (linkText: string, status: string) => {
+Then('I see the status of {string} is {string}', (linkText: string, status: string) => {
   cy.contains('[class="govuk-task-list__name-and-hint"]', linkText)
     .next()
     .contains('[class="govuk-task-list__status"]', status);

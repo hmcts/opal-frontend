@@ -1,4 +1,4 @@
-Feature:PO-369 Personal details screen for adult or youth for parent or guardian defendant type
+Feature:PO-369  Personal details screen for adult or youth for parent or guardian defendant type
 
     Background:
         Given I am on the OPAL Frontend
@@ -19,7 +19,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
         Then I see the "Defendant details" section heading
         And I see the "Personal details" link under the "Defendant details" section
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
     Scenario: AC1-positive: Personal details page will be created with all fields
@@ -590,7 +590,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I click the "Return to account details" button
         Then I see "Account details" on the page header
 
-        Then I click on "Personal details" link
+        Then I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
@@ -621,7 +621,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I see "Offence details" on the page header
         Then I click the "Return to account details" button
 
-        Then I click on "Personal details" link
+        Then I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
@@ -643,7 +643,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
 
@@ -654,9 +654,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I click the "Return to account details" button
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        Then I verify the status of "Personal details" to "Provided"
+        Then I see the status of "Personal details" is "Provided"
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
         When I select add aliases check box
         Then I see data entered in "Alias 1","First names" and "<firstNames>"
@@ -678,7 +678,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I click the "Return to account details" button
         Then I see "Account details" on the page header
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
         And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
 
@@ -689,9 +689,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I click the "Add offence details" button
         Then I see "Offence details" on the page header
         Then I click the "Return to account details" button
-        Then I verify the status of "Personal details" to "Provided"
+        Then I see the status of "Personal details" is "Provided"
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
         When I select add aliases check box
         Then I see data entered in "Alias 1","First names" and "<firstNames>"
@@ -707,7 +707,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         When "Cancel" is clicked
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        Then I verify the status of "Personal details" to "Not provided"
+        Then I see the status of "Personal details" is "Not provided"
 
     Scenario: AC15a-negative: If a user selects the 'Cancel' button and the user has entered data into one or more fields, a warning message will be displayed and user selects 'OK'
         When I select title "Mrs" from dropdown
@@ -719,7 +719,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         When I click Cancel, a window pops up and I click Ok
         Then I see "Account details" on the page header
 
-        And I click on "Personal details" link
+        And I click on the "Personal details" link
         Then I see "Personal details" on the page header
         Then I see "" in the "First names" field
         Then I see "" in the "Last name" field
