@@ -1,4 +1,4 @@
-Feature: PO-371 Contact Details for company
+Feature: PO-370 Contact Details for adult or you parent/guardian to pay
   Background:
     Given I am on the OPAL Frontend
     Then I see "Opal" in the header
