@@ -38,7 +38,7 @@ class TestFormBaseComponent extends FormBaseComponent {
   }
 }
 
-fdescribe('FormBaseComponent', () => {
+describe('FormBaseComponent', () => {
   let component: TestFormBaseComponent;
   let fixture: ComponentFixture<TestFormBaseComponent>;
 
@@ -800,84 +800,49 @@ fdescribe('FormBaseComponent', () => {
   });
 
   it('should remove the form array control at the specified index', () => {
-    const index = 0;
+    const index = 1;
     const formArrayName = 'alias';
-    const fieldNames = ['field1', 'field2'];
-    const controlValidation = [
-      { controlName: 'field1', validators: [Validators.required] },
-      { controlName: 'field2', validators: [Validators.maxLength(10)] },
+    const formArrayControls: { [key: string]: IFormArrayControl }[] = [
+      {
+        firstNames: {
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+          controlName: 'firstNames_0',
+        },
+        lastName: {
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+          controlName: 'lastName_0',
+        },
+      },
+      {
+        firstNames: {
+          inputId: 'firstNames_1',
+          inputName: 'firstNames_1',
+          controlName: 'firstNames_1',
+        },
+        lastName: {
+          inputId: 'lastName_1',
+          inputName: 'lastName_1',
+          controlName: 'lastName_1',
+        },
+      },
     ];
-    const expectedControlObj = {
-      field1: { inputId: 'field1_0', inputName: 'field1_0', controlName: 'field1_0' },
-      field2: { inputId: 'field2_0', inputName: 'field2_0', controlName: 'field2_0' },
+    const fieldNames = ['firstNames', 'lastName'];
+    const errorMessage: IFormControlErrorMessage = {
+      firstNames_0: 'test message',
+      lastName_0: 'test message',
+      firstNames_1: 'test message',
+      lastName_1: 'test message',
     };
 
-    // Add the controls first
-    const controls = component.addFormArrayControls(index, formArrayName, fieldNames, controlValidation);
-    const aliasArray = component.form.get('alias') as FormArray;
+    component.formControlErrorMessages = errorMessage;
 
-    expect(controls).toEqual(expectedControlObj);
-    expect(aliasArray.at(0).get('field1_0')).toBeInstanceOf(FormControl);
-    expect(aliasArray.at(0).get('field2_0')).toBeInstanceOf(FormControl);
+    component['removeFormArrayControls'](index, formArrayName, formArrayControls, fieldNames);
+
+    expect(formArrayControls.length).toBe(1);
+    console.log(component.formControlErrorMessages);
+    expect(component.formControlErrorMessages['firstNames_1']).toBeUndefined();
+    expect(component.formControlErrorMessages['firstNames_0']).toBeDefined();
   });
 });
-// describe('FormBaseComponent', () => {
-//   let component: TestFormBaseComponent;
-//   let fixture: ComponentFixture<TestFormBaseComponent>;
-
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       declarations: [TestFormBaseComponent],
-//     }).compileComponents();
-//   });
-
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(TestFormBaseComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
-
-//   describe('removeFormArrayControls', () => {
-//     it('should remove the form array control at the specified index', () => {
-//       // Arrange
-//       const index = 1;
-//       const formArrayName = 'testFormArray';
-//       const formArrayControls: any[] = [
-//         { controlName: 'control1' },
-//         { controlName: 'control2' },
-//         { controlName: 'control3' },
-//       ];
-//       const fieldNames = ['controlName'];
-
-//       // Act
-//       const result = component.removeFormArrayControls(index, formArrayName, formArrayControls, fieldNames);
-
-//       // Assert
-//       expect(result).toEqual([{ controlName: 'control1' }, { controlName: 'control3' }]);
-//       expect(component.form.get(formArrayName)?.length).toBe(2);
-//     });
-
-//     it('should remove the form array controls errors for the specified index and field names', () => {
-//       // Arrange
-//       const index = 1;
-//       const formArrayName = 'testFormArray';
-//       const formArrayControls: any[] = [
-//         { controlName: 'control1' },
-//         { controlName: 'control2' },
-//         { controlName: 'control3' },
-//       ];
-//       const fieldNames = ['controlName'];
-//       component.formControlErrorMessages = {
-//         control1: 'Error 1',
-//         control2: 'Error 2',
-//         control3: 'Error 3',
-//       };
-
-//       // Act
-//       component.removeFormArrayControls(index, formArrayName, formArrayControls, fieldNames);
-
-//       // Assert
-//       expect(component.formControlErrorMessages).toEqual({ control1: 'Error 1', control3: 'Error 3' });
-//     });
-//   });
-// });

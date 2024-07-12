@@ -574,6 +574,15 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     return controls;
   }
 
+  /**
+   * Removes a form array control at the specified index and updates the list of form array controls.
+   *
+   * @param index - The index of the form array control to remove.
+   * @param formArrayName - The name of the form array.
+   * @param formArrayControls - The list of form array controls.
+   * @param fieldNames - The names of the fields in the form array control.
+   * @returns The updated list of form array controls.
+   */
   public removeFormArrayControls(
     index: number,
     formArrayName: string,
