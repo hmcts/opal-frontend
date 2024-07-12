@@ -427,16 +427,17 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @returns An object containing form controls configuration.
    */
   protected createControls(fields: string[], index: number): { [key: string]: IFormArrayControl } {
-    const controls: { [key: string]: IFormArrayControl } = {};
-    fields.forEach((field) => {
-      controls[field] = {
-        inputId: `${field}_${index}`,
-        inputName: `${field}_${index}`,
-        controlName: `${field}_${index}`,
-      };
-    });
-
-    return controls;
+    return fields.reduce(
+      (controls, field) => ({
+        ...controls,
+        [field]: {
+          inputId: `${field}_${index}`,
+          inputName: `${field}_${index}`,
+          controlName: `${field}_${index}`,
+        },
+      }),
+      {},
+    );
   }
 
   /**
@@ -454,17 +455,10 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     fieldNames: string[],
     controlValidation: IFormArrayControlValidation[],
   ): IFormArrayControls[] {
-    const controls: IFormArrayControls[] = [];
-    console.log(formControlCount);
-
-    // Create the form array controls...
-    formControlCount.forEach((_element: any, index: number) => {
-      // Add the form array controls...
-      controls.push(this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation));
-    });
-
-    // Return the form array controls...
-    return controls;
+    // Directly map each index to a control
+    return formControlCount.map((_element, index) =>
+      this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation),
+    );
   }
 
   /**
@@ -507,7 +501,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     if (formArrayControl) {
       // Loop over the field names and remove the field errors...
       fieldNames.forEach((field) => {
-        console.log(formArrayControl[field]);
         if (this.formControlErrorMessages && this.formControlErrorMessages[formArrayControl[field].controlName]) {
           delete this.formControlErrorMessages[formArrayControl[field].controlName];
         }
