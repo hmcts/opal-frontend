@@ -489,13 +489,22 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     return [];
   }
 
+  /**
+   * Removes the form array controls errors for the specified index and field names.
+   * @param index - The index of the form array control.
+   * @param formArrayControls - The array of form array controls.
+   * @param fieldNames - The names of the fields to remove errors from.
+   */
   protected removeFormArrayControlsErrors(index: number, formArrayControls: any[], fieldNames: string[]): void {
     // Get the controls from the form array...
     const formArrayControl = formArrayControls[index];
+
     if (formArrayControl) {
       // Loop over the field names and remove the field errors...
       fieldNames.forEach((field) => {
-        delete this.formControlErrorMessages[formArrayControl[field].controlName];
+        if (this.formControlErrorMessages && this.formControlErrorMessages[formArrayControl[field].controlName]) {
+          delete this.formControlErrorMessages[formArrayControl[field].controlName];
+        }
       });
     }
   }

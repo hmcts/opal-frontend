@@ -11,6 +11,7 @@ import {
   IFieldError,
   IFormArrayControl,
   IFormArrayControlValidation,
+  IFormControlErrorMessage,
   IFormError,
   IFormErrorSummaryMessage,
 } from '@interfaces';
@@ -686,5 +687,37 @@ fdescribe('FormBaseComponent', () => {
     expect(result).toEqual([]);
     expect(component.form.get(formArrayName)?.value).toEqual([]);
     expect(component.formControlErrorMessages).toEqual({});
+  });
+
+  it('should remove field errors for the specified form array control', () => {
+    const index = 0;
+    const formArrayControls = [{ field1: { controlName: 'field1_0' }, field2: { controlName: 'field2_0' } }];
+    const fieldNames = ['field1', 'field2'];
+    const errorMessage: IFormControlErrorMessage = {
+      field1_0: 'test message',
+      field2_0: 'test message',
+    };
+
+    component.formControlErrorMessages = errorMessage;
+
+    component['removeFormArrayControlsErrors'](index, formArrayControls, fieldNames);
+
+    expect(component.formControlErrorMessages).toEqual({});
+  });
+
+  it('should not remove field errors if the form array control does not exist', () => {
+    const index = 1;
+    const formArrayControls = [{ field1: { controlName: 'field1_0' }, field2: { controlName: 'field2_0' } }];
+    const fieldNames = ['field1', 'field2'];
+    const errorMessage: IFormControlErrorMessage = {
+      field1_0: 'test message',
+      field2_0: 'test message',
+    };
+
+    component.formControlErrorMessages = errorMessage;
+
+    component['removeFormArrayControlsErrors'](index, formArrayControls, fieldNames);
+
+    expect(component.formControlErrorMessages).toEqual(errorMessage);
   });
 });
