@@ -39,7 +39,7 @@ class TestFormBaseComponent extends FormBaseComponent {
   }
 }
 
-fdescribe('FormBaseComponent', () => {
+describe('FormBaseComponent', () => {
   let component: TestFormBaseComponent;
   let fixture: ComponentFixture<TestFormBaseComponent>;
 
@@ -838,9 +838,9 @@ fdescribe('FormBaseComponent', () => {
     };
 
     component.formControlErrorMessages = errorMessage;
-    console.log(component.formControlErrorMessages);
+
     component['removeFormArrayControls'](index, formArrayName, formArrayControls, fieldNames);
-    console.log(component.formControlErrorMessages);
+
     expect(formArrayControls.length).toBe(1);
 
     expect(component.formControlErrorMessages['firstNames_1']).toBeUndefined();

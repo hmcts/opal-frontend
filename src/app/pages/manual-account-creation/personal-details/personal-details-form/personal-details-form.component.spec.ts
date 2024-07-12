@@ -1,416 +1,162 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing';
-// import { PersonalDetailsFormComponent } from './personal-details-form.component';
-// import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE, MANUAL_ACCOUNT_CREATION_STATE } from '@constants';
-// import { MacStateService } from '@services';
-// import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-// import { IManualAccountCreationPersonalAlias } from '@interfaces';
-// import {
-//   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
-//   MANUAL_ACCOUNT_CREATION_MOCK,
-//   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
-//   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
-// } from '@mocks';
-
-// describe('PersonalDetailsFormComponent', () => {
-//   let component: PersonalDetailsFormComponent;
-//   let fixture: ComponentFixture<PersonalDetailsFormComponent>;
-//   let mockMacStateService: jasmine.SpyObj<MacStateService>;
-
-//   beforeEach(async () => {
-//     mockMacStateService = jasmine.createSpyObj('macStateService', ['manualAccountCreation']);
-
-//     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
-
-//     await TestBed.configureTestingModule({
-//       imports: [PersonalDetailsFormComponent],
-//       providers: [{ provide: MacStateService, useValue: mockMacStateService }],
-//     }).compileComponents();
-
-//     fixture = TestBed.createComponent(PersonalDetailsFormComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
-
-//   beforeEach(() => {
-//     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
-//     mockMacStateService.manualAccountCreation.accountDetails = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
-//     mockMacStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE;
-
-//     component.form.reset();
-//   });
-
-//   afterEach(() => {
-//     component.ngOnDestroy();
-//   });
-
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-
-//   it('should add a single alias when personalDetails.addAlias is false', () => {
-//     mockMacStateService.manualAccountCreation.personalDetails.addAlias = false;
-//     mockMacStateService.manualAccountCreation.personalDetails.aliases = [{ firstName: 'Alias1', lastName: 'User1' }];
-
-//     spyOn(component, 'addAliases');
-//     spyOn(component, 'addAliasCheckboxChange');
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const rePopulateFormSpy = spyOn<any>(component, 'rePopulateForm');
-
-//     component['buildAliasInputs']();
-
-//     expect(component.addAliases).toHaveBeenCalledTimes(1);
-//     expect(component.addAliases).toHaveBeenCalledWith(0);
-//     expect(component.addAliasCheckboxChange).not.toHaveBeenCalled();
-//     expect(rePopulateFormSpy).not.toHaveBeenCalled();
-//   });
-
-//   it('should add aliases based on personalDetails.addAlias being true', () => {
-//     mockMacStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK;
-
-//     spyOn(component, 'addAliases');
-//     spyOn(component, 'addAliasCheckboxChange');
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const rePopulateFormSpy = spyOn<any>(component, 'rePopulateForm');
-
-//     component['buildAliasInputs']();
-
-//     expect(component.addAliases).toHaveBeenCalledTimes(1);
-//     expect(component.addAliases).toHaveBeenCalledWith(0);
-//     expect(component.addAliasCheckboxChange).toHaveBeenCalled();
-//     expect(rePopulateFormSpy).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.personalDetails);
-//   });
-
-//   it('should call updateAliasFormGroupValidators for each alias form group', () => {
-//     const aliasesFormArray = new FormArray([new FormGroup({}), new FormGroup({})]);
-
-//     component.form = new FormGroup({
-//       aliases: aliasesFormArray,
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const updateAliasFormGroupValidatorsSpy = spyOn<any>(component, 'updateAliasFormGroupValidators');
-
-//     component.addAliasCheckboxChange();
-
-//     aliasesFormArray.controls.forEach((control) => {
-//       expect(updateAliasFormGroupValidatorsSpy).toHaveBeenCalledWith(control as FormGroup);
-//     });
-
-//     expect(updateAliasFormGroupValidatorsSpy).toHaveBeenCalledTimes(2);
-//   });
-
-//   it('should handle an empty aliases form array', () => {
-//     const aliasesFormArray = new FormArray([]);
-
-//     component.form = new FormGroup({
-//       aliases: aliasesFormArray,
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const updateAliasFormGroupValidatorsSpy = spyOn<any>(component, 'updateAliasFormGroupValidators');
-
-//     component.addAliasCheckboxChange();
-
-//     expect(updateAliasFormGroupValidatorsSpy).not.toHaveBeenCalled();
-//   });
-
-//   it('should set alias validators when addAlias is true', () => {
-//     const aliasFormGroup = new FormGroup({
-//       firstName: new FormControl(''),
-//       lastName: new FormControl(''),
-//     });
-
-//     component.form = new FormGroup({
-//       addAlias: new FormControl(true),
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const setAliasValidatorsSpy = spyOn<any>(component, 'setAliasValidators');
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const clearAliasValidatorsSpy = spyOn<any>(component, 'clearAliasValidators');
-
-//     component['updateAliasFormGroupValidators'](aliasFormGroup);
-
-//     Object.keys(aliasFormGroup.controls).forEach((key) => {
-//       expect(setAliasValidatorsSpy).toHaveBeenCalledWith(aliasFormGroup, key);
-//     });
-
-//     expect(clearAliasValidatorsSpy).not.toHaveBeenCalled();
-//   });
-
-//   it('should clear alias validators when addAlias is false', () => {
-//     const aliasFormGroup = new FormGroup({
-//       firstName: new FormControl(''),
-//       lastName: new FormControl(''),
-//     });
-
-//     component.form = new FormGroup({
-//       addAlias: new FormControl(false),
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const setAliasValidatorsSpy = spyOn<any>(component, 'setAliasValidators');
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const clearAliasValidatorsSpy = spyOn<any>(component, 'clearAliasValidators');
-
-//     component['updateAliasFormGroupValidators'](aliasFormGroup);
-
-//     Object.keys(aliasFormGroup.controls).forEach((key) => {
-//       expect(clearAliasValidatorsSpy).toHaveBeenCalledWith(aliasFormGroup, key);
-//     });
-
-//     expect(setAliasValidatorsSpy).not.toHaveBeenCalled();
-//   });
-
-//   it('should set validators for firstNames control', () => {
-//     const aliasFormGroup = new FormGroup({
-//       firstNames: new FormControl(''),
-//     });
-
-//     const control = aliasFormGroup.controls['firstNames'];
-
-//     component['setAliasValidators'](aliasFormGroup, 'firstNames');
-
-//     expect(control.validator).toBeTruthy();
-
-//     const validators = control.validator ? control.validator({} as AbstractControl) : null;
-//     expect(validators).toEqual({
-//       required: true,
-//     });
-//   });
-
-//   it('should set validators for other controls', () => {
-//     const aliasFormGroup = new FormGroup({
-//       lastName: new FormControl(''),
-//     });
-
-//     const control = aliasFormGroup.controls['lastName'];
-
-//     component['setAliasValidators'](aliasFormGroup, 'lastName');
-
-//     expect(control.validator).toBeTruthy();
-
-//     const validators = control.validator ? control.validator({} as AbstractControl) : null;
-//     expect(validators).toEqual({
-//       required: true,
-//     });
-//   });
-
-//   it('should add aliases to the form array', () => {
-//     const aliasesFormArray = new FormArray([]);
-
-//     component.form = new FormGroup({
-//       addAlias: new FormControl(null),
-//       aliases: aliasesFormArray,
-//     });
-//     component.form.controls['addAlias'].setValue(true);
-
-//     const index = 0;
-//     const aliasesFormGroup = new FormGroup({});
-//     const controls = component['createControls'](index);
-//     component.aliasControls.push(controls);
-//     component['addControlsToFormGroup'](aliasesFormGroup, controls);
-
-//     component.addAliases(index);
-
-//     expect(aliasesFormArray.length).toBe(1);
-//   });
-
-//   it('should create controls with unique input IDs, input names, and control names', () => {
-//     const index = 0;
-
-//     const controls = component['createControls'](index);
-
-//     expect(controls.firstName.inputId).toBe(`firstNames_${index}`);
-//     expect(controls.firstName.inputName).toBe(`firstNames_${index}`);
-//     expect(controls.firstName.controlName).toBe(`firstNames_${index}`);
-
-//     expect(controls.lastName.inputId).toBe(`lastName_${index}`);
-//     expect(controls.lastName.inputName).toBe(`lastName_${index}`);
-//     expect(controls.lastName.controlName).toBe(`lastName_${index}`);
-//   });
-
-//   it('should add alias controls with validators when addAlias is true', () => {
-//     const formGroup = new FormGroup({});
-//     const controls: IManualAccountCreationPersonalAlias = {
-//       firstName: {
-//         controlName: 'firstNames_0',
-//         inputId: 'firstNames_0',
-//         inputName: 'firstNames_0',
-//       },
-//       lastName: {
-//         controlName: 'lastName_0',
-//         inputId: 'lastName_0',
-//         inputName: 'lastName_0',
-//       },
-//     };
-//     component.form.controls['addAlias'].setValue(true);
-
-//     component['addControlsToFormGroup'](formGroup, controls);
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     expect((formGroup.controls as { [key: string]: any })[controls.firstName.controlName].validator).not.toBeNull();
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     expect((formGroup.controls as { [key: string]: any })[controls.lastName.controlName].validator).not.toBeNull();
-//     expect(
-//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//       (formGroup.controls as { [key: string]: any })[controls.firstName.controlName].validator({} as AbstractControl),
-//     ).toEqual({
-//       required: true,
-//     });
-//     expect(
-//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//       (formGroup.controls as { [key: string]: any })[controls.lastName.controlName].validator({} as AbstractControl),
-//     ).toEqual({
-//       required: true,
-//     });
-//   });
-
-//   it('should add alias controls without validators when addAlias is false', () => {
-//     const formGroup = new FormGroup({});
-//     const controls: IManualAccountCreationPersonalAlias = {
-//       firstName: {
-//         controlName: 'firstNames_0',
-//         inputId: 'firstNames_0',
-//         inputName: 'firstNames_0',
-//       },
-//       lastName: {
-//         controlName: 'lastName_0',
-//         inputId: 'lastName_0',
-//         inputName: 'lastName_0',
-//       },
-//     };
-//     component.form.controls['addAlias'].setValue(false);
-
-//     component['addControlsToFormGroup'](formGroup, controls);
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     expect((formGroup.controls as { [key: string]: any })[controls.firstName.controlName].validator).toBeNull();
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     expect((formGroup.controls as { [key: string]: any })[controls.lastName.controlName].validator).toBeNull();
-//   });
-
-//   it('should remove alias at the specified index', () => {
-//     const aliasesFormArray = new FormArray([
-//       new FormGroup({ firstName: new FormControl('Alias1'), lastName: new FormControl('User1') }),
-//       new FormGroup({ firstName: new FormControl('Alias2'), lastName: new FormControl('User2') }),
-//       new FormGroup({ firstName: new FormControl('Alias3'), lastName: new FormControl('User3') }),
-//     ]);
-
-//     component.form = new FormGroup({
-//       aliases: aliasesFormArray,
-//     });
-
-//     component.removeAlias(1);
-
-//     expect(aliasesFormArray.length).toBe(2);
-//     expect(aliasesFormArray.at(0).value).toEqual({ firstName: 'Alias1', lastName: 'User1' });
-//     expect(aliasesFormArray.at(1).value).toEqual({ firstName: 'Alias3', lastName: 'User3' });
-//   });
-
-//   it('should remove field errors for the removed alias', () => {
-//     const aliasesFormArray = new FormArray([
-//       new FormGroup({ firstName: new FormControl('Alias1'), lastName: new FormControl('User1') }),
-//       new FormGroup({ firstName: new FormControl('Alias2'), lastName: new FormControl('User2') }),
-//       new FormGroup({ firstName: new FormControl('Alias3'), lastName: new FormControl('User3') }),
-//     ]);
-
-//     component.form = new FormGroup({
-//       aliases: aliasesFormArray,
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const removeFieldErrorsSpy = spyOn<any>(component, 'removeFieldErrors');
-
-//     component.removeAlias(1);
-
-//     expect(removeFieldErrorsSpy).toHaveBeenCalledWith(1);
-//   });
-
-//   it('should remove alias controls for the removed alias', () => {
-//     const aliasesFormArray = new FormArray([
-//       new FormGroup({ firstName: new FormControl('Alias1'), lastName: new FormControl('User1') }),
-//       new FormGroup({ firstName: new FormControl('Alias2'), lastName: new FormControl('User2') }),
-//       new FormGroup({ firstName: new FormControl('Alias3'), lastName: new FormControl('User3') }),
-//     ]);
-
-//     component.form = new FormGroup({
-//       aliases: aliasesFormArray,
-//     });
-
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//     const removeFieldErrorsSpy = spyOn<any>(component, 'removeFieldErrors');
-
-//     component.removeAlias(1);
-
-//     expect(removeFieldErrorsSpy).toHaveBeenCalledWith(1);
-//   });
-
-//   it('should emit form submit event with form value', () => {
-//     const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-//     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-//     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-//     const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-//     personalDetailsForm.continueFlow = true;
-//     spyOn(component['formSubmit'], 'emit');
-
-//     component['rePopulateForm'](personalDetailsForm.formData);
-//     component.handleFormSubmit(event);
-
-//     expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
-//   });
-
-//   it('should emit form submit event with form value', () => {
-//     const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-//     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-//     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-//     const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-//     personalDetailsForm.continueFlow = true;
-//     spyOn(component['formSubmit'], 'emit');
-
-//     component['rePopulateForm'](personalDetailsForm.formData);
-//     component.handleFormSubmit(event);
-
-//     expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
-//   });
-
-//   it('should emit form submit event with form value', () => {
-//     const event = {} as SubmitEvent;
-//     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-//     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-//     const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-//     personalDetailsForm.continueFlow = false;
-//     spyOn(component['formSubmit'], 'emit');
-
-//     component['rePopulateForm'](personalDetailsForm.formData);
-//     component.handleFormSubmit(event);
-//     component['rePopulateForm'](personalDetailsForm.formData);
-//     component.handleFormSubmit(event);
-
-//     expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
-//   });
-
-//   it('should set nestedRouteButtonText to "Add contact details" when defendantType is adultOrYouthOnly', () => {
-//     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-
-//     component['getNestedRoute']();
-
-//     expect(component.nestedRouteButtonText).toBe('Add contact details');
-//   });
-
-//   it('should set nestedRouteButtonText to "Add offence details" when defendantType is parentOrGuardianToPay', () => {
-//     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
-
-//     component['getNestedRoute']();
-
-//     expect(component.nestedRouteButtonText).toBe('Add offence details');
-//   });
-
-//   it('should set nestedRouteButtonText to an empty string when defendantType is company', () => {
-//     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
-
-//     component['getNestedRoute']();
-
-//     expect(component.nestedRouteButtonText).toBe('');
-//   });
-// });
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PersonalDetailsFormComponent } from './personal-details-form.component';
+import {
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_STATE,
+} from '@constants';
+import { MacStateService } from '@services';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { IManualAccountCreationPersonalAlias } from '@interfaces';
+import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_MOCK,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
+} from '@mocks';
+
+fdescribe('PersonalDetailsFormComponent', () => {
+  let component: PersonalDetailsFormComponent;
+  let fixture: ComponentFixture<PersonalDetailsFormComponent>;
+  let mockMacStateService: jasmine.SpyObj<MacStateService>;
+
+  beforeEach(async () => {
+    mockMacStateService = jasmine.createSpyObj('macStateService', ['manualAccountCreation']);
+
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+
+    await TestBed.configureTestingModule({
+      imports: [PersonalDetailsFormComponent],
+      providers: [{ provide: MacStateService, useValue: mockMacStateService }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(PersonalDetailsFormComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  beforeEach(() => {
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+    mockMacStateService.manualAccountCreation.accountDetails = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
+    mockMacStateService.manualAccountCreation.personalDetails = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE;
+
+    component.form.reset();
+  });
+
+  afterEach(() => {
+    component.ngOnDestroy();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should emit form submit event with form value', () => {
+    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
+    personalDetailsForm.continueFlow = true;
+    spyOn(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+  });
+
+  it('should emit form submit event with form value', () => {
+    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
+    personalDetailsForm.continueFlow = true;
+    spyOn(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+  });
+
+  it('should emit form submit event with form value', () => {
+    const event = {} as SubmitEvent;
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
+    personalDetailsForm.continueFlow = false;
+    spyOn(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
+    component['rePopulateForm'](personalDetailsForm.formData);
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
+  });
+
+  it('should set nestedRouteButtonText to "Add contact details" when defendantType is adultOrYouthOnly', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('Add contact details');
+  });
+
+  it('should set nestedRouteButtonText to "Add offence details" when defendantType is parentOrGuardianToPay', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('Add offence details');
+  });
+
+  it('should set nestedRouteButtonText to an empty string when defendantType is company', () => {
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
+
+    component['getNestedRoute']();
+
+    expect(component.nestedRouteButtonText).toBe('');
+  });
+
+  it('should set up the personal details form', () => {
+    component['setupPersonalDetailsForm']();
+    expect(component.form).toBeTruthy();
+    expect(component.form.get('title')).toBeTruthy();
+    expect(component.form.get('firstNames')).toBeTruthy();
+    expect(component.form.get('lastName')).toBeTruthy();
+    expect(component.form.get('addAlias')).toBeTruthy();
+    expect(component.form.get('aliases')).toBeTruthy();
+    expect(component.form.get('dateOfBirth')).toBeTruthy();
+    expect(component.form.get('nationalInsuranceNumber')).toBeTruthy();
+    expect(component.form.get('addressLine1')).toBeTruthy();
+    expect(component.form.get('addressLine2')).toBeTruthy();
+    expect(component.form.get('addressLine3')).toBeTruthy();
+    expect(component.form.get('postcode')).toBeTruthy();
+    expect(component.form.get('makeOfCar')).toBeTruthy();
+    expect(component.form.get('registrationNumber')).toBeTruthy();
+  });
+  it('should set up the alias configuration for the personal details form', () => {
+    component['setupAliasConfiguration']();
+    expect(component.aliasFields).toEqual(['firstNames', 'lastName']);
+    expect(component.aliasControlsValidation).toEqual(MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS);
+  });
+
+  it('should update alias controls based on the value of the checkbox', () => {
+    const addAliasControl = component.form.get('addAlias');
+
+    addAliasControl?.setValue(true);
+
+    // Call the setUpAliasCheckboxListener method
+    component['setUpAliasCheckboxListener']();
+
+    // Check that the aliasControls array is populated with the expected number of controls
+    expect(component.aliasControls.length).toBe(1);
+
+    // // Set the value of the addAlias control to false
+    addAliasControl?.setValue(false);
+
+    // // Check that the aliasControls array is empty
+    expect(component.aliasControls.length).toBe(0);
+  });
+});

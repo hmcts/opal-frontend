@@ -31,6 +31,7 @@ import {
   IFieldErrors,
   IFormArrayControl,
   IFormArrayControlValidation,
+  IFormArrayControls,
   IGovUkSelectOptions,
   IManualAccountCreationPersonalDetailsForm,
 } from '@interfaces';
@@ -72,7 +73,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public nestedRouteButtonText!: string;
 
-  public aliasControls: { [key: string]: IFormArrayControl }[] = [];
+  public aliasControls: IFormArrayControls[] = [];
   public aliasControlsValidation: IFormArrayControlValidation[] = [];
   public aliasFields: string[] = [];
 
@@ -92,7 +93,11 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   private addAliasListener!: Subscription | undefined;
 
   /**
-   * Sets up the personal details form with the necessary form controls.
+   * Sets up the personal details form.
+   *
+   * This method initializes the form group and its form controls with the necessary validators.
+   *
+   * @returns void
    */
   private setupPersonalDetailsForm(): void {
     this.form = new FormGroup({
@@ -118,7 +123,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
 
   /**
    * Sets up the alias configuration for the personal details form.
-   * The alias configuration includes the alias fields and their corresponding validation rules.
+   * The alias configuration includes the alias fields and controls validation.
    */
   private setupAliasConfiguration(): void {
     this.aliasFields = ['firstNames', 'lastName'];
@@ -163,32 +168,44 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     }
   }
 
+  /**
+   * Sets up the listener for the alias checkbox.
+   * This method ensures any existing subscription is cleared to avoid memory leaks.
+   * It subscribes to the value changes of the 'addAlias' control in the form,
+   * and updates the alias controls based on the value of the checkbox.
+   */
   private setUpAliasCheckboxListener(): void {
-    this.addAliasListener = this.form.get('addAlias')?.valueChanges.subscribe((value) => {
-      if (value) {
-        this.aliasControls = this.buildFormArrayControls(
-          [0],
-          'aliases',
-          this.aliasFields,
-          this.aliasControlsValidation,
-        );
-      } else {
-        this.aliasControls = this.removeAllFormArrayControls(this.aliasControls, 'aliases', this.aliasFields);
-      }
+    // Ensure any existing subscription is cleared to avoid memory leaks
+    this.addAliasListener?.unsubscribe();
+
+    const addAliasControl = this.form.get('addAlias');
+    if (!addAliasControl) {
+      return;
+    }
+
+    this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
+      this.aliasControls = shouldAddAlias
+        ? this.buildFormArrayControls([0], 'aliases', this.aliasFields, this.aliasControlsValidation)
+        : this.removeAllFormArrayControls(this.aliasControls, 'aliases', this.aliasFields);
     });
   }
 
-  private getAliasCount(): number[] {
-    const length = this.macStateService.manualAccountCreation.personalDetails.aliases.length;
-    return Array.from({ length }, (_, i) => i);
-  }
-
+  /**
+   * Adds an alias to the aliasControls form array.
+   *
+   * @param index - The index at which to add the alias.
+   */
   public addAlias(index: number): void {
     this.aliasControls.push(
       this.addFormArrayControls(index, 'aliases', this.aliasFields, this.aliasControlsValidation),
     );
   }
 
+  /**
+   * Removes an alias from the aliasControls array.
+   *
+   * @param index - The index of the alias to remove.
+   */
   public removeAlias(index: number): void {
     this.aliasControls = this.removeFormArrayControls(index, 'aliases', this.aliasControls, this.aliasFields);
   }
@@ -197,7 +214,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
     this.aliasControls = this.buildFormArrayControls(
-      this.getAliasCount(),
+      [...Array(this.macStateService.manualAccountCreation.personalDetails.aliases.length).keys()],
       'aliases',
       this.aliasFields,
       this.aliasControlsValidation,
