@@ -331,7 +331,10 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formArrayControls - The array of form array controls.
    * @returns The updated array of form array controls after removing the control.
    */
-  protected removeFormArrayControl(index: number, formArrayControls: IFormArrayControl[]): IFormArrayControl[] {
+  protected removeFormArrayControl(
+    index: number,
+    formArrayControls: { [key: string]: IFormArrayControl }[],
+  ): { [key: string]: IFormArrayControl }[] {
     formArrayControls.splice(index, 1);
     return formArrayControls;
   }
@@ -495,13 +498,18 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formArrayControls - The array of form array controls.
    * @param fieldNames - The names of the fields to remove errors from.
    */
-  protected removeFormArrayControlsErrors(index: number, formArrayControls: any[], fieldNames: string[]): void {
+  protected removeFormArrayControlsErrors(
+    index: number,
+    formArrayControls: { [key: string]: IFormArrayControl }[],
+    fieldNames: string[],
+  ): void {
     // Get the controls from the form array...
     const formArrayControl = formArrayControls[index];
 
     if (formArrayControl) {
       // Loop over the field names and remove the field errors...
       fieldNames.forEach((field) => {
+        console.log(formArrayControl[field]);
         if (this.formControlErrorMessages && this.formControlErrorMessages[formArrayControl[field].controlName]) {
           delete this.formControlErrorMessages[formArrayControl[field].controlName];
         }
@@ -535,6 +543,15 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     this.router.navigate([route]);
   }
 
+  /**
+   * Adds form array controls to a form array and returns the form controls.
+   *
+   * @param index - The index at which to add the form array controls.
+   * @param formArrayName - The name of the form array.
+   * @param fieldNames - An array of field names for the form controls.
+   * @param controlValidation - An array of control validation configurations.
+   * @returns An object containing the form controls added to the form array.
+   */
   public addFormArrayControls(
     index: number,
     formArrayName: string,
@@ -560,9 +577,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   public removeFormArrayControls(
     index: number,
     formArrayName: string,
-    formArrayControls: any[],
+    formArrayControls: { [key: string]: IFormArrayControl }[],
     fieldNames: string[],
-  ): any {
+  ): { [key: string]: IFormArrayControl }[] {
     // Get the form array...
     const control = this.form.get(formArrayName) as FormArray;
 
