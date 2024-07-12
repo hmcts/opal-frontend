@@ -466,6 +466,14 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     return controls;
   }
 
+  /**
+   * Removes all form array controls and clears error messages for the specified form array.
+   *
+   * @param formArrayControls - The array of form array controls to be removed.
+   * @param formArrayName - The name of the form array.
+   * @param fieldNames - The names of the fields associated with the form array controls.
+   * @returns An empty array of form array controls.
+   */
   protected removeAllFormArrayControls(formArrayControls: any[], formArrayName: string, fieldNames: string[]): any[] {
     const control = this.form.get(formArrayName) as FormArray;
 
