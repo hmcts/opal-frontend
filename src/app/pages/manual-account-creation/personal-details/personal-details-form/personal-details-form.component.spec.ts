@@ -15,7 +15,7 @@ import {
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
 
-fdescribe('PersonalDetailsFormComponent', () => {
+describe('PersonalDetailsFormComponent', () => {
   let component: PersonalDetailsFormComponent;
   let fixture: ComponentFixture<PersonalDetailsFormComponent>;
   let mockMacStateService: jasmine.SpyObj<MacStateService>;
