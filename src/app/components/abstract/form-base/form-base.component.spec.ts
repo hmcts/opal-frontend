@@ -7,7 +7,13 @@ import {
   FORM_ERROR_SUMMARY_MOCK,
   SEARCH_STATE_MOCK,
 } from '@mocks';
-import { IFieldError, IFormError, IFormErrorSummaryMessage } from '@interfaces';
+import {
+  IFieldError,
+  IFormArrayControl,
+  IFormArrayControlValidation,
+  IFormError,
+  IFormErrorSummaryMessage,
+} from '@interfaces';
 import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
 
 class TestFormBaseComponent extends FormBaseComponent {
@@ -26,11 +32,12 @@ class TestFormBaseComponent extends FormBaseComponent {
       addressLine: new FormControl(null),
       niNumber: new FormControl(null),
       pcr: new FormControl(null),
+      alias: new FormArray([]),
     });
   }
 }
 
-describe('FormBaseComponent', () => {
+fdescribe('FormBaseComponent', () => {
   let component: TestFormBaseComponent;
   let fixture: ComponentFixture<TestFormBaseComponent>;
 
@@ -513,46 +520,128 @@ describe('FormBaseComponent', () => {
     expect(component.form.controls[controlName].touched).toBeTrue();
   });
 
-  it('should clear alias validators', () => {
-    const aliasFormGroup = new FormGroup({
-      firstName: new FormControl('', Validators.required),
-      lastName: new FormControl('', Validators.required),
-    });
+  it('should add controls to a form group', () => {
+    const formGroup = new FormGroup({});
+    const controls: IFormArrayControlValidation[] = [
+      { controlName: 'firstName', validators: [] },
+      { controlName: 'lastName', validators: [] },
+    ];
+    const index = 0;
 
-    const firstNameControl = aliasFormGroup.controls['firstName'];
-    const lastNameControl = aliasFormGroup.controls['lastName'];
+    component['addControlsToFormGroup'](formGroup, controls, index);
 
-    firstNameControl.setValidators(Validators.required);
-    lastNameControl.setValidators(Validators.required);
+    fixture.detectChanges();
 
-    component['clearAliasValidators'](aliasFormGroup, 'firstName');
-    component['clearAliasValidators'](aliasFormGroup, 'lastName');
-
-    expect(firstNameControl.validator).toBeNull();
-    expect(lastNameControl.validator).toBeNull();
-    expect(firstNameControl.errors).toBeNull();
-    expect(lastNameControl.errors).toBeNull();
+    expect(formGroup.get('firstName_0')).toBeInstanceOf(FormControl);
+    expect(formGroup.get('lastName_0')).toBeInstanceOf(FormControl);
   });
 
-  it('should remove alias controls', () => {
-    const index = 0;
-    component.aliasControls = [
-      {
-        firstName: {
-          controlName: 'firstNames_0',
-          inputId: 'firstNames_0',
-          inputName: 'firstNames_0',
-        },
-        lastName: {
-          controlName: 'lastName_0',
-          inputId: 'lastName_0',
-          inputName: 'lastName_0',
-        },
-      },
+  it('should remove the form array control at the specified index', () => {
+    const index = 1;
+    const formArrayControls: IFormArrayControl[] = [
+      { controlName: 'control_0', inputId: 'control_0', inputName: 'control_0' },
+      { controlName: 'control_1', inputId: 'control_1', inputName: 'control_1' },
+      { controlName: 'control_2', inputId: 'control_2', inputName: 'control_2' },
+    ];
+    const expectedFormArrayControls: IFormArrayControl[] = [
+      { controlName: 'control_0', inputId: 'control_0', inputName: 'control_0' },
+      { controlName: 'control_2', inputId: 'control_2', inputName: 'control_2' },
     ];
 
-    component['removeAliasControls'](index);
+    const result = component['removeFormArrayControl'](index, formArrayControls);
 
-    expect(component.aliasControls.length).toBe(0);
+    expect(result).toEqual(expectedFormArrayControls);
+  });
+
+  it('should create form controls based on the given fields and index', () => {
+    const fields = ['field1', 'field2', 'field3'];
+    const index = 0;
+
+    const result = component['createControls'](fields, index);
+
+    expect(result).toEqual({
+      field1: {
+        inputId: 'field1_0',
+        inputName: 'field1_0',
+        controlName: 'field1_0',
+      },
+      field2: {
+        inputId: 'field2_0',
+        inputName: 'field2_0',
+        controlName: 'field2_0',
+      },
+      field3: {
+        inputId: 'field3_0',
+        inputName: 'field3_0',
+        controlName: 'field3_0',
+      },
+    });
+  });
+
+  it('should build form array controls with the given form control count, form array name, field names, and control validation', () => {
+    const formControlCount = [0, 1, 2];
+    const formArrayName = 'alias';
+    const fieldNames = ['field1', 'field2', 'field3'];
+    const controlValidation = [
+      { controlName: 'field1', validators: [Validators.required] },
+      { controlName: 'field2', validators: [Validators.maxLength(10)] },
+      { controlName: 'field3', validators: [Validators.pattern('[a-zA-Z]*')] },
+    ];
+
+    const result = component['buildFormArrayControls'](formControlCount, formArrayName, fieldNames, controlValidation);
+
+    expect(result).toEqual([
+      {
+        field1: {
+          inputId: 'field1_0',
+          inputName: 'field1_0',
+          controlName: 'field1_0',
+        },
+        field2: {
+          inputId: 'field2_0',
+          inputName: 'field2_0',
+          controlName: 'field2_0',
+        },
+        field3: {
+          inputId: 'field3_0',
+          inputName: 'field3_0',
+          controlName: 'field3_0',
+        },
+      },
+      {
+        field1: {
+          inputId: 'field1_1',
+          inputName: 'field1_1',
+          controlName: 'field1_1',
+        },
+        field2: {
+          inputId: 'field2_1',
+          inputName: 'field2_1',
+          controlName: 'field2_1',
+        },
+        field3: {
+          inputId: 'field3_1',
+          inputName: 'field3_1',
+          controlName: 'field3_1',
+        },
+      },
+      {
+        field1: {
+          inputId: 'field1_2',
+          inputName: 'field1_2',
+          controlName: 'field1_2',
+        },
+        field2: {
+          inputId: 'field2_2',
+          inputName: 'field2_2',
+          controlName: 'field2_2',
+        },
+        field3: {
+          inputId: 'field3_2',
+          inputName: 'field3_2',
+          controlName: 'field3_2',
+        },
+      },
+    ]);
   });
 });

@@ -315,9 +315,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Adds controls to a form group.
    *
    * @param formGroup - The form group to add controls to.
-   * @param controls - An array of IFormAliasConfigurationValidation objects representing the controls to add.
-   * @param index - The index used to generate unique control names.
-   * @returns void
+   * @param controls - An array of form array control validations.
+   * @param index - The index of the form array control.
    */
   private addControlsToFormGroup(formGroup: FormGroup, controls: IFormArrayControlValidation[], index: number): void {
     controls.forEach((control) => {
@@ -325,6 +324,13 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Removes a form array control at the specified index from the given array of form array controls.
+   *
+   * @param index - The index of the form array control to remove.
+   * @param formArrayControls - The array of form array controls.
+   * @returns The updated array of form array controls after removing the control.
+   */
   protected removeFormArrayControl(index: number, formArrayControls: IFormArrayControl[]): IFormArrayControl[] {
     formArrayControls.splice(index, 1);
     return formArrayControls;
@@ -429,9 +435,19 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
         controlName: `${field}_${index}`,
       };
     });
+
     return controls;
   }
 
+  /**
+   * Builds an array of form array controls based on the provided parameters.
+   *
+   * @param formControlCount - An array of numbers representing the number of form controls to create for each index.
+   * @param formArrayName - The name of the form array.
+   * @param fieldNames - An array of field names for the form controls.
+   * @param controlValidation - An array of control validation objects for the form controls.
+   * @returns An array of form array controls.
+   */
   protected buildFormArrayControls(
     formControlCount: number[],
     formArrayName: string,
