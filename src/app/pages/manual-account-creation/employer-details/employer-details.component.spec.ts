@@ -20,7 +20,7 @@ describe('EmployerDetailsComponent', () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
     mockMacStateService.manualAccountCreation = {
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+      accountDetails: { ...MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, defendantType: 'adultOrYouthOnly' },
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
@@ -72,8 +72,6 @@ describe('EmployerDetailsComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-
     const formData: IManualAccountCreationEmployerDetailsState = {
       employerName: 'Test',
       employeeReference: null,
@@ -101,7 +99,7 @@ describe('EmployerDetailsComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
+    component.defendantType = 'parentOrGuardianToPay';
 
     const formData: IManualAccountCreationEmployerDetailsState = {
       employerName: 'Test',

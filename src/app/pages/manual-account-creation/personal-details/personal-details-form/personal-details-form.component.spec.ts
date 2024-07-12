@@ -6,7 +6,6 @@ import {
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_STATE,
 } from '@constants';
 import { MacStateService } from '@services';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -25,7 +24,7 @@ describe('PersonalDetailsFormComponent', () => {
     mockMacStateService = jasmine.createSpyObj('macStateService', ['manualAccountCreation']);
 
     mockMacStateService.manualAccountCreation = {
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+      accountDetails: { ...MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, defendantType: 'adultOrYouthOnly' },
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
@@ -41,6 +40,9 @@ describe('PersonalDetailsFormComponent', () => {
 
     fixture = TestBed.createComponent(PersonalDetailsFormComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 
@@ -396,22 +398,6 @@ describe('PersonalDetailsFormComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-    const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-    personalDetailsForm.continueFlow = true;
-    spyOn(component['formSubmit'], 'emit');
-
-    component['rePopulateForm'](personalDetailsForm.formData);
-    component.handleFormSubmit(event);
-
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
-  });
-
-  it('should emit form submit event with form value', () => {
-    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
     const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
     personalDetailsForm.continueFlow = true;
     spyOn(component['formSubmit'], 'emit');
@@ -424,41 +410,13 @@ describe('PersonalDetailsFormComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
     const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
     personalDetailsForm.continueFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](personalDetailsForm.formData);
     component.handleFormSubmit(event);
-    component['rePopulateForm'](personalDetailsForm.formData);
-    component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(personalDetailsForm);
-  });
-
-  it('should set nestedRouteButtonText to "Add contact details" when defendantType is adultOrYouthOnly', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('Add contact details');
-  });
-
-  it('should set nestedRouteButtonText to "Add offence details" when defendantType is parentOrGuardianToPay', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('Add offence details');
-  });
-
-  it('should set nestedRouteButtonText to an empty string when defendantType is company', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('');
   });
 });

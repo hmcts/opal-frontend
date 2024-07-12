@@ -42,6 +42,8 @@ import { IManualAccountCreationFieldTypes } from './manual-account-creation-fiel
 import { IManualAccountCreationContactDetailsForm } from './manual-account-creation-contact-details-form.interface';
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
 import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
+import { INestedRoutes } from './nested-routes.interface';
+import { IManualAccountCreationNestedRoutes } from './manual-account-creation-nested-routes.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -91,4 +93,6 @@ export {
   IManualAccountCreationFieldTypes,
   IManualAccountCreationContactDetailsForm,
   ICustomAddressFieldIds,
+  INestedRoutes,
+  IManualAccountCreationNestedRoutes,
 };

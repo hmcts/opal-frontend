@@ -25,6 +25,7 @@ import { ROUTE_PERMISSIONS } from './route-permissions';
 import { TITLE_DROPDOWN_OPTIONS } from './title-dropdown-options';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from './manual-account-creation-account-status';
 import { CUSTOM_ADDRESS_FIELD_IDS } from './common/custom-address-field-ids';
+import { MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS } from './manual-account-creation-nested-buttons';
 
 export {
   ACCOUNT_ENQUIRY_DEFAULT_STATE,
@@ -54,4 +55,5 @@ export {
   MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS,
   CUSTOM_ADDRESS_FIELD_IDS,
+  MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS,
 };

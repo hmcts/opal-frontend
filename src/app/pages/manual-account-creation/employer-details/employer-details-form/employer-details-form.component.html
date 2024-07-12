@@ -33,7 +33,6 @@
     inputName="employerTelephone"
     inputClasses="govuk-input--width-20"
     labelClasses="govuk-label--s"
-    inputMode="numeric"
     [control]="form.controls['employerTelephone']"
     [errors]="formControlErrorMessages['employerTelephone']"
   ></app-govuk-text-input>
@@ -94,13 +93,13 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
-      @if (nestedRouteButtonText) {
+      @if (manualAccountCreationNestedRoutes[defendantType].employerDetails) {
         <app-govuk-button
           buttonId="submitForm"
           type="submit"
           buttonClasses="continue-flow govuk-button--secondary govuk-!-margin-left-3"
         >
-          {{ nestedRouteButtonText }}
+          {{ manualAccountCreationNestedRoutes[defendantType].employerDetails?.buttonText }}
         </app-govuk-button>
       }
       <app-govuk-cancel-link

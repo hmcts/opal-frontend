@@ -15,13 +15,13 @@ import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployerDetailsComponent extends FormParentBaseComponent {
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+
   /**
    * Handles the form submission for employer details.
    * @param formData - The form data containing the search parameters.
    */
   public handleEmployerDetailsSubmit(employerDetailsForm: IManualAccountCreationEmployerDetailsForm): void {
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       employerDetails: employerDetailsForm.formData,
@@ -29,8 +29,11 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    if (employerDetailsForm.continueFlow && defendantType) {
-      this.routerNavigate(MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['employerDetails']);
+    if (employerDetailsForm.continueFlow && this.defendantType) {
+      const nextRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[this.defendantType]['employerDetails'];
+      if (nextRoute) {
+        this.routerNavigate(nextRoute.nextRoute);
+      }
     } else {
       this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
     }

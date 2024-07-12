@@ -8,7 +8,6 @@ import {
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_STATE,
 } from '@constants';
 
 describe('ContactDetailsFormComponent', () => {
@@ -20,7 +19,7 @@ describe('ContactDetailsFormComponent', () => {
     mockMacStateService = jasmine.createSpyObj('macStateService', ['manualAccountCreation']);
 
     mockMacStateService.manualAccountCreation = {
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+      accountDetails: { ...MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, defendantType: 'adultOrYouthOnly' },
       employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
@@ -36,6 +35,9 @@ describe('ContactDetailsFormComponent', () => {
 
     fixture = TestBed.createComponent(ContactDetailsFormComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 
@@ -45,8 +47,6 @@ describe('ContactDetailsFormComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
     const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
     contactDetailsForm.continueFlow = true;
     spyOn(component['formSubmit'], 'emit');
@@ -60,8 +60,6 @@ describe('ContactDetailsFormComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
-    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
     const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
     contactDetailsForm.continueFlow = false;
     spyOn(component['formSubmit'], 'emit');
@@ -71,37 +69,5 @@ describe('ContactDetailsFormComponent', () => {
     component.handleFormSubmit(event);
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(contactDetailsForm);
-  });
-
-  it('should set nestedRouteButtonText to "Add employer details" when defendantType is adultOrYouthOnly', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('Add employer details');
-  });
-
-  it('should set nestedRouteButtonText to "Add employer details" when defendantType is parentOrGuardianToPay', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('Add employer details');
-  });
-
-  it('should set nestedRouteButtonText to "Add offence details" when defendantType is company', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('Add offence details');
-  });
-
-  it('should set nestedRouteButtonText to an empty string when defendantType is company', () => {
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'test';
-
-    component['getNestedRoute']();
-
-    expect(component.nestedRouteButtonText).toBe('');
   });
 });
