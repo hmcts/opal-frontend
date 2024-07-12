@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactDetailsComponent } from './contact-details.component';
 import { MacStateService } from '@services';
-import { IManualAccountCreationContactDetailsState } from '@interfaces';
+import { IManualAccountCreationContactDetailsForm, IManualAccountCreationContactDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
 
@@ -30,20 +30,49 @@ describe('ContactDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle form submission and navigate', () => {
+  it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const formData: IManualAccountCreationContactDetailsState = {
       primaryEmailAddress: 'Test',
       secondaryEmailAddress: null,
       homeTelephoneNumber: null,
       mobileTelephoneNumber: null,
-      businessTelephoneNumber: null,
+      workTelephoneNumber: null,
     };
 
-    component.handleContactDetailsSubmit(formData);
+    const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
+      formData,
+      continueFlow: false,
+    };
+
+    component.handleContactDetailsSubmit(contactDetailsFormSubmit);
 
     expect(mockMacStateService.manualAccountCreation.contactDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
+  });
+
+  it('should handle form submission and navigate to next route', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+
+    const formData: IManualAccountCreationContactDetailsState = {
+      primaryEmailAddress: 'Test',
+      secondaryEmailAddress: null,
+      homeTelephoneNumber: null,
+      mobileTelephoneNumber: null,
+      workTelephoneNumber: null,
+    };
+
+    const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
+      formData,
+      continueFlow: true,
+    };
+
+    component.handleContactDetailsSubmit(contactDetailsFormSubmit);
+
+    expect(mockMacStateService.manualAccountCreation.contactDetails).toEqual(formData);
+    expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.employerDetails]);
   });
 
   it('should test handleUnsavedChanges', () => {

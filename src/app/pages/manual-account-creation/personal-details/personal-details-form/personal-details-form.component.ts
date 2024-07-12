@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Ou
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import {
   CustomAddressBlockComponent,
+  CustomDateOfBirthComponent,
+  CustomNationalInsuranceNumberComponent,
   FormBaseComponent,
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -61,6 +63,8 @@ import {
     GovukSelectComponent,
     GovukCancelLinkComponent,
     CustomAddressBlockComponent,
+    CustomDateOfBirthComponent,
+    CustomNationalInsuranceNumberComponent,
   ],
   templateUrl: './personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

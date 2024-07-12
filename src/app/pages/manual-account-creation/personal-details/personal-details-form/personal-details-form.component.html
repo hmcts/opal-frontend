@@ -82,27 +82,15 @@
       }
     </div>
   }
-  <app-scotgov-date-picker
-    labelText="Date of birth"
-    labelClasses="govuk-label--s"
-    inputId="dateOfBirth"
-    inputName="dateOfBirth"
-    inputClasses="govuk-input--width-10"
-    hintText="For example, 31/01/2023"
-    [control]="form.controls['dateOfBirth']"
-    [maxDate]="yesterday"
+  <app-custom-date-of-birth
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
     (dateChange)="setInputValue($event, 'dateOfBirth')"
-    [errors]="formControlErrorMessages['dateOfBirth']"
-  ></app-scotgov-date-picker>
-  <app-govuk-text-input
-    labelText="National Insurance number"
-    inputId="nationalInsuranceNumber"
-    inputName="nationalInsuranceNumber"
-    inputClasses="govuk-input--width-10"
-    labelClasses="govuk-label--s"
-    [control]="form.controls['nationalInsuranceNumber']"
-    [errors]="formControlErrorMessages['nationalInsuranceNumber']"
-  ></app-govuk-text-input>
+  ></app-custom-date-of-birth>
+  <app-custom-national-insurance-number
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
+  ></app-custom-national-insurance-number>
   <app-custom-address-block
     [divider]="true"
     legendText="Address"

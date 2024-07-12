@@ -1,16 +1,19 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
+  CustomAddressBlockComponent,
+  CustomDateOfBirthComponent,
+  CustomNationalInsuranceNumberComponent,
   FormBaseComponent,
   GovukButtonComponent,
   GovukCancelLinkComponent,
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
-  ScotgovDatePickerComponent,
 } from '@components';
 import {
   ADDRESS_LINE_ONE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
+  CUSTOM_ADDRESS_FIELD_IDS,
   DATE_OF_BIRTH_FIELD_ERRORS,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
   NATIONAL_INSURANCE_FIELD_ERRORS,
@@ -18,7 +21,6 @@ import {
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IManualAccountCreationParentGuardianDetailsState } from '@interfaces';
-import { DateTime } from 'luxon';
 import {
   optionalMaxLengthValidator,
   dateOfBirthValidator,
@@ -36,8 +38,10 @@ import {
     GovukTextInputComponent,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    ScotgovDatePickerComponent,
     GovukCancelLinkComponent,
+    CustomAddressBlockComponent,
+    CustomNationalInsuranceNumberComponent,
+    CustomDateOfBirthComponent,
   ],
   templateUrl: './parent-guardian-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +49,7 @@ import {
 export class ParentGuardianDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationParentGuardianDetailsState>();
 
+  public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
 
   override fieldErrors: IFieldErrors = {
@@ -55,8 +60,6 @@ export class ParentGuardianDetailsFormComponent extends FormBaseComponent implem
     ...ADDRESS_LINE_TWO_FIELD_ERRORS,
     ...POST_CODE_FIELD_ERRORS,
   };
-
-  public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 
   /**
    * Sets up the parent/guardian details form with the necessary form controls.
@@ -90,6 +93,7 @@ export class ParentGuardianDetailsFormComponent extends FormBaseComponent implem
   }
 
   public override ngOnInit(): void {
+    this.customAddressFieldIds.addressLineThreeFieldId = null;
     this.setupParentGuardianDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.macStateService.manualAccountCreation.parentGuardianDetails);

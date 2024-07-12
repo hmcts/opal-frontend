@@ -42,7 +42,9 @@ import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.
 import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 import { GovukHeadingWithCaptionComponent } from './govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
 import { GovukCancelLinkComponent } from './govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { CustomAddressBlockComponent } from './custom/custom-address-block/custom-address-block/custom-address-block.component';
+import { CustomAddressBlockComponent } from './custom/custom-address-block/custom-address-block.component';
+import { CustomNationalInsuranceNumberComponent } from './custom/custom-national-insurance-number/custom-national-insurance-number.component';
+import { CustomDateOfBirthComponent } from './custom/custom-date-of-birth/custom-date-of-birth.component';
 
 export {
   GovukButtonComponent,
@@ -89,4 +91,6 @@ export {
   GovukHeadingWithCaptionComponent,
   GovukCancelLinkComponent,
   CustomAddressBlockComponent,
+  CustomNationalInsuranceNumberComponent,
+  CustomDateOfBirthComponent,
 };
