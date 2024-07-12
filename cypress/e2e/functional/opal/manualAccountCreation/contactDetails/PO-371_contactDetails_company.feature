@@ -106,13 +106,13 @@ Feature: PO-371 Contact Details for company
 
     When I click the "Return to account details" button
 
-    Then I see the error message "Enter primary email address in the correct format like, name@example.com" at the top of the page
+    Then I see the error message "The primary email address must be 76 characters or fewer" at the top of the page
     And I see the error message "Enter secondary email address in the correct format like, name@example.com" at the top of the page
     And I see the error message "Enter a home telephone number, like 01632 960 001" at the top of the page
     And I see the error message "Enter a work telephone number, like 01632 960 001 or 07700 900 982" at the top of the page
     And I see the error message "Enter a mobile telephone number, like 07700 900 982" at the top of the page
 
-    And I see the error message "Enter primary email address in the correct format like, name@example.com" above the "Primary email address" field
+    And I see the error message "The primary email address must be 76 characters or fewer" above the "Primary email address" field
     And I see the error message "Enter secondary email address in the correct format like, name@example.com" above the "Secondary email address" field
     And I see the error message "Enter a home telephone number, like 01632 960 001" above the "Home telephone number" field
     And I see the error message "Enter a work telephone number, like 01632 960 001 or 07700 900 982" above the "Work telephone number" field
@@ -128,10 +128,16 @@ Feature: PO-371 Contact Details for company
 
     Then I see "Account details" on the page header
     And I see the status of "Contact details" is "Provided"
+    Then I click on the "Contact details" link
+    And I see "<correctPrimaryEmail>" in the "Primary email address" field
+    And I see "<correctSecondaryEmail>" in the "Secondary email address" field
+    And I see "<correctMobileTelephone>" in the "Mobile telephone number" field
+    And I see "<correctHomeTelephone>" in the "Home telephone number" field
+    And I see "<correctWorkTelephone>" in the "Work telephone number" field
 
     Examples:
-      | correctPrimaryEmail   | correctSecondaryEmail   | correctMobileTelephone | correctHomeTelephone | correctWorkTelephone | incorrectPrimaryEmail | incorrectSecondaryEmail | incorrectMobileTelephone | incorrectHomeTelephone | incorrectWorkTelephone |
-      | primaryEmail@test.com | secondaryEmail@test.com | 07 700 900 982         | 01632 960 001        | 07 700 900 982       | primaryEmailtest.com  | secondaryEmailtest.com  | 07 700 900 abc           | 01632 960 abc          | 07 700 900 abc 123     |
+      | correctPrimaryEmail                                                          | correctSecondaryEmail   | correctMobileTelephone | correctHomeTelephone | correctWorkTelephone | incorrectPrimaryEmail                                                         | incorrectSecondaryEmail | incorrectMobileTelephone | incorrectHomeTelephone | incorrectWorkTelephone |
+      | primaryEmailtesttesttesttesttesttesttesttesttesttesttesttesttest123@test.com | secondaryEmail@test.com | 07 700 900 982         | 01632 960 001        | 07 700 900 982       | primaryEmailtesttesttesttesttesttesttesttesttesttesttesttesttest1234@test.com | secondaryEmailtest.com  | 07 700 900 abc           | 01632 960 abc          | 07 700 900 abc 123     |
 
   Scenario Outline: AC7,8,9 - Negative test contact details - validation - 'Add offence details'
     When I enter "<incorrectPrimaryEmail>" into the "Primary email address" field
@@ -142,13 +148,13 @@ Feature: PO-371 Contact Details for company
 
     When I click the "Add offence details" button
 
-    Then I see the error message "Enter primary email address in the correct format like, name@example.com" at the top of the page
+    Then I see the error message "The primary email address must be 76 characters or fewer" at the top of the page
     And I see the error message "Enter secondary email address in the correct format like, name@example.com" at the top of the page
     And I see the error message "Enter a home telephone number, like 01632 960 001" at the top of the page
     And I see the error message "Enter a work telephone number, like 01632 960 001 or 07700 900 982" at the top of the page
     And I see the error message "Enter a mobile telephone number, like 07700 900 982" at the top of the page
 
-    And I see the error message "Enter primary email address in the correct format like, name@example.com" above the "Primary email address" field
+    And I see the error message "The primary email address must be 76 characters or fewer" above the "Primary email address" field
     And I see the error message "Enter secondary email address in the correct format like, name@example.com" above the "Secondary email address" field
     And I see the error message "Enter a home telephone number, like 01632 960 001" above the "Home telephone number" field
     And I see the error message "Enter a work telephone number, like 01632 960 001 or 07700 900 982" above the "Work telephone number" field
@@ -168,8 +174,8 @@ Feature: PO-371 Contact Details for company
     And I see the status of "Contact details" is "Provided"
 
     Examples:
-      | correctPrimaryEmail   | correctSecondaryEmail   | correctMobileTelephone | correctHomeTelephone | correctWorkTelephone | incorrectPrimaryEmail | incorrectSecondaryEmail | incorrectMobileTelephone | incorrectHomeTelephone | incorrectWorkTelephone |
-      | primaryEmail@test.com | secondaryEmail@test.com | 07 700 900 982         | 01632 960 001        | 07 700 900 982       | primaryEmailtest.com  | secondaryEmailtest.com  | 07 700 900 abc           | 01632 960 abc          | 07 700 900 abc 123     |
+      | correctPrimaryEmail                                                          | correctSecondaryEmail   | correctMobileTelephone | correctHomeTelephone | correctWorkTelephone | incorrectPrimaryEmail                                                         | incorrectSecondaryEmail | incorrectMobileTelephone | incorrectHomeTelephone | incorrectWorkTelephone |
+      | primaryEmailtesttesttesttesttesttesttesttesttesttesttesttesttest123@test.com | secondaryEmail@test.com | 07 700 900 982         | 01632 960 001        | 07 700 900 982       | primaryEmailtesttesttesttesttesttesttesttesttesttesttesttesttest1234@test.com | secondaryEmailtest.com  | 07 700 900 abc           | 01632 960 abc          | 07 700 900 abc 123     |
 
   Scenario: AC10 - contact details - 'Cancel' - no data entered
     When I click on the "Cancel" link
