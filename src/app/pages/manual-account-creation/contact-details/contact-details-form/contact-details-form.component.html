@@ -44,7 +44,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
-      @if (manualAccountCreationNestedRoutes[defendantType].contactDetails) {
+      @if (defendantType && manualAccountCreationNestedRoutes[defendantType].contactDetails) {
         <app-govuk-button
           buttonId="submitForm"
           type="submit"
