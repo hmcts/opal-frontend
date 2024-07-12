@@ -189,7 +189,7 @@ describe('PersonalDetailsFormComponent', () => {
     ];
 
     component.macStateService.manualAccountCreation.personalDetails.aliases = aliases;
-    component['setupAliases']();
+    component['setupAliasFormControls']();
 
     expect(component.aliasControls.length).toBe(1);
   });
@@ -197,7 +197,7 @@ describe('PersonalDetailsFormComponent', () => {
   it('should call the necessary setup methods', () => {
     spyOn<any>(component, 'setupPersonalDetailsForm');
     spyOn<any>(component, 'setupAliasConfiguration');
-    spyOn<any>(component, 'setupAliases');
+    spyOn<any>(component, 'setupAliasFormControls');
     spyOn<any>(component, 'setInitialErrorMessages');
     spyOn<any>(component, 'getNestedRoute');
     spyOn<any>(component, 'rePopulateForm');
@@ -207,7 +207,7 @@ describe('PersonalDetailsFormComponent', () => {
 
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
-    expect(component['setupAliases']).toHaveBeenCalled();
+    expect(component['setupAliasFormControls']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['getNestedRoute']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.personalDetails);

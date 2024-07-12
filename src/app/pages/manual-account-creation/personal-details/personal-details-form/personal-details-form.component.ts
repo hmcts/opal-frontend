@@ -213,7 +213,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
    * Sets up the aliases for the personal details form.
    * Re-populates the alias controls if there are any aliases.
    */
-  private setupAliases(): void {
+  private setupAliasFormControls(): void {
     const aliases = this.macStateService.manualAccountCreation.personalDetails.aliases;
     // Re-populate the alias controls if there are any aliases
     if (aliases.length) {
@@ -234,7 +234,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   private initialSetup(): void {
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliases();
+    this.setupAliasFormControls();
     this.setInitialErrorMessages();
     this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
