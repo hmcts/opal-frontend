@@ -320,8 +320,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param index - The index of the form array control.
    */
   private addControlsToFormGroup(formGroup: FormGroup, controls: IFormArrayControlValidation[], index: number): void {
-    controls.forEach((control) => {
-      formGroup.addControl(`${control.controlName}_${index}`, new FormControl(null, control.validators));
+    controls.forEach(({ controlName, validators }) => {
+      formGroup.addControl(`${controlName}_${index}`, new FormControl(null, validators));
     });
   }
 
@@ -333,8 +333,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @returns The updated array of form array controls after removing the control.
    */
   protected removeFormArrayControl(index: number, formArrayControls: IFormArrayControls[]): IFormArrayControls[] {
-    formArrayControls.splice(index, 1);
-    return formArrayControls;
+    return formArrayControls.filter((_, i) => i !== index);
   }
 
   /**
