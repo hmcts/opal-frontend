@@ -159,4 +159,71 @@ fdescribe('PersonalDetailsFormComponent', () => {
     // // Check that the aliasControls array is empty
     expect(component.aliasControls.length).toBe(0);
   });
+
+  it('should add an alias to the aliasControls form array', () => {
+    const index = 0;
+
+    expect(component.aliasControls.length).toBe(0);
+
+    component.addAlias(index);
+
+    expect(component.aliasControls.length).toBe(1);
+  });
+
+  it('should remove an alias from the aliasControls form array', () => {
+    const index = 0;
+
+    component.addAlias(index);
+    expect(component.aliasControls.length).toBe(1);
+
+    component.removeAlias(index);
+    expect(component.aliasControls.length).toBe(0);
+  });
+
+  it('should set up the aliases for the personal details form', () => {
+    const aliases = [
+      {
+        firstNames_0: 'TEst',
+        lastName_0: 'test',
+      },
+    ];
+
+    component.macStateService.manualAccountCreation.personalDetails.aliases = aliases;
+    component['setupAliases']();
+
+    expect(component.aliasControls.length).toBe(1);
+  });
+
+  it('should call the necessary setup methods', () => {
+    spyOn<any>(component, 'setupPersonalDetailsForm');
+    spyOn<any>(component, 'setupAliasConfiguration');
+    spyOn<any>(component, 'setupAliases');
+    spyOn<any>(component, 'setInitialErrorMessages');
+    spyOn<any>(component, 'getNestedRoute');
+    spyOn<any>(component, 'rePopulateForm');
+    spyOn<any>(component, 'setUpAliasCheckboxListener');
+
+    component['initialSetup']();
+
+    expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
+    expect(component['setupAliasConfiguration']).toHaveBeenCalled();
+    expect(component['setupAliases']).toHaveBeenCalled();
+    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
+    expect(component['getNestedRoute']).toHaveBeenCalled();
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.personalDetails);
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalled();
+  });
+
+  it('should unsubscribe from addAliasListener on ngOnDestroy', () => {
+    const addAliasControl = component.form.get('addAlias');
+
+    addAliasControl?.setValue(true);
+
+    // Call the setUpAliasCheckboxListener method
+    component['setUpAliasCheckboxListener']();
+
+    const unsubscribeSpy = spyOn<any>(component['addAliasListener'], 'unsubscribe');
+    component.ngOnDestroy();
+    expect(unsubscribeSpy).toHaveBeenCalled();
+  });
 });

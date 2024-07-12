@@ -29,7 +29,6 @@ import {
 import { ManualAccountCreationRoutes } from '@enums';
 import {
   IFieldErrors,
-  IFormArrayControl,
   IFormArrayControlValidation,
   IFormArrayControls,
   IGovUkSelectOptions,
@@ -210,19 +209,40 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     this.aliasControls = this.removeFormArrayControls(index, 'aliases', this.aliasControls, this.aliasFields);
   }
 
-  public override ngOnInit(): void {
+  /**
+   * Sets up the aliases for the personal details form.
+   * Re-populates the alias controls if there are any aliases.
+   */
+  private setupAliases(): void {
+    const aliases = this.macStateService.manualAccountCreation.personalDetails.aliases;
+    // Re-populate the alias controls if there are any aliases
+    if (aliases.length) {
+      this.aliasControls = this.buildFormArrayControls(
+        [...Array(aliases.length).keys()],
+        'aliases',
+        this.aliasFields,
+        this.aliasControlsValidation,
+      );
+    }
+  }
+
+  /**
+   * Performs the initial setup for the personal details form component.
+   * This method sets up the personal details form, alias configuration, aliases,
+   * initial error messages, nested route, form population, and alias checkbox listener.
+   */
+  private initialSetup(): void {
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.aliasControls = this.buildFormArrayControls(
-      [...Array(this.macStateService.manualAccountCreation.personalDetails.aliases.length).keys()],
-      'aliases',
-      this.aliasFields,
-      this.aliasControlsValidation,
-    );
+    this.setupAliases();
     this.setInitialErrorMessages();
     this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
     this.setUpAliasCheckboxListener();
+  }
+
+  public override ngOnInit(): void {
+    this.initialSetup();
     super.ngOnInit();
   }
 
