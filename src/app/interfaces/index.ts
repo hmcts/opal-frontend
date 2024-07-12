@@ -45,6 +45,7 @@ import { IManualAccountCreationCompanyAlias } from './manual-account-creation-co
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
 import { IFormArrayControl } from './form-array-control.interface';
 import { IFormArrayControlValidation } from './form-array-control-validation.interface';
+import { IFormArrayControls } from './form-array-controls.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -99,4 +100,5 @@ export {
   ICustomAddressFieldIds,
   IFormArrayControl,
   IFormArrayControlValidation,
+  IFormArrayControls,
 };

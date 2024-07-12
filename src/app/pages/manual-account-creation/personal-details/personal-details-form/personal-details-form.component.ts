@@ -196,7 +196,12 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public override ngOnInit(): void {
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.buildFormArrayControls(this.getAliasCount(), 'aliases', this.aliasFields, this.aliasControlsValidation);
+    this.aliasControls = this.buildFormArrayControls(
+      this.getAliasCount(),
+      'aliases',
+      this.aliasFields,
+      this.aliasControlsValidation,
+    );
     this.setInitialErrorMessages();
     this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);

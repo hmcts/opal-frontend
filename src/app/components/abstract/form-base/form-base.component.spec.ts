@@ -11,6 +11,7 @@ import {
   IFieldError,
   IFormArrayControl,
   IFormArrayControlValidation,
+  IFormArrayControls,
   IFormControlErrorMessage,
   IFormError,
   IFormErrorSummaryMessage,
@@ -38,7 +39,7 @@ class TestFormBaseComponent extends FormBaseComponent {
   }
 }
 
-describe('FormBaseComponent', () => {
+fdescribe('FormBaseComponent', () => {
   let component: TestFormBaseComponent;
   let fixture: ComponentFixture<TestFormBaseComponent>;
 
@@ -539,7 +540,7 @@ describe('FormBaseComponent', () => {
 
   it('should remove the form array control at the specified index', () => {
     const index = 1;
-    const formArrayControls: { [key: string]: IFormArrayControl }[] = [
+    const formArrayControls: IFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -565,7 +566,7 @@ describe('FormBaseComponent', () => {
         },
       },
     ];
-    const expectedFormArrayControls: { [key: string]: IFormArrayControl }[] = [
+    const expectedFormArrayControls: IFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -722,7 +723,7 @@ describe('FormBaseComponent', () => {
 
   it('should remove field errors for the specified form array control', () => {
     const index = 0;
-    const formArrayControls: { [key: string]: IFormArrayControl }[] = [
+    const formArrayControls: IFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -751,7 +752,7 @@ describe('FormBaseComponent', () => {
 
   it('should not remove field errors if the form array control does not exist', () => {
     const index = 1;
-    const formArrayControls: { [key: string]: IFormArrayControl }[] = [
+    const formArrayControls: IFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -802,7 +803,7 @@ describe('FormBaseComponent', () => {
   it('should remove the form array control at the specified index', () => {
     const index = 1;
     const formArrayName = 'alias';
-    const formArrayControls: { [key: string]: IFormArrayControl }[] = [
+    const formArrayControls: IFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',

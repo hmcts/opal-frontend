@@ -6,6 +6,7 @@ import {
   IFieldErrors,
   IFormArrayControl,
   IFormArrayControlValidation,
+  IFormArrayControls,
   IFormControlErrorMessage,
   IFormError,
   IFormErrorSummaryMessage,
@@ -331,10 +332,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formArrayControls - The array of form array controls.
    * @returns The updated array of form array controls after removing the control.
    */
-  protected removeFormArrayControl(
-    index: number,
-    formArrayControls: { [key: string]: IFormArrayControl }[],
-  ): { [key: string]: IFormArrayControl }[] {
+  protected removeFormArrayControl(index: number, formArrayControls: IFormArrayControls[]): IFormArrayControls[] {
     formArrayControls.splice(index, 1);
     return formArrayControls;
   }
@@ -456,8 +454,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     formArrayName: string,
     fieldNames: string[],
     controlValidation: IFormArrayControlValidation[],
-  ): { [key: string]: IFormArrayControl }[] {
-    const controls: { [key: string]: IFormArrayControl }[] = [];
+  ): IFormArrayControls[] {
+    const controls: IFormArrayControls[] = [];
+    console.log(formControlCount);
 
     // Create the form array controls...
     formControlCount.forEach((_element: any, index: number) => {
@@ -500,7 +499,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    */
   protected removeFormArrayControlsErrors(
     index: number,
-    formArrayControls: { [key: string]: IFormArrayControl }[],
+    formArrayControls: IFormArrayControls[],
     fieldNames: string[],
   ): void {
     // Get the controls from the form array...
@@ -586,9 +585,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   public removeFormArrayControls(
     index: number,
     formArrayName: string,
-    formArrayControls: { [key: string]: IFormArrayControl }[],
+    formArrayControls: IFormArrayControls[],
     fieldNames: string[],
-  ): { [key: string]: IFormArrayControl }[] {
+  ): IFormArrayControls[] {
     // Get the form array...
     const control = this.form.get(formArrayName) as FormArray;
 
