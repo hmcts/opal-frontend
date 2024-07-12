@@ -6,14 +6,12 @@ import {
   MANUAL_ACCOUNT_CREATION_STATE,
 } from '@constants';
 import { MacStateService } from '@services';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { IManualAccountCreationPersonalAlias } from '@interfaces';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
+import { of } from 'rxjs';
 
 describe('PersonalDetailsFormComponent', () => {
   let component: PersonalDetailsFormComponent;
@@ -136,6 +134,7 @@ describe('PersonalDetailsFormComponent', () => {
     expect(component.form.get('makeOfCar')).toBeTruthy();
     expect(component.form.get('registrationNumber')).toBeTruthy();
   });
+
   it('should set up the alias configuration for the personal details form', () => {
     component['setupAliasConfiguration']();
     expect(component.aliasFields).toEqual(['firstNames', 'lastName']);
@@ -183,7 +182,7 @@ describe('PersonalDetailsFormComponent', () => {
   it('should set up the aliases for the personal details form', () => {
     const aliases = [
       {
-        firstNames_0: 'TEst',
+        firstNames_0: 'Test',
         lastName_0: 'test',
       },
     ];
@@ -195,12 +194,19 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should call the necessary setup methods', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPersonalDetailsForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAliasConfiguration');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAliasFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setInitialErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getNestedRoute');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setUpAliasCheckboxListener');
 
     component['initialSetup']();
@@ -222,8 +228,29 @@ describe('PersonalDetailsFormComponent', () => {
     // Call the setUpAliasCheckboxListener method
     component['setUpAliasCheckboxListener']();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const unsubscribeSpy = spyOn<any>(component['addAliasListener'], 'unsubscribe');
     component.ngOnDestroy();
     expect(unsubscribeSpy).toHaveBeenCalled();
+  });
+
+  it('should return if addAlias control is not found', () => {
+    spyOn(component.form, 'get').and.returnValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setUpAliasCheckboxListener').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'buildFormArrayControls').and.returnValue(of([]));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'removeAllFormArrayControls').and.returnValue(of([]));
+
+    component['setUpAliasCheckboxListener']();
+
+    expect(component.form.get).toHaveBeenCalledWith('addAlias');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect<any>(component['setUpAliasCheckboxListener']).toHaveBeenCalled();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect<any>(component['buildFormArrayControls']).not.toHaveBeenCalled();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect<any>(component['removeAllFormArrayControls']).not.toHaveBeenCalled();
   });
 });

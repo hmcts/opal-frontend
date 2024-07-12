@@ -307,7 +307,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Setup listener for the form value changes and to emit hasUnsavedChanges
    */
   private setupListener(): void {
-    this.formSub = this.form.valueChanges.subscribe((values) => {
+    this.formSub = this.form.valueChanges.subscribe(() => {
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     });
   }
@@ -470,6 +470,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param fieldNames - The names of the fields associated with the form array controls.
    * @returns An empty array of form array controls.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected removeAllFormArrayControls(formArrayControls: any[], formArrayName: string, fieldNames: string[]): any[] {
     const control = this.form.get(formArrayName) as FormArray;
 
@@ -502,7 +503,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     if (formArrayControl) {
       // Loop over the field names and remove the field errors...
       fieldNames.forEach((field) => {
-        if (this.formControlErrorMessages && this.formControlErrorMessages[formArrayControl[field].controlName]) {
+        if (this.formControlErrorMessages?.[formArrayControl[field].controlName]) {
           delete this.formControlErrorMessages[formArrayControl[field].controlName];
         }
       });

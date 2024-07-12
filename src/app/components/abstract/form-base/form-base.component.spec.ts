@@ -9,7 +9,6 @@ import {
 } from '@mocks';
 import {
   IFieldError,
-  IFormArrayControl,
   IFormArrayControlValidation,
   IFormArrayControls,
   IFormControlErrorMessage,

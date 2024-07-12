@@ -1,4 +1,4 @@
-<!-- <h1 class="govuk-heading-l">Company details</h1>
+<h1 class="govuk-heading-l">Company details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-text-input
@@ -16,7 +16,6 @@
       inputId="addAlias"
       inputName="addAlias"
       [control]="form.get('addAlias')"
-      (change)="addAliasCheckboxChange()"
     ></div>
   </app-govuk-checkboxes>
   @if (form.get('addAlias')?.value === true) {
@@ -51,7 +50,7 @@
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
-          (buttonClickEvent)="addAliases(aliasControls.length)"
+          (buttonClickEvent)="addAlias(aliasControls.length)"
           >Add another alias</app-govuk-button
         >
       }
@@ -79,4 +78,4 @@
       ></app-govuk-cancel-link>
     </div>
   </div>
-</form> -->
+</form>
