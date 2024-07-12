@@ -27,7 +27,13 @@ import {
   TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalDetailsForm } from '@interfaces';
+import {
+  IFieldErrors,
+  IFormArrayControl,
+  IFormArrayControlValidation,
+  IGovUkSelectOptions,
+  IManualAccountCreationPersonalDetailsForm,
+} from '@interfaces';
 import { DateTime } from 'luxon';
 import { Subscription } from 'rxjs';
 import {
@@ -65,6 +71,10 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public nestedRouteButtonText!: string;
+
+  public aliasControls: { [key: string]: IFormArrayControl }[] = [];
+  public aliasControlsValidation: IFormArrayControlValidation[] = [];
+  public aliasFields: string[] = [];
 
   override fieldErrors: IFieldErrors = {
     ...MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
@@ -173,15 +183,14 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     return Array.from({ length }, (_, i) => i);
   }
 
-  public addNewAlias(index: number): void {
+  public addAlias(index: number): void {
     this.aliasControls.push(
       this.addFormArrayControls(index, 'aliases', this.aliasFields, this.aliasControlsValidation),
     );
   }
 
-  public removeNewAlias(index: number): void {
+  public removeAlias(index: number): void {
     this.aliasControls = this.removeFormArrayControls(index, 'aliases', this.aliasControls, this.aliasFields);
-    console.log(this.aliasControls);
   }
 
   public override ngOnInit(): void {

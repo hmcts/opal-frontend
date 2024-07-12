@@ -63,8 +63,8 @@
         <div class="govuk-!-margin-bottom-3">
           <a
             class="govuk-link govuk-link--no-visited-state"
-            (click)="removeNewAlias(aliasControls.length - 1)"
-            (keyup.enter)="removeNewAlias(aliasControls.length - 1)"
+            (click)="removeAlias(aliasControls.length - 1)"
+            (keyup.enter)="removeAlias(aliasControls.length - 1)"
             tabindex="0"
           >
             Remove
@@ -76,7 +76,7 @@
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
-          (buttonClickEvent)="addNewAlias(aliasControls.length)"
+          (buttonClickEvent)="addAlias(aliasControls.length)"
           >Add another alias</app-govuk-button
         >
       }
