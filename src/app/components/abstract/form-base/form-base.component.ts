@@ -333,7 +333,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @returns The updated array of form array controls after removing the control.
    */
   protected removeFormArrayControl(index: number, formArrayControls: IFormArrayControls[]): IFormArrayControls[] {
-    return formArrayControls.filter((_, i) => i !== index);
+    formArrayControls.splice(index, 1);
+    return formArrayControls;
   }
 
   /**

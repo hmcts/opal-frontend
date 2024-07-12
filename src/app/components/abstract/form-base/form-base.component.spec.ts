@@ -838,11 +838,11 @@ fdescribe('FormBaseComponent', () => {
     };
 
     component.formControlErrorMessages = errorMessage;
-
-    component['removeFormArrayControls'](index, formArrayName, formArrayControls, fieldNames);
-
-    expect(formArrayControls.length).toBe(1);
     console.log(component.formControlErrorMessages);
+    component['removeFormArrayControls'](index, formArrayName, formArrayControls, fieldNames);
+    console.log(component.formControlErrorMessages);
+    expect(formArrayControls.length).toBe(1);
+
     expect(component.formControlErrorMessages['firstNames_1']).toBeUndefined();
     expect(component.formControlErrorMessages['firstNames_0']).toBeDefined();
   });
