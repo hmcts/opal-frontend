@@ -57,7 +57,7 @@
     "@angular/router": "^18.0.5",
     "@angular/ssr": "^18.0.6",
     "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "@cypress/webpack-preprocessor": "^6.0.2",
     "@hmcts/info-provider": "^1.1.0",
     "@hmcts/nodejs-healthcheck": "^1.8.5",
     "@hmcts/nodejs-logging": "^4.0.4",
@@ -85,8 +85,10 @@
     "redis": "^4.6.11",
     "rxjs": "~7.8.0",
     "session-file-store": "^1.5.0",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
+    "webpack": "^5.93.0",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {

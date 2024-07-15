@@ -21,7 +21,6 @@
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
-    "esModuleInterop": true,
     "paths": {
       "@components": ["./src/app/components/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
@@ -46,6 +45,5 @@
 }
 
 // include + exclude - Issue with cypress + jasmine
-
 
 // https://github.com/cypress-io/cypress/issues/7552#issuecomment-717329891
