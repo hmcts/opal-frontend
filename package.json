@@ -133,7 +133,7 @@
   },
   "resolutions": {
     "braces": "3.0.3",
-    "@azure/msal-node": "2.10.0",
+    "@azure/msal-node": "2.11.0",
     "@azure/identity": "4.3.0",
     "jackspeak": "2.1.1"
   }
