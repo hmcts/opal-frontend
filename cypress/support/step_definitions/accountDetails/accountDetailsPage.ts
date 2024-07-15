@@ -1,4 +1,4 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor/';
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 Then(
   'should display business unit account {string} I selected from Business unit and defendant type page',

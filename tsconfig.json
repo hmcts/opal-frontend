@@ -21,6 +21,7 @@
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
+    "esModuleInterop": true,
     "paths": {
       "@components": ["./src/app/components/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
