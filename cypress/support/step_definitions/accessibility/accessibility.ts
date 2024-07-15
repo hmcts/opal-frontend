@@ -1,4 +1,4 @@
-import { Then } from '@badeball/cypress-cucumber-preprocessor/';
+import { Then } from '@badeball/cypress-cucumber-preprocessor';
 import 'cypress-axe';
 
 Then('I check accessibility', () => {

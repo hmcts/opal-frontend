@@ -1,4 +1,4 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor/';
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I see {string} as the caption on the page', (bodyCaption) => {
   cy.get('[class="govuk-caption-l"]').should('contain', bodyCaption);

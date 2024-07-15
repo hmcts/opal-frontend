@@ -1,4 +1,4 @@
-import { When, Then, Given } from '@badeball/cypress-cucumber-preprocessor/';
+import { When, Then, Given } from '@badeball/cypress-cucumber-preprocessor';
 
 Given('I am on the OPAL Frontend', () => {
   cy.visit('/sign-in');
