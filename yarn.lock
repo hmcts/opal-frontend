@@ -8916,7 +8916,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-scope@npm:^8.0.0, eslint-scope@npm:^8.0.2":
+"eslint-scope@npm:^8.0.0":
+  version: 8.0.1
+  resolution: "eslint-scope@npm:8.0.1"
+  dependencies:
+    esrecurse: ^4.3.0
+    estraverse: ^5.2.0
+  checksum: 67a5a39312dadb8c9a677df0f2e8add8daf15280b08bfe07f898d5347ee2d7cd2a1f5c2760f34e46e8f5f13f7192f47c2c10abe676bfa4173ae5539365551940
+  languageName: node
+  linkType: hard
+
+"eslint-scope@npm:^8.0.2":
   version: 8.0.2
   resolution: "eslint-scope@npm:8.0.2"
   dependencies:
