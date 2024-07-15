@@ -1,4 +1,4 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor/';
+import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import manualAccountPageObjects from '../../projectConfig/manual_account_page';
 import contactDetails from '../../projectConfig/contact_details_page';
 import personalDetails from '../../projectConfig/personal_details_page';
