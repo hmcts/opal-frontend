@@ -58,32 +58,32 @@ Then('I do not see a back button or back link', () => {
   cy.contains('button', /back/i).should('not.exist');
 });
 Then('I enter more than 30 characters into the {string} field', (fieldName: string) => {
-  cy.contains('app-govuk-text-input', fieldName).find('input').clear().type('Test'.repeat(10));
+  cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear().type('Test'.repeat(10));
 });
 Then('I see the error message {string} at the top of the page', (errorMessage: string) => {
   cy.get('.govuk-error-summary').should('contain', errorMessage);
 });
 Then('I see the error message {string} above the {string} field', (errorMessage: string, fieldName: string) => {
-  cy.contains('.govuk-error-message', errorMessage).prev().should('contain', fieldName);
+  cy.contains('.govuk-error-message', errorMessage).siblings().find('label').should('contain', fieldName);
 });
 Then('I see the error message {string} above the Date of birth field', (errorMessage: string) => {
   cy.contains('.govuk-error-message', errorMessage).siblings('label').should('contain', 'Date of birth');
 });
 Then('I enter {string} into the {string} field', (value: string, fieldName: string) => {
-  cy.contains('app-govuk-text-input', fieldName).find('input').clear().type(value);
+  cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear().type(value);
 });
 Then('I enter {string} into the Date of birth field', (dob: string) => {
   cy.get('app-scotgov-date-picker').find('input').clear().type(dob);
 });
 Then('I see {string} in the {string} field', (value: string, fieldName: string) => {
-  cy.contains('app-govuk-text-input', fieldName).find('input').should('have.value', value);
+  cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').should('have.value', value);
 });
 Then('I see {string} in the Date of birth field', (dob: string) => {
   cy.get('app-scotgov-date-picker').find('input').should('have.value', dob);
 });
 Then('I select {string} from the {string} dropdown', (option: string, dropdown: string) => {
-  cy.contains('app-govuk-select', dropdown).find('select').select(option);
+  cy.contains('app-govuk-select', dropdown, { matchCase: false }).find('select').select(option);
 });
 Then('I see {string} selected in the {string} dropdown', (option: string, dropdown: string) => {
-  cy.contains('app-govuk-select', dropdown).find('select').should('have.value', option);
+  cy.contains('app-govuk-select', dropdown, { matchCase: false }).find('select').should('have.value', option);
 });
