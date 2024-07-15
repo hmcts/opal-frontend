@@ -13,13 +13,13 @@ import { CompanyDetailsFormComponent } from './company-details-form/company-deta
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyDetailsComponent extends FormParentBaseComponent {
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+
   /**
    * Handles the form submission for company details.
    * @param companyDetailsForm - The form data containing the company details.
    */
   public handleCompanyDetailsSubmit(companyDetailsForm: IManualAccountCreationCompanyDetailsForm): void {
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       companyDetails: companyDetailsForm.formData,
@@ -27,8 +27,11 @@ export class CompanyDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    if (companyDetailsForm.continueFlow && defendantType) {
-      this.routerNavigate(MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['companyDetails']);
+    if (companyDetailsForm.continueFlow && this.defendantType) {
+      const nextRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[this.defendantType]['companyDetails'];
+      if (nextRoute) {
+        this.routerNavigate(nextRoute.nextRoute);
+      }
     } else {
       this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
     }

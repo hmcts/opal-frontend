@@ -2,16 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PersonalDetailsComponent } from './personal-details.component';
 import { MacStateService } from '@services';
-import {
-  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-} from '@constants';
 import { IManualAccountCreationPersonalDetailsForm, IManualAccountCreationPersonalDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
+import { MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
 
 describe('PersonalDetailsComponent', () => {
   let component: PersonalDetailsComponent;
@@ -23,16 +16,7 @@ describe('PersonalDetailsComponent', () => {
   beforeEach(async () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
-    mockMacStateService.manualAccountCreation = {
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-      companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     formData = {
       title: 'Mr',
@@ -62,6 +46,9 @@ describe('PersonalDetailsComponent', () => {
 
     fixture = TestBed.createComponent(PersonalDetailsComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 
@@ -80,8 +67,6 @@ describe('PersonalDetailsComponent', () => {
 
   it('should handle form submission and navigate next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
 
     formSubmit.continueFlow = true;
 

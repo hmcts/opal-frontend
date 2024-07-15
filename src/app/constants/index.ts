@@ -12,6 +12,7 @@ import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from './manual-ac
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE } from './manual-account-creation-account-details-state';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR } from './manual-account-creation-contact-details-field-errors';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE } from './manual-account-creation-contact-details-state';
+import { MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS } from './manual-account-creation-nested-buttons';
 import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from './manual-account-creation-nested-routes';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from './manual-account-creation-employer-details-field-errors';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from './manual-account-creation-employer-details-state';
@@ -56,6 +57,7 @@ export {
   POST_CODE_FIELD_ERRORS,
   DATE_OF_BIRTH_FIELD_ERRORS,
   NATIONAL_INSURANCE_FIELD_ERRORS,
+  MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS,
   MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS,
   CUSTOM_ADDRESS_FIELD_IDS,

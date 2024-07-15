@@ -66,13 +66,15 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit"> Return to account details </app-govuk-button>
-      <app-govuk-button
-        buttonId="submitForm"
-        type="submit"
-        buttonClasses="continue-flow govuk-button--secondary govuk-!-margin-left-3"
-      >
-        Add contact details
-      </app-govuk-button>
+      @if (defendantType && manualAccountCreationNestedRoutes[defendantType].companyDetails) {
+        <app-govuk-button
+          buttonId="submitForm"
+          type="submit"
+          buttonClasses="continue-flow govuk-button--secondary govuk-!-margin-left-3"
+        >
+          {{ manualAccountCreationNestedRoutes[defendantType].companyDetails?.buttonText }}
+        </app-govuk-button>
+      }
       <app-govuk-cancel-link
         (linkClickEvent)="handleRoute(manualAccountCreationRoutes.accountDetails)"
       ></app-govuk-cancel-link>

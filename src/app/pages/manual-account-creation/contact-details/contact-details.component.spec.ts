@@ -23,6 +23,9 @@ describe('ContactDetailsComponent', () => {
 
     fixture = TestBed.createComponent(ContactDetailsComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 
@@ -53,8 +56,6 @@ describe('ContactDetailsComponent', () => {
 
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
 
     const formData: IManualAccountCreationContactDetailsState = {
       primaryEmailAddress: 'Test',

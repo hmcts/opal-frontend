@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomAddressBlockComponent,
@@ -19,6 +19,7 @@ import {
   POST_CODE_FIELD_ERRORS,
   CUSTOM_ADDRESS_FIELD_IDS,
   MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS,
+  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import {
@@ -49,10 +50,12 @@ import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengt
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+  @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationCompanyDetailsForm>();
 
   public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
 
   public aliasControls: { [key: string]: IFormArrayControl }[] = [];
   public aliasControlsValidation: IFormArrayControlValidation[] = [];

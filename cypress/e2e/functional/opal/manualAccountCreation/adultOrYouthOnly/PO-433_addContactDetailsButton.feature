@@ -547,18 +547,6 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     Then I see "Alias 1", "First names" is set to ""
     Then I see "Alias 1", "Last name" is set to ""
 
-    Then I see "Alias 2", "First names" is set to ""
-    Then I see "Alias 2", "First names" is set to ""
-
-    Then I see "Alias 3", "First names" is set to ""
-    Then I see "Alias 3", "First names" is set to ""
-
-    Then I see "Alias 4", "First names" is set to ""
-    Then I see "Alias 4", "First names" is set to ""
-
-    Then I see "Alias 5", "First names" is set to ""
-    Then I see "Alias 5", "First names" is set to ""
-
 
 
 

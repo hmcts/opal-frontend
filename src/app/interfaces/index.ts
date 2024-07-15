@@ -47,6 +47,8 @@ import { IManualAccountCreationCompanyAlias } from './manual-account-creation-co
 import { IFormArrayControl } from './form-array-control.interface';
 import { IFormArrayControlValidation } from './form-array-control-validation.interface';
 import { IFormArrayControls } from './form-array-controls.interface';
+import { INestedRoutes } from './nested-routes.interface';
+import { IManualAccountCreationNestedRoutes } from './manual-account-creation-nested-routes.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -103,4 +105,6 @@ export {
   IFormArrayControl,
   IFormArrayControlValidation,
   IFormArrayControls,
+  INestedRoutes,
+  IManualAccountCreationNestedRoutes,
 };

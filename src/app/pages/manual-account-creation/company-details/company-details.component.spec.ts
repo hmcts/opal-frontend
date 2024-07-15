@@ -40,6 +40,9 @@ describe('CompanyDetailsComponent', () => {
 
     fixture = TestBed.createComponent(CompanyDetailsComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'company';
+
     fixture.detectChanges();
   });
 
@@ -58,8 +61,6 @@ describe('CompanyDetailsComponent', () => {
 
   it('should handle form submission and navigate next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'company';
 
     formSubmit.continueFlow = true;
 

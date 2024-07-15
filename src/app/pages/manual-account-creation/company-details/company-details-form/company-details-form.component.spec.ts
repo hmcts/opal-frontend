@@ -1,15 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CompanyDetailsFormComponent } from './company-details-form.component';
-import {
-  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
-  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK,
-  MANUAL_ACCOUNT_CREATION_MOCK,
-} from '@mocks';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK, MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
 import { MacStateService } from '@services';
-import {
-  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS,
-  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE,
-} from '@constants';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS } from '@constants';
 import { of } from 'rxjs';
 
 describe('CompanyDetailsFormComponent', () => {
@@ -29,14 +22,13 @@ describe('CompanyDetailsFormComponent', () => {
 
     fixture = TestBed.createComponent(CompanyDetailsFormComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 
   beforeEach(() => {
-    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
-    mockMacStateService.manualAccountCreation.accountDetails = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
-    mockMacStateService.manualAccountCreation.companyDetails = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE;
-
     component.form.reset();
   });
 

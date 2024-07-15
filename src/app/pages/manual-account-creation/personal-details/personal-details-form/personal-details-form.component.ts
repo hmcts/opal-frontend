@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import {
   CustomAddressBlockComponent,
@@ -70,11 +70,12 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+  @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
 
   public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-  public nestedRouteButtonText!: string;
+  public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
 
   public aliasControls: IFormArrayControls[] = [];
   public aliasControlsValidation: IFormArrayControlValidation[] = [];
@@ -131,27 +132,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   private setupAliasConfiguration(): void {
     this.aliasFields = ['firstNames', 'lastName'];
     this.aliasControlsValidation = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS;
-  }
-
-  /**
-   * Retrieves the nested route based on the defendant type and sets the nested route button text accordingly.
-   */
-  private getNestedRoute(): void {
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-    if (defendantType) {
-      const nestedRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['personalDetails'];
-      switch (nestedRoute) {
-        case ManualAccountCreationRoutes.contactDetails:
-          this.nestedRouteButtonText = 'Add contact details';
-          break;
-        case ManualAccountCreationRoutes.offenceDetails:
-          this.nestedRouteButtonText = 'Add offence details';
-          break;
-        default:
-          this.nestedRouteButtonText = '';
-          break;
-      }
-    }
   }
 
   /**
@@ -240,7 +220,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     this.setupAliasConfiguration();
     this.setupAliasFormControls();
     this.setInitialErrorMessages();
-    this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
     this.setUpAliasCheckboxListener();
   }
