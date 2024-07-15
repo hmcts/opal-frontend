@@ -400,7 +400,7 @@ When('I enter alias5 details {string},{string}', (firstName: string, lastName: s
   cy.get('#lastName_4').type(lastName);
 });
 When('I select add another alias', () => {
-  cy.get('#addNameAlias-conditional > app-govuk-button > button').click();
+  cy.get('#addAlias-conditional > app-govuk-button > button').click();
 });
 When('I enter make of the car {string}', (carBrand: string) => {
   cy.get('#makeOfCar').clear().type(carBrand);
@@ -427,8 +427,8 @@ When('I enter postcode {string}', (postcode: string) => {
 });
 
 Then('I verify {string} sub heading', (aliasText: string) => {
-  //cy.get('#addNameAlias-conditional > fieldset > legend').invoke('text').should('be.equal',aliasText);
-  cy.contains('#addNameAlias-conditional > fieldset > legend', aliasText).invoke('text');
+  //cy.get('#addAlias-conditional > fieldset > legend').invoke('text').should('be.equal',aliasText);
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText).invoke('text');
 });
 Then('I verify the text boxes {string},{string} below the sub heading', (firstName: string, lastName: string) => {
   cy.contains('h1', firstName)
@@ -439,9 +439,9 @@ Then('I verify the text boxes {string},{string} below the sub heading', (firstNa
     .then((lastName) => lastName.replace(' ', '').trim());
 });
 Then('I see {string} link below the {string} field', (removeLink: string, lastName: string) => {
-  //cy.get('#addNameAlias-conditional > div > a').prev().parent('#addNameAlias-conditional > fieldset >app-govuk-text-input').invoke('text').should('contains', lastName);
-  cy.get('#addNameAlias-conditional > fieldset >app-govuk-text-input > div >h1 ')
-    .find('#addNameAlias-conditional>div > a')
+  //cy.get('#addAlias-conditional > div > a').prev().parent('#addAlias-conditional > fieldset >app-govuk-text-input').invoke('text').should('contains', lastName);
+  cy.get('#addAlias-conditional > fieldset >app-govuk-text-input > div >h1 ')
+    .find('#addAlias-conditional>div > a')
     .invoke('text')
     .should('contains', removeLink);
 });
@@ -451,10 +451,10 @@ Then('I select {string} button', (removeButton: string) => {
 });
 
 Then('I no longer see {string} sub heading', (aliasText: string) => {
-  cy.contains('#addNameAlias-conditional > fieldset > legend', aliasText).should('not.exist', aliasText);
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText).should('not.exist', aliasText);
 });
 Then('I verify the {string} text box below the {string} sub heading', (firstName: string, aliasText: string) => {
-  cy.contains('#addNameAlias-conditional > fieldset > legend', aliasText)
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText)
     .next()
     .contains('h1', firstName)
     .invoke('text')
@@ -463,7 +463,7 @@ Then('I verify the {string} text box below the {string} sub heading', (firstName
 Then(
   'I verify the {string} text box below the {string} sub heading and first names',
   (lastName: string, aliasText: string) => {
-    cy.contains('#addNameAlias-conditional > fieldset > legend', aliasText)
+    cy.contains('#addAlias-conditional > fieldset > legend', aliasText)
       .next()
       .next()
       .contains('h1', lastName)
@@ -472,7 +472,7 @@ Then(
   },
 );
 Then('I verify the {string} button below the {string}', (removeLink: string, aliasText: string) => {
-  cy.contains('#addNameAlias-conditional > fieldset > legend', aliasText)
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText)
     .invoke('text')
     .next()
     .contains('h1', 'First names')
@@ -483,7 +483,7 @@ Then('I verify the {string} button below the {string}', (removeLink: string, ali
     .invoke('text')
     .then((lastName) => lastName.replace(' ', '').trim())
     .prev()
-    .contains('#addNameAlias-conditional > div > a', removeLink)
+    .contains('#addAlias-conditional > div > a', removeLink)
     .invoke('text')
     .should('have.text', removeLink);
 });
@@ -491,12 +491,12 @@ When('I unselect aliases check box', () => {
   cy.get('input[type="checkbox"]').uncheck();
 });
 Then('I see {string} sub heading', (aliasText: string) => {
-  cy.contains('#addNameAlias-conditional > fieldset > legend', aliasText).invoke('text').should('contains', aliasText);
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText).invoke('text').should('contains', aliasText);
 });
 
 Then('I verify {string} and {string} data should not be existed', (firstName: string, lastName: string) => {
-  cy.get('#addNameAlias-conditional > fieldset >app-govuk-text-input >div>input').should('not.have.value', firstName);
-  cy.get('#addNameAlias-conditional > fieldset >app-govuk-text-input >div>input').should('not.have.value', lastName);
+  cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').should('not.have.value', firstName);
+  cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').should('not.have.value', lastName);
 });
 When('I verify the error messages {string} for defendant screens', (errorMessage: string) => {
   cy.get('[class="govuk-error-message"]').should('contain', errorMessage);
@@ -537,8 +537,8 @@ Then(
   },
 );
 Then('I verify {string} and {string} in alias 1', (firstNames: string, lastName: string) => {
-  cy.get('#addNameAlias-conditional > fieldset > app-govuk-text-input >div >input').should('be.empty');
-  cy.get('#addNameAlias-conditional > fieldset > app-govuk-text-input >div >input').should('be.empty');
+  cy.get('#addAlias-conditional > fieldset > app-govuk-text-input >div >input').should('be.empty');
+  cy.get('#addAlias-conditional > fieldset > app-govuk-text-input >div >input').should('be.empty');
 });
 
 When(
@@ -551,15 +551,15 @@ When(
 When(
   'I verify the text boxes {string},{string} below the sub heading {string}',
   (firstNames: string, lastName: string, alias: string) => {
-    cy.get('#addNameAlias-conditional > fieldset >legend')
+    cy.get('#addAlias-conditional > fieldset >legend')
       .next()
-      .children('#addNameAlias-conditional > fieldset >app-govuk-text-input >')
+      .children('#addAlias-conditional > fieldset >app-govuk-text-input >')
       .invoke('text')
       .should('contains', firstNames);
-    cy.get('#addNameAlias-conditional > fieldset >legend')
+    cy.get('#addAlias-conditional > fieldset >legend')
       .next()
       .next()
-      .children('#addNameAlias-conditional > fieldset >app-govuk-text-input >')
+      .children('#addAlias-conditional > fieldset >app-govuk-text-input >')
       .invoke('text')
       .should('contains', lastName);
   },

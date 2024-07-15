@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomAddressBlockComponent,
-  FormBaseComponent,
+  FormAliasBaseComponent,
   GovukButtonComponent,
   GovukCancelLinkComponent,
   GovukCheckboxesComponent,
@@ -22,13 +22,7 @@ import {
   MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import {
-  IFieldErrors,
-  IFormArrayControl,
-  IFormArrayControlValidation,
-  IManualAccountCreationCompanyDetailsForm,
-} from '@interfaces';
-import { Subscription } from 'rxjs';
+import { IFieldErrors, IManualAccountCreationCompanyDetailsForm } from '@interfaces';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from 'src/app/validators';
 
 @Component({
@@ -49,17 +43,13 @@ import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengt
   templateUrl: './company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CompanyDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+export class CompanyDetailsFormComponent extends FormAliasBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationCompanyDetailsForm>();
 
   public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
-
-  public aliasControls: { [key: string]: IFormArrayControl }[] = [];
-  public aliasControlsValidation: IFormArrayControlValidation[] = [];
-  public aliasFields: string[] = [];
 
   override fieldErrors: IFieldErrors = {
     ...MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR,
@@ -69,16 +59,14 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
     ...POST_CODE_FIELD_ERRORS,
   };
 
-  private addAliasListener!: Subscription | undefined;
-
   /**
    * Sets up the company details form with the necessary form controls.
    */
   private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
       companyName: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
-      addCompanyAlias: new FormControl(null),
-      companyAliases: new FormArray([]),
+      addAlias: new FormControl(null),
+      aliases: new FormArray([]),
       addressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -117,65 +105,6 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
   }
 
   /**
-   * Sets up the listener for the alias checkbox.
-   * This method ensures any existing subscription is cleared to avoid memory leaks.
-   * It subscribes to the value changes of the 'addAlias' control in the form,
-   * and updates the alias controls based on the value of the checkbox.
-   */
-  private setUpAliasCheckboxListener(): void {
-    // Ensure any existing subscription is cleared to avoid memory leaks
-    this.addAliasListener?.unsubscribe();
-
-    const addAliasControl = this.form.get('addCompanyAlias');
-    if (!addAliasControl) {
-      return;
-    }
-
-    this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
-      this.aliasControls = shouldAddAlias
-        ? this.buildFormArrayControls([0], 'companyAliases', this.aliasFields, this.aliasControlsValidation)
-        : this.removeAllFormArrayControls(this.aliasControls, 'companyAliases', this.aliasFields);
-    });
-  }
-
-  /**
-   * Adds an alias to the aliasControls form array.
-   *
-   * @param index - The index at which to add the alias.
-   */
-  public addAlias(index: number): void {
-    this.aliasControls.push(
-      this.addFormArrayControls(index, 'companyAliases', this.aliasFields, this.aliasControlsValidation),
-    );
-  }
-
-  /**
-   * Removes an alias from the aliasControls array.
-   *
-   * @param index - The index of the alias to remove.
-   */
-  public removeAlias(index: number): void {
-    this.aliasControls = this.removeFormArrayControls(index, 'companyAliases', this.aliasControls, this.aliasFields);
-  }
-
-  /**
-   * Sets up the aliases for the personal details form.
-   * Re-populates the alias controls if there are any aliases.
-   */
-  private setupAliasFormControls(): void {
-    const aliases = this.macStateService.manualAccountCreation.companyDetails.companyAliases;
-    // Re-populate the alias controls if there are any aliases
-    if (aliases.length) {
-      this.aliasControls = this.buildFormArrayControls(
-        [...Array(aliases.length).keys()],
-        'companyAliases',
-        this.aliasFields,
-        this.aliasControlsValidation,
-      );
-    }
-  }
-
-  /**
    * Performs the initial setup for the personal details form component.
    * This method sets up the personal details form, alias configuration, aliases,
    * initial error messages, nested route, form population, and alias checkbox listener.
@@ -183,19 +112,13 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
   private initialSetup(): void {
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls();
+    this.setupAliasFormControls(this.macStateService.manualAccountCreation.companyDetails.aliases);
     this.setInitialErrorMessages();
     this.rePopulateForm(this.macStateService.manualAccountCreation.companyDetails);
-    this.setUpAliasCheckboxListener();
   }
 
   public override ngOnInit(): void {
     this.initialSetup();
     super.ngOnInit();
-  }
-
-  public override ngOnDestroy(): void {
-    this.addAliasListener?.unsubscribe();
-    super.ngOnDestroy();
   }
 }

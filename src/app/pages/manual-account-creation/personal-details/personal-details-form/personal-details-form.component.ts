@@ -4,7 +4,7 @@ import {
   CustomAddressBlockComponent,
   CustomDateOfBirthComponent,
   CustomNationalInsuranceNumberComponent,
-  FormBaseComponent,
+  FormAliasBaseComponent,
   GovukButtonComponent,
   GovukCancelLinkComponent,
   GovukCheckboxesComponent,
@@ -29,15 +29,8 @@ import {
   TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import {
-  IFieldErrors,
-  IFormArrayControlValidation,
-  IFormArrayControls,
-  IGovUkSelectOptions,
-  IManualAccountCreationPersonalDetailsForm,
-} from '@interfaces';
+import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalDetailsForm } from '@interfaces';
 import { DateTime } from 'luxon';
-import { Subscription } from 'rxjs';
 import {
   alphabeticalTextValidator,
   dateOfBirthValidator,
@@ -69,17 +62,13 @@ import {
   templateUrl: './personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PersonalDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+export class PersonalDetailsFormComponent extends FormAliasBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
 
   public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
-
-  public aliasControls: IFormArrayControls[] = [];
-  public aliasControlsValidation: IFormArrayControlValidation[] = [];
-  public aliasFields: string[] = [];
 
   override fieldErrors: IFieldErrors = {
     ...MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
@@ -94,8 +83,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 
-  private addAliasListener!: Subscription | undefined;
-
   /**
    * Sets up the personal details form.
    *
@@ -108,8 +95,8 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
       title: new FormControl(null, [Validators.required]),
       firstNames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
       lastName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      addNameAlias: new FormControl(null),
-      nameAliases: new FormArray([]),
+      addAlias: new FormControl(null),
+      aliases: new FormArray([]),
       dateOfBirth: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
       nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
       addressLine1: new FormControl(null, [
@@ -152,65 +139,6 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   }
 
   /**
-   * Sets up the listener for the alias checkbox.
-   * This method ensures any existing subscription is cleared to avoid memory leaks.
-   * It subscribes to the value changes of the 'addAlias' control in the form,
-   * and updates the alias controls based on the value of the checkbox.
-   */
-  private setUpAliasCheckboxListener(): void {
-    // Ensure any existing subscription is cleared to avoid memory leaks
-    this.addAliasListener?.unsubscribe();
-
-    const addAliasControl = this.form.get('addNameAlias');
-    if (!addAliasControl) {
-      return;
-    }
-
-    this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
-      this.aliasControls = shouldAddAlias
-        ? this.buildFormArrayControls([0], 'nameAliases', this.aliasFields, this.aliasControlsValidation)
-        : this.removeAllFormArrayControls(this.aliasControls, 'nameAliases', this.aliasFields);
-    });
-  }
-
-  /**
-   * Adds an alias to the aliasControls form array.
-   *
-   * @param index - The index at which to add the alias.
-   */
-  public addAlias(index: number): void {
-    this.aliasControls.push(
-      this.addFormArrayControls(index, 'nameAliases', this.aliasFields, this.aliasControlsValidation),
-    );
-  }
-
-  /**
-   * Removes an alias from the aliasControls array.
-   *
-   * @param index - The index of the alias to remove.
-   */
-  public removeAlias(index: number): void {
-    this.aliasControls = this.removeFormArrayControls(index, 'nameAliases', this.aliasControls, this.aliasFields);
-  }
-
-  /**
-   * Sets up the aliases for the personal details form.
-   * Re-populates the alias controls if there are any aliases.
-   */
-  private setupAliasFormControls(): void {
-    const aliases = this.macStateService.manualAccountCreation.personalDetails.nameAliases;
-    // Re-populate the alias controls if there are any aliases
-    if (aliases.length) {
-      this.aliasControls = this.buildFormArrayControls(
-        [...Array(aliases.length).keys()],
-        'nameAliases',
-        this.aliasFields,
-        this.aliasControlsValidation,
-      );
-    }
-  }
-
-  /**
    * Performs the initial setup for the personal details form component.
    * This method sets up the personal details form, alias configuration, aliases,
    * initial error messages, nested route, form population, and alias checkbox listener.
@@ -218,19 +146,13 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
   private initialSetup(): void {
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls();
+    this.setupAliasFormControls(this.macStateService.manualAccountCreation.personalDetails.aliases);
     this.setInitialErrorMessages();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
-    this.setUpAliasCheckboxListener();
   }
 
   public override ngOnInit(): void {
     this.initialSetup();
     super.ngOnInit();
-  }
-
-  public override ngOnDestroy(): void {
-    this.addAliasListener?.unsubscribe();
-    super.ngOnDestroy();
   }
 }

@@ -45,6 +45,7 @@ import { GovukCancelLinkComponent } from './govuk/govuk-cancel-link/govuk-cancel
 import { CustomAddressBlockComponent } from './custom/custom-address-block/custom-address-block.component';
 import { CustomNationalInsuranceNumberComponent } from './custom/custom-national-insurance-number/custom-national-insurance-number.component';
 import { CustomDateOfBirthComponent } from './custom/custom-date-of-birth/custom-date-of-birth.component';
+import { FormAliasBaseComponent } from './abstract/form-alias-base/form-alias-base';
 
 export {
   GovukButtonComponent,
@@ -93,4 +94,5 @@ export {
   CustomAddressBlockComponent,
   CustomNationalInsuranceNumberComponent,
   CustomDateOfBirthComponent,
+  FormAliasBaseComponent,
 };

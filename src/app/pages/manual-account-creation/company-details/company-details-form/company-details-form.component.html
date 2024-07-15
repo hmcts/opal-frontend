@@ -9,17 +9,17 @@
     [control]="form.controls['companyName']"
     [errors]="formControlErrorMessages['companyName']"
   ></app-govuk-text-input>
-  <app-govuk-checkboxes fieldSetId="addCompanyAliasCheckbox" checkboxClasses="" legendText="">
+  <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
       app-govuk-checkboxes-item
       labelText="Add company aliases"
-      inputId="addCompanyAlias"
-      inputName="addCompanyAlias"
-      [control]="form.get('addCompanyAlias')"
+      inputId="addAlias"
+      inputName="addAlias"
+      [control]="form.get('addAlias')"
     ></div>
   </app-govuk-checkboxes>
-  @if (form.get('addCompanyAlias')?.value === true) {
-    <div app-govuk-checkboxes-conditional conditionalId="addCompanyAlias" formArrayName="companyAliases">
+  @if (form.get('addAlias')?.value === true) {
+    <div app-govuk-checkboxes-conditional conditionalId="addAlias" formArrayName="aliases">
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
@@ -27,7 +27,7 @@
             labelText="Company name"
             [inputId]="aliasControls[rowIndex]['companyName'].inputId"
             [inputName]="aliasControls[rowIndex]['companyName'].inputName"
-            [control]="form.get(['companyAliases', rowIndex, aliasControls[rowIndex]['companyName'].controlName])"
+            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['companyName'].controlName])"
             [errors]="formControlErrorMessages[aliasControls[rowIndex]['companyName'].controlName]"
           ></app-govuk-text-input>
         </fieldset>

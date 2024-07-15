@@ -4,8 +4,8 @@ export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK: IManualAccount
   title: 'Mr',
   firstNames: 'John',
   lastName: 'Doe',
-  addNameAlias: true,
-  nameAliases: [
+  addAlias: true,
+  aliases: [
     {
       firstNames_0: 'Testing',
       lastName_0: 'Test',

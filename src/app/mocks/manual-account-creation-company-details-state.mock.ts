@@ -2,8 +2,8 @@ import { IManualAccountCreationCompanyDetailsState } from '../interfaces';
 
 export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK: IManualAccountCreationCompanyDetailsState = {
   companyName: 'Acme Org Ltd.',
-  addCompanyAlias: true,
-  companyAliases: [
+  addAlias: true,
+  aliases: [
     {
       companyName_0: 'Boring Co.',
     },
