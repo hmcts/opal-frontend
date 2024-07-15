@@ -298,10 +298,6 @@ When('I enter work telephone number {string}', (workTelephone: string) => {
   contactDetails.enterWorkTelephone(workTelephone);
 });
 
-Then('I see {string} value on {string} field', (inputValue: string, inputField: string) => {
-  cy.contains('[class="govuk-form-group"]', inputField).find('input').should('have.value', inputValue);
-});
-
 Then(
   'I verify {string},{string},{string} on contact details page',
   (primaryEmail, secondaryEmail, homeTelephone: string) => {
