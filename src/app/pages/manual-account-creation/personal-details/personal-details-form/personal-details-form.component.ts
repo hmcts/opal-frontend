@@ -108,8 +108,8 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
       title: new FormControl(null, [Validators.required]),
       firstNames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
       lastName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      addAlias: new FormControl(null),
-      aliases: new FormArray([]),
+      addNameAlias: new FormControl(null),
+      nameAliases: new FormArray([]),
       dateOfBirth: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
       nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
       addressLine1: new FormControl(null, [
@@ -161,15 +161,15 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
     // Ensure any existing subscription is cleared to avoid memory leaks
     this.addAliasListener?.unsubscribe();
 
-    const addAliasControl = this.form.get('addAlias');
+    const addAliasControl = this.form.get('addNameAlias');
     if (!addAliasControl) {
       return;
     }
 
     this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
       this.aliasControls = shouldAddAlias
-        ? this.buildFormArrayControls([0], 'aliases', this.aliasFields, this.aliasControlsValidation)
-        : this.removeAllFormArrayControls(this.aliasControls, 'aliases', this.aliasFields);
+        ? this.buildFormArrayControls([0], 'nameAliases', this.aliasFields, this.aliasControlsValidation)
+        : this.removeAllFormArrayControls(this.aliasControls, 'nameAliases', this.aliasFields);
     });
   }
 
@@ -180,7 +180,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
    */
   public addAlias(index: number): void {
     this.aliasControls.push(
-      this.addFormArrayControls(index, 'aliases', this.aliasFields, this.aliasControlsValidation),
+      this.addFormArrayControls(index, 'nameAliases', this.aliasFields, this.aliasControlsValidation),
     );
   }
 
@@ -190,7 +190,7 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
    * @param index - The index of the alias to remove.
    */
   public removeAlias(index: number): void {
-    this.aliasControls = this.removeFormArrayControls(index, 'aliases', this.aliasControls, this.aliasFields);
+    this.aliasControls = this.removeFormArrayControls(index, 'nameAliases', this.aliasControls, this.aliasFields);
   }
 
   /**
@@ -198,12 +198,12 @@ export class PersonalDetailsFormComponent extends FormBaseComponent implements O
    * Re-populates the alias controls if there are any aliases.
    */
   private setupAliasFormControls(): void {
-    const aliases = this.macStateService.manualAccountCreation.personalDetails.aliases;
+    const aliases = this.macStateService.manualAccountCreation.personalDetails.nameAliases;
     // Re-populate the alias controls if there are any aliases
     if (aliases.length) {
       this.aliasControls = this.buildFormArrayControls(
         [...Array(aliases.length).keys()],
-        'aliases',
+        'nameAliases',
         this.aliasFields,
         this.aliasControlsValidation,
       );

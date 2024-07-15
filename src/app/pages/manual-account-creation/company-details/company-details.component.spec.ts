@@ -20,8 +20,8 @@ describe('CompanyDetailsComponent', () => {
 
     formData = {
       companyName: 'Test',
-      addAlias: false,
-      aliases: [],
+      addCompanyAlias: false,
+      companyAliases: [],
       addressLine1: null,
       addressLine2: null,
       addressLine3: null,

@@ -70,8 +70,8 @@ describe('CompanyDetailsFormComponent', () => {
     component['setupCompanyDetailsForm']();
     expect(component.form).toBeTruthy();
     expect(component.form.get('companyName')).toBeTruthy();
-    expect(component.form.get('addAlias')).toBeTruthy();
-    expect(component.form.get('aliases')).toBeTruthy();
+    expect(component.form.get('addCompanyAlias')).toBeTruthy();
+    expect(component.form.get('companyAliases')).toBeTruthy();
     expect(component.form.get('addressLine1')).toBeTruthy();
     expect(component.form.get('addressLine2')).toBeTruthy();
     expect(component.form.get('addressLine3')).toBeTruthy();
@@ -85,7 +85,7 @@ describe('CompanyDetailsFormComponent', () => {
   });
 
   it('should update alias controls based on the value of the checkbox', () => {
-    const addAliasControl = component.form.get('addAlias');
+    const addAliasControl = component.form.get('addCompanyAlias');
 
     addAliasControl?.setValue(true);
 
@@ -129,7 +129,7 @@ describe('CompanyDetailsFormComponent', () => {
       },
     ];
 
-    component.macStateService.manualAccountCreation.companyDetails.aliases = aliases;
+    component.macStateService.manualAccountCreation.companyDetails.companyAliases = aliases;
     component['setupAliasFormControls']();
 
     expect(component.aliasControls.length).toBe(1);
@@ -160,7 +160,7 @@ describe('CompanyDetailsFormComponent', () => {
   });
 
   it('should unsubscribe from addAliasListener on ngOnDestroy', () => {
-    const addAliasControl = component.form.get('addAlias');
+    const addAliasControl = component.form.get('addCompanyAlias');
 
     addAliasControl?.setValue(true);
 
@@ -184,7 +184,7 @@ describe('CompanyDetailsFormComponent', () => {
 
     component['setUpAliasCheckboxListener']();
 
-    expect(component.form.get).toHaveBeenCalledWith('addAlias');
+    expect(component.form.get).toHaveBeenCalledWith('addCompanyAlias');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect<any>(component['setUpAliasCheckboxListener']).toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

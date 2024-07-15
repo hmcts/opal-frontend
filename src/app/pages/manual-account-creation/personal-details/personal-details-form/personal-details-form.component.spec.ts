@@ -84,8 +84,8 @@ describe('PersonalDetailsFormComponent', () => {
     expect(component.form.get('title')).toBeTruthy();
     expect(component.form.get('firstNames')).toBeTruthy();
     expect(component.form.get('lastName')).toBeTruthy();
-    expect(component.form.get('addAlias')).toBeTruthy();
-    expect(component.form.get('aliases')).toBeTruthy();
+    expect(component.form.get('addNameAlias')).toBeTruthy();
+    expect(component.form.get('nameAliases')).toBeTruthy();
     expect(component.form.get('dateOfBirth')).toBeTruthy();
     expect(component.form.get('nationalInsuranceNumber')).toBeTruthy();
     expect(component.form.get('addressLine1')).toBeTruthy();
@@ -103,7 +103,7 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should update alias controls based on the value of the checkbox', () => {
-    const addAliasControl = component.form.get('addAlias');
+    const addAliasControl = component.form.get('addNameAlias');
 
     addAliasControl?.setValue(true);
 
@@ -148,7 +148,7 @@ describe('PersonalDetailsFormComponent', () => {
       },
     ];
 
-    component.macStateService.manualAccountCreation.personalDetails.aliases = aliases;
+    component.macStateService.manualAccountCreation.personalDetails.nameAliases = aliases;
     component['setupAliasFormControls']();
 
     expect(component.aliasControls.length).toBe(1);
@@ -179,7 +179,7 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should unsubscribe from addAliasListener on ngOnDestroy', () => {
-    const addAliasControl = component.form.get('addAlias');
+    const addAliasControl = component.form.get('addNameAlias');
 
     addAliasControl?.setValue(true);
 
@@ -203,7 +203,7 @@ describe('PersonalDetailsFormComponent', () => {
 
     component['setUpAliasCheckboxListener']();
 
-    expect(component.form.get).toHaveBeenCalledWith('addAlias');
+    expect(component.form.get).toHaveBeenCalledWith('addNameAlias');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect<any>(component['setUpAliasCheckboxListener']).toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -4,8 +4,8 @@ export interface IManualAccountCreationPersonalDetailsState {
   title: string | null;
   firstNames: string | null;
   lastName: string | null;
-  addAlias: boolean | null;
-  aliases: IManualAccountCreationPersonalDetailsAliasState[];
+  addNameAlias: boolean | null;
+  nameAliases: IManualAccountCreationPersonalDetailsAliasState[];
   dateOfBirth: string | null;
   nationalInsuranceNumber: string | null;
   addressLine1: string | null;

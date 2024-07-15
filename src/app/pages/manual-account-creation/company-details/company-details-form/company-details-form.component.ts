@@ -77,8 +77,8 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
   private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
       companyName: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
-      addAlias: new FormControl(null),
-      aliases: new FormArray([]),
+      addCompanyAlias: new FormControl(null),
+      companyAliases: new FormArray([]),
       addressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -126,15 +126,15 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
     // Ensure any existing subscription is cleared to avoid memory leaks
     this.addAliasListener?.unsubscribe();
 
-    const addAliasControl = this.form.get('addAlias');
+    const addAliasControl = this.form.get('addCompanyAlias');
     if (!addAliasControl) {
       return;
     }
 
     this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
       this.aliasControls = shouldAddAlias
-        ? this.buildFormArrayControls([0], 'aliases', this.aliasFields, this.aliasControlsValidation)
-        : this.removeAllFormArrayControls(this.aliasControls, 'aliases', this.aliasFields);
+        ? this.buildFormArrayControls([0], 'companyAliases', this.aliasFields, this.aliasControlsValidation)
+        : this.removeAllFormArrayControls(this.aliasControls, 'companyAliases', this.aliasFields);
     });
   }
 
@@ -145,7 +145,7 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
    */
   public addAlias(index: number): void {
     this.aliasControls.push(
-      this.addFormArrayControls(index, 'aliases', this.aliasFields, this.aliasControlsValidation),
+      this.addFormArrayControls(index, 'companyAliases', this.aliasFields, this.aliasControlsValidation),
     );
   }
 
@@ -155,7 +155,7 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
    * @param index - The index of the alias to remove.
    */
   public removeAlias(index: number): void {
-    this.aliasControls = this.removeFormArrayControls(index, 'aliases', this.aliasControls, this.aliasFields);
+    this.aliasControls = this.removeFormArrayControls(index, 'companyAliases', this.aliasControls, this.aliasFields);
   }
 
   /**
@@ -163,12 +163,12 @@ export class CompanyDetailsFormComponent extends FormBaseComponent implements On
    * Re-populates the alias controls if there are any aliases.
    */
   private setupAliasFormControls(): void {
-    const aliases = this.macStateService.manualAccountCreation.companyDetails.aliases;
+    const aliases = this.macStateService.manualAccountCreation.companyDetails.companyAliases;
     // Re-populate the alias controls if there are any aliases
     if (aliases.length) {
       this.aliasControls = this.buildFormArrayControls(
         [...Array(aliases.length).keys()],
-        'aliases',
+        'companyAliases',
         this.aliasFields,
         this.aliasControlsValidation,
       );

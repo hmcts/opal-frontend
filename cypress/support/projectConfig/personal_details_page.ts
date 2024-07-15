@@ -24,13 +24,13 @@ export default class personalDetails {
     cy.get('#addressLine1').find('input').clear().type(addLine3);
   }
   static enterFirstNamesInAlias(firstNameAlias: string) {
-    cy.get('#addAlias-conditional > fieldset >legend')
+    cy.get('#addNameAlias-conditional > fieldset >legend')
       .siblings()
-      .get('#addAlias-conditional > fieldset >app-govuk-text-input > div > input')
+      .get('#addNameAlias-conditional > fieldset >app-govuk-text-input > div > input')
       .should('be.visible')
       .type(firstNameAlias);
   }
   static enterLastNamesInAlias(lastNameAlias: string) {
-    cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').type(lastNameAlias);
+    cy.get('#addNameAlias-conditional > fieldset >app-govuk-text-input >div>input').type(lastNameAlias);
   }
 }
