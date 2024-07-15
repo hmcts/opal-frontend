@@ -756,7 +756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/identity@npm:4.3.0":
+"@azure/identity@npm:^4.0.0-beta.1, @azure/identity@npm:^4.2.1":
   version: 4.3.0
   resolution: "@azure/identity@npm:4.3.0"
   dependencies:
@@ -887,14 +887,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-node@npm:2.10.0":
-  version: 2.10.0
-  resolution: "@azure/msal-node@npm:2.10.0"
+"@azure/msal-node@npm:^2.9.2":
+  version: 2.11.0
+  resolution: "@azure/msal-node@npm:2.11.0"
   dependencies:
     "@azure/msal-common": "npm:14.13.0"
     jsonwebtoken: "npm:^9.0.0"
     uuid: "npm:^8.3.0"
-  checksum: 10/7a57d371b2bdda1fc4459577c66e98c6c9e67e1c554a615042d47c3252bcc5bac84a398b15a0e52239d715d761fef60d6eaedbf394a0eca327cf54c866d8c2fd
+  checksum: 10/527e4c2a694c302963edcd13f76bedf3b7294849f91a5713f8370fbfe876cd9735a247c34de2f730d9e01f295a8b3363a043c3aa11fad11db62bfcda2ed98179
   languageName: node
   linkType: hard
 
@@ -7053,7 +7053,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"braces@npm:3.0.3":
+"braces@npm:^3.0.2, braces@npm:^3.0.3, braces@npm:~3.0.2":
   version: 3.0.3
   resolution: "braces@npm:3.0.3"
   dependencies:
