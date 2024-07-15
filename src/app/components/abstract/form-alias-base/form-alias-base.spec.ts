@@ -36,6 +36,10 @@ describe('FormArrayBase', () => {
     component.aliasFields = [];
   });
 
+  afterEach(() => {
+    component.ngOnDestroy();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -368,10 +372,14 @@ describe('FormArrayBase', () => {
   it('should update alias controls based on the value of the checkbox', () => {
     const addAliasControl = component.form.get('addAlias');
 
+    // Call the setUpAliasCheckboxListener method
+    component['setUpAliasCheckboxListener']('addAlias', 'aliases');
+
+    // Mark checkbox as true
     addAliasControl?.setValue(true);
 
-    // Call the setUpAliasCheckboxListener method
-    component['setUpAliasCheckboxListener']();
+    // Check addAliasListener is setup
+    expect(component['addAliasListener']).toBeDefined();
 
     // Check that the aliasControls array is populated with the expected number of controls
     expect(component.aliasControls.length).toBe(1);
@@ -388,7 +396,7 @@ describe('FormArrayBase', () => {
 
     expect(component.aliasControls.length).toBe(0);
 
-    component.addAlias(index);
+    component.addAlias(index, 'aliases');
 
     expect(component.aliasControls.length).toBe(1);
   });
@@ -396,10 +404,10 @@ describe('FormArrayBase', () => {
   it('should remove an alias from the aliasControls form array', () => {
     const index = 0;
 
-    component.addAlias(index);
+    component.addAlias(index, 'aliases');
     expect(component.aliasControls.length).toBe(1);
 
-    component.removeAlias(index);
+    component.removeAlias(index, 'aliases');
     expect(component.aliasControls.length).toBe(0);
   });
 
@@ -410,7 +418,7 @@ describe('FormArrayBase', () => {
       },
     ];
 
-    component['setupAliasFormControls'](aliases);
+    component['setupAliasFormControls'](aliases, 'aliases');
 
     expect(component.aliasControls.length).toBe(1);
   });
@@ -421,7 +429,7 @@ describe('FormArrayBase', () => {
     addAliasControl?.setValue(true);
 
     // Call the setUpAliasCheckboxListener method
-    component['setUpAliasCheckboxListener']();
+    component['setUpAliasCheckboxListener']('addAlias', 'aliases');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const unsubscribeSpy = spyOn<any>(component['addAliasListener'], 'unsubscribe');
@@ -438,7 +446,7 @@ describe('FormArrayBase', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeAllFormArrayControls').and.returnValue(of([]));
 
-    component['setUpAliasCheckboxListener']();
+    component['setUpAliasCheckboxListener']('addAlias', 'aliases');
 
     expect(component.form.get).toHaveBeenCalledWith('addAlias');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

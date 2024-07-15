@@ -112,9 +112,10 @@ export class CompanyDetailsFormComponent extends FormAliasBaseComponent implemen
   private initialSetup(): void {
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls(this.macStateService.manualAccountCreation.companyDetails.aliases);
+    this.setupAliasFormControls(this.macStateService.manualAccountCreation.companyDetails.aliases, 'aliases');
     this.setInitialErrorMessages();
     this.rePopulateForm(this.macStateService.manualAccountCreation.companyDetails);
+    this.setUpAliasCheckboxListener('addAlias', 'aliases');
   }
 
   public override ngOnInit(): void {

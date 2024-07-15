@@ -15,28 +15,6 @@ export abstract class FormAliasBaseComponent extends FormBaseComponent implement
   public aliasFields: string[] = [];
 
   /**
-   * Sets up the listener for the alias checkbox.
-   * This method ensures any existing subscription is cleared to avoid memory leaks.
-   * It subscribes to the value changes of the 'addAlias' control in the form,
-   * and updates the alias controls based on the value of the checkbox.
-   */
-  private setUpAliasCheckboxListener(): void {
-    // Ensure any existing subscription is cleared to avoid memory leaks
-    this.addAliasListener?.unsubscribe();
-
-    const addAliasControl = this.form.get('addAlias');
-    if (!addAliasControl) {
-      return;
-    }
-
-    this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
-      this.aliasControls = shouldAddAlias
-        ? this.buildFormArrayControls([0], 'aliases', this.aliasFields, this.aliasControlsValidation)
-        : this.removeAllFormArrayControls(this.aliasControls, 'aliases', this.aliasFields);
-    });
-  }
-
-  /**
    * Adds controls to a form group.
    *
    * @param formGroup - The form group to add controls to.
@@ -54,12 +32,12 @@ export abstract class FormAliasBaseComponent extends FormBaseComponent implement
    * Re-populates the alias controls if there are any aliases.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected setupAliasFormControls(aliases: any[]): void {
+  protected setupAliasFormControls(aliases: any[], formArrayName: string): void {
     // Re-populate the alias controls if there are any aliases
     if (aliases.length) {
       this.aliasControls = this.buildFormArrayControls(
         [...Array(aliases.length).keys()],
-        'aliases',
+        formArrayName,
         this.aliasFields,
         this.aliasControlsValidation,
       );
@@ -168,6 +146,28 @@ export abstract class FormAliasBaseComponent extends FormBaseComponent implement
   }
 
   /**
+   * Sets up the listener for the alias checkbox.
+   * This method ensures any existing subscription is cleared to avoid memory leaks.
+   * It subscribes to the value changes of the 'addAlias' control in the form,
+   * and updates the alias controls based on the value of the checkbox.
+   */
+  protected setUpAliasCheckboxListener(formCheckboxName: string, formArrayName: string): void {
+    // Ensure any existing subscription is cleared to avoid memory leaks
+    this.addAliasListener?.unsubscribe();
+
+    const addAliasControl = this.form.get(formCheckboxName);
+    if (!addAliasControl) {
+      return;
+    }
+
+    this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
+      this.aliasControls = shouldAddAlias
+        ? this.buildFormArrayControls([0], formArrayName, this.aliasFields, this.aliasControlsValidation)
+        : this.removeAllFormArrayControls(this.aliasControls, formArrayName, this.aliasFields);
+    });
+  }
+
+  /**
    * Adds form array controls to a form array and returns the form controls.
    *
    * @param index - The index at which to add the form array controls.
@@ -231,9 +231,9 @@ export abstract class FormAliasBaseComponent extends FormBaseComponent implement
    *
    * @param index - The index at which to add the alias.
    */
-  public addAlias(index: number): void {
+  public addAlias(index: number, formArrayName: string): void {
     this.aliasControls.push(
-      this.addFormArrayControls(index, 'aliases', this.aliasFields, this.aliasControlsValidation),
+      this.addFormArrayControls(index, formArrayName, this.aliasFields, this.aliasControlsValidation),
     );
   }
 
@@ -242,12 +242,11 @@ export abstract class FormAliasBaseComponent extends FormBaseComponent implement
    *
    * @param index - The index of the alias to remove.
    */
-  public removeAlias(index: number): void {
-    this.aliasControls = this.removeFormArrayControls(index, 'aliases', this.aliasControls, this.aliasFields);
+  public removeAlias(index: number, formArrayName: string): void {
+    this.aliasControls = this.removeFormArrayControls(index, formArrayName, this.aliasControls, this.aliasFields);
   }
 
   public override ngOnInit(): void {
-    this.setUpAliasCheckboxListener();
     super.ngOnInit();
   }
 

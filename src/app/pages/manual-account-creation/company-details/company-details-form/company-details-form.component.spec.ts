@@ -41,7 +41,6 @@ describe('CompanyDetailsFormComponent', () => {
 
   it('should emit form submit event with form value - continueFlow true', () => {
     const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
     const companyDetailsForm = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK;
     companyDetailsForm.continueFlow = true;
     spyOn(component['formSubmit'], 'emit');
@@ -54,7 +53,6 @@ describe('CompanyDetailsFormComponent', () => {
 
   it('should emit form submit event with form value - continueFlow false', () => {
     const event = {} as SubmitEvent;
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
     const companyDetailsForm = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK;
     companyDetailsForm.continueFlow = false;
     spyOn(component['formSubmit'], 'emit');
@@ -94,6 +92,8 @@ describe('CompanyDetailsFormComponent', () => {
     spyOn<any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setUpAliasCheckboxListener');
 
     component['initialSetup']();
 
@@ -101,8 +101,10 @@ describe('CompanyDetailsFormComponent', () => {
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
       mockMacStateService.manualAccountCreation.companyDetails.aliases,
+      'aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.companyDetails);
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('addAlias', 'aliases');
   });
 });

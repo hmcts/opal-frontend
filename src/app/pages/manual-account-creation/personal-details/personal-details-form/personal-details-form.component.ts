@@ -146,9 +146,10 @@ export class PersonalDetailsFormComponent extends FormAliasBaseComponent impleme
   private initialSetup(): void {
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls(this.macStateService.manualAccountCreation.personalDetails.aliases);
+    this.setupAliasFormControls(this.macStateService.manualAccountCreation.personalDetails.aliases, 'aliases');
     this.setInitialErrorMessages();
     this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
+    this.setUpAliasCheckboxListener('addAlias', 'aliases');
   }
 
   public override ngOnInit(): void {
