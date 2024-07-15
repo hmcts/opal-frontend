@@ -1,4 +1,4 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor/';
+import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import { SrvRecord } from 'dns';
 
 Then('I select the add aliases checkbox', () => {
