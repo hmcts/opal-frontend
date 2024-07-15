@@ -135,7 +135,6 @@
     "braces": "3.0.3",
     "@azure/msal-node": "2.10.0",
     "@azure/identity": "4.3.0",
-    "jackspeak": "2.1.1",
     "glob": "^10.4.5",
     "@cucumber/messages": "^25.0.1"
   }
