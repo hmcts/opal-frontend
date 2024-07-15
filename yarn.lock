@@ -2504,18 +2504,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cucumber/messages@npm:24.1.0, @cucumber/messages@npm:>=19.1.4 <=24, @cucumber/messages@npm:^24.0.0":
-  version: 24.1.0
-  resolution: "@cucumber/messages@npm:24.1.0"
-  dependencies:
-    "@types/uuid": "npm:9.0.8"
-    class-transformer: "npm:0.5.1"
-    reflect-metadata: "npm:0.2.1"
-    uuid: "npm:9.0.1"
-  checksum: 10/a0e28349afd872cd067c03b726f0e61bb017735df63e343f94c096842058282a6fd6a1adcff83d8b61855d00637904535e5918c1ac589d660bd2c610c922f088
-  languageName: node
-  linkType: hard
-
 "@cucumber/messages@npm:^25.0.1":
   version: 25.0.1
   resolution: "@cucumber/messages@npm:25.0.1"
@@ -13854,13 +13842,6 @@ __metadata:
     "@redis/search": "npm:1.1.6"
     "@redis/time-series": "npm:1.0.5"
   checksum: 10/72f74fc80c89a8251e997b2c55bd05f5556191adeafe806ea17842ece5d2f80be31a76e161a9f0badcc5c35924044d642de66d3fc27215525f7332e9862e56d3
-  languageName: node
-  linkType: hard
-
-"reflect-metadata@npm:0.2.1":
-  version: 0.2.1
-  resolution: "reflect-metadata@npm:0.2.1"
-  checksum: 10/394b293bd4a538b644ed0e8730c5aeb1e08e78972c915b3d2cf3b302241952cfee8f8bd8a0fdf7d8c7fa78d31d0585489061624692e2577d767abd120cad968c
   languageName: node
   linkType: hard
 
