@@ -418,7 +418,7 @@ describe('FormArrayBase', () => {
       },
     ];
 
-    component['setupAliasFormControls'](aliases, 'aliases');
+    component['setupAliasFormControls']([...Array(aliases.length).keys()], 'aliases');
 
     expect(component.aliasControls.length).toBe(1);
   });

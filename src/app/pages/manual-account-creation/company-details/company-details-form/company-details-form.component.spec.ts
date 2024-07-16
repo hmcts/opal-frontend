@@ -100,7 +100,7 @@ describe('CompanyDetailsFormComponent', () => {
     expect(component['setupCompanyDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      mockMacStateService.manualAccountCreation.companyDetails.aliases,
+      [...Array(component.macStateService.manualAccountCreation.companyDetails.aliases.length).keys()],
       'aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();

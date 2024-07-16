@@ -106,7 +106,7 @@ describe('PersonalDetailsFormComponent', () => {
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      mockMacStateService.manualAccountCreation.personalDetails.aliases,
+      [...Array(component.macStateService.manualAccountCreation.personalDetails.aliases.length).keys()],
       'aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();

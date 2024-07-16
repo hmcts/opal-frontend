@@ -112,7 +112,10 @@ export class CompanyDetailsFormComponent extends FormAliasBaseComponent implemen
   private initialSetup(): void {
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls(this.macStateService.manualAccountCreation.companyDetails.aliases, 'aliases');
+    this.setupAliasFormControls(
+      [...Array(this.macStateService.manualAccountCreation.companyDetails.aliases.length).keys()],
+      'aliases',
+    );
     this.setInitialErrorMessages();
     this.rePopulateForm(this.macStateService.manualAccountCreation.companyDetails);
     this.setUpAliasCheckboxListener('addAlias', 'aliases');
