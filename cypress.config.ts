@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress';
+import * as webpack from '@cypress/webpack-preprocessor';
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
-import { preprocessor } from '@badeball/cypress-cucumber-preprocessor/browserify';
 
 async function setupNodeEvents(
   on: Cypress.PluginEvents,
@@ -10,8 +10,34 @@ async function setupNodeEvents(
 
   on(
     'file:preprocessor',
-    preprocessor(config, {
-      typescript: require.resolve('typescript'),
+    webpack({
+      webpackOptions: {
+        resolve: {
+          extensions: ['.ts', '.js'],
+        },
+        module: {
+          rules: [
+            {
+              test: /\.ts$/,
+              exclude: [/node_modules/],
+              use: [
+                {
+                  loader: 'ts-loader',
+                },
+              ],
+            },
+            {
+              test: /\.feature$/,
+              use: [
+                {
+                  loader: '@badeball/cypress-cucumber-preprocessor/webpack',
+                  options: config,
+                },
+              ],
+            },
+          ],
+        },
+      },
     }),
   );
   on('before:browser:launch', (browser, launchOptions) => {
@@ -40,6 +66,8 @@ async function setupNodeEvents(
 
     return launchOptions;
   });
+  config.env['messagesOutput'] =
+    `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   return config;
 }
 export default defineConfig({

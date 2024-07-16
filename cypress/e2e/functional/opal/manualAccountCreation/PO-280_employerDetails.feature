@@ -1,4 +1,4 @@
-Feature:PO-280 Employer details page for defendant accounts
+Feature: PO-280 Employer details page for defendant accounts for Adult or Youth Only configuration
 
   Background:
     Given I am on the OPAL Frontend
@@ -19,7 +19,7 @@ Feature:PO-280 Employer details page for defendant accounts
     When I select the "Adult or youth only" radio button
     Then I click the "Continue" button
     Then I see "Account details" on the page header
-    Then I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I see "Employer details" on the page header
 
   #AC7
@@ -38,11 +38,11 @@ Feature:PO-280 Employer details page for defendant accounts
 
     #Due to changes in PO-360
     #Then I click save and return to tasks
-    And I click the "Return to account details" button
+    Then I click the "Return to account details" button
     #The page header changed according to PO-366
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
-    When I click on "Employer details" link
+    When I click on the "Employer details" link
     Then I see "Employer details" on the page header
 
     And I see "<employerName>" in the "Employer name" field
@@ -76,32 +76,13 @@ Feature:PO-280 Employer details page for defendant accounts
 
     #Due to changes in PO-360
     #Then I click save and return to tasks
-    And I click the "Return to account details" button
-    Then I see the error message "The employer name must be 35 characters or fewer" at the top of the page
-    And I see the error message "The employee reference must be 20 characters or fewer" at the top of the page
-    And I see the error message "The employer email address must be 76 characters or fewer" at the top of the page
-    And I see the error message "Enter employer telephone number in the correct format" at the top of the page
-    And I see the error message "The employer address line 1 must be 30 characters or fewer" at the top of the page
-    And I see the error message "The employer address line 2 must be 30 characters or fewer" at the top of the page
-    And I see the error message "The employer address line 3 must be 30 characters or fewer" at the top of the page
-    And I see the error message "The employer address line 4 must be 30 characters or fewer" at the top of the page
-    And I see the error message "The employer address line 5 must be 30 characters or fewer" at the top of the page
-    And I see the error message "The employer postcode must be 8 characters or fewer" at the top of the page
-
-    #Due to changes in PO-360
+    Then I click the "Return to account details" button
+    Then I verify the error message
+    # Due to changes in PO-360
     #Then I click save and return to tasks
-    When I click the "Return to account details" button
-    Then I see the error message "The employer name must be 35 characters or fewer" above the "Employer name" field
-    And I see the error message "The employee reference must be 20 characters or fewer" above the "Employee reference" field
-    And I see the error message "The employer email address must be 76 characters or fewer" above the "Employer email address" field
-    And I see the error message "Enter employer telephone number in the correct format" above the "Employer telephone" field
-    And I see the error message "The employer address line 1 must be 30 characters or fewer" above the "Address line 1" field
-    And I see the error message "The employer address line 2 must be 30 characters or fewer" above the "Address line 2" field
-    And I see the error message "The employer address line 3 must be 30 characters or fewer" above the "Address line 3" field
-    And I see the error message "The employer address line 4 must be 30 characters or fewer" above the "Address line 4" field
-    And I see the error message "The employer address line 5 must be 30 characters or fewer" above the "Address line 5" field
-    And I see the error message "The employer postcode must be 8 characters or fewer" above the "Postcode" field
-    And I see "Employer details" on the page header
+    Then I click the "Return to account details" button
+    Then I verify the error message
+    Then I see "Employer details" on the page header
 
     Examples:
       | incorrectEmployerName                                         | incorrectEmpNino                 | incorrectEmail                                                                                                                           | incorrectTelephone     | incorrectAddressLine1                                 | incorrectAddressLine2                                 | incorrectAddressLine3                                 | incorrectAddressLine4                                 | incorrectAddressLine5                                 | incorrectPostCode |
@@ -156,7 +137,7 @@ Feature:PO-280 Employer details page for defendant accounts
 
     #Due to changes in PO-360
     #Then I click save and return to tasks
-    When I click the "Return to account details" button
+    Then I click the "Return to account details" button
 
     Then I see the error message "Enter employer name" at the top of the page
     And I see the error message "Enter employee reference or National Insurance number" at the top of the page
@@ -183,11 +164,8 @@ Feature:PO-280 Employer details page for defendant accounts
     #The page header changed according to PO-366
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
-
-    When I click on "Employer details" link
-    Then I see "" in the "Employer name" field
-    And I see "" in the "Postcode" field
-
+    Then I click on the "Employer details" link
+    Then I verify employer name, employer postcode is empty
     Examples:
       | employerName    | employerPostcode |
       | testWindowPopUP | AB12 7HN         |
@@ -216,36 +194,28 @@ Feature:PO-280 Employer details page for defendant accounts
     #Then upon selecting the 'Save and return to tasks' button
     #Due to changes in PO-360
     #Then I click save and return to tasks
-    And I click the "Return to account details" button
-    Then I see the error message "Enter employer name" at the top of the page
-    And I see the error message "Enter employee reference or National Insurance number" at the top of the page
-    And I see the error message "Enter employer email address in the correct format like, name@example.com" at the top of the page
-    And I see the error message "Enter employer telephone number in the correct format" at the top of the page
-    And I see the error message "Enter employer address line 1, typically the building and street" at the top of the page
-    And I see the error message "The employer address line 2 must be 30 characters or fewer" at the top of the page
-    And I see the error message "The employer address line 3 must not contain special characters" at the top of the page
-    And I see the error message "The employer address line 4 must not contain special characters" at the top of the page
-    And I see the error message "The employer address line 5 must not contain special characters" at the top of the page
+    Then I click the "Return to account details" button
+    Then I verify the error message
 
-    When I enter "<employerName>" into the "Employer name" field
-    And I enter "<employeeNino>" into the "Employee reference" field
-    And I enter "<employerEmail>" into the "Employer email address" field
-    And I enter "<employerTelephone>" into the "Employer telephone" field
-    And I enter "<employerAddress1>" into the "Address line 1" field
-    And I enter "<employerAddress2>" into the "Address line 2" field
-    And I enter "<employerAddress3>" into the "Address line 3" field
-    And I enter "<employerAddress4>" into the "Address line 4" field
-    And I enter "<employerAddress5>" into the "Address line 5" field
-    And I enter "<employerPostCode>" into the "Postcode" field
+    Then I update employer name "<employerName>"
+    Then I update employee reference number or nino "<employeeNino>"
+    Then I update employer email address "<employerEmail>"
+    Then I update employer telephone number "<employerTelephone>"
+    Then I update employer address line1 "<employerAddress1>"
+    Then I update employer address line2 "<employerAddress2>"
+    Then I update employer address line3 "<employerAddress3>"
+    Then I update employer address line4 "<employerAddress4>"
+    Then I update employer address line5 "<employerAddress5>"
+    Then I update employer postcode "<employerPostCode>"
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    And I click the "Return to account details" button
+    Then I click the "Return to account details" button
     #The page header changed according to PO-366
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
 
-    When I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I see "Employer details" on the page header
     And I see "<employerName>" in the "Employer name" field
     And I see "<employeeNino>" in the "Employee reference" field
@@ -267,14 +237,9 @@ Feature:PO-280 Employer details page for defendant accounts
 
     #Due to changes in PO-360
     #Then I click save and return to tasks
-    When I click the "Return to account details" button
-    Then I see the error message "Enter employer name" at the top of the page
-    And I see the error message "Enter employee reference or National Insurance number" at the top of the page
-    And I see the error message "Enter employer address line 1, typically the building and street" at the top of the page
-    And I see the error message "Enter employer name" above the "Employer name" field
-    And I see the error message "Enter employee reference or National Insurance number" above the "Employee reference" field
-    And I see the error message "Enter employer address line 1, typically the building and street" above the "Address line 1" field
-    And I see "Employer details" on the page header
+    Then I click the "Return to account details" button
+    Then I verify the error message
+    Then I see "Employer details" on the page header
 
   #AC8
   Scenario: AC8 - Unhappy: verifying If a user selects the 'Back' button and the user has not entered data into any fields

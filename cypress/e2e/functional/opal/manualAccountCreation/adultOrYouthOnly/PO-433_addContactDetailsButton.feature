@@ -1,4 +1,4 @@
-Feature:PO-433 'Add contact details' button on Personal details screen
+Feature: PO-433 Add contact details button on Personal details screen for Adult or youth only
 
   Background:
 
@@ -12,7 +12,7 @@ Feature:PO-433 'Add contact details' button on Personal details screen
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
-    And I select adults and youth only
+    When I select the "Adult or youth only" radio button
     Then I click on continue button
 
     Then I see "Create account" as the caption on the page
@@ -20,8 +20,8 @@ Feature:PO-433 'Add contact details' button on Personal details screen
 
     Then I see the "Defendant details" section heading
     And I see the "Personal details" link under the "Defendant details" section
-    Then I verify the status of "Personal details" to "Not provided"
-    And I click on "Personal details" link
+    Then I see the status of "Personal details" is "Not provided"
+    And I click on the "Personal details" link
     Then I see "Personal details" on the page header
 
   Scenario: AC1-positive: A grey 'Add contact details' button will be introduced onto the Personal Details screen
@@ -372,9 +372,9 @@ Feature:PO-433 'Add contact details' button on Personal details screen
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
-    Then I verify the status of "Personal details" to "Provided"
+    Then I see the status of "Personal details" is "Provided"
 
-    Then I click on "Personal details" link
+    Then I click on the "Personal details" link
     Then I see "Personal details" on the page header
 
     And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
@@ -388,6 +388,7 @@ Feature:PO-433 'Add contact details' button on Personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
     When I select the "Add aliases" checkbox
+
 
     Then I set the "Alias 1", "First names" to "First names in alias"
     And I set the "Alias 1", "Last name" to "Last name in aliases"
@@ -437,9 +438,9 @@ Feature:PO-433 'Add contact details' button on Personal details screen
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
-    Then I verify the status of "Personal details" to "Provided"
+    Then I see the status of "Personal details" is "Provided"
 
-    Then I click on "Personal details" link
+    Then I click on the "Personal details" link
     Then I see "Personal details" on the page header
 
     Then I see "John Smith" in the "First names" field
@@ -482,7 +483,7 @@ Feature:PO-433 'Add contact details' button on Personal details screen
     When "Cancel" is clicked
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
-    Then I verify the status of "Personal details" to "Not provided"
+    Then I see the status of "Personal details" is "Not provided"
 
   Scenario: AC8a-negative: When user has selected the 'Cancel' button and has entered data into some fields, then selects 'Ok' on the warning message
     When I select title "Ms" from dropdown
@@ -503,13 +504,13 @@ Feature:PO-433 'Add contact details' button on Personal details screen
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
-    Then I verify the status of "Personal details" to "Provided"
+    Then I see the status of "Personal details" is "Provided"
 
-    And I click on "Personal details" link
+    And I click on the "Personal details" link
     Then I see "Personal details" on the page header
 
     When "Cancel" is clicked
-    Then I verify the status of "Personal details" to "Provided"
+    Then I see the status of "Personal details" is "Provided"
 
   Scenario: AC9-positive: If the user unticks the 'Add aliases' tick box, after entering data in one or more fields
     When I select the "Add aliases" checkbox

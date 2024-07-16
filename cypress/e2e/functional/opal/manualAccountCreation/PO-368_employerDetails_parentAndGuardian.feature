@@ -1,4 +1,4 @@
-Feature:PO-368 Employer details page for Adult or youth with parent or guardian to pay
+Feature: PO-368 employer details page for Adult or youth with parent or guardian to pay
 
   Background:
     Given I am on the OPAL Frontend
@@ -17,7 +17,7 @@ Feature:PO-368 Employer details page for Adult or youth with parent or guardian 
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
-    Then I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I see "Employer details" on the page header
 
   Scenario Outline: AC1a,AC1b- positive: user enters data in the all fields including space in telephone number
@@ -37,7 +37,7 @@ Feature:PO-368 Employer details page for Adult or youth with parent or guardian 
     #Then I click save and return to tasks
     Then I click the "Return to account details" button
     Then I see "Account details" on the page header
-    When I click on "Employer details" link
+    When I click on the "Employer details" link
     Then I see "Employer details" on the page header
     Then I verify "<employerName>","<employeeNino>","<employerEmail>","<employerTelephone>","<employerAddress1>","<employerAddress2>","<employerAddress3>","<employerAddress4>","<employerAddress5>","<employerPostCode>" values saved
 
@@ -184,7 +184,7 @@ Feature:PO-368 Employer details page for Adult or youth with parent or guardian 
     Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
-    Then I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I see "Employer details" on the page header
 
     Then I verify "<employerName>","<employeeNino>","<employerEmail>","<employerTelephone>","<employerAddress1>","<employerAddress2>","<employerAddress3>","<employerAddress4>","<employerAddress5>","<employerPostCode>" values saved
@@ -211,7 +211,7 @@ Feature:PO-368 Employer details page for Adult or youth with parent or guardian 
     #Then I click save and return to tasks
     Then I click the "Return to account details" button
     Then I see "Account details" on the page header
-    When I click on "Employer details" link
+    When I click on the "Employer details" link
     Then I see "Employer details" on the page header
     Then I verify "<employerName>","<employeeNino>","<employerEmail>","<employerTelephone>","<employerAddress1>","<employerAddress2>","<employerAddress3>","<employerAddress4>","<employerAddress5>","<employerPostCode>" values saved
 
@@ -231,7 +231,7 @@ Feature:PO-368 Employer details page for Adult or youth with parent or guardian 
 
     Then I select OK on the pop up window
     Then I see "Account details" on the page header
-    Then I click on "Employer details" link
+    Then I click on the "Employer details" link
     Then I verify employer name, employer postcode is empty
     Examples:
       | employerName    | employerPostcode |
