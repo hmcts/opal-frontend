@@ -24,9 +24,8 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC1-positive: Personal details page will be created with all fields
         When I select title "Mr" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smithy Michaele           |
-            | lastName   | Astridge Lamsden Langley Treen |
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley Treen" into the "Last name" field
 
         When I select the "Add aliases" checkbox
 
@@ -58,26 +57,25 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
 
         And I enter "10/10/2000" into the Date of birth field
-        And I enter National insurance number "QQ 12 34 56 C"
+        And I enter "QQ 12 34 56 C" into the "National Insurance number" field
 
-        And I enter address line 1 "12 test's road checking address1"
-        And I enter address line 2 "12 test road checking address2"
-        And I enter address line 3 "London city chec"
-        And I enter postcode "AB12 7MH"
+        And I enter "12 test's road checking address1" into the "Address line 1" field
+        And I enter "12 test road checking address2" into the "Address line 2" field
+        And I enter "London city check" into the "Address line 3" field
+        And I enter "AB12 7MH" into the "Postcode" field
 
-        And I enter make of the car "Ambassdor Volkswagen"
-        And I enter registration number of the car "AP28 AAR"
+        And I enter "Ambassdor Volkswagen" into the "Make of the car" field
+        And I enter "AP28 AAR" into the "Registration number" field
 
         Then I click the "Return to account details" button
 
     Scenario Outline: AC1b & 1c-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
         When I select title "Mr" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith * Michael 7               |
-            | lastName   | Astridge Lamsden Langley's Green 10. |
-        And I enter address line 1 "<addressLine1>"
-        And I enter address line 2 "<addressLine2>"
-        And I enter address line 3 "<addressLine3>"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley Treen" into the "Last name" field
+        And I enter "<addressLine1>" into the "Address line 1" field
+        And I enter "<addressLine2>" into the "Address line 2" field
+        And I enter "<addressLine3>" into the "Address line 3" field
 
         Then I click the "Return to account details" button
         Then I see the error message "The address line 1 must not contain special characters" at the top of the page
@@ -99,8 +97,8 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
             | Add offence details       |
 
     Scenario Outline: AC3- negative: If a user has not entered data into any mandatory fields (i.e. Title, First Names, Last Name & Address Line 1 fields) but has entered data into one or more other optional fields, then selecting the 'Return to account details' or 'Add offence details' button
-        And I enter address line 2 "<addressLine2>"
-        And I enter address line 3 "<addressLine3>"
+        And I enter "<addressLine2>" into the "Address line 2" field
+        And I enter "<addressLine3>" into the "Address line 3" field
 
         Then I click the "<returnButton>" button
         Then I see the error message "Select a title" at the top of the page
@@ -223,23 +221,21 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC9 - negative: If a user is selecting a date of birth using the date picker
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith Michael             |
-            | lastName   | Astridge Lamsden Langley Treen |
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
         When I enter "01/01/2500" into the Date of birth field
-        And I enter address line 1 "120 Deuchar street"
+        And I enter "120 Deuchar street" into the "Address line 1" field
 
         Then I click the "Return to account details" button
         Then I see the error message "Enter a valid date of birth in the past" at the top of the page
 
     Scenario: AC10a- negative: User ticks Add aliases box but does not input any data into Alias 1
         When I select title "Mr" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith Michael       |
-            | lastName   | Astridge Lamsden Langley |
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
 
         When I select add aliases check box
-        And I enter address line 1 "456 Lamburgh Street"
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
@@ -250,12 +246,11 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10ai- negative: User adds data into Alias 1 - First names, but does enter any data into last name
         When I select title "Mr" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith Michael       |
-            | lastName   | Astridge Lamsden Langley |
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
         When I select add aliases check box
         Then I set the "Alias 1", "First names" to "Micheal Kores"
-        And I enter address line 1 "456 Lamburgh Street"
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         Then I click the "<returnButton>" button
         Then I see the error message "Enter last name for alias 1" at the top of the page
         Examples:
@@ -265,12 +260,11 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10aii- negative: User adds data into Alias 1 - Last name, but does enter any data into First names
         When I select title "Miss" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith       |
-            | lastName   | Astridge Lamsden |
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
         When I select add aliases check box
         And I set the "Alias 1", "Last name" to "Guccio gucci "
-        And I enter address line 1 "456 Lamburgh Street"
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         Examples:
@@ -280,13 +274,12 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10b -negative: User does not add any data into either Alias 2 fields
         When I select title "Ms" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith       |
-            | lastName   | Astridge Lamsden |
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
 
         When I select add aliases check box
         And I click the "Add another alias" button
-        And I enter address line 1 "456 Lamburgh Street"
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
@@ -299,10 +292,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10bi- negative: User adds data into Alias 2 - First names, but does enter any data into last name
         When I select title "Miss" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith       |
-            | lastName   | Astridge Lamsden |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         Then I set the "Alias 2", "First names" to "Gucci Gucci "
@@ -317,10 +309,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10bii- negative: User adds data into Alias 2 - Last name, but does enter any data into First names
         When I select title "Mr" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I set the "Alias 2", "Last name" to "Holland and Barrates"
@@ -336,10 +327,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10c -negative: User does not add any data into either Alias 3 fields
         When I select title "Mr" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -357,10 +347,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10ci- negative: User adds data into Alias 3 - First names, but does enter any data into last name
         When I select title "Ms" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith       |
-            | lastName   | Astridge Lamsden |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -379,10 +368,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario Outline: AC10cii- negative: User adds data into Alias 3 - Last name, but does enter any data into First names
         When I select title "Miss" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith       |
-            | lastName   | Astridge Lamsden |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -400,10 +388,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario Outline: AC10d -negative: User does not add any data into either Alias 4 fields
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -423,10 +410,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10di- negative: User adds data into Alias 4 - First names, but does enter any data into last name
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -447,10 +433,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10dii- negative: User adds data into Alias 4 - Last name, but does enter any data into First names
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -472,10 +457,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10e -negative: User does not add any data into either Alias 5 fields
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -499,10 +483,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10ei- negative: User adds data into Alias 5 - First names, but does enter any data into last name
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -526,10 +509,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC10eii- negative: User adds data into Alias 5 - Last name, but does enter any data into First names
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
         When I select add aliases check box
         And I click the "Add another alias" button
         And I click the "Add another alias" button
@@ -553,11 +535,10 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario Outline: AC11- Negative: Scenarios for National Insurance number field validation
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith |
-            | lastName   | Astridge   |
-        And I enter address line 1 "456 Lamburgh Street"
-        When I enter National insurance number "AB 12 34 45 6"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
+        When I enter "AB 12 34 45 6" into the "National Insurance number" field
         Then I click the "<returnButton>" button
 
         Then I see "Personal details" on the page header
@@ -569,11 +550,10 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
             | Return to account details |
             | Add offence details       |
 
-    Scenario: AC12- positive: When user amends all fields where validation fails (Mandatory fields)
-        When I enter data into first names and last name in personal details screen
-            | firstNames | Stuart Philips aarogyam Gucci Coach VII      |
-            | lastName   | Chicago bulls Burberry Redbull 2345 PizzaHut |
-        And I enter incorrect address line 1 "<incorrectAddressLine1>"
+    Scenario: AC12- positive: When user amends all fields where validation fails (Mandatory fields) upon selecting "Return to account details"
+        When I enter "Patricia Linda Barbara Amy Michael" into the "First names" field
+        When I enter "Christina Kathy Ruby Melissa Langley" into the "Last name" field
+        And I enter "test Road *12" into the "Address line 1" field
 
         Then I click the "Return to account details" button
         Then I see the error message "Select a title" at the top of the page
@@ -583,27 +563,30 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
         Then I see "Personal details" on the page header
 
-        Then I update title "<title>"
-        And I update the first names "<firstNames>"
-        And I update the last name "<lastName>"
-        And I update address line 1 "<addressLine1>"
+        When I select title "<updateTitle>" from dropdown
+        When I enter "<updateFirstnames>" into the "First names" field
+        When I enter "<updateLastname>" into the "Last name" field
+        And I enter "<updateAddressLine1>" into the "Address line 1" field
+
         Then I click the "Return to account details" button
         Then I see "Account details" on the page header
 
         Then I click on "Personal details" link
         Then I see "Personal details" on the page header
 
-        And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+        Then I see "<updateFirstnames>" in the "First names" field
+        Then I see "<updateLastname>" in the "Last name" field
+        Then I see "<updateAddressLine1>" in the "Address line 1" field
+
         Examples:
-            | incorrectAddressLine1 | title | firstNames | lastName    | title | addressLine1 |
-            | test Road *12         | Mr    | Coca Cola  | Cola Family | Mr    | Pepsi Road   |
+            | updateTitle | updateFirstnames | updateLastname | updateAddressLine1 |
+            | Mr          | Coca Cola        | Cola Family    | Pepsi Road         |
 
 
-    Scenario: AC12a- positive: When user amends all fields where validation fails (Mandatory fields)
-        When I enter data into first names and last name in personal details screen
-            | firstNames | Stuart Philips aarogyam Gucci Coach VII      |
-            | lastName   | Chicago bulls Burberry Redbull 2345 PizzaHut |
-        And I enter incorrect address line 1 "<incorrectAddressLine1>"
+    Scenario: AC12a- positive: When user amends all fields where validation fails (Mandatory fields)upon selecting "Add offence details"
+        When I enter "Patricia Linda Barbara Amy" into the "First names" field
+        When I enter "Christina Kathy234 Ruby Melissa" into the "Last name" field
+        And I enter "test Road *12" into the "Address line 1" field
 
         Then I click the "Return to account details" button
         Then I see the error message "Select a title" at the top of the page
@@ -613,10 +596,11 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
         Then I see "Personal details" on the page header
 
-        Then I update title "<title>"
-        And I update the first names "<firstNames>"
-        And I update the last name "<lastName>"
-        And I update address line 1 "<addressLine1>"
+        When I select title "<updateTitle>" from dropdown
+        When I enter "<updateFirstnames>" into the "First names" field
+        When I enter "<updateLastname>" into the "Last name" field
+        When I enter "<updateAddressLine1>" into the "Address line 1" field
+
         Then I click the "Add offence details" button
         Then I see "Offence details" on the page header
         Then I click the "Return to account details" button
@@ -624,54 +608,51 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I click on "Personal details" link
         Then I see "Personal details" on the page header
 
-        And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+        Then I see "<updateFirstnames>" in the "First names" field
+        Then I see "<updateLastname>" in the "Last name" field
+        Then I see "<updateAddressLine1>" in the "Address line 1" field
         Examples:
-            | incorrectAddressLine1 | title | firstNames | lastName    | title | addressLine1 |
-            | test Road *12         | Mr    | Coca Cola  | Cola Family | Mr    | Pepsi Road   |
-
-
+            | updateTitle | updateFirstnames | updateLastname | updateAddressLine1 |
+            | Mr          | Coca Cola        | Cola Family    | Pepsi Road         |
 
 
     Scenario Outline: AC13-positive: When user enters data into mandatory fields only and selecting Return to account details button
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith Michael             |
-            | lastName   | Astridge Lamsden Langley Treen |
-        And I enter address line 1 "<addressLine1>"
-
-        Then I click the "Return to account details" button
-        Then I see "Create account" as the caption on the page
-        Then I see "Account details" on the page header
-
-        And I click on "Personal details" link
-        Then I see "Personal details" on the page header
-        And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+        When I enter "<firstNames>" into the "First names" field
+        When I enter "<lastName>" into the "Last name" field
+        And I enter "<addressLine1>" into the "Address line 1" field
 
         When I select add aliases check box
         Then I set the "Alias 1", "First names" to "<firstNames>"
         Then I set the "Alias 1", "Last name" to "<lastName>"
 
-        Then I click the "Return to account details" button
+        Then I click the "<returnPageButton>" button
         Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
         Then I verify the status of "Personal details" to "Provided"
 
         And I click on "Personal details" link
         Then I see "Personal details" on the page header
+        Then I see "<firstNames>" in the "First names" field
+        Then I see "<lastName>" in the "Last name" field
+        Then I see "<addressLine1>" in the "Address line 1" field
         When I select add aliases check box
         Then I see data entered in "Alias 1","First names" and "<firstNames>"
         Then I see data entered in "Alias 1","Last name" and "<lastName>"
-        And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+
         Examples:
-            | title | firstNames         | lastName                       | addressLine1        |
-            | Mrs   | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road |
+            | title | firstNames         | lastName                       | addressLine1        | returnPageButton          |
+            | Mrs   | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road | Return to account details |
+
 
     Scenario Outline: AC13a-positive: When user enters data into mandatory fields only and selecting Add offence details button
-        When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith Michael             |
-            | lastName   | Astridge Lamsden Langley Treen |
-        And I enter address line 1 "<addressLine1>"
+        When I select title "<title>" from dropdown
+        When I enter "<firstNames>" into the "First names" field
+        When I enter "<lastName>" into the "Last name" field
+        And I enter "<addressLine1>" into the "Address line 1" field
+        When I select add aliases check box
+        Then I set the "Alias 1", "First names" to "<firstNames>"
+        Then I set the "Alias 1", "Last name" to "<lastName>"
 
         Then I click the "Add offence details" button
         Then I see "Offence details" on the page header
@@ -680,27 +661,15 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
         And I click on "Personal details" link
         Then I see "Personal details" on the page header
-        And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
-
-        When I select add aliases check box
-        Then I set the "Alias 1", "First names" to "<firstNames>"
-        Then I set the "Alias 1", "Last name" to "<lastName>"
-
-        Then I click the "Add offence details" button
-        Then I see "Offence details" on the page header
-        Then I click the "Return to account details" button
-        Then I verify the status of "Personal details" to "Provided"
-
-        And I click on "Personal details" link
-        Then I see "Personal details" on the page header
-        When I select add aliases check box
+        Then I see "<firstNames>" in the "First names" field
+        Then I see "<lastName>" in the "Last name" field
+        Then I see "<addressLine1>" in the "Address line 1" field
         Then I see data entered in "Alias 1","First names" and "<firstNames>"
         Then I see data entered in "Alias 1","Last name" and "<lastName>"
-        And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+
         Examples:
             | title | firstNames         | lastName                       | addressLine1        |
-            | Mrs   | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road |
-
+            | Ms    | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road |
 
 
     Scenario: AC14-negative: When user selects cancel button without entering any data into fields
@@ -711,10 +680,9 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario: AC15a-negative: If a user selects the 'Cancel' button and the user has entered data into one or more fields, a warning message will be displayed and user selects 'OK'
         When I select title "Mrs" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith Michael             |
-            | lastName   | Astridge Lamsden Langley Treen |
-        And I enter address line 1 "23 WarwickShire Road"
+        When I enter "John Smith Michael" into the "First names" field
+        When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "23 WarwickShire Road" into the "Address line 1" field
 
         When I click Cancel, a window pops up and I click Ok
         Then I see "Account details" on the page header
@@ -727,16 +695,18 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
     Scenario Outline: AC15b-neagative: If a user selects the 'Cancel' button and the user has entered data into one or more fields, a warning message will be displayed and user selects 'Cancel'
         When I select title "Ms" from dropdown
-        When I enter data into first names and last name in personal details screen
-            | firstNames | John Smith Michael             |
-            | lastName   | Astridge Lamsden Langley Treen |
-        And I enter address line 1 "<addressLine1>"
+        When I enter "<firstNames>" into the "First names" field
+        When I enter "<lastName>" into the "Last name" field
+        And I enter "<addressLine1>" into the "Address line 1" field
 
         When I click Cancel, a window pops up and I click Cancel
         Then I see "Personal details" on the page header
 
         Then I see "Personal details" on the page header
-        And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+        #And I see "<title>" from dropdown
+        Then I see "<firstNames>" in the "First names" field
+        Then I see "<lastName>" in the "Last name" field
+        Then I see "<addressLine1>" in the "Address line 1" field
         Examples:
             | title | firstNames         | lastName                       | addressLine1         |
             | Ms    | John Smith Michael | Astridge Lamsden Langley Treen | 23 WarwickShire Road |
