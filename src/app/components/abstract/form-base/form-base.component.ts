@@ -500,15 +500,11 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     formArrayControls: IFormArrayControls[],
     fieldNames: string[],
   ): void {
-    // Get the controls from the form array...
     const formArrayControl = formArrayControls[index];
 
     if (formArrayControl) {
-      // Loop over the field names and remove the field errors...
       fieldNames.forEach((field) => {
-        if (this.formControlErrorMessages && this.formControlErrorMessages[formArrayControl[field].controlName]) {
-          delete this.formControlErrorMessages[formArrayControl[field].controlName];
-        }
+        delete this.formControlErrorMessages?.[formArrayControl[field].controlName];
       });
     }
   }

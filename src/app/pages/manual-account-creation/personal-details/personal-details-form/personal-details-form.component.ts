@@ -144,14 +144,12 @@ export class PersonalDetailsFormComponent extends FormAliasBaseComponent impleme
    * initial error messages, nested route, form population, and alias checkbox listener.
    */
   private initialSetup(): void {
+    const { personalDetails } = this.macStateService.manualAccountCreation;
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls(
-      [...Array(this.macStateService.manualAccountCreation.personalDetails.aliases.length).keys()],
-      'aliases',
-    );
+    this.setupAliasFormControls([...Array(personalDetails.aliases.length).keys()], 'aliases');
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.macStateService.manualAccountCreation.personalDetails);
+    this.rePopulateForm(personalDetails);
     this.setUpAliasCheckboxListener('addAlias', 'aliases');
   }
 
