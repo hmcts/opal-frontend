@@ -203,35 +203,51 @@ describe('FormArrayBase', () => {
   it('should remove all form array controls and clear error messages', () => {
     // Arrange
     const formArrayName = 'aliases';
-    const fieldNames = ['name', 'age'];
-    const formArrayControls = [
-      { name: { controlName: 'name_0' }, age: { controlName: 'age_0' } },
-      { name: { controlName: 'name_1' }, age: { controlName: 'age_1' } },
-      { name: { controlName: 'name_2' }, age: { controlName: 'age_2' } },
+    const fieldNames = ['firstNames', 'lastName'];
+    const formArrayControls: IFormArrayControls[] = [
+      {
+        firstNames: {
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+          controlName: 'firstNames_0',
+        },
+        lastName: {
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+          controlName: 'lastName_0',
+        },
+      },
+      {
+        firstNames: {
+          inputId: 'firstNames_1',
+          inputName: 'firstNames_1',
+          controlName: 'firstNames_1',
+        },
+        lastName: {
+          inputId: 'lastName_1',
+          inputName: 'lastName_1',
+          controlName: 'lastName_1',
+        },
+      },
     ];
     component.form = new FormGroup({
       aliases: new FormArray([
         new FormGroup({
-          name: new FormControl(null),
-          age: new FormControl(null),
+          firstNames: new FormControl(null),
+          lastName: new FormControl(null),
         }),
         new FormGroup({
-          name: new FormControl(null),
-          age: new FormControl(null),
-        }),
-        new FormGroup({
-          name: new FormControl(null),
-          age: new FormControl(null),
+          firstNames: new FormControl(null),
+          lastName: new FormControl(null),
         }),
       ]),
     });
+
     component.formControlErrorMessages = {
-      name_0: 'Error 1',
-      age_0: 'Error 2',
-      name_1: 'Error 3',
-      age_1: 'Error 4',
-      name_2: 'Error 5',
-      age_2: 'Error 6',
+      firstNames_0: 'Error 1',
+      lastName_0: 'Error 2',
+      firstNames_1: 'Error 3',
+      lastName_1: 'Error 4',
     };
 
     // Act

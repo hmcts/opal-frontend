@@ -503,6 +503,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     // Get the controls from the form array...
     const formArrayControl = formArrayControls[index];
 
+    console.log(formArrayControl);
+
     if (formArrayControl) {
       // Loop over the field names and remove the field errors...
       fieldNames.forEach((field) => {
