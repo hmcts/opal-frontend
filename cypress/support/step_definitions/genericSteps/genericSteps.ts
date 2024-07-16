@@ -1,4 +1,4 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor/';
+import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I click the {string} button and see {string} on the page header', (buttonName: string, bodyHeader: string) => {
   switch (buttonName) {
