@@ -307,7 +307,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Setup listener for the form value changes and to emit hasUnsavedChanges
    */
   private setupListener(): void {
-    this.formSub = this.form.valueChanges.subscribe((values) => {
+    this.formSub = this.form.valueChanges.subscribe(() => {
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     });
   }
@@ -470,7 +470,11 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param fieldNames - The names of the fields associated with the form array controls.
    * @returns An empty array of form array controls.
    */
-  protected removeAllFormArrayControls(formArrayControls: any[], formArrayName: string, fieldNames: string[]): any[] {
+  protected removeAllFormArrayControls(
+    formArrayControls: IFormArrayControls[],
+    formArrayName: string,
+    fieldNames: string[],
+  ): [] {
     const control = this.form.get(formArrayName) as FormArray;
 
     // Clear the error messages...
