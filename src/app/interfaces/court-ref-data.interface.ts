@@ -1,4 +1,4 @@
-interface Court {
+interface ICourt {
   courtId: number;
   courtCode: number;
   name: string;
@@ -9,5 +9,5 @@ interface Court {
 
 export interface ICourtRefData {
   count: number;
-  refData: Court[];
+  refData: ICourt[];
 }

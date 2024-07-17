@@ -1,4 +1,4 @@
-interface LocalJusticeArea {
+interface ILocalJusticeArea {
   localJusticeAreaId: number;
   ljaCode: string;
   name: string;
@@ -8,5 +8,5 @@ interface LocalJusticeArea {
 
 export interface ILocalJusticeAreaRefData {
   count: number;
-  refData: LocalJusticeArea[];
+  refData: ILocalJusticeArea[];
 }
