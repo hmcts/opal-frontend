@@ -86,3 +86,6 @@ Then(
       .should('have.value', aliasValue);
   },
 );
+When('I remove the {string}, {string} to be cleared', (alias: string, aliasField: string) => {
+  cy.contains('legend', alias).siblings().contains('app-govuk-text-input', aliasField).find('input').clear();
+});

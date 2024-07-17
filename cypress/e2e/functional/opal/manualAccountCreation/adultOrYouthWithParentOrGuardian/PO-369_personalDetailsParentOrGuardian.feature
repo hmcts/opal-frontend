@@ -69,22 +69,6 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
 
         Then I click the "Return to account details" button
 
-    Scenario Outline: AC1b & 1c-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
-        When I select title "Mr" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley Treen" into the "Last name" field
-        And I enter "<addressLine1>" into the "Address line 1" field
-        And I enter "<addressLine2>" into the "Address line 2" field
-        And I enter "<addressLine3>" into the "Address line 3" field
-
-        Then I click the "Return to account details" button
-        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
-        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
-        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
-        Examples:
-            | addressLine1 | addressLine2 | addressLine3 |
-            | 92 * Avenue  | test road *  | test* city   |
-
     Scenario Outline: AC2- negative: If a user does not enter any data into any field and selects the 'Return to account details' or 'Add offence details' button
         Then I click the "<returnButton>" button
         Then I see the error message "Select a title" at the top of the page
@@ -110,21 +94,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
             | test road    | London       | Return to account details |
             | test road    | London       | Add offence details       |
 
-    Scenario: AC4- positive: If a user selects the 'Add Aliases' tick box
-        When I select add aliases check box
-        Then I verify "Alias 1" sub heading
-        Then I verify the text boxes "First names","Last name" below the sub heading
-
-    Scenario: AC5-positive: If a user selects 'Add another alias' for the first time
-        When I select add aliases check box
-        When I select add another alias
-        Then I verify "Alias 2" sub heading
-        Then I verify the text boxes "First names","Last name" below the sub heading
-        Then I see the "Remove" link below the "Alias 2", "Last name" input
-        #And I see "Add another alias" button below the "Remove" link "last name"
-        And I see the "Remove" link below the "Alias 2", "Last name" input
-
-    Scenario: AC6-positive: If a user selects 'Add another alias' for the nth time (where N = 2, 3 or 4)
+    Scenario: AC4, AC5, AC6-positive: If a user selects 'Add another alias' for the nth time (where N = 2, 3 or 4 so)
         When I select add aliases check box
         Then I verify "Alias 1" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
@@ -134,25 +104,27 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I see the "Remove" link below the "Alias 2", "Last name" input
         #And I see "Add another alias" link below the "Remove" button
-
         And I click the "Add another alias" button
+
         Then I verify "Alias 3" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I see the "Remove" link below the "Alias 3", "Last name" input
-
-
         And I click the "Add another alias" button
+
         Then I verify "Alias 4" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I see the "Remove" link below the "Alias 4", "Last name" input
 
 
         And I click the "Add another alias" button
+
+
         Then I verify "Alias 5" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I see the "Remove" link below the "Alias 5", "Last name" input
 
-    Scenario: AC7- positive: verifying the 'Remove' alias button work flow
+    Scenario: AC4, AC5, AC6, AC7, AC8-positive: If a user selects 'Add another alias' for the nth time (where N = 2, 3 or 4 so) and verifying the 'Remove' alias button work flow then the user unticks the 'Add aliases' tick box
+        When I select add aliases check box
         When I select add aliases check box
         Then I verify "Alias 1" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
@@ -173,7 +145,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I verify "Alias 5" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I set the "Alias 5", "First names" to "First names in alias"
-        Then I set the "Alias 5", "First names" to "First names in alias"
+        Then I set the "Alias 5", "Last name" to "Last name in alias"
 
         Then I select "Remove" button
         Then I no longer see "Alias 5" sub heading
@@ -181,7 +153,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I verify "Alias 4" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I set the "Alias 4", "First names" to "First names in alias"
-        Then I set the "Alias 4", "First names" to "First names in alias"
+        Then I set the "Alias 4", "Last name" to "Last name in alias"
 
         Then I select "Remove" button
         Then I no longer see "Alias 4" sub heading
@@ -189,7 +161,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I verify "Alias 3" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I set the "Alias 3", "First names" to "First names in alias"
-        Then I set the "Alias 3", "First names" to "First names in alias"
+        Then I set the "Alias 3", "Last name" to "Last name in alias"
 
         Then I select "Remove" button
         Then I no longer see "Alias 3" sub heading
@@ -197,18 +169,12 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I verify "Alias 2" sub heading
         Then I verify the text boxes "First names","Last name" below the sub heading
         Then I set the "Alias 2", "First names" to "First names in alias"
-        Then I set the "Alias 2", "First names" to "First names in alias"
+        Then I set the "Alias 2", "Last name" to "Last name in alias"
 
         Then I select "Remove" button
         Then I no longer see "Alias 2" sub heading
         Then I verify "Alias 1" sub heading
         And I do not see the "Remove" link below the "Alias 1"
-
-
-    Scenario: AC8- positive: If the user unticks the 'Add aliases' tick box
-        When I select add aliases check box
-        Then I set the "Alias 1", "First names" to "First names in alias"
-        And I set the "Alias 1", "Last name" to "Last name in aliases"
 
         Then I unselect aliases check box
         Then I no longer see "Alias 1" sub heading
@@ -229,7 +195,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I click the "Return to account details" button
         Then I see the error message "Enter a valid date of birth in the past" at the top of the page
 
-    Scenario: AC10a- negative: User ticks Add aliases box but does not input any data into Alias 1
+    Scenario: AC10a, AC10ai, AC10aii- negative: User ticks Add aliases box but does not input any data into Alias 1
         When I select title "Mr" from dropdown
         When I enter "John Smith Michael" into the "First names" field
         When I enter "Astridge Lamsden Langley" into the "Last name" field
@@ -239,81 +205,45 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10ai- negative: User adds data into Alias 1 - First names, but does enter any data into last name
-        When I select title "Mr" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        When I select add aliases check box
         Then I set the "Alias 1", "First names" to "Micheal Kores"
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
         Then I click the "<returnButton>" button
         Then I see the error message "Enter last name for alias 1" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10aii- negative: User adds data into Alias 1 - Last name, but does enter any data into First names
-        When I select title "Miss" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        When I select add aliases check box
-        And I set the "Alias 1", "Last name" to "Guccio gucci "
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
+        And I remove the "Alias 1", "First names" to be cleared
+        And I set the "Alias 1", "Last name" to "Guccio gucci"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+
+
         Examples:
             | returnButton              |
             | Return to account details |
             | Add offence details       |
 
-    Scenario: AC10b -negative: User does not add any data into either Alias 2 fields
+
+    Scenario: AC10b, AC10bi,AC10bii -negative: User does not add any data into either Alias 2 fields, User adds data into Alias 2 - First names, but does enter any data into last name, User adds data into Alias 2 - Last name, but does enter any data into First names
         When I select title "Ms" from dropdown
         When I enter "John Smith Michael" into the "First names" field
         When I enter "Astridge Lamsden Langley" into the "Last name" field
+        And I enter "456 Lamburgh Street" into the "Address line 1" field
 
         When I select add aliases check box
         And I click the "Add another alias" button
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
         Then I click the "<returnButton>" button
+
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
         And I see the error message "Enter last name for alias 2" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10bi- negative: User adds data into Alias 2 - First names, but does enter any data into last name
-        When I select title "Miss" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
         Then I set the "Alias 2", "First names" to "Gucci Gucci "
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 2" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10bii- negative: User adds data into Alias 2 - Last name, but does enter any data into First names
-        When I select title "Mr" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
+        And I remove the "Alias 2", "First names" to be cleared
         And I set the "Alias 2", "Last name" to "Holland and Barrates"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -325,7 +255,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
             | Add offence details       |
 
 
-    Scenario: AC10c -negative: User does not add any data into either Alias 3 fields
+    Scenario: AC10c,AC10i,AC10ii -negative: User does not add any data into either Alias 3 fields, User adds data into Alias 3 - First names, but does enter any data into last name, User adds data into Alias 3 - Last name, but does enter any data into First names
         When I select title "Mr" from dropdown
         When I enter "John Smith Michael" into the "First names" field
         When I enter "Astridge Lamsden Langley" into the "Last name" field
@@ -334,25 +264,14 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         Then I click the "<returnButton>" button
+
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
         And I see the error message "Enter last name for alias 2" at the top of the page
         Then I see the error message "Enter first name(s) for alias 3" at the top of the page
         And I see the error message "Enter last name for alias 3" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10ci- negative: User adds data into Alias 3 - First names, but does enter any data into last name
-        When I select title "Ms" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
         And I set the "Alias 3", "First names" to "Holland and Barrates"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -360,20 +279,8 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
         And I see the error message "Enter last name for alias 2" at the top of the page
         Then I see the error message "Enter last name for alias 3" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-
-    Scenario Outline: AC10cii- negative: User adds data into Alias 3 - Last name, but does enter any data into First names
-        When I select title "Miss" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
+        And I remove the "Alias 3", "First names" to be cleared
         And I set the "Alias 3", "Last name" to "Holland and Barrates"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -386,7 +293,8 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
             | Return to account details |
             | Add offence details       |
 
-    Scenario Outline: AC10d -negative: User does not add any data into either Alias 4 fields
+
+    Scenario Outline: AC10d,AC10di,AC10dii -negative: User does not add any data into either Alias 4 fields, User adds data into Alias 4 - First names, but does enter any data into last name, User adds data into Alias 4 - Last name, but does enter any data into First names
         When I select title "Mrs" from dropdown
         When I enter "John Smith Michael" into the "First names" field
         When I enter "Astridge Lamsden Langley" into the "Last name" field
@@ -396,6 +304,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         Then I click the "<returnButton>" button
+
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -403,20 +312,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I see the error message "Enter first name(s) for alias 3" at the top of the page
         Then I see the error message "Enter first name(s) for alias 4" at the top of the page
         And I see the error message "Enter last name for alias 4" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10di- negative: User adds data into Alias 4 - First names, but does enter any data into last name
-        When I select title "Mrs" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
         Then I set the "Alias 4", "First names" to "Holland and Barrates"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -426,20 +322,8 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I see the error message "Enter first name(s) for alias 3" at the top of the page
         And I see the error message "Enter last name for alias 3" at the top of the page
         Then I see the error message "Enter last name for alias 4" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10dii- negative: User adds data into Alias 4 - Last name, but does enter any data into First names
-        When I select title "Mrs" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
+        And I remove the "Alias 4", "First names" to be cleared
         Then I set the "Alias 4", "Last name" to "Holland and Barrates"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -454,8 +338,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
             | Return to account details |
             | Add offence details       |
 
-
-    Scenario: AC10e -negative: User does not add any data into either Alias 5 fields
+    Scenario: AC10e,AC10ei,AC10eii -negative: User does not add any data into either Alias 5 fields,User adds data into Alias 5 - First names, but does enter any data into last name,User adds data into Alias 5 - Last name, but does enter any data into First names
         When I select title "Mrs" from dropdown
         When I enter "John Smith Michael" into the "First names" field
         When I enter "Astridge Lamsden Langley" into the "Last name" field
@@ -466,6 +349,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         And I click the "Add another alias" button
         And I click the "Add another alias" button
         Then I click the "<returnButton>" button
+
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
         And I see the error message "Enter last name for alias 1" at the top of the page
         Then I see the error message "Enter first name(s) for alias 2" at the top of the page
@@ -476,21 +360,7 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         And I see the error message "Enter last name for alias 4" at the top of the page
         Then I see the error message "Enter first name(s) for alias 5" at the top of the page
         And I see the error message "Enter last name for alias 5" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10ei- negative: User adds data into Alias 5 - First names, but does enter any data into last name
-        When I select title "Mrs" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
         Then I set the "Alias 5", "First names" to "Holland and Barrates"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -502,21 +372,8 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         Then I see the error message "Enter first name(s) for alias 4" at the top of the page
         And I see the error message "Enter last name for alias 4" at the top of the page
         And I see the error message "Enter last name for alias 5" at the top of the page
-        Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
 
-    Scenario: AC10eii- negative: User adds data into Alias 5 - Last name, but does enter any data into First names
-        When I select title "Mrs" from dropdown
-        When I enter "John Smith Michael" into the "First names" field
-        When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
-        When I select add aliases check box
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
-        And I click the "Add another alias" button
+        And I remove the "Alias 5", "First names" to be cleared
         Then I set the "Alias 5", "Last name" to "Holland and Barrates"
         Then I click the "<returnButton>" button
         Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -533,11 +390,13 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
             | Return to account details |
             | Add offence details       |
 
-    Scenario Outline: AC11- Negative: Scenarios for National Insurance number field validation
+    Scenario Outline: AC1b, AC1c,AC11- Negative: Scenarios for National Insurance number field validation
         When I select title "Mrs" from dropdown
         When I enter "John Smith Michael" into the "First names" field
         When I enter "Astridge Lamsden Langley" into the "Last name" field
-        And I enter "456 Lamburgh Street" into the "Address line 1" field
+        And I enter "<addressLine1>" into the "Address line 1" field
+        And I enter "<addressLine2>" into the "Address line 2" field
+        And I enter "<addressLine3>" into the "Address line 3" field
         When I enter "AB 12 34 45 6" into the "National Insurance number" field
         Then I click the "<returnButton>" button
 
@@ -545,10 +404,14 @@ Feature:PO-369 Personal details screen for adult or youth for parent or guardian
         #NINO validation has lessen so the error message has changed
         #Then I see the error message "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, like QQ 12 34 56 C" at the top of the page
         Then I see the error message "Enter a National Insurance number in the format AANNNNNNA" at the top of the page
+        Then I click the "Return to account details" button
+        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
+        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
+        Then I see the error message "The address line 1 must not contain special characters" at the top of the page
         Examples:
-            | returnButton              |
-            | Return to account details |
-            | Add offence details       |
+            | returnButton              | addressLine1 | addressLine2 | addressLine3 |
+            | Return to account details | 92 * Avenue  | test road *  | test* city   |
+            | Add offence details       | 92 * Avenue  | test road *  | test* city   |
 
     Scenario: AC12- positive: When user amends all fields where validation fails (Mandatory fields) upon selecting "Return to account details"
         When I enter "Patricia Linda Barbara Amy Michael" into the "First names" field
