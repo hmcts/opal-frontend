@@ -5,7 +5,7 @@ export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 20 characters or fewer`,
+      message: `The company name must be 50 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
@@ -19,7 +19,7 @@ export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 20 characters or fewer for alias 1`,
+      message: `The company name must be 30 characters or fewer for alias 1`,
       priority: 2,
     },
     alphabeticalTextPattern: {
@@ -33,7 +33,7 @@ export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 20 characters or fewer for alias 2`,
+      message: `The company name must be 30 characters or fewer for alias 2`,
       priority: 2,
     },
     alphabeticalTextPattern: {
@@ -47,7 +47,7 @@ export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 20 characters or fewer for alias 3`,
+      message: `The company name must be 30 characters or fewer for alias 3`,
       priority: 2,
     },
     alphabeticalTextPattern: {
@@ -61,7 +61,7 @@ export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 20 characters or fewer for alias 4`,
+      message: `The company name must be 30 characters or fewer for alias 4`,
       priority: 2,
     },
     alphabeticalTextPattern: {
@@ -75,7 +75,7 @@ export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 1,
     },
     maxlength: {
-      message: `The company name must be 20 characters or fewer for alias 5`,
+      message: `The company name must be 30 characters or fewer for alias 5`,
       priority: 2,
     },
     alphabeticalTextPattern: {
