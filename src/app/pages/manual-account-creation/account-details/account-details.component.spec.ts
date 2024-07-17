@@ -7,6 +7,8 @@ import {
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
 } from '@constants';
 import { MacStateService } from '@services';
 import { provideRouter } from '@angular/router';
@@ -32,6 +34,8 @@ describe('AccountDetailsComponent', () => {
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };
@@ -94,6 +98,8 @@ describe('AccountDetailsComponent', () => {
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
+      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
       unsavedChanges: true,
       stateChanges: false,
     };
@@ -114,6 +120,8 @@ describe('AccountDetailsComponent', () => {
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };

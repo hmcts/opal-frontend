@@ -4,7 +4,9 @@ import { PersonalDetailsComponent } from './personal-details.component';
 import { MacStateService } from '@services';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
@@ -26,6 +28,8 @@ describe('PersonalDetailsComponent', () => {
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };
@@ -65,7 +69,7 @@ describe('PersonalDetailsComponent', () => {
 
     const personalDetailsFormSubmit: IManualAccountCreationPersonalDetailsForm = {
       formData: formData,
-      continueFlow: false,
+      nestedFlow: false,
     };
 
     component.handlePersonalDetailsSubmit(personalDetailsFormSubmit);
@@ -77,7 +81,7 @@ describe('PersonalDetailsComponent', () => {
   it('should handle form submission and navigate next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    component.defendantType = 'adultOrYouthOnly';
 
     const formData: IManualAccountCreationPersonalDetailsState = {
       title: 'Mr',
@@ -97,7 +101,7 @@ describe('PersonalDetailsComponent', () => {
 
     const personalDetailsFormSubmit: IManualAccountCreationPersonalDetailsForm = {
       formData: formData,
-      continueFlow: true,
+      nestedFlow: true,
     };
 
     component.handlePersonalDetailsSubmit(personalDetailsFormSubmit);

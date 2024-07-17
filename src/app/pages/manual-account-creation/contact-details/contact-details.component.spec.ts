@@ -8,6 +8,8 @@ import {
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
 } from '@constants';
 import { IManualAccountCreationContactDetailsForm, IManualAccountCreationContactDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
@@ -26,6 +28,8 @@ describe('ContactDetailsComponent', () => {
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
+      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
       unsavedChanges: false,
       stateChanges: false,
     };
@@ -56,7 +60,7 @@ describe('ContactDetailsComponent', () => {
 
     const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
       formData,
-      continueFlow: false,
+      nestedFlow: false,
     };
 
     component.handleContactDetailsSubmit(contactDetailsFormSubmit);
@@ -68,7 +72,7 @@ describe('ContactDetailsComponent', () => {
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    component.defendantType = 'adultOrYouthOnly';
 
     const formData: IManualAccountCreationContactDetailsState = {
       primaryEmailAddress: 'Test',
@@ -80,7 +84,7 @@ describe('ContactDetailsComponent', () => {
 
     const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
       formData,
-      continueFlow: true,
+      nestedFlow: true,
     };
 
     component.handleContactDetailsSubmit(contactDetailsFormSubmit);

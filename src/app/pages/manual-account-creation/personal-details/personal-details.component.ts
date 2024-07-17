@@ -13,6 +13,8 @@ import { IManualAccountCreationPersonalDetailsForm } from '@interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalDetailsComponent extends FormParentBaseComponent {
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+
   /**
    * Handles the submission of personal details form in the manual account creation process.
    * Updates the `manualAccountCreation` state with the form data and navigates to the appropriate route.
@@ -20,8 +22,6 @@ export class PersonalDetailsComponent extends FormParentBaseComponent {
    * @param personalDetailsForm - The form data for the personal details.
    */
   public handlePersonalDetailsSubmit(personalDetailsForm: IManualAccountCreationPersonalDetailsForm): void {
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       personalDetails: personalDetailsForm.formData,
@@ -29,8 +29,11 @@ export class PersonalDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    if (personalDetailsForm.continueFlow && defendantType) {
-      this.routerNavigate(MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['personalDetails']);
+    if (personalDetailsForm.nestedFlow && this.defendantType) {
+      const nextRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[this.defendantType]['personalDetails'];
+      if (nextRoute) {
+        this.routerNavigate(nextRoute.nextRoute);
+      }
     } else {
       this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
     }

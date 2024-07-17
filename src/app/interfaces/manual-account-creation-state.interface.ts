@@ -1,6 +1,8 @@
 import {
+  IBusinessUnit,
   IManualAccountCreationAccountDetailsState,
   IManualAccountCreationContactDetailsState,
+  IManualAccountCreationCourtDetailsState,
   IManualAccountCreationEmployerDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
   IManualAccountCreationPersonalDetailsState,
@@ -12,6 +14,8 @@ export interface IManualAccountCreationState {
   contactDetails: IManualAccountCreationContactDetailsState;
   parentGuardianDetails: IManualAccountCreationParentGuardianDetailsState;
   personalDetails: IManualAccountCreationPersonalDetailsState;
+  courtDetails: IManualAccountCreationCourtDetailsState;
+  businessUnit: IBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;
 }

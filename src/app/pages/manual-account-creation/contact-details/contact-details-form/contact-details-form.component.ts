@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   FormBaseComponent,
@@ -31,10 +31,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+  @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationContactDetailsForm>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-  public nestedRouteButtonText!: string;
+  public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR;
 
@@ -52,27 +53,6 @@ export class ContactDetailsFormComponent extends FormBaseComponent implements On
   }
 
   /**
-   * Retrieves the nested route based on the defendant type and sets the nested route button text accordingly.
-   */
-  private getNestedRoute(): void {
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-    if (defendantType) {
-      const nestedRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['contactDetails'];
-      switch (nestedRoute) {
-        case ManualAccountCreationRoutes.employerDetails:
-          this.nestedRouteButtonText = 'Add employer details';
-          break;
-        case ManualAccountCreationRoutes.offenceDetails:
-          this.nestedRouteButtonText = 'Add offence details';
-          break;
-        default:
-          this.nestedRouteButtonText = '';
-          break;
-      }
-    }
-  }
-
-  /**
    * Handles the form submission event.
    */
   public handleFormSubmit(event: SubmitEvent): void {
@@ -80,16 +60,15 @@ export class ContactDetailsFormComponent extends FormBaseComponent implements On
 
     if (this.form.valid) {
       this.formSubmitted = true;
-      const continueFlow = event.submitter ? event.submitter.className.includes('continue-flow') : false;
+      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: this.form.value, continueFlow: continueFlow });
+      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
     }
   }
 
   public override ngOnInit(): void {
     this.setupContactDetailsForm();
     this.setInitialErrorMessages();
-    this.getNestedRoute();
     this.rePopulateForm(this.macStateService.manualAccountCreation.contactDetails);
     super.ngOnInit();
   }

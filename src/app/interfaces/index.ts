@@ -28,10 +28,10 @@ import { IManualAccountCreationEmployerDetailsState } from './manual-account-cre
 import { IManualAccountCreationState } from './manual-account-creation-state.interface';
 import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
 import { IManualAccountCreationAccountDetailsState } from './manual-account-creation-account-details-state.interface';
-import { IDefendantTypes } from './defendant-type.interface';
+import { IDefendantTypes } from './defendant-types.interface';
 import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
 import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
-import { IBusinessUnitRefData } from './business-unit-ref-data.interface';
+import { IBusinessUnit, IBusinessUnitRefData } from './business-unit-ref-data.interface';
 
 import { IManualAccountCreationPersonalAlias } from './manual-account-creation-personal-details-alias.interface';
 import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
@@ -41,6 +41,12 @@ import { IManualAccountCreationAccountStatus } from './manual-account-creation-a
 import { IManualAccountCreationFieldTypes } from './manual-account-creation-field-types.interface';
 import { IManualAccountCreationContactDetailsForm } from './manual-account-creation-contact-details-form.interface';
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
+import { IManualAccountCreationCourtDetailsState } from './manual-account-creation-court-details-state.interface';
+import { IManualAccountCreationCourtDetailsForm } from './manual-account-creation-court-details-form.interface';
+import { INestedRoutes } from './nested-routes.interface';
+import { IManualAccountCreationNestedRoutes } from './manual-account-creation-nested-routes.interface';
+import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
+import { ICourtRefData } from './court-ref-data.interface';
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -80,6 +86,7 @@ export {
   IDefendantTypes,
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
+  IBusinessUnit,
   IBusinessUnitRefData,
   IManualAccountCreationPersonalAlias,
   IManualAccountCreationPersonalDetailsState,
@@ -89,4 +96,10 @@ export {
   IManualAccountCreationFieldTypes,
   IManualAccountCreationContactDetailsForm,
   ICustomAddressFieldIds,
+  IManualAccountCreationCourtDetailsState,
+  IManualAccountCreationCourtDetailsForm,
+  INestedRoutes,
+  IManualAccountCreationNestedRoutes,
+  ILocalJusticeAreaRefData,
+  ICourtRefData,
 };

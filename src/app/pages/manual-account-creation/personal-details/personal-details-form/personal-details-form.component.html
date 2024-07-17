@@ -123,13 +123,13 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit"> Return to account details </app-govuk-button>
-      @if (nestedRouteButtonText) {
+      @if (defendantType && manualAccountCreationNestedRoutes[defendantType].personalDetails) {
         <app-govuk-button
           buttonId="submitForm"
           type="submit"
-          buttonClasses="continue-flow govuk-button--secondary govuk-!-margin-left-3"
+          buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
         >
-          {{ nestedRouteButtonText }}
+          {{ manualAccountCreationNestedRoutes[defendantType].personalDetails?.buttonText }}
         </app-govuk-button>
       }
       <app-govuk-cancel-link
