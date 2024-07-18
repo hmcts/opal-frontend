@@ -6,7 +6,6 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
 
     When I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
-
     When I navigate to Manual Account Creation
 
     #new feature implemented on Po-346 so deactivating this step
@@ -158,7 +157,7 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
 
     When I enter "<employerName>" into the "Employer name" field
     And I enter "<employerPostCode>" into the "Postcode" field
-    And I click on "Cancel" link
+    And I click on the "Cancel" link
 
     And I select OK on the pop up window
     #The page header changed according to PO-366
@@ -244,5 +243,5 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
   #AC8
   Scenario: AC8 - Unhappy: verifying If a user selects the 'Back' button and the user has not entered data into any fields
 
-    When I click on "Cancel" link
+    When I click on the "Cancel" link
     Then I see "Account details" on the page header
