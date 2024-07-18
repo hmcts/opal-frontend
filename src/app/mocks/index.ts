@@ -31,6 +31,7 @@ import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from './business-unit-autocompl
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK } from './manual-account-creation-personal-details-state.mock';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK } from './manual-account-creation-personal-details-form.mock';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK } from './manual-account-creation-contact-details-form.mock';
+import { TOKEN_EXPIRY_MOCK } from './token-expiry.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -66,4 +67,5 @@ export {
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK,
+  TOKEN_EXPIRY_MOCK,
 };

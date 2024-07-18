@@ -42,5 +42,16 @@
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret"
     }
+  },
+  "expiry": {
+    "testMode": false,
+    "default": {
+      "expiryTimeInMilliseconds": 1800000,
+      "warningThresholdInMilliseconds": 1800000
+    },
+    "test": {
+      "expiryTimeInMilliseconds": 300000,
+      "warningThresholdInMilliseconds": 300000
+    }
   }
 }
