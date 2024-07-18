@@ -4,7 +4,6 @@ import { GlobalStateService } from './global-state-service/global-state.service'
 import { UtilsService } from './utils/utils.service';
 import { CourtService } from './court-service/court.service';
 import { LaunchDarklyService } from './launch-darkly/launch-darkly.service';
-
 import { AppInitializerService } from './app-initializer-service/app-initializer.service';
 import { PermissionsService } from './permissions-service/permissions.service';
 import { TransferStateService } from './transfer-state-service/transfer-state.service';
