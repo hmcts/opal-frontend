@@ -487,7 +487,7 @@ Then('I verify the {string} button below the {string}', (removeLink: string, ali
     .invoke('text')
     .should('have.text', removeLink);
 });
-When('I unselect aliases check box', () => {
+When('I unselect {string} checkbox', () => {
   cy.get('input[type="checkbox"]').uncheck();
 });
 Then('I see {string} sub heading', (aliasText: string) => {

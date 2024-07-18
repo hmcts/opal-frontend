@@ -11,6 +11,13 @@ Then('I click the {string} button and see {string} on the page header', (buttonN
       cy.contains('button', buttonName).click();
       cy.get('h1').should('contain', bodyHeader);
       cy.get('a').contains('Cancel').click();
+      break;
+    }
+    case 'Add contact details': {
+      cy.contains('button', buttonName).click();
+      cy.get('h1').should('contain', bodyHeader);
+      cy.get('a').contains('Cancel').click();
+      break;
     }
   }
 });

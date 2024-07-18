@@ -212,7 +212,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
         Then I set the "Alias 1", "First names" to "First names in alias"
         And I set the "Alias 1", "Last name" to "Last name in aliases"
 
-        Then I unselect aliases check box
+        Then I unselect "Add aliases" checkbox
         Then I no longer see "Alias 1" sub heading
 
         When I select add aliases check box
