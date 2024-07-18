@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { SessionEndpoints } from '@enums';
-import { IUserState } from '@interfaces';
+import { ITokenExpiry, IUserState } from '@interfaces';
 import { GlobalStateService } from '@services';
 
 import { Observable, shareReplay, tap } from 'rxjs';
@@ -13,6 +13,7 @@ export class SessionService {
   private readonly http = inject(HttpClient);
   private readonly globalStateService = inject(GlobalStateService);
   private userStateCache$!: Observable<IUserState>;
+  private tokenExpiryCache$!: Observable<ITokenExpiry>;
 
   /**
    * Retrieves the user state from the backend.
@@ -39,5 +40,26 @@ export class SessionService {
     }
 
     return this.userStateCache$;
+  }
+
+  /**
+   * Retrieves the token expiry information.
+   * If the token expiry information is not available in the cache, it makes an HTTP request to fetch it.
+   * The token expiry information is stored in the cache for subsequent calls.
+   * @returns An Observable that emits the token expiry information.
+   */
+  public getTokenExpiry(): Observable<ITokenExpiry> {
+    if (!this.tokenExpiryCache$) {
+      this.tokenExpiryCache$ = this.http
+        .get<ITokenExpiry>(SessionEndpoints.expiry)
+        .pipe(shareReplay(1))
+        .pipe(
+          tap((expiry) => {
+            this.globalStateService.tokenExpiry = expiry;
+          }),
+        );
+    }
+
+    return this.tokenExpiryCache$;
   }
 }

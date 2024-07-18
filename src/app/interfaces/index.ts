@@ -41,6 +41,8 @@ import { IManualAccountCreationAccountStatus } from './manual-account-creation-a
 import { IManualAccountCreationFieldTypes } from './manual-account-creation-field-types.interface';
 import { IManualAccountCreationContactDetailsForm } from './manual-account-creation-contact-details-form.interface';
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
+import { ITokenExpiry } from './token-expiry.interface';
+
 export {
   IGetDefendantAccountParams,
   IDefendantAccount,
@@ -89,4 +91,5 @@ export {
   IManualAccountCreationFieldTypes,
   IManualAccountCreationContactDetailsForm,
   ICustomAddressFieldIds,
+  ITokenExpiry,
 };
