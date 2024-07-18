@@ -19,27 +19,35 @@
   </app-govuk-summary-list>
   <h2 class="govuk-heading-m">Court details</h2>
   <ng-container *ngTemplateOutlet="courtDetails"></ng-container>
-  @if (defendantType === 'Adult or youth with parent or guardian to pay') {
-    <h2 class="govuk-heading-m">Parent or guardian details</h2>
-    <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
-      <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
-      <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
-      <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
-    </app-govuk-task-list>
-  }
-  <h2 class="govuk-heading-m">Defendant details</h2>
-  <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
-    @if (defendantType === 'Company') {
-      <ng-container *ngTemplateOutlet="companyDetails"></ng-container>
-      <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
-    } @else if (defendantType === 'Adult or youth with parent or guardian to pay') {
-      <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-    } @else {
-      <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-      <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
-      <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
+  @switch (defendantType) {
+    @case (defendantTypes['adultOrYouthOnly']) {
+      <h2 class="govuk-heading-m">Defendant details</h2>
+      <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+        <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+        <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
+        <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
+      </app-govuk-task-list>
     }
-  </app-govuk-task-list>
+    @case (defendantTypes['parentOrGuardianToPay']) {
+      <h2 class="govuk-heading-m">Parent or guardian details</h2>
+      <app-govuk-task-list taskListId="parentOrGuardianDetails" taskListClasses="govuk-!-margin-left-0 ">
+        <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
+        <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
+        <ng-container *ngTemplateOutlet="employerDetails"></ng-container>
+      </app-govuk-task-list>
+      <h2 class="govuk-heading-m">Defendant details</h2>
+      <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+        <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+      </app-govuk-task-list>
+    }
+    @case (defendantTypes['company']) {
+      <h2 class="govuk-heading-m">Defendant details</h2>
+      <app-govuk-task-list taskListId="defendantDetails" taskListClasses="govuk-!-margin-left-0 ">
+        <ng-container *ngTemplateOutlet="companyDetails"></ng-container>
+        <ng-container *ngTemplateOutlet="contactDetails"></ng-container>
+      </app-govuk-task-list>
+    }
+  }
   <h2 class="govuk-heading-m">Offence and imposition details</h2>
   <app-govuk-task-list taskListId="offenceAndImpositionDetails" taskListClasses="govuk-!-margin-left-0 ">
     <ng-container *ngTemplateOutlet="offenceDetails"></ng-container>
