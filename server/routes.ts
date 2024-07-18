@@ -12,7 +12,7 @@ import {
   ssoLogoutStub,
   ssoLogoutCallbackStub,
 } from './stubs/sso';
-import { userState } from './session/index';
+import { userState, expiry } from './session/index';
 
 export default class Routes {
   public enableFor(app: Application): void {
@@ -27,6 +27,7 @@ export default class Routes {
     this.setupSSORoutes(app, ssoEnabled);
 
     app.get('/session/user-state', (req: Request, res: Response) => userState(req, res));
+    app.get('/session/expiry', (req: Request, res: Response) => expiry(req, res));
   }
 
   private setupSSORoutes(app: Application, ssoEnabled: boolean) {
