@@ -10812,10 +10812,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:~5.1.0":
-  version: 5.1.2
-  resolution: "jasmine-core@npm:5.1.2"
-  checksum: 10/b885618b040c1ead7d27d954ca32ad77faddf8e722cffcd0883e39dbc3909a1b85316c7ccfa0a2e5b312f2bed02d8d6bd577e835da88d892bb18c354581bee26
+"jasmine-core@npm:~5.2.0":
+  version: 5.2.0
+  resolution: "jasmine-core@npm:5.2.0"
+  checksum: 10/6980ef00864ff81f814917c02a9a844e2fa801de5ea84a63f04add0d888a55efc6cad2ae51ed6bd25c11a9ca5fecb9fa11bc9e9063f0ad4ca66d5c4c641b7b7d
   languageName: node
   linkType: hard
 
@@ -12830,7 +12830,7 @@ __metadata:
     govuk-frontend: "npm:^5.0.0"
     helmet: "npm:^7.0.0"
     http-proxy-middleware: "npm:^3.0.0"
-    jasmine-core: "npm:~5.1.0"
+    jasmine-core: "npm:~5.2.0"
     junit-report-merger: "npm:^7.0.0"
     karma: "npm:~6.4.0"
     karma-chrome-launcher: "npm:~3.2.0"
