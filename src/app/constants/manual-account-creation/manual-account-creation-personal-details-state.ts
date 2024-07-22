@@ -1,0 +1,15 @@
+export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE = {
+  title: null,
+  firstNames: null,
+  lastName: null,
+  addAlias: null,
+  aliases: [],
+  dateOfBirth: null,
+  nationalInsuranceNumber: null,
+  addressLine1: null,
+  addressLine2: null,
+  addressLine3: null,
+  postcode: null,
+  makeOfCar: null,
+  registrationNumber: null,
+};
