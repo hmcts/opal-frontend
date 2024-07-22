@@ -9,7 +9,7 @@ import { GlobalStateService, UtilsService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { ITokenExpiry } from './interfaces/token-expiry.interface';
+import { ITokenExpiry } from './interfaces/services/token-expiry.interface';
 import { TOKEN_EXPIRY_MOCK } from '@mocks';
 import { DateTime } from 'luxon';
 import { MojBannerComponent } from './components/moj/moj-banner/moj-banner.component';

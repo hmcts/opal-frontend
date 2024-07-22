@@ -1,12 +1,12 @@
-import { GovukFooter } from './govuk-footer';
-import { GovukHeaderLinks } from './govuk-header-links';
-import { AccountEnquiryRoutes } from './account-enquiry-routes';
-import { SsoEndpoints } from './sso-endpoints';
-import { RoutingPaths } from './routing-paths';
-import { PermissionsMap } from './permissions-map';
-import { SessionEndpoints } from './session-endpoints';
-import { MojHeaderLinks } from './moj-header-links';
-import { ManualAccountCreationRoutes } from './manual-account-creation-routes';
+import { GovukFooter } from './component/govuk-footer';
+import { GovukHeaderLinks } from './component/govuk-header-links';
+import { AccountEnquiryRoutes } from './routing/account-enquiry-routes';
+import { SsoEndpoints } from './routing/sso-endpoints';
+import { RoutingPaths } from './routing/routing-paths';
+import { PermissionsMap } from './routing/permissions-map';
+import { SessionEndpoints } from './routing/session-endpoints';
+import { MojHeaderLinks } from './component/moj-header-links';
+import { ManualAccountCreationRoutes } from './routing/manual-account-creation-routes';
 
 export {
   GovukFooter,

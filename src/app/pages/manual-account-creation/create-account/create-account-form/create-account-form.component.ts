@@ -13,7 +13,7 @@ import {
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import { IAutoCompleteItem, IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
-import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
+import { DEFENDANT_TYPES_STATE } from 'src/app/constants/common/defendant-types-state';
 
 @Component({
   selector: 'app-create-account-form',
