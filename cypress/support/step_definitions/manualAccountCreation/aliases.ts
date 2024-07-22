@@ -64,13 +64,12 @@ Then(
 );
 
 Then('I see {string} button below the {string} link', (addAnotherAliasButton: string, removeLink: string) => {
-// cy.contains('#addAlias', addAnotherAliasButton).closest().contains('a', removeLink);
-    cy.contains('a', removeLink)
+  // cy.contains('#addAlias', addAnotherAliasButton).closest().contains('a', removeLink);
+  cy.contains('a', removeLink)
     .parent()
-      .siblings()
-      .contains('#addAlias', addAnotherAliasButton)
-      .should('have.text', addAnotherAliasButton);
-
+    .siblings()
+    .contains('#addAlias', addAnotherAliasButton)
+    .should('have.text', addAnotherAliasButton);
 });
 Then(
   'I see data entered in {string},{string} and {string}',
