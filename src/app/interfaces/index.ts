@@ -40,6 +40,7 @@ import { IManualAccountCreationAccountStatus } from './manual-account-creation-a
 import { IManualAccountCreationFieldTypes } from './manual-account-creation-field-types.interface';
 import { IManualAccountCreationContactDetailsForm } from './manual-account-creation-contact-details-form.interface';
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
+
 import { IManualAccountCreationCompanyDetailsAliasState } from './manual-account-creation-company-details-alias-state.interface';
 import { IManualAccountCreationCompanyDetailsState } from './manual-account-creation-company-details-state.interface';
 import { IManualAccountCreationCompanyDetailsForm } from './manual-account-creation-company-details-form.interface';
@@ -49,6 +50,9 @@ import { IFormArrayControlValidation } from './form-array-control-validation.int
 import { IFormArrayControls } from './form-array-controls.interface';
 import { INestedRoutes } from './nested-routes.interface';
 import { IManualAccountCreationNestedRoutes } from './manual-account-creation-nested-routes.interface';
+
+import { ITokenExpiry } from './token-expiry.interface';
+
 
 export {
   IGetDefendantAccountParams,
@@ -98,6 +102,7 @@ export {
   IManualAccountCreationFieldTypes,
   IManualAccountCreationContactDetailsForm,
   ICustomAddressFieldIds,
+
   IManualAccountCreationCompanyAlias,
   IManualAccountCreationCompanyDetailsState,
   IManualAccountCreationCompanyDetailsAliasState,
@@ -107,4 +112,7 @@ export {
   IFormArrayControls,
   INestedRoutes,
   IManualAccountCreationNestedRoutes,
+
+  ITokenExpiry,
+
 };

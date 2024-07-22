@@ -1,8 +1,9 @@
 Feature:PO-369  Personal details screen for adult or youth for parent or guardian defendant type
+  #needs optimising for performance
 
-    Background:
-        Given I am on the OPAL Frontend
-        Then I see "Opal" in the header
+  Background:
+    Given I am on the OPAL Frontend
+    Then I see "Opal" in the header
 
         When I sign in as "opal-test@HMCTS.NET"
         Then I am on the dashboard
@@ -701,8 +702,6 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
             | title | firstNames         | lastName                       | addressLine1        |
             | Mrs   | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road |
 
-
-
     Scenario: AC14-negative: When user selects cancel button without entering any data into fields
         When "Cancel" is clicked
         Then I see "Create account" as the caption on the page
@@ -740,6 +739,10 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
         Examples:
             | title | firstNames         | lastName                       | addressLine1         |
             | Ms    | John Smith Michael | Astridge Lamsden Langley Treen | 23 WarwickShire Road |
+
+  
+ 
+
 
 
 
