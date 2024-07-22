@@ -11,6 +11,13 @@ Then('I click the {string} button and see {string} on the page header', (buttonN
       cy.contains('button', buttonName).click();
       cy.get('h1').should('contain', bodyHeader);
       cy.get('a').contains('Cancel').click();
+      break;
+    }
+    case 'Personal details': {
+      cy.contains('button', buttonName).click();
+      cy.get('h1').should('contain', bodyHeader);
+      cy.get('a').contains('Cancel').click();
+      break;
     }
   }
 });
@@ -86,4 +93,16 @@ Then('I select {string} from the {string} dropdown', (option: string, dropdown: 
 });
 Then('I see {string} selected in the {string} dropdown', (option: string, dropdown: string) => {
   cy.contains('app-govuk-select', dropdown, { matchCase: false }).find('select').should('have.value', option);
+});
+Then('I see {string} in the {string} searchbox', (fieldValue: string, fieldName: string) => {
+  cy.contains('app-alphagov-accessible-autocomplete', fieldName, { matchCase: false })
+    .find('input')
+    .should('have.value', fieldValue);
+});
+
+Then('I verify local justice area name and code through api', () => {
+  cy.request('Get', 'http://localhost:4550/api/local-justice-area/ref-data/').then((response) => {
+    expect(response.status).eq(200);
+    assert.isArray(response.body.data);
+  });
 });

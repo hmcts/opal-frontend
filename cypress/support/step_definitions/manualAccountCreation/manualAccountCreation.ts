@@ -575,3 +575,24 @@ Then('I see the status of {string} is {string}', (linkText: string, status: stri
     .next()
     .contains('[class="govuk-task-list__status"]', status);
 });
+When('I enter {string} into the {string} search box',(searchText:string,searchBox:string) => {
+  cy.contains('app-alphagov-accessible-autocomplete',searchBox,{ matchCase: false }).find('label').should('be.visible',searchBox).type(searchText)
+  //cy.get('ul').should('not.contain', 'No results found');
+  cy.contains('app-alphagov-accessible-autocomplete',searchBox,{ matchCase: false }).find('label').should('be.visible',searchBox).type('{downArrow}{enter}');
+})
+
+When('I see {string} under the {string} search box',(text:string,fieldName:string) => {
+  cy.contains('app-alphagov-accessible-autocomplete',fieldName)
+  .find('label')
+  .next()
+  .invoke('text')
+  .should('contains',text)
+})
+When('I see {string} under the {string} field',(text:string,fieldName:string) => {
+  cy.contains('app-govuk-text-input',fieldName)
+  .find('input')
+  .prev()
+  .invoke('text')
+  .should('contains',text)
+})
+
