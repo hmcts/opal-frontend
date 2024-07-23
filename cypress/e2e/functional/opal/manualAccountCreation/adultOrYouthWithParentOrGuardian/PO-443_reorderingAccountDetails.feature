@@ -72,13 +72,12 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
 
     When I see the "Review and publish" section heading
     And I see the "Check that all required fields have been entered before you publish" text under the "Review and publish" section
-    #And I click the "Review account" button, nothing happens
-    And "Review account" button is clicked, nothing happens
-#And I click Cancel, a window pops up and I click Cancel
+#Review account button currently does nothing
+
+#Steps below need working on to pass
+
+#And I click "Cancel account creation", a window pops up and I click Cancel
 #Then I see "Account details" on the page header
 
-#When I click Cancel, a window pops up and I click OK
+#When I click "Cancel account creation", a window pops up and I click Ok
 #Then I am on the dashboard
-
-#Need to add step for clicking cancel, then cancelling popup.
-#Need to add step for clicking cancel, clicking leave on popup and going to dashboard.
