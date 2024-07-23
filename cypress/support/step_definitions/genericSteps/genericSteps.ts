@@ -13,6 +13,12 @@ Then('I click the {string} button and see {string} on the page header', (buttonN
       cy.get('a').contains('Cancel').click();
       break;
     }
+    case 'Add contact details': {
+      cy.contains('button', buttonName).click();
+      cy.get('h1').should('contain', bodyHeader);
+      cy.get('a').contains('Cancel').click();
+      break;
+    }
     case 'Add personal details': {
       cy.contains('button', buttonName).click();
       cy.get('h1').should('contain', bodyHeader);
@@ -44,6 +50,9 @@ Then('I go back in the browser', () => {
 });
 Then('I select the {string} checkbox', (checkbox: string) => {
   cy.contains('label', checkbox).click();
+});
+When('I unselect the {string} checkbox', (checkbox: string) => {
+  cy.contains('label', checkbox).siblings('input').uncheck();
 });
 Then('I see the {string} section heading', (sectionName: string) => {
   cy.contains('h2', sectionName);

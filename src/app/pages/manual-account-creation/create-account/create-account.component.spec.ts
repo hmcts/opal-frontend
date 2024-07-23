@@ -1,19 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateAccountComponent } from './create-account.component';
 import { ManualAccountCreationRoutes } from '@enums';
-import {
-  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
-  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-} from '@constants';
 import { BusinessUnitService, MacStateService } from '@services';
 import { IAutoCompleteItem, IBusinessUnitRefData, IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
+import {
+  BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK,
+  BUSINESS_UNIT_REF_DATA_MOCK,
+  MANUAL_ACCOUNT_CREATION_MOCK,
+} from '@mocks';
 import { of } from 'rxjs';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -30,17 +25,7 @@ describe('CreateAccountComponent', () => {
     };
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
-    mockMacStateService.manualAccountCreation = {
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
-      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [CreateAccountComponent],

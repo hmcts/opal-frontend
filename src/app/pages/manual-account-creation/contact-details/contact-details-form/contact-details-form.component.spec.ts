@@ -1,16 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContactDetailsFormComponent } from './contact-details-form.component';
-import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK } from '@mocks';
+import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK, MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
 import { MacStateService } from '@services';
-import {
-  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
-  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
-} from '@constants';
 
 describe('ContactDetailsFormComponent', () => {
   let component: ContactDetailsFormComponent;
@@ -20,17 +11,7 @@ describe('ContactDetailsFormComponent', () => {
   beforeEach(async () => {
     mockMacStateService = jasmine.createSpyObj('macStateService', ['manualAccountCreation']);
 
-    mockMacStateService.manualAccountCreation = {
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
-      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [ContactDetailsFormComponent],
@@ -39,6 +20,7 @@ describe('ContactDetailsFormComponent', () => {
 
     fixture = TestBed.createComponent(ContactDetailsFormComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 

@@ -42,10 +42,18 @@ import { IManualAccountCreationFieldTypes } from './manual-account-creation-fiel
 import { IManualAccountCreationContactDetailsForm } from './manual-account-creation-contact-details-form.interface';
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
 import { ITokenExpiry } from './token-expiry.interface';
-import { IManualAccountCreationCourtDetailsState } from './manual-account-creation-court-details-state.interface';
-import { IManualAccountCreationCourtDetailsForm } from './manual-account-creation-court-details-form.interface';
+
+import { IManualAccountCreationCompanyDetailsAliasState } from './manual-account-creation-company-details-alias-state.interface';
+import { IManualAccountCreationCompanyDetailsState } from './manual-account-creation-company-details-state.interface';
+import { IManualAccountCreationCompanyDetailsForm } from './manual-account-creation-company-details-form.interface';
+import { IManualAccountCreationCompanyAlias } from './manual-account-creation-company-details-alias.interface';
+import { IFormArrayControl } from './form-array-control.interface';
+import { IFormArrayControlValidation } from './form-array-control-validation.interface';
+import { IFormArrayControls } from './form-array-controls.interface';
 import { INestedRoutes } from './nested-routes.interface';
 import { IManualAccountCreationNestedRoutes } from './manual-account-creation-nested-routes.interface';
+import { IManualAccountCreationCourtDetailsState } from './manual-account-creation-court-details-state.interface';
+import { IManualAccountCreationCourtDetailsForm } from './manual-account-creation-court-details-form.interface';
 import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
 import { ICourtRefData } from './court-ref-data.interface';
 
@@ -98,11 +106,18 @@ export {
   IManualAccountCreationFieldTypes,
   IManualAccountCreationContactDetailsForm,
   ICustomAddressFieldIds,
+  IManualAccountCreationCompanyAlias,
+  IManualAccountCreationCompanyDetailsState,
+  IManualAccountCreationCompanyDetailsAliasState,
+  IManualAccountCreationCompanyDetailsForm,
+  IFormArrayControl,
+  IFormArrayControlValidation,
+  IFormArrayControls,
+  INestedRoutes,
+  IManualAccountCreationNestedRoutes,
   ITokenExpiry,
   IManualAccountCreationCourtDetailsState,
   IManualAccountCreationCourtDetailsForm,
-  INestedRoutes,
-  IManualAccountCreationNestedRoutes,
   ILocalJusticeAreaRefData,
   ICourtRefData,
 };

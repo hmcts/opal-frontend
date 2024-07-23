@@ -32,6 +32,9 @@ import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK } from './manual-ac
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK } from './manual-account-creation-personal-details-form.mock';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK } from './manual-account-creation-contact-details-form.mock';
 import { TOKEN_EXPIRY_MOCK } from './token-expiry.mock';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK } from './manual-account-creation-company-details-state.mock';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK } from './manual-account-creation-company-details-form.mock';
+import { MANUAL_ACCOUNT_CREATION_MOCK } from './manual-account-creation.mock';
 import { LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './local-justice-area-ref-data.mock';
 import { COURT_REF_DATA_MOCK } from './court-ref-data.mock';
 import { COURT_AUTOCOMPLETE_ITEMS_MOCK } from './court-autocomplete-items.mock';
@@ -73,6 +76,9 @@ export {
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_MOCK,
   TOKEN_EXPIRY_MOCK,
   LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
   COURT_REF_DATA_MOCK,

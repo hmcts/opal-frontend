@@ -2,20 +2,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountDetailsComponent } from './account-details.component';
 import {
   DEFENDANT_TYPES_STATE,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
+  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
 } from '@constants';
 import { MacStateService } from '@services';
 import { provideRouter } from '@angular/router';
 import {
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_MOCK,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
@@ -28,18 +26,7 @@ describe('AccountDetailsComponent', () => {
   beforeEach(async () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
-    mockMacStateService.manualAccountCreation = {
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
-      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
-
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
     await TestBed.configureTestingModule({
       imports: [AccountDetailsComponent],
       providers: [{ provide: MacStateService, useValue: mockMacStateService }, provideRouter([])],
@@ -98,10 +85,11 @@ describe('AccountDetailsComponent', () => {
       contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
+      companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
       courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
       businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
-      unsavedChanges: true,
-      stateChanges: false,
+      unsavedChanges: false,
+      stateChanges: true,
     };
 
     component['checkStatus']();
@@ -114,17 +102,8 @@ describe('AccountDetailsComponent', () => {
   });
 
   it('should correctly update accountCreationStatus based on empty manualAccountCreation state', () => {
-    component.macStateService.manualAccountCreation = {
-      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-      accountDetails: MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
-      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
-      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+    component.macStateService.manualAccountCreation.accountDetails = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
 
     component['checkStatus']();
 
@@ -133,5 +112,6 @@ describe('AccountDetailsComponent', () => {
     expect(component.accountCreationStatus['contactDetails']).toBeFalsy();
     expect(component.accountCreationStatus['parentGuardianDetails']).toBeFalsy();
     expect(component.accountCreationStatus['personalDetails']).toBeFalsy();
+    expect(component.accountCreationStatus['companyDetails']).toBeFalsy();
   });
 });
