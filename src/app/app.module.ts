@@ -10,7 +10,12 @@ import {
   withXsrfConfiguration,
 } from '@angular/common/http';
 
-import { MojHeaderComponent, MojHeaderNavigationItemComponent, GovukFooterComponent } from '@components';
+import {
+  MojHeaderComponent,
+  MojHeaderNavigationItemComponent,
+  GovukFooterComponent,
+  MojBannerComponent,
+} from '@components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors';
 import { AppInitializerService } from '@services';
@@ -25,6 +30,7 @@ import { AppInitializerService } from '@services';
     MojHeaderNavigationItemComponent,
     GovukFooterComponent,
     BrowserAnimationsModule,
+    MojBannerComponent,
   ],
   providers: [
     provideClientHydration(withNoHttpTransferCache()),

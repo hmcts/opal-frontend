@@ -1,1 +1,60 @@
-{"cypress/e2e/functional/opal/PO-117_accounEnquirytDetails.feature":{"time":12015,"weight":2},"cypress/e2e/functional/opal/PO-136_PO-137_accountHistory.feature":{"time":7213,"weight":1},"cypress/e2e/functional/opal/PO-251_unauthorisedUser.feature":{"time":1841,"weight":0},"cypress/e2e/functional/opal/account_details/PO-366_updateAccountDetails.feature":{"time":13278,"weight":2},"cypress/e2e/functional/opal/account_details/PO-367_accountCreation_parentOrGaurdian.feature":{"time":13552,"weight":2},"cypress/e2e/functional/opal/manualAccountCreation/PO-280_employerDetails.feature":{"time":50293,"weight":10},"cypress/e2e/functional/opal/manualAccountCreation/PO-343_manualAccountCreation.feature":{"time":1972,"weight":0},"cypress/e2e/functional/opal/manualAccountCreation/PO-346_Business_Unit_And_Defendant_type.feature":{"time":19059,"weight":4},"cypress/e2e/functional/opal/manualAccountCreation/PO-347_createAccountUserAccessOneBU.feature":{"time":6892,"weight":1},"cypress/e2e/functional/opal/manualAccountCreation/PO-362_companyTaskList.feature":{"time":21115,"weight":4},"cypress/e2e/functional/opal/manualAccountCreation/PO-364_parentOrGuardianToPayPage.feature":{"time":64822,"weight":13},"cypress/e2e/functional/opal/manualAccountCreation/PO-368_employerDetails_parentAndGuardian.feature":{"time":59594,"weight":12},"cypress/e2e/functional/opal/manualAccountCreation/PO-377_createAccountUserAccessMultipleBU.feature":{"time":29628,"weight":6},"cypress/e2e/functional/opal/manualAccountCreation/adultOrYouthOnly/PO-360_personalDetails.feature":{"time":140214,"weight":29},"cypress/e2e/functional/opal/manualAccountCreation/adultOrYouthOnly/PO-433_addContactDetailsButton.feature":{"time":120639,"weight":25},"cypress/e2e/functional/opal/manualAccountCreation/adultOrYouthWithParentOrGuardian/PO-369_personalDetailsParentOrGuardian.feature":{"time":204876,"weight":43},"cypress/e2e/functional/opal/manualAccountCreation/contactDetails/PO-370_contactDetails_parentOrGuardian.feature":{"time":46098,"weight":9},"cypress/e2e/functional/opal/manualAccountCreation/contactDetails/PO-371_contactDetails_company.feature":{"time":45217,"weight":9},"cypress/e2e/functional/opal/manualAccountCreation/contactDetails/PO-419_contactDetails_adultOrYouth.feature":{"time":42826,"weight":9}}
+{
+  "cypress/e2e/functional/opal/PO-117_accounEnquirytDetails.feature": { "time": 12223, "weight": 2 },
+  "cypress/e2e/functional/opal/PO-136_PO-137_accountHistory.feature": { "time": 7331, "weight": 1 },
+  "cypress/e2e/functional/opal/PO-251_unauthorisedUser.feature": { "time": 1824, "weight": 0 },
+  "cypress/e2e/functional/opal/account_details/PO-366_updateAccountDetails.feature": { "time": 13579, "weight": 2 },
+  "cypress/e2e/functional/opal/account_details/PO-367_accountCreation_parentOrGaurdian.feature": {
+    "time": 13882,
+    "weight": 2
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-280_employerDetails.feature": { "time": 51338, "weight": 10 },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-343_manualAccountCreation.feature": {
+    "time": 1938,
+    "weight": 0
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-346_Business_Unit_And_Defendant_type.feature": {
+    "time": 19359,
+    "weight": 3
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-347_createAccountUserAccessOneBU.feature": {
+    "time": 7120,
+    "weight": 1
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-362_companyTaskList.feature": { "time": 22184, "weight": 4 },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-364_parentOrGuardianToPayPage.feature": {
+    "time": 64300,
+    "weight": 13
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-368_employerDetails_parentAndGuardian.feature": {
+    "time": 60624,
+    "weight": 12
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/PO-377_createAccountUserAccessMultipleBU.feature": {
+    "time": 30052,
+    "weight": 6
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/adultOrYouthOnly/PO-360_personalDetails.feature": {
+    "time": 142917,
+    "weight": 29
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/adultOrYouthOnly/PO-433_addContactDetailsButton.feature": {
+    "time": 122586,
+    "weight": 25
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/adultOrYouthWithParentOrGuardian/PO-369_personalDetailsParentOrGuardian.feature": {
+    "time": 207562,
+    "weight": 42
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/contactDetails/PO-370_contactDetails_parentOrGuardian.feature": {
+    "time": 47631,
+    "weight": 9
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/contactDetails/PO-371_contactDetails_company.feature": {
+    "time": 48117,
+    "weight": 9
+  },
+  "cypress/e2e/functional/opal/manualAccountCreation/contactDetails/PO-419_contactDetails_adultOrYouth.feature": {
+    "time": 45238,
+    "weight": 9
+  }
+}
