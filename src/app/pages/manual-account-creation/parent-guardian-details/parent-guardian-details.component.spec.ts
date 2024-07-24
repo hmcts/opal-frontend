@@ -12,11 +12,28 @@ describe('ParentGuardianDetailsComponent', () => {
   let component: ParentGuardianDetailsComponent;
   let fixture: ComponentFixture<ParentGuardianDetailsComponent>;
   let mockMacStateService: jasmine.SpyObj<MacStateService>;
+  let formData: IManualAccountCreationParentGuardianDetailsState;
+  let formSubmit: IManualAccountCreationParentGuardianForm;
 
   beforeEach(async () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+
+    formData = {
+      fullName: 'Test test',
+      dateOfBirth: '',
+      nationalInsuranceNumber: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    };
+
+    formSubmit = {
+      formData: formData,
+      nestedFlow: false,
+    };
 
     await TestBed.configureTestingModule({
       imports: [ParentGuardianDetailsComponent],
@@ -34,22 +51,8 @@ describe('ParentGuardianDetailsComponent', () => {
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IManualAccountCreationParentGuardianDetailsState = {
-      fullName: 'Test test',
-      dateOfBirth: '',
-      nationalInsuranceNumber: '',
-      addressLine1: '',
-      addressLine2: '',
-      addressLine3: '',
-      postcode: '',
-    };
 
-    const parentGuardianFormSubmit: IManualAccountCreationParentGuardianForm = {
-      formData: formData,
-      continueFlow: false,
-    };
-
-    component.handleParentGuardianDetailsSubmit(parentGuardianFormSubmit);
+    component.handleParentGuardianDetailsSubmit(formSubmit);
 
     expect(mockMacStateService.manualAccountCreation.parentGuardianDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
@@ -57,24 +60,11 @@ describe('ParentGuardianDetailsComponent', () => {
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
+    component.defendantType = 'parentOrGuardianToPay';
 
-    const formData: IManualAccountCreationParentGuardianDetailsState = {
-      fullName: 'Test test',
-      dateOfBirth: '',
-      nationalInsuranceNumber: '',
-      addressLine1: '',
-      addressLine2: '',
-      addressLine3: '',
-      postcode: '',
-    };
+    formSubmit.nestedFlow = true;
 
-    const parentGuardianFormSubmit: IManualAccountCreationParentGuardianForm = {
-      formData: formData,
-      continueFlow: true,
-    };
-
-    component.handleParentGuardianDetailsSubmit(parentGuardianFormSubmit);
+    component.handleParentGuardianDetailsSubmit(formSubmit);
 
     expect(mockMacStateService.manualAccountCreation.parentGuardianDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.contactDetails]);

@@ -2,5 +2,5 @@ import { IManualAccountCreationParentGuardianDetailsState } from './manual-accou
 
 export interface IManualAccountCreationParentGuardianForm {
   formData: IManualAccountCreationParentGuardianDetailsState;
-  continueFlow: boolean;
+  nestedFlow: boolean;
 }

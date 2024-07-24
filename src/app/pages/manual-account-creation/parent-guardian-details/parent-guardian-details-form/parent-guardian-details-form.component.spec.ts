@@ -23,11 +23,11 @@ describe('ParentGuardianDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+    const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
     const parentGuardianForm = MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FORM_MOCK;
-    parentGuardianForm.continueFlow = true;
+    parentGuardianForm.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](parentGuardianForm.formData);
@@ -42,7 +42,7 @@ describe('ParentGuardianDetailsFormComponent', () => {
     component.macStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_STATE;
     component.macStateService.manualAccountCreation.accountDetails.defendantType = 'parentOrGuardianToPay';
     const parentGuardianForm = MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FORM_MOCK;
-    parentGuardianForm.continueFlow = false;
+    parentGuardianForm.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](parentGuardianForm.formData);
