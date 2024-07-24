@@ -8,5 +8,9 @@ export const MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR = {
       message: 'The full name must be 30 characters or fewer',
       priority: 2,
     },
+    alphabeticalTextPattern: {
+      message: `The full name must only contain alphabetical text`,
+      priority: 2,
+    },
   },
 };
