@@ -31,7 +31,8 @@ import { IManualAccountCreationAccountDetailsState } from './manual-account-crea
 import { IDefendantTypes } from './defendant-types.interface';
 import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
 import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
-import { IBusinessUnitRefData } from './business-unit-ref-data.interface';
+import { IBusinessUnit, IBusinessUnitRefData } from './business-unit-ref-data.interface';
+
 import { IManualAccountCreationPersonalAlias } from './manual-account-creation-personal-details-alias.interface';
 import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
 import { IManualAccountCreationPersonalDetailsAliasState } from './manual-account-creation-personal-details-alias-state.interface';
@@ -51,6 +52,10 @@ import { IFormArrayControlValidation } from './form-array-control-validation.int
 import { IFormArrayControls } from './form-array-controls.interface';
 import { INestedRoutes } from './nested-routes.interface';
 import { IManualAccountCreationNestedRoutes } from './manual-account-creation-nested-routes.interface';
+import { IManualAccountCreationCourtDetailsState } from './manual-account-creation-court-details-state.interface';
+import { IManualAccountCreationCourtDetailsForm } from './manual-account-creation-court-details-form.interface';
+import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
+import { ICourtRefData } from './court-ref-data.interface';
 import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
 
 export {
@@ -93,6 +98,7 @@ export {
   IDefendantTypes,
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
+  IBusinessUnit,
   IBusinessUnitRefData,
   IManualAccountCreationPersonalAlias,
   IManualAccountCreationPersonalDetailsState,
@@ -112,4 +118,8 @@ export {
   INestedRoutes,
   IManualAccountCreationNestedRoutes,
   ITokenExpiry,
+  IManualAccountCreationCourtDetailsState,
+  IManualAccountCreationCourtDetailsForm,
+  ILocalJusticeAreaRefData,
+  ICourtRefData,
 };

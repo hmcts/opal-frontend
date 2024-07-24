@@ -1,4 +1,4 @@
-interface BusinessUnit {
+export interface IBusinessUnit {
   businessUnitCode: string;
   businessUnitType: string;
   accountNumberPrefix: null | string;
@@ -9,5 +9,5 @@ interface BusinessUnit {
 
 export interface IBusinessUnitRefData {
   count: number;
-  refData: BusinessUnit[];
+  refData: IBusinessUnit[];
 }
