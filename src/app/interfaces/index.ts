@@ -56,6 +56,7 @@ import { IManualAccountCreationCourtDetailsState } from './manual-account-creati
 import { IManualAccountCreationCourtDetailsForm } from './manual-account-creation-court-details-form.interface';
 import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
 import { ICourtRefData } from './court-ref-data.interface';
+import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -89,6 +90,7 @@ export {
   IHighPriorityFormError,
   IFormErrorSummaryMessage,
   IManualAccountCreationEmployerDetailsState,
+  IManualAccountCreationEmployerDetailsForm,
   IManualAccountCreationState,
   CanComponentDeactivate,
   CanDeactivateType,
