@@ -32,6 +32,9 @@ import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK } from './manual-ac
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK } from './manual-account-creation-personal-details-form.mock';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK } from './manual-account-creation-contact-details-form.mock';
 import { TOKEN_EXPIRY_MOCK } from './token-expiry.mock';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK } from './manual-account-creation-company-details-state.mock';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK } from './manual-account-creation-company-details-form.mock';
+import { MANUAL_ACCOUNT_CREATION_MOCK } from './manual-account-creation.mock';
 import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FORM_MOCK } from './manual-account-creation-parent-guardian-details-form.mock';
 
 export {
@@ -68,6 +71,9 @@ export {
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_MOCK,
   TOKEN_EXPIRY_MOCK,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FORM_MOCK,
 };
