@@ -2,5 +2,5 @@ import { IManualAccountCreationCompanyDetailsState } from './manual-account-crea
 
 export interface IManualAccountCreationCompanyDetailsForm {
   formData: IManualAccountCreationCompanyDetailsState;
-  continueFlow: boolean;
+  nestedFlow: boolean;
 }
