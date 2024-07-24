@@ -1,9 +1,12 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IFieldError,
   IFieldErrors,
+  IFormArrayControl,
+  IFormArrayControlValidation,
+  IFormArrayControls,
   IFormControlErrorMessage,
   IFormError,
   IFormErrorSummaryMessage,
@@ -163,23 +166,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sets the initial error messages for the form controls.
-   *
-   * @param form - The FormGroup instance.
-   */
-  protected setInitialErrorMessages(): void {
-    const formControls = this.form.controls;
-    const initialFormControlErrorMessages: IFormControlErrorMessage = {};
-
-    Object.keys(formControls).map((controlName) => {
-      initialFormControlErrorMessages[controlName] = null;
-    });
-
-    this.formControlErrorMessages = initialFormControlErrorMessages;
-    this.formErrorSummaryMessage = [];
-  }
-
-  /**
    * Sets the error messages for the form controls and error summary based on the provided form errors.
    * @param formErrors - An array of form errors containing field IDs and error messages.
    */
@@ -252,15 +238,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Repopulates the search form with the data from the account enquiry search.
-   * @param state - The state object containing the search form data.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected rePopulateForm(state: any): void {
-    this.form.patchValue(state);
-  }
-
-  /**
    * Splits the form errors into two arrays based on the provided field IDs.
    * Errors with field IDs included in the fieldIds array will be moved to the removedFormErrors array,
    * while the remaining errors will be moved to the cleanFormErrors array.
@@ -282,30 +259,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     });
 
     return [cleanFormErrors, removedFormErrors];
-  }
-
-  /**
-   * Handles the form errors for the date input fields.
-   * @param formErrors - An array of form errors.
-   * @returns An array of form errors with the manipulated error messages.
-   */
-  protected handleDateInputFormErrors() {
-    const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
-    const splitFormErrors = this.splitFormErrors(dateInputFields, this.formErrors);
-    const highPriorityDateControlErrors = this.getHighPriorityFormErrors(splitFormErrors[1]);
-    let manipulatedFormErrors: IFormError[] = highPriorityDateControlErrors;
-
-    // If we have more than one error then we want to manipulate the error message
-    if (highPriorityDateControlErrors.length > 1) {
-      manipulatedFormErrors = this.manipulateFormErrorMessage(
-        dateInputFields,
-        'Please enter a DOB',
-        'required',
-        manipulatedFormErrors,
-      );
-    }
-
-    return [...splitFormErrors[0], ...manipulatedFormErrors];
   }
 
   /**
@@ -351,6 +304,40 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Setup listener for the form value changes and to emit hasUnsavedChanges
+   */
+  private setupListener(): void {
+    this.formSub = this.form.valueChanges.subscribe(() => {
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+    });
+  }
+
+  /**
+   * Adds controls to a form group.
+   *
+   * @param formGroup - The form group to add controls to.
+   * @param controls - An array of form array control validations.
+   * @param index - The index of the form array control.
+   */
+  private addControlsToFormGroup(formGroup: FormGroup, controls: IFormArrayControlValidation[], index: number): void {
+    controls.forEach(({ controlName, validators }) => {
+      formGroup.addControl(`${controlName}_${index}`, new FormControl(null, validators));
+    });
+  }
+
+  /**
+   * Removes a form array control at the specified index from the given array of form array controls.
+   *
+   * @param index - The index of the form array control to remove.
+   * @param formArrayControls - The array of form array controls.
+   * @returns The updated array of form array controls after removing the control.
+   */
+  protected removeFormArrayControl(index: number, formArrayControls: IFormArrayControls[]): IFormArrayControls[] {
+    formArrayControls.splice(index, 1);
+    return formArrayControls;
+  }
+
+  /**
    * Handles the error messages and populates the relevant variables
    */
   protected handleErrorMessages(): void {
@@ -362,22 +349,6 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
       this.formErrorSummaryMessage,
       this.getDateFieldsToRemoveIndexes(),
     );
-  }
-
-  /**
-   * Clears the search form.
-   */
-  public handleClearForm(): void {
-    this.form.reset();
-  }
-
-  /**
-   * Handles the scroll of the component error from the summary
-   *
-   * @param fieldId - Field id of the component
-   */
-  public scrollTo(fieldId: string): void {
-    this['scroll'](fieldId);
   }
 
   /**
@@ -401,6 +372,160 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handles the form errors for the date input fields.
+   * @param formErrors - An array of form errors.
+   * @returns An array of form errors with the manipulated error messages.
+   */
+  protected handleDateInputFormErrors() {
+    const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
+    const splitFormErrors = this.splitFormErrors(dateInputFields, this.formErrors);
+    const highPriorityDateControlErrors = this.getHighPriorityFormErrors(splitFormErrors[1]);
+    let manipulatedFormErrors: IFormError[] = highPriorityDateControlErrors;
+
+    // If we have more than one error then we want to manipulate the error message
+    if (highPriorityDateControlErrors.length > 1) {
+      manipulatedFormErrors = this.manipulateFormErrorMessage(
+        dateInputFields,
+        'Please enter a DOB',
+        'required',
+        manipulatedFormErrors,
+      );
+    }
+
+    return [...splitFormErrors[0], ...manipulatedFormErrors];
+  }
+
+  /**
+   * Sets the initial error messages for the form controls.
+   *
+   * @param form - The FormGroup instance.
+   */
+  protected setInitialErrorMessages(): void {
+    const formControls = this.form.controls;
+    const initialFormControlErrorMessages: IFormControlErrorMessage = {};
+
+    Object.keys(formControls).map((controlName) => {
+      initialFormControlErrorMessages[controlName] = null;
+    });
+
+    this.formControlErrorMessages = initialFormControlErrorMessages;
+    this.formErrorSummaryMessage = [];
+  }
+
+  /**
+   * Repopulates the search form with the data from the account enquiry search.
+   * @param state - The state object containing the search form data.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected rePopulateForm(state: any): void {
+    this.form.patchValue(state);
+  }
+
+  /**
+   * Creates form controls based on the given fields and index.
+   * @param fields - An array of field names.
+   * @param index - The index value.
+   * @returns An object containing form controls configuration.
+   */
+  protected createControls(fields: string[], index: number): { [key: string]: IFormArrayControl } {
+    return fields.reduce(
+      (controls, field) => ({
+        ...controls,
+        [field]: {
+          inputId: `${field}_${index}`,
+          inputName: `${field}_${index}`,
+          controlName: `${field}_${index}`,
+        },
+      }),
+      {},
+    );
+  }
+
+  /**
+   * Builds an array of form array controls based on the provided parameters.
+   *
+   * @param formControlCount - An array of numbers representing the number of form controls to create for each index.
+   * @param formArrayName - The name of the form array.
+   * @param fieldNames - An array of field names for the form controls.
+   * @param controlValidation - An array of control validation objects for the form controls.
+   * @returns An array of form array controls.
+   */
+  protected buildFormArrayControls(
+    formControlCount: number[],
+    formArrayName: string,
+    fieldNames: string[],
+    controlValidation: IFormArrayControlValidation[],
+  ): IFormArrayControls[] {
+    // Directly map each index to a control
+    return formControlCount.map((_element, index) =>
+      this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation),
+    );
+  }
+
+  /**
+   * Removes all form array controls and clears error messages for the specified form array.
+   *
+   * @param formArrayControls - The array of form array controls to be removed.
+   * @param formArrayName - The name of the form array.
+   * @param fieldNames - The names of the fields associated with the form array controls.
+   * @returns An empty array of form array controls.
+   */
+  protected removeAllFormArrayControls(
+    formArrayControls: IFormArrayControls[],
+    formArrayName: string,
+    fieldNames: string[],
+  ): [] {
+    const control = this.form.get(formArrayName) as FormArray;
+
+    // Clear the error messages...
+    [...formArrayControls].forEach((_element, index) => {
+      this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
+    });
+
+    // Reset the form array controls...
+    control.clear();
+
+    // Return en empty array of form array controls...
+    return [];
+  }
+
+  /**
+   * Removes the form array controls errors for the specified index and field names.
+   * @param index - The index of the form array control.
+   * @param formArrayControls - The array of form array controls.
+   * @param fieldNames - The names of the fields to remove errors from.
+   */
+  protected removeFormArrayControlsErrors(
+    index: number,
+    formArrayControls: IFormArrayControls[],
+    fieldNames: string[],
+  ): void {
+    const formArrayControl = formArrayControls[index];
+
+    if (formArrayControl) {
+      fieldNames.forEach((field) => {
+        delete this.formControlErrorMessages?.[formArrayControl[field].controlName];
+      });
+    }
+  }
+
+  /**
+   * Clears the search form.
+   */
+  public handleClearForm(): void {
+    this.form.reset();
+  }
+
+  /**
+   * Handles the scroll of the component error from the summary
+   *
+   * @param fieldId - Field id of the component
+   */
+  public scrollTo(fieldId: string): void {
+    this['scroll'](fieldId);
+  }
+
+  /**
    * Handles route with the supplied route
    *
    * @param route string of route
@@ -411,12 +536,62 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Setup listener for the form value changes and to emit hasUnsavedChanges
+   * Adds form array controls to a form array and returns the form controls.
+   *
+   * @param index - The index at which to add the form array controls.
+   * @param formArrayName - The name of the form array.
+   * @param fieldNames - An array of field names for the form controls.
+   * @param controlValidation - An array of control validation configurations.
+   * @returns An object containing the form controls added to the form array.
    */
-  private setupListener(): void {
-    this.formSub = this.form.valueChanges.subscribe(() => {
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-    });
+  public addFormArrayControls(
+    index: number,
+    formArrayName: string,
+    fieldNames: string[],
+    controlValidation: IFormArrayControlValidation[],
+  ): { [key: string]: IFormArrayControl } {
+    const formArray = this.form.get(formArrayName) as FormArray;
+    const formArrayFormGroup = new FormGroup({});
+
+    // Create the form controls...
+    const controls = this.createControls(fieldNames, index);
+
+    // Add the controls to the form group...
+    this.addControlsToFormGroup(formArrayFormGroup, controlValidation, index);
+
+    // Add the form group to the form array...
+    formArray.push(formArrayFormGroup);
+
+    // Return the form controls...
+    return controls;
+  }
+
+  /**
+   * Removes a form array control at the specified index and updates the list of form array controls.
+   *
+   * @param index - The index of the form array control to remove.
+   * @param formArrayName - The name of the form array.
+   * @param formArrayControls - The list of form array controls.
+   * @param fieldNames - The names of the fields in the form array control.
+   * @returns The updated list of form array controls.
+   */
+  public removeFormArrayControls(
+    index: number,
+    formArrayName: string,
+    formArrayControls: IFormArrayControls[],
+    fieldNames: string[],
+  ): IFormArrayControls[] {
+    // Get the form array...
+    const control = this.form.get(formArrayName) as FormArray;
+
+    // Remove the form array control based on index
+    control.removeAt(index);
+
+    // Then remove the form array controls errors...
+    this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
+
+    // Return the new list of form array controls...
+    return this.removeFormArrayControl(index, formArrayControls);
   }
 
   public ngOnInit(): void {
