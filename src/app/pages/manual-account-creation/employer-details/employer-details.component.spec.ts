@@ -42,6 +42,9 @@ describe('EmployerDetailsComponent', () => {
 
     fixture = TestBed.createComponent(EmployerDetailsComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 
@@ -60,7 +63,6 @@ describe('EmployerDetailsComponent', () => {
 
   it('should handle form submission and navigate to offence details - adult or youth only', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.defendantType = 'adultOrYouthOnly';
     employerDetailsFormSubmit.nestedFlow = true;
 
     component.handleEmployerDetailsSubmit(employerDetailsFormSubmit);
