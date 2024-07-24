@@ -41,6 +41,7 @@ import { COURT_AUTOCOMPLETE_ITEMS_MOCK } from './court-autocomplete-items.mock';
 import { LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from './local-justice-area-autocomplete-items.mock';
 import { MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE_MOCK } from './manual-account-creation-court-details-state.mock';
 import { MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FORM_MOCK } from './manual-account-creation-court-details-form.mock';
+import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FORM_MOCK } from './manual-account-creation-employer-details-form.mock';
 
 export {
   DEFENDANT_ACCOUNT_MOCK,
@@ -86,4 +87,5 @@ export {
   COURT_AUTOCOMPLETE_ITEMS_MOCK,
   MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FORM_MOCK,
 };

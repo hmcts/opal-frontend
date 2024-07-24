@@ -351,17 +351,6 @@ When('I verify primary email, home telephone is empty', () => {
   cy.get('#homeTelephoneNumber').should('have.value', '');
 });
 
-Then('I click Cancel, a window pops up and I click Ok', () => {
-  cy.contains('a', 'Cancel').click();
-  cy.on('window:confirm', () => {});
-});
-Then('I click Cancel, a window pops up and I click Cancel', () => {
-  cy.contains('a', 'Cancel').click();
-  cy.on('window:confirm', () => {
-    return false;
-  });
-});
-
 When('I select title {string} from dropdown', (title: string) => {
   personalDetails.selectTitle(title);
 });
