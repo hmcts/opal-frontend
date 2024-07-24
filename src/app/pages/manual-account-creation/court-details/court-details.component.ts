@@ -11,7 +11,7 @@ import {
   IManualAccountCreationCourtDetailsForm,
 } from '@interfaces';
 import { CourtService, LocalJusticeAreaService } from '@services';
-import { Observable, map } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -39,6 +39,10 @@ export class CourtDetailsComponent extends FormParentBaseComponent {
         return this.createAutoCompleteItemsCourts(response);
       }),
     );
+  public groupLjaAndCourtData$ = forkJoin({
+    sendingCourtData: this.sendingCourtData$,
+    enforcementCourtData: this.enforcementCourtData$,
+  });
 
   public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
 

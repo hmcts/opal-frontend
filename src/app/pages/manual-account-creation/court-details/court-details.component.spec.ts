@@ -69,6 +69,7 @@ describe('CourtDetailsComponent', () => {
   it('should have state and populate data$', () => {
     expect(component.sendingCourtData$).not.toBeUndefined();
     expect(component.enforcementCourtData$).not.toBeUndefined();
+    expect(component.groupLjaAndCourtData$).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate to account details', () => {
