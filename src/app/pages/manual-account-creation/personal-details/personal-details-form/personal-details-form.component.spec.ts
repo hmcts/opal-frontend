@@ -40,9 +40,9 @@ describe('PersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+    const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-    personalDetailsForm.continueFlow = true;
+    personalDetailsForm.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](personalDetailsForm.formData);
@@ -54,7 +54,7 @@ describe('PersonalDetailsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     const personalDetailsForm = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK;
-    personalDetailsForm.continueFlow = false;
+    personalDetailsForm.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](personalDetailsForm.formData);

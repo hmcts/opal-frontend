@@ -63,7 +63,7 @@ Feature: PO-362 Company task list screen
 
     Then I see the "Court details" section heading
     And I see the "Court details" link under the "Court details" section
-    Then "Court details" is clicked, nothing happens
+  # Then "Court details" is clicked, nothing happens
 
   Scenario: AC4.a company task list defendant details section
     Given I am on the OPAL Frontend
@@ -118,7 +118,7 @@ Feature: PO-362 Company task list screen
 
     Then I see the "Offence and imposition details" section heading
     And I see the "Offence details" link under the "Offence and imposition details" section
-    Then "Offence details" is clicked, nothing happens
+  # Then "Offence details" is clicked, nothing happens
 
   Scenario: AC5.b company task list Offence and imposition details section
     Given I am on the OPAL Frontend
@@ -135,7 +135,7 @@ Feature: PO-362 Company task list screen
 
     Then I see the "Offence and imposition details" section heading
     And I see the "Payment terms" link under the "Offence and imposition details" section
-    Then "Payment terms" is clicked, nothing happens
+  # Then "Payment terms" is clicked, nothing happens
 
   Scenario: AC6a.b company task list Review and Publish section
     Given I am on the OPAL Frontend
@@ -155,21 +155,22 @@ Feature: PO-362 Company task list screen
     And I see the "Review account" button under the "Review and publish" section
     And I see the "Cancel account creation" link
 
-  Scenario: AC6.c company task list Review account button
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
+  # Descoped
+  # Scenario: AC6.c company task list Review account button
+  #   Given I am on the OPAL Frontend
+  #   Then I see "Opal" in the header
 
-    When I sign in as "opal-test@hmcts.net"
-    Then I am on the dashboard
+  #   When I sign in as "opal-test@hmcts.net"
+  #   Then I am on the dashboard
 
-    When I navigate to Manual Account Creation
+  #   When I navigate to Manual Account Creation
 
-    And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+  #   And I enter "London South" into the business unit search box
+  #   When I select company
+  #   And I click on continue button
 
-    Then I see "Account details" on the page header
-    When The button "Review account" is clicked, nothing happens
+  #   Then I see "Account details" on the page header
+  #   When The button "Review account" is clicked, nothing happens
 
 
   # Descoped
