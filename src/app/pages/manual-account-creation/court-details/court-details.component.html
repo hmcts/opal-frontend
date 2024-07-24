@@ -1,0 +1,13 @@
+@if (sendingCourtData$ | async; as sendingCourtData) {
+  @if (enforcementCourtData$ | async; as enforcementCourtData) {
+    <div class="govuk-grid-column-two-thirds">
+      <app-court-details-form
+        [defendantType]="defendantType"
+        [sendingCourtAutoCompleteItems]="sendingCourtData"
+        [enforcingCourtAutoCompleteItems]="enforcementCourtData"
+        (formSubmit)="handleCourtDetailsSubmit($event)"
+        (unsavedChanges)="handleUnsavedChanges($event)"
+      ></app-court-details-form>
+    </div>
+  }
+}

@@ -45,7 +45,7 @@ describe('ContactDetailsComponent', () => {
 
     const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
       formData,
-      continueFlow: false,
+      nestedFlow: false,
     };
 
     component.handleContactDetailsSubmit(contactDetailsFormSubmit);
@@ -67,7 +67,7 @@ describe('ContactDetailsComponent', () => {
 
     const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
       formData,
-      continueFlow: true,
+      nestedFlow: true,
     };
 
     component.handleContactDetailsSubmit(contactDetailsFormSubmit);
