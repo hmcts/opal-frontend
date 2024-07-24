@@ -5,6 +5,7 @@ import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
 import {
   IAutoCompleteItem,
+  IBusinessUnit,
   IBusinessUnitRefData,
   IGovUkSelectOptions,
   IManualAccountCreationAccountDetailsState,
@@ -21,6 +22,7 @@ import { Observable, map, tap } from 'rxjs';
 })
 export class CreateAccountComponent extends FormParentBaseComponent {
   private businessUnitService = inject(BusinessUnitService);
+  private businessUnits!: IBusinessUnit[];
   public data$: Observable<IGovUkSelectOptions[]> = this.businessUnitService
     .getBusinessUnits('MANUAL_ACCOUNT_CREATION')
     .pipe(
@@ -43,7 +45,9 @@ export class CreateAccountComponent extends FormParentBaseComponent {
 
     if (count === 1 && accountDetails.businessUnit === null) {
       this.macStateService.manualAccountCreation.accountDetails.businessUnit = refData[0].businessUnitName;
+      this.macStateService.manualAccountCreation.businessUnit = refData[0];
     }
+    this.businessUnits = refData;
   }
 
   /**
@@ -70,6 +74,7 @@ export class CreateAccountComponent extends FormParentBaseComponent {
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       accountDetails: formData,
+      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === formData.businessUnit)!,
       unsavedChanges: false,
       stateChanges: true,
     };

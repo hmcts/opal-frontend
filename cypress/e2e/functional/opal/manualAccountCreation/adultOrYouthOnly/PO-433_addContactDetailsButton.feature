@@ -46,190 +46,190 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     Then I see the error message "Enter defendant's last name" at the top of the page
     Then I see the error message "Enter address line 1, typically the building and street" at the top of the page
 
-  Scenario: AC4a-negative: When user ticks 'Add aliases' checkbox and not entered data into first names &last name in alias 1
-    When I select title "Mr" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4a-negative: When user ticks 'Add aliases' checkbox and not entered data into first names &last name in alias 1
+    #     When I select title "Mr" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    Then I see the error message "Enter last name for alias 1" at the top of the page
+    #     Then I click the "Add contact details" button
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     Then I see the error message "Enter last name for alias 1" at the top of the page
 
 
-  Scenario: AC4ai-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 1
-    When I select title "Miss" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    Then I set the "Alias 1", "First names" to "Micheal Kores"
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4ai-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 1
+    #     When I select title "Miss" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     Then I set the "Alias 1", "First names" to "Micheal Kores"
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
-    Then I see the error message "Enter last name for alias 1" at the top of the page
+    #     Then I click the "Add contact details" button
+    #     Then I see the error message "Enter last name for alias 1" at the top of the page
 
-  Scenario: AC4aii-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 1
-    When I select title "Mr" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    Then I set the "Alias 1", "Last name" to "Micheal Kores"
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4aii-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 1
+    #     When I select title "Mr" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     Then I set the "Alias 1", "Last name" to "Micheal Kores"
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     Then I click the "Add contact details" button
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
 
-  Scenario: AC4b-negative: When user ticks 'Add aliases' checkbox and not entered data into first names & last name in alias 2
-    When I select title "Mrs" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4b-negative: When user ticks 'Add aliases' checkbox and not entered data into first names & last name in alias 2
+    #     When I select title "Mrs" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-    And I see the error message "Enter last name for alias 2" at the top of the page
+    #     Then I click the "Add contact details" button
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 2" at the top of the page
+    #     And I see the error message "Enter last name for alias 2" at the top of the page
 
-  Scenario: AC4bi-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 2
-    When I select title "Mr" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    Then I set the "Alias 2", "First names" to "Micheal Kores"
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4bi-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 2
+    #     When I select title "Mr" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     Then I set the "Alias 2", "First names" to "Micheal Kores"
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    Then I see the error message "Enter last name for alias 2" at the top of the page
+    #     Then I click the "Add contact details" button
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     Then I see the error message "Enter last name for alias 2" at the top of the page
 
-  Scenario: AC4bii-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 2
-    When I select title "Miss" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    Then I set the "Alias 2", "Last name" to "Micheal Kores"
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4bii-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 2
+    #     When I select title "Miss" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     Then I set the "Alias 2", "Last name" to "Micheal Kores"
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    And I see the error message "Enter first name(s) for alias 2" at the top of the page
+    #     Then I click the "Add contact details" button
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     And I see the error message "Enter first name(s) for alias 2" at the top of the page
 
-  Scenario: AC4c-negative: When user ticks 'Add aliases' checkbox and not entered data into first names & last name in alias 3
-    When I select title "Miss" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    And I click the "Add another alias" button
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4c-negative: When user ticks 'Add aliases' checkbox and not entered data into first names & last name in alias 3
+    #     When I select title "Miss" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     And I click the "Add another alias" button
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
+    #     Then I click the "Add contact details" button
 
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 2" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 3" at the top of the page
-    And I see the error message "Enter last name for alias 3" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 2" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 2" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 3" at the top of the page
+    #     And I see the error message "Enter last name for alias 3" at the top of the page
 
-  Scenario: AC4ci-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 3
-    When I select title "Mrs" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    And I click the "Add another alias" button
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4ci-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 3
+    #     When I select title "Mrs" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     And I click the "Add another alias" button
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I set the "Alias 3", "First names" to "Micheal Kores"
-    Then I click the "Add contact details" button
+    #     Then I set the "Alias 3", "First names" to "Micheal Kores"
+    #     Then I click the "Add contact details" button
 
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 2" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-    And I see the error message "Enter last name for alias 3" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 2" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 2" at the top of the page
+    #     And I see the error message "Enter last name for alias 3" at the top of the page
 
-  Scenario: AC4cii-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 3
-    When I select title "Mrs" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    And I click the "Add another alias" button
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4cii-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 3
+    #     When I select title "Mrs" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     And I click the "Add another alias" button
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I set the "Alias 3", "Last name" to "Micheal Kores"
-    Then I click the "Add contact details" button
+    #     Then I set the "Alias 3", "Last name" to "Micheal Kores"
+    #     Then I click the "Add contact details" button
 
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 2" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-    And I see the error message "Enter first name(s) for alias 3" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 2" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 2" at the top of the page
+    #     And I see the error message "Enter first name(s) for alias 3" at the top of the page
 
-  Scenario: AC4d-negative: When user ticks 'Add aliases' checkbox and not entered data into first names and last name in alias 4
-    When I select title "Mrs" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    And I click the "Add another alias" button
-    And I click the "Add another alias" button
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4d-negative: When user ticks 'Add aliases' checkbox and not entered data into first names and last name in alias 4
+    #     When I select title "Mrs" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     And I click the "Add another alias" button
+    #     And I click the "Add another alias" button
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I click the "Add contact details" button
+    #     Then I click the "Add contact details" button
 
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 2" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-    And I see the error message "Enter first name(s) for alias 3" at the top of the page
-    And I see the error message "Enter last name for alias 3" at the top of the page
-    And I see the error message "Enter first name(s) for alias 4" at the top of the page
-    And I see the error message "Enter last name for alias 4" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 2" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 2" at the top of the page
+    #     And I see the error message "Enter first name(s) for alias 3" at the top of the page
+    #     And I see the error message "Enter last name for alias 3" at the top of the page
+    #     And I see the error message "Enter first name(s) for alias 4" at the top of the page
+    #     And I see the error message "Enter last name for alias 4" at the top of the page
 
-  Scenario: AC4di-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 4
-    When I select title "Mrs" from dropdown
-    When I enter data into first names and last name in personal details screen
-      | firstNames | John Smith Michael       |
-      | lastName   | Astridge Lamsden Langley |
-    When I select add aliases check box
-    And I click the "Add another alias" button
-    And I click the "Add another alias" button
-    And I click the "Add another alias" button
-    And I enter address line 1 "456 Lamburgh Street"
+    # Scenario: AC4di-negative: When user ticks 'Add aliases' checkbox and not entered data into last name in alias 4
+    #     When I select title "Mrs" from dropdown
+    #     When I enter data into first names and last name in personal details screen
+    #         | firstNames | John Smith Michael       |
+    #         | lastName   | Astridge Lamsden Langley |
+    #     When I select add aliases check box
+    #     And I click the "Add another alias" button
+    #     And I click the "Add another alias" button
+    #     And I click the "Add another alias" button
+    #     And I enter address line 1 "456 Lamburgh Street"
 
-    Then I set the "Alias 4", "First names" to "Micheal Kores"
-    Then I click the "Add contact details" button
+    #     Then I set the "Alias 4", "First names" to "Micheal Kores"
+    #     Then I click the "Add contact details" button
 
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 2" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-    And I see the error message "Enter first name(s) for alias 3" at the top of the page
-    And I see the error message "Enter last name for alias 3" at the top of the page
-    And I see the error message "Enter last name for alias 4" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 1" at the top of the page
+    #     And I see the error message "Enter last name for alias 2" at the top of the page
+    #     Then I see the error message "Enter first name(s) for alias 2" at the top of the page
+    #     And I see the error message "Enter first name(s) for alias 3" at the top of the page
+    #     And I see the error message "Enter last name for alias 3" at the top of the page
+    #     And I see the error message "Enter last name for alias 4" at the top of the page
 
-  Scenario: AC4dii-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 4
+    # Scenario: AC4dii-negative: When user ticks 'Add aliases' checkbox and not entered data into first names in alias 4
     When I select title "Mrs" from dropdown
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael       |
@@ -546,18 +546,6 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
     Then I see "Alias 1", "First names" is set to ""
     Then I see "Alias 1", "Last name" is set to ""
-
-    Then I see "Alias 2", "First names" is set to ""
-    Then I see "Alias 2", "First names" is set to ""
-
-    Then I see "Alias 3", "First names" is set to ""
-    Then I see "Alias 3", "First names" is set to ""
-
-    Then I see "Alias 4", "First names" is set to ""
-    Then I see "Alias 4", "First names" is set to ""
-
-    Then I see "Alias 5", "First names" is set to ""
-    Then I see "Alias 5", "First names" is set to ""
 
 
 

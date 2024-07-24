@@ -123,6 +123,24 @@ const routes: Routes = [
           ),
         canActivate: [authGuard],
       },
+      {
+        path: RoutingPaths.manualAccountCreationCompanyDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/company-details/company-details.component').then(
+            (c) => c.CompanyDetailsComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        path: RoutingPaths.manualAccountCreationCourtDetails,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/court-details/court-details.component').then(
+            (c) => c.CourtDetailsComponent,
+          ),
+        canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
     canDeactivate: [canDeactivateGuard],

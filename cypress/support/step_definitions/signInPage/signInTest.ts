@@ -44,7 +44,7 @@ When('I sign in as {string}', (email: string) => {
           cy.get('input[type="email"]').type(emailSSO);
           cy.get('input[type="submit"]').click();
 
-          cy.get('input[type="password"]').type(passwordSSO);
+          cy.get('input[type="password"]').type(passwordSSO, { log: false });
           cy.get('input[type="submit"]').click();
           cy.get('#idBtn_Back').click();
         },

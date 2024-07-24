@@ -13,13 +13,13 @@ import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactDetailsComponent extends FormParentBaseComponent {
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+
   /**
    * Handles the form submission for contact details.
    * @param formData - The form data containing the search parameters.
    */
   public handleContactDetailsSubmit(contactDetailsForm: IManualAccountCreationContactDetailsForm): void {
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       contactDetails: contactDetailsForm.formData,
@@ -27,8 +27,11 @@ export class ContactDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    if (contactDetailsForm.continueFlow && defendantType) {
-      this.routerNavigate(MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[defendantType]?.['contactDetails']);
+    if (contactDetailsForm.nestedFlow && this.defendantType) {
+      const nextRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[this.defendantType]['contactDetails'];
+      if (nextRoute) {
+        this.routerNavigate(nextRoute.nextRoute);
+      }
     } else {
       this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
     }

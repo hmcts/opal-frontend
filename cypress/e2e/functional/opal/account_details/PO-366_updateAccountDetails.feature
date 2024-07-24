@@ -24,11 +24,12 @@ Feature: PO-366 updating the account details page to manage the account creation
     And I see the business unit is "London South West"
     And I see the defendant type is "Adult or youth only"
 
-  Scenario: AC3-positive: verify Court details section heading and sub-section link is not configured
-    Then I see "Create account" as the caption on the page
-    And I see "Account details" on the page header
-    And I see "Court details" on the section heading
-    When "Court details" is clicked, nothing happens
+  #Descoped
+  # Scenario: AC3-positive: verify Court details section heading and sub-section link is not configured
+  #   Then I see "Create account" as the caption on the page
+  #   Then I see "Account details" on the page header
+  #   Then I see "Court details" on the section heading
+  #   When "Court details" is clicked, nothing happens
 
   #Not refactoring this, the screen following this link will be developed
 
@@ -44,19 +45,17 @@ Feature: PO-366 updating the account details page to manage the account creation
     And I click on the "Employer details" link
     Then I see "Employer details" on the page header
 
-
-  Scenario: AC5-positive: verify Offences and imposition details section heading and sub-section links are not configured
-    Then I see "Create account" as the caption on the page
-    And I see "Account details" on the page header
-    And I see "Offence and imposition details" on the section heading
-
-    When "Offence details" is clicked, nothing happens
-    When "Payment terms" is clicked, nothing happens
-  #Not refactoring this, the screen following this link will be developed
-
-  Scenario: AC6-positive: verify review and publish Review account
-    When I see "Review and publish" on the section heading
-    #When I check text under review and publish "Check that all required fields have been entered before you publish"
-    When "Review account" button is clicked, nothing happens
-    When "Cancel account creation" link is clicked, nothing happens
 #Not refactoring this, the screen following this link will be developed
+#Descoped
+# Scenario: AC5-positive: verify Offences and imposition details section heading and sub-section links are not configured
+#   Then I see "Create account" as the caption on the page
+#   Then I see "Account details" on the page header
+#   Then I see "Offence and imposition details" on the section heading
+#   When "Offence details" is clicked, nothing happens
+#   When "Payment terms" is clicked, nothing happens
+
+# Scenario: AC6-positive: verify review and publish Review account
+#   When I see "Review and publish" on the section heading
+#   #When I check text under review and publish "Check that all required fields have been entered before you publish"
+#   When "Review account" button is clicked, nothing happens
+#   When "Cancel account creation" link is clicked, nothing happens

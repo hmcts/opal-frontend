@@ -60,3 +60,4 @@ cypress/results
 functional-output
 smoke-output
 runner-results
+multi-reporter-config.json
