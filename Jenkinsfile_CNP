@@ -41,12 +41,14 @@ before('smokeTest:dev') {
         sh '''
         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
         else
             echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
         fi
 
         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
         else
             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json not found, skipping move"
         fi
@@ -59,12 +61,12 @@ before('smokeTest:dev') {
 
 afterSuccess('functionalTest:dev'){
     script {
-                    sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
-                    sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+      sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
+      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
 
-                    archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
-                    archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
-  }
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+    }
 }
 
 before('smokeTest:stg') {
@@ -77,12 +79,14 @@ before('smokeTest:stg') {
         sh '''
         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
         else
             echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
         fi
 
         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
         else
             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json not found, skipping move"
         fi
@@ -95,12 +99,14 @@ before('smokeTest:stg') {
 
 afterSuccess('functionalTest:stg'){
     script {
-                    sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
-                    sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+      sh' mkdir -p cypress/parallel/weights/pipeline'
+      sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
+      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
 
-                    archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
-                    archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+      sh'echo "Archiving weight files"'
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+    }
   }
-}
 }
 
