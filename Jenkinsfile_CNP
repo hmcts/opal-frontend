@@ -30,5 +30,40 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
   }
+
+before('Smoke') {
+    script {
+      try{
+        copyArtifacts projectName: 'opal-frontend', selector: lastSuccessful(), filter: 'smoke-parallel-weights.json'
+        copyArtifacts projectName: 'opal-frontend', selector: lastSuccessful(), filter: 'functional-parallel-weights.json'
+
+        sh '''
+        if [ -f smoke-parallel-weights.json ]; then
+            mv smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+        else
+            echo "smoke-parallel-weights.json not found, skipping move"
+        fi
+
+        if [ -f functional-parallel-weights.json ]; then
+            mv functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+        else
+            echo "functional-parallel-weights.json not found, skipping move"
+        fi
+        '''
+      } catch (Exception e) {
+            echo "Artifacts not found or copy failed: ${e}"
+        }
+    }
+}
+
+afterSuccess('functional'){
+    script {
+                    sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json /'
+                    sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json /'
+
+                    archiveArtifacts artifacts: 'smoke-parallel-weights.json', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'functional-parallel-weights.json', allowEmptyArchive: true
+  }
+}
 }
 
