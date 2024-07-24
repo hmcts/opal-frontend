@@ -29,7 +29,7 @@ export class EmployerDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    if (employerDetailsForm.continueFlow && this.defendantType) {
+    if (employerDetailsForm.nestedFlow && this.defendantType) {
       const nextRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[this.defendantType]['employerDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);

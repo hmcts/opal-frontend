@@ -112,6 +112,4 @@ export {
   INestedRoutes,
   IManualAccountCreationNestedRoutes,
   ITokenExpiry,
-  INestedRoutes,
-  IManualAccountCreationNestedRoutes,
 };

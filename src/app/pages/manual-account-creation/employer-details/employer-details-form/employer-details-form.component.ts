@@ -77,9 +77,9 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
 
     if (this.form.valid) {
       this.formSubmitted = true;
-      const continueFlow = event.submitter ? event.submitter.className.includes('continue-flow') : false;
+      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: this.form.value, continueFlow: continueFlow });
+      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
     }
   }
 

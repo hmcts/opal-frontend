@@ -9,11 +9,31 @@ describe('EmployerDetailsComponent', () => {
   let component: EmployerDetailsComponent;
   let fixture: ComponentFixture<EmployerDetailsComponent>;
   let mockMacStateService: jasmine.SpyObj<MacStateService>;
+  let formData: IManualAccountCreationEmployerDetailsState;
+  let employerDetailsFormSubmit: IManualAccountCreationEmployerDetailsForm;
 
   beforeEach(async () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+
+    formData = {
+      employerName: 'Test',
+      employeeReference: null,
+      employerEmailAddress: null,
+      employerTelephone: null,
+      employerAddress1: null,
+      employerAddress2: null,
+      employerAddress3: null,
+      employerAddress4: null,
+      employerAddress5: null,
+      employerPostcode: null,
+    };
+
+    employerDetailsFormSubmit = {
+      formData: formData,
+      nestedFlow: false,
+    };
 
     await TestBed.configureTestingModule({
       imports: [EmployerDetailsComponent],
@@ -31,23 +51,6 @@ describe('EmployerDetailsComponent', () => {
 
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IManualAccountCreationEmployerDetailsState = {
-      employerName: 'Test',
-      employeeReference: null,
-      employerEmailAddress: null,
-      employerTelephone: null,
-      employerAddress1: null,
-      employerAddress2: null,
-      employerAddress3: null,
-      employerAddress4: null,
-      employerAddress5: null,
-      employerPostcode: null,
-    };
-
-    const employerDetailsFormSubmit: IManualAccountCreationEmployerDetailsForm = {
-      formData: formData,
-      continueFlow: false,
-    };
 
     component.handleEmployerDetailsSubmit(employerDetailsFormSubmit);
 
@@ -55,26 +58,10 @@ describe('EmployerDetailsComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
   });
 
-  it('should handle form submission and navigate to account details', () => {
+  it('should handle form submission and navigate to offence details - adult or youth only', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-
-    const formData: IManualAccountCreationEmployerDetailsState = {
-      employerName: 'Test',
-      employeeReference: null,
-      employerEmailAddress: null,
-      employerTelephone: null,
-      employerAddress1: null,
-      employerAddress2: null,
-      employerAddress3: null,
-      employerAddress4: null,
-      employerAddress5: null,
-      employerPostcode: null,
-    };
-
-    const employerDetailsFormSubmit: IManualAccountCreationEmployerDetailsForm = {
-      formData: formData,
-      continueFlow: true,
-    };
+    component.defendantType = 'adultOrYouthOnly';
+    employerDetailsFormSubmit.nestedFlow = true;
 
     component.handleEmployerDetailsSubmit(employerDetailsFormSubmit);
 
@@ -82,28 +69,10 @@ describe('EmployerDetailsComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.offenceDetails]);
   });
 
-  it('should handle form submission and navigate to account details', () => {
+  it('should handle form submission and navigate to personal details - parent or guardian to pay', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-
     component.defendantType = 'parentOrGuardianToPay';
-
-    const formData: IManualAccountCreationEmployerDetailsState = {
-      employerName: 'Test',
-      employeeReference: null,
-      employerEmailAddress: null,
-      employerTelephone: null,
-      employerAddress1: null,
-      employerAddress2: null,
-      employerAddress3: null,
-      employerAddress4: null,
-      employerAddress5: null,
-      employerPostcode: null,
-    };
-
-    const employerDetailsFormSubmit: IManualAccountCreationEmployerDetailsForm = {
-      formData: formData,
-      continueFlow: true,
-    };
+    employerDetailsFormSubmit.nestedFlow = true;
 
     component.handleEmployerDetailsSubmit(employerDetailsFormSubmit);
 

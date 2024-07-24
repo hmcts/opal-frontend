@@ -31,9 +31,9 @@ describe('ContactDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+    const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
-    contactDetailsForm.continueFlow = true;
+    contactDetailsForm.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](contactDetailsForm.formData);
@@ -46,7 +46,7 @@ describe('ContactDetailsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
-    contactDetailsForm.continueFlow = false;
+    contactDetailsForm.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](contactDetailsForm.formData);

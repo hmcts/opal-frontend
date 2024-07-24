@@ -36,7 +36,7 @@ describe('PersonalDetailsComponent', () => {
 
     formSubmit = {
       formData: formData,
-      continueFlow: false,
+      nestedFlow: false,
     };
 
     await TestBed.configureTestingModule({
@@ -68,7 +68,7 @@ describe('PersonalDetailsComponent', () => {
   it('should handle form submission and navigate next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.continueFlow = true;
+    formSubmit.nestedFlow = true;
 
     component.handlePersonalDetailsSubmit(formSubmit);
 
