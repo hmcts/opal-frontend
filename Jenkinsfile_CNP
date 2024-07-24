@@ -61,6 +61,7 @@ before('smokeTest:dev') {
 
 afterSuccess('functionalTest:dev'){
     script {
+      sh' mkdir -p cypress/parallel/weights/pipeline'
       sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
       sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
 
