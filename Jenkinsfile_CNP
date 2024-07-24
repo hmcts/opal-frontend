@@ -33,9 +33,10 @@ withPipeline(type, product, component) {
 
 before('smokeTest') {
     script {
+      def sourceJobName = env.JOB_NAME
       try{
-        copyArtifacts projectName: 'opal-frontend', selector: lastSuccessful(), filter: 'smoke-parallel-weights.json'
-        copyArtifacts projectName: 'opal-frontend', selector: lastSuccessful(), filter: 'functional-parallel-weights.json'
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'smoke-parallel-weights.json'
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'functional-parallel-weights.json'
 
         sh '''
         if [ -f smoke-parallel-weights.json ]; then
