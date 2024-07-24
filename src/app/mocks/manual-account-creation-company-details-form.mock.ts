@@ -3,5 +3,5 @@ import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK } from './manual-acc
 
 export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK: IManualAccountCreationCompanyDetailsForm = {
   formData: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
-  continueFlow: false,
+  nestedFlow: false,
 };

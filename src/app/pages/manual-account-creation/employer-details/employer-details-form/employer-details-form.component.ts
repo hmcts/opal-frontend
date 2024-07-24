@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   GovukTextInputComponent,
@@ -7,9 +7,12 @@ import {
   FormBaseComponent,
   GovukCancelLinkComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from '@constants';
+import {
+  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR,
+  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
+} from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationEmployerDetailsState, IFieldErrors } from '@interfaces';
+import { IFieldErrors, IManualAccountCreationEmployerDetailsForm } from '@interfaces';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
@@ -33,9 +36,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployerDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsState>();
+  @Input() public defendantType!: string;
+  @Output() private formSubmit = new EventEmitter<IManualAccountCreationEmployerDetailsForm>();
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
+  public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR;
 
@@ -63,14 +68,18 @@ export class EmployerDetailsFormComponent extends FormBaseComponent implements O
 
   /**
    * Handles the form submission event.
+   *
+   * @param event - The form submission event.
+   * @returns void
    */
-  public handleFormSubmit(): void {
+  public handleFormSubmit(event: SubmitEvent): void {
     this.handleErrorMessages();
 
     if (this.form.valid) {
       this.formSubmitted = true;
+      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
     }
   }
 
