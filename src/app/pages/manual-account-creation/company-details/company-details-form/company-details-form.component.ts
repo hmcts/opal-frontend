@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CustomAddressBlockComponent,
-  CustomDateOfBirthComponent,
-  CustomNationalInsuranceNumberComponent,
   FormAliasBaseComponent,
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -11,37 +9,24 @@ import {
   GovukCheckboxesConditionalComponent,
   GovukCheckboxesItemComponent,
   GovukErrorSummaryComponent,
-  GovukSelectComponent,
   GovukTextInputComponent,
-  ScotgovDatePickerComponent,
 } from '@components';
 import {
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR,
   ADDRESS_LINE_ONE_FIELD_ERRORS,
-  ADDRESS_LINE_THREE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
-  CUSTOM_ADDRESS_FIELD_IDS,
-  DATE_OF_BIRTH_FIELD_ERRORS,
-  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
-  NATIONAL_INSURANCE_FIELD_ERRORS,
+  ADDRESS_LINE_THREE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
-  TITLE_DROPDOWN_OPTIONS,
+  CUSTOM_ADDRESS_FIELD_IDS,
+  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS,
+  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalDetailsForm } from '@interfaces';
-import { DateTime } from 'luxon';
-import {
-  alphabeticalTextValidator,
-  dateOfBirthValidator,
-  nationalInsuranceNumberValidator,
-  optionalMaxLengthValidator,
-  optionalValidDateValidator,
-  specialCharactersValidator,
-} from 'src/app/validators';
+import { IFieldErrors, IManualAccountCreationCompanyDetailsForm } from '@interfaces';
+import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from 'src/app/validators';
 
 @Component({
-  selector: 'app-personal-details-form',
+  selector: 'app-company-details-form',
   standalone: true,
   imports: [
     FormsModule,
@@ -49,56 +34,39 @@ import {
     GovukTextInputComponent,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    ScotgovDatePickerComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
-    GovukSelectComponent,
     GovukCancelLinkComponent,
     CustomAddressBlockComponent,
-    CustomDateOfBirthComponent,
-    CustomNationalInsuranceNumberComponent,
   ],
-  templateUrl: './personal-details-form.component.html',
+  templateUrl: './company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PersonalDetailsFormComponent extends FormAliasBaseComponent implements OnInit, OnDestroy {
+export class CompanyDetailsFormComponent extends FormAliasBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
-  @Output() private formSubmit = new EventEmitter<IManualAccountCreationPersonalDetailsForm>();
+  @Output() private formSubmit = new EventEmitter<IManualAccountCreationCompanyDetailsForm>();
 
   public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
 
   override fieldErrors: IFieldErrors = {
-    ...MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR,
-    ...DATE_OF_BIRTH_FIELD_ERRORS,
-    ...NATIONAL_INSURANCE_FIELD_ERRORS,
+    ...MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR,
     ...ADDRESS_LINE_ONE_FIELD_ERRORS,
     ...ADDRESS_LINE_TWO_FIELD_ERRORS,
     ...ADDRESS_LINE_THREE_FIELD_ERRORS,
     ...POST_CODE_FIELD_ERRORS,
   };
 
-  public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
-  public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
-
   /**
-   * Sets up the personal details form.
-   *
-   * This method initializes the form group and its form controls with the necessary validators.
-   *
-   * @returns void
+   * Sets up the company details form with the necessary form controls.
    */
-  private setupPersonalDetailsForm(): void {
+  private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
-      title: new FormControl(null, [Validators.required]),
-      firstNames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      lastName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      companyName: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
       addAlias: new FormControl(null),
       aliases: new FormArray([]),
-      dateOfBirth: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
       addressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -107,18 +75,16 @@ export class PersonalDetailsFormComponent extends FormAliasBaseComponent impleme
       addressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
       addressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
       postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-      makeOfCar: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      registrationNumber: new FormControl(null, [optionalMaxLengthValidator(11)]),
     });
   }
 
   /**
-   * Sets up the alias configuration for the personal details form.
-   * The alias configuration includes the alias fields and controls validation.
+   * Sets up the alias configuration for the company details form.
+   * This method initializes the aliasFields and aliasControlsValidation properties.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = ['firstNames', 'lastName'];
-    this.aliasControlsValidation = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS;
+    this.aliasFields = ['companyName'];
+    this.aliasControlsValidation = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS;
   }
 
   /**
@@ -144,12 +110,12 @@ export class PersonalDetailsFormComponent extends FormAliasBaseComponent impleme
    * initial error messages, nested route, form population, and alias checkbox listener.
    */
   private initialSetup(): void {
-    const { personalDetails } = this.macStateService.manualAccountCreation;
-    this.setupPersonalDetailsForm();
+    const { companyDetails } = this.macStateService.manualAccountCreation;
+    this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(personalDetails.aliases.length).keys()], 'aliases');
+    this.setupAliasFormControls([...Array(companyDetails.aliases.length).keys()], 'aliases');
     this.setInitialErrorMessages();
-    this.rePopulateForm(personalDetails);
+    this.rePopulateForm(companyDetails);
     this.setUpAliasCheckboxListener('addAlias', 'aliases');
   }
 

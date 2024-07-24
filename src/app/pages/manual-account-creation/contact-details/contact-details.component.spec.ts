@@ -2,15 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactDetailsComponent } from './contact-details.component';
 import { MacStateService } from '@services';
-import {
-  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-  MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-} from '@constants';
 import { IManualAccountCreationContactDetailsForm, IManualAccountCreationContactDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
+import { MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
 
 describe('ContactDetailsComponent', () => {
   let component: ContactDetailsComponent;
@@ -20,15 +14,7 @@ describe('ContactDetailsComponent', () => {
   beforeEach(async () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
-    mockMacStateService.manualAccountCreation = {
-      accountDetails: { ...MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, defendantType: 'adultOrYouthOnly' },
-      employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
-      contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
-      parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
-      personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
-      unsavedChanges: false,
-      stateChanges: false,
-    };
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [ContactDetailsComponent],
@@ -37,6 +23,9 @@ describe('ContactDetailsComponent', () => {
 
     fixture = TestBed.createComponent(ContactDetailsComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 

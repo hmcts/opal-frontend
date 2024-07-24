@@ -5,6 +5,6 @@ interface Detail {
 }
 
 export interface IManualAccountCreationPersonalAlias {
-  firstName: Detail;
+  firstNames: Detail;
   lastName: Detail;
 }

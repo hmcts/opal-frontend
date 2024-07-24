@@ -28,11 +28,10 @@ import { IManualAccountCreationEmployerDetailsState } from './manual-account-cre
 import { IManualAccountCreationState } from './manual-account-creation-state.interface';
 import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
 import { IManualAccountCreationAccountDetailsState } from './manual-account-creation-account-details-state.interface';
-import { IDefendantTypes } from './defendant-type.interface';
+import { IDefendantTypes } from './defendant-types.interface';
 import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
 import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
 import { IBusinessUnitRefData } from './business-unit-ref-data.interface';
-
 import { IManualAccountCreationPersonalAlias } from './manual-account-creation-personal-details-alias.interface';
 import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
 import { IManualAccountCreationPersonalDetailsAliasState } from './manual-account-creation-personal-details-alias-state.interface';
@@ -43,9 +42,16 @@ import { IManualAccountCreationContactDetailsForm } from './manual-account-creat
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
 import { ITokenExpiry } from './token-expiry.interface';
 
-import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
+import { IManualAccountCreationCompanyDetailsAliasState } from './manual-account-creation-company-details-alias-state.interface';
+import { IManualAccountCreationCompanyDetailsState } from './manual-account-creation-company-details-state.interface';
+import { IManualAccountCreationCompanyDetailsForm } from './manual-account-creation-company-details-form.interface';
+import { IManualAccountCreationCompanyAlias } from './manual-account-creation-company-details-alias.interface';
+import { IFormArrayControl } from './form-array-control.interface';
+import { IFormArrayControlValidation } from './form-array-control-validation.interface';
+import { IFormArrayControls } from './form-array-controls.interface';
 import { INestedRoutes } from './nested-routes.interface';
 import { IManualAccountCreationNestedRoutes } from './manual-account-creation-nested-routes.interface';
+import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -96,6 +102,15 @@ export {
   IManualAccountCreationFieldTypes,
   IManualAccountCreationContactDetailsForm,
   ICustomAddressFieldIds,
+  IManualAccountCreationCompanyAlias,
+  IManualAccountCreationCompanyDetailsState,
+  IManualAccountCreationCompanyDetailsAliasState,
+  IManualAccountCreationCompanyDetailsForm,
+  IFormArrayControl,
+  IFormArrayControlValidation,
+  IFormArrayControls,
+  INestedRoutes,
+  IManualAccountCreationNestedRoutes,
   ITokenExpiry,
   INestedRoutes,
   IManualAccountCreationNestedRoutes,

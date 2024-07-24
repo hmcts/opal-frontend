@@ -34,7 +34,6 @@
       inputId="addAlias"
       inputName="addAlias"
       [control]="form.get('addAlias')"
-      (change)="addAliasCheckboxChange()"
     ></div>
   </app-govuk-checkboxes>
 
@@ -45,17 +44,17 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="First names"
-            [inputId]="aliasControls[rowIndex].firstName.inputId"
-            [inputName]="aliasControls[rowIndex].firstName.inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex].firstName.controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex].firstName.controlName]"
+            [inputId]="aliasControls[rowIndex]['firstNames'].inputId"
+            [inputName]="aliasControls[rowIndex]['firstNames'].inputName"
+            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['firstNames'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['firstNames'].controlName]"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Last name"
-            [inputId]="aliasControls[rowIndex].lastName.inputId"
-            [inputName]="aliasControls[rowIndex].lastName.inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex].lastName.controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex].lastName.controlName]"
+            [inputId]="aliasControls[rowIndex]['lastName'].inputId"
+            [inputName]="aliasControls[rowIndex]['lastName'].inputName"
+            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['lastName'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['lastName'].controlName]"
           ></app-govuk-text-input>
         </fieldset>
       }
@@ -64,8 +63,8 @@
         <div class="govuk-!-margin-bottom-3">
           <a
             class="govuk-link govuk-link--no-visited-state"
-            (click)="removeAlias(aliasControls.length - 1)"
-            (keyup.enter)="removeAlias(aliasControls.length - 1)"
+            (click)="removeAlias(aliasControls.length - 1, 'aliases')"
+            (keyup.enter)="removeAlias(aliasControls.length - 1, 'aliases')"
             tabindex="0"
           >
             Remove
@@ -77,7 +76,7 @@
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
-          (buttonClickEvent)="addAliases(aliasControls.length)"
+          (buttonClickEvent)="addAlias(aliasControls.length, 'aliases')"
           >Add another alias</app-govuk-button
         >
       }

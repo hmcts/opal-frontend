@@ -6,6 +6,7 @@ export const MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS: IManualAccountCreationAccou
   contactDetails: false,
   parentGuardianDetails: false,
   personalDetails: false,
+  companyDetails: false,
   unsavedChanges: false,
   stateChanges: false,
 };

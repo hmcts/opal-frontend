@@ -36,7 +36,6 @@ export class ContactDetailsFormComponent extends FormBaseComponent implements On
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly manualAccountCreationNestedRoutes = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES;
-  public nestedRouteButtonText!: string;
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR;
 

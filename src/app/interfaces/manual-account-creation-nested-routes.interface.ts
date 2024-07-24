@@ -1,4 +1,4 @@
-import { INestedRoutes } from './nested-routes.interface';
+import { INestedRoutes } from '@interfaces';
 
 export interface IManualAccountCreationNestedRoutes {
   courtDetails: INestedRoutes | null;
