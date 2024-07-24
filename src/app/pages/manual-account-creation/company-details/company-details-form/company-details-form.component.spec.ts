@@ -39,10 +39,10 @@ describe('CompanyDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit form submit event with form value - continueFlow true', () => {
-    const event = { submitter: { className: 'continue-flow' } } as SubmitEvent;
+  it('should emit form submit event with form value - nestedFlow true', () => {
+    const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     const companyDetailsForm = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK;
-    companyDetailsForm.continueFlow = true;
+    companyDetailsForm.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](companyDetailsForm.formData);
@@ -51,10 +51,10 @@ describe('CompanyDetailsFormComponent', () => {
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(companyDetailsForm);
   });
 
-  it('should emit form submit event with form value - continueFlow false', () => {
+  it('should emit form submit event with form value - nestedFlow false', () => {
     const event = {} as SubmitEvent;
     const companyDetailsForm = MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK;
-    companyDetailsForm.continueFlow = false;
+    companyDetailsForm.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](companyDetailsForm.formData);
