@@ -27,7 +27,7 @@ export class ContactDetailsComponent extends FormParentBaseComponent {
       stateChanges: true,
     };
 
-    if (contactDetailsForm.continueFlow && this.defendantType) {
+    if (contactDetailsForm.nestedFlow && this.defendantType) {
       const nextRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[this.defendantType]['contactDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
