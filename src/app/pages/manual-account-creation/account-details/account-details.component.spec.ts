@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountDetailsComponent } from './account-details.component';
-import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE } from '@constants';
+import {
+  DEFENDANT_TYPES_STATE,
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
+  MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+} from '@constants';
 import { MacStateService } from '@services';
 import { provideRouter } from '@angular/router';
 import {
@@ -81,6 +86,8 @@ describe('AccountDetailsComponent', () => {
       parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
       companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
+      courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+      businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
       unsavedChanges: false,
       stateChanges: true,
     };

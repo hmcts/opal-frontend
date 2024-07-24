@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CourtService } from './court.service';
-import { ISearchCourt, ISearchCourtBody } from '@interfaces';
-import { SEARCH_COURT_BODY_MOCK, SEARCH_COURT_MOCK } from '@mocks';
+import { ICourtRefData, ISearchCourt, ISearchCourtBody } from '@interfaces';
+import { COURT_REF_DATA_MOCK, SEARCH_COURT_BODY_MOCK, SEARCH_COURT_MOCK } from '@mocks';
 import { API_PATHS } from '@constants';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -61,5 +61,43 @@ describe('CourtService', () => {
 
     // No new request should be made since the response is cached
     httpMock.expectNone(API_PATHS.courtSearch);
+  });
+
+  it('should send a GET request to court ref data API', () => {
+    const businessUnit = 1;
+    const mockCourts: ICourtRefData = COURT_REF_DATA_MOCK;
+    const expectedUrl = `${API_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+
+    service.getCourts(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockCourts);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockCourts);
+  });
+
+  it('should return cached response for the same ref data search', () => {
+    const businessUnit = 1;
+    const mockCourts: ICourtRefData = COURT_REF_DATA_MOCK;
+    const expectedUrl = `${API_PATHS.courtRefData}?businessUnit=${businessUnit}`;
+
+    service.getCourts(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockCourts);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockCourts);
+
+    // Make a second call to searchCourt with the same search body
+    service.getCourts(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockCourts);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(expectedUrl);
   });
 });

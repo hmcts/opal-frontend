@@ -21,8 +21,6 @@ describe('ContactDetailsFormComponent', () => {
     fixture = TestBed.createComponent(ContactDetailsFormComponent);
     component = fixture.componentInstance;
 
-    component.defendantType = 'adultOrYouthOnly';
-
     fixture.detectChanges();
   });
 
@@ -33,6 +31,7 @@ describe('ContactDetailsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
+    contactDetailsForm.nestedFlow = true;
     contactDetailsForm.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
@@ -45,6 +44,7 @@ describe('ContactDetailsFormComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
+    component.defendantType = 'adultOrYouthOnly';
     const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
     contactDetailsForm.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');

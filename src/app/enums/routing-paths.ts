@@ -16,4 +16,5 @@ export enum RoutingPaths {
   manualAccountCreationParentGuardianDetails = 'parent-guardian-details',
   manualAccountCreationPersonalDetails = 'personal-details',
   manualAccountCreationOffenceDetails = 'offence-details',
+  manualAccountCreationCourtDetails = 'court-details',
 }
