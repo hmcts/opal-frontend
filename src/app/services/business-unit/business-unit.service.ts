@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-
 import { IBusinessUnitRefData } from '@interfaces';
 import { Observable, shareReplay } from 'rxjs';
-
 import { API_PATHS } from '@constants';
 
 @Injectable({

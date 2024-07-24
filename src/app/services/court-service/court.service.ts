@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { API_PATHS } from '@constants';
-import { ISearchCourt, ISearchCourtBody } from '@interfaces';
+import { ICourtRefData, ISearchCourt, ISearchCourtBody } from '@interfaces';
 import { Observable, shareReplay } from 'rxjs';
 
 @Injectable({
@@ -10,6 +10,7 @@ import { Observable, shareReplay } from 'rxjs';
 export class CourtService {
   private readonly http = inject(HttpClient);
   private courtCache$: { [key: string]: Observable<ISearchCourt[]> } = {};
+  private courtRefDataCache$: { [key: string]: Observable<ICourtRefData> } = {};
 
   /**
    * Searches for courts based on the provided search criteria.
@@ -25,5 +26,21 @@ export class CourtService {
     }
 
     return this.courtCache$[key];
+  }
+
+  /**
+   * Retrieves the court data for a specific business unit.
+   * If the court data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * @param businessUnit - The business unit for which to retrieve the court data.
+   * @returns An Observable that emits the court data for the specified business unit.
+   */
+  public getCourts(businessUnit: number) {
+    if (!this.courtRefDataCache$[businessUnit]) {
+      this.courtRefDataCache$[businessUnit] = this.http
+        .get<ICourtRefData>(API_PATHS.courtRefData, { params: { businessUnit } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.courtRefDataCache$[businessUnit];
   }
 }

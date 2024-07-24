@@ -12,11 +12,6 @@
     </p>
   }
 
-  <div
-    #autocomplete
-    id="{{ autoCompleteId }}-container"
-    class="{{ inputClasses }}"
-    [class.govuk-input--error]="hasError()"
-  ></div>
+  <div #autocomplete id="{{ autoCompleteId }}-container" class="{{ inputClasses }}"></div>
   <input [id]="inputId" [name]="inputName" type="hidden" [formControl]="getControl" />
 </div>

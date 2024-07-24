@@ -25,12 +25,13 @@ Feature: PO-367 create the account details for adult or youth with parent or gua
     Then should display business unit account "London South West" I selected from Business unit and defendant type page
     Then should display defendant type "Adult or youth with parent or guardian to pay" I selected from Business unit and defendant type page
 
-  Scenario: AC3-positive: verify Court details section heading and sub-section link is not configured
-    Then I see "Create account" as the caption on the page
-    Then I see "Account details" on the page header
-    Then I see "Court details" on the section heading
-    When "Court details" is clicked, nothing happens
-    Then I see "Account details" on the page header
+  #Descoped
+  # Scenario: AC3-positive: verify Court details section heading and sub-section link is not configured
+  #   Then I see "Create account" as the caption on the page
+  #   Then I see "Account details" on the page header
+  #   Then I see "Court details" on the section heading
+  #   When "Court details" is clicked, nothing happens
+  #   Then I see "Account details" on the page header
 
   #Descoped
   # Scenario: AC4-positive: verify Defendant details section heading and sub-section links are not configured, except employer details
@@ -55,17 +56,18 @@ Feature: PO-367 create the account details for adult or youth with parent or gua
     Then I click cancel on Contact details page
     Then I see "Account details" on the page header
 
-  Scenario: AC6-positive: verify Offence and imposition details section heading and sub-section links are not configured
-    Then I see "Create account" as the caption on the page
-    Then I see "Account details" on the page header
-    Then I see "Defendant details" on the section heading
-    When "Offence details" is clicked, nothing happens
-    When "Payment terms" is clicked, nothing happens
-    Then I see "Account details" on the page header
+#Descoped
+# Scenario: AC6-positive: verify Offence and imposition details section heading and sub-section links are not configured
+#   Then I see "Create account" as the caption on the page
+#   Then I see "Account details" on the page header
+#   Then I see "Defendant details" on the section heading
+#   When "Offence details" is clicked, nothing happens
+#   When "Payment terms" is clicked, nothing happens
+#   Then I see "Account details" on the page header
 
-  Scenario: AC7-positive: verify review and publish Review account
-    When I see "Review and publish" on the section heading
-    #When I check text under review and publish "Check that all required fields have been entered before you publish"
-    When "Review account" button is clicked, nothing happens
-    When "Cancel account creation" link is clicked, nothing happens
+# Scenario: AC7-positive: verify review and publish Review account
+#   When I see "Review and publish" on the section heading
+#   #When I check text under review and publish "Check that all required fields have been entered before you publish"
+#   When "Review account" button is clicked, nothing happens
+#   When "Cancel account creation" link is clicked, nothing happens
 
