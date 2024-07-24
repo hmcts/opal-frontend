@@ -31,7 +31,7 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('build')
   }
 
-before('smokeTest') {
+before('smokeTest:dev') {
     script {
       def sourceJobName = env.JOB_NAME
       try{
@@ -57,7 +57,7 @@ before('smokeTest') {
     }
 }
 
-afterSuccess('functionalTest'){
+afterSuccess('functionalTest:dev'){
     script {
                     sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json /'
                     sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json /'
