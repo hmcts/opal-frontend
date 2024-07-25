@@ -32,6 +32,7 @@ describe('ContactDetailsFormComponent', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
     contactDetailsForm.nestedFlow = true;
+    contactDetailsForm.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](contactDetailsForm.formData);
