@@ -4,5 +4,6 @@ export interface IManualAccountCreationParentGuardianDetailsState {
   nationalInsuranceNumber: string | null;
   addressLine1: string | null;
   addressLine2: string | null;
+  addressLine3: string | null;
   postcode: string | null;
 }
