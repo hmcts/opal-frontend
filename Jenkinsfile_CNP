@@ -24,6 +24,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   afterSuccess('build') {
@@ -31,7 +32,7 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('build')
   }
 
-afterAlways('smokeTest:dev') {
+afterAlways('smoketest:dev') {
   script{
       def sourceJobName = env.JOB_NAME
       sh "echo 'dev: Copying functional weight files in ${sourceJobName}'"
@@ -63,7 +64,7 @@ afterSuccess('functionalTest:dev'){
     }
 }
 
-afterAlways('smokeTest:stg') {
+afterAlways('smoketest:stg') {
   script{
       def sourceJobName = env.JOB_NAME
       sh "echo 'stg: Copying functional weight files in ${sourceJobName}'"
