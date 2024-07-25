@@ -30,9 +30,6 @@ properties([
 
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
-  options {
-    copyArtifactPermission('PR-*,master');
-  }
   afterSuccess('build') {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
