@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBaseComponent } from './form-base.component';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   FORM_CONTROL_ERROR_MOCK,
   FORM_DATE_ERROR_SUMMARY_MOCK,
@@ -859,5 +859,42 @@ describe('FormBaseComponent', () => {
 
     expect(component.formControlErrorMessages['firstNames_1']).toBeUndefined();
     expect(component.formControlErrorMessages['firstNames_0']).toBeDefined();
+  });
+
+  it('should reset the form control', () => {
+    const controlName = 'forename';
+    component.form.controls[controlName].setValue('John');
+
+    component['resetFormControl'](controlName);
+
+    expect(component.form.controls[controlName].value).toBeNull();
+  });
+
+  it('should clear validators and validity of a control', () => {
+    const controlName = 'court';
+    const control = component.form.controls[controlName];
+
+    // Set validators for the control
+    control.setValidators([Validators.required]);
+    control.setValue('Test value');
+
+    // Call the method to clear validators and validity
+    component['clearValidatorsAndValidity'](controlName);
+
+    // Expect validators to be cleared
+    expect(control.validator).toBeNull();
+
+    // Expect validity to be updated
+    expect(control.valid).toBeTrue();
+  });
+
+  it('should set validators and update validity for a control', () => {
+    const controlName = 'court';
+    const validators: ValidatorFn[] = [Validators.required];
+
+    component['setValidatorsAndValidity'](controlName, validators);
+
+    expect(component.form.controls[controlName].hasValidator(Validators.required)).toBeTruthy();
+    expect(component.form.controls[controlName].valid).toBeFalse();
   });
 });
