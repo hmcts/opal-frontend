@@ -42,6 +42,7 @@ import { IManualAccountCreationFieldTypes } from './manual-account-creation-fiel
 import { IManualAccountCreationContactDetailsForm } from './manual-account-creation-contact-details-form.interface';
 import { ICustomAddressFieldIds } from './custom-address-field-ids';
 import { ITokenExpiry } from './token-expiry.interface';
+import { IManualAccountCreationParentGuardianForm } from './manual-account-creation-parent-guardian-form.interface';
 
 import { IManualAccountCreationCompanyDetailsAliasState } from './manual-account-creation-company-details-alias-state.interface';
 import { IManualAccountCreationCompanyDetailsState } from './manual-account-creation-company-details-state.interface';
@@ -99,6 +100,7 @@ export {
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
   IBusinessUnit,
+  IManualAccountCreationParentGuardianForm,
   IBusinessUnitRefData,
   IManualAccountCreationPersonalAlias,
   IManualAccountCreationPersonalDetailsState,
