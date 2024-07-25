@@ -32,7 +32,6 @@ withPipeline(type, product, component) {
   }
 
 before('smokeTest:dev') {
-    script {
       def sourceJobName = env.JOB_NAME
       try{
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
@@ -56,7 +55,7 @@ before('smokeTest:dev') {
       } catch (Exception e) {
             echo "Artifacts not found or copy failed: ${e}"
         }
-    }
+
 }
 
 afterSuccess('functionalTest:dev'){
@@ -72,7 +71,6 @@ afterSuccess('functionalTest:dev'){
 }
 
 before('smokeTest:stg') {
-    script {
       def sourceJobName = env.JOB_NAME
       try{
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
@@ -96,7 +94,7 @@ before('smokeTest:stg') {
       } catch (Exception e) {
             echo "Artifacts not found or copy failed: ${e}"
         }
-    }
+
 }
 
 afterSuccess('functionalTest:stg'){
