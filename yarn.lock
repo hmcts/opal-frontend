@@ -708,7 +708,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/identity@npm:^4.0.0-beta.1, @azure/identity@npm:^4.2.1":
+"@azure/identity@npm:^4.2.1":
   version: 4.3.0
   resolution: "@azure/identity@npm:4.3.0"
   dependencies:
@@ -2988,15 +2988,15 @@ __metadata:
   linkType: hard
 
 "@hmcts/properties-volume@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@hmcts/properties-volume@npm:1.1.0"
+  version: 1.2.0
+  resolution: "@hmcts/properties-volume@npm:1.2.0"
   dependencies:
-    "@azure/identity": "npm:^4.0.0-beta.1"
+    "@azure/identity": "npm:^4.2.1"
     "@azure/keyvault-secrets": "npm:^4.7.0"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     js-yaml: "npm:^4.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/82347117098f8cf0286c4f73eaa02016a270b4fdb9e9d98d82834089d81d20ec1d1392eb9a03a7d944ccb3d8032964eb5a35e1b5f135cca23f1310008565dd1d
+  checksum: 10/d8087372250cd954b90f73ff9b1ebcb94badd6188b0c7b642d0e29cc389105147efd6a97a0d6897621261d9eb0ea74507ced6c6e5036b0734a8363d1bac696ca
   languageName: node
   linkType: hard
 
