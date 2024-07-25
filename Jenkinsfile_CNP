@@ -37,21 +37,13 @@ withPipeline(type, product, component) {
     before('build') {
     script {
       def sourceJobName = env.JOB_NAME
-      def previousBuild = Jenkins.instance.getItemByFullName(sourceJobName).getLastSuccessfulBuild()
+      copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/*'
 
-      // Check if there is a previous successful build
-      if (previousBuild) {
-        echo "Previous successful build: #${previousBuild.number}"
-        def artifactsDir = previousBuild.artifactsDir
-        echo "Artifacts directory: ${artifactsDir}"
-
-        // List all artifacts in the previous build
-        previousBuild.artifacts.each { artifact ->
-          echo "Artifact: ${artifact.relativePath}"
-        }
-      } else {
-        echo "No previous successful build found."
-        }
+        // List all copied artifacts
+        sh '''
+        echo "Listing all copied artifacts:"
+        ls -l cypress/parallel/weights/pipeline/
+        '''
       }
     }
 
