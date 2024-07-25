@@ -33,6 +33,7 @@ withPipeline(type, product, component) {
 
 before('smokeTest:dev') {
       def sourceJobName = env.JOB_NAME
+      sh' echo "Copying smoke and functional weight files"'
       try{
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
@@ -72,6 +73,7 @@ afterSuccess('functionalTest:dev'){
 
 before('smokeTest:stg') {
       def sourceJobName = env.JOB_NAME
+      sh' echo "Copying smoke and functional weight files"'
       try{
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
