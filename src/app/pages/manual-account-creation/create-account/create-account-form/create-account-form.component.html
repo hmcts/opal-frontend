@@ -24,7 +24,7 @@
     legendClasses="govuk-fieldset__legend--m"
     [errors]="formControlErrorMessages['accountType']"
   >
-    @for (accountType of accountTypes; track accountType) {
+    @for (accountType of accountTypes; track accountType.key) {
       <div
         app-govuk-radios-item
         [labelText]="accountType.value"
@@ -78,7 +78,7 @@
         isFine ? formControlErrorMessages['fineDefendantType'] : formControlErrorMessages['fixedPenaltyDefendantType']
       "
     >
-      @for (defendantType of defendantTypes; track defendantType) {
+      @for (defendantType of defendantTypes; track defendantType.key) {
         <div
           app-govuk-radios-item
           [labelText]="defendantType.value"

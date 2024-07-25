@@ -77,29 +77,41 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
     });
   }
 
+  /**
+   * Sets up a listener for changes in the account type form control.
+   * When the account type changes, it triggers the handleAccountTypeChange method.
+   */
   private setupAccountTypeListener(): void {
     this.accountTypeListener = this.form
       .get('accountType')!
       .valueChanges.subscribe(() => this.handleAccountTypeChange());
   }
 
-  public handleAccountTypeChange(): void {
+  /**
+   * Handles the change event of the account type form control.
+   * Resets error messages and validators based on the selected account type.
+   */
+  private handleAccountTypeChange(): void {
     this.formErrorSummaryMessage = [];
     this.formControlErrorMessages = {};
     const accountType = this.form.get('accountType')?.value;
     switch (accountType) {
       case 'fine':
         this.resetFormControl('defendantType');
+        this.resetFormControl('fixedPenaltyDefendantType');
         this.clearValidatorsAndValidity('fixedPenaltyDefendantType');
         this.setValidatorsAndValidity('fineDefendantType', [Validators.required]);
         break;
       case 'fixedPenalty':
         this.resetFormControl('defendantType');
+        this.resetFormControl('fineDefendantType');
         this.clearValidatorsAndValidity('fineDefendantType');
         this.setValidatorsAndValidity('fixedPenaltyDefendantType', [Validators.required]);
         break;
       case 'conditionalCaution':
+        this.resetFormControl('fineDefendantType');
         this.clearValidatorsAndValidity('fineDefendantType');
+        this.resetFormControl('fixedPenaltyDefendantType');
         this.clearValidatorsAndValidity('fixedPenaltyDefendantType');
         break;
     }
