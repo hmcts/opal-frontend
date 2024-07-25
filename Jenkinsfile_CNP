@@ -40,8 +40,8 @@ before('smoketest:dev') {
       def sourceJobName = env.JOB_NAME
       sh "echo 'dev: Copying weight files in ${sourceJobName}'"
       try{
-        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
-        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/functional-parallel-weights.json'
 
         sh '''
         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
@@ -81,8 +81,8 @@ before('smoketest:stg') {
       def sourceJobName = env.JOB_NAME
       sh "echo 'stg: Copying weight files in ${sourceJobName}'"
       try{
-        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
-        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/functional-parallel-weights.json'
 
         sh '''
         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
