@@ -47,7 +47,7 @@ withPipeline(type, product, component) {
         ls -l cypress/parallel/weights/pipeline/
         '''
 
-      copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/*'
+      copyArtifacts projectName: "/" + sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/*'
 
         // List all copied artifacts
         sh '''
