@@ -38,7 +38,16 @@ withPipeline(type, product, component) {
     script {
       def sourceJobName = env.JOB_NAME
       sh 'mkdir -p cypress/parallel/weights/pipeline'
-      copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/*'
+
+        sh '''
+        echo "Listing all copied artifacts:"
+        ls -l ./
+        ls -l cypress/
+        ls -l cypress/parallel/weights/
+        ls -l cypress/parallel/weights/pipeline/
+        '''
+
+      copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/*'
 
         // List all copied artifacts
         sh '''
