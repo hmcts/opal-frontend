@@ -18,6 +18,7 @@ export class GovukRadiosItemComponent {
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
   @Input({ required: true }) inputValue!: string;
+  @Input({ required: false }) inputValueHint!: string;
   @Input({ required: false }) ariaControls!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl | null) {

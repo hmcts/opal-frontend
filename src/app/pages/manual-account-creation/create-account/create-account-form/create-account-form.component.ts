@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -9,21 +10,28 @@ import {
   GovukCancelLinkComponent,
   GovukErrorSummaryComponent,
   AlphagovAccessibleAutocompleteComponent,
+  GovukRadiosConditionalComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR } from '@constants';
+import {
+  ACCOUNT_TYPES_STATE,
+  ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR,
+} from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import { IAutoCompleteItem, IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
-import { DEFENDANT_TYPES_STATE } from 'src/app/constants/defendant-types-state';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create-account-form',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     GovukButtonComponent,
     GovukRadioComponent,
     GovukRadiosItemComponent,
+    GovukRadiosConditionalComponent,
     GovukHeadingWithCaptionComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
@@ -36,12 +44,23 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationAccountDetailsState>();
   @Input({ required: true }) public autoCompleteItems!: IAutoCompleteItem[];
 
+  private accountTypeListener!: Subscription;
+
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
   public readonly routingPaths = RoutingPaths;
 
-  public readonly defendantTypes: { key: string; value: string }[] = Object.entries(DEFENDANT_TYPES_STATE).map(
+  public readonly accountTypes: { key: string; value: string }[] = Object.entries(ACCOUNT_TYPES_STATE).map(
     ([key, value]) => ({ key, value }),
   );
+  public readonly fineDefendantTypes: { key: string; value: string }[] = Object.entries(
+    ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
+  ).map(([key, value]) => ({ key, value }));
+  public readonly fixedPenaltyDefendantTypes: { key: string; value: string }[] = Object.entries(
+    ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
+  ).map(([key, value]) => ({ key, value }));
+  public readonly conditionalCautionPenaltyDefendantTypes: { key: string; value: string }[] = Object.entries(
+    ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
+  ).map(([key, value]) => ({ key, value }));
 
   override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR;
 
@@ -50,15 +69,65 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
    */
   private setupAccountDetailsForm(): void {
     this.form = new FormGroup({
+      accountType: new FormControl(null, [Validators.required]),
       businessUnit: new FormControl(null, [Validators.required]),
-      defendantType: new FormControl(null, [Validators.required]),
+      defendantType: new FormControl(null),
+      fineDefendantType: new FormControl(null),
+      fixedPenaltyDefendantType: new FormControl(null),
     });
+  }
+
+  private setupAccountTypeListener(): void {
+    this.accountTypeListener = this.form
+      .get('accountType')!
+      .valueChanges.subscribe(() => this.handleAccountTypeChange());
+  }
+
+  public handleAccountTypeChange(): void {
+    this.formErrorSummaryMessage = [];
+    this.formControlErrorMessages = {};
+    const accountType = this.form.get('accountType')?.value;
+    switch (accountType) {
+      case 'fine':
+        this.resetFormControl('defendantType');
+        this.clearValidatorsAndValidity('fixedPenaltyDefendantType');
+        this.setValidatorsAndValidity('fineDefendantType', [Validators.required]);
+        break;
+      case 'fixedPenalty':
+        this.resetFormControl('defendantType');
+        this.clearValidatorsAndValidity('fineDefendantType');
+        this.setValidatorsAndValidity('fixedPenaltyDefendantType', [Validators.required]);
+        break;
+      case 'conditionalCaution':
+        this.clearValidatorsAndValidity('fineDefendantType');
+        this.clearValidatorsAndValidity('fixedPenaltyDefendantType');
+        break;
+    }
+  }
+
+  /**
+   * Sets the defendant type based on the selected account type.
+   */
+  private setDefendantType(): void {
+    const accountType = this.form.get('accountType')?.value;
+    switch (accountType) {
+      case 'fine':
+        this.form.get('defendantType')?.setValue(this.form.get('fineDefendantType')?.value);
+        break;
+      case 'fixedPenalty':
+        this.form.get('defendantType')?.setValue(this.form.get('fixedPenaltyDefendantType')?.value);
+        break;
+      case 'conditionalCaution':
+        this.form.get('defendantType')?.setValue(this.conditionalCautionPenaltyDefendantTypes[0].key);
+        break;
+    }
   }
 
   /**
    * Handles the form submission event.
    */
   public handleFormSubmit(): void {
+    this.setDefendantType();
     this.handleErrorMessages();
 
     if (this.form.valid) {
@@ -72,6 +141,12 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
     this.setupAccountDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.macStateService.manualAccountCreation.accountDetails);
+    this.setupAccountTypeListener();
     super.ngOnInit();
+  }
+
+  public override ngOnDestroy(): void {
+    this.accountTypeListener.unsubscribe();
+    super.ngOnDestroy();
   }
 }

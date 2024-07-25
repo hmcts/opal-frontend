@@ -58,6 +58,8 @@ import { IManualAccountCreationCourtDetailsForm } from './manual-account-creatio
 import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
 import { ICourtRefData } from './court-ref-data.interface';
 import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
+import { IAccountTypes } from './account-types.interface';
+import { IAccountTypeDefendantTypes } from './account-type-defendant-types.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -97,6 +99,7 @@ export {
   CanDeactivateType,
   IManualAccountCreationAccountDetailsState,
   IDefendantTypes,
+  IAccountTypes,
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
   IBusinessUnit,
@@ -124,4 +127,5 @@ export {
   IManualAccountCreationCourtDetailsForm,
   ILocalJusticeAreaRefData,
   ICourtRefData,
+  IAccountTypeDefendantTypes,
 };

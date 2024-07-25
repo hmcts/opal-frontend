@@ -32,6 +32,8 @@ import { CUSTOM_ADDRESS_FIELD_IDS } from './common/custom-address-field-ids';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS } from './manual-account-creation-personal-details-alias';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS } from './manual-account-creation-company-details-alias';
 import { MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS } from './manual-account-creation-court-details-field-errors';
+import { ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from './account-type-defendant-types-state';
+import { ACCOUNT_TYPES_STATE } from './account-types-state';
 
 export {
   ACCOUNT_ENQUIRY_DEFAULT_STATE,
@@ -69,4 +71,6 @@ export {
   MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
   MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS,
+  ACCOUNT_TYPES_STATE,
+  ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
 };

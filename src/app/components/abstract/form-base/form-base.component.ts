@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IFieldError,
@@ -507,6 +507,36 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
         delete this.formControlErrorMessages?.[formArrayControl[field].controlName];
       });
     }
+  }
+
+  /**
+   * Resets the value of a form control to its initial state.
+   *
+   * @param controlName - The name of the form control to reset.
+   */
+  protected resetFormControl(controlName: string): void {
+    this.form.controls[controlName].reset();
+  }
+
+  /**
+   * Clears the validators and updates the validity of a specific form control.
+   *
+   * @param controlName - The name of the form control.
+   */
+  protected clearValidatorsAndValidity(controlName: string): void {
+    this.form.controls[controlName].clearValidators();
+    this.form.controls[controlName].updateValueAndValidity();
+  }
+
+  /**
+   * Sets the validators for a specific form control and updates its validity.
+   *
+   * @param controlName - The name of the form control.
+   * @param validators - An array of validator functions to set for the form control.
+   */
+  protected setValidatorsAndValidity(controlName: string, validators: ValidatorFn[]): void {
+    this.form.controls[controlName].setValidators(validators);
+    this.form.controls[controlName].updateValueAndValidity();
   }
 
   /**
