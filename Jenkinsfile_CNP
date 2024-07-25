@@ -37,7 +37,7 @@ withPipeline(type, product, component) {
     before('build') {
     script {
       def sourceJobName = env.JOB_NAME
-      copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/*'
+      copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './*/parallel/weights/pipeline/*'
 
         // List all copied artifacts
         sh '''
