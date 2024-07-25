@@ -24,22 +24,35 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+properties([
+    copyArtifactPermission('PR-*,master')
+])
 
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
+  options {
+    copyArtifactPermission('PR-*,master');
+  }
   afterSuccess('build') {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
   }
 
-afterAlways('smoketest:dev') {
+before('smoketest:dev') {
   script{
       def sourceJobName = env.JOB_NAME
-      sh "echo 'dev: Copying functional weight files in ${sourceJobName}'"
+      sh "echo 'dev: Copying weight files in ${sourceJobName}'"
       try{
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
 
         sh '''
+        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
+        else
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
+        fi
         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
@@ -57,21 +70,30 @@ afterSuccess('functionalTest:dev'){
     script {
       def sourceJobName = env.JOB_NAME
       sh' mkdir -p cypress/parallel/weights/pipeline'
+      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
       sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
 
       sh"echo 'Archiving weight files in ${sourceJobName}'"
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
     }
 }
 
-afterAlways('smoketest:stg') {
+before('smoketest:stg') {
   script{
       def sourceJobName = env.JOB_NAME
-      sh "echo 'stg: Copying functional weight files in ${sourceJobName}'"
+      sh "echo 'stg: Copying weight files in ${sourceJobName}'"
       try{
+        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
 
         sh '''
+        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
+        else
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
+        fi
         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
@@ -89,9 +111,11 @@ afterSuccess('functionalTest:stg'){
     script {
       def sourceJobName = env.JOB_NAME
       sh' mkdir -p cypress/parallel/weights/pipeline'
+      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
       sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
 
       sh"echo 'Archiving weight files in ${sourceJobName}'"
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
     }
   }
