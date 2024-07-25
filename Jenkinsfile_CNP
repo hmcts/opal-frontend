@@ -31,21 +31,14 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('build')
   }
 
-before('smokeTest:dev') {
+afterAlways('smokeTest:dev') {
+  script{
       def sourceJobName = env.JOB_NAME
-      sh "echo 'Copying smoke and functional weight files in ${sourceJobName}'"
+      sh "echo 'dev: Copying functional weight files in ${sourceJobName}'"
       try{
-        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
 
         sh '''
-        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
-            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
-        else
-            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
-        fi
-
         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
@@ -56,36 +49,27 @@ before('smokeTest:dev') {
       } catch (Exception e) {
             echo "Artifacts not found or copy failed: ${e}"
         }
-
+  }
 }
 
 afterSuccess('functionalTest:dev'){
     script {
       sh' mkdir -p cypress/parallel/weights/pipeline'
-      sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
       sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
 
       sh'echo "Archiving weight files"'
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
     }
 }
 
-before('smokeTest:stg') {
+afterAlways('smokeTest:stg') {
+  script{
       def sourceJobName = env.JOB_NAME
-      sh "echo 'Copying smoke and functional weight files in ${sourceJobName}'"
+      sh "echo 'stg: Copying functional weight files in ${sourceJobName}'"
       try{
-        copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json'
 
         sh '''
-        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
-            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
-        else
-            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
-        fi
-
         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
@@ -96,17 +80,15 @@ before('smokeTest:stg') {
       } catch (Exception e) {
             echo "Artifacts not found or copy failed: ${e}"
         }
-
+  }
 }
 
 afterSuccess('functionalTest:stg'){
     script {
       sh' mkdir -p cypress/parallel/weights/pipeline'
-      sh 'cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
       sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
 
       sh'echo "Archiving weight files"'
-      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
     }
   }
