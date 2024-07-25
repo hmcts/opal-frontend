@@ -25,7 +25,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 properties([
-    copyArtifactPermission('PR-*,master')
+    copyArtifactPermission('HMCTS/opal-frontend/*')
 ])
 
 withPipeline(type, product, component) {
