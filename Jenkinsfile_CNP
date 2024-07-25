@@ -34,6 +34,26 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
   }
+    before('build:dev') {
+    script {
+      def sourceJobName = env.JOB_NAME
+      def previousBuild = Jenkins.instance.getItemByFullName(sourceJobName).getLastSuccessfulBuild()
+
+      // Check if there is a previous successful build
+      if (previousBuild) {
+        echo "Previous successful build: #${previousBuild.number}"
+        def artifactsDir = previousBuild.artifactsDir
+        echo "Artifacts directory: ${artifactsDir}"
+
+        // List all artifacts in the previous build
+        previousBuild.artifacts.each { artifact ->
+          echo "Artifact: ${artifact.relativePath}"
+        }
+      } else {
+        echo "No previous successful build found."
+        }
+      }
+    }
 
 before('smoketest:dev') {
   script{
