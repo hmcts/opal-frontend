@@ -1,4 +1,5 @@
 #!groovy
+import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.GithubAPI
 
 @Library("Infrastructure")
@@ -151,5 +152,12 @@ afterSuccess('functionalTest:stg'){
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
     }
   }
+      onMaster() {
+        enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
+    }
+
+    onPR() {
+        enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
+    }
 }
 
