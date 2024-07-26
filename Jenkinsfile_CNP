@@ -24,11 +24,24 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+properties([
+    copyArtifactPermission('HMCTS/opal-frontend/*'),
+]);
+
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   afterSuccess('build') {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
   }
-}
 
+  afterSuccess('checkout') {
+      sh 'echo project is ${env.JOB_NAME}'
+      step ([
+              $class: 'CopyArtifact',
+              selector: lastSuccessful(),
+              projectName: env.JOB_NAME,
+              target: "./"
+      ]);
+  }
+}
