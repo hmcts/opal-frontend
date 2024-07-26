@@ -45,6 +45,21 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
   }
+  before('checkout') {
+    script {
+      def folderName = "org/repo" // Replace with your folder path
+      def folder = Jenkins.instance.getItemByFullName(folderName)
+
+      if (folder instanceof com.cloudbees.hudson.plugins.folder.Folder) {
+        folder.getItems().each { job ->
+          echo "Job: ${job.fullName}"
+        }
+      } else {
+        echo "Folder not found or is not a valid folder: ${folderName}"
+      }
+    }
+  }
+  
     afterSuccess('checkout') {
       sh 'mkdir -p cypress/parallel/weights/pipeline'
 
