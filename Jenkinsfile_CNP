@@ -46,7 +46,6 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('build')
   }
     afterSuccess('checkout') {
-      def sourceJobName = env.JOB_NAME
       sh 'mkdir -p cypress/parallel/weights/pipeline'
 
         sh '''
@@ -56,7 +55,6 @@ withPipeline(type, product, component) {
         ls -l cypress/parallel/weights/
         ls -l cypress/parallel/weights/pipeline/
         '''
-        sh" echo'ProjectPrefix: ${getProjectName()}'"
 
         step ([
                 $class: 'CopyArtifact',
