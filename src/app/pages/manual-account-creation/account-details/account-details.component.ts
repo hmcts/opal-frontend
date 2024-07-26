@@ -11,7 +11,7 @@ import {
   GovukTaskListComponent,
   GovukTaskListItemComponent,
 } from '@components';
-import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from '@constants';
+import { ACCOUNT_TYPES_STATE, DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from '@constants';
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import {
@@ -50,9 +50,11 @@ export class AccountDetailsComponent implements OnInit {
   public accountCreationStatus: IManualAccountCreationAccountStatus = MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS;
 
   public readonly defendantTypes = DEFENDANT_TYPES_STATE;
+  private readonly accountTypes = ACCOUNT_TYPES_STATE;
   public personalDetailsPopulated!: boolean;
 
-  public defendantType = '';
+  public defendantType!: string;
+  public accountType!: string;
 
   /**
    * Sets the defendant type based on the value stored in the account details.
@@ -63,6 +65,18 @@ export class AccountDetailsComponent implements OnInit {
     const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
     if (defendantType) {
       this.defendantType = this.defendantTypes[defendantType] || '';
+    }
+  }
+
+  /**
+   * Sets the account type based on the value stored in the `manualAccountCreation.accountDetails.accountType` property.
+   * If a valid account type is found, it assigns the corresponding value from `accountTypes` to the `accountType` property.
+   */
+  private setAccountType(): void {
+    // Moved to here as inline was adding extra spaces in HTML...
+    const { accountType } = this.macStateService.manualAccountCreation.accountDetails;
+    if (accountType) {
+      this.accountType = this.accountTypes[accountType] || '';
     }
   }
 
@@ -109,6 +123,7 @@ export class AccountDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDefendantType();
+    this.setAccountType();
     this.checkStatus();
   }
 }
