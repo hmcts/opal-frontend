@@ -36,7 +36,7 @@ def getProjectName() {
 }
 
 properties([
-    copyArtifactPermission('HMCTS/opal-frontend/*')
+    copyArtifactPermission('*')
 ])
 
 withPipeline(type, product, component) {
