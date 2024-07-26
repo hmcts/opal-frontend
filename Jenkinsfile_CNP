@@ -60,8 +60,8 @@ withPipeline(type, product, component) {
                 $class: 'CopyArtifact',
                 selector: lastSuccessful(),
                 projectName: getProjectName(),
-                filter: './cypress/*',
-                target: './cypress/parallel/weights/pipeline/'
+                filter: 'cypress/*',
+                target: 'cypress/parallel/weights/pipeline/'
         ]);
 
         sh '''
