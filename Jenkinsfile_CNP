@@ -36,7 +36,6 @@ withPipeline(type, product, component) {
   }
 
   afterSuccess('checkout') {
-      sh 'echo project is ${env.JOB_NAME}'
       step ([
               $class: 'CopyArtifact',
               selector: lastSuccessful(),
