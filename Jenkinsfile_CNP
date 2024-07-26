@@ -30,7 +30,7 @@ def getProjectName() {
     def githubApi = new GithubAPI(this)
     for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, "opal-frontend-pr-") ) {
         String prNumber = label.substring(21, label.length())
-        return projectPrefix + "PR-" + prNumber
+        return projectPrefix + "pr-" + prNumber
     }
     return projectPrefix + "master"
 }
