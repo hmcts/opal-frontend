@@ -49,11 +49,9 @@ withPipeline(type, product, component) {
       sh 'mkdir -p cypress/parallel/weights/pipeline'
 
         sh '''
-        echo "Listing all copied artifacts:"
-        ls -l ./
-        ls -l cypress/
-        ls -l cypress/parallel/weights/
-        ls -l cypress/parallel/weights/pipeline/
+        echo "Listing all artifacts before copy artifacts:"
+        ls -l1a cypress/parallel/weights/
+        ls -l1a cypress/parallel/weights/pipeline/*
         '''
 
         script {
@@ -63,7 +61,13 @@ withPipeline(type, product, component) {
             } catch (Exception e) {
                 echo "Error copying artifacts: ${e}"
             }
-                  try{
+
+        sh '''
+        echo "Listing all artifacts after copy artifacts:"
+        ls -l1a cypress/parallel/weights/
+        ls -l1a cypress/parallel/weights/pipeline/*
+        '''
+        try{
         sh '''
         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
             mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
