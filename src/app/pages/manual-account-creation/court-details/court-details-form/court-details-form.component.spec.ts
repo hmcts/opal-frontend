@@ -5,15 +5,23 @@ import {
   COURT_AUTOCOMPLETE_ITEMS_MOCK,
   LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK,
   MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_MOCK,
 } from '@mocks';
+import { MacStateService } from '@services';
 
 describe('CourtDetailsFormComponent', () => {
   let component: CourtDetailsFormComponent;
   let fixture: ComponentFixture<CourtDetailsFormComponent>;
+  let mockMacStateService: jasmine.SpyObj<MacStateService>;
 
   beforeEach(async () => {
+    mockMacStateService = jasmine.createSpyObj('macStateService', ['manualAccountCreation']);
+
+    mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+
     await TestBed.configureTestingModule({
       imports: [CourtDetailsFormComponent],
+      providers: [{ provide: MacStateService, useValue: mockMacStateService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CourtDetailsFormComponent);
