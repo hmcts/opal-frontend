@@ -26,11 +26,11 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def getProjectName() {
-    String projectPrefix = "hmcts/opal-frontend/"
+    String projectPrefix = "HMCTS/opal-frontend/"
     def githubApi = new GithubAPI(this)
     for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, "opal-frontend-pr-") ) {
         String prNumber = label.substring(21, label.length())
-        return projectPrefix + "pr-" + prNumber
+        return projectPrefix + "PR-" + prNumber
     }
     return projectPrefix + "master"
 }
@@ -56,13 +56,14 @@ withPipeline(type, product, component) {
         ls -l cypress/parallel/weights/pipeline/
         '''
 
-        step ([
-                $class: 'CopyArtifact',
-                selector: lastSuccessful(),
-                projectName: getProjectName(),
-                filter: '**/*',
-                target: 'cypress/parallel/weights/pipeline/'
-        ]);
+        script {
+            def projectName = getProjectName()
+            try {
+                copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/*', target: 'cypress/parallel/weights/pipeline/'
+            } catch (Exception e) {
+                echo "Error copying artifacts: ${e}"
+            }
+        }
 
         sh '''
         echo "Listing all copied artifacts:"
