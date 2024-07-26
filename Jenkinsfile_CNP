@@ -47,19 +47,16 @@ withPipeline(type, product, component) {
   }
   before('checkout') {
     script {
-      def folderName = "org/repo" // Replace with your folder path
-      def folder = Jenkins.instance.getItemByFullName(folderName)
+      def folderName = "HMCTS/opal-frontend" // Replace with your folder path
+      def response = sh(script: """
+          curl -u ${env.JENKINS_USER}:${env.JENKINS_API_TOKEN} -s "${env.JENKINS_URL}/job/${folderName}/api/json?tree=jobs[name]" | jq -r '.jobs[].name'
+      """, returnStdout: true).trim()
 
-      if (folder instanceof com.cloudbees.hudson.plugins.folder.Folder) {
-        folder.getItems().each { job ->
-          echo "Job: ${job.fullName}"
-        }
-      } else {
-        echo "Folder not found or is not a valid folder: ${folderName}"
-      }
+      echo "Jobs in folder '${folderName}':"
+      echo "${response}"
     }
   }
-  
+
     afterSuccess('checkout') {
       sh 'mkdir -p cypress/parallel/weights/pipeline'
 
