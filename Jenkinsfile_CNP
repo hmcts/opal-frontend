@@ -25,7 +25,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 properties([
-    copyArtifactPermission('HMCTS/opal-frontend/*'),
+    copyArtifactPermission('*'),
 ]);
 
 withPipeline(type, product, component) {
@@ -39,7 +39,7 @@ withPipeline(type, product, component) {
       step ([
               $class: 'CopyArtifact',
               selector: lastSuccessful(),
-              projectName: env.JOB_NAME,
+              projectName: 'HMCTS/opal-frontend/*',
               target: "./"
       ]);
   }
