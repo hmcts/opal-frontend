@@ -45,18 +45,6 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
   }
-  before('checkout') {
-    script {
-      def folderName = "HMCTS/job/opal-frontend" // Replace with your folder path
-      def response = sh(script: """
-          curl -u ${env.JENKINS_USER}:${env.JENKINS_API_TOKEN} -s "https://sds-build.hmcts.net/job/HMCTS/job/opal-frontend/api/json?tree=jobs[name]"
-      """, returnStdout: true).trim()
-
-      echo "Jobs in folder '${folderName}':"
-      echo "${response}"
-    }
-  }
-
     afterSuccess('checkout') {
       sh 'mkdir -p cypress/parallel/weights/pipeline'
 
