@@ -26,7 +26,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def getProjectName() {
-    String projectPrefix = "HMCTS/opal-frontend/"
+    String projectPrefix = "hmcts/opal-frontend/"
     def githubApi = new GithubAPI(this)
     for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, "opal-frontend-pr-") ) {
         String prNumber = label.substring(21, label.length())
