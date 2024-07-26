@@ -861,40 +861,20 @@ describe('FormBaseComponent', () => {
     expect(component.formControlErrorMessages['firstNames_0']).toBeDefined();
   });
 
-  it('should reset the form control', () => {
-    const controlName = 'forename';
-    component.form.controls[controlName].setValue('John');
-
-    component['resetFormControl'](controlName);
-
-    expect(component.form.controls[controlName].value).toBeNull();
-  });
-
-  it('should clear validators and validity of a control', () => {
-    const controlName = 'court';
-    const control = component.form.controls[controlName];
-
-    // Set validators for the control
-    control.setValidators([Validators.required]);
-    control.setValue('Test value');
-
-    // Call the method to clear validators and validity
-    component['clearValidatorsAndValidity'](controlName);
-
-    // Expect validators to be cleared
-    expect(control.validator).toBeNull();
-
-    // Expect validity to be updated
-    expect(control.valid).toBeTrue();
-  });
-
-  it('should set validators and update validity for a control', () => {
-    const controlName = 'court';
+  it('should create a new control with the given control name and validators', () => {
+    const controlName = 'testControl';
     const validators: ValidatorFn[] = [Validators.required];
 
-    component['setValidatorsAndValidity'](controlName, validators);
+    component['createControl'](controlName, validators);
 
-    expect(component.form.controls[controlName].hasValidator(Validators.required)).toBeTruthy();
-    expect(component.form.controls[controlName].valid).toBeFalse();
+    expect(component.form.get(controlName)).toBeTruthy();
+    expect(component.form.get(controlName)?.value).toBeNull();
+    expect(component.form.get(controlName)?.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should remove a control from the form', () => {
+    const controlName = 'surname';
+    component['removeControl'](controlName);
+    expect(component.form.get(controlName)).toBeNull();
   });
 });

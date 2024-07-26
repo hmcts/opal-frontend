@@ -6,6 +6,7 @@ import {
   MANUAL_ACCOUNT_CREATION_MOCK,
 } from '@mocks';
 import { MacStateService } from '@services';
+import { Validators } from '@angular/forms';
 
 describe('CreateAccountFormComponent', () => {
   let component: CreateAccountFormComponent;
@@ -54,79 +55,8 @@ describe('CreateAccountFormComponent', () => {
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
 
-  it('should handle account type change correctly', () => {
-    const accountType = 'fine';
-    const formValue = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
-    formValue.defendantType = 'adultOrYouthOnly';
-    formValue.accountType = accountType;
-    formValue.fineDefendantType = formValue.defendantType;
-    component.form.setValue(formValue);
-
-    component['handleAccountTypeChange']();
-
-    expect(component.form.get('defendantType')?.value).toBeNull();
-    expect(component.form.get('fixedPenaltyDefendantType')?.value).toBeNull();
-    expect(component.form.get('fineDefendantType')?.value).toBe('adultOrYouthOnly');
-    expect(component.form.get('defendantType')?.validator).toBeNull();
-    expect(component.form.get('fixedPenaltyDefendantType')?.validator).toBeNull();
-  });
-
-  it('should handle account type change correctly', () => {
-    const accountType = 'fixedPenalty';
-    const formValue = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
-    formValue.defendantType = 'adultOrYouthOnly';
-    formValue.accountType = accountType;
-    formValue.fixedPenaltyDefendantType = formValue.defendantType;
-    component.form.setValue(formValue);
-
-    component['handleAccountTypeChange']();
-
-    expect(component.form.get('defendantType')?.value).toBeNull();
-    expect(component.form.get('fineDefendantType')?.value).toBeNull();
-    expect(component.form.get('fixedPenaltyDefendantType')?.value).toBe('adultOrYouthOnly');
-    expect(component.form.get('defendantType')?.validator).toBeNull();
-    expect(component.form.get('fineDefendantType')?.validator).toBeNull();
-  });
-
-  it('should handle account type change correctly', () => {
-    const accountType = 'conditionalCaution';
-    const formValue = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
-    formValue.accountType = accountType;
-    formValue.fineDefendantType = '';
-    component.form.setValue(formValue);
-
-    component['handleAccountTypeChange']();
-
-    expect(component.form.get('defendantType')?.value).not.toBeNull();
-    expect(component.form.get('fineDefendantType')?.value).toBeNull();
-    expect(component.form.get('fixedPenaltyDefendantType')?.value).toBeNull();
-    expect(component.form.get('defendantType')?.validator).toBeNull();
-    expect(component.form.get('fineDefendantType')?.validator).toBeNull();
-  });
-
-  it('should set defendant type correctly for account type "fine"', () => {
-    component.form.get('accountType')?.setValue('fine');
-    component['setDefendantType']();
-    expect(component.form.get('defendantType')?.value).toBe(component.form.get('fineDefendantType')?.value);
-  });
-
-  it('should set defendant type correctly for account type "fixedPenalty"', () => {
-    component.form.get('accountType')?.setValue('fixedPenalty');
-    component['setDefendantType']();
-    expect(component.form.get('defendantType')?.value).toBe(component.form.get('fixedPenaltyDefendantType')?.value);
-  });
-
-  it('should set defendant type correctly for account type "conditionalCaution"', () => {
-    component.form.get('accountType')?.setValue('conditionalCaution');
-    component['setDefendantType']();
-    expect(component.form.get('defendantType')?.value).toBe(component.conditionalCautionPenaltyDefendantTypes[0].key);
-  });
-
   it('should emit form submit event with form value', () => {
     const formValue = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK;
-    formValue.defendantType = 'adultOrYouthOnly';
-    formValue.fineDefendantType = 'adultOrYouthOnly';
-    formValue.fixedPenaltyDefendantType = 'adultOrYouthOnly';
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formValue);
@@ -145,5 +75,97 @@ describe('CreateAccountFormComponent', () => {
 
     expect(component['accountTypeListener'].unsubscribe).toHaveBeenCalled();
     expect(component['ngOnDestroy']).toHaveBeenCalled();
+  });
+
+  it('should handle account type change - fine', () => {
+    const accountType = 'fine';
+    const fieldName = 'fineDefendantType';
+    const validators = [Validators.required];
+    const fieldsToRemove = ['fixedPenaltyDefendantType'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'removeControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'createControl');
+
+    component['handleAccountTypeChange'](accountType);
+
+    expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
+    fieldsToRemove.forEach((field) => {
+      expect(component['removeControl']).toHaveBeenCalledWith(field);
+    });
+    expect(component['createControl']).toHaveBeenCalledWith(fieldName, validators);
+  });
+
+  it('should handle account type change - fixed penalty', () => {
+    const accountType = 'fixedPenalty';
+    const fieldName = 'fixedPenaltyDefendantType';
+    const validators = [Validators.required];
+    const fieldsToRemove = ['fineDefendantType'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'removeControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'createControl');
+
+    component['handleAccountTypeChange'](accountType);
+
+    expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
+    fieldsToRemove.forEach((field) => {
+      expect(component['removeControl']).toHaveBeenCalledWith(field);
+    });
+    expect(component['createControl']).toHaveBeenCalledWith(fieldName, validators);
+  });
+
+  it('should handle account type change - conditional caution', () => {
+    const accountType = 'conditionalCaution';
+    const fieldsToRemove = ['fineDefendantType', 'fixedPenaltyDefendantType'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'removeControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'createControl');
+
+    component['handleAccountTypeChange'](accountType);
+
+    expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
+    fieldsToRemove.forEach((field) => {
+      expect(component['removeControl']).toHaveBeenCalledWith(field);
+    });
+    expect(component['createControl']).not.toHaveBeenCalled();
+  });
+
+  it('should set defendant type based on account type - fixed penalty', () => {
+    const accountType = 'fixedPenalty';
+    const fieldName = 'fixedPenaltyDefendantType';
+    const fieldValue = 'adultOrYouthOnly';
+
+    component.form.get('accountType')?.setValue(accountType);
+    component.form.get(fieldName)?.setValue(fieldValue);
+
+    component['setDefendantType']();
+
+    expect(component.form.get('defendantType')?.value).toEqual(fieldValue);
+  });
+
+  it('should set defendant type based on account type - fine', () => {
+    const accountType = 'fine';
+    const fieldName = 'fineDefendantType';
+    const fieldValue = 'adultOrYouthOnly';
+
+    component.form.get('accountType')?.setValue(accountType);
+    component.form.get(fieldName)?.setValue(fieldValue);
+
+    component['setDefendantType']();
+
+    expect(component.form.get('defendantType')?.value).toEqual(fieldValue);
+  });
+
+  it('should set defendant type to default for conditional caution account type', () => {
+    const accountType = 'conditionalCaution';
+    const defaultDefendantType = component.conditionalCautionPenaltyDefendantTypes[0].key;
+
+    component.form.get('accountType')?.setValue(accountType);
+
+    component['setDefendantType']();
+
+    expect(component.form.get('defendantType')?.value).toEqual(defaultDefendantType);
   });
 });

@@ -3,5 +3,4 @@ export const MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK = {
   accountType: 'fine',
   defendantType: 'company',
   fineDefendantType: 'company',
-  fixedPenaltyDefendantType: '',
 };

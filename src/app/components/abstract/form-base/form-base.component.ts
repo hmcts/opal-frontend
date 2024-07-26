@@ -510,33 +510,22 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Resets the value of a form control to its initial state.
+   * Adds a new form control to the form group.
    *
-   * @param controlName - The name of the form control to reset.
+   * @param controlName - The name of the control to add.
+   * @param validators - An array of validators to apply to the control.
    */
-  protected resetFormControl(controlName: string): void {
-    this.form.controls[controlName].reset();
+  protected createControl(controlName: string, validators: ValidatorFn[]): void {
+    this.form.addControl(controlName, new FormControl(null, validators));
   }
 
   /**
-   * Clears the validators and updates the validity of a specific form control.
+   * Removes a control from the form.
    *
-   * @param controlName - The name of the form control.
+   * @param controlName - The name of the control to remove.
    */
-  protected clearValidatorsAndValidity(controlName: string): void {
-    this.form.controls[controlName].clearValidators();
-    this.form.controls[controlName].updateValueAndValidity();
-  }
-
-  /**
-   * Sets the validators for a specific form control and updates its validity.
-   *
-   * @param controlName - The name of the form control.
-   * @param validators - An array of validator functions to set for the form control.
-   */
-  protected setValidatorsAndValidity(controlName: string, validators: ValidatorFn[]): void {
-    this.form.controls[controlName].setValidators(validators);
-    this.form.controls[controlName].updateValueAndValidity();
+  protected removeControl(controlName: string): void {
+    this.form.removeControl(controlName);
   }
 
   /**
