@@ -65,7 +65,7 @@ withPipeline(type, product, component) {
         sh '''
         echo "Listing all artifacts after copy artifacts:"
         ls -l1a cypress/parallel/weights/
-        ls -l1a cypress/parallel/weights/pipeline/*
+        ls -l1a cypress/parallel/weights/pipeline/
         '''
         try{
         sh '''
