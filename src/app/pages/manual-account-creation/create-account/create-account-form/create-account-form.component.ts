@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import {
   FormBaseComponent,
   GovukButtonComponent,
@@ -12,13 +12,9 @@ import {
   AlphagovAccessibleAutocompleteComponent,
   GovukRadiosConditionalComponent,
 } from '@components';
-import {
-  ACCOUNT_TYPES_STATE,
-  ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
-  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR,
-} from '@constants';
+import { ACCOUNT_TYPES_STATE, ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import { IAutoCompleteItem, IFieldErrors, IManualAccountCreationAccountDetailsState } from '@interfaces';
+import { IAutoCompleteItem, IManualAccountCreationAccountDetailsState } from '@interfaces';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -62,7 +58,25 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
     ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
   ).map(([key, value]) => ({ key, value }));
 
-  override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR;
+  private readonly accountTypeDefendantTypeControlNames: {
+    [key: string]: { fieldName: string; validators: ValidatorFn[]; fieldsToRemove: string[] };
+  } = {
+    fine: {
+      fieldName: 'fineDefendantType',
+      validators: [Validators.required],
+      fieldsToRemove: ['fixedPenaltyDefendantType'],
+    },
+    fixedPenalty: {
+      fieldName: 'fixedPenaltyDefendantType',
+      validators: [Validators.required],
+      fieldsToRemove: ['fineDefendantType'],
+    },
+    conditionalCaution: {
+      fieldName: '',
+      validators: [],
+      fieldsToRemove: ['fineDefendantType', 'fixedPenaltyDefendantType'],
+    },
+  };
 
   /**
    * Sets up the employer details form with the necessary form controls.
@@ -72,8 +86,6 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
       accountType: new FormControl(null, [Validators.required]),
       businessUnit: new FormControl(null, [Validators.required]),
       defendantType: new FormControl(null),
-      fineDefendantType: new FormControl(null),
-      fixedPenaltyDefendantType: new FormControl(null),
     });
   }
 
@@ -84,36 +96,22 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
   private setupAccountTypeListener(): void {
     this.accountTypeListener = this.form
       .get('accountType')!
-      .valueChanges.subscribe(() => this.handleAccountTypeChange());
+      .valueChanges.subscribe((accountType: string) => this.handleAccountTypeChange(accountType));
   }
 
   /**
-   * Handles the change event of the account type form control.
-   * Resets error messages and validators based on the selected account type.
+   * Handles the change of the account type.
+   * @param accountType - The selected account type.
    */
-  private handleAccountTypeChange(): void {
-    this.formErrorSummaryMessage = [];
-    this.formControlErrorMessages = {};
-    const accountType = this.form.get('accountType')?.value;
-    switch (accountType) {
-      case 'fine':
-        this.resetFormControl('defendantType');
-        this.resetFormControl('fixedPenaltyDefendantType');
-        this.clearValidatorsAndValidity('fixedPenaltyDefendantType');
-        this.setValidatorsAndValidity('fineDefendantType', [Validators.required]);
-        break;
-      case 'fixedPenalty':
-        this.resetFormControl('defendantType');
-        this.resetFormControl('fineDefendantType');
-        this.clearValidatorsAndValidity('fineDefendantType');
-        this.setValidatorsAndValidity('fixedPenaltyDefendantType', [Validators.required]);
-        break;
-      case 'conditionalCaution':
-        this.resetFormControl('fineDefendantType');
-        this.clearValidatorsAndValidity('fineDefendantType');
-        this.resetFormControl('fixedPenaltyDefendantType');
-        this.clearValidatorsAndValidity('fixedPenaltyDefendantType');
-        break;
+  private handleAccountTypeChange(accountType: string): void {
+    const { fieldName, validators, fieldsToRemove } = this.accountTypeDefendantTypeControlNames[accountType];
+
+    fieldsToRemove.forEach((field) => {
+      this.removeControl(field);
+    });
+
+    if (accountType !== 'conditionalCaution') {
+      this.createControl(fieldName, validators);
     }
   }
 
@@ -122,17 +120,16 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
    */
   private setDefendantType(): void {
     const accountType = this.form.get('accountType')?.value;
-    switch (accountType) {
-      case 'fine':
-        this.form.get('defendantType')?.setValue(this.form.get('fineDefendantType')?.value);
-        break;
-      case 'fixedPenalty':
-        this.form.get('defendantType')?.setValue(this.form.get('fixedPenaltyDefendantType')?.value);
-        break;
-      case 'conditionalCaution':
-        this.form.get('defendantType')?.setValue(this.conditionalCautionPenaltyDefendantTypes[0].key);
-        break;
-    }
+    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType];
+    const fieldValue = this.form.get(fieldName)?.value;
+
+    const defendantTypeMap: { [key: string]: string } = {
+      fine: fieldValue,
+      fixedPenalty: fieldValue,
+      conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
+    };
+
+    this.form.get('defendantType')?.setValue(defendantTypeMap[accountType]);
   }
 
   /**
@@ -152,8 +149,8 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
   public override ngOnInit(): void {
     this.setupAccountDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.macStateService.manualAccountCreation.accountDetails);
     this.setupAccountTypeListener();
+    this.rePopulateForm(this.macStateService.manualAccountCreation.accountDetails);
     super.ngOnInit();
   }
 
