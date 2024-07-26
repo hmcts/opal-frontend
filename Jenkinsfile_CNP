@@ -47,7 +47,7 @@ withPipeline(type, product, component) {
   }
   before('checkout') {
     script {
-      def folderName = "HMCTS/opal-frontend" // Replace with your folder path
+      def folderName = "HMCTS/job/opal-frontend" // Replace with your folder path
       def response = sh(script: """
           curl -u ${env.JENKINS_USER}:${env.JENKINS_API_TOKEN} -s "${env.JENKINS_URL}/job/${folderName}/api/json?tree=jobs[name]" | jq -r '.jobs[].name'
       """, returnStdout: true).trim()
