@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CourtDetailsComponent } from './court-details.component';
 import { CourtService, LocalJusticeAreaService, MacStateService } from '@services';
 import { of } from 'rxjs';
@@ -16,6 +15,8 @@ describe('CourtDetailsComponent', () => {
   let mockMacStateService: jasmine.SpyObj<MacStateService>;
   let localJusticeAreaService: Partial<LocalJusticeAreaService>;
   let courtService: Partial<CourtService>;
+  let formData: IManualAccountCreationCourtDetailsState;
+  let formSubmit: IManualAccountCreationCourtDetailsForm;
 
   beforeEach(async () => {
     localJusticeAreaService = {
@@ -29,6 +30,17 @@ describe('CourtDetailsComponent', () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+
+    formData = {
+      sendingCourt: 'Test',
+      pcr: 'Test',
+      enforcementCourt: 'Test',
+    };
+
+    formSubmit = {
+      formData: formData,
+      nestedFlow: false,
+    };
 
     await TestBed.configureTestingModule({
       imports: [CourtDetailsComponent],
@@ -44,6 +56,9 @@ describe('CourtDetailsComponent', () => {
 
     fixture = TestBed.createComponent(CourtDetailsComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
+
     fixture.detectChanges();
   });
 
@@ -54,40 +69,24 @@ describe('CourtDetailsComponent', () => {
   it('should have state and populate data$', () => {
     expect(component.sendingCourtData$).not.toBeUndefined();
     expect(component.enforcementCourtData$).not.toBeUndefined();
+    expect(component.groupLjaAndCourtData$).not.toBeUndefined();
   });
 
-  it('should handle form submission and navigate', () => {
+  it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IManualAccountCreationCourtDetailsState = {
-      sendingCourt: 'Test',
-      pcr: 'Test',
-      enforcementCourt: 'Test',
-    };
-    const courtDetailsFormSubmit: IManualAccountCreationCourtDetailsForm = {
-      formData: formData,
-      nestedFlow: false,
-    };
 
-    component.handleCourtDetailsSubmit(courtDetailsFormSubmit);
+    component.handleCourtDetailsSubmit(formSubmit);
 
     expect(mockMacStateService.manualAccountCreation.courtDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
   });
 
-  it('should handle form submission and navigate', () => {
+  it('should handle form submission and navigate to personal details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component.defendantType = 'adultOrYouthOnly';
-    const formData: IManualAccountCreationCourtDetailsState = {
-      sendingCourt: 'Test',
-      pcr: 'Test',
-      enforcementCourt: 'Test',
-    };
-    const courtDetailsFormSubmit: IManualAccountCreationCourtDetailsForm = {
-      formData: formData,
-      nestedFlow: true,
-    };
 
-    component.handleCourtDetailsSubmit(courtDetailsFormSubmit);
+    formSubmit.nestedFlow = true;
+
+    component.handleCourtDetailsSubmit(formSubmit);
 
     expect(mockMacStateService.manualAccountCreation.courtDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.personalDetails]);
