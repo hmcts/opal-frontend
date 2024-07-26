@@ -4575,9 +4575,9 @@ __metadata:
   linkType: hard
 
 "@scottish-government/design-system@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "@scottish-government/design-system@npm:2.1.0"
-  checksum: 10/a6349711e70ac859f7693175d31c9688ceab36f4344e02b89154eb01a0b9dd176ad4335e50c0d10b4f395dab82f830138af66ad0ac041146088ca7e4581f1f77
+  version: 2.2.0
+  resolution: "@scottish-government/design-system@npm:2.2.0"
+  checksum: 10/47f3ae07ee4a166372df5ec3ee860b223bd0c7022ecf4b5c1ee8168c5f35e28874d22a12b9607bfe9bd56dba04a6e0f373912700cd8763b41f01e3f35178f761
   languageName: node
   linkType: hard
 
