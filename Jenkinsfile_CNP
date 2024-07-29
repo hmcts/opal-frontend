@@ -16,10 +16,10 @@ def secrets = [
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [$class     : 'AzureKeyVaultSecret',
-   secretType : 'Secret',
-   name       : secretName,
-   version    : '',
-   envVariable: envVar
+    secretType : 'Secret',
+    name       : secretName,
+    version    : '',
+    envVariable: envVar
   ]
 }
 
@@ -95,34 +95,6 @@ withPipeline(type, product, component) {
 
     }
 
-// before('smoketest:dev') {
-//   script{
-//       def sourceJobName = env.JOB_NAME
-//       sh "echo 'dev: Copying weight files in ${sourceJobName}'"
-//       try{
-//         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
-//         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/functional-parallel-weights.json'
-
-//         sh '''
-//         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-//             mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
-//             echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
-//         else
-//             echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
-//         fi
-//         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
-//             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
-//             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
-//         else
-//             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json not found, skipping move"
-//         fi
-//         '''
-//       } catch (Exception e) {
-//             echo "Artifacts not found or copy failed: ${e}"
-//         }
-//   }
-// }
-
 afterSuccess('functionalTest:dev'){
     script {
       def sourceJobName = env.JOB_NAME
@@ -135,34 +107,6 @@ afterSuccess('functionalTest:dev'){
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
     }
 }
-
-// before('smoketest:stg') {
-//   script{
-//       def sourceJobName = env.JOB_NAME
-//       sh "echo 'stg: Copying weight files in ${sourceJobName}'"
-//       try{
-//         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/smoke-parallel-weights.json'
-//         copyArtifacts projectName: sourceJobName, selector: lastSuccessful(), filter: './cypress/parallel/weights/pipeline/functional-parallel-weights.json'
-
-//         sh '''
-//         if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-//             mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
-//             echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
-//         else
-//             echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
-//         fi
-//         if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
-//             mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
-//             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
-//         else
-//             echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json not found, skipping move"
-//         fi
-//         '''
-//       } catch (Exception e) {
-//             echo "Artifacts not found or copy failed: ${e}"
-//         }
-//   }
-// }
 
 afterSuccess('functionalTest:stg'){
     script {
