@@ -1,15 +1,6 @@
-<h1 class="govuk-heading-l">Language preferences</h1>
-
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
-    <app-govuk-button
-      buttonId="submitForm"
-      (buttonClickEvent)="handleRoute(manualAccountCreationRoutes.accountDetails)"
-    >
-      Return to account details
-    </app-govuk-button>
-    <app-govuk-cancel-link
-      (linkClickEvent)="handleRoute(manualAccountCreationRoutes.accountDetails)"
-    ></app-govuk-cancel-link>
-  </div>
+<div class="govuk-grid-column-two-thirds">
+  <app-language-preferences-form
+    (formSubmit)="handleLanguagePreferencesSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-language-preferences-form>
 </div>

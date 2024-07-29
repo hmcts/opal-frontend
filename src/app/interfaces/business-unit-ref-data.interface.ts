@@ -1,3 +1,9 @@
+export interface IConfigurationItems {
+  itemName: string;
+  itemValue: string;
+  itemValues: string[];
+}
+
 export interface IBusinessUnit {
   businessUnitCode: string;
   businessUnitType: string;
@@ -5,7 +11,7 @@ export interface IBusinessUnit {
   opalDomain: null | string;
   businessUnitId: number;
   businessUnitName: string;
-  configurationItems: string[];
+  configurationItems: IConfigurationItems[];
   welshLanguage: boolean | null;
 }
 

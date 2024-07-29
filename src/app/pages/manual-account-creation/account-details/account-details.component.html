@@ -24,34 +24,34 @@
         <p class="govuk-body">{{ defendantType }}</p>
       </ng-container>
     </app-govuk-summary-list-row>
-    @if (macStateService.manualAccountCreation.businessUnit.welshLanguage) {
-      <div
-        app-govuk-summary-list-row
-        summaryListId="accountDetails"
-        summaryListRowId="languagePreferences"
-        [actionEnabled]="true"
-        (actionClick)="handleRoute(manualAccountCreationRoutes.languagePreferences)"
-      >
-        <ng-container name>Document language</ng-container>
-        <ng-container value>
-          <p class="govuk-body">Welsh and English</p>
-        </ng-container>
-        <ng-container action>Change</ng-container>
-      </div>
-      <div
-        app-govuk-summary-list-row
-        summaryListId="accountDetails"
-        summaryListRowId="languagePreferences"
-        [actionEnabled]="true"
-        (actionClick)="handleRoute(manualAccountCreationRoutes.languagePreferences)"
-      >
-        <ng-container name>Hearing language</ng-container>
-        <ng-container value>
-          <p class="govuk-body">Welsh and English</p>
-        </ng-container>
-        <ng-container action>Change</ng-container>
-      </div>
-    }
+    <!-- @if (macStateService.manualAccountCreation.businessUnit.welshLanguage) { -->
+    <div
+      app-govuk-summary-list-row
+      summaryListId="accountDetails"
+      summaryListRowId="languagePreferences"
+      [actionEnabled]="true"
+      (actionClick)="handleRoute(manualAccountCreationRoutes.languagePreferences)"
+    >
+      <ng-container name>Document language</ng-container>
+      <ng-container value>
+        <p class="govuk-body">{{ documentLanguage }}</p>
+      </ng-container>
+      <ng-container action>Change</ng-container>
+    </div>
+    <div
+      app-govuk-summary-list-row
+      summaryListId="accountDetails"
+      summaryListRowId="languagePreferences"
+      [actionEnabled]="true"
+      (actionClick)="handleRoute(manualAccountCreationRoutes.languagePreferences)"
+    >
+      <ng-container name>Hearing language</ng-container>
+      <ng-container value>
+        <p class="govuk-body">{{ courtHearingLanguage }}</p>
+      </ng-container>
+      <ng-container action>Change</ng-container>
+    </div>
+    <!-- } -->
   </app-govuk-summary-list>
   <h2 class="govuk-heading-m">Court details</h2>
   <ng-container *ngTemplateOutlet="courtDetails"></ng-container>

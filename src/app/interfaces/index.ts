@@ -31,7 +31,7 @@ import { IManualAccountCreationAccountDetailsState } from './manual-account-crea
 import { IDefendantTypes } from './defendant-types.interface';
 import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
 import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
-import { IBusinessUnit, IBusinessUnitRefData } from './business-unit-ref-data.interface';
+import { IBusinessUnit, IBusinessUnitRefData, IConfigurationItems } from './business-unit-ref-data.interface';
 
 import { IManualAccountCreationPersonalAlias } from './manual-account-creation-personal-details-alias.interface';
 import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
@@ -58,6 +58,8 @@ import { IManualAccountCreationCourtDetailsForm } from './manual-account-creatio
 import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
 import { ICourtRefData } from './court-ref-data.interface';
 import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
+import { IManualAccountCreationLanguagePreferencesState } from './manual-account-creation-language-preferences.interface';
+import { ILanguageOptions } from './language-options.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -99,6 +101,7 @@ export {
   IDefendantTypes,
   IManualAccountCreationContactDetailsState,
   IManualAccountCreationParentGuardianDetailsState,
+  IConfigurationItems,
   IBusinessUnit,
   IManualAccountCreationParentGuardianForm,
   IBusinessUnitRefData,
@@ -124,4 +127,6 @@ export {
   IManualAccountCreationCourtDetailsForm,
   ILocalJusticeAreaRefData,
   ICourtRefData,
+  IManualAccountCreationLanguagePreferencesState,
+  ILanguageOptions,
 };

@@ -4,7 +4,7 @@ import { BusinessUnitService } from './business-unit.service';
 
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { API_PATHS } from '@constants';
-import { IBusinessUnitRefData } from '@interfaces';
+import { IBusinessUnit, IBusinessUnitRefData } from '@interfaces';
 import { BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -65,5 +65,23 @@ describe('BusinessUnitService', () => {
 
     // No new request should be made since the response is cached
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should return the item value for a given configuration item name', () => {
+    const businessUnit = BUSINESS_UNIT_REF_DATA_MOCK.refData[0] as IBusinessUnit;
+    const expectedValue = 'Item1';
+
+    const result = service.getConfigurationItemValue(businessUnit, expectedValue);
+
+    expect(result).toEqual(expectedValue);
+  });
+
+  it('should return null if the configuration item name is not found', () => {
+    const businessUnit = BUSINESS_UNIT_REF_DATA_MOCK.refData[1] as IBusinessUnit;
+    const itemName = 'Item0';
+
+    const result = service.getConfigurationItemValue(businessUnit, itemName);
+
+    expect(result).toBeNull();
   });
 });

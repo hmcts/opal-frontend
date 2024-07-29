@@ -13,6 +13,7 @@ import {
   MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCES_MOCK,
   MANUAL_ACCOUNT_CREATION_MOCK,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
@@ -88,6 +89,7 @@ describe('AccountDetailsComponent', () => {
       companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
       courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
       businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
+      languagePreferences: MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCES_MOCK,
       unsavedChanges: false,
       stateChanges: true,
     };
@@ -113,5 +115,32 @@ describe('AccountDetailsComponent', () => {
     expect(component.accountCreationStatus['parentGuardianDetails']).toBeFalsy();
     expect(component.accountCreationStatus['personalDetails']).toBeFalsy();
     expect(component.accountCreationStatus['companyDetails']).toBeFalsy();
+  });
+  it('should set documentLanguage and courtHearingLanguage correctly', () => {
+    const documentLanguage = 'welshEnglish';
+    const courtHearingLanguage = 'welshEnglish';
+    component.macStateService.manualAccountCreation.languagePreferences = {
+      documentLanguage,
+      courtHearingLanguage,
+    };
+
+    component['setLanguage']();
+
+    expect(component.documentLanguage).toEqual(component.languages[documentLanguage]);
+    expect(component.courtHearingLanguage).toEqual(component.languages[courtHearingLanguage]);
+  });
+
+  it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
+    const documentLanguage = 'german';
+    const courtHearingLanguage = 'french';
+    component.macStateService.manualAccountCreation.languagePreferences = {
+      documentLanguage,
+      courtHearingLanguage,
+    };
+
+    component['setLanguage']();
+
+    expect(component.documentLanguage).toBe('');
+    expect(component.courtHearingLanguage).toBe('');
   });
 });

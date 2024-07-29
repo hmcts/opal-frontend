@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormParentBaseComponent } from '@components';
-import { ManualAccountCreationRoutes } from '@enums';
+import { ConfigurationItems, ManualAccountCreationRoutes } from '@enums';
 import {
   IAutoCompleteItem,
   IBusinessUnit,
@@ -23,6 +23,7 @@ import { Observable, map, tap } from 'rxjs';
 export class CreateAccountComponent extends FormParentBaseComponent {
   private businessUnitService = inject(BusinessUnitService);
   private businessUnits!: IBusinessUnit[];
+  private configurationItems = ConfigurationItems;
   public data$: Observable<IGovUkSelectOptions[]> = this.businessUnitService
     .getBusinessUnits('MANUAL_ACCOUNT_CREATION')
     .pipe(
@@ -71,10 +72,22 @@ export class CreateAccountComponent extends FormParentBaseComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
+    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formData.businessUnit)!;
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       accountDetails: formData,
-      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === formData.businessUnit)!,
+      businessUnit: businessUnit,
+      languagePreferences: {
+        ...this.macStateService.manualAccountCreation.languagePreferences,
+        courtHearingLanguage: this.businessUnitService.getConfigurationItemValue(
+          businessUnit,
+          this.configurationItems.defaultLanguagePreference,
+        ),
+        documentLanguage: this.businessUnitService.getConfigurationItemValue(
+          businessUnit,
+          this.configurationItems.defaultLanguagePreference,
+        ),
+      },
       unsavedChanges: false,
       stateChanges: true,
     };

@@ -22,6 +22,7 @@ describe('CreateAccountComponent', () => {
   beforeEach(async () => {
     businessUnitService = {
       getBusinessUnits: jasmine.createSpy('getBusinessUnits').and.returnValue(of(BUSINESS_UNIT_REF_DATA_MOCK)),
+      getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
     };
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
@@ -65,6 +66,7 @@ describe('CreateAccountComponent', () => {
 
     expect(mockMacStateService.manualAccountCreation.accountDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
+    expect(businessUnitService.getConfigurationItemValue).toHaveBeenCalled();
   });
 
   it('should test handleUnsavedChanges', () => {

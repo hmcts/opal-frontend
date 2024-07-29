@@ -20,6 +20,7 @@ import {
   IManualAccountCreationState,
 } from '@interfaces';
 import { MacStateService } from '@services';
+import { LANGUAGE_OPTIONS } from 'src/app/constants/common/languages';
 
 @Component({
   selector: 'app-account-details',
@@ -50,9 +51,12 @@ export class AccountDetailsComponent implements OnInit {
   public accountCreationStatus: IManualAccountCreationAccountStatus = MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS;
 
   public readonly defendantTypes = DEFENDANT_TYPES_STATE;
+  public readonly languages = LANGUAGE_OPTIONS;
   public personalDetailsPopulated!: boolean;
 
   public defendantType = '';
+  public documentLanguage = '';
+  public courtHearingLanguage = '';
 
   /**
    * Sets the defendant type based on the value stored in the account details.
@@ -63,6 +67,18 @@ export class AccountDetailsComponent implements OnInit {
     const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
     if (defendantType) {
       this.defendantType = this.defendantTypes[defendantType] || '';
+    }
+  }
+
+  /**
+   * Sets the document language and court hearing language based on the language preferences
+   * stored in the `manualAccountCreation` property of the `macStateService`.
+   */
+  private setLanguage(): void {
+    const { documentLanguage, courtHearingLanguage } = this.macStateService.manualAccountCreation.languagePreferences;
+    if (documentLanguage && courtHearingLanguage) {
+      this.documentLanguage = this.languages[documentLanguage] || '';
+      this.courtHearingLanguage = this.languages[courtHearingLanguage] || '';
     }
   }
 
@@ -109,6 +125,7 @@ export class AccountDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDefendantType();
+    this.setLanguage();
     this.checkStatus();
   }
 }
