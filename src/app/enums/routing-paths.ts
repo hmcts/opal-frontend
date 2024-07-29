@@ -17,4 +17,5 @@ export enum RoutingPaths {
   manualAccountCreationPersonalDetails = 'personal-details',
   manualAccountCreationOffenceDetails = 'offence-details',
   manualAccountCreationCourtDetails = 'court-details',
+  manualAccountCreationLanguagePreferences = 'language-preferences',
 }

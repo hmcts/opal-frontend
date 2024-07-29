@@ -141,6 +141,14 @@ const routes: Routes = [
         canActivate: [authGuard],
         canDeactivate: [canDeactivateGuard],
       },
+      {
+        path: RoutingPaths.manualAccountCreationLanguagePreferences,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/language-preferences/language-preferences.component').then(
+            (c) => c.LanguagePreferencesComponent,
+          ),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
     canDeactivate: [canDeactivateGuard],

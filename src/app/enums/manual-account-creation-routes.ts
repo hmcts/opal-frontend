@@ -10,4 +10,5 @@ export enum ManualAccountCreationRoutes {
   contactDetails = '/manual-account-creation/contact-details',
   companyDetails = '/manual-account-creation/company-details',
   parentOrGuardianDetails = '/manual-account-creation/parent-guardian-details',
+  languagePreferences = '/manual-account-creation/language-preferences',
 }
