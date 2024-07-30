@@ -12,12 +12,18 @@ import {
   AlphagovAccessibleAutocompleteComponent,
   GovukRadiosConditionalComponent,
 } from '@components';
-import { ACCOUNT_TYPES_STATE, ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from '@constants';
+import {
+  ACCOUNT_TYPES_STATE,
+  ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR,
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_TYPE_DEFENDANT_TYPE_CONTROL_NAMES,
+} from '@constants';
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import {
   IAccountTypeDefendantTypeControlNames,
+  IAccountTypes,
   IAutoCompleteItem,
-  IDefendantTypes,
+  IFieldErrors,
   IManualAccountCreationAccountDetailsState,
   IRadioOptions,
 } from '@interfaces';
@@ -64,32 +70,18 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
   public readonly conditionalCautionPenaltyDefendantTypes: IRadioOptions[] = Object.entries(
     ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
   ).map(([key, value]) => ({ key, value }));
+  private readonly accountTypeDefendantTypeControlNames: IAccountTypeDefendantTypeControlNames =
+    MANUAL_ACCOUNT_CREATION_ACCOUNT_TYPE_DEFENDANT_TYPE_CONTROL_NAMES;
 
-  private readonly accountTypeDefendantTypeControlNames: IAccountTypeDefendantTypeControlNames = {
-    fine: {
-      fieldName: 'fineDefendantType',
-      validators: [Validators.required],
-      fieldsToRemove: ['fixedPenaltyDefendantType'],
-    },
-    fixedPenalty: {
-      fieldName: 'fixedPenaltyDefendantType',
-      validators: [Validators.required],
-      fieldsToRemove: ['fineDefendantType'],
-    },
-    conditionalCaution: {
-      fieldName: '',
-      validators: [],
-      fieldsToRemove: ['fineDefendantType', 'fixedPenaltyDefendantType'],
-    },
-  };
+  override fieldErrors: IFieldErrors = MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR;
 
   /**
    * Sets up the employer details form with the necessary form controls.
    */
   private setupAccountDetailsForm(): void {
     this.form = new FormGroup({
-      accountType: new FormControl(null, [Validators.required]),
       businessUnit: new FormControl(null, [Validators.required]),
+      accountType: new FormControl(null, [Validators.required]),
       defendantType: new FormControl(null),
     });
   }
@@ -109,13 +101,14 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
    * @param accountType - The selected account type.
    */
   private handleAccountTypeChange(accountType: string): void {
-    const { fieldName, validators, fieldsToRemove } = this.accountTypeDefendantTypeControlNames[accountType];
+    const { fieldName, validators, fieldsToRemove } =
+      this.accountTypeDefendantTypeControlNames[accountType as keyof IAccountTypes] ?? {};
 
-    fieldsToRemove.forEach((field) => {
+    fieldsToRemove?.forEach((field) => {
       this.removeControl(field);
     });
 
-    if (accountType !== 'conditionalCaution') {
+    if (fieldName && accountType !== 'conditionalCaution') {
       this.createControl(fieldName, validators);
     }
   }
@@ -125,16 +118,16 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
    */
   private setDefendantType(): void {
     const accountType = this.form.get('accountType')?.value;
-    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType];
+    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IAccountTypes] ?? '';
     const fieldValue = this.form.get(fieldName)?.value;
 
-    const defendantTypeMap: IDefendantTypes = {
+    const defendantTypeMap: IAccountTypes = {
       fine: fieldValue,
       fixedPenalty: fieldValue,
       conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
     };
 
-    this.form.get('defendantType')?.setValue(defendantTypeMap[accountType]);
+    this.form.get('defendantType')?.setValue(defendantTypeMap[accountType as keyof IAccountTypes]);
   }
 
   /**
