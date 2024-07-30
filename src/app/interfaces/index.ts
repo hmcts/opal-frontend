@@ -60,6 +60,8 @@ import { ICourtRefData } from './court-ref-data.interface';
 import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
 import { IAccountTypes } from './account-types.interface';
 import { IAccountTypeDefendantTypes } from './account-type-defendant-types.interface';
+import { IRadioOptions } from './radio-options.interface';
+import { IAccountTypeDefendantTypeControlNames } from './account-type-defendant-type-control-names.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -128,4 +130,6 @@ export {
   ILocalJusticeAreaRefData,
   ICourtRefData,
   IAccountTypeDefendantTypes,
+  IRadioOptions,
+  IAccountTypeDefendantTypeControlNames,
 };
