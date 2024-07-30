@@ -47,6 +47,7 @@ import { CustomNationalInsuranceNumberComponent } from './custom/custom-national
 import { CustomDateOfBirthComponent } from './custom/custom-date-of-birth/custom-date-of-birth.component';
 import { GovukTextAreaComponent } from './govuk/govuk-text-area/govuk-text-area.component';
 import { FormAliasBaseComponent } from './abstract/form-alias-base/form-alias-base';
+import { GovukDetailsComponent } from './govuk/govuk-details/govuk-details.component';
 import { GovukPanelComponent } from './govuk/govuk-panel/govuk-panel.component';
 
 export {
@@ -98,5 +99,6 @@ export {
   CustomNationalInsuranceNumberComponent,
   CustomDateOfBirthComponent,
   FormAliasBaseComponent,
+  GovukDetailsComponent,
   GovukPanelComponent,
 };
