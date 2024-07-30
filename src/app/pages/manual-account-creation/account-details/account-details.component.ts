@@ -114,7 +114,6 @@ export class AccountDetailsComponent implements OnInit {
     });
   }
 
-
   /**
    * Performs the initial setup for the account details component.
    * This method sets the defendant type, language, and checks the status.
