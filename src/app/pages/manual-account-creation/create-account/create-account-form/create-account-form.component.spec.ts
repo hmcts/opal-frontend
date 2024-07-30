@@ -67,13 +67,15 @@ describe('CreateAccountFormComponent', () => {
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {
-    spyOn(component['accountTypeListener'], 'unsubscribe');
+    spyOn(component['ngUnsubscribe'], 'next');
+    spyOn(component['ngUnsubscribe'], 'complete');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'ngOnDestroy').and.callThrough();
 
     component.ngOnDestroy();
 
-    expect(component['accountTypeListener'].unsubscribe).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
     expect(component['ngOnDestroy']).toHaveBeenCalled();
   });
 

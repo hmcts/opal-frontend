@@ -27,7 +27,7 @@ import {
   IManualAccountCreationAccountDetailsState,
   IRadioOptions,
 } from '@interfaces';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-create-account-form',
@@ -52,6 +52,7 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
   @Output() private formSubmit = new EventEmitter<IManualAccountCreationAccountDetailsState>();
   @Input({ required: true }) public autoCompleteItems!: IAutoCompleteItem[];
 
+  private ngUnsubscribe = new Subject<void>();
   private accountTypeListener!: Subscription;
 
   public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
@@ -93,7 +94,8 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
   private setupAccountTypeListener(): void {
     this.accountTypeListener = this.form
       .get('accountType')!
-      .valueChanges.subscribe((accountType: string) => this.handleAccountTypeChange(accountType));
+      .valueChanges.pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((accountType: string) => this.handleAccountTypeChange(accountType));
   }
 
   /**
@@ -153,7 +155,8 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
   }
 
   public override ngOnDestroy(): void {
-    this.accountTypeListener.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
     super.ngOnDestroy();
   }
 }
