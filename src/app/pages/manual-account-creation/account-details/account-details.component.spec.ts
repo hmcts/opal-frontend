@@ -143,4 +143,19 @@ describe('AccountDetailsComponent', () => {
     expect(component.documentLanguage).toBe('');
     expect(component.courtHearingLanguage).toBe('');
   });
+
+  it('should call setDefendantType, setLanguage, and checkStatus on initialSetup', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setDefendantType');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setLanguage');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'checkStatus');
+
+    component['initialSetup']();
+
+    expect(component['setDefendantType']).toHaveBeenCalled();
+    expect(component['setLanguage']).toHaveBeenCalled();
+    expect(component['checkStatus']).toHaveBeenCalled();
+  });
 });

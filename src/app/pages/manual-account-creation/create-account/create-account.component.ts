@@ -72,21 +72,20 @@ export class CreateAccountComponent extends FormParentBaseComponent {
    * @param formData - The form data containing the search parameters.
    */
   public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
+    // Get the business unit and default language from the business unit if applicable
     const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formData.businessUnit)!;
+    const defaultLanguage = this.businessUnitService.getConfigurationItemValue(
+      businessUnit,
+      this.configurationItems.defaultLanguagePreference,
+    );
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       accountDetails: formData,
       businessUnit: businessUnit,
       languagePreferences: {
         ...this.macStateService.manualAccountCreation.languagePreferences,
-        courtHearingLanguage: this.businessUnitService.getConfigurationItemValue(
-          businessUnit,
-          this.configurationItems.defaultLanguagePreference,
-        ),
-        documentLanguage: this.businessUnitService.getConfigurationItemValue(
-          businessUnit,
-          this.configurationItems.defaultLanguagePreference,
-        ),
+        courtHearingLanguage: defaultLanguage,
+        documentLanguage: defaultLanguage,
       },
       unsavedChanges: false,
       stateChanges: true,
