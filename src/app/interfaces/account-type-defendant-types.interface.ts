@@ -4,11 +4,11 @@ export interface IAccountTypeDefendantTypes {
     parentOrGuardianToPay: string;
     company: string;
   };
-  fixedPenalty: { 
-    adultOrYouthOnly: string; 
-    company: string; 
+  fixedPenalty: {
+    adultOrYouthOnly: string;
+    company: string;
   };
-  conditionalCaution: { 
-    adultOrYouthOnly: string 
+  conditionalCaution: {
+    adultOrYouthOnly: string;
   };
 }

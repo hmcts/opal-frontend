@@ -108,7 +108,7 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
       this.removeControl(field);
     });
 
-    if (accountType !== 'conditionalCaution') {
+    if (fieldName && accountType !== 'conditionalCaution') {
       this.createControl(fieldName, validators);
     }
   }

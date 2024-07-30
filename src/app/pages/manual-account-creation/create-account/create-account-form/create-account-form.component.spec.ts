@@ -168,4 +168,17 @@ describe('CreateAccountFormComponent', () => {
 
     expect(component.form.get('defendantType')?.value).toEqual(defaultDefendantType);
   });
+
+  it('should not do anything as the account, fieldName, and fieldValue are not real', () => {
+    const accountType = 'test';
+    const fieldName = 'test';
+    const fieldValue = 'test';
+
+    component.form.get('accountType')?.setValue(accountType);
+    component.form.get(fieldName)?.setValue(fieldValue);
+
+    component['setDefendantType']();
+
+    expect(component.form.get('defendantType')?.value).not.toBeDefined();
+  });
 });
