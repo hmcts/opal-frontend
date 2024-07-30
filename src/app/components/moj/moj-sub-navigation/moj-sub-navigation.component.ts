@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-moj-sub-navigation',
@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs';
 export class MojSubNavigationComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private routeFragmentSub!: Subscription;
+  private ngUnsubscribe = new Subject<void>();
 
   @Input({ required: true }) public subNavId!: string;
   @Output() activeSubNavItemFragment = new EventEmitter<string>();
@@ -31,7 +32,7 @@ export class MojSubNavigationComponent implements OnInit, OnDestroy {
    */
   private setupListeners(): void {
     // Basically we want to mimic the behaviour of the GDS tabs component, as this is how these will be used.
-    this.routeFragmentSub = this.route.fragment.subscribe((fragment) => {
+    this.routeFragmentSub = this.route.fragment.pipe(takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
       if (fragment) {
         this.activeSubNavItemFragment.emit(fragment);
       }
@@ -47,6 +48,7 @@ export class MojSubNavigationComponent implements OnInit, OnDestroy {
    * Unsubscribes from the route fragment subscription.
    */
   ngOnDestroy(): void {
-    this.routeFragmentSub.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

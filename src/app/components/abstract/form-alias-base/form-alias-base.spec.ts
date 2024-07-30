@@ -447,10 +447,11 @@ describe('FormArrayBase', () => {
     // Call the setUpAliasCheckboxListener method
     component['setUpAliasCheckboxListener']('addAlias', 'aliases');
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const unsubscribeSpy = spyOn<any>(component['addAliasListener'], 'unsubscribe');
+    spyOn(component['ngUnsubscribe'], 'next');
+    spyOn(component['ngUnsubscribe'], 'complete');
     component.ngOnDestroy();
-    expect(unsubscribeSpy).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
   });
 
   it('should return if addAlias control is not found', () => {

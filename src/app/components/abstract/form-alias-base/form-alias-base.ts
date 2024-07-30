@@ -1,6 +1,6 @@
 import { IFormArrayControl, IFormArrayControlValidation } from '@interfaces';
 import { FormBaseComponent } from '../form-base/form-base.component';
-import { Subscription } from 'rxjs';
+import { Subscription, takeUntil } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
@@ -37,18 +37,21 @@ export abstract class FormAliasBaseComponent extends FormBaseComponent implement
    */
   protected setUpAliasCheckboxListener(formCheckboxName: string, formArrayName: string): void {
     // Ensure any existing subscription is cleared to avoid memory leaks
-    this.addAliasListener?.unsubscribe();
+    this['ngUnsubscribe'].next();
+    this['ngUnsubscribe'].complete();
 
     const addAliasControl = this.form.get(formCheckboxName);
     if (!addAliasControl) {
       return;
     }
 
-    this.addAliasListener = addAliasControl.valueChanges.subscribe((shouldAddAlias) => {
-      this.aliasControls = shouldAddAlias
-        ? this.buildFormArrayControls([0], formArrayName, this.aliasFields, this.aliasControlsValidation)
-        : this.removeAllFormArrayControls(this.aliasControls, formArrayName, this.aliasFields);
-    });
+    this.addAliasListener = addAliasControl.valueChanges
+      .pipe(takeUntil(this['ngUnsubscribe']))
+      .subscribe((shouldAddAlias) => {
+        this.aliasControls = shouldAddAlias
+          ? this.buildFormArrayControls([0], formArrayName, this.aliasFields, this.aliasControlsValidation)
+          : this.removeAllFormArrayControls(this.aliasControls, formArrayName, this.aliasFields);
+      });
   }
 
   /**
@@ -76,7 +79,8 @@ export abstract class FormAliasBaseComponent extends FormBaseComponent implement
   }
 
   public override ngOnDestroy(): void {
-    this.addAliasListener?.unsubscribe();
+    this['ngUnsubscribe'].next();
+    this['ngUnsubscribe'].complete();
     super.ngOnDestroy();
   }
 }

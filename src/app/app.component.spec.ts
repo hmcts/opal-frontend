@@ -8,7 +8,6 @@ import { SsoEndpoints } from '@enums';
 import { GlobalStateService, UtilsService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { Subscription } from 'rxjs';
 import { ITokenExpiry } from './interfaces/token-expiry.interface';
 import { TOKEN_EXPIRY_MOCK } from '@mocks';
 import { DateTime } from 'luxon';
@@ -106,12 +105,13 @@ describe('AppComponent', () => {
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    component['timerSub'] = new Subscription();
-    spyOn(component['timerSub'], 'unsubscribe');
+    spyOn(component['ngUnsubscribe'], 'next');
+    spyOn(component['ngUnsubscribe'], 'complete');
 
     component.ngOnDestroy();
 
-    expect(component['timerSub'].unsubscribe).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
   });
 
   it('should show expired warning when remaining minutes is zero', fakeAsync(() => {

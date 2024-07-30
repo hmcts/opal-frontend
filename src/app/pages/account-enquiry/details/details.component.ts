@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@components';
 import { AccountEnquiryRoutes, PermissionsMap } from '@enums';
 import { AeStateService, DefendantAccountService, GlobalStateService, PermissionsService } from '@services';
-import { EMPTY, Observable, switchMap, tap } from 'rxjs';
+import { EMPTY, Observable, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { IDefendantAccountDetails, IDefendantAccountNote, IPermissions, IUserStateRole } from '@interfaces';
 import { ACCOUNT_ENQUIRY_DEFAULT_STATE } from '@constants';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,7 +40,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
   styleUrl: './details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly defendantAccountService = inject(DefendantAccountService);
   private readonly route = inject(ActivatedRoute);
@@ -48,6 +48,7 @@ export class DetailsComponent implements OnInit {
   public readonly globalStateService = inject(GlobalStateService);
   public readonly aeStateService = inject(AeStateService);
 
+  private ngUnsubscribe = new Subject<void>();
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
   private readonly userStateRoles: IUserStateRole[] = this.globalStateService.userState()?.roles || [];
 
@@ -100,6 +101,7 @@ export class DetailsComponent implements OnInit {
           this.businessUnitId = businessUnitId;
           this.setupPermissions();
         }),
+        takeUntil(this.ngUnsubscribe),
       );
       this.notes$ = this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
       this.setupAddNoteForm();
@@ -130,6 +132,7 @@ export class DetailsComponent implements OnInit {
         switchMap(() => {
           return this.defendantAccountService.getDefendantAccountNotes(this.defendantAccountId);
         }),
+        takeUntil(this.ngUnsubscribe),
       );
   }
 
@@ -148,7 +151,12 @@ export class DetailsComponent implements OnInit {
     this.router.navigate([AccountEnquiryRoutes.matches]);
   }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.initialSetup();
+  }
+
+  public ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }
