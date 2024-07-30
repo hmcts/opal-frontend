@@ -8,9 +8,10 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS, MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IAutoCompleteItem, IFieldErrors, IManualAccountCreationCourtDetailsForm } from '@interfaces';
+import { MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS } from '../constants/manual-account-creation-court-details-field-errors';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../../constants/manual-account-creation-nested-routes';
 
 @Component({
   selector: 'app-court-details-form',

@@ -11,7 +11,7 @@ import {
   GovukTaskListComponent,
   GovukTaskListItemComponent,
 } from '@components';
-import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from '@constants';
+import { DEFENDANT_TYPES_STATE } from '@constants';
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import {
@@ -20,6 +20,7 @@ import {
   IManualAccountCreationState,
 } from '@interfaces';
 import { MacStateService } from '@services';
+import { MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from './constants/manual-account-creation-account-status';
 
 @Component({
   selector: 'app-account-details',

@@ -12,18 +12,18 @@ import {
   GovukTextInputComponent,
 } from '@components';
 import {
-  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR,
   ADDRESS_LINE_ONE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
   ADDRESS_LINE_THREE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
   CUSTOM_ADDRESS_FIELD_IDS,
-  MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS,
-  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
 import { IFieldErrors, IManualAccountCreationCompanyDetailsForm } from '@interfaces';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from 'src/app/validators';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS } from '../constants/manual-account-creation-company-details-alias';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR } from '../constants/manual-account-creation-company-details-field-errors';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../../constants/manual-account-creation-nested-routes';
 
 @Component({
   selector: 'app-company-details-form',

@@ -5,7 +5,7 @@ import { IManualAccountCreationParentGuardianForm } from '@interfaces';
 import { ParentGuardianDetailsFormComponent } from './parent-guardian-details-form/parent-guardian-details-form.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../constants/manual-account-creation-nested-routes';
 
 @Component({
   selector: 'app-parent-guardian-details',

@@ -5,7 +5,7 @@ import { EmployerDetailsFormComponent } from './employer-details-form/employer-d
 import { IManualAccountCreationEmployerDetailsForm } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { FormParentBaseComponent } from '@components';
-import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../constants/manual-account-creation-nested-routes';
 
 @Component({
   selector: 'app-employer-details',

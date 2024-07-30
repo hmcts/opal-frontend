@@ -1,6 +1,6 @@
 import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationNestedRoutes } from '@interfaces';
-import { MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS } from '@constants';
+import { MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS } from './manual-account-creation-nested-buttons';
 
 export const MANUAL_ACCOUNT_CREATION_NESTED_ROUTES: Record<string, IManualAccountCreationNestedRoutes> = {
   adultOrYouthOnly: {
