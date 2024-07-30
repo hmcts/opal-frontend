@@ -1,3 +1,5 @@
 export interface IAccountTypeDefendantTypes {
-  [key: string]: { [key: string]: string };
+  fine: { [key: string]: string };
+  fixedPenalty: { [key: string]: string };
+  conditionalCaution: { [key: string]: string };
 }

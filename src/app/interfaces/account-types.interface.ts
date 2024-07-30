@@ -1,3 +1,5 @@
 export interface IAccountTypes {
-  [key: string]: string;
+  fine: string;
+  fixedPenalty: string;
+  conditionalCaution: string;
 }

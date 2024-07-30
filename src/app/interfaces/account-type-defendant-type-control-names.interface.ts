@@ -1,5 +1,13 @@
 import { ValidatorFn } from '@angular/forms';
 
+interface IControlNames {
+  fieldName: string;
+  validators: ValidatorFn[];
+  fieldsToRemove: string[];
+}
+
 export interface IAccountTypeDefendantTypeControlNames {
-  [key: string]: { fieldName: string; validators: ValidatorFn[]; fieldsToRemove: string[] };
+  fine: IControlNames;
+  fixedPenalty: IControlNames;
+  conditionalCaution: IControlNames;
 }
