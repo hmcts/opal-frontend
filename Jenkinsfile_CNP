@@ -1,4 +1,5 @@
 #!groovy
+import uk.gov.hmcts.contino.GithubAPI
 
 @Library("Infrastructure")
 
@@ -15,20 +16,109 @@ def secrets = [
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   [$class     : 'AzureKeyVaultSecret',
-   secretType : 'Secret',
-   name       : secretName,
-   version    : '',
-   envVariable: envVar
+    secretType : 'Secret',
+    name       : secretName,
+    version    : '',
+    envVariable: envVar
   ]
 }
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+def getProjectName() {
+    String projectPrefix = "HMCTS/opal-frontend/"
+    def githubApi = new GithubAPI(this)
+    for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, "opal-frontend-pr-") ) {
+        String prNumber = label.substring(21, label.length())
+        return projectPrefix + "PR-" + prNumber
+    }
+    return projectPrefix + "master"
+}
+
+properties([
+    copyArtifactPermission('*')
+])
 
 withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   afterSuccess('build') {
     yarnBuilder.yarn('rebuild puppeteer')
     yarnBuilder.yarn('build')
+  }
+    afterSuccess('checkout') {
+      sh 'mkdir -p cypress/parallel/weights/pipeline'
+
+        sh '''
+        echo "Listing all artifacts before copy artifacts:"
+        ls -l1a cypress/parallel/weights/
+        ls -l1a cypress/parallel/weights/pipeline/
+        '''
+
+        script {
+            def projectName = getProjectName()
+            try {
+                copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
+            } catch (Exception e) {
+                echo "Error copying artifacts: ${e}"
+            }
+
+        sh '''
+        echo "Listing all artifacts after copy artifacts:"
+        ls -l1a cypress/parallel/weights/
+        ls -l1a cypress/parallel/weights/pipeline/
+        '''
+        try{
+        sh '''
+        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
+        else
+            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
+        fi
+        if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+            echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
+        else
+            echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json not found, skipping move"
+        fi
+        '''
+      } catch (Exception e) {
+            echo "Artifacts not found or copy failed: ${e}"
+        }
+        }
+
+        sh '''
+        echo "Listing all copied artifacts:"
+        ls -l1a cypress/parallel/weights/
+        ls -l1a cypress/parallel/weights/pipeline/
+        '''
+
+    }
+
+afterSuccess('functionalTest:dev'){
+    script {
+      def sourceJobName = env.JOB_NAME
+      sh' mkdir -p cypress/parallel/weights/pipeline'
+      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
+      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+
+      sh"echo 'Archiving weight files in ${sourceJobName}'"
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+    }
+}
+
+afterSuccess('functionalTest:stg'){
+    script {
+      def sourceJobName = env.JOB_NAME
+      sh' mkdir -p cypress/parallel/weights/pipeline'
+      sh' cp -r cypress/parallel/weights/smoke-parallel-weights.json cypress/parallel/weights/pipeline/'
+      sh 'cp -r cypress/parallel/weights/functional-parallel-weights.json cypress/parallel/weights/pipeline/'
+
+      sh"echo 'Archiving weight files in ${sourceJobName}'"
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+    }
   }
 }
 
