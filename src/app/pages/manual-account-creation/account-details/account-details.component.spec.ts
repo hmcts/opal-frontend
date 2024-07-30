@@ -9,6 +9,7 @@ import {
 import { MacStateService } from '@services';
 import { provideRouter } from '@angular/router';
 import {
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_MOCK,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
@@ -87,6 +88,7 @@ describe('AccountDetailsComponent', () => {
       personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
       companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
       courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+      accountCommentsNotes: MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_MOCK,
       businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
       unsavedChanges: false,
       stateChanges: true,

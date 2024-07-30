@@ -34,6 +34,8 @@ import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK } from './manual-acco
 import { TOKEN_EXPIRY_MOCK } from './token-expiry.mock';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK } from './manual-account-creation-company-details-state.mock';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK } from './manual-account-creation-company-details-form.mock';
+import { MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './manual-account-creation-account-comments-notes-state.mock';
+import { MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_MOCK } from './manual-account-creation-account-comments-notes.mock';
 import { MANUAL_ACCOUNT_CREATION_MOCK } from './manual-account-creation.mock';
 import { LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './local-justice-area-ref-data.mock';
 import { COURT_REF_DATA_MOCK } from './court-ref-data.mock';
@@ -90,4 +92,6 @@ export {
   MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FORM_MOCK,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FORM_MOCK,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FORM_MOCK,
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_MOCK,
 };

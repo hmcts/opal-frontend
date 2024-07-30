@@ -58,6 +58,7 @@ import { IManualAccountCreationCourtDetailsForm } from './manual-account-creatio
 import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
 import { ICourtRefData } from './court-ref-data.interface';
 import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
+import { IAccountCommentsNotesState } from './manual-account-creation-account-comments-notes-state.interface';
 
 export {
   IGetDefendantAccountParams,
@@ -124,4 +125,5 @@ export {
   IManualAccountCreationCourtDetailsForm,
   ILocalJusticeAreaRefData,
   ICourtRefData,
+  IAccountCommentsNotesState,
 };
