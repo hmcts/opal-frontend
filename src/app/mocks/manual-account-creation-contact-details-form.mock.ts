@@ -1,7 +1,6 @@
-import { IManualAccountCreationContactDetailsForm } from '@interfaces';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK } from '@mocks';
 
-export const MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK: IManualAccountCreationContactDetailsForm = {
+export const MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK = {
   formData: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
   nestedFlow: false,
 };

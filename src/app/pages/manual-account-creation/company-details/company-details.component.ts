@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationCompanyDetailsForm } from '@interfaces';
 import { CompanyDetailsFormComponent } from './company-details-form/company-details-form.component';
 import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationCompanyDetailsForm } from './interfaces/manual-account-creation-company-details-form.interface';
 
 @Component({
   selector: 'app-company-details',

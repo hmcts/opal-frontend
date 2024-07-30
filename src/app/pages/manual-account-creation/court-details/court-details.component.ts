@@ -2,18 +2,13 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CourtDetailsFormComponent } from './court-details-form/court-details-form.component';
 import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
-import {
-  IAutoCompleteItem,
-  ICourtRefData,
-  IGovUkSelectOptions,
-  ILocalJusticeAreaRefData,
-  IManualAccountCreationCourtDetailsForm,
-} from '@interfaces';
+import { IAutoCompleteItem, ICourtRefData, IGovUkSelectOptions, ILocalJusticeAreaRefData } from '@interfaces';
 import { CourtService, LocalJusticeAreaService } from '@services';
 import { Observable, forkJoin, map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationCourtDetailsForm } from './interfaces/manual-account-creation-court-details-form.interface';
 
 @Component({
   selector: 'app-court-details',

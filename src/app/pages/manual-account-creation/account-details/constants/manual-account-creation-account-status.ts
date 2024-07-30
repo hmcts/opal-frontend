@@ -1,4 +1,4 @@
-import { IManualAccountCreationAccountStatus } from '@interfaces';
+import { IManualAccountCreationAccountStatus } from '../interfaces/manual-account-creation-account-status.interface';
 
 export const MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS: IManualAccountCreationAccountStatus = {
   employerDetails: false,

@@ -20,7 +20,7 @@ import {
   POST_CODE_FIELD_ERRORS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IManualAccountCreationParentGuardianForm } from '@interfaces';
+import { IFieldErrors } from '@interfaces';
 import {
   optionalMaxLengthValidator,
   dateOfBirthValidator,
@@ -30,6 +30,7 @@ import {
   alphabeticalTextValidator,
 } from 'src/app/validators';
 import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '../constants/manual-account-creation-parent-guardian-details-field-errors';
+import { IManualAccountCreationParentGuardianForm } from '../interfaces/manual-account-creation-parent-guardian-form.interface';
 
 @Component({
   selector: 'app-parent-guardian-details-form',

@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PersonalDetailsComponent } from './personal-details.component';
 import { MacStateService } from '@services';
-import { IManualAccountCreationPersonalDetailsForm, IManualAccountCreationPersonalDetailsState } from '@interfaces';
+import { IManualAccountCreationPersonalDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
+import { IManualAccountCreationPersonalDetailsForm } from './interfaces/manual-account-creation-personal-details-form.interface';
 
 describe('PersonalDetailsComponent', () => {
   let component: PersonalDetailsComponent;

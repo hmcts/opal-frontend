@@ -19,11 +19,12 @@ import {
   CUSTOM_ADDRESS_FIELD_IDS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IManualAccountCreationCompanyDetailsForm } from '@interfaces';
+import { IFieldErrors } from '@interfaces';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from 'src/app/validators';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS } from '../constants/manual-account-creation-company-details-alias';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR } from '../constants/manual-account-creation-company-details-field-errors';
 import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationCompanyDetailsForm } from '../interfaces/manual-account-creation-company-details-form.interface';
 
 @Component({
   selector: 'app-company-details-form',

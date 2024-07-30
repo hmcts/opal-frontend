@@ -6,8 +6,9 @@ import { COURT_REF_DATA_MOCK, LOCAL_JUSTICE_AREA_REF_DATA_MOCK, MANUAL_ACCOUNT_C
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { IManualAccountCreationCourtDetailsForm, IManualAccountCreationCourtDetailsState } from '@interfaces';
+import { IManualAccountCreationCourtDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
+import { IManualAccountCreationCourtDetailsForm } from './interfaces/manual-account-creation-court-details-form.interface';
 
 describe('CourtDetailsComponent', () => {
   let component: CourtDetailsComponent;

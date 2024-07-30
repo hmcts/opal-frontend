@@ -26,7 +26,7 @@ import {
   TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IGovUkSelectOptions, IManualAccountCreationPersonalDetailsForm } from '@interfaces';
+import { IFieldErrors, IGovUkSelectOptions } from '@interfaces';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
@@ -39,6 +39,7 @@ import {
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR } from '../constants/manual-account-creation-personal-detail-field-errors';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS } from '../constants/manual-account-creation-personal-details-alias';
 import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationPersonalDetailsForm } from '../interfaces/manual-account-creation-personal-details-form.interface';
 
 @Component({
   selector: 'app-personal-details-form',

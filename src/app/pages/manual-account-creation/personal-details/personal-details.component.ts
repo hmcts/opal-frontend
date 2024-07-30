@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ManualAccountCreationRoutes } from '@enums';
 import { PersonalDetailsFormComponent } from './personal-details-form/personal-details-form.component';
 import { FormParentBaseComponent } from '@components';
-import { IManualAccountCreationPersonalDetailsForm } from '@interfaces';
 import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationPersonalDetailsForm } from './interfaces/manual-account-creation-personal-details-form.interface';
 
 @Component({
   selector: 'app-personal-details',

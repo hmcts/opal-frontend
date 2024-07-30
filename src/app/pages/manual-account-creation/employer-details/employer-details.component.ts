@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { EmployerDetailsFormComponent } from './employer-details-form/employer-details-form.component';
-import { IManualAccountCreationEmployerDetailsForm } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { FormParentBaseComponent } from '@components';
 import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationEmployerDetailsForm } from './interfaces/manual-account-creation-employer-details-form.interface';
 
 @Component({
   selector: 'app-employer-details',

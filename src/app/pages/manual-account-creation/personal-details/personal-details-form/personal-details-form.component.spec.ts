@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PersonalDetailsFormComponent } from './personal-details-form.component';
-import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS } from '@constants';
 import { MacStateService } from '@services';
 import { MANUAL_ACCOUNT_CREATION_MOCK, MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FORM_MOCK } from '@mocks';
+import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS } from '../constants/manual-account-creation-personal-details-alias';
 
 describe('PersonalDetailsFormComponent', () => {
   let component: PersonalDetailsFormComponent;
