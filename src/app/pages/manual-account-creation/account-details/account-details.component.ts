@@ -15,6 +15,7 @@ import { ACCOUNT_TYPES_STATE, DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACC
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import {
+  IAccountTypes,
   IDefendantTypes,
   IManualAccountCreationAccountStatus,
   IManualAccountCreationFieldTypes,
@@ -77,7 +78,7 @@ export class AccountDetailsComponent implements OnInit {
     // Moved to here as inline was adding extra spaces in HTML...
     const { accountType } = this.macStateService.manualAccountCreation.accountDetails;
     if (accountType) {
-      this.accountType = this.accountTypes[accountType] || '';
+      this.accountType = this.accountTypes[accountType as keyof IAccountTypes] || '';
     }
   }
 

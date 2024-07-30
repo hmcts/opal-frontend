@@ -18,7 +18,7 @@ import {
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
-import { IDefendantTypes } from '@interfaces';
+import { IAccountTypes, IDefendantTypes } from '@interfaces';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -88,7 +88,7 @@ describe('AccountDetailsComponent', () => {
     component['setAccountType']();
 
     expect(component.accountType).toEqual(
-      ACCOUNT_TYPES_STATE[mockMacStateService.manualAccountCreation.accountDetails.accountType],
+      ACCOUNT_TYPES_STATE[mockMacStateService.manualAccountCreation.accountDetails.accountType as keyof IAccountTypes],
     );
   });
 
