@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { IBusinessUnitRefData } from '@interfaces';
+import { IBusinessUnit, IBusinessUnitRefData } from '@interfaces';
 import { Observable, shareReplay } from 'rxjs';
 import { API_PATHS } from '@constants';
 
@@ -23,5 +23,9 @@ export class BusinessUnitService {
     }
 
     return this.businessUnitsCache$[permission];
+  }
+
+  public getConfigurationItemValue(businessUnit: IBusinessUnit, itemName: string): string | null {
+    return businessUnit.configurationItems.find((item) => item.itemName === itemName)?.itemValue ?? null;
   }
 }

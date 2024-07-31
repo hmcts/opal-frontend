@@ -148,6 +148,7 @@ const routes: Routes = [
             (c) => c.LanguagePreferencesComponent,
           ),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
       },
     ],
     resolve: { userState: userStateResolver },

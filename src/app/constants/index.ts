@@ -24,6 +24,7 @@ import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE } from './manual-account
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR } from './manual-account-creation-company-details-field-errors';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE } from './manual-account-creation-company-details-state';
 import { MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE } from './manual-account-creation-business-unit-state';
+import { MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCE_STATE } from './manual-account-creation-language-preference-state';
 import { MANUAL_ACCOUNT_CREATION_STATE } from './manual-account-creation-state';
 import { ROUTE_PERMISSIONS } from './route-permissions';
 import { TITLE_DROPDOWN_OPTIONS } from './title-dropdown-options';
@@ -54,6 +55,7 @@ export {
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FIELD_ERROR,
   MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE,
+  MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCE_STATE,
   ADDRESS_LINE_ONE_FIELD_ERRORS,
   ADDRESS_LINE_TWO_FIELD_ERRORS,
   ADDRESS_LINE_THREE_FIELD_ERRORS,

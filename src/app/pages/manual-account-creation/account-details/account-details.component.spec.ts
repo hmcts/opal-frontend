@@ -13,10 +13,12 @@ import {
   MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
+  MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCES_MOCK,
   MANUAL_ACCOUNT_CREATION_MOCK,
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
+import { ILanguageOptions } from '@interfaces';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -88,6 +90,7 @@ describe('AccountDetailsComponent', () => {
       companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK,
       courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
       businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
+      languagePreferences: MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCES_MOCK,
       unsavedChanges: false,
       stateChanges: true,
     };
@@ -113,5 +116,47 @@ describe('AccountDetailsComponent', () => {
     expect(component.accountCreationStatus['parentGuardianDetails']).toBeFalsy();
     expect(component.accountCreationStatus['personalDetails']).toBeFalsy();
     expect(component.accountCreationStatus['companyDetails']).toBeFalsy();
+  });
+  it('should set documentLanguage and courtHearingLanguage correctly', () => {
+    const documentLanguage = 'W';
+    const courtHearingLanguage = 'E';
+    component.macStateService.manualAccountCreation.languagePreferences = {
+      documentLanguage,
+      courtHearingLanguage,
+    };
+
+    component['setLanguage']();
+
+    expect(component.documentLanguage).toEqual(component.languages[documentLanguage as keyof ILanguageOptions]);
+    expect(component.courtHearingLanguage).toEqual(component.languages[courtHearingLanguage as keyof ILanguageOptions]);
+  });
+
+  it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
+    const documentLanguage = 'german';
+    const courtHearingLanguage = 'french';
+    component.macStateService.manualAccountCreation.languagePreferences = {
+      documentLanguage,
+      courtHearingLanguage,
+    };
+
+    component['setLanguage']();
+
+    expect(component.documentLanguage).toBe('');
+    expect(component.courtHearingLanguage).toBe('');
+  });
+
+  it('should call setDefendantType, setLanguage, and checkStatus on initialSetup', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setDefendantType');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setLanguage');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'checkStatus');
+
+    component['initialSetup']();
+
+    expect(component['setDefendantType']).toHaveBeenCalled();
+    expect(component['setLanguage']).toHaveBeenCalled();
+    expect(component['checkStatus']).toHaveBeenCalled();
   });
 });

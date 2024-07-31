@@ -8,7 +8,13 @@ export const BUSINESS_UNIT_REF_DATA_MOCK = {
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
-      configurationItems: [],
+      configurationItems: [
+        {
+          itemName: 'Item1',
+          itemValue: 'Item1',
+          itemValues: [],
+        },
+      ],
       welshLanguage: false,
     },
     {
@@ -18,7 +24,13 @@ export const BUSINESS_UNIT_REF_DATA_MOCK = {
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
-      configurationItems: [],
+      configurationItems: [
+        {
+          itemName: 'Item2',
+          itemValue: 'Item2',
+          itemValues: [],
+        },
+      ],
       welshLanguage: false,
     },
     {
@@ -28,7 +40,13 @@ export const BUSINESS_UNIT_REF_DATA_MOCK = {
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Confiscation',
-      configurationItems: [],
+      configurationItems: [
+        {
+          itemName: 'Item3',
+          itemValue: 'Item3',
+          itemValues: [],
+        },
+      ],
       welshLanguage: false,
     },
     {
@@ -38,7 +56,13 @@ export const BUSINESS_UNIT_REF_DATA_MOCK = {
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
-      configurationItems: [],
+      configurationItems: [
+        {
+          itemName: 'Item4',
+          itemValue: 'Item4',
+          itemValues: [],
+        },
+      ],
       welshLanguage: false,
     },
     {
@@ -48,7 +72,13 @@ export const BUSINESS_UNIT_REF_DATA_MOCK = {
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
-      configurationItems: [],
+      configurationItems: [
+        {
+          itemName: 'Item5',
+          itemValue: 'Item5',
+          itemValues: [],
+        },
+      ],
       welshLanguage: false,
     },
     {
@@ -58,7 +88,13 @@ export const BUSINESS_UNIT_REF_DATA_MOCK = {
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
-      configurationItems: [],
+      configurationItems: [
+        {
+          itemName: 'Item6',
+          itemValue: 'Item6',
+          itemValues: [],
+        },
+      ],
       welshLanguage: false,
     },
     {
@@ -68,7 +104,13 @@ export const BUSINESS_UNIT_REF_DATA_MOCK = {
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'RM',
-      configurationItems: [],
+      configurationItems: [
+        {
+          itemName: 'Item7',
+          itemValue: 'Item7',
+          itemValues: [],
+        },
+      ],
       welshLanguage: false,
     },
   ],

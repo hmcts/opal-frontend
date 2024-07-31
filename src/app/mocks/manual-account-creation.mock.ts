@@ -4,6 +4,7 @@ import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE } from '../constants/manu
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE } from '../constants/manual-account-creation-contact-details-state';
 import { MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE } from '../constants/manual-account-creation-court-details-state';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE } from '../constants/manual-account-creation-employer-details-state';
+import { MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCE_STATE } from '../constants/manual-account-creation-language-preference-state';
 import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE } from '../constants/manual-account-creation-parent-guardian-details-state';
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE } from '../constants/manual-account-creation-personal-details-state';
 
@@ -16,6 +17,7 @@ export const MANUAL_ACCOUNT_CREATION_MOCK = {
   companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE,
   courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
   businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
+  languagePreferences: MANUAL_ACCOUNT_CREATION_LANGUAGE_PREFERENCE_STATE,
   unsavedChanges: false,
   stateChanges: false,
 };
