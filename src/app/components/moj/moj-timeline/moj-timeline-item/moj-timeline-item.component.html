@@ -1,0 +1,13 @@
+<div class="moj-timeline__item">
+  <div class="moj-timeline__header">
+    <h2 class="moj-timeline__title"><ng-content select="[title]"></ng-content></h2>
+
+    <p class="moj-timeline__byline">&nbsp;by <ng-content select="[user]"></ng-content></p>
+  </div>
+  <p class="moj-timeline__date">
+    <time datetime=""><ng-content select="[date]"></ng-content></time>
+  </p>
+  <div class="moj-timeline__description">
+    <ng-content select="[description]"></ng-content>
+  </div>
+</div>
