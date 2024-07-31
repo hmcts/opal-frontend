@@ -51,6 +51,8 @@ import { GovukDetailsComponent } from './govuk/govuk-details/govuk-details.compo
 import { GovukPanelComponent } from './govuk/govuk-panel/govuk-panel.component';
 import { MojTimelineComponent } from './moj/moj-timeline/moj-timeline.component';
 import { MojTimelineItemComponent } from './moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
+import { MojTicketPanelComponent } from './moj/moj-ticket-panel/moj-ticket-panel.component';
+import { MojTicketPanelSectionComponent } from './moj/moj-ticket-panel/moj-ticket-panel-section/moj-ticket-panel-section.component';
 
 export {
   GovukButtonComponent,
@@ -105,4 +107,6 @@ export {
   GovukPanelComponent,
   MojTimelineComponent,
   MojTimelineItemComponent,
+  MojTicketPanelComponent,
+  MojTicketPanelSectionComponent,
 };
