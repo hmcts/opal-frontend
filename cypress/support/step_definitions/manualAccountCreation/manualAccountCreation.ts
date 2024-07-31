@@ -244,12 +244,7 @@ Then('I see {string} above the defendant type heading', (businessUnitText: strin
     .find('p')
     .should('have.text', businessUnitText);
 });
-Then('I see the business unit is {string}', (businessUnit: string) => {
-  cy.get('#accountDetailsBusinessUnitValue').should('have.text', businessUnit);
-});
-Then('I see the defendant type is {string}', (defendantType: string) => {
-  cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
-});
+
 Then('I see the business unit heading is {string}', (businessUnitHeading: string) => {
   cy.get('#businessUnit-hint').prev().should('contains.text', businessUnitHeading);
 });
