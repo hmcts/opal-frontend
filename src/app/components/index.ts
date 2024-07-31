@@ -49,6 +49,8 @@ import { GovukTextAreaComponent } from './govuk/govuk-text-area/govuk-text-area.
 import { FormAliasBaseComponent } from './abstract/form-alias-base/form-alias-base';
 import { GovukDetailsComponent } from './govuk/govuk-details/govuk-details.component';
 import { GovukPanelComponent } from './govuk/govuk-panel/govuk-panel.component';
+import { MojTimelineComponent } from './moj/moj-timeline/moj-timeline.component';
+import { MojTimelineItemComponent } from './moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTicketPanelComponent } from './moj/moj-ticket-panel/moj-ticket-panel.component';
 import { MojTicketPanelSectionComponent } from './moj/moj-ticket-panel/moj-ticket-panel-section/moj-ticket-panel-section.component';
 
@@ -103,6 +105,8 @@ export {
   FormAliasBaseComponent,
   GovukDetailsComponent,
   GovukPanelComponent,
+  MojTimelineComponent,
+  MojTimelineItemComponent,
   MojTicketPanelComponent,
   MojTicketPanelSectionComponent,
 };
