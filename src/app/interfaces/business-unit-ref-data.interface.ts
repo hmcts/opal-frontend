@@ -1,7 +1,7 @@
 export interface IConfigurationItems {
-  itemName: string;
-  itemValue: string;
-  itemValues: string[];
+  itemName: string | null;
+  itemValue: string | null;
+  itemValues: string[] | null;
 }
 
 export interface IBusinessUnit {

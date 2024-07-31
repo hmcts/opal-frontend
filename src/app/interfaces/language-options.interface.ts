@@ -1,4 +1,4 @@
 export interface ILanguageOptions {
-  welshEnglish: string;
-  englishOnly: string;
+  W: string;
+  E: string;
 }

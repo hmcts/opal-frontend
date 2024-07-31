@@ -18,6 +18,7 @@ import {
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
+import { ILanguageOptions } from '@interfaces';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -117,8 +118,8 @@ describe('AccountDetailsComponent', () => {
     expect(component.accountCreationStatus['companyDetails']).toBeFalsy();
   });
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
-    const documentLanguage = 'welshEnglish';
-    const courtHearingLanguage = 'welshEnglish';
+    const documentLanguage = 'W';
+    const courtHearingLanguage = 'E';
     component.macStateService.manualAccountCreation.languagePreferences = {
       documentLanguage,
       courtHearingLanguage,
@@ -126,8 +127,8 @@ describe('AccountDetailsComponent', () => {
 
     component['setLanguage']();
 
-    expect(component.documentLanguage).toEqual(component.languages[documentLanguage]);
-    expect(component.courtHearingLanguage).toEqual(component.languages[courtHearingLanguage]);
+    expect(component.documentLanguage).toEqual(component.languages[documentLanguage as keyof ILanguageOptions]);
+    expect(component.courtHearingLanguage).toEqual(component.languages[courtHearingLanguage as keyof ILanguageOptions]);
   });
 
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {

@@ -74,9 +74,13 @@ export class CreateAccountComponent extends FormParentBaseComponent {
   public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
     // Get the business unit and default language from the business unit if applicable
     const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formData.businessUnit)!;
-    const defaultLanguage = this.businessUnitService.getConfigurationItemValue(
+    const defaultDocumentLanguage = this.businessUnitService.getConfigurationItemValue(
       businessUnit,
-      this.configurationItems.defaultLanguagePreference,
+      this.configurationItems.defaultDocumentLanguagePreference,
+    );
+    const defaultCourtHearingLanguage = this.businessUnitService.getConfigurationItemValue(
+      businessUnit,
+      this.configurationItems.defaultDocumentCourtHearingPreference,
     );
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
@@ -84,8 +88,8 @@ export class CreateAccountComponent extends FormParentBaseComponent {
       businessUnit: businessUnit,
       languagePreferences: {
         ...this.macStateService.manualAccountCreation.languagePreferences,
-        courtHearingLanguage: defaultLanguage,
-        documentLanguage: defaultLanguage,
+        courtHearingLanguage: defaultCourtHearingLanguage,
+        documentLanguage: defaultDocumentLanguage,
       },
       unsavedChanges: false,
       stateChanges: true,

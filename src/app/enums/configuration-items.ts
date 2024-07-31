@@ -1,3 +1,4 @@
 export enum ConfigurationItems {
-  defaultLanguagePreference = 'DEFAULT_DOCUMENT_LANGUAGE_PREFERENCE',
+  defaultDocumentLanguagePreference = 'DEFAULT_DOCUMENT_LANGUAGE_PREFERENCE',
+  defaultDocumentCourtHearingPreference = 'DEFAULT_HEARING_LANGUAGE_PREFERENCE',
 }
