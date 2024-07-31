@@ -15,6 +15,7 @@ import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from '@
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
 import {
+  ILanguageOptions,
   IManualAccountCreationAccountStatus,
   IManualAccountCreationFieldTypes,
   IManualAccountCreationState,
@@ -77,8 +78,8 @@ export class AccountDetailsComponent implements OnInit {
   private setLanguage(): void {
     const { documentLanguage, courtHearingLanguage } = this.macStateService.manualAccountCreation.languagePreferences;
     if (documentLanguage && courtHearingLanguage) {
-      this.documentLanguage = this.languages[documentLanguage] || '';
-      this.courtHearingLanguage = this.languages[courtHearingLanguage] || '';
+      this.documentLanguage = this.languages[documentLanguage as keyof ILanguageOptions] || '';
+      this.courtHearingLanguage = this.languages[courtHearingLanguage as keyof ILanguageOptions] || '';
     }
   }
 
