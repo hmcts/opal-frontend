@@ -564,6 +564,6 @@ Then('I see the status of {string} is {string}', (linkText: string, status: stri
     .next()
     .contains('[class="govuk-task-list__status"]', status);
 });
-When('I see {string} below the {string} radio button',(text:string,radioButton:string) => {
-  cy.contains('label',radioButton).next().contains('div',text).invoke('text').should('contains',text)
-})
+When('I see {string} below the {string} radio button', (text: string, radioButton: string) => {
+  cy.contains('label', radioButton).next().contains('div', text).invoke('text').should('contains', text);
+});

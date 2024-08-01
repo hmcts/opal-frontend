@@ -136,6 +136,6 @@ When('I see {string} under the {string} field', (text: string, fieldName: string
 Then('I see {string} below the {string} header', (defendantType: string, accountType: string) => {
   cy.contains('fieldset', accountType).find('app-govuk-radio').invoke('text').should('contains', defendantType);
 });
-Then('I see {string} is {string}',(accountList:string,value:string) => {
-  cy.contains('dt',accountList).siblings().invoke('text').should('contains',value)
-})
+Then('I see {string} is {string}', (accountList: string, value: string) => {
+  cy.contains('dt', accountList).siblings().invoke('text').should('contains', value);
+});
