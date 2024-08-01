@@ -279,17 +279,6 @@ Then('I see the {string} radio button below the defendant type help text', (radi
   cy.get('#defendantTypeHint').next().contains('label', radioButton);
 });
 
-Then('I click Cancel, a window pops up and I click Ok', () => {
-  cy.contains('a', 'Cancel').click();
-  cy.on('window:confirm', () => {});
-});
-Then('I click Cancel, a window pops up and I click Cancel', () => {
-  cy.contains('a', 'Cancel').click();
-  cy.on('window:confirm', () => {
-    return false;
-  });
-});
-
 When('I select title {string} from dropdown', (title: string) => {
   cy.get('select').select(title);
 });

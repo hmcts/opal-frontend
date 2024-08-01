@@ -485,7 +485,6 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     When I select title "Ms" from dropdown
     When I enter "John Smith Michael" into the "First names" field
     When I enter "Astridge Lamsden Langley Treen" into the "Last name" field
-    When "Cancel" is clicked
     Then I click Cancel, a window pops up and I click Ok
 
   Scenario: AC8b-negative: When user has selected the 'Cancel' button and has entered data into some fields, then selects 'Ok' on the warning message
