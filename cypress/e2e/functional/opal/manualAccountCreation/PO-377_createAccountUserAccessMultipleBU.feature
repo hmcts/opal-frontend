@@ -24,7 +24,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     When I navigate to Manual Account Creation
 
     Then I see the business unit heading is "Business unit"
-    Then I see the business unit help text is "Enter area where the account is to be created (such as Sussex or London)"
+    Then I see the business unit help text is "Enter area where the account is to be created"
     Then I see the search box below the business unit help text
 
     When I enter "London South" into the business unit search box
@@ -39,8 +39,9 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
 
     When I navigate to Manual Account Creation
 
-    Then I see the defendant type heading is "Defendant type"
-    Then I see the defendant type help text is "If sole trader, choose 'Adult or youth only'"
+    When I select the "Fine" radio button
+    And I see the heading under the fine radio button is "Defendant type"
+    #Then I see the defendant type help text is "If sole trader, choose 'Adult or youth only'" Rework step (repeat for others)
     Then I see the "Adult or youth only" radio button below the defendant type help text
     Then I see the "Adult or youth with parent or guardian to pay" radio button below the "Adult or youth only" radio button
     Then I see the "Company" radio button below the "Adult or youth with parent or guardian to pay" radio button
