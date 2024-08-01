@@ -82,16 +82,7 @@ Then('I see {string} button below the {string} link', (addAnotherAliasButton: st
     .contains('#addAlias', addAnotherAliasButton)
     .should('have.text', addAnotherAliasButton);
 });
-Then(
-  'I see data entered in {string},{string} and {string}',
-  (alias: string, aliasField: string, aliasValue: string) => {
-    cy.contains('legend', alias)
-      .siblings()
-      .contains('app-govuk-text-input', aliasField)
-      .find('input')
-      .should('have.value', aliasValue);
-  },
-);
+
 When('I remove the {string}, {string} to be cleared', (alias: string, aliasField: string) => {
   cy.contains('legend', alias).siblings().contains('app-govuk-text-input', aliasField).find('input').clear();
 });
