@@ -22,6 +22,7 @@ import {
   GovukSummaryCardActionComponent,
   ScotgovDatePickerComponent,
   FormBaseComponent,
+  GovukTextAreaComponent,
 } from '@components';
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
@@ -55,6 +56,7 @@ import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
     GovukSummaryCardListComponent,
     GovukSummaryCardActionComponent,
     ScotgovDatePickerComponent,
+    GovukTextAreaComponent,
   ],
   templateUrl: './search-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

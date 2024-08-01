@@ -8,7 +8,7 @@ function apiUrl() {
   } else if (baseUrl?.includes('staging.staging')) {
     url = 'https://opal-fines-service.staging.platform.hmcts.net';
   } else {
-    url = `https://opal-fines-service-${baseUrl.replace('https://', '')}`;
+    url = `https://opal-fines-service-${baseUrl?.replace('https://', '')}`;
   }
   return url;
 }

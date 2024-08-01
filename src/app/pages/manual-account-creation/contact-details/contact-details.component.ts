@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormParentBaseComponent } from '@components';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationContactDetailsState } from '@interfaces';
+import { IManualAccountCreationContactDetailsForm } from '@interfaces';
 import { ContactDetailsFormComponent } from './contact-details-form/contact-details-form.component';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
 
 @Component({
   selector: 'app-contact-details',
@@ -12,19 +13,28 @@ import { ContactDetailsFormComponent } from './contact-details-form/contact-deta
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactDetailsComponent extends FormParentBaseComponent {
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+
   /**
    * Handles the form submission for contact details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleContactDetailsSubmit(formData: IManualAccountCreationContactDetailsState): void {
+  public handleContactDetailsSubmit(contactDetailsForm: IManualAccountCreationContactDetailsForm): void {
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
-      contactDetails: formData,
+      contactDetails: contactDetailsForm.formData,
       unsavedChanges: false,
       stateChanges: true,
     };
 
-    this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
+    if (contactDetailsForm.nestedFlow && this.defendantType) {
+      const nextRoute = MANUAL_ACCOUNT_CREATION_NESTED_ROUTES[this.defendantType]['contactDetails'];
+      if (nextRoute) {
+        this.routerNavigate(nextRoute.nextRoute);
+      }
+    } else {
+      this.routerNavigate(ManualAccountCreationRoutes.accountDetails);
+    }
   }
 
   /**

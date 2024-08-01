@@ -1,4 +1,4 @@
-import { When, Then, Given } from '@badeball/cypress-cucumber-preprocessor/';
+import { When, Then, Given } from '@badeball/cypress-cucumber-preprocessor';
 
 Given('I am on the OPAL Frontend', () => {
   cy.visit('/sign-in');
@@ -44,7 +44,7 @@ When('I sign in as {string}', (email: string) => {
           cy.get('input[type="email"]').type(emailSSO);
           cy.get('input[type="submit"]').click();
 
-          cy.get('input[type="password"]').type(passwordSSO);
+          cy.get('input[type="password"]').type(passwordSSO, { log: false });
           cy.get('input[type="submit"]').click();
           cy.get('#idBtn_Back').click();
         },

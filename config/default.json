@@ -27,11 +27,13 @@
     "prefix": "opal-session",
     "ttlInSeconds": 1200,
     "maxAge": null,
-    "secure": false
+    "secure": false,
+    "sameSite": "strict"
   },
   "csrf": {
     "cookieName": "XSRF-TOKEN",
-    "secure": false
+    "secure": false,
+    "sameSite": "strict"
   },
   "secrets": {
     "opal": {
@@ -39,6 +41,17 @@
       "opal-frontend-session-secret": "supersecret",
       "opal-frontend-cookie-secret": "supersecret",
       "opal-frontend-csrf-secret": "supersecret"
+    }
+  },
+  "expiry": {
+    "testMode": false,
+    "default": {
+      "expiryTimeInMilliseconds": 1800000,
+      "warningThresholdInMilliseconds": 1800000
+    },
+    "test": {
+      "expiryTimeInMilliseconds": 300000,
+      "warningThresholdInMilliseconds": 300000
     }
   }
 }

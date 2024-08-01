@@ -1,4 +1,4 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor/';
+import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import manualAccountPageObjects from '../../projectConfig/manual_account_page';
 
 Then('I navigate to Manual Account Creation', () => {
@@ -39,7 +39,7 @@ When('The button {string} is clicked, nothing happens', (linkText: string) => {
   });
 });
 
-Then('I click on {string} link', (linkText: string) => {
+Then('I click on the {string} link', (linkText: string) => {
   cy.get('a').contains(linkText).click();
 });
 When('{string} is clicked', (linkText: string) => {
@@ -400,7 +400,7 @@ When('{string} is verified as grey', (addContactDetailsButton: string) => {
   cy.get('#submitForm').should('be.enabled', addContactDetailsButton);
 });
 
-Then('I verify the status of {string} to {string}', (linkText: string, status: string) => {
+Then('I see the status of {string} is {string}', (linkText: string, status: string) => {
   cy.contains('[class="govuk-task-list__name-and-hint"]', linkText)
     .next()
     .contains('[class="govuk-task-list__status"]', status);

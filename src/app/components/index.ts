@@ -42,6 +42,17 @@ import { GovukTaskListComponent } from './govuk/govuk-task-list/govuk-task-list.
 import { GovukTaskListItemComponent } from './govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 import { GovukHeadingWithCaptionComponent } from './govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
 import { GovukCancelLinkComponent } from './govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { CustomAddressBlockComponent } from './custom/custom-address-block/custom-address-block.component';
+import { CustomNationalInsuranceNumberComponent } from './custom/custom-national-insurance-number/custom-national-insurance-number.component';
+import { CustomDateOfBirthComponent } from './custom/custom-date-of-birth/custom-date-of-birth.component';
+import { GovukTextAreaComponent } from './govuk/govuk-text-area/govuk-text-area.component';
+import { FormAliasBaseComponent } from './abstract/form-alias-base/form-alias-base';
+import { GovukDetailsComponent } from './govuk/govuk-details/govuk-details.component';
+import { GovukPanelComponent } from './govuk/govuk-panel/govuk-panel.component';
+import { MojTimelineComponent } from './moj/moj-timeline/moj-timeline.component';
+import { MojTimelineItemComponent } from './moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
+import { MojTicketPanelComponent } from './moj/moj-ticket-panel/moj-ticket-panel.component';
+import { MojTicketPanelSectionComponent } from './moj/moj-ticket-panel/moj-ticket-panel-section/moj-ticket-panel-section.component';
 
 export {
   GovukButtonComponent,
@@ -50,6 +61,7 @@ export {
   GovukHeaderNavigationItemComponent,
   GovukFooterComponent,
   GovukTextInputComponent,
+  GovukTextAreaComponent,
   GovukDateInputComponent,
   GovukSelectComponent,
   GovukPaginationComponent,
@@ -87,4 +99,14 @@ export {
   FormParentBaseComponent,
   GovukHeadingWithCaptionComponent,
   GovukCancelLinkComponent,
+  CustomAddressBlockComponent,
+  CustomNationalInsuranceNumberComponent,
+  CustomDateOfBirthComponent,
+  FormAliasBaseComponent,
+  GovukDetailsComponent,
+  GovukPanelComponent,
+  MojTimelineComponent,
+  MojTimelineItemComponent,
+  MojTicketPanelComponent,
+  MojTicketPanelSectionComponent,
 };

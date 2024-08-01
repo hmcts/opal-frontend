@@ -60,3 +60,5 @@ cypress/results
 functional-output
 smoke-output
 runner-results
+cypress/parallel/weights
+multi-reporter-config.json
