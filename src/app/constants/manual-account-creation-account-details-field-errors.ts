@@ -7,13 +7,13 @@ export const MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR = {
   },
   fineDefendantType: {
     required: {
-      message: 'Select defendant type',
+      message: 'Select a defendant type',
       priority: 1,
     },
   },
   fixedPenaltyDefendantType: {
     required: {
-      message: 'Select defendant type',
+      message: 'Select a defendant type',
       priority: 1,
     },
   },
