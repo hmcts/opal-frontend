@@ -59,15 +59,13 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
 
 
     And I enter "10/10/2000" into the Date of birth field
-    And I enter National insurance number "QQ 12 34 56 C"
-
-    And I enter address line 1 "12 test's road checking address1"
-    And I enter address line 2 "12 test road checking address2"
-    And I enter address line 3 "London city chec"
-    And I enter postcode "AB12 7MH"
-
-    And I enter make of the car "Ambassdor Volkswagen"
-    And I enter registration number of the car "AP28 AAR"
+    And I enter "QQ 12 34 56 C" into the "National Insurance number" field
+    And I enter "12 test road checking address1" into the "Address line 1" field
+    And I enter "12 test road checking address2" into the "Address line 2" field
+    And I enter "London city chec" into the "Address line 3" field
+    And I enter "AB12 7MH" into the "Postcode" field
+    And I enter "Ambassdor Volkswagen" into the "Make of the car" field
+    And I enter "AP28 AAR" into the "Registration number" field
 
     Then I click the "Return to account details" button
 
@@ -76,9 +74,9 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith * Michael 7               |
       | lastName   | Astridge Lamsden Langley's Green 10. |
-    And I enter address line 1 "<addressLine1>"
-    And I enter address line 2 "<addressLine2>"
-    And I enter address line 3 "<addressLine3>"
+    And I enter "<addressLine1>" into the "Address line 1" field
+    And I enter "<addressLine2>" into the "Address line 2" field
+    And I enter "<addressLine3>" into the "Address line 3" field
 
     Then I click the "Return to account details" button
     Then I see the error message "The address line 1 must not contain special characters" at the top of the page
@@ -100,8 +98,8 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
       | Add offence details       |
 
   Scenario Outline: AC3- negative: If a user has not entered data into any mandatory fields (i.e. Title, First Names, Last Name & Address Line 1 fields) but has entered data into one or more other optional fields, then selecting the 'Return to account details' or 'Add offence details' button
-    And I enter address line 2 "<addressLine2>"
-    And I enter address line 3 "<addressLine3>"
+    And I enter "<addressLine2>" into the "Address line 2" field
+    And I enter "<addressLine3>" into the "Address line 3" field
 
     Then I click the "<returnButton>" button
     Then I see the error message "Select a title" at the top of the page
@@ -228,7 +226,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
     When I enter "01/01/2500" into the Date of birth field
-    And I enter address line 1 "120 Deuchar street"
+    And I enter "120 Deuchar street" into the "Address line 1" field
 
     Then I click the "Return to account details" button
     Then I see the error message "Enter a valid date of birth in the past" at the top of the page
@@ -240,7 +238,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
       | lastName   | Astridge Lamsden Langley |
 
     When I select add aliases check box
-    And I enter address line 1 "456 Lamburgh Street"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
     Then I click the "<returnButton>" button
     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
     And I see the error message "Enter last name for alias 1" at the top of the page
@@ -476,7 +474,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select add aliases check box
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -503,7 +501,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select add aliases check box
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -530,7 +528,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select add aliases check box
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -557,8 +555,8 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
-    When I enter National insurance number "AB 12 34 45 6"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
+    When I enter "AB 12 34 45 6" into the "National Insurance number" field
     Then I click the "<returnButton>" button
 
     Then I see "Personal details" on the page header
@@ -574,7 +572,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | Stuart Philips aarogyam Gucci Coach VII      |
       | lastName   | Chicago bulls Burberry Redbull 2345 PizzaHut |
-    And I enter incorrect address line 1 "<incorrectAddressLine1>"
+    And I enter "<incorrectAddressLine1>" into the "Address line 1" field
 
     Then I click the "Return to account details" button
     Then I see the error message "Select a title" at the top of the page
@@ -584,17 +582,20 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
 
     Then I see "Personal details" on the page header
 
-    Then I update title "<title>"
-    And I update the first names "<firstNames>"
-    And I update the last name "<lastName>"
-    And I update address line 1 "<addressLine1>"
+    Then I select "<title>" from the "Title" dropdown
+    And I enter "<firstNames>" into the "First names" field
+    And I enter "<lastName>" into the "Last name" field
+    And I enter "<addressLine1>" into the "Address line 1" field
     Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
     Then I click on the "Personal details" link
     Then I see "Personal details" on the page header
 
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
     Examples:
       | incorrectAddressLine1 | title | firstNames | lastName    | title | addressLine1 |
       | test Road *12         | Mr    | Coca Cola  | Cola Family | Mr    | Pepsi Road   |
@@ -604,7 +605,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | Stuart Philips aarogyam Gucci Coach VII      |
       | lastName   | Chicago bulls Burberry Redbull 2345 PizzaHut |
-    And I enter incorrect address line 1 "<incorrectAddressLine1>"
+    And I enter "<incorrectAddressLine1>" into the "Address line 1" field
 
     Then I click the "Return to account details" button
     Then I see the error message "Select a title" at the top of the page
@@ -614,10 +615,10 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
 
     Then I see "Personal details" on the page header
 
-    Then I update title "<title>"
-    And I update the first names "<firstNames>"
-    And I update the last name "<lastName>"
-    And I update address line 1 "<addressLine1>"
+    Then I select "<title>" from the "Title" dropdown
+    And I enter "<firstNames>" into the "First names" field
+    And I enter "<lastName>" into the "Last name" field
+    And I enter "<addressLine1>" into the "Address line 1" field
     Then I click the "Add offence details" button
     Then I see "Offence details" on the page header
     Then I click the "Return to account details" button
@@ -625,7 +626,11 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     Then I click on the "Personal details" link
     Then I see "Personal details" on the page header
 
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
+
     Examples:
       | incorrectAddressLine1 | title | firstNames | lastName    | title | addressLine1 |
       | test Road *12         | Mr    | Coca Cola  | Cola Family | Mr    | Pepsi Road   |
@@ -638,15 +643,19 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
-    And I enter address line 1 "<addressLine1>"
+    And I enter "<addressLine1>" into the "Address line 1" field
 
     Then I click the "Return to account details" button
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     And I click on the "Personal details" link
+
     Then I see "Personal details" on the page header
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
 
     When I select add aliases check box
     Then I set the "Alias 1", "First names" to "<firstNames>"
@@ -660,9 +669,13 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     And I click on the "Personal details" link
     Then I see "Personal details" on the page header
     When I select add aliases check box
-    Then I see data entered in "Alias 1","First names" and "<firstNames>"
-    Then I see data entered in "Alias 1","Last name" and "<lastName>"
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "Alias 1", "First names" is set to "<firstNames>"
+    And I see "Alias 1", "Last name" is set to "<lastName>"
+
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
     Examples:
       | title | firstNames         | lastName                       | addressLine1        |
       | Mrs   | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road |
@@ -672,7 +685,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
-    And I enter address line 1 "<addressLine1>"
+    And I enter "<addressLine1>" into the "Address line 1" field
 
     Then I click the "Add offence details" button
     Then I see "Offence details" on the page header
@@ -681,7 +694,10 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
 
     And I click on the "Personal details" link
     Then I see "Personal details" on the page header
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
 
     When I select add aliases check box
     Then I set the "Alias 1", "First names" to "<firstNames>"
@@ -694,10 +710,14 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
 
     And I click on the "Personal details" link
     Then I see "Personal details" on the page header
+
     When I select add aliases check box
-    Then I see data entered in "Alias 1","First names" and "<firstNames>"
-    Then I see data entered in "Alias 1","Last name" and "<lastName>"
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "Alias 1", "First names" is set to "<firstNames>"
+    And I see "Alias 1", "Last name" is set to "<lastName>"
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
     Examples:
       | title | firstNames         | lastName                       | addressLine1        |
       | Mrs   | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road |
@@ -715,7 +735,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
-    And I enter address line 1 "23 WarwickShire Road"
+    And I enter "23 WarwickShire Road" into the "Address line 1" field
 
     When I click Cancel, a window pops up and I click Ok
     Then I see "Account details" on the page header
@@ -731,13 +751,18 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
-    And I enter address line 1 "<addressLine1>"
+    And I enter "<addressLine1>" into the "Address line 1" field
+
 
     When I click Cancel, a window pops up and I click Cancel
     Then I see "Personal details" on the page header
 
     Then I see "Personal details" on the page header
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
+
     Examples:
       | title | firstNames         | lastName                       | addressLine1         |
       | Ms    | John Smith Michael | Astridge Lamsden Langley Treen | 23 WarwickShire Road |
