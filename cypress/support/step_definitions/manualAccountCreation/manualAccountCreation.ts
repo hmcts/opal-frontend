@@ -394,3 +394,14 @@ Then('I see the status of {string} is {string}', (linkText: string, status: stri
     .next()
     .contains('[class="govuk-task-list__status"]', status);
 });
+When('I enter data into first names and last name in personal details screen', (table: DataTable) => {
+  const data = table.rowsHash();
+
+  function typeIfNotBlank(selector: string, value: string) {
+    if (value) {
+      cy.get(selector).type(value);
+    }
+  }
+  typeIfNotBlank('#firstNames', data['firstNames']);
+  typeIfNotBlank('#lastName', data['lastName']);
+});
