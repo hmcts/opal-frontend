@@ -10,6 +10,12 @@
         <p class="govuk-body">{{ macStateService.manualAccountCreation.accountDetails.businessUnit }}</p>
       </ng-container>
     </div>
+    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="accountType">
+      <ng-container name>Account type</ng-container>
+      <ng-container value>
+        <p class="govuk-body">{{ accountType }}</p>
+      </ng-container>
+    </div>
     <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="defendantType">
       <ng-container name>Defendant type</ng-container>
       <ng-container value>
