@@ -12,8 +12,9 @@ Feature: PO-367 create the account details for adult or youth with parent or gua
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
 
-    When I select parent or guardian to pay
-    Then I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
 
   Scenario: AC1-positive: verifying the account details page headings for adult or youth with parent or guardian to pay defendant type
     Then I see "Create account" as the caption on the page
