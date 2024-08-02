@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountDetailsComponent } from './account-details.component';
 import {
+  ACCOUNT_TYPES_STATE,
   DEFENDANT_TYPES_STATE,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
@@ -17,7 +18,7 @@ import {
   MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks';
-import { IDefendantTypes } from '@interfaces';
+import { IAccountTypes, IDefendantTypes } from '@interfaces';
 
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
@@ -79,6 +80,32 @@ describe('AccountDetailsComponent', () => {
 
     component['setDefendantType']();
     expect(component.defendantType).toBe('');
+  });
+
+  it('should set accountType correctly', () => {
+    mockMacStateService.manualAccountCreation.accountDetails.accountType = 'fine';
+
+    component['setAccountType']();
+
+    expect(component.accountType).toEqual(
+      ACCOUNT_TYPES_STATE[mockMacStateService.manualAccountCreation.accountDetails.accountType as keyof IAccountTypes],
+    );
+  });
+
+  it('should set accountType to be empty', () => {
+    mockMacStateService.manualAccountCreation.accountDetails.accountType = 'test';
+
+    component['setAccountType']();
+
+    expect(component.accountType).toBe('');
+  });
+
+  it('should not set accountType', () => {
+    component.accountType = '';
+    mockMacStateService.manualAccountCreation.accountDetails.accountType = null;
+
+    component['setAccountType']();
+    expect(component.accountType).toBe('');
   });
 
   it('should correctly update accountCreationStatus based on manualAccountCreation state', () => {
