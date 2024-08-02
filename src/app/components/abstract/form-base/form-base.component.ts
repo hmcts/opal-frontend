@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IFieldError,
@@ -507,6 +507,25 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
         delete this.formControlErrorMessages?.[formArrayControl[field].controlName];
       });
     }
+  }
+
+  /**
+   * Adds a new form control to the form group.
+   *
+   * @param controlName - The name of the control to add.
+   * @param validators - An array of validators to apply to the control.
+   */
+  protected createControl(controlName: string, validators: ValidatorFn[]): void {
+    this.form.addControl(controlName, new FormControl(null, validators));
+  }
+
+  /**
+   * Removes a control from the form.
+   *
+   * @param controlName - The name of the control to remove.
+   */
+  protected removeControl(controlName: string): void {
+    this.form.removeControl(controlName);
   }
 
   /**

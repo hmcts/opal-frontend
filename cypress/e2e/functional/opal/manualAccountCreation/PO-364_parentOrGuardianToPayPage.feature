@@ -13,9 +13,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter more than 30 characters into the "Full name" field
     And I click the "Return to account details" button
@@ -32,9 +33,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "Abc123" into the "Full name" field
     And I enter "Address line 1" into the "Address line 1" field
@@ -51,9 +53,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter more than 30 characters into the "Address line 1" field
     And I click the "Return to account details" button
@@ -70,9 +73,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "Abc123" into the "Full name" field
     And I enter "Address line 1" into the "Address line 1" field
@@ -89,9 +93,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter more than 30 characters into the "Address line 2" field
     And I click the "Return to account details" button
@@ -108,9 +113,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "Abc123" into the "Full name" field
     And I enter "Address line 1" into the "Address line 1" field
@@ -128,9 +134,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "Abc123456" into the "Postcode" field
     And I click the "Return to account details" button
@@ -147,9 +154,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "asterisk *" into the "Address line 1" field
     And I click the "Return to account details" button
@@ -166,9 +174,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "asterisk *" into the "Address line 2" field
     And I click the "Return to account details" button
@@ -185,9 +194,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "test addr2" into the "Address line 2" field
 
@@ -208,9 +218,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     And I click the "Return to account details" button
 
@@ -226,9 +237,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     And I click the "Return to account details" button
 
@@ -244,9 +256,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "01/01/3000" into the Date of birth field
     And I click the "Return to account details" button
@@ -263,9 +276,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "10102000" into the Date of birth field
     And I click the "Return to account details" button
@@ -301,9 +315,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "NInumber1234" into the "National Insurance number" field
     And I click the "Return to account details" button
@@ -320,9 +335,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "AB123456Z" into the "National Insurance number" field
     And I click the "Return to account details" button
@@ -339,9 +355,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter more than 30 characters into the "Full name" field
     And I enter "01/012000" into the Date of birth field
@@ -390,9 +407,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "Fname Lname" into the "Full name" field
     And I enter "01/01/2000" into the Date of birth field
@@ -420,9 +438,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
     Then I see "Parent or guardian details" on the page header
 
     When "Cancel" is clicked
@@ -438,9 +457,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "Fname Lname" into the "Full name" field
     And I enter "Address line 1" into the "Address line 1" field
@@ -461,9 +481,10 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
     When I navigate to Manual Account Creation
     And I enter "London South" into the business unit search box
-    And I select parent or guardian to pay
-    And I click on continue button
-    And "Parent or guardian details" is clicked
+    And I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I click the "Continue" button
+    And I click on the "Parent or guardian details" link
 
     When I enter "Fname Lname" into the "Full name" field
     And I enter "Address line 1" into the "Address line 1" field
@@ -473,4 +494,3 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I see "Parent or guardian details" on the page header
     Then I see "Fname Lname" in the "Full name" field
     And I see "Address line 1" in the "Address line 1" field
-

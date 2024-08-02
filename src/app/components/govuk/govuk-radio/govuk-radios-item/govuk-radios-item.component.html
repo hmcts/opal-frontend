@@ -8,3 +8,8 @@
   [attr.data-aria-controls]="ariaControls"
 />
 <label class="govuk-label govuk-radios__label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
+@if (inputValueHint) {
+  <div id="{{ inputId }}-item-hint" class="govuk-hint govuk-radios__hint">
+    {{ inputValueHint }}
+  </div>
+}

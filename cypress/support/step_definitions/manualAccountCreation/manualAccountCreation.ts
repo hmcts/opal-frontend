@@ -233,15 +233,6 @@ Then('I update employer postcode {string}', (employerPostCode: string) => {
   cy.get('#employerPostcode').clear();
   manualAccountPageObjects.enterEmployerPostcode(employerPostCode);
 });
-Then('I see {string} above the defendant type heading', (businessUnitText: string) => {
-  cy.get('#defendantType')
-    .should('contain.text', 'Defendant type')
-    .parent()
-    .parent()
-    .parent()
-    .find('p')
-    .should('have.text', businessUnitText);
-});
 Then('I see the business unit is {string}', (businessUnit: string) => {
   cy.get('#accountDetailsBusinessUnitValue').should('have.text', businessUnit);
 });
@@ -274,9 +265,6 @@ Then('I see the defendant type heading is {string}', (businessUnitHeading: strin
 });
 Then('I see the defendant type help text is {string}', (businessUnitHelpText: string) => {
   cy.get('#defendantTypeHint').should('contains.text', businessUnitHelpText);
-});
-Then('I see the {string} radio button below the defendant type help text', (radioButton: string) => {
-  cy.get('#defendantTypeHint').next().contains('label', radioButton);
 });
 
 When('I select title {string} from dropdown', (title: string) => {

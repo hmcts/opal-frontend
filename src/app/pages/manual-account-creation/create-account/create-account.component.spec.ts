@@ -58,6 +58,7 @@ describe('CreateAccountComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const formData: IManualAccountCreationAccountDetailsState = {
       businessUnit: 'Test',
+      accountType: 'Test',
       defendantType: 'Test',
     };
 
