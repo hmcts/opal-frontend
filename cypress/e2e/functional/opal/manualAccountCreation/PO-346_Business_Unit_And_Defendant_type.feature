@@ -44,7 +44,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
-    #as per the new design process in PO-366 this step is descoped
+
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
@@ -66,7 +66,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
-    #as per the new design process in PO-366 this step is descoped
+    
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
@@ -88,16 +88,15 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
-    #as per the new design process in PO-366 this step is descoped
+
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
   #as per the new design process in PO-366 this step is descoped
-  #as per the new design process in PO-366 this step is descoped
+
   #When "Back" is clicked
   #Then I verify company radio button checked
 
-  #AC8
   #AC8
 
   Scenario: AC-08 positive: When user navigating to Business unit and defendant type screen and selecting adults and youth only then continue
@@ -110,13 +109,13 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
-    #as per the new design process in PO-366 this step is descoped
+
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
 
   #AC9
-  #AC9
+
   Scenario: AC-09 positive: When user navigating to Business unit and defendant type screen and selecting parent or guardian to pay then continue
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
@@ -130,7 +129,6 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
 
-  #AC10
   #AC10
   Scenario: AC-10 positive: When user navigating to Business unit and defendant type screen and selecting company then continue
     Then I see "Create account" as the caption on the page
