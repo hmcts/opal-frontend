@@ -10,6 +10,7 @@ Feature: PO-436 Additional elements of the Parent or Guardian details screen
     And I see "Business unit and defendant type" on the page header
 
     When I enter "London South" into the business unit search box
+    And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
     And I click on the "Parent or guardian details" link

@@ -10,8 +10,9 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
     And I see "Business unit and defendant type" on the page header
 
     When I enter "London South" into the business unit search box
+    And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
-    And I click on continue button
+    And I click the "Continue" button
     Then I see "Account details" on the page header
 
   Scenario: AC1 & AC2 - Heading, sub-heading, business unit and defendant type

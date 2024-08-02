@@ -11,8 +11,9 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
-    When I select the "Company" radio button
-    Then I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
@@ -243,11 +244,12 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
     Then I see "<updateAddressLine2>" in the "Address line 2" field
     Then I see "<updateAddressLine3>" in the "Address line 3" field
     Then I see "<updatePostcode>" in the "Postcode" field
-    Then I see data entered in "Alias 1","Company name" and "<alias1>"
-    Then I see data entered in "Alias 2","Company name" and "<alias2>"
-    Then I see data entered in "Alias 3","Company name" and "<alias3>"
-    Then I see data entered in "Alias 4","Company name" and "<alias4>"
-    Then I see data entered in "Alias 5","Company name" and "<alias5>"
+
+    Then I see "Alias 1", "Company name" is set to "<alias1>"
+    Then I see "Alias 2", "Company name" is set to "<alias2>"
+    Then I see "Alias 3", "Company name" is set to "<alias3>"
+    Then I see "Alias 4", "Company name" is set to "<alias4>"
+    Then I see "Alias 5", "Company name" is set to "<alias5>"
 
     Examples:
       | returnButton              | updateCompanyName | updateAddressLine1  | updateAddressLine2 | updateAddressLine3 | updatePostcode | alias1               | alias2                | alias3             | alias4             | alias5              | pageName        |

@@ -26,8 +26,9 @@ Feature: PO-362 Company task list screen
     Then I see "Business unit and defendant type" on the page header
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see "Account details" on the page header
     And I see "Create account" above "Account details"
@@ -42,8 +43,9 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see the business unit is "London South West"
     And I see the defendant type is "Company"
@@ -58,12 +60,13 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see the "Court details" section heading
     And I see the "Court details" link under the "Court details" section
-  # Then "Court details" is clicked, nothing happens
+  #Then "Court details" is clicked, nothing happens
 
   Scenario: AC4.a company task list defendant details section
     Given I am on the OPAL Frontend
@@ -75,8 +78,9 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see the "Court details" section heading
     And I see the "Company details" link under the "Defendant details" section
@@ -94,8 +98,9 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see the "Defendant details" section heading
     And I see the "Contact details" link under the "Defendant details" section
@@ -113,8 +118,9 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see the "Offence and imposition details" section heading
     And I see the "Offence details" link under the "Offence and imposition details" section
@@ -130,8 +136,9 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see the "Offence and imposition details" section heading
     And I see the "Payment terms" link under the "Offence and imposition details" section
@@ -147,8 +154,9 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I see the "Review and publish" section heading
     And I see the "Check that all required fields have been entered before you publish" text under the "Review and publish" section
@@ -198,7 +206,8 @@ Feature: PO-362 Company task list screen
     When I navigate to Manual Account Creation
 
     And I enter "London South" into the business unit search box
-    When I select company
-    And I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Company" radio button
+    And I click the "Continue" button
 
     Then I do not see a back button or back link
