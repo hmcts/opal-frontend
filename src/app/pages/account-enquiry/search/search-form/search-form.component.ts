@@ -27,7 +27,7 @@ import {
 import { IAccountEnquiryStateSearch, IGovUkDateInput, IGovUkSelectOptions } from '@interfaces';
 import { DATE_INPUTS } from '../config/date-inputs';
 import { overEighteenValidator } from 'src/app/validators';
-import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
+import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '../constants/account-enquiry-search-form-field-errors';
 
 @Component({
   selector: 'app-search-form',

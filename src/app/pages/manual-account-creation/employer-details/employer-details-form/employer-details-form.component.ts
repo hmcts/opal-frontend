@@ -7,18 +7,17 @@ import {
   FormBaseComponent,
   GovukCancelLinkComponent,
 } from '@components';
-import {
-  MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR,
-  MANUAL_ACCOUNT_CREATION_NESTED_ROUTES,
-} from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IManualAccountCreationEmployerDetailsForm } from '@interfaces';
+import { IFieldErrors } from '@interfaces';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
   optionalPhoneNumberValidator,
   specialCharactersValidator,
 } from 'src/app/validators';
+import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR } from '../constants/manual-account-creation-employer-details-field-errors';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationEmployerDetailsForm } from '../interfaces/manual-account-creation-employer-details-form.interface';
 
 @Component({
   selector: 'app-employer-details-form',

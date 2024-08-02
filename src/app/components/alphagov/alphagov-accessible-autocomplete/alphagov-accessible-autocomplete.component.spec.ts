@@ -143,7 +143,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'configureAutoComplete');
 
-    component['controlSub'].unsubscribe();
+    component['ngUnsubscribe'].next();
+    component['ngUnsubscribe'].complete();
     component['setupControlSub']();
     component['_control'].setValue('Hello');
 
@@ -154,7 +155,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'configureAutoComplete');
 
-    component['controlSub'].unsubscribe();
+    component['ngUnsubscribe'].next();
+    component['ngUnsubscribe'].complete();
 
     component['setupControlSub']();
 
@@ -169,7 +171,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'configureAutoComplete');
 
-    component['controlSub'].unsubscribe();
+    component['ngUnsubscribe'].next();
+    component['ngUnsubscribe'].complete();
 
     component['setupControlSub']();
 

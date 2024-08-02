@@ -1,4 +1,4 @@
-import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
+import { IManualAccountCreationContactDetailsState } from '@interfaces';
 
 export interface IManualAccountCreationContactDetailsForm {
   formData: IManualAccountCreationContactDetailsState;

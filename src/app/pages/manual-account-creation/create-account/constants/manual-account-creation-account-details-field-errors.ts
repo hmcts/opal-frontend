@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR = {
+export const MANUAL_ACCOUNT_CREATION_CREATE_ACCOUNT_FIELD_ERROR = {
   defendantType: {
     required: {
       message: 'Select defendant type',

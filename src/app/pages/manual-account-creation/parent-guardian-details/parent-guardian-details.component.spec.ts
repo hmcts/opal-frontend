@@ -3,10 +3,10 @@ import { ParentGuardianDetailsComponent } from './parent-guardian-details.compon
 import { ManualAccountCreationRoutes } from '@enums';
 import {
   IManualAccountCreationParentGuardianDetailsState,
-  IManualAccountCreationParentGuardianForm,
 } from '@interfaces';
 import { MacStateService } from '@services';
 import { MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
+import { IManualAccountCreationParentGuardianForm } from './interfaces/manual-account-creation-parent-guardian-form.interface';
 
 describe('ParentGuardianDetailsComponent', () => {
   let component: ParentGuardianDetailsComponent;

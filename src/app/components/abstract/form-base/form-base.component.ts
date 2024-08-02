@@ -13,7 +13,7 @@ import {
   IHighPriorityFormError,
 } from '@interfaces';
 import { MacStateService, GlobalStateService } from '@services';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -32,6 +32,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   protected fieldErrors!: IFieldErrors;
   protected formSubmitted = false;
   private formSub!: Subscription;
+  private ngUnsubscribe = new Subject<void>();
   public formErrors!: IFormError[];
 
   constructor() {}
@@ -307,7 +308,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Setup listener for the form value changes and to emit hasUnsavedChanges
    */
   private setupListener(): void {
-    this.formSub = this.form.valueChanges.subscribe(() => {
+    this.formSub = this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     });
   }
@@ -599,8 +600,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.formSub) {
-      this.formSub.unsubscribe();
-    }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

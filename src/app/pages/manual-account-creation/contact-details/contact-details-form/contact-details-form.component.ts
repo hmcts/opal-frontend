@@ -7,14 +7,16 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components';
-import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR, MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IManualAccountCreationContactDetailsForm } from '@interfaces';
+import { IFieldErrors } from '@interfaces';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
   optionalPhoneNumberValidator,
 } from 'src/app/validators';
+import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FIELD_ERROR } from '../constants/manual-account-creation-contact-details-field-errors';
+import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '../../constants/manual-account-creation-nested-routes';
+import { IManualAccountCreationContactDetailsForm } from '../interfaces/manual-account-creation-contact-details-form.interface';
 
 @Component({
   selector: 'app-contact-details-form',

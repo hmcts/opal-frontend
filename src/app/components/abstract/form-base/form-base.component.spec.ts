@@ -15,7 +15,7 @@ import {
   IFormError,
   IFormErrorSummaryMessage,
 } from '@interfaces';
-import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
+import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from 'src/app/pages/account-enquiry/search/constants/account-enquiry-search-form-field-errors';
 
 class TestFormBaseComponent extends FormBaseComponent {
   constructor() {

@@ -11,15 +11,14 @@ import {
   GovukTaskListComponent,
   GovukTaskListItemComponent,
 } from '@components';
-import { DEFENDANT_TYPES_STATE, MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from '@constants';
+import { DEFENDANT_TYPES_STATE } from '@constants';
 
 import { ManualAccountCreationRoutes, RoutingPaths } from '@enums';
-import {
-  IManualAccountCreationAccountStatus,
-  IManualAccountCreationFieldTypes,
-  IManualAccountCreationState,
-} from '@interfaces';
+import { IManualAccountCreationState } from '@interfaces';
 import { MacStateService } from '@services';
+import { MANUAL_ACCOUNT_CREATION_ACCOUNT_STATUS } from './constants/manual-account-creation-account-status';
+import { IManualAccountCreationAccountStatus } from './interfaces/manual-account-creation-account-status.interface';
+import { IManualAccountCreationFieldTypes } from './interfaces/manual-account-creation-field-types.interface';
 
 @Component({
   selector: 'app-account-details',

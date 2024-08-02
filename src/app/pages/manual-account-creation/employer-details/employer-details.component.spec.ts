@@ -1,9 +1,10 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { EmployerDetailsComponent } from './employer-details.component';
 import { MacStateService } from '@services';
-import { IManualAccountCreationEmployerDetailsForm, IManualAccountCreationEmployerDetailsState } from '@interfaces';
+import { IManualAccountCreationEmployerDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
+import { IManualAccountCreationEmployerDetailsForm } from './interfaces/manual-account-creation-employer-details-form.interface';
 
 describe('EmployerDetailsComponent', () => {
   let component: EmployerDetailsComponent;

@@ -16,12 +16,11 @@ import {
   ADDRESS_LINE_TWO_FIELD_ERRORS,
   CUSTOM_ADDRESS_FIELD_IDS,
   DATE_OF_BIRTH_FIELD_ERRORS,
-  MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
   NATIONAL_INSURANCE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
 } from '@constants';
 import { ManualAccountCreationRoutes } from '@enums';
-import { IFieldErrors, IManualAccountCreationParentGuardianForm } from '@interfaces';
+import { IFieldErrors } from '@interfaces';
 import {
   optionalMaxLengthValidator,
   dateOfBirthValidator,
@@ -30,6 +29,8 @@ import {
   specialCharactersValidator,
   alphabeticalTextValidator,
 } from 'src/app/validators';
+import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '../constants/manual-account-creation-parent-guardian-details-field-errors';
+import { IManualAccountCreationParentGuardianForm } from '../interfaces/manual-account-creation-parent-guardian-form.interface';
 
 @Component({
   selector: 'app-parent-guardian-details-form',

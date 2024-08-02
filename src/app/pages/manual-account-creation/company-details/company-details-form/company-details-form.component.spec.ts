@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CompanyDetailsFormComponent } from './company-details-form.component';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_FORM_MOCK, MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
 import { MacStateService } from '@services';
-import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS } from '@constants';
+import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS } from '../constants/manual-account-creation-company-details-alias';
 
 describe('CompanyDetailsFormComponent', () => {
   let component: CompanyDetailsFormComponent;

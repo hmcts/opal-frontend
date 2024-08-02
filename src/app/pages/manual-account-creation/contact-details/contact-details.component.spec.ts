@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContactDetailsComponent } from './contact-details.component';
 import { MacStateService } from '@services';
-import { IManualAccountCreationContactDetailsForm, IManualAccountCreationContactDetailsState } from '@interfaces';
+import { IManualAccountCreationContactDetailsState } from '@interfaces';
 import { ManualAccountCreationRoutes } from '@enums';
 import { MANUAL_ACCOUNT_CREATION_MOCK } from '@mocks';
+import { IManualAccountCreationContactDetailsForm } from './interfaces/manual-account-creation-contact-details-form.interface';
 
 describe('ContactDetailsComponent', () => {
   let component: ContactDetailsComponent;
