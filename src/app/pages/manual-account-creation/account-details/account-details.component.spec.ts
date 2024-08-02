@@ -20,7 +20,6 @@ import {
 } from '@mocks';
 import { IAccountTypes, IDefendantTypes } from '@interfaces';
 
-
 describe('AccountDetailsComponent', () => {
   let component: AccountDetailsComponent;
   let fixture: ComponentFixture<AccountDetailsComponent>;
