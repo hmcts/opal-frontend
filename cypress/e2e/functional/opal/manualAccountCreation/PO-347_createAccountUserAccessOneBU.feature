@@ -16,7 +16,7 @@ Feature: PO-347 manual account creation, user has access to one BU
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
-    And I see "The account will be created in Hertfordshire" above the defendant type heading
+    And I see "The account will be created in Hertfordshire" above the "Account type" heading
 
   Scenario: AC2 - Correct BU is shown - Adult or youth only
     Given I am on the OPAL Frontend
@@ -30,7 +30,8 @@ Feature: PO-347 manual account creation, user has access to one BU
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
-    When I select adults and youth only
+    When I select the "Fine" radio button
+    And I select the "Adult or youth only" radio button
     And I click the "Continue" button
 
     Then I see the business unit is "Hertfordshire"
@@ -48,7 +49,8 @@ Feature: PO-347 manual account creation, user has access to one BU
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
-    When I select parent or guardian to pay
+    When I select the "Fine" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
 
     Then I see the business unit is "Hertfordshire"
@@ -66,9 +68,9 @@ Feature: PO-347 manual account creation, user has access to one BU
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
-    When I select company
+    When I select the "Fine" radio button
+    And I select the "Company" radio button
     And I click the "Continue" button
 
     Then I see the business unit is "Hertfordshire"
     And I see the defendant type is "Company"
-

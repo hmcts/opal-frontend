@@ -12,28 +12,51 @@
       inputId="businessUnit"
       inputName="businessUnit"
       label="Search for a user"
-      hintText="Enter area where the account is to be created (such as Sussex or London)"
+      hintText="Enter area where the account is to be created"
       [autoCompleteItems]="autoCompleteItems"
       [errors]="formControlErrorMessages['businessUnit']"
     ></app-alphagov-accessible-autocomplete>
   }
 
   <app-govuk-radio
-    fieldSetId="defendantType"
-    legendText="Defendant type"
+    fieldSetId="accountType"
+    legendText="Account type"
     legendClasses="govuk-fieldset__legend--m"
-    legendHint="If sole trader, choose 'Adult or youth only'"
-    [errors]="formControlErrorMessages['defendantType']"
+    [errors]="formControlErrorMessages['accountType']"
   >
-    @for (defendantType of defendantTypes; track defendantType) {
+    @for (accountType of accountTypes; track accountType.key) {
       <div
         app-govuk-radios-item
-        [labelText]="defendantType.value"
-        [inputId]="defendantType.key"
-        inputName="defendantType"
-        [inputValue]="defendantType.key"
-        [control]="form.get('defendantType')"
+        [labelText]="accountType.value"
+        [inputId]="accountType.key"
+        inputName="accountType"
+        [inputValue]="accountType.key"
+        [control]="form.get('accountType')"
+        [inputValueHint]="accountType.key === 'conditionalCaution' ? 'Adult or youth only' : ''"
       ></div>
+
+      @switch (accountType.key) {
+        @case ('fine') {
+          @if (form.get('accountType')?.value === 'fine') {
+            <ng-container
+              *ngTemplateOutlet="
+                defendantTypesRadioOptions;
+                context: { defendantTypes: fineDefendantTypes, isFine: true }
+              "
+            ></ng-container>
+          }
+        }
+        @case ('fixedPenalty') {
+          @if (form.get('accountType')?.value === 'fixedPenalty') {
+            <ng-container
+              *ngTemplateOutlet="
+                defendantTypesRadioOptions;
+                context: { defendantTypes: fixedPenaltyDefendantTypes, isFine: false }
+              "
+            ></ng-container>
+          }
+        }
+      }
     }
   </app-govuk-radio>
   <div class="govuk-grid-row">
@@ -43,3 +66,28 @@
     </div>
   </div>
 </form>
+
+<ng-template #defendantTypesRadioOptions let-defendantTypes="defendantTypes" let-isFine="isFine">
+  <div app-govuk-radios-conditional conditionalId="radio">
+    <app-govuk-radio
+      [fieldSetId]="isFine ? 'fineDefendantType' : 'fixedPenaltyDefendantType'"
+      legendText="Defendant type"
+      legendClasses="govuk-fieldset__legend--m"
+      legendHint="If sole trader, choose 'Adult or youth only'"
+      [errors]="
+        isFine ? formControlErrorMessages['fineDefendantType'] : formControlErrorMessages['fixedPenaltyDefendantType']
+      "
+    >
+      @for (defendantType of defendantTypes; track defendantType.key) {
+        <div
+          app-govuk-radios-item
+          [labelText]="defendantType.value"
+          [inputId]="defendantType.key"
+          [inputName]="isFine ? 'fineDefendantType' : 'fixedPenaltyDefendantType'"
+          [inputValue]="defendantType.key"
+          [control]="isFine ? form.get('fineDefendantType') : form.get('fixedPenaltyDefendantType')"
+        ></div>
+      }
+    </app-govuk-radio>
+  </div>
+</ng-template>

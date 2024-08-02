@@ -15,8 +15,9 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     Then I see "Business unit and defendant type" on the page header
 
     And I enter "London South" into the business unit search box
-    When I select the "Adult or youth only" radio button
-    Then I click the "Continue" button
+    And I select the "Fine" radio button
+    And I select the "Adult or youth only" radio button
+    And I click the "Continue" button
     Then I see "Account details" on the page header
     Then I click on the "Employer details" link
     Then I see "Employer details" on the page header

@@ -11,8 +11,9 @@ Feature: PO-366 updating the account details page to manage the account creation
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
 
-    When I select the "Adult or youth only" radio button
-    Then I click the "Continue" button
+    And I select the "Fine" radio button
+    And I select the "Adult or youth only" radio button
+    And I click the "Continue" button
 
   Scenario: AC1-positive: verifying the account details page headings for adult or youth only defendant type
     Then I see "Create account" as the caption on the page
