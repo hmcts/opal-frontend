@@ -4,8 +4,9 @@
     headingText="Account details"
   ></app-govuk-heading-with-caption>
   <app-govuk-summary-list summaryListId="accountDetails">
-    <app-govuk-summary-list-row
-      class="govuk-summary-list__row--no-actions"
+    <div
+      app-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
       summaryListId="accountDetails"
       summaryListRowId="businessUnit"
     >
@@ -13,9 +14,10 @@
       <ng-container value>
         <p class="govuk-body">{{ macStateService.manualAccountCreation.accountDetails.businessUnit }}</p>
       </ng-container>
-    </app-govuk-summary-list-row>
-    <app-govuk-summary-list-row
-      class="govuk-summary-list__row--no-actions"
+    </div>
+    <div
+      app-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
       summaryListId="accountDetails"
       summaryListRowId="defendantType"
     >
@@ -23,10 +25,11 @@
       <ng-container value>
         <p class="govuk-body">{{ defendantType }}</p>
       </ng-container>
-    </app-govuk-summary-list-row>
+    </div>
     @if (macStateService.manualAccountCreation.businessUnit.welshLanguage) {
       <div
         app-govuk-summary-list-row
+        class="govuk-summary-list__row"
         summaryListId="accountDetails"
         summaryListRowId="languagePreferences"
         [actionEnabled]="true"
@@ -40,6 +43,7 @@
       </div>
       <div
         app-govuk-summary-list-row
+        class="govuk-summary-list__row"
         summaryListId="accountDetails"
         summaryListRowId="languagePreferences"
         [actionEnabled]="true"
