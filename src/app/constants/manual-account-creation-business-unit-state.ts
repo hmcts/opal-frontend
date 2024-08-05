@@ -5,4 +5,6 @@ export const MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE = {
   opalDomain: null,
   businessUnitId: 0,
   businessUnitName: '',
+  configurationItems: [],
+  welshLanguage: false,
 };

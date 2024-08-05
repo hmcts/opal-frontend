@@ -5,6 +5,8 @@ export interface IBusinessUnit {
   opalDomain: null | string;
   businessUnitId: number;
   businessUnitName: string;
+  configurationItems: string[];
+  welshLanguage: boolean | null;
 }
 
 export interface IBusinessUnitRefData {
