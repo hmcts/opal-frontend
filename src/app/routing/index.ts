@@ -1,3 +1,3 @@
-import { finesRouting } from './fines-routing';
+import { finesRouting } from './fines/fines-routing';
 
 export { finesRouting };
