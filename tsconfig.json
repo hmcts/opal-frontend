@@ -30,7 +30,8 @@
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
       "@interceptors": ["./src/app/interceptors/index.ts"],
-      "@resolvers": ["./src/app/resolvers/index.ts"]
+      "@resolvers": ["./src/app/resolvers/index.ts"],
+      "@routing": ["./src/app/routing/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
