@@ -1,5 +1,5 @@
 export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
-  employerName: {
+  EmployerCompanyName: {
     required: {
       message: 'Enter employer name',
       priority: 1,
@@ -9,7 +9,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employeeReference: {
+  EmployerReference: {
     required: {
       message: 'Enter employee reference or National Insurance number',
       priority: 1,
@@ -19,7 +19,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employerEmailAddress: {
+  EmployerEmailAddress: {
     maxlength: {
       message: 'The employer email address must be 76 characters or fewer',
       priority: 2,
@@ -29,7 +29,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employerTelephone: {
+  EmployerTelephoneNumber: {
     maxlength: {
       message: 'Enter employer telephone number in the correct format',
       priority: 1,
@@ -39,7 +39,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employerAddress1: {
+  EmployerAddressLine1: {
     required: {
       message: 'Enter employer address line 1, typically the building and street',
       priority: 1,
@@ -53,7 +53,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  employerAddress2: {
+  EmployerAddressLine2: {
     maxlength: {
       message: 'The employer address line 2 must be 30 characters or fewer',
       priority: 1,
@@ -63,7 +63,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employerAddress3: {
+  EmployerAddressLine3: {
     maxlength: {
       message: 'The employer address line 3 must be 30 characters or fewer',
       priority: 1,
@@ -73,7 +73,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employerAddress4: {
+  EmployerAddressLine4: {
     maxlength: {
       message: 'The employer address line 4 must be 30 characters or fewer',
       priority: 1,
@@ -83,7 +83,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employerAddress5: {
+  EmployerAddressLine5: {
     maxlength: {
       message: 'The employer address line 5 must be 30 characters or fewer',
       priority: 1,
@@ -93,7 +93,7 @@ export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  employerPostcode: {
+  EmployerPostcode: {
     maxlength: {
       message: 'The employer postcode must be 8 characters or fewer',
       priority: 1,
