@@ -26,6 +26,7 @@
       "@enums": ["./src/app/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],
+      "@interfaces/fines/mac": ["./src/app/fines/mac/interfaces/index.ts"],
       "@mocks": ["./src/app/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
