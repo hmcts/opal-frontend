@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBaseComponent } from './form-base.component';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import {
   FORM_CONTROL_ERROR_MOCK,
   FORM_DATE_ERROR_SUMMARY_MOCK,
@@ -859,5 +859,22 @@ describe('FormBaseComponent', () => {
 
     expect(component.formControlErrorMessages['firstNames_1']).toBeUndefined();
     expect(component.formControlErrorMessages['firstNames_0']).toBeDefined();
+  });
+
+  it('should create a new control with the given control name and validators', () => {
+    const controlName = 'testControl';
+    const validators: ValidatorFn[] = [Validators.required];
+
+    component['createControl'](controlName, validators);
+
+    expect(component.form.get(controlName)).toBeTruthy();
+    expect(component.form.get(controlName)?.value).toBeNull();
+    expect(component.form.get(controlName)?.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should remove a control from the form', () => {
+    const controlName = 'surname';
+    component['removeControl'](controlName);
+    expect(component.form.get(controlName)).toBeNull();
   });
 });

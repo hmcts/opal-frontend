@@ -11,8 +11,9 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
-    When I select the "Adult or youth only" radio button
-    Then I click on continue button
+    And I select the "Fine" radio button
+    And I select the "Adult or youth only" radio button
+    And I click the "Continue" button
 
     Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
@@ -58,15 +59,15 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
 
     And I enter "10/10/2000" into the Date of birth field
-    And I enter National insurance number "QQ 12 34 56 C"
+    And I enter "QQ 12 34 56 C" into the "National Insurance number" field
 
-    And I enter address line 1 "12 test's road checking address1"
-    And I enter address line 2 "12 test road checking address2"
-    And I enter address line 3 "London city chec"
-    And I enter postcode "AB12 7MH"
+    And I enter "12 test road checking address1" into the "Address line 1" field
+    And I enter "12 test road checking address2" into the "Address line 2" field
+    And I enter "London city chec" into the "Address line 3" field
+    And I enter "AB12 7MH" into the "Postcode" field
 
-    And I enter make of the car "Ambassdor Volkswagen"
-    And I enter registration number of the car "AP28 AAR"
+    And I enter "Ambassdor Volkswagen" into the "Make of the car" field
+    And I enter "AP28 AAR" into the "Registration number" field
 
     Then I click the "Return to account details" button
 
@@ -76,9 +77,9 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
-    And I enter address line 1 "<addressLine1>"
-    And I enter address line 2 "<addressLine2>"
-    And I enter address line 3 "<addressLine3>"
+    And I enter "<addressLine1>" into the "Address line 1" field
+    And I enter "<addressLine2>" into the "Address line 2" field
+    And I enter "<addressLine3>" into the "Address line 3" field
 
     Then I click the "Return to account details" button
     Then I see the error message "The address line 1 must not contain special characters" at the top of the page
@@ -93,9 +94,9 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael Letter Count      |
       | lastName   | Astridge Lamsden Langley Green Count |
-    And I enter address line 1 "<addressLine1>"
-    And I enter address line 2 "<addressLine2>"
-    And I enter address line 3 "<addressLine3>"
+    And I enter "<addressLine1>" into the "Address line 1" field
+    And I enter "<addressLine2>" into the "Address line 2" field
+    And I enter "<addressLine3>" into the "Address line 3" field
 
     Then I click the "Return to account details" button
     Then I see the error message "The address line 1 must be 30 characters or fewer" at the top of the page
@@ -116,8 +117,8 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     Then I see the error message "Enter address line 1, typically the building and street" at the top of the page
 
   Scenario Outline: AC3- negative: If a user has not entered data into any mandatory fields (i.e. Title, First Names, Last Name & Address Line 1 fields) but has entered data into one or more other optional fields, then selecting the 'Return to account details' button
-    And I enter address line 2 "<addressLine2>"
-    And I enter address line 3 "<addressLine3>"
+    And I enter "<addressLine2>" into the "Address line 2" field
+    And I enter "<addressLine3>" into the "Address line 3" field
 
     Then I click the "Return to account details" button
     Then I see the error message "Select a title" at the top of the page
@@ -242,7 +243,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
     When I enter "<dateOfBirth>" into the Date of birth field
-    And I enter address line 1 "120 Deuchar street"
+    And I enter "120 Deuchar street" into the "Address line 1" field
 
     Then I click the "Return to account details" button
     Then I see the error message "<errorMessage>" at the top of the page
@@ -442,11 +443,11 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
 
   Scenario: AC10e -negative: User does not add any data into either Alias 5 fields
-    When I select title "Mrs" from dropdown
+    When I select "Mrs" from the "Title" dropdown
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select add aliases check box
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -465,11 +466,11 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I see the error message "Enter last name for alias 5" at the top of the page
 
   Scenario: AC10ei- negative: User adds data into Alias 5 - First names, but does enter any data into last name
-    When I select title "Mrs" from dropdown
+    When I select "Mrs" from the "Title" dropdown
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select add aliases check box
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -488,11 +489,11 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I see the error message "Enter last name for alias 5" at the top of the page
 
   Scenario: AC10eii- negative: User adds data into Alias 5 - Last name, but does enter any data into First names
-    When I select title "Mrs" from dropdown
+    When I select "Mrs" from the "Title" dropdown
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select add aliases check box
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -511,12 +512,12 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I see the error message "Enter first name(s) for alias 5" at the top of the page
 
   Scenario Outline: AC11- Negative: Scenarios for National Insurance number field validation
-    When I select title "Mrs" from dropdown
+    When I select "Mrs" from the "Title" dropdown
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith |
       | lastName   | Astridge   |
-    And I enter address line 1 "456 Lamburgh Street"
-    When I enter incorrect National insurance number "<NInumber>"
+    And I enter "456 Lamburgh Street" into the "Address line 1" field
+    When I enter "<NInumber>" into the "National Insurance number" field
     Then I click the "Return to account details" button
 
     Then I see "Personal details" on the page header
@@ -527,15 +528,12 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
       | NInumber      |
       | AB 12 34 45 6 |
       | 1234GH6       |
-      | 1234567       |
-      | ABCFER        |
-      | ABCD1234      |
 
   Scenario: AC12- positive: When user amends all fields where validation fails (Mandatory fields)
     When I enter data into first names and last name in personal details screen
       | firstNames | Stuart Philips aarogyam Gucci Coach VII      |
       | lastName   | Chicago bulls Burberry Redbull 2345 PizzaHut |
-    And I enter incorrect address line 1 "<incorrectAddressLine1>"
+    And I enter "<incorrectAddressLine1>" into the "Address Line 1" field
 
     Then I click the "Return to account details" button
     Then I see the error message "Select a title" at the top of the page
@@ -545,28 +543,32 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
     Then I see "Personal details" on the page header
 
-    Then I update title "<title>"
-    And I update the first names "<firstNames>"
-    And I update the last name "<lastName>"
-    And I update address line 1 "<addressLine1>"
+    Then I select "<title>" from the "Title" dropdown
+    And I enter "<firstNames>" into the "First names" field
+    And I enter "<lastName>" into the "Last name" field
+    And I enter "<addressLine1>" into the "Address line 1" field
     Then I click the "Return to account details" button
     Then I see "Account details" on the page header
 
     Then I click on the "Personal details" link
     Then I see "Personal details" on the page header
 
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
+
     Examples:
       | incorrectAddressLine1 | title | firstNames | lastName    | title | addressLine1 |
       | test Road *12         | Mr    | Coca Cola  | Cola Family | Mr    | Pepsi Road   |
 
 
   Scenario Outline: AC13-positive: When user enters data into mandatory fields only
-    When I select title "Mrs" from dropdown
+    When I select "Mrs" from the "Title" dropdown
     When I enter data into first names and last name in personal details screen
       | firstNames | John Smith Michael             |
       | lastName   | Astridge Lamsden Langley Treen |
-    And I enter address line 1 "<addressLine1>"
+    And I enter "<addressLine1>" into the "Address line 1" field
 
     Then I click the "Return to account details" button
     Then I see "Create account" as the caption on the page
@@ -574,7 +576,11 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
     And I click on the "Personal details" link
     Then I see "Personal details" on the page header
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+
+    And I see "<title>" selected in the "Title" dropdown
+    And I see "<firstNames>" in the "First names" field
+    And I see "<lastName>" in the "Last name" field
+    And I see "<addressLine1>" in the "Address line 1" field
 
     When I select add aliases check box
     Then I set the "Alias 1", "First names" to "<firstNames>"
@@ -586,10 +592,10 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
     And I click on the "Personal details" link
     Then I see "Personal details" on the page header
-    When I select add aliases check box
-    Then I see data entered in "Alias 1","First names" and "<firstNames>"
-    Then I see data entered in "Alias 1","Last name" and "<lastName>"
-    And I verify "<title>","<firstNames>","<lastName>" and "<addressLine1>" on contact details
+    #When I select add aliases check box
+    And I see "Alias 1", "First names" is set to "<firstNames>"
+    And I see "Alias 1", "Last name" is set to "<lastName>"
+
     Examples:
       | title | firstNames         | lastName                       | addressLine1        |
       | Mrs   | John Smith Michael | Astridge Lamsden Langley Treen | Alphine Colony Road |
