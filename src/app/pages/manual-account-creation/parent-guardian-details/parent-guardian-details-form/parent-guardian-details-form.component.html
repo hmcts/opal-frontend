@@ -3,16 +3,16 @@
 <form (submit)="handleFormSubmit($event)">
   <app-govuk-text-input
     labelText="Full name"
-    inputId="fullName"
-    inputName="fullName"
+    inputId="FullName"
+    inputName="FullName"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fullName']"
-    [errors]="formControlErrorMessages['fullName']"
+    [control]="form.controls['FullName']"
+    [errors]="formControlErrorMessages['FullName']"
   ></app-govuk-text-input>
   <app-custom-date-of-birth
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
-    (dateChange)="setInputValue($event, 'dateOfBirth')"
+    (dateChange)="setInputValue($event, 'DOB')"
   ></app-custom-date-of-birth>
   <app-custom-national-insurance-number
     [form]="form"

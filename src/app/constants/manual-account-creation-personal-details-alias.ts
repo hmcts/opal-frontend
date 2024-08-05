@@ -4,11 +4,11 @@ import { alphabeticalTextValidator } from '../validators';
 
 export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS: IFormArrayControlValidation[] = [
   {
-    controlName: 'firstNames',
+    controlName: 'AliasForenames',
     validators: [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()],
   },
   {
-    controlName: 'lastName',
+    controlName: 'AliasSurname',
     validators: [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()],
   },
 ];

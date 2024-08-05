@@ -1,5 +1,5 @@
 export const ADDRESS_LINE_ONE_FIELD_ERRORS = {
-  addressLine1: {
+  AddressLine1: {
     required: {
       message: 'Enter address line 1, typically the building and street',
       priority: 1,

@@ -69,17 +69,17 @@ export class ParentGuardianDetailsFormComponent extends FormBaseComponent implem
    */
   private setupParentGuardianDetailsForm(): void {
     this.form = new FormGroup({
-      fullName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      dateOfBirth: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      addressLine1: new FormControl(null, [
+      FullName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      DOB: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      NationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      AddressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      addressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      addressLine3: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      AddressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      AddressLine3: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      Postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 

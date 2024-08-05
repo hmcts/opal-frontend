@@ -66,24 +66,24 @@ describe('PersonalDetailsFormComponent', () => {
   it('should set up the personal details form', () => {
     component['setupPersonalDetailsForm']();
     expect(component.form).toBeTruthy();
-    expect(component.form.get('title')).toBeTruthy();
-    expect(component.form.get('firstNames')).toBeTruthy();
-    expect(component.form.get('lastName')).toBeTruthy();
-    expect(component.form.get('addAlias')).toBeTruthy();
-    expect(component.form.get('aliases')).toBeTruthy();
-    expect(component.form.get('dateOfBirth')).toBeTruthy();
-    expect(component.form.get('nationalInsuranceNumber')).toBeTruthy();
-    expect(component.form.get('addressLine1')).toBeTruthy();
-    expect(component.form.get('addressLine2')).toBeTruthy();
-    expect(component.form.get('addressLine3')).toBeTruthy();
-    expect(component.form.get('postcode')).toBeTruthy();
-    expect(component.form.get('makeOfCar')).toBeTruthy();
-    expect(component.form.get('registrationNumber')).toBeTruthy();
+    expect(component.form.get('Title')).toBeTruthy();
+    expect(component.form.get('Forenames')).toBeTruthy();
+    expect(component.form.get('Surname')).toBeTruthy();
+    expect(component.form.get('AddAlias')).toBeTruthy();
+    expect(component.form.get('Aliases')).toBeTruthy();
+    expect(component.form.get('DOB')).toBeTruthy();
+    expect(component.form.get('NationalInsuranceNumber')).toBeTruthy();
+    expect(component.form.get('AddressLine1')).toBeTruthy();
+    expect(component.form.get('AddressLine2')).toBeTruthy();
+    expect(component.form.get('AddressLine3')).toBeTruthy();
+    expect(component.form.get('Postcode')).toBeTruthy();
+    expect(component.form.get('VehicleMake')).toBeTruthy();
+    expect(component.form.get('VehicleRegistrationMark')).toBeTruthy();
   });
 
   it('should set up the alias configuration for the personal details form', () => {
     component['setupAliasConfiguration']();
-    expect(component.aliasFields).toEqual(['firstNames', 'lastName']);
+    expect(component.aliasFields).toEqual(['AliasForenames', 'AliasSurname']);
     expect(component.aliasControlsValidation).toEqual(MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS);
   });
 
@@ -106,11 +106,11 @@ describe('PersonalDetailsFormComponent', () => {
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(component.macStateService.manualAccountCreation.personalDetails.aliases.length).keys()],
-      'aliases',
+      [...Array(component.macStateService.manualAccountCreation.personalDetails.Aliases.length).keys()],
+      'Aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.personalDetails);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('addAlias', 'aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
   });
 });

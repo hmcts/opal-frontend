@@ -19,13 +19,13 @@ describe('CompanyDetailsComponent', () => {
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     formData = {
-      companyName: 'Test',
-      addAlias: false,
-      aliases: [],
-      addressLine1: null,
-      addressLine2: null,
-      addressLine3: null,
-      postcode: null,
+      CompanyName: 'Test',
+      AddAlias: false,
+      Aliases: [],
+      AddressLine1: null,
+      AddressLine2: null,
+      AddressLine3: null,
+      Postcode: null,
     };
 
     formSubmit = {

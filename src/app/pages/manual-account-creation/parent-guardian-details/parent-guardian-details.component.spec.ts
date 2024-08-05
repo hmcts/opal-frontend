@@ -21,13 +21,13 @@ describe('ParentGuardianDetailsComponent', () => {
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     formData = {
-      fullName: 'Test test',
-      dateOfBirth: '',
-      nationalInsuranceNumber: '',
-      addressLine1: '',
-      addressLine2: '',
-      addressLine3: '',
-      postcode: '',
+      FullName: 'Test test',
+      DOB: '',
+      NationalInsuranceNumber: '',
+      AddressLine1: '',
+      AddressLine2: '',
+      AddressLine3: '',
+      Postcode: '',
     };
 
     formSubmit = {
