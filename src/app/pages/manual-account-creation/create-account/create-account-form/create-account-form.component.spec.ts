@@ -40,7 +40,7 @@ describe('CreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component.ngOnInit();
-    component.form.controls['accountType'].setValue('fine');
+    component.form.controls['AccountType'].setValue('fine');
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -50,7 +50,7 @@ describe('CreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component['setupAccountTypeListener']();
-    component.form.get('accountType')!.setValue('fine');
+    component.form.get('AccountType')!.setValue('fine');
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -81,9 +81,9 @@ describe('CreateAccountFormComponent', () => {
 
   it('should handle account type change - fine', () => {
     const accountType = 'fine';
-    const fieldName = 'fineDefendantType';
+    const fieldName = 'FineDefendantType';
     const validators = [Validators.required];
-    const fieldsToRemove = ['fixedPenaltyDefendantType'];
+    const fieldsToRemove = ['FixedPenaltyDefendantType'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,9 +100,9 @@ describe('CreateAccountFormComponent', () => {
 
   it('should handle account type change - fixed penalty', () => {
     const accountType = 'fixedPenalty';
-    const fieldName = 'fixedPenaltyDefendantType';
+    const fieldName = 'FixedPenaltyDefendantType';
     const validators = [Validators.required];
-    const fieldsToRemove = ['fineDefendantType'];
+    const fieldsToRemove = ['FineDefendantType'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,7 +119,7 @@ describe('CreateAccountFormComponent', () => {
 
   it('should handle account type change - conditional caution', () => {
     const accountType = 'conditionalCaution';
-    const fieldsToRemove = ['fineDefendantType', 'fixedPenaltyDefendantType'];
+    const fieldsToRemove = ['FineDefendantType', 'FixedPenaltyDefendantType'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,39 +136,39 @@ describe('CreateAccountFormComponent', () => {
 
   it('should set defendant type based on account type - fixed penalty', () => {
     const accountType = 'fixedPenalty';
-    const fieldName = 'fixedPenaltyDefendantType';
+    const fieldName = 'FixedPenaltyDefendantType';
     const fieldValue = 'adultOrYouthOnly';
 
-    component.form.get('accountType')?.setValue(accountType);
+    component.form.get('AccountType')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendantType')?.value).toEqual(fieldValue);
+    expect(component.form.get('DefendantType')?.value).toEqual(fieldValue);
   });
 
   it('should set defendant type based on account type - fine', () => {
     const accountType = 'fine';
-    const fieldName = 'fineDefendantType';
+    const fieldName = 'FineDefendantType';
     const fieldValue = 'adultOrYouthOnly';
 
-    component.form.get('accountType')?.setValue(accountType);
+    component.form.get('AccountType')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendantType')?.value).toEqual(fieldValue);
+    expect(component.form.get('DefendantType')?.value).toEqual(fieldValue);
   });
 
   it('should set defendant type to default for conditional caution account type', () => {
     const accountType = 'conditionalCaution';
     const defaultDefendantType = component.conditionalCautionPenaltyDefendantTypes[0].key;
 
-    component.form.get('accountType')?.setValue(accountType);
+    component.form.get('AccountType')?.setValue(accountType);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendantType')?.value).toEqual(defaultDefendantType);
+    expect(component.form.get('DefendantType')?.value).toEqual(defaultDefendantType);
   });
 
   it('should not do anything as the account, fieldName, and fieldValue are not real', () => {
@@ -176,11 +176,11 @@ describe('CreateAccountFormComponent', () => {
     const fieldName = 'test';
     const fieldValue = 'test';
 
-    component.form.get('accountType')?.setValue(accountType);
+    component.form.get('AccountType')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendantType')?.value).not.toBeDefined();
+    expect(component.form.get('DefendantType')?.value).not.toBeDefined();
   });
 });

@@ -44,6 +44,7 @@ describe('ContactDetailsFormComponent', () => {
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
     const formSubmit = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
+    formSubmit.nestedFlow = false;
     component.defendantType = 'adultOrYouthOnly';
     spyOn(component['formSubmit'], 'emit');
 

@@ -43,8 +43,8 @@ export class CreateAccountComponent extends FormParentBaseComponent {
     const { count, refData } = response;
     const { accountDetails } = this.macStateService.manualAccountCreation;
 
-    if (count === 1 && accountDetails.businessUnit === null) {
-      this.macStateService.manualAccountCreation.accountDetails.businessUnit = refData[0].businessUnitName;
+    if (count === 1 && accountDetails.BusinessUnit === null) {
+      this.macStateService.manualAccountCreation.accountDetails.BusinessUnit = refData[0].businessUnitName;
       this.macStateService.manualAccountCreation.businessUnit = refData[0];
     }
     this.businessUnits = refData;
@@ -74,7 +74,7 @@ export class CreateAccountComponent extends FormParentBaseComponent {
     this.macStateService.manualAccountCreation = {
       ...this.macStateService.manualAccountCreation,
       accountDetails: formData,
-      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === formData.businessUnit)!,
+      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === formData.BusinessUnit)!,
       unsavedChanges: false,
       stateChanges: true,
     };

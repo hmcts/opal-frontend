@@ -4,18 +4,18 @@ import { IAccountTypeDefendantTypeControlNames } from '@interfaces';
 export const MANUAL_ACCOUNT_CREATION_ACCOUNT_TYPE_DEFENDANT_TYPE_CONTROL_NAMES: IAccountTypeDefendantTypeControlNames =
   {
     fine: {
-      fieldName: 'fineDefendantType',
+      fieldName: 'FineDefendantType',
       validators: [Validators.required],
-      fieldsToRemove: ['fixedPenaltyDefendantType'],
+      fieldsToRemove: ['FixedPenaltyDefendantType'],
     },
     fixedPenalty: {
-      fieldName: 'fixedPenaltyDefendantType',
+      fieldName: 'FixedPenaltyDefendantType',
       validators: [Validators.required],
-      fieldsToRemove: ['fineDefendantType'],
+      fieldsToRemove: ['FineDefendantType'],
     },
     conditionalCaution: {
       fieldName: '',
       validators: [],
-      fieldsToRemove: ['fineDefendantType', 'fixedPenaltyDefendantType'],
+      fieldsToRemove: ['FineDefendantType', 'FixedPenaltyDefendantType'],
     },
   };

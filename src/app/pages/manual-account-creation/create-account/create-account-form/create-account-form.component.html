@@ -3,41 +3,41 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit()">
   @if (autoCompleteItems.length === 1) {
-    <p>The account will be created in {{ form.get('businessUnit')?.value }}</p>
+    <p>The account will be created in {{ form.get('BusinessUnit')?.value }}</p>
   } @else {
     <app-alphagov-accessible-autocomplete
-      [control]="form.controls['businessUnit']"
+      [control]="form.controls['BusinessUnit']"
       labelText="Business unit"
       labelClasses="govuk-fieldset__legend--m"
-      inputId="businessUnit"
-      inputName="businessUnit"
+      inputId="BusinessUnit"
+      inputName="BusinessUnit"
       label="Search for a user"
       hintText="Enter area where the account is to be created"
       [autoCompleteItems]="autoCompleteItems"
-      [errors]="formControlErrorMessages['businessUnit']"
+      [errors]="formControlErrorMessages['BusinessUnit']"
     ></app-alphagov-accessible-autocomplete>
   }
 
   <app-govuk-radio
-    fieldSetId="accountType"
+    fieldSetId="AccountType"
     legendText="Account type"
     legendClasses="govuk-fieldset__legend--m"
-    [errors]="formControlErrorMessages['accountType']"
+    [errors]="formControlErrorMessages['AccountType']"
   >
     @for (accountType of accountTypes; track accountType.key) {
       <div
         app-govuk-radios-item
         [labelText]="accountType.value"
         [inputId]="accountType.key"
-        inputName="accountType"
+        inputName="AccountType"
         [inputValue]="accountType.key"
-        [control]="form.get('accountType')"
+        [control]="form.get('AccountType')"
         [inputValueHint]="accountType.key === 'conditionalCaution' ? 'Adult or youth only' : ''"
       ></div>
 
       @switch (accountType.key) {
         @case ('fine') {
-          @if (form.get('accountType')?.value === 'fine') {
+          @if (form.get('AccountType')?.value === 'fine') {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;
@@ -47,7 +47,7 @@
           }
         }
         @case ('fixedPenalty') {
-          @if (form.get('accountType')?.value === 'fixedPenalty') {
+          @if (form.get('AccountType')?.value === 'fixedPenalty') {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;
@@ -70,12 +70,12 @@
 <ng-template #defendantTypesRadioOptions let-defendantTypes="defendantTypes" let-isFine="isFine">
   <div app-govuk-radios-conditional conditionalId="radio">
     <app-govuk-radio
-      [fieldSetId]="isFine ? 'fineDefendantType' : 'fixedPenaltyDefendantType'"
+      [fieldSetId]="isFine ? 'FineDefendantType' : 'FixedPenaltyDefendantType'"
       legendText="Defendant type"
       legendClasses="govuk-fieldset__legend--m"
       legendHint="If sole trader, choose 'Adult or youth only'"
       [errors]="
-        isFine ? formControlErrorMessages['fineDefendantType'] : formControlErrorMessages['fixedPenaltyDefendantType']
+        isFine ? formControlErrorMessages['FineDefendantType'] : formControlErrorMessages['FixedPenaltyDefendantType']
       "
     >
       @for (defendantType of defendantTypes; track defendantType.key) {
@@ -83,9 +83,9 @@
           app-govuk-radios-item
           [labelText]="defendantType.value"
           [inputId]="defendantType.key"
-          [inputName]="isFine ? 'fineDefendantType' : 'fixedPenaltyDefendantType'"
+          [inputName]="isFine ? 'FineDefendantType' : 'FixedPenaltyDefendantType'"
           [inputValue]="defendantType.key"
-          [control]="isFine ? form.get('fineDefendantType') : form.get('fixedPenaltyDefendantType')"
+          [control]="isFine ? form.get('FineDefendantType') : form.get('FixedPenaltyDefendantType')"
         ></div>
       }
     </app-govuk-radio>

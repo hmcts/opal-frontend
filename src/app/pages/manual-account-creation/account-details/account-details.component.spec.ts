@@ -55,19 +55,19 @@ describe('AccountDetailsComponent', () => {
   });
 
   it('should set defendantType correctly', () => {
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'adultOrYouthOnly';
+    mockMacStateService.manualAccountCreation.accountDetails.DefendantType = 'adultOrYouthOnly';
 
     component['setDefendantType']();
 
     expect(component.defendantType).toEqual(
       DEFENDANT_TYPES_STATE[
-        mockMacStateService.manualAccountCreation.accountDetails.defendantType as keyof IDefendantTypes
+        mockMacStateService.manualAccountCreation.accountDetails.DefendantType as keyof IDefendantTypes
       ],
     );
   });
 
   it('should set defendantType to be empty', () => {
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = 'test';
+    mockMacStateService.manualAccountCreation.accountDetails.DefendantType = 'test';
 
     component['setDefendantType']();
 
@@ -76,24 +76,24 @@ describe('AccountDetailsComponent', () => {
 
   it('should not set defendantType', () => {
     component.defendantType = '';
-    mockMacStateService.manualAccountCreation.accountDetails.defendantType = null;
+    mockMacStateService.manualAccountCreation.accountDetails.DefendantType = null;
 
     component['setDefendantType']();
     expect(component.defendantType).toBe('');
   });
 
   it('should set accountType correctly', () => {
-    mockMacStateService.manualAccountCreation.accountDetails.accountType = 'fine';
+    mockMacStateService.manualAccountCreation.accountDetails.AccountType = 'fine';
 
     component['setAccountType']();
 
     expect(component.accountType).toEqual(
-      ACCOUNT_TYPES_STATE[mockMacStateService.manualAccountCreation.accountDetails.accountType as keyof IAccountTypes],
+      ACCOUNT_TYPES_STATE[mockMacStateService.manualAccountCreation.accountDetails.AccountType as keyof IAccountTypes],
     );
   });
 
   it('should set accountType to be empty', () => {
-    mockMacStateService.manualAccountCreation.accountDetails.accountType = 'test';
+    mockMacStateService.manualAccountCreation.accountDetails.AccountType = 'test';
 
     component['setAccountType']();
 
@@ -102,7 +102,7 @@ describe('AccountDetailsComponent', () => {
 
   it('should not set accountType', () => {
     component.accountType = '';
-    mockMacStateService.manualAccountCreation.accountDetails.accountType = null;
+    mockMacStateService.manualAccountCreation.accountDetails.AccountType = null;
 
     component['setAccountType']();
     expect(component.accountType).toBe('');

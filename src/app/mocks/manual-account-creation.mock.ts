@@ -8,7 +8,7 @@ import { MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE } from '../consta
 import { MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE } from '../constants/manual-account-creation-personal-details-state';
 
 export const MANUAL_ACCOUNT_CREATION_MOCK = {
-  accountDetails: { ...MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, defendantType: 'adultOrYouthOnly' },
+  accountDetails: { ...MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE, DefendantType: 'adultOrYouthOnly' },
   employerDetails: MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   contactDetails: MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE,
   parentGuardianDetails: MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE,
