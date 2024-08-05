@@ -1,5 +1,5 @@
 export interface IManualAccountCreationCourtDetailsState {
-  sendingCourt: string | null;
-  pcr: string | null;
-  enforcementCourt: string | null;
+  SendingCourt: string | null;
+  ProsecutorCaseReference: string | null;
+  EnforcingCourt: string | null;
 }
