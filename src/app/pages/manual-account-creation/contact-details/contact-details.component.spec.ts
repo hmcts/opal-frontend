@@ -10,11 +10,25 @@ describe('ContactDetailsComponent', () => {
   let component: ContactDetailsComponent;
   let fixture: ComponentFixture<ContactDetailsComponent>;
   let mockMacStateService: jasmine.SpyObj<MacStateService>;
+  let formSubmit: IManualAccountCreationContactDetailsForm;
+  let formData: IManualAccountCreationContactDetailsState;
 
   beforeEach(async () => {
     mockMacStateService = jasmine.createSpyObj('MacStateService', ['manualAccountCreation']);
 
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
+
+    formData = {
+      EmailAddress1: 'Test',
+      EmailAddress2: '',
+      TelephoneNumberMobile: '',
+      TelephoneNumberHome: '',
+      TelephoneNumberBusiness: '',
+    };
+    formSubmit = {
+      formData,
+      nestedFlow: false,
+    };
 
     await TestBed.configureTestingModule({
       imports: [ContactDetailsComponent],
@@ -35,20 +49,8 @@ describe('ContactDetailsComponent', () => {
 
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IManualAccountCreationContactDetailsState = {
-      primaryEmailAddress: 'Test',
-      secondaryEmailAddress: null,
-      homeTelephoneNumber: null,
-      mobileTelephoneNumber: null,
-      workTelephoneNumber: null,
-    };
 
-    const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
-      formData,
-      nestedFlow: false,
-    };
-
-    component.handleContactDetailsSubmit(contactDetailsFormSubmit);
+    component.handleContactDetailsSubmit(formSubmit);
 
     expect(mockMacStateService.manualAccountCreation.contactDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.accountDetails]);
@@ -57,20 +59,9 @@ describe('ContactDetailsComponent', () => {
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    const formData: IManualAccountCreationContactDetailsState = {
-      primaryEmailAddress: 'Test',
-      secondaryEmailAddress: null,
-      homeTelephoneNumber: null,
-      mobileTelephoneNumber: null,
-      workTelephoneNumber: null,
-    };
+    formSubmit.nestedFlow = true;
 
-    const contactDetailsFormSubmit: IManualAccountCreationContactDetailsForm = {
-      formData,
-      nestedFlow: true,
-    };
-
-    component.handleContactDetailsSubmit(contactDetailsFormSubmit);
+    component.handleContactDetailsSubmit(formSubmit);
 
     expect(mockMacStateService.manualAccountCreation.contactDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([ManualAccountCreationRoutes.employerDetails]);

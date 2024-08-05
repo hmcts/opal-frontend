@@ -44,11 +44,11 @@ export class ContactDetailsFormComponent extends FormBaseComponent implements On
    */
   private setupContactDetailsForm(): void {
     this.form = new FormGroup({
-      primaryEmailAddress: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      secondaryEmailAddress: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      mobileTelephoneNumber: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
-      homeTelephoneNumber: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
-      workTelephoneNumber: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
+      EmailAddress1: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
+      EmailAddress2: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
+      TelephoneNumberMobile: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
+      TelephoneNumberHome: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
+      TelephoneNumberBusiness: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
     });
   }
 
