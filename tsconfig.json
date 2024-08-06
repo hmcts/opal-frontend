@@ -30,6 +30,8 @@
       "@components/alphagov": ["./src/app/components/alphagov/index.ts"],
       "@components/abstract": ["./src/app/components/abstract/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
+      "@enums/fines": ["./src/app/fines/enums/index.ts"],
+      "@enums/fines/mac": ["./src/app/fines/mac/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],
       "@interfaces/fines/mac": ["./src/app/fines/mac/interfaces/index.ts"],

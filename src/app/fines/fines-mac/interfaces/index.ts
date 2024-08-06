@@ -17,6 +17,7 @@ import { IFinesMacParentGuardianForm } from './fines-mac-parent-guardian-form.in
 import { IFinesMacPersonalDetailsAlias } from './fines-mac-personal-details-alias.interface';
 import { IFinesMacPersonalDetailsForm } from './fines-mac-personal-details-form.interface';
 import { IFinesMacPersonalDetailsState } from './fines-mac-personal-details-state.interface';
+import { IFinesMacCreateAccountControlNames } from './fines-mac-create-account-control-names.interface';
 export {
   IFinesMacState,
   IFinesMacAccountDetailsState,
@@ -37,4 +38,5 @@ export {
   IFinesMacPersonalDetailsAlias,
   IFinesMacPersonalDetailsForm,
   IFinesMacPersonalDetailsState,
+  IFinesMacCreateAccountControlNames,
 };

@@ -1,7 +1,7 @@
 import { Validators } from '@angular/forms';
-import { IAccountTypeDefendantTypeControlNames } from '@interfaces';
+import { IFinesMacCreateAccountControlNames } from '../interfaces';
 
-export const FINES_MAC_TYPE_DEFENDANT_TYPE_CONTROL_NAMES: IAccountTypeDefendantTypeControlNames = {
+export const FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES: IFinesMacCreateAccountControlNames = {
   fine: {
     fieldName: 'fineDefendantType',
     validators: [Validators.required],

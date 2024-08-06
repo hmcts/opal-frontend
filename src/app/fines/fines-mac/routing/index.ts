@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import { RoutingPaths } from '@enums';
 import { authGuard, canDeactivateGuard } from '@guards';
+import { FinesMacRoutingPaths } from '../enums';
 
 export const routing: Routes = [
   {
     path: '',
-    redirectTo: RoutingPaths.manualAccountCreationCreateAccount,
+    redirectTo: FinesMacRoutingPaths.finesMacCreateAccount,
     pathMatch: 'full',
   },
   {
-    path: RoutingPaths.manualAccountCreationCreateAccount,
+    path: FinesMacRoutingPaths.finesMacCreateAccount,
     loadComponent: () =>
       import('../fines-mac-create-account/fines-mac-create-account.component').then(
         (c) => c.FinesMacCreateAccountComponent,
@@ -18,7 +18,7 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationAccountDetails,
+    path: FinesMacRoutingPaths.finesMacAccountDetails,
     loadComponent: () =>
       import('../fines-mac-account-details/fines-mac-account-details.component').then(
         (c) => c.FinesMacAccountDetailsComponent,
@@ -26,7 +26,7 @@ export const routing: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationEmployerDetails,
+    path: FinesMacRoutingPaths.finesMacEmployerDetails,
     loadComponent: () =>
       import('../fines-mac-employer-details/fines-mac-employer-details.component').then(
         (c) => c.FinesMacEmployerDetailsComponent,
@@ -35,7 +35,7 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationContactDetails,
+    path: FinesMacRoutingPaths.finesMacContactDetails,
     loadComponent: () =>
       import('../fines-mac-contact-details/fines-mac-contact-details.component').then(
         (c) => c.FinesMacContactDetailsComponent,
@@ -44,7 +44,7 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationParentGuardianDetails,
+    path: FinesMacRoutingPaths.finesMacParentGuardianDetails,
     loadComponent: () =>
       import('../fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component').then(
         (c) => c.FinesMacParentGuardianDetailsComponent,
@@ -53,7 +53,7 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationPersonalDetails,
+    path: FinesMacRoutingPaths.finesMacPersonalDetails,
     loadComponent: () =>
       import('../fines-mac-personal-details/fines-mac-personal-details.component').then(
         (c) => c.FinesMacPersonalDetailsComponent,
@@ -62,7 +62,7 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationOffenceDetails,
+    path: FinesMacRoutingPaths.finesMacOffenceDetails,
     loadComponent: () =>
       import('../fines-mac-offence-details/fines-mac-offence-details.component').then(
         (c) => c.FinesMacOffenceDetailsComponent,
@@ -70,7 +70,7 @@ export const routing: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationCompanyDetails,
+    path: FinesMacRoutingPaths.finesMacCompanyDetails,
     loadComponent: () =>
       import('../fines-mac-company-details/fines-mac-company-details.component').then(
         (c) => c.FinesMacCompanyDetailsComponent,
@@ -79,7 +79,7 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
   },
   {
-    path: RoutingPaths.manualAccountCreationCourtDetails,
+    path: FinesMacRoutingPaths.finesMacCourtDetails,
     loadComponent: () =>
       import('../fines-mac-court-details/fines-mac-court-details.component').then(
         (c) => c.FinesMacCourtDetailsComponent,

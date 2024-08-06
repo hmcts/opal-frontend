@@ -2,10 +2,11 @@ import { Routes } from '@angular/router';
 import { authGuard, canDeactivateGuard } from '@guards';
 import { userStateResolver } from '@resolvers';
 import { routing as macRouting } from '../fines-mac/routing';
+import { FinesRoutingPaths } from '../enums/fines-routing-paths';
 
 export const routing: Routes = [
   {
-    path: 'fines',
+    path: FinesRoutingPaths.fines,
     loadComponent: () => import('../../fines/fines.component').then((c) => c.FinesComponent),
     children: [
       {
@@ -14,7 +15,7 @@ export const routing: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'manual-account-creation',
+        path: FinesRoutingPaths.finesMac,
         loadComponent: () => import('../../fines/fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         canActivate: [authGuard],
         children: macRouting,

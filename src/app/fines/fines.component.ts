@@ -6,7 +6,6 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet],
   templateUrl: './fines.component.html',
-  styleUrl: './fines.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesComponent {}

@@ -1,75 +1,75 @@
-import { ManualAccountCreationRoutes } from '@enums';
-import { IManualAccountCreationNestedRoutes } from '@interfaces';
-import { MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS } from '@constants';
+import { FinesMacRoutes } from '../enums';
+import { IFinesMacNestedRoutes } from '../interfaces';
+import { FINES_MAC_NESTED_BUTTONS } from './fines-mac-nested-buttons';
 
-export const FINES_MAC_NESTED_ROUTES: Record<string, IManualAccountCreationNestedRoutes> = {
+export const FINES_MAC_NESTED_ROUTES: Record<string, IFinesMacNestedRoutes> = {
   adultOrYouthOnly: {
     courtDetails: {
-      nextRoute: ManualAccountCreationRoutes.personalDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.personalDetails,
+      nextRoute: FinesMacRoutes.personalDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.personalDetails,
     },
     personalDetails: {
-      nextRoute: ManualAccountCreationRoutes.contactDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.contactDetails,
+      nextRoute: FinesMacRoutes.contactDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.contactDetails,
     },
     contactDetails: {
-      nextRoute: ManualAccountCreationRoutes.employerDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.employerDetails,
+      nextRoute: FinesMacRoutes.employerDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.employerDetails,
     },
     employerDetails: {
-      nextRoute: ManualAccountCreationRoutes.offenceDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.offenceDetails,
+      nextRoute: FinesMacRoutes.offenceDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: ManualAccountCreationRoutes.paymentDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.paymentDetails,
+      nextRoute: FinesMacRoutes.paymentDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.paymentDetails,
     },
     companyDetails: null,
     parentOrGuardianDetails: null,
   },
   parentOrGuardianToPay: {
     courtDetails: {
-      nextRoute: ManualAccountCreationRoutes.parentOrGuardianDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.parentOrGuardianDetails,
+      nextRoute: FinesMacRoutes.parentOrGuardianDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.parentOrGuardianDetails,
     },
     parentOrGuardianDetails: {
-      nextRoute: ManualAccountCreationRoutes.contactDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.contactDetails,
+      nextRoute: FinesMacRoutes.contactDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.contactDetails,
     },
     contactDetails: {
-      nextRoute: ManualAccountCreationRoutes.employerDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.employerDetails,
+      nextRoute: FinesMacRoutes.employerDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.employerDetails,
     },
     employerDetails: {
-      nextRoute: ManualAccountCreationRoutes.personalDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.personalDetails,
+      nextRoute: FinesMacRoutes.personalDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.personalDetails,
     },
     personalDetails: {
-      nextRoute: ManualAccountCreationRoutes.offenceDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.offenceDetails,
+      nextRoute: FinesMacRoutes.offenceDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: ManualAccountCreationRoutes.paymentDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.paymentDetails,
+      nextRoute: FinesMacRoutes.paymentDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.paymentDetails,
     },
     companyDetails: null,
   },
   company: {
     courtDetails: {
-      nextRoute: ManualAccountCreationRoutes.companyDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.companyDetails,
+      nextRoute: FinesMacRoutes.companyDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.companyDetails,
     },
     companyDetails: {
-      nextRoute: ManualAccountCreationRoutes.contactDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.contactDetails,
+      nextRoute: FinesMacRoutes.contactDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.contactDetails,
     },
     contactDetails: {
-      nextRoute: ManualAccountCreationRoutes.offenceDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.offenceDetails,
+      nextRoute: FinesMacRoutes.offenceDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: ManualAccountCreationRoutes.personalDetails,
-      buttonText: MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS.personalDetails,
+      nextRoute: FinesMacRoutes.personalDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.personalDetails,
     },
     personalDetails: null,
     parentOrGuardianDetails: null,
