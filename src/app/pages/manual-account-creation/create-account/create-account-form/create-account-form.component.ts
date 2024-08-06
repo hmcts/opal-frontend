@@ -81,9 +81,9 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
    */
   private setupAccountDetailsForm(): void {
     this.form = new FormGroup({
-      businessUnit: new FormControl(null, [Validators.required]),
-      accountType: new FormControl(null, [Validators.required]),
-      defendantType: new FormControl(null),
+      BusinessUnit: new FormControl(null, [Validators.required]),
+      AccountType: new FormControl(null, [Validators.required]),
+      DefendantType: new FormControl(null),
     });
   }
 
@@ -93,7 +93,7 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
    */
   private setupAccountTypeListener(): void {
     this.accountTypeListener = this.form
-      .get('accountType')!
+      .get('AccountType')!
       .valueChanges.pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((accountType: string) => this.handleAccountTypeChange(accountType));
   }
@@ -119,7 +119,7 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
    * Sets the defendant type based on the selected account type.
    */
   private setDefendantType(): void {
-    const accountType = this.form.get('accountType')?.value;
+    const accountType = this.form.get('AccountType')?.value;
     const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IAccountTypes] ?? '';
     const fieldValue = this.form.get(fieldName)?.value;
 
@@ -129,7 +129,7 @@ export class CreateAccountFormComponent extends FormBaseComponent implements OnI
       conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
     };
 
-    this.form.get('defendantType')?.setValue(defendantTypeMap[accountType as keyof IAccountTypes]);
+    this.form.get('DefendantType')?.setValue(defendantTypeMap[accountType as keyof IAccountTypes]);
   }
 
   /**

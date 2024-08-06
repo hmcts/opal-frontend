@@ -44,7 +44,7 @@ export class CourtDetailsComponent extends FormParentBaseComponent {
     enforcementCourtData: this.enforcementCourtData$,
   });
 
-  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.DefendantType!;
 
   /**
    * Creates an array of autocomplete items based on the response from the server.

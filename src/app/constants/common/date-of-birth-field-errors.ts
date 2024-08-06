@@ -1,5 +1,5 @@
 export const DATE_OF_BIRTH_FIELD_ERRORS = {
-  dateOfBirth: {
+  DOB: {
     invalidDateFormat: {
       message: `Enter date of birth in the format DD/MM/YYYY`,
       priority: 1,

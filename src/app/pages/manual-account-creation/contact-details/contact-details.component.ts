@@ -13,7 +13,7 @@ import { MANUAL_ACCOUNT_CREATION_NESTED_ROUTES } from '@constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactDetailsComponent extends FormParentBaseComponent {
-  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.DefendantType!;
 
   /**
    * Handles the form submission for contact details.

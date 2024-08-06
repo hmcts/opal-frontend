@@ -4,57 +4,57 @@
   <app-govuk-select
     labelText="Title"
     labelClasses="govuk-label--s"
-    selectId="title"
-    selectName="title"
+    selectId="Title"
+    selectName="Title"
     [options]="titleOptions"
-    [control]="form.controls['title']"
-    [errors]="formControlErrorMessages['title']"
+    [control]="form.controls['Title']"
+    [errors]="formControlErrorMessages['Title']"
   ></app-govuk-select>
   <app-govuk-text-input
     labelText="First names"
-    inputId="firstNames"
-    inputName="firstNames"
+    inputId="Forenames"
+    inputName="Forenames"
     labelClasses="govuk-label--s"
     hintText="This can include their middle names"
-    [control]="form.controls['firstNames']"
-    [errors]="formControlErrorMessages['firstNames']"
+    [control]="form.controls['Forenames']"
+    [errors]="formControlErrorMessages['Forenames']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Last name"
-    inputId="lastName"
-    inputName="lastName"
+    inputId="Surname"
+    inputName="Surname"
     labelClasses="govuk-label--s"
-    [control]="form.controls['lastName']"
-    [errors]="formControlErrorMessages['lastName']"
+    [control]="form.controls['Surname']"
+    [errors]="formControlErrorMessages['Surname']"
   ></app-govuk-text-input>
   <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
       app-govuk-checkboxes-item
       labelText="Add aliases"
-      inputId="addAlias"
-      inputName="addAlias"
-      [control]="form.get('addAlias')"
+      inputId="AddAlias"
+      inputName="AddAlias"
+      [control]="form.get('AddAlias')"
     ></div>
   </app-govuk-checkboxes>
 
-  @if (form.get('addAlias')?.value === true) {
-    <div app-govuk-checkboxes-conditional conditionalId="addAlias" formArrayName="aliases">
+  @if (form.get('AddAlias')?.value === true) {
+    <div app-govuk-checkboxes-conditional conditionalId="AddAlias" formArrayName="Aliases">
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="First names"
-            [inputId]="aliasControls[rowIndex]['firstNames'].inputId"
-            [inputName]="aliasControls[rowIndex]['firstNames'].inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['firstNames'].controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex]['firstNames'].controlName]"
+            [inputId]="aliasControls[rowIndex]['AliasForenames'].inputId"
+            [inputName]="aliasControls[rowIndex]['AliasForenames'].inputName"
+            [control]="form.get(['Aliases', rowIndex, aliasControls[rowIndex]['AliasForenames'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['AliasForenames'].controlName]"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Last name"
-            [inputId]="aliasControls[rowIndex]['lastName'].inputId"
-            [inputName]="aliasControls[rowIndex]['lastName'].inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['lastName'].controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex]['lastName'].controlName]"
+            [inputId]="aliasControls[rowIndex]['AliasSurname'].inputId"
+            [inputName]="aliasControls[rowIndex]['AliasSurname'].inputName"
+            [control]="form.get(['Aliases', rowIndex, aliasControls[rowIndex]['AliasSurname'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['AliasSurname'].controlName]"
           ></app-govuk-text-input>
         </fieldset>
       }
@@ -63,8 +63,8 @@
         <div class="govuk-!-margin-bottom-3">
           <a
             class="govuk-link govuk-link--no-visited-state"
-            (click)="removeAlias(aliasControls.length - 1, 'aliases')"
-            (keyup.enter)="removeAlias(aliasControls.length - 1, 'aliases')"
+            (click)="removeAlias(aliasControls.length - 1, 'Aliases')"
+            (keyup.enter)="removeAlias(aliasControls.length - 1, 'Aliases')"
             tabindex="0"
           >
             Remove
@@ -76,7 +76,7 @@
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
-          (buttonClickEvent)="addAlias(aliasControls.length, 'aliases')"
+          (buttonClickEvent)="addAlias(aliasControls.length, 'Aliases')"
           >Add another alias</app-govuk-button
         >
       }
@@ -85,7 +85,7 @@
   <app-custom-date-of-birth
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
-    (dateChange)="setInputValue($event, 'dateOfBirth')"
+    (dateChange)="setInputValue($event, 'DOB')"
   ></app-custom-date-of-birth>
   <app-custom-national-insurance-number
     [form]="form"
@@ -102,21 +102,21 @@
   <h2 class="govuk-heading-m">Vehicle details</h2>
   <app-govuk-text-input
     labelText="Make of the car"
-    inputId="makeOfCar"
-    inputName="makeOfCar"
-    inputName="makeOfCar"
+    inputId="VehicleMake"
+    inputName="VehicleMake"
+    inputName="VehicleMake"
     labelClasses="govuk-label--s"
-    [control]="form.controls['makeOfCar']"
-    [errors]="formControlErrorMessages['makeOfCar']"
+    [control]="form.controls['VehicleMake']"
+    [errors]="formControlErrorMessages['VehicleMake']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Registration number"
-    inputId="registrationNumber"
-    inputName="registrationNumber"
+    inputId="VehicleRegistrationMark"
+    inputName="VehicleRegistrationMark"
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
-    [control]="form.controls['registrationNumber']"
-    [errors]="formControlErrorMessages['registrationNumber']"
+    [control]="form.controls['VehicleRegistrationMark']"
+    [errors]="formControlErrorMessages['VehicleRegistrationMark']"
   ></app-govuk-text-input>
 
   <div class="govuk-grid-row">

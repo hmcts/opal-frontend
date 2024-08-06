@@ -18,16 +18,16 @@ describe('EmployerDetailsComponent', () => {
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     formData = {
-      employerName: 'Test',
-      employeeReference: null,
-      employerEmailAddress: null,
-      employerTelephone: null,
-      employerAddress1: null,
-      employerAddress2: null,
-      employerAddress3: null,
-      employerAddress4: null,
-      employerAddress5: null,
-      employerPostcode: null,
+      EmployerCompanyName: 'Test',
+      EmployerReference: null,
+      EmployerEmailAddress: null,
+      EmployerTelephoneNumber: null,
+      EmployerAddressLine1: null,
+      EmployerAddressLine2: null,
+      EmployerAddressLine3: null,
+      EmployerAddressLine4: null,
+      EmployerAddressLine5: null,
+      EmployerPostcode: null,
     };
 
     employerDetailsFormSubmit = {

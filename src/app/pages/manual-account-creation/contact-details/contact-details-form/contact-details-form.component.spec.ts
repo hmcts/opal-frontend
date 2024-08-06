@@ -30,29 +30,28 @@ describe('ContactDetailsFormComponent', () => {
 
   it('should emit form submit event with form value', () => {
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
-    const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
-    contactDetailsForm.nestedFlow = true;
-    contactDetailsForm.nestedFlow = true;
+    const formSubmit = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
+    formSubmit.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
 
-    component['rePopulateForm'](contactDetailsForm.formData);
+    component['rePopulateForm'](formSubmit.formData);
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(contactDetailsForm);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
   });
 
   it('should emit form submit event with form value', () => {
     const event = {} as SubmitEvent;
+    const formSubmit = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
+    formSubmit.nestedFlow = false;
     component.defendantType = 'adultOrYouthOnly';
-    const contactDetailsForm = MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_FORM_MOCK;
-    contactDetailsForm.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');
 
-    component['rePopulateForm'](contactDetailsForm.formData);
+    component['rePopulateForm'](formSubmit.formData);
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(contactDetailsForm);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
   });
 });

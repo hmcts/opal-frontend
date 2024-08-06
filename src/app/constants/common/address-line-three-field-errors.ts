@@ -1,5 +1,5 @@
 export const ADDRESS_LINE_THREE_FIELD_ERRORS = {
-  addressLine3: {
+  AddressLine3: {
     maxlength: {
       message: `The address line 3 must be 16 characters or fewer`,
       priority: 1,

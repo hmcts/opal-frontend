@@ -1,15 +1,15 @@
 import { IManualAccountCreationCompanyDetailsState } from '../interfaces';
 
 export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE_MOCK: IManualAccountCreationCompanyDetailsState = {
-  companyName: 'Acme Org Ltd.',
-  addAlias: true,
-  aliases: [
+  CompanyName: 'Acme Org Ltd.',
+  AddAlias: true,
+  Aliases: [
     {
-      companyName_0: 'Boring Co.',
+      AliasOrganisationName_0: 'Boring Co.',
     },
   ],
-  addressLine1: '123 Street',
-  addressLine2: 'City',
-  addressLine3: 'County',
-  postcode: 'AB12 3CD',
+  AddressLine1: '123 Street',
+  AddressLine2: 'City',
+  AddressLine3: 'County',
+  Postcode: 'AB12 3CD',
 };

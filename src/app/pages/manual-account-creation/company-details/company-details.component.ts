@@ -13,7 +13,7 @@ import { CompanyDetailsFormComponent } from './company-details-form/company-deta
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyDetailsComponent extends FormParentBaseComponent {
-  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.DefendantType!;
 
   /**
    * Handles the form submission for company details.

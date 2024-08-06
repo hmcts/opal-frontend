@@ -66,18 +66,18 @@ describe('CompanyDetailsFormComponent', () => {
   it('should set up the company details form', () => {
     component['setupCompanyDetailsForm']();
     expect(component.form).toBeTruthy();
-    expect(component.form.get('companyName')).toBeTruthy();
-    expect(component.form.get('addAlias')).toBeTruthy();
-    expect(component.form.get('aliases')).toBeTruthy();
-    expect(component.form.get('addressLine1')).toBeTruthy();
-    expect(component.form.get('addressLine2')).toBeTruthy();
-    expect(component.form.get('addressLine3')).toBeTruthy();
-    expect(component.form.get('postcode')).toBeTruthy();
+    expect(component.form.get('CompanyName')).toBeTruthy();
+    expect(component.form.get('AddAlias')).toBeTruthy();
+    expect(component.form.get('Aliases')).toBeTruthy();
+    expect(component.form.get('AddressLine1')).toBeTruthy();
+    expect(component.form.get('AddressLine2')).toBeTruthy();
+    expect(component.form.get('AddressLine3')).toBeTruthy();
+    expect(component.form.get('Postcode')).toBeTruthy();
   });
 
   it('should set up the alias configuration for the company details form', () => {
     component['setupAliasConfiguration']();
-    expect(component.aliasFields).toEqual(['companyName']);
+    expect(component.aliasFields).toEqual(['AliasOrganisationName']);
     expect(component.aliasControlsValidation).toEqual(MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS);
   });
 
@@ -100,11 +100,11 @@ describe('CompanyDetailsFormComponent', () => {
     expect(component['setupCompanyDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(component.macStateService.manualAccountCreation.companyDetails.aliases.length).keys()],
-      'aliases',
+      [...Array(component.macStateService.manualAccountCreation.companyDetails.Aliases.length).keys()],
+      'Aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockMacStateService.manualAccountCreation.companyDetails);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('addAlias', 'aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
   });
 });

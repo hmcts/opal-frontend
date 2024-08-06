@@ -52,7 +52,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I enter address line 1 "456 Lamburgh Street"
 
     #     Then I click the "Add contact details" button
@@ -65,7 +65,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     Then I set the "Alias 1", "First names" to "Micheal Kores"
     #     And I enter address line 1 "456 Lamburgh Street"
 
@@ -77,7 +77,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     Then I set the "Alias 1", "Last name" to "Micheal Kores"
     #     And I enter address line 1 "456 Lamburgh Street"
 
@@ -89,7 +89,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     And I enter address line 1 "456 Lamburgh Street"
 
@@ -104,7 +104,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     Then I set the "Alias 2", "First names" to "Micheal Kores"
     #     And I enter address line 1 "456 Lamburgh Street"
@@ -119,7 +119,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     Then I set the "Alias 2", "Last name" to "Micheal Kores"
     #     And I enter address line 1 "456 Lamburgh Street"
@@ -134,7 +134,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     And I click the "Add another alias" button
     #     And I enter address line 1 "456 Lamburgh Street"
@@ -153,7 +153,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     And I click the "Add another alias" button
     #     And I enter address line 1 "456 Lamburgh Street"
@@ -172,7 +172,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     And I click the "Add another alias" button
     #     And I enter address line 1 "456 Lamburgh Street"
@@ -191,7 +191,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     And I click the "Add another alias" button
     #     And I click the "Add another alias" button
@@ -213,7 +213,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     #     When I enter data into first names and last name in personal details screen
     #         | firstNames | John Smith Michael       |
     #         | lastName   | Astridge Lamsden Langley |
-    #     When I select add aliases check box
+    #     When I select the "Add aliases" checkbox
     #     And I click the "Add another alias" button
     #     And I click the "Add another alias" button
     #     And I click the "Add another alias" button
@@ -234,7 +234,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     When I select title "Mrs" from dropdown
     When I enter "John Smith Michael" into the "First names" field
     When I enter "Astridge Lamsden Langley" into the "Last name" field
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -256,7 +256,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     When I select title "Ms" from dropdown
     When I enter "John Smith Michael" into the "First names" field
     When I enter "Astridge Lamsden Langley" into the "Last name" field
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -280,7 +280,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     When I select title "Mrs" from dropdown
     When I enter "John Smith Michael" into the "First names" field
     When I enter "Astridge Lamsden Langley" into the "Last name" field
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -304,7 +304,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     When I select title "Mrs" from dropdown
     When I enter "John Smith Michael" into the "First names" field
     When I enter "Astridge Lamsden Langley" into the "Last name" field
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button

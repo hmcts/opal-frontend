@@ -16,7 +16,7 @@ describe('CustomDateOfBirthComponent', () => {
     component = fixture.componentInstance;
 
     component.form = new FormGroup({
-      dateOfBirth: new FormControl(null),
+      DOB: new FormControl(null),
     });
     component.formControlErrorMessages = {};
 

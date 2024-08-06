@@ -19,19 +19,19 @@ describe('PersonalDetailsComponent', () => {
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     formData = {
-      title: 'Mr',
-      firstNames: null,
-      lastName: null,
-      addAlias: false,
-      aliases: [],
-      dateOfBirth: null,
-      nationalInsuranceNumber: null,
-      addressLine1: null,
-      addressLine2: null,
-      addressLine3: null,
-      postcode: null,
-      makeOfCar: null,
-      registrationNumber: null,
+      Title: 'Mr',
+      Forenames: null,
+      Surname: null,
+      AddAlias: false,
+      Aliases: [],
+      DOB: null,
+      NationalInsuranceNumber: null,
+      AddressLine1: null,
+      AddressLine2: null,
+      AddressLine3: null,
+      Postcode: null,
+      VehicleMake: null,
+      VehicleRegistrationMark: null,
     };
 
     formSubmit = {

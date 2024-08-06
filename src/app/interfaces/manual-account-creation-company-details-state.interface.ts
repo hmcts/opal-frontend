@@ -1,11 +1,11 @@
 import { IManualAccountCreationCompanyDetailsAliasState } from './manual-account-creation-company-details-alias-state.interface';
 
 export interface IManualAccountCreationCompanyDetailsState {
-  companyName: string | null;
-  addAlias: boolean | null;
-  aliases: IManualAccountCreationCompanyDetailsAliasState[];
-  addressLine1: string | null;
-  addressLine2: string | null;
-  addressLine3: string | null;
-  postcode: string | null;
+  CompanyName: string | null;
+  AddAlias: boolean | null;
+  Aliases: IManualAccountCreationCompanyDetailsAliasState[];
+  AddressLine1: string | null;
+  AddressLine2: string | null;
+  AddressLine3: string | null;
+  Postcode: string | null;
 }
