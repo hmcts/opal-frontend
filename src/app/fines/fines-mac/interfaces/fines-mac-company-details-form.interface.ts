@@ -1,6 +1,6 @@
-import { IFinesCompanyDetailsState } from './fines-mac-company-details-state.interface';
+import { IFinesMacCompanyDetailsState } from './fines-mac-company-details-state.interface';
 
 export interface IFinesMacCompanyDetailsForm {
-  formData: IFinesCompanyDetailsState;
+  formData: IFinesMacCompanyDetailsState;
   nestedFlow: boolean;
 }

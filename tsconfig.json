@@ -32,7 +32,8 @@
       "@constants": ["./src/app/constants/index.ts"],
       "@interceptors": ["./src/app/interceptors/index.ts"],
       "@resolvers": ["./src/app/resolvers/index.ts"],
-      "@routing": ["./src/app/routing/index.ts"]
+      "@routing": ["./src/app/routing/index.ts"],
+      "@validators": ["./src/app/validators/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
