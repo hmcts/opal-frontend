@@ -1,7 +1,6 @@
 import { IFinesMacState } from './fines-mac-state.interface';
 import { IFinesMacAccountDetailsState } from './fines-mac-account-details-state.interface';
 import { IFinesMacAccountStatus } from './fines-mac-account-status.interface';
-import { IFinesMacCompanyDetailsAliasState } from './fines-mac-company-details-alias-state.interface';
 import { IFinesMacCompanyDetailsAlias } from './fines-mac-company-details-alias.interface';
 import { IFinesMacCompanyDetailsForm } from './fines-mac-company-details-form.interface';
 import { IFinesMacCompanyDetailsState } from './fines-mac-company-details-state.interface';
@@ -15,7 +14,6 @@ import { IFinesMacFieldTypes } from './fines-mac-field-types.interface';
 import { IFinesMacNestedRoutes } from './fines-mac-nested-routes.interface';
 import { IFinesMacParentGuardianDetailsState } from './fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacParentGuardianForm } from './fines-mac-parent-guardian-form.interface';
-import { IFinesMacPersonalDetailsAliasState } from './fines-mac-personal-details-alias-state.interface';
 import { IFinesMacPersonalDetailsAlias } from './fines-mac-personal-details-alias.interface';
 import { IFinesMacPersonalDetailsForm } from './fines-mac-personal-details-form.interface';
 import { IFinesMacPersonalDetailsState } from './fines-mac-personal-details-state.interface';
@@ -23,7 +21,6 @@ export {
   IFinesMacState,
   IFinesMacAccountDetailsState,
   IFinesMacAccountStatus,
-  IFinesMacCompanyDetailsAliasState,
   IFinesMacCompanyDetailsAlias,
   IFinesMacCompanyDetailsForm,
   IFinesMacCompanyDetailsState,
@@ -37,7 +34,6 @@ export {
   IFinesMacNestedRoutes,
   IFinesMacParentGuardianDetailsState,
   IFinesMacParentGuardianForm,
-  IFinesMacPersonalDetailsAliasState,
   IFinesMacPersonalDetailsAlias,
   IFinesMacPersonalDetailsForm,
   IFinesMacPersonalDetailsState,

@@ -1,3 +1,10 @@
 export interface IFinesMacAccountStatus {
-  [key: string]: boolean;
+  employerDetails: boolean;
+  accountDetails: boolean;
+  contactDetails: boolean;
+  parentGuardianDetails: boolean;
+  personalDetails: boolean;
+  companyDetails: boolean;
+  unsavedChanges: boolean;
+  stateChanges: boolean;
 }
