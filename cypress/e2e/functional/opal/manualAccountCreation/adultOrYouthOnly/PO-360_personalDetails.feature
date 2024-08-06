@@ -128,12 +128,12 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
 
   Scenario: AC4- positive: If a user selects the 'Add Aliases' tick box
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     Then I see the "Alias 1" sub heading in aliases
     Then I verify the text boxes "First names","Last name" below the sub heading
 
   Scenario: AC5-positive: If a user selects 'Add another alias' for the first time
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     When I select add another alias
     Then I see the "Alias 2" sub heading in aliases
     Then I verify the text boxes "First names","Last name" below the sub heading
@@ -141,7 +141,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #And I see "Add another alias" button below the "Remove" link "last name"
 
   Scenario: AC6-positive: If a user selects 'Add another alias' for the nth time (where N = 2, 3 or 4)
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     Then I see the "Alias 1" sub heading in aliases
     Then I verify the text boxes "First names","Last name" below the sub heading
     And I click the "Add another alias" button
@@ -168,7 +168,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     Then I see the "Remove" link below the "Alias 5", "Last name" input
 
   Scenario: AC7a- positive: verifying the 'Remove' alias button work flow
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     Then I see the "Alias 1" sub heading in aliases
     Then I verify the text boxes "First names","Last name" below the sub heading
 
@@ -220,14 +220,14 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #And I do not see the "Remove" link below the "Alias1", "Last name" input
 
   Scenario: AC8- positive: If the user unticks the 'Add aliases' tick box
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     Then I set the "Alias 1", "First names" to "First names in alias"
     And I set the "Alias 1", "Last name" to "Last name in aliases"
 
-    Then I unselect aliases check box
+    Then I unselect the "Add aliases" checkbox
     Then I no longer see "Alias 1" sub heading
 
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     Then I see the "Alias 1" sub heading in aliases
 
     Then I see "Alias 1", "First names" is set to ""
@@ -254,7 +254,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith Michael       |
   #     | lastName   | Astridge Lamsden Langley |
 
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I enter address line 1 "456 Lamburgh Street"
   #   Then I click the "Return to account details" button
   #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
@@ -265,7 +265,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #   When I enter data into first names and last name in personal details screen
   #     | firstNames | John Smith Michael       |
   #     | lastName   | Astridge Lamsden Langley |
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   Then I set the "Alias 1", "First names" to "Micheal Kores"
   #   And I enter address line 1 "456 Lamburgh Street"
   #   Then I click the "Return to account details" button
@@ -276,7 +276,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #   When I enter data into first names and last name in personal details screen
   #     | firstNames | John Smith       |
   #     | lastName   | Astridge Lamsden |
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I set the "Alias 1", "Last name" to "Guccio gucci "
   #   And I enter address line 1 "456 Lamburgh Street"
   #   Then I click the "Return to account details" button
@@ -288,7 +288,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith       |
   #     | lastName   | Astridge Lamsden |
 
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I enter address line 1 "456 Lamburgh Street"
   #   Then I click the "Return to account details" button
@@ -303,7 +303,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith       |
   #     | lastName   | Astridge Lamsden |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   Then I set the "Alias 2", "First names" to "Gucci Gucci "
   #   Then I click the "Return to account details" button
@@ -317,7 +317,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith |
   #     | lastName   | Astridge   |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I set the "Alias 2", "Last name" to "Holland and Barrates"
   #   Then I click the "Return to account details" button
@@ -332,7 +332,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith |
   #     | lastName   | Astridge   |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
   #   Then I click the "Return to account details" button
@@ -349,7 +349,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith       |
   #     | lastName   | Astridge Lamsden |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
   #   And I set the "Alias 3", "First names" to "Holland and Barrates"
@@ -367,7 +367,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith       |
   #     | lastName   | Astridge Lamsden |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
   #   And I set the "Alias 3", "Last name" to "Holland and Barrates"
@@ -384,7 +384,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith |
   #     | lastName   | Astridge   |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
@@ -403,7 +403,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith |
   #     | lastName   | Astridge   |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
@@ -423,7 +423,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
   #     | firstNames | John Smith |
   #     | lastName   | Astridge   |
   #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select add aliases check box
+  #   When I select the "Add aliases" checkbox
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
   #   And I click the "Add another alias" button
@@ -443,7 +443,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I enter "John Smithy Michaele" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -465,7 +465,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I enter "John Smithy Michaele" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -487,7 +487,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I enter "John Smithy Michaele" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
@@ -572,7 +572,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I see "<lastName>" in the "Last name" field
     And I see "<addressLine1>" in the "Address line 1" field
 
-    When I select add aliases check box
+    When I select the "Add aliases" checkbox
     Then I set the "Alias 1", "First names" to "<firstNames>"
     Then I set the "Alias 1", "Last name" to "<lastName>"
 
@@ -582,7 +582,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
     And I click on the "Personal details" link
     Then I see "Personal details" on the page header
-    #When I select add aliases check box
+    #When I select the "Add aliases" checkbox
     And I see "Alias 1", "First names" is set to "<firstNames>"
     And I see "Alias 1", "Last name" is set to "<lastName>"
 
