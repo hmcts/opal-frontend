@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS = {
+export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS = {
   sendingCourt: {
     required: {
       message: 'Enter a sending area or Local Justice Area',

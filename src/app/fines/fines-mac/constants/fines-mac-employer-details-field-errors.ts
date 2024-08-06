@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR = {
+export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR = {
   employerName: {
     required: {
       message: 'Enter employer name',

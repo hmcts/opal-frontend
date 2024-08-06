@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE = {
+export const FINES_MAC_PERSONAL_DETAILS_STATE = {
   title: null,
   firstNames: null,
   lastName: null,

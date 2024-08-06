@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE = {
+export const FINES_MAC_EMPLOYER_DETAILS_STATE = {
   employerName: null,
   employeeReference: null,
   employerEmailAddress: null,

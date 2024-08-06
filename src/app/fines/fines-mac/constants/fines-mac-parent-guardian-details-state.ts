@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_STATE = {
+export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE = {
   fullName: null,
   dateOfBirth: null,
   nationalInsuranceNumber: null,

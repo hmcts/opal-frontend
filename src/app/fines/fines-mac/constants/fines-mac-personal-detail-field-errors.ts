@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_FIELD_ERROR = {
+export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
   title: {
     required: {
       message: 'Select a title',

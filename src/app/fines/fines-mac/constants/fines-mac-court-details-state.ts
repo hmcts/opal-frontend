@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE = {
+export const FINES_MAC_COURT_DETAILS_STATE = {
   sendingCourt: null,
   pcr: null,
   enforcementCourt: null,

@@ -1,4 +1,4 @@
-export const MANUAL_ACCOUNT_CREATION_PARENT_GUARDIAN_DETAILS_FIELD_ERROR = {
+export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR = {
   fullName: {
     required: {
       message: 'You must enter a full name',

@@ -2,7 +2,7 @@ import { ManualAccountCreationRoutes } from '@enums';
 import { IManualAccountCreationNestedRoutes } from '@interfaces';
 import { MANUAL_ACCOUNT_CREATION_NESTED_BUTTONS } from '@constants';
 
-export const MANUAL_ACCOUNT_CREATION_NESTED_ROUTES: Record<string, IManualAccountCreationNestedRoutes> = {
+export const FINES_MAC_NESTED_ROUTES: Record<string, IManualAccountCreationNestedRoutes> = {
   adultOrYouthOnly: {
     courtDetails: {
       nextRoute: ManualAccountCreationRoutes.personalDetails,
