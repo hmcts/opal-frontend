@@ -5,7 +5,7 @@ import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } f
 
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
-import { finesRouting } from '@routing';
+import { routing as finesRouting } from './fines/routing';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

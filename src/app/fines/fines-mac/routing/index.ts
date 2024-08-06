@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { RoutingPaths } from '@enums';
 import { authGuard, canDeactivateGuard } from '@guards';
 
-export const macRouting: Routes = [
+export const routing: Routes = [
   {
     path: '',
     redirectTo: RoutingPaths.manualAccountCreationCreateAccount,
@@ -11,7 +11,7 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationCreateAccount,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-create-account/fines-mac-create-account.component').then(
+      import('../fines-mac-create-account/fines-mac-create-account.component').then(
         (c) => c.FinesMacCreateAccountComponent,
       ),
     canActivate: [authGuard],
@@ -20,7 +20,7 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationAccountDetails,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-account-details/fines-mac-account-details.component').then(
+      import('../fines-mac-account-details/fines-mac-account-details.component').then(
         (c) => c.FinesMacAccountDetailsComponent,
       ),
     canActivate: [authGuard],
@@ -28,7 +28,7 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationEmployerDetails,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-employer-details/fines-mac-employer-details.component').then(
+      import('../fines-mac-employer-details/fines-mac-employer-details.component').then(
         (c) => c.FinesMacEmployerDetailsComponent,
       ),
     canActivate: [authGuard],
@@ -37,7 +37,7 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationContactDetails,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-contact-details/fines-mac-contact-details.component').then(
+      import('../fines-mac-contact-details/fines-mac-contact-details.component').then(
         (c) => c.FinesMacContactDetailsComponent,
       ),
     canActivate: [authGuard],
@@ -46,16 +46,16 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationParentGuardianDetails,
     loadComponent: () =>
-      import(
-        '../../fines/fines-mac/fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component'
-      ).then((c) => c.FinesMacParentGuardianDetailsComponent),
+      import('../fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component').then(
+        (c) => c.FinesMacParentGuardianDetailsComponent,
+      ),
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
   },
   {
     path: RoutingPaths.manualAccountCreationPersonalDetails,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-personal-details/fines-mac-personal-details.component').then(
+      import('../fines-mac-personal-details/fines-mac-personal-details.component').then(
         (c) => c.FinesMacPersonalDetailsComponent,
       ),
     canActivate: [authGuard],
@@ -64,7 +64,7 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationOffenceDetails,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details.component').then(
+      import('../fines-mac-offence-details/fines-mac-offence-details.component').then(
         (c) => c.FinesMacOffenceDetailsComponent,
       ),
     canActivate: [authGuard],
@@ -72,7 +72,7 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationCompanyDetails,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-company-details/fines-mac-company-details.component').then(
+      import('../fines-mac-company-details/fines-mac-company-details.component').then(
         (c) => c.FinesMacCompanyDetailsComponent,
       ),
     canActivate: [authGuard],
@@ -81,7 +81,7 @@ export const macRouting: Routes = [
   {
     path: RoutingPaths.manualAccountCreationCourtDetails,
     loadComponent: () =>
-      import('../../fines/fines-mac/fines-mac-court-details/fines-mac-court-details.component').then(
+      import('../fines-mac-court-details/fines-mac-court-details.component').then(
         (c) => c.FinesMacCourtDetailsComponent,
       ),
     canActivate: [authGuard],
