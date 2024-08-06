@@ -253,9 +253,9 @@ Then('I see the search box below the business unit help text', () => {
     .should('have.attr', 'id', 'businessUnit-autocomplete');
 });
 Then('I enter {string} into the business unit search box', (businessUnit: string) => {
-  cy.get('#businessUnit-autocomplete').type(businessUnit);
-  cy.get('#businessUnit-autocomplete__listbox').should('not.contain', 'No results found');
-  cy.get('#businessUnit-autocomplete').type('{downArrow}{enter}');
+  cy.get('#BusinessUnit-autocomplete').type(businessUnit);
+  cy.get('#BusinessUnit-autocomplete__listbox').should('not.contain', 'No results found');
+  cy.get('#BusinessUnit-autocomplete').type('{downArrow}{enter}');
 });
 Then('I see the value {string} in the business unit search box', (businessUnit: string) => {
   cy.get('#businessUnit-autocomplete').should('have.value', businessUnit);
