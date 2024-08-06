@@ -92,23 +92,23 @@ export class PersonalDetailsFormComponent extends FormAliasBaseComponent impleme
    */
   private setupPersonalDetailsForm(): void {
     this.form = new FormGroup({
-      title: new FormControl(null, [Validators.required]),
-      firstNames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      lastName: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      addAlias: new FormControl(null),
-      aliases: new FormArray([]),
-      dateOfBirth: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      nationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      addressLine1: new FormControl(null, [
+      Title: new FormControl(null, [Validators.required]),
+      Forenames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
+      Surname: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      AddAlias: new FormControl(null),
+      Aliases: new FormArray([]),
+      DOB: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      NationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      AddressLine1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      addressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      addressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
-      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-      makeOfCar: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      registrationNumber: new FormControl(null, [optionalMaxLengthValidator(11)]),
+      AddressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      AddressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
+      Postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      VehicleMake: new FormControl(null, [optionalMaxLengthValidator(30)]),
+      VehicleRegistrationMark: new FormControl(null, [optionalMaxLengthValidator(11)]),
     });
   }
 
@@ -117,7 +117,7 @@ export class PersonalDetailsFormComponent extends FormAliasBaseComponent impleme
    * The alias configuration includes the alias fields and controls validation.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = ['firstNames', 'lastName'];
+    this.aliasFields = ['AliasForenames', 'AliasSurname'];
     this.aliasControlsValidation = MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_ALIAS;
   }
 
@@ -147,10 +147,10 @@ export class PersonalDetailsFormComponent extends FormAliasBaseComponent impleme
     const { personalDetails } = this.macStateService.manualAccountCreation;
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(personalDetails.aliases.length).keys()], 'aliases');
+    this.setupAliasFormControls([...Array(personalDetails.Aliases.length).keys()], 'Aliases');
     this.setInitialErrorMessages();
     this.rePopulateForm(personalDetails);
-    this.setUpAliasCheckboxListener('addAlias', 'aliases');
+    this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
   }
 
   public override ngOnInit(): void {

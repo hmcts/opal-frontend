@@ -143,6 +143,14 @@ const routes: Routes = [
         canActivate: [authGuard],
         canDeactivate: [canDeactivateGuard],
       },
+      {
+        path: RoutingPaths.manualAccountCreationAccountCommentsNotes,
+        loadComponent: () =>
+          import('./pages/manual-account-creation/account-comments-notes/account-comments-notes.component').then(
+            (c) => c.AccountCommentsNotesComponent,
+          ),
+        canActivate: [authGuard],
+      },
     ],
     resolve: { userState: userStateResolver },
     canDeactivate: [canDeactivateGuard],

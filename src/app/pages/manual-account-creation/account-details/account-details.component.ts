@@ -64,9 +64,9 @@ export class AccountDetailsComponent implements OnInit {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { defendantType } = this.macStateService.manualAccountCreation.accountDetails;
-    if (defendantType) {
-      this.defendantType = this.defendantTypes[defendantType as keyof IDefendantTypes] || '';
+    const { DefendantType } = this.macStateService.manualAccountCreation.accountDetails;
+    if (DefendantType) {
+      this.defendantType = this.defendantTypes[DefendantType as keyof IDefendantTypes] || '';
     }
   }
 
@@ -76,9 +76,9 @@ export class AccountDetailsComponent implements OnInit {
    */
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { accountType } = this.macStateService.manualAccountCreation.accountDetails;
-    if (accountType) {
-      this.accountType = this.accountTypes[accountType as keyof IAccountTypes] || '';
+    const { AccountType } = this.macStateService.manualAccountCreation.accountDetails;
+    if (AccountType) {
+      this.accountType = this.accountTypes[AccountType as keyof IAccountTypes] || '';
     }
   }
 

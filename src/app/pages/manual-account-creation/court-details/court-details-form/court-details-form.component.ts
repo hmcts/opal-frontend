@@ -43,13 +43,13 @@ export class CourtDetailsFormComponent extends FormBaseComponent implements OnIn
    */
   private setupCourtDetailsForm(): void {
     this.form = new FormGroup({
-      sendingCourt: new FormControl(null, [Validators.required]),
-      pcr: new FormControl(null, [
+      SendingCourt: new FormControl(null, [Validators.required]),
+      ProsecutorCaseReference: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z0-9 ]*$/),
       ]),
-      enforcementCourt: new FormControl(null, [Validators.required]),
+      EnforcingCourt: new FormControl(null, [Validators.required]),
     });
   }
 

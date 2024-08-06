@@ -1,4 +1,5 @@
 import {
+  IAccountCommentsNotesState,
   IBusinessUnit,
   IManualAccountCreationAccountDetailsState,
   IManualAccountCreationCompanyDetailsState,
@@ -17,6 +18,7 @@ export interface IManualAccountCreationState {
   personalDetails: IManualAccountCreationPersonalDetailsState;
   companyDetails: IManualAccountCreationCompanyDetailsState;
   courtDetails: IManualAccountCreationCourtDetailsState;
+  accountCommentsNotes: IAccountCommentsNotesState;
   businessUnit: IBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;

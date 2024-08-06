@@ -109,3 +109,10 @@ Then(
 Then('I see {string} button', (buttonName: string) => {
   cy.contains('button', buttonName).should('exist', buttonName);
 });
+When('I select add another alias', () => {
+  cy.get('#AddAlias-conditional > app-govuk-button > button').click();
+});
+
+Then('I see the {string} sub heading in aliases', (aliasText: string) => {
+  cy.contains('#AddAlias-conditional > fieldset > legend', aliasText).invoke('text');
+});

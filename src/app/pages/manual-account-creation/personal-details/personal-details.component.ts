@@ -13,7 +13,7 @@ import { IManualAccountCreationPersonalDetailsForm } from '@interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonalDetailsComponent extends FormParentBaseComponent {
-  public defendantType = this.macStateService.manualAccountCreation.accountDetails.defendantType!;
+  public defendantType = this.macStateService.manualAccountCreation.accountDetails.DefendantType!;
 
   /**
    * Handles the submission of personal details form in the manual account creation process.

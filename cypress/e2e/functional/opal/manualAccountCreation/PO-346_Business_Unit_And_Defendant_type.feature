@@ -1,3 +1,4 @@
+
 Feature: PO-346 business unit and defendant type Users associated to one and only one BU
   #this feature file is messy and needs sorting out removing overlap with other tests
 
@@ -8,14 +9,16 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     When I sign in as "opal-test-3@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
+
   #AC1
   Scenario: AC-01 positive: verifying the page heading for Business unit and defendant type screen
-    Then I see "Create account" as the caption on the page
+    When I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
   #AC2
   Scenario: AC-02 positive: If a user is only associated to one BU, then the following view 1 will displayed
     When I see "The account will be created in Hertfordshire" message on the business unit
+
   #AC3
   Scenario: AC-03 positive: verify defendant type header and radio buttons
     When I select the "Fine" radio button
@@ -42,6 +45,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
+
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
@@ -63,6 +67,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
+
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
@@ -84,10 +89,12 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
+
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
   #as per the new design process in PO-366 this step is descoped
+
   #When "Back" is clicked
   #Then I verify company radio button checked
 
@@ -103,11 +110,13 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I click the "Continue" button
 
     #as per the new design process in PO-366 this step is descoped
+
     #Then I see "Create account" on the page header
 
     Then I see "Account details" on the page header
 
   #AC9
+
   Scenario: AC-09 positive: When user navigating to Business unit and defendant type screen and selecting parent or guardian to pay then continue
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
@@ -134,7 +143,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
 
-  # #AC1 #AC1
+  #AC1
   Scenario: AC-11-negative: When user selects cancel button without selecting defendant type
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
@@ -168,10 +177,3 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
 #     Then I click on cancel
 #     Then I select cancel on the pop up window
 #     Then I see "Business unit and defendant type" on the page header
-
-
-
-
-
-
-

@@ -240,25 +240,25 @@ Then('I see the defendant type is {string}', (defendantType: string) => {
   cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
 });
 Then('I see the business unit heading is {string}', (businessUnitHeading: string) => {
-  cy.get('#businessUnit-hint').prev().should('contains.text', businessUnitHeading);
+  cy.get('#BusinessUnit-hint').prev().should('contains.text', businessUnitHeading);
 });
 Then('I see the business unit help text is {string}', (businessUnitHelpText: string) => {
-  cy.get('#businessUnit-hint').should('contains.text', businessUnitHelpText);
+  cy.get('#BusinessUnit-hint').should('contains.text', businessUnitHelpText);
 });
 Then('I see the search box below the business unit help text', () => {
-  cy.get('#businessUnit-hint')
+  cy.get('#BusinessUnit-hint')
     .next()
     .children()
     .children('input')
-    .should('have.attr', 'id', 'businessUnit-autocomplete');
+    .should('have.attr', 'id', 'BusinessUnit-autocomplete');
 });
 Then('I enter {string} into the business unit search box', (businessUnit: string) => {
-  cy.get('#businessUnit-autocomplete').type(businessUnit);
-  cy.get('#businessUnit-autocomplete__listbox').should('not.contain', 'No results found');
-  cy.get('#businessUnit-autocomplete').type('{downArrow}{enter}');
+  cy.get('#BusinessUnit-autocomplete').type(businessUnit);
+  cy.get('#BusinessUnit-autocomplete__listbox').should('not.contain', 'No results found');
+  cy.get('#BusinessUnit-autocomplete').type('{downArrow}{enter}');
 });
 Then('I see the value {string} in the business unit search box', (businessUnit: string) => {
-  cy.get('#businessUnit-autocomplete').should('have.value', businessUnit);
+  cy.get('#BusinessUnit-autocomplete').should('have.value', businessUnit);
 });
 Then('I see the defendant type heading is {string}', (businessUnitHeading: string) => {
   cy.get('#defendantTypeHint').prev().should('contains.text', businessUnitHeading);
@@ -270,16 +270,7 @@ Then('I see the defendant type help text is {string}', (businessUnitHelpText: st
 When('I select title {string} from dropdown', (title: string) => {
   cy.get('select').select(title);
 });
-Then('I select add aliases check box', () => {
-  cy.get('input[type="checkbox"]').check().should('be.checked');
-});
-When('I select add another alias', () => {
-  cy.get('#addAlias-conditional > app-govuk-button > button').click();
-});
 
-Then('I verify {string} sub heading', (aliasText: string) => {
-  cy.contains('#addAlias-conditional > fieldset > legend', aliasText).invoke('text');
-});
 Then('I verify the text boxes {string},{string} below the sub heading', (firstName: string, lastName: string) => {
   cy.contains('h1', firstName)
     .invoke('text')
@@ -336,42 +327,6 @@ Then('I verify the {string} button below the {string}', (removeLink: string, ali
     .invoke('text')
     .should('have.text', removeLink);
 });
-When('I unselect aliases check box', () => {
-  cy.get('input[type="checkbox"]').uncheck();
-});
-Then('I see {string} sub heading', (aliasText: string) => {
-  cy.contains('#addAlias-conditional > fieldset > legend', aliasText).invoke('text').should('contains', aliasText);
-});
-
-Then('I verify {string} and {string} data should not be existed', (firstName: string, lastName: string) => {
-  cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').should('not.have.value', firstName);
-  cy.get('#addAlias-conditional > fieldset >app-govuk-text-input >div>input').should('not.have.value', lastName);
-});
-When('I verify the error messages {string} for defendant screens', (errorMessage: string) => {
-  cy.get('[class="govuk-error-message"]').should('contain', errorMessage);
-});
-
-Then('I verify {string} and {string} in alias 1', (firstNames: string, lastName: string) => {
-  cy.get('#addAlias-conditional > fieldset > app-govuk-text-input >div >input').should('be.empty');
-  cy.get('#addAlias-conditional > fieldset > app-govuk-text-input >div >input').should('be.empty');
-});
-When(
-  'I verify the text boxes {string},{string} below the sub heading {string}',
-  (firstNames: string, lastName: string, alias: string) => {
-    cy.get('#addAlias-conditional > fieldset >legend')
-      .next()
-      .children('#addAlias-conditional > fieldset >app-govuk-text-input >')
-      .invoke('text')
-      .should('contains', firstNames);
-    cy.get('#addAlias-conditional > fieldset >legend')
-      .next()
-      .next()
-      .children('#addAlias-conditional > fieldset >app-govuk-text-input >')
-      .invoke('text')
-      .should('contains', lastName);
-  },
-);
-
 When('{string} is verified as grey', (addContactDetailsButton: string) => {
   cy.get('#submitForm').should('be.visible', addContactDetailsButton);
   cy.get('#submitForm').should('be.enabled', addContactDetailsButton);
@@ -385,16 +340,4 @@ Then('I see the status of {string} is {string}', (linkText: string, status: stri
 
 When('I see {string} below the {string} radio button', (text: string, radioButton: string) => {
   cy.contains('label', radioButton).next().contains('div', text).invoke('text').should('contains', text);
-});
-
-When('I enter data into first names and last name in personal details screen', (table: DataTable) => {
-  const data = table.rowsHash();
-
-  function typeIfNotBlank(selector: string, value: string) {
-    if (value) {
-      cy.get(selector).type(value);
-    }
-  }
-  typeIfNotBlank('#firstNames', data['firstNames']);
-  typeIfNotBlank('#lastName', data['lastName']);
 });

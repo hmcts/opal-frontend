@@ -3,91 +3,91 @@
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-text-input
     labelText="Employer name"
-    inputId="employerName"
-    inputName="employerName"
+    inputId="EmployerCompanyName"
+    inputName="EmployerCompanyName"
     labelClasses="govuk-label--s"
-    [control]="form.controls['employerName']"
-    [errors]="formControlErrorMessages['employerName']"
+    [control]="form.controls['EmployerCompanyName']"
+    [errors]="formControlErrorMessages['EmployerCompanyName']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Employee reference"
-    inputId="employeeReference"
-    inputName="employeeReference"
+    inputId="EmployerReference"
+    inputName="EmployerReference"
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     hintText="If employee reference not known, add National Insurance number"
-    [control]="form.controls['employeeReference']"
-    [errors]="formControlErrorMessages['employeeReference']"
+    [control]="form.controls['EmployerReference']"
+    [errors]="formControlErrorMessages['EmployerReference']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Employer email address"
-    inputId="employerEmailAddress"
-    inputName="employerEmailAddress"
+    inputId="EmployerEmailAddress"
+    inputName="EmployerEmailAddress"
     labelClasses="govuk-label--s"
-    [control]="form.controls['employerEmailAddress']"
-    [errors]="formControlErrorMessages['employerEmailAddress']"
+    [control]="form.controls['EmployerEmailAddress']"
+    [errors]="formControlErrorMessages['EmployerEmailAddress']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Employer telephone"
-    inputId="employerTelephone"
-    inputName="employerTelephone"
+    inputId="EmployerTelephoneNumber"
+    inputName="EmployerTelephoneNumber"
     inputClasses="govuk-input--width-20"
     labelClasses="govuk-label--s"
-    [control]="form.controls['employerTelephone']"
-    [errors]="formControlErrorMessages['employerTelephone']"
+    [control]="form.controls['EmployerTelephoneNumber']"
+    [errors]="formControlErrorMessages['EmployerTelephoneNumber']"
   ></app-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
     <app-govuk-text-input
       labelText="Address line 1"
-      inputId="employerAddress1"
-      inputName="employerAddress1"
+      inputId="EmployerAddressLine1"
+      inputName="EmployerAddressLine1"
       labelClasses="govuk-label--s"
-      [control]="form.controls['employerAddress1']"
-      [errors]="formControlErrorMessages['employerAddress1']"
-      [errors]="formControlErrorMessages['employerAddress1']"
+      [control]="form.controls['EmployerAddressLine1']"
+      [errors]="formControlErrorMessages['EmployerAddressLine1']"
+      [errors]="formControlErrorMessages['EmployerAddressLine1']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 2"
-      inputId="employerAddress2"
-      inputName="employerAddress2"
+      inputId="EmployerAddressLine2"
+      inputName="EmployerAddressLine2"
       labelClasses="govuk-label--s"
-      [control]="form.controls['employerAddress2']"
-      [errors]="formControlErrorMessages['employerAddress2']"
+      [control]="form.controls['EmployerAddressLine2']"
+      [errors]="formControlErrorMessages['EmployerAddressLine2']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 3"
-      inputId="employerAddress3"
-      inputName="employerAddress3"
+      inputId="EmployerAddressLine3"
+      inputName="EmployerAddressLine3"
       labelClasses="govuk-label--s"
-      [control]="form.controls['employerAddress3']"
-      [errors]="formControlErrorMessages['employerAddress3']"
+      [control]="form.controls['EmployerAddressLine3']"
+      [errors]="formControlErrorMessages['EmployerAddressLine3']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 4"
-      inputId="employerAddress4"
-      inputName="employerAddress4"
+      inputId="EmployerAddressLine4"
+      inputName="EmployerAddressLine4"
       labelClasses="govuk-label--s"
-      [control]="form.controls['employerAddress4']"
-      [errors]="formControlErrorMessages['employerAddress4']"
+      [control]="form.controls['EmployerAddressLine4']"
+      [errors]="formControlErrorMessages['EmployerAddressLine4']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 5"
-      inputId="employerAddress5"
-      inputName="employerAddress5"
+      inputId="EmployerAddressLine5"
+      inputName="EmployerAddressLine5"
       labelClasses="govuk-label--s"
-      [control]="form.controls['employerAddress5']"
-      [errors]="formControlErrorMessages['employerAddress5']"
+      [control]="form.controls['EmployerAddressLine5']"
+      [errors]="formControlErrorMessages['EmployerAddressLine5']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Postcode"
-      inputId="employerPostcode"
-      inputName="employerPostcode"
+      inputId="EmployerPostcode"
+      inputName="EmployerPostcode"
       inputClasses="govuk-input--width-10"
       labelClasses="govuk-label--s"
-      [control]="form.controls['employerPostcode']"
-      [errors]="formControlErrorMessages['employerPostcode']"
+      [control]="form.controls['EmployerPostcode']"
+      [errors]="formControlErrorMessages['EmployerPostcode']"
     ></app-govuk-text-input>
   </fieldset>
   <div class="govuk-grid-row">

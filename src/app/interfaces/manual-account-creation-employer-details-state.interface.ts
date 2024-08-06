@@ -1,12 +1,12 @@
 export interface IManualAccountCreationEmployerDetailsState {
-  employerName: string | null;
-  employeeReference: string | null;
-  employerEmailAddress: string | null;
-  employerTelephone: string | null;
-  employerAddress1: string | null;
-  employerAddress2: string | null;
-  employerAddress3: string | null;
-  employerAddress4: string | null;
-  employerAddress5: string | null;
-  employerPostcode: string | null;
+  EmployerCompanyName: string | null;
+  EmployerReference: string | null;
+  EmployerEmailAddress: string | null;
+  EmployerTelephoneNumber: string | null;
+  EmployerAddressLine1: string | null;
+  EmployerAddressLine2: string | null;
+  EmployerAddressLine3: string | null;
+  EmployerAddressLine4: string | null;
+  EmployerAddressLine5: string | null;
+  EmployerPostcode: string | null;
 }

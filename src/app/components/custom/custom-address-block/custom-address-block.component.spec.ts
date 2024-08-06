@@ -18,10 +18,10 @@ describe('CustomAddressBlockComponent', () => {
 
     component.legendText = 'Test';
     component.form = new FormGroup({
-      addressLine1: new FormControl(null),
-      addressLine2: new FormControl(null),
-      addressLine3: new FormControl(null),
-      postcode: new FormControl(null),
+      AddressLine1: new FormControl(null),
+      AddressLine2: new FormControl(null),
+      AddressLine3: new FormControl(null),
+      Postcode: new FormControl(null),
     });
     component.formControlErrorMessages = {};
     component.addressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;

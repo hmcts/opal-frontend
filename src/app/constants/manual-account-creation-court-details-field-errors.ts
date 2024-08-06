@@ -1,11 +1,11 @@
 export const MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS = {
-  sendingCourt: {
+  SendingCourt: {
     required: {
       message: 'Enter a sending area or Local Justice Area',
       priority: 1,
     },
   },
-  pcr: {
+  ProsecutorCaseReference: {
     required: {
       message: 'Enter a Prosecutor Case Reference',
       priority: 1,
@@ -19,7 +19,7 @@ export const MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS = {
       priority: 3,
     },
   },
-  enforcementCourt: {
+  EnforcingCourt: {
     required: {
       message: 'Enter an Enforcement court',
       priority: 1,

@@ -16,7 +16,7 @@ describe('CustomNationalInsuranceNumberComponent', () => {
     component = fixture.componentInstance;
 
     component.form = new FormGroup({
-      nationalInsuranceNumber: new FormControl(null),
+      NationalInsuranceNumber: new FormControl(null),
     });
     component.formControlErrorMessages = {};
 

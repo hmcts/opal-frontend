@@ -32,9 +32,9 @@ describe('CourtDetailsComponent', () => {
     mockMacStateService.manualAccountCreation = MANUAL_ACCOUNT_CREATION_MOCK;
 
     formData = {
-      sendingCourt: 'Test',
-      pcr: 'Test',
-      enforcementCourt: 'Test',
+      SendingCourt: 'Test',
+      ProsecutorCaseReference: 'Test',
+      EnforcingCourt: 'Test',
     };
 
     formSubmit = {

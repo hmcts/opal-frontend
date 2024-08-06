@@ -17,15 +17,16 @@ Feature: PO-367 create the account details for adult or youth with parent or gua
     And I click the "Continue" button
 
   Scenario: AC1-positive: verifying the account details page headings for adult or youth with parent or guardian to pay defendant type
-    Then I see "Create account" as the caption on the page
+    When I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
   Scenario: AC2-positive: verifying the account details page where account being created and defendant type text
-    Then I see "Create account" as the caption on the page
+    When I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
-    Then should display business unit account "London South West" I selected from Business unit and defendant type page
-    Then should display defendant type "Adult or youth with parent or guardian to pay" I selected from Business unit and defendant type page
+    And I see the business unit is "London South West"
+    And I see the defendant type is "Adult or youth with parent or guardian to pay"
 
+  #Not refactoring this, the screen following this link will be developed
   #Descoped
   # Scenario: AC3-positive: verify Court details section heading and sub-section link is not configured
   #   Then I see "Create account" as the caption on the page
@@ -46,17 +47,19 @@ Feature: PO-367 create the account details for adult or youth with parent or gua
 
 
   Scenario: AC5-positive: verify parent or guardian details section heading and sub-section links are not configured
-    Then I see "Create account" as the caption on the page
-    Then I see "Account details" on the page header
-    Then I see "Defendant details" on the section heading
-    When I click on the "Personal details" link
+    When I see "Create account" as the caption on the page
+    And I see "Account details" on the page header
+    And I see "Defendant details" on the section heading
+    And I click on the "Personal details" link
     Then I see "Personal details" on the page header
-    Then I click on the "Cancel" link
-    When I click on the "Contact details" link
-    Then I see "Contact details" on the page header
-    Then I click cancel on Contact details page
+
+    When I click on the "Cancel" link
+    And I click on the "Contact details" link
+    And I see "Contact details" on the page header
+    And I click on the "Cancel" link
     Then I see "Account details" on the page header
 
+#Not refactoring this, the screen following this link will be developed
 #Descoped
 # Scenario: AC6-positive: verify Offence and imposition details section heading and sub-section links are not configured
 #   Then I see "Create account" as the caption on the page

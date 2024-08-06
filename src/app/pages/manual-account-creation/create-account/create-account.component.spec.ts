@@ -41,7 +41,7 @@ describe('CreateAccountComponent', () => {
     fixture = TestBed.createComponent(CreateAccountComponent);
     component = fixture.componentInstance;
 
-    component.macStateService.manualAccountCreation.accountDetails.businessUnit = null;
+    component.macStateService.manualAccountCreation.accountDetails.BusinessUnit = null;
 
     fixture.detectChanges();
   });
@@ -57,9 +57,9 @@ describe('CreateAccountComponent', () => {
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const formData: IManualAccountCreationAccountDetailsState = {
-      businessUnit: 'Test',
-      accountType: 'Test',
-      defendantType: 'Test',
+      BusinessUnit: 'Test',
+      AccountType: 'Test',
+      DefendantType: 'Test',
     };
 
     component.handleAccountDetailsSubmit(formData);
@@ -83,7 +83,7 @@ describe('CreateAccountComponent', () => {
 
     component['setBusinessUnit'](response);
 
-    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+    expect(component.macStateService.manualAccountCreation.accountDetails.BusinessUnit).toEqual(
       BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
     );
   });
@@ -91,14 +91,14 @@ describe('CreateAccountComponent', () => {
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
     const response = { count: 1, refData: [BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
-    component.macStateService.manualAccountCreation.accountDetails.businessUnit =
+    component.macStateService.manualAccountCreation.accountDetails.BusinessUnit =
       BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
 
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
-    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toEqual(
+    expect(component.macStateService.manualAccountCreation.accountDetails.BusinessUnit).toEqual(
       BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
     );
   });
@@ -106,11 +106,11 @@ describe('CreateAccountComponent', () => {
   it('should not set the business unit for account details when there are multiple business units available', () => {
     const response = BUSINESS_UNIT_REF_DATA_MOCK;
 
-    component.macStateService.manualAccountCreation.accountDetails.businessUnit = null;
+    component.macStateService.manualAccountCreation.accountDetails.BusinessUnit = null;
 
     component['setBusinessUnit'](response);
 
-    expect(component.macStateService.manualAccountCreation.accountDetails.businessUnit).toBeNull();
+    expect(component.macStateService.manualAccountCreation.accountDetails.BusinessUnit).toBeNull();
   });
 
   it('should create an array of autocomplete items from the response', () => {
