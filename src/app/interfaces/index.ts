@@ -58,6 +58,7 @@ import { IManualAccountCreationCourtDetailsForm } from './manual-account-creatio
 import { ILocalJusticeAreaRefData } from './local-justice-area-ref-data.interface';
 import { ICourtRefData } from './court-ref-data.interface';
 import { IManualAccountCreationEmployerDetailsForm } from './manual-account-creation-employer-details-form.interface';
+import { IAccountCommentsNotesState } from './manual-account-creation-account-comments-notes-state.interface';
 import { IAccountTypes } from './account-types.interface';
 import { IAccountTypeDefendantTypes } from './account-type-defendant-types.interface';
 import { IRadioOptions } from './radio-options.interface';
@@ -129,6 +130,7 @@ export {
   IManualAccountCreationCourtDetailsForm,
   ILocalJusticeAreaRefData,
   ICourtRefData,
+  IAccountCommentsNotesState,
   IAccountTypeDefendantTypes,
   IRadioOptions,
   IAccountTypeDefendantTypeControlNames,
