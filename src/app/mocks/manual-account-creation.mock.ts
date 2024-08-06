@@ -1,3 +1,4 @@
+import { MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from '@mocks';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE } from '../constants/manual-account-creation-account-details-state';
 import { MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE } from '../constants/manual-account-creation-business-unit-state';
 import { MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE } from '../constants/manual-account-creation-company-details-state';
@@ -15,6 +16,7 @@ export const MANUAL_ACCOUNT_CREATION_MOCK = {
   personalDetails: MANUAL_ACCOUNT_CREATION_PERSONAL_DETAILS_STATE,
   companyDetails: MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_STATE,
   courtDetails: MANUAL_ACCOUNT_CREATION_COURT_DETAILS_STATE,
+  accountCommentsNotes: MANUAL_ACCOUNT_CREATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK,
   businessUnit: MANUAL_ACCOUNT_CREATION_BUSINESS_UNIT_STATE,
   unsavedChanges: false,
   stateChanges: false,

@@ -59,6 +59,10 @@
     <ng-container *ngTemplateOutlet="offenceDetails"></ng-container>
     <ng-container *ngTemplateOutlet="paymentTerms"></ng-container>
   </app-govuk-task-list>
+  <h2 class="govuk-heading-m">Account comments and notes</h2>
+  <app-govuk-task-list taskListId="accountCommentsAndNotes" taskListClasses="govuk-!-margin-left-0 ">
+    <ng-container *ngTemplateOutlet="accountCommentsAndNotes"></ng-container>
+  </app-govuk-task-list>
   <h2 class="govuk-heading-m">Review and publish</h2>
   <p class="govuk-body">Check that all required fields have been entered before you publish</p>
   <p class="govuk-body">
@@ -283,6 +287,32 @@
         *ngTemplateOutlet="
           accountCreationStatus['paymentTerms'] ? provided : notProvided;
           context: { $implicit: 'paymentTermsStatusTag' }
+        "
+      ></ng-container>
+    </ng-container>
+  </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #accountCommentsAndNotes>
+  <app-govuk-task-list-item
+    taskListItemId="accountCommentsAndNotesItem"
+    taskListStatusId="accountCommentsAndNotesStatus"
+    taskListItemClasses="govuk-task-list__item--with-link"
+  >
+    <ng-container name>
+      <a
+        class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+        [routerLink]="manualAccountCreationRoutes.accountCommentsNotes"
+        aria-describedby="accountCommentsAndNotesStatus"
+      >
+        Account comments and notes
+      </a>
+    </ng-container>
+    <ng-container status>
+      <ng-container
+        *ngTemplateOutlet="
+          accountCreationStatus['accountCommentsNotes'] ? provided : notProvided;
+          context: { $implicit: 'accountCommentsAndNotesStatusTag' }
         "
       ></ng-container>
     </ng-container>
