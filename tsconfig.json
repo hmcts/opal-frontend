@@ -23,6 +23,12 @@
     "resolveJsonModule": false,
     "paths": {
       "@components": ["./src/app/components/index.ts"],
+      "@components/govuk": ["./src/app/components/govuk/index.ts"],
+      "@components/moj": ["./src/app/components/moj/index.ts"],
+      "@components/scotgov": ["./src/app/components/scotgov/index.ts"],
+      "@components/custom": ["./src/app/components/custom/index.ts"],
+      "@components/alphagov": ["./src/app/components/alphagov/index.ts"],
+      "@components/abstract": ["./src/app/components/abstract/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],
