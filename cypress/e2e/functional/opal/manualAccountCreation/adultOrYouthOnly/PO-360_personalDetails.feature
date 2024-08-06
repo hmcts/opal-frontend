@@ -25,7 +25,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario: AC1-positive: Personal details page will be created with all fields
     When I select title "Mr" from dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
+    And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
 
     When I select the "Add aliases" checkbox
@@ -73,7 +73,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario Outline: AC1b-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
     When I select title "Mr" from dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
+    And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "<addressLine1>" into the "Address line 1" field
     And I enter "<addressLine2>" into the "Address line 2" field
@@ -89,8 +89,8 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario Outline: Negative: verifying firstnames,last names and Address lines 1,2 & 3 having more than max characters
     When I select title "Mrs" from dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
-    And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
+    And I enter "John Smithy Michael John Smithy Michael long" into the "First names" field
+    And I enter "Astridge Lamsden Langley Treen long" into the "Last name" field
     And I enter "<addressLine1>" into the "Address line 1" field
     And I enter "<addressLine2>" into the "Address line 2" field
     And I enter "<addressLine3>" into the "Address line 3" field
@@ -236,7 +236,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario Outline: AC9 - negative: If a user is selecting a date of birth using the date picker
     When I select title "Mrs" from dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
+    And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     When I enter "<dateOfBirth>" into the Date of birth field
     And I enter "120 Deuchar street" into the "Address line 1" field
@@ -440,7 +440,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario: AC10e -negative: User does not add any data into either Alias 5 fields
     When I select "Mrs" from the "Title" dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
+    And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select the "Add aliases" checkbox
@@ -462,7 +462,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario: AC10ei- negative: User adds data into Alias 5 - First names, but does enter any data into last name
     When I select "Mrs" from the "Title" dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
+    And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select the "Add aliases" checkbox
@@ -484,7 +484,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario: AC10eii- negative: User adds data into Alias 5 - Last name, but does enter any data into First names
     When I select "Mrs" from the "Title" dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
+    And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I select the "Add aliases" checkbox
@@ -506,7 +506,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario Outline: AC11- Negative: Scenarios for National Insurance number field validation
     When I select "Mrs" from the "Title" dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
+    And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
     When I enter "<NInumber>" into the "National Insurance number" field
@@ -556,8 +556,8 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario Outline: AC13-positive: When user enters data into mandatory fields only
     When I select "Mrs" from the "Title" dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
-    And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
+    And I enter "<firstNames>" into the "First names" field
+    And I enter "<lastName>" into the "Last name" field
     And I enter "<addressLine1>" into the "Address line 1" field
 
     Then I click the "Return to account details" button

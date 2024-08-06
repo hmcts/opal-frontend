@@ -240,17 +240,17 @@ Then('I see the defendant type is {string}', (defendantType: string) => {
   cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
 });
 Then('I see the business unit heading is {string}', (businessUnitHeading: string) => {
-  cy.get('#businessUnit-hint').prev().should('contains.text', businessUnitHeading);
+  cy.get('#BusinessUnit-hint').prev().should('contains.text', businessUnitHeading);
 });
 Then('I see the business unit help text is {string}', (businessUnitHelpText: string) => {
-  cy.get('#businessUnit-hint').should('contains.text', businessUnitHelpText);
+  cy.get('#BusinessUnit-hint').should('contains.text', businessUnitHelpText);
 });
 Then('I see the search box below the business unit help text', () => {
-  cy.get('#businessUnit-hint')
+  cy.get('#BusinessUnit-hint')
     .next()
     .children()
     .children('input')
-    .should('have.attr', 'id', 'businessUnit-autocomplete');
+    .should('have.attr', 'id', 'BusinessUnit-autocomplete');
 });
 Then('I enter {string} into the business unit search box', (businessUnit: string) => {
   cy.get('#BusinessUnit-autocomplete').type(businessUnit);
@@ -258,7 +258,7 @@ Then('I enter {string} into the business unit search box', (businessUnit: string
   cy.get('#BusinessUnit-autocomplete').type('{downArrow}{enter}');
 });
 Then('I see the value {string} in the business unit search box', (businessUnit: string) => {
-  cy.get('#businessUnit-autocomplete').should('have.value', businessUnit);
+  cy.get('#BusinessUnit-autocomplete').should('have.value', businessUnit);
 });
 Then('I see the defendant type heading is {string}', (businessUnitHeading: string) => {
   cy.get('#defendantTypeHint').prev().should('contains.text', businessUnitHeading);

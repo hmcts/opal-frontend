@@ -17,7 +17,7 @@ Then('I see the heading under the fixed penalty radio button is {string}', (busi
 });
 
 Then('I see {string} above the {string} heading', (businessUnitText: string, headingName: string) => {
-  cy.get('#accountType')
+  cy.get('#AccountType')
     .should('contain.text', headingName)
     .parent()
     .parent()

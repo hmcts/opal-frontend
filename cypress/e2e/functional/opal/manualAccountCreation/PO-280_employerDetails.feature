@@ -165,7 +165,8 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #Then I see "Create account" on the page header
     Then I see "Account details" on the page header
     Then I click on the "Employer details" link
-    Then I verify employer name, employer postcode is empty
+    Then I see "" in the "Employer name" field
+    Then I see "" in the "Postcode" field
     Examples:
       | employerName    | employerPostcode |
       | testWindowPopUP | AB12 7HN         |
@@ -197,16 +198,16 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     Then I click the "Return to account details" button
     Then I verify the error message
 
-    Then I update employer name "<employerName>"
-    Then I update employee reference number or nino "<employeeNino>"
-    Then I update employer email address "<employerEmail>"
-    Then I update employer telephone number "<employerTelephone>"
-    Then I update employer address line1 "<employerAddress1>"
-    Then I update employer address line2 "<employerAddress2>"
-    Then I update employer address line3 "<employerAddress3>"
-    Then I update employer address line4 "<employerAddress4>"
-    Then I update employer address line5 "<employerAddress5>"
-    Then I update employer postcode "<employerPostCode>"
+    And I enter "<employerName>" into the "Employer name" field
+    And I enter "<employeeNino>" into the "Employee reference" field
+    And I enter "<employerEmail>" into the "Employer email address" field
+    And I enter "<employerTelephone>" into the "Employer telephone" field
+    And I enter "<employerAddress1>" into the "Address line 1" field
+    And I enter "<employerAddress2>" into the "Address line 2" field
+    And I enter "<employerAddress3>" into the "Address line 3" field
+    And I enter "<employerAddress4>" into the "Address line 4" field
+    And I enter "<employerAddress5>" into the "Address line 5" field
+    And I enter "<employerPostCode>" into the "Postcode" field
 
     # Due to changes in PO-360
     #Then I click save and return to tasks
