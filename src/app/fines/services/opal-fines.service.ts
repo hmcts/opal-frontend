@@ -1,7 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-
-import {} from '@interfaces';
 import { Observable, shareReplay } from 'rxjs';
 import { OPAL_FINES_SERVICE_PATHS } from '../constants';
 import {
@@ -22,7 +20,7 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class OpalFinesServiceService {
+export class OpalFinesService {
   private readonly http = inject(HttpClient);
   private courtCache$: { [key: string]: Observable<IFinesSearchCourt[]> } = {};
   private courtRefDataCache$: { [key: string]: Observable<IFinesCourtRefData> } = {};
