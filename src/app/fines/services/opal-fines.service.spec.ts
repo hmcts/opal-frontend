@@ -1,13 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OpalFinesService } from './opal-fines-service.service';
+import { OpalFines } from './opal-fines.service';
+import { OPAL_FINES_SERVICE_PATHS } from '../constants';
+import { IFinesBusinessUnitRefData } from '../interfaces';
+import { HttpTestingController } from '@angular/common/http/testing';
 
-describe('OpalFinesService', () => {
-  let service: OpalFinesService;
+describe('OpalFines', () => {
+  let service: OpalFines;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(OpalFinesService);
+    service = TestBed.inject(OpalFines);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should be created', () => {
@@ -16,8 +25,8 @@ describe('OpalFinesService', () => {
 
   it('should send a GET request to business unit ref data API', () => {
     const permission = 'ACCOUNT_ENQUIRY';
-    const mockBusinessUnits: IBusinessUnitRefData = BUSINESS_UNIT_REF_DATA_MOCK;
-    const expectedUrl = `${API_PATHS.businessUnitRefData}?permission=${permission}`;
+    const mockBusinessUnits: IFinesBusinessUnitRefData = BUSINESS_UNIT_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_SERVICE_PATHS.businessUnitRefData}?permission=${permission}`;
 
     service.getBusinessUnits(permission).subscribe((response) => {
       expect(response).toEqual(mockBusinessUnits);

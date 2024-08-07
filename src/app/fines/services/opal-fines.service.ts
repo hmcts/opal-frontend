@@ -20,7 +20,7 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class OpalFinesService {
+export class OpalFines {
   private readonly http = inject(HttpClient);
   private courtCache$: { [key: string]: Observable<IFinesSearchCourt[]> } = {};
   private courtRefDataCache$: { [key: string]: Observable<IFinesCourtRefData> } = {};
