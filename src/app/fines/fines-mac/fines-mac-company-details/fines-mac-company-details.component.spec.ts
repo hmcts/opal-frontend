@@ -64,11 +64,11 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeTruthy();
+    expect(component.finesService.finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(component.macStateService.manualAccountCreation.unsavedChanges).toBeFalsy();
+    expect(component.finesService.finesMacState.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

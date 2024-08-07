@@ -43,7 +43,7 @@ export class FinesMacCompanyDetailsComponent extends FormParentBaseComponent {
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.macStateService.manualAccountCreation.unsavedChanges = unsavedChanges;
+    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

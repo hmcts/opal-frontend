@@ -1,1 +1,7 @@
-<p>fines-mac-employer-details works!</p>
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-mac-employer-details-form
+    [defendantType]="defendantType"
+    (formSubmit)="handleEmployerDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-mac-employer-details-form>
+</div>

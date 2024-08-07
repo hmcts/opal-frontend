@@ -110,7 +110,7 @@ export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent 
    * initial error messages, nested route, form population, and alias checkbox listener.
    */
   private initialSetup(): void {
-    const { companyDetails } = this.macStateService.manualAccountCreation;
+    const { companyDetails } = this.finesService.finesMacState;
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls([...Array(companyDetails.Aliases.length).keys()], 'Aliases');
