@@ -1,4 +1,4 @@
-// import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { OpalFines } from './opal-fines.service';
 import { OPAL_FINES_PATHS } from '../constants';
@@ -28,9 +28,9 @@ import {
 } from '../mocks';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-// xdescribe('OpalFines', () => {
-//   let service: OpalFines;
-//   let httpMock: HttpTestingController;
+describe('OpalFines', () => {
+  let service: OpalFines;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -41,47 +41,47 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-//   afterEach(() => {
-//     httpMock.verify();
-//   });
+  afterEach(() => {
+    httpMock.verify();
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
   it('should send a GET request to business unit ref data API', () => {
     const permission = 'ACCOUNT_ENQUIRY';
     const mockBusinessUnits: IFinesBusinessUnitRefData = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-//     service.getBusinessUnits(permission).subscribe((response) => {
-//       expect(response).toEqual(mockBusinessUnits);
-//     });
+    service.getBusinessUnits(permission).subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
 
-//     const req = httpMock.expectOne(expectedUrl);
-//     expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
 
-//     req.flush(mockBusinessUnits);
-//   });
+    req.flush(mockBusinessUnits);
+  });
 
   it('should return cached response for the same ref data search', () => {
     const permission = 'ACCOUNT_ENQUIRY';
     const mockBusinessUnits: IFinesBusinessUnitRefData = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
-//     service.getBusinessUnits(permission).subscribe((response) => {
-//       expect(response).toEqual(mockBusinessUnits);
-//     });
+    service.getBusinessUnits(permission).subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
 
-//     const req = httpMock.expectOne(expectedUrl);
-//     expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
 
-//     req.flush(mockBusinessUnits);
+    req.flush(mockBusinessUnits);
 
-//     // Make a second call to searchCourt with the same search body
-//     service.getBusinessUnits(permission).subscribe((response) => {
-//       expect(response).toEqual(mockBusinessUnits);
-//     });
+    // Make a second call to searchCourt with the same search body
+    service.getBusinessUnits(permission).subscribe((response) => {
+      expect(response).toEqual(mockBusinessUnits);
+    });
 
     // No new request should be made since the response is cached
     httpMock.expectNone(expectedUrl);

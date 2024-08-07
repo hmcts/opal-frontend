@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FinesMacRoutes } from '../enums';
+import { FINES_COURT_REF_DATA_MOCK, FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../mocks';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let component: FinesMacCourtDetailsComponent;
@@ -25,8 +26,8 @@ describe('FinesMacCourtDetailsComponent', () => {
     mockOpalFinesService = {
       getLocalJusticeAreas: jasmine
         .createSpy('getLocalJusticeAreas')
-        .and.returnValue(of(LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
-      getCourts: jasmine.createSpy('getCourts').and.returnValue(of(COURT_REF_DATA_MOCK)),
+        .and.returnValue(of(FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
+      getCourts: jasmine.createSpy('getCourts').and.returnValue(of(FINES_COURT_REF_DATA_MOCK)),
     };
     formData = FINES_MAC_COURT_DETAILS_STATE_MOCK;
     formSubmit = FINES_MAC_COURT_DETAILS_FORM_MOCK;
@@ -62,6 +63,8 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+
+    formSubmit.nestedFlow = false;
 
     component.handleCourtDetailsSubmit(formSubmit);
 

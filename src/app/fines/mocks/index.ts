@@ -10,6 +10,8 @@ import { FINES_COURT_REF_DATA_MOCK } from './fines-court-ref-data.mock';
 import { FINES_DEFENDANT_ACCOUNT_NOTES_MOCK } from './fines-defendant-account-notes.mock';
 import { FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK } from './fines-defendant-account-details.mock';
 import { FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './fines-local-justice-area-ref-data.mock';
+import { FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from './fines-court-autocomplete-items.mock';
+import { FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from './fines-local-justice-area-autocomplete-items.mock';
 
 export {
   FINES_BUSINESS_UNIT_REF_DATA_MOCK,
@@ -24,4 +26,6 @@ export {
   FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
   FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
   FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+  FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK,
+  FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK,
 };

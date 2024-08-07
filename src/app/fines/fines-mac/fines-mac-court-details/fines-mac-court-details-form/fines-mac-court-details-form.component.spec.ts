@@ -1,9 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form.component';
 import { FinesService } from 'src/app/fines/services/fines.service';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_STATE_MOCK } from '../../mocks';
 import { IFinesMacCourtDetailsForm } from '../../interfaces';
+import {
+  FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK,
+  FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK,
+} from 'src/app/fines/mocks';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;
@@ -26,8 +29,8 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     component.defendantType = 'adultOrYouthOnly';
-    //component.sendingCourtAutoCompleteItems = FINES_;
-    //component.enforcingCourtAutoCompleteItems = COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    component.sendingCourtAutoCompleteItems = FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK;
+    component.enforcingCourtAutoCompleteItems = FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
 
     fixture.detectChanges();
   });

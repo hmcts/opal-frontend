@@ -44,6 +44,8 @@ describe('FinesMacContactDetailsComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
+    formSubmit.nestedFlow = false;
+
     component.handleContactDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.contactDetails).toEqual(formData);

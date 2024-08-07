@@ -25,6 +25,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsComponent],
+      providers: [{ provide: FinesService, useValue: mockFinesService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacEmployerDetailsComponent);
@@ -42,6 +43,8 @@ describe('FinesMacEmployerDetailsComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
+    formSubmit.nestedFlow = false;
+
     component.handleEmployerDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.employerDetails).toEqual(formData);
@@ -50,6 +53,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   it('should handle form submission and navigate to offence details - adult or youth only', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+
     formSubmit.nestedFlow = true;
 
     component.handleEmployerDetailsSubmit(formSubmit);
