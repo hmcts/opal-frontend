@@ -16,6 +16,7 @@ nodejs:
     ALLOW_CONFIG_MUTATIONS: true
     FEATURES_REDIS_ENABLED: true
     OPAL_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
+    OPAL_FINES_SERVICE_API_URL: https://opal-fines-service.{{ .Values.global.environment }}.platform.hmcts.net
     FRONTEND_HOSTNAME: https://opal-frontend.{{ .Values.global.environment }}.platform.hmcts.net
     SESSION_SECURE_ENABLED: true
     CSRF_SECURE_ENABLED: true
