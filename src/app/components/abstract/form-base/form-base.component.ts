@@ -14,6 +14,7 @@ import {
 } from '@interfaces';
 import { MacStateService, GlobalStateService } from '@services';
 import { Subscription } from 'rxjs';
+import { FinesService } from 'src/app/fines/services/fines.service';
 
 @Component({
   standalone: true,
@@ -25,6 +26,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   public readonly globalStateService = inject(GlobalStateService);
   public readonly macStateService = inject(MacStateService);
+  public readonly finesService = inject(FinesService);
 
   public form!: FormGroup;
   public formControlErrorMessages!: IFormControlErrorMessage;

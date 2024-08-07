@@ -8,4 +8,5 @@ export enum FinesMacRoutingPaths {
   finesMacPersonalDetails = 'personal-details',
   finesMacOffenceDetails = 'offence-details',
   finesMacCourtDetails = 'court-details',
+  finesMacAccountCommentsNotes = 'account-comments-notes',
 }

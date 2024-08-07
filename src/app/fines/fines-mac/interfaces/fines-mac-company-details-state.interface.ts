@@ -1,11 +1,11 @@
-import { IFinesMacCompanyDetailsAlias } from './fines-mac-company-details-alias.interface';
+import { IFinesMacCompanyDetailsAliasState } from './fines-mac-company-details-alias-state.interface';
 
 export interface IFinesMacCompanyDetailsState {
-  companyName: string | null;
-  addAlias: boolean | null;
-  aliases: IFinesMacCompanyDetailsAlias[];
-  addressLine1: string | null;
-  addressLine2: string | null;
-  addressLine3: string | null;
-  postcode: string | null;
+  CompanyName: string | null;
+  AddAlias: boolean | null;
+  Aliases: IFinesMacCompanyDetailsAliasState[];
+  AddressLine1: string | null;
+  AddressLine2: string | null;
+  AddressLine3: string | null;
+  Postcode: string | null;
 }

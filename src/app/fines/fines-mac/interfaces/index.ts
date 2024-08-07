@@ -13,11 +13,20 @@ import { IFinesMacEmployerDetailsState } from './fines-mac-employer-details-stat
 import { IFinesMacFieldTypes } from './fines-mac-field-types.interface';
 import { IFinesMacNestedRoutes } from './fines-mac-nested-routes.interface';
 import { IFinesMacParentGuardianDetailsState } from './fines-mac-parent-guardian-details-state.interface';
-import { IFinesMacParentGuardianForm } from './fines-mac-parent-guardian-form.interface';
-import { IFinesMacPersonalDetailsAlias } from './fines-mac-personal-details-alias.interface';
+import { IFinesMacParentGuardianDetailsForm } from './fines-mac-parent-guardian-form.interface';
+import { IFinesMacPersonalDetailsAliasControls } from './fines-mac-personal-details-alias-controls.interface';
 import { IFinesMacPersonalDetailsForm } from './fines-mac-personal-details-form.interface';
 import { IFinesMacPersonalDetailsState } from './fines-mac-personal-details-state.interface';
 import { IFinesMacCreateAccountControlNames } from './fines-mac-create-account-control-names.interface';
+import { IFinesMacAccountTypes } from './fines-mac-account-types.interface';
+import { IFinesMacDefendantTypes } from './fines-mac-defendant-types.interface';
+import { IFinesMacAccountTypeDefendantTypes } from './fines-mac-account-type-defendant-types.interface';
+import { IFinesMacAccountCommentsNotesState } from './fines-mac-account-comments-notes-state.interface';
+import { IFinesMacCompanyDetailsAliasState } from './fines-mac-company-details-alias-state.interface';
+import { IFinesMacPersonalDetailsAliasState } from './fines-mac-personal-details-alias-state.interface';
+import { IFinesMacOffenceDetailsState } from './fines-mac-offence-details-state.interface';
+import { IFinesMacPaymentTermsState } from './fines-mac-payment-terms-state.interface';
+
 export {
   IFinesMacState,
   IFinesMacAccountDetailsState,
@@ -34,9 +43,17 @@ export {
   IFinesMacFieldTypes,
   IFinesMacNestedRoutes,
   IFinesMacParentGuardianDetailsState,
-  IFinesMacParentGuardianForm,
-  IFinesMacPersonalDetailsAlias,
+  IFinesMacParentGuardianDetailsForm,
+  IFinesMacPersonalDetailsAliasControls,
   IFinesMacPersonalDetailsForm,
+  IFinesMacPersonalDetailsAliasState,
   IFinesMacPersonalDetailsState,
   IFinesMacCreateAccountControlNames,
+  IFinesMacAccountTypes,
+  IFinesMacAccountTypeDefendantTypes,
+  IFinesMacDefendantTypes,
+  IFinesMacAccountCommentsNotesState,
+  IFinesMacCompanyDetailsAliasState,
+  IFinesMacOffenceDetailsState,
+  IFinesMacPaymentTermsState,
 };

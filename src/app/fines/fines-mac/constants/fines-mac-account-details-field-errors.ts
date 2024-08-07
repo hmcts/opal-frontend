@@ -1,23 +1,23 @@
-export const FINES_MAC_DETAILS_FIELD_ERROR = {
-  accountType: {
+export const FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR = {
+  AccountType: {
     required: {
       message: 'Select an account type',
       priority: 1,
     },
   },
-  fineDefendantType: {
+  FineDefendantType: {
     required: {
       message: 'Select a defendant type',
       priority: 1,
     },
   },
-  fixedPenaltyDefendantType: {
+  FixedPenaltyDefendantType: {
     required: {
       message: 'Select a defendant type',
       priority: 1,
     },
   },
-  businessUnit: {
+  BusinessUnit: {
     required: {
       message: 'Enter a business unit',
       priority: 1,

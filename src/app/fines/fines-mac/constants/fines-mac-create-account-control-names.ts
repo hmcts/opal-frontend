@@ -3,18 +3,18 @@ import { IFinesMacCreateAccountControlNames } from '../interfaces';
 
 export const FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES: IFinesMacCreateAccountControlNames = {
   fine: {
-    fieldName: 'fineDefendantType',
+    fieldName: 'FineDefendantType',
     validators: [Validators.required],
-    fieldsToRemove: ['fixedPenaltyDefendantType'],
+    fieldsToRemove: ['FixedPenaltyDefendantType'],
   },
   fixedPenalty: {
-    fieldName: 'fixedPenaltyDefendantType',
+    fieldName: 'FixedPenaltyDefendantType',
     validators: [Validators.required],
-    fieldsToRemove: ['fineDefendantType'],
+    fieldsToRemove: ['FineDefendantType'],
   },
   conditionalCaution: {
     fieldName: '',
     validators: [],
-    fieldsToRemove: ['fineDefendantType', 'fixedPenaltyDefendantType'],
+    fieldsToRemove: ['FineDefendantType', 'FixedPenaltyDefendantType'],
   },
 };

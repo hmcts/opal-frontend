@@ -1,11 +1,11 @@
 export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
-  title: {
+  Title: {
     required: {
       message: 'Select a title',
       priority: 1,
     },
   },
-  firstNames: {
+  Forenames: {
     required: {
       message: `Enter defendant's first name(s)`,
       priority: 1,
@@ -19,7 +19,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  lastName: {
+  Surname: {
     required: {
       message: `Enter defendant's last name`,
       priority: 1,
@@ -33,7 +33,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 2,
     },
   },
-  firstNames_0: {
+  AliasForenames_0: {
     required: {
       message: `Enter first name(s) for alias 1`,
       priority: 1,
@@ -47,7 +47,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  lastName_0: {
+  AliasSurname_0: {
     required: {
       message: `Enter last name for alias 1`,
       priority: 1,
@@ -61,7 +61,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  firstNames_1: {
+  AliasForenames_1: {
     required: {
       message: `Enter first name(s) for alias 2`,
       priority: 1,
@@ -75,7 +75,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  lastName_1: {
+  AliasSurname_1: {
     required: {
       message: `Enter last name for alias 2`,
       priority: 1,
@@ -89,7 +89,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  firstNames_2: {
+  AliasForenames_2: {
     required: {
       message: `Enter first name(s) for alias 3`,
       priority: 1,
@@ -103,7 +103,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  lastName_2: {
+  AliasSurname_2: {
     required: {
       message: `Enter last name for alias 3`,
       priority: 1,
@@ -117,7 +117,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  firstNames_3: {
+  AliasForenames_3: {
     required: {
       message: `Enter first name(s) for alias 4`,
       priority: 1,
@@ -131,7 +131,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  lastName_3: {
+  AliasSurname_3: {
     required: {
       message: `Enter last name for alias 4`,
       priority: 1,
@@ -145,7 +145,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  firstNames_4: {
+  AliasForenames_4: {
     required: {
       message: `Enter first name(s) for alias 5`,
       priority: 1,
@@ -159,7 +159,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  lastName_4: {
+  AliasSurname_4: {
     required: {
       message: `Enter last name for alias 5`,
       priority: 1,

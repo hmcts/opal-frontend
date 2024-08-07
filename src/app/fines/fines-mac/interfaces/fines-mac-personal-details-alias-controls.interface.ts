@@ -4,7 +4,7 @@ interface Detail {
   controlName: string;
 }
 
-export interface IFinesMacPersonalDetailsAlias {
+export interface IFinesMacPersonalDetailsAliasControls {
   firstNames: Detail;
   lastName: Detail;
 }

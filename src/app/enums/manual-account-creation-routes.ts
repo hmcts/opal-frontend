@@ -11,4 +11,5 @@ export enum ManualAccountCreationRoutes {
   companyDetails = '/manual-account-creation/company-details',
   parentOrGuardianDetails = '/manual-account-creation/parent-guardian-details',
   accountCommentsNotes = '/manual-account-creation/account-comments-notes',
+  restructure = '/fines/manual-account-creation/create-account',
 }

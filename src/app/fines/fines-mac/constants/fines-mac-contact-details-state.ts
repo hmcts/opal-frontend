@@ -1,7 +1,9 @@
-export const MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE = {
-  primaryEmailAddress: null,
-  secondaryEmailAddress: null,
-  mobileTelephoneNumber: null,
-  homeTelephoneNumber: null,
-  workTelephoneNumber: null,
+import { IFinesMacContactDetailsState } from '../interfaces';
+
+export const FINES_MAC_CONTACT_DETAILS_STATE: IFinesMacContactDetailsState = {
+  EmailAddress1: null,
+  EmailAddress2: null,
+  TelephoneNumberMobile: null,
+  TelephoneNumberHome: null,
+  TelephoneNumberBusiness: null,
 };

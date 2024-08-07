@@ -18,10 +18,10 @@ export const routing: Routes = [
         path: FinesRoutingPaths.finesMac,
         loadComponent: () => import('../../fines/fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         canActivate: [authGuard],
+        canDeactivate: [canDeactivateGuard],
         children: macRouting,
       },
     ],
     resolve: { userState: userStateResolver },
-    canDeactivate: [canDeactivateGuard],
   },
 ];

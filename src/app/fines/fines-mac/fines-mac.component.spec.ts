@@ -8,9 +8,8 @@ describe('FinesMacComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesMacComponent]
-    })
-    .compileComponents();
+      imports: [FinesMacComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacComponent);
     component = fixture.componentInstance;

@@ -5,5 +5,5 @@ interface Detail {
 }
 
 export interface IFinesMacCompanyDetailsAlias {
-  companyName: Detail;
+  AliasOrganisationName: Detail;
 }

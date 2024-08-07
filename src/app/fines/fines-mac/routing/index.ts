@@ -87,4 +87,12 @@ export const routing: Routes = [
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
   },
+  {
+    path: FinesMacRoutingPaths.finesMacAccountCommentsNotes,
+    loadComponent: () =>
+      import('../fines-mac-account-comments-notes/fines-mac-account-comments-notes.component').then(
+        (c) => c.FinesMacAccountCommentsNotesComponent,
+      ),
+    canActivate: [authGuard],
+  },
 ];

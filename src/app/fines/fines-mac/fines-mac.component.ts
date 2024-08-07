@@ -1,12 +1,63 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CanDeactivateType } from '@interfaces';
+import { GlobalStateService } from '@services';
+import { FinesService } from '../services/fines.service';
+import { FINES_MAC_STATE } from './constants';
 
 @Component({
   selector: 'app-fines-mac',
   standalone: true,
   imports: [RouterOutlet],
   templateUrl: './fines-mac.component.html',
-  styleUrl: './fines-mac.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacComponent {}
+export class FinesMacComponent implements OnDestroy {
+  public readonly globalStateService = inject(GlobalStateService);
+  public readonly finesService = inject(FinesService);
+
+  /**
+   * If the user navigates externally from the site or closes the tab
+   * Check if there is unsaved changes -> warning message
+   * Check if the state has changes -> warning message
+   * Otherwise -> no warning message
+   *
+   * @returns boolean
+   */
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(): boolean {
+    if (this.finesService.fineMacState.unsavedChanges) {
+      return false;
+    } else if (this.finesService.fineMacState.stateChanges) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * If the user navigates externally from the site or closes the tab
+   * Check if there is state changes -> warning message
+   * Otherwise -> no warning message
+   *
+   * @returns boolean
+   */
+  canDeactivate(): CanDeactivateType {
+    if (this.finesService.fineMacState.stateChanges) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Cleanup our state when the route unloads...
+    this.finesService.fineMacState = FINES_MAC_STATE;
+
+    // Clear any errors...
+    this.globalStateService.error.set({
+      error: false,
+      message: '',
+    });
+  }
+}

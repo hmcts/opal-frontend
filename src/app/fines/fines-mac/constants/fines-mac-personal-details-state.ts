@@ -1,15 +1,17 @@
-export const FINES_MAC_PERSONAL_DETAILS_STATE = {
-  title: null,
-  firstNames: null,
-  lastName: null,
-  addAlias: null,
-  aliases: [],
-  dateOfBirth: null,
-  nationalInsuranceNumber: null,
-  addressLine1: null,
-  addressLine2: null,
-  addressLine3: null,
-  postcode: null,
-  makeOfCar: null,
-  registrationNumber: null,
+import { IFinesMacPersonalDetailsState } from '../interfaces';
+
+export const FINES_MAC_PERSONAL_DETAILS_STATE: IFinesMacPersonalDetailsState = {
+  Title: null,
+  Forenames: null,
+  Surname: null,
+  AddAlias: null,
+  Aliases: [],
+  DOB: null,
+  NationalInsuranceNumber: null,
+  AddressLine1: null,
+  AddressLine2: null,
+  AddressLine3: null,
+  Postcode: null,
+  VehicleMake: null,
+  VehicleRegistrationMark: null,
 };

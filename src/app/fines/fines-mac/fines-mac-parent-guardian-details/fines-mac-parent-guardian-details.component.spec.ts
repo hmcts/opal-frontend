@@ -8,9 +8,8 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesMacParentGuardianDetailsComponent]
-    })
-    .compileComponents();
+      imports: [FinesMacParentGuardianDetailsComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacParentGuardianDetailsComponent);
     component = fixture.componentInstance;

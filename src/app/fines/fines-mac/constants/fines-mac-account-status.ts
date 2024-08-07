@@ -7,6 +7,10 @@ export const FINES_MAC_ACCOUNT_STATUS: IFinesMacAccountStatus = {
   parentGuardianDetails: false,
   personalDetails: false,
   companyDetails: false,
+  courtDetails: false,
+  accountCommentsNotes: false,
+  offenceDetails: false,
+  paymentTerms: false,
   unsavedChanges: false,
   stateChanges: false,
 };

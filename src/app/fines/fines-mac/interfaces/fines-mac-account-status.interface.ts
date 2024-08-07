@@ -5,6 +5,10 @@ export interface IFinesMacAccountStatus {
   parentGuardianDetails: boolean;
   personalDetails: boolean;
   companyDetails: boolean;
+  courtDetails: boolean;
+  offenceDetails?: boolean;
+  paymentTerms?: boolean;
+  accountCommentsNotes: boolean;
   unsavedChanges: boolean;
   stateChanges: boolean;
 }

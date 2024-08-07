@@ -16,7 +16,7 @@ describe('FinesService', () => {
   });
 
   it('should store search state', () => {
-    service.manualAccountCreation = FINES_MAC_STATE;
-    expect(service.manualAccountCreation).toEqual(FINES_MAC_STATE);
+    service.fineMacState = FINES_MAC_STATE;
+    expect(service.fineMacState).toEqual(FINES_MAC_STATE);
   });
 });
