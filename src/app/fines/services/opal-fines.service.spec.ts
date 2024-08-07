@@ -7,6 +7,7 @@ import {
   IFinesBusinessUnitRefData,
   IFinesCourtRefData,
   IFinesGetDefendantAccountParams,
+  IFinesLocalJusticeAreaRefData,
   IFinesSearchCourt,
   IFinesSearchCourtBody,
   IFinesSearchDefendantAccountBody,
@@ -23,10 +24,11 @@ import {
   FINES_DEFENDANT_ACCOUNT_NOTE_MOCK,
   FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
   FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
+  FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
 } from '../mocks';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-fdescribe('OpalFines', () => {
+describe('OpalFines', () => {
   let service: OpalFines;
   let httpMock: HttpTestingController;
 
@@ -244,5 +246,41 @@ fdescribe('OpalFines', () => {
     expect(req.request.method).toBe('GET');
 
     req.flush(FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK);
+  });
+
+  it('should send a GET request to court ref data API', () => {
+    const mockLocalJusticeArea: IFinesLocalJusticeAreaRefData = FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
+
+    service.getLocalJusticeAreas().subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockLocalJusticeArea);
+  });
+
+  it('should return cached response for the same ref data search', () => {
+    const mockLocalJusticeArea: IFinesLocalJusticeAreaRefData = FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
+
+    service.getLocalJusticeAreas().subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockLocalJusticeArea);
+
+    // Make a second call to searchCourt with the same search body
+    service.getLocalJusticeAreas().subscribe((response) => {
+      expect(response).toEqual(mockLocalJusticeArea);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(expectedUrl);
   });
 });

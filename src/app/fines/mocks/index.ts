@@ -9,6 +9,7 @@ import { FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK } from './fines-search-defendant-a
 import { FINES_COURT_REF_DATA_MOCK } from './fines-court-ref-data.mock';
 import { FINES_DEFENDANT_ACCOUNT_NOTES_MOCK } from './fines-defendant-account-notes.mock';
 import { FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK } from './fines-defendant-account-details.mock';
+import { FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './fines-local-justice-area-ref-data.mock';
 
 export {
   FINES_BUSINESS_UNIT_REF_DATA_MOCK,
@@ -22,4 +23,5 @@ export {
   FINES_COURT_REF_DATA_MOCK,
   FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
   FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
+  FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
 };
