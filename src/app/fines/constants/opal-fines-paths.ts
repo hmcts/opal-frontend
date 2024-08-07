@@ -4,7 +4,7 @@ const courtPath = 'court/';
 const businessUnit = 'business-unit/';
 const localJusticeArea = 'local-justice-area/';
 
-export const OPAL_FINES_SERVICE_PATHS = {
+export const OPAL_FINES_PATHS = {
   defendantAccount: `${baseUrl}${defendantAccountPath}`,
   defendantAccountSearch: `${baseUrl}${defendantAccountPath}search`,
   defendantAccountAddNote: `${baseUrl}${defendantAccountPath}addNote`,

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
-import { OPAL_FINES_SERVICE_PATHS } from '../constants';
+import { OPAL_FINES_PATHS } from '../constants';
 import {
   IFinesAddDefendantAccountNoteBody,
   IFinesBusinessUnitRefData,
@@ -38,7 +38,7 @@ export class OpalFines {
     // Court search is cached to prevent multiple requests for the same data.
     if (!this.courtCache$[key]) {
       this.courtCache$[key] = this.http
-        .post<IFinesSearchCourt[]>(OPAL_FINES_SERVICE_PATHS.courtSearch, body)
+        .post<IFinesSearchCourt[]>(OPAL_FINES_PATHS.courtSearch, body)
         .pipe(shareReplay(1));
     }
 
@@ -54,7 +54,7 @@ export class OpalFines {
   public getCourts(businessUnit: number) {
     if (!this.courtRefDataCache$[businessUnit]) {
       this.courtRefDataCache$[businessUnit] = this.http
-        .get<IFinesCourtRefData>(OPAL_FINES_SERVICE_PATHS.courtRefData, { params: { businessUnit } })
+        .get<IFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { businessUnit } })
         .pipe(shareReplay(1));
     }
 
@@ -68,7 +68,7 @@ export class OpalFines {
    */
   public getDefendantAccount(params: IFinesGetDefendantAccountParams): Observable<IFinesDefendantAccount> {
     return this.http.get<IFinesDefendantAccount>(
-      `${OPAL_FINES_SERVICE_PATHS.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`,
+      `${OPAL_FINES_PATHS.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`,
     );
   }
 
@@ -78,7 +78,7 @@ export class OpalFines {
    * @returns An Observable that emits the search results.
    */
   public searchDefendantAccounts(body: IFinesSearchDefendantAccountBody): Observable<IFinesSearchDefendantAccounts> {
-    return this.http.post<IFinesSearchDefendantAccounts>(OPAL_FINES_SERVICE_PATHS.defendantAccountSearch, body);
+    return this.http.post<IFinesSearchDefendantAccounts>(OPAL_FINES_PATHS.defendantAccountSearch, body);
   }
 
   /**
@@ -87,9 +87,7 @@ export class OpalFines {
    * @returns An Observable that emits the defendant account details.
    */
   public getDefendantAccountDetails(defendantAccountId: number): Observable<IFinesDefendantAccountDetails> {
-    return this.http.get<IFinesDefendantAccountDetails>(
-      `${OPAL_FINES_SERVICE_PATHS.defendantAccount}/${defendantAccountId}`,
-    );
+    return this.http.get<IFinesDefendantAccountDetails>(`${OPAL_FINES_PATHS.defendantAccount}/${defendantAccountId}`);
   }
 
   /**
@@ -98,7 +96,7 @@ export class OpalFines {
    * @returns An observable that emits the added defendant account note.
    */
   public addDefendantAccountNote(body: IFinesAddDefendantAccountNoteBody): Observable<IFinesDefendantAccountNote> {
-    return this.http.post<IFinesDefendantAccountNote>(OPAL_FINES_SERVICE_PATHS.defendantAccountAddNote, body);
+    return this.http.post<IFinesDefendantAccountNote>(OPAL_FINES_PATHS.defendantAccountAddNote, body);
   }
 
   /**
@@ -108,7 +106,7 @@ export class OpalFines {
    */
   public getDefendantAccountNotes(defendantAccountId: number): Observable<IFinesDefendantAccountNote[]> {
     return this.http.get<IFinesDefendantAccountNote[]>(
-      `${OPAL_FINES_SERVICE_PATHS.defendantAccountNotes}/${defendantAccountId}`,
+      `${OPAL_FINES_PATHS.defendantAccountNotes}/${defendantAccountId}`,
     );
   }
 
@@ -118,7 +116,7 @@ export class OpalFines {
     // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, MANUAL_ACCOUNT_CREATION
     if (!this.businessUnitsCache$[permission]) {
       this.businessUnitsCache$[permission] = this.http
-        .get<IFinesBusinessUnitRefData>(OPAL_FINES_SERVICE_PATHS.businessUnitRefData, { params: { permission } })
+        .get<IFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
         .pipe(shareReplay(1));
     }
 
@@ -134,7 +132,7 @@ export class OpalFines {
   public getLocalJusticeAreas() {
     if (!this.localJusticeAreasCache$) {
       this.localJusticeAreasCache$ = this.http
-        .get<IFinesLocalJusticeAreaRefData>(OPAL_FINES_SERVICE_PATHS.localJusticeAreaRefData)
+        .get<IFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
         .pipe(shareReplay(1));
     }
 

@@ -1,3 +1,3 @@
-import { OPAL_FINES_SERVICE_PATHS } from './opal-fines-service-paths';
+import { OPAL_FINES_PATHS } from './opal-fines-paths';
 
-export { OPAL_FINES_SERVICE_PATHS };
+export { OPAL_FINES_PATHS };
