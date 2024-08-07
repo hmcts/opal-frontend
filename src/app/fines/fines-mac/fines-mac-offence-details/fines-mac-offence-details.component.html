@@ -1,1 +1,11 @@
-<p>fines-mac-offence-details works!</p>
+<h1 class="govuk-heading-l">Offence details</h1>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <app-govuk-button buttonId="submitForm" (buttonClickEvent)="handleRoute(finesMacRoutes.finesMacAccountDetails)"
+      >Return to account details</app-govuk-button
+    >
+    <app-govuk-cancel-link
+      (linkClickEvent)="handleRoute(finesMacRoutes.finesMacAccountDetails)"
+    ></app-govuk-cancel-link>
+  </div>
+</div>

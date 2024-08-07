@@ -35,8 +35,8 @@ export class FinesMacCourtDetailsFormComponent extends FormBaseComponent impleme
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAutoCompleteItem[];
   @Output() private formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
 
-  public readonly finesMacRoutes = FinesMacRoutes;
-  public readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
+  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
 

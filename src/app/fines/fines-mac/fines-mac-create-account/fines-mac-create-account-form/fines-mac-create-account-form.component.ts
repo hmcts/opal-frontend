@@ -131,10 +131,9 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
   }
 
   /**
-   * Performs the initial setup for the fines-mac-create-account-form component.
-   * This method sets up the account details form, initializes error messages,
-   * sets up the account type listener, and repopulates the form with the
-   * account details from the macStateService.
+   * Performs the initial setup for the create account form.
+   * This method sets up the create account form, initializes error messages,
+   * sets up the account type listener, and repopulates the form with account details.
    */
   private initialSetup(): void {
     this.setupCreateAccountForm();

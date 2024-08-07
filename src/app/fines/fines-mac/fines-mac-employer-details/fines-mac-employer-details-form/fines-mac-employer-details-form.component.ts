@@ -38,8 +38,8 @@ export class FinesMacEmployerDetailsFormComponent extends FormBaseComponent impl
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
 
-  public readonly finesMacRoutes = FinesMacRoutes;
-  public readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
+  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR;
 

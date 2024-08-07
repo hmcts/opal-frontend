@@ -1,1 +1,6 @@
-<p>fines-mac-parent-guardian-details works!</p>
+<div class="govuk-grid-column-two-thirds">
+  <app-fines-mac-parent-guardian-details-form
+    (formSubmit)="handleParentGuardianDetailsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  ></app-fines-mac-parent-guardian-details-form>
+</div>
