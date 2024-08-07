@@ -11,9 +11,9 @@ describe('FinesMacCreateAccountFormComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj('FinesService', ['fineMacState']);
+    mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.fineMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
@@ -196,6 +196,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component['setupCreateAccountForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['setupAccountTypeListener']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(component.finesService.fineMacState.accountDetails);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(component.finesService.finesMacState.accountDetails);
   });
 });

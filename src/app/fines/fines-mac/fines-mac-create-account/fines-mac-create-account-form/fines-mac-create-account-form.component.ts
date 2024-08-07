@@ -140,7 +140,7 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
     this.setupCreateAccountForm();
     this.setInitialErrorMessages();
     this.setupAccountTypeListener();
-    this.rePopulateForm(this.finesService.fineMacState.accountDetails);
+    this.rePopulateForm(this.finesService.finesMacState.accountDetails);
   }
 
   /**

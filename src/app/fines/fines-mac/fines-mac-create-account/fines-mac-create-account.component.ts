@@ -2,17 +2,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormParentBaseComponent } from '@components/abstract';
-import {
-  IBusinessUnit,
-  IGovUkSelectOptions,
-  IBusinessUnitRefData,
-  IAutoCompleteItem,
-  IManualAccountCreationAccountDetailsState,
-} from '@interfaces';
-import { BusinessUnitService } from '@services';
+import { IGovUkSelectOptions, IAutoCompleteItem } from '@interfaces';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { FinesMacRoutes } from '../enums';
+import { OpalFines } from '../../services/opal-fines.service';
+import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '../../interfaces';
+import { IFinesMacAccountDetailsState } from '../interfaces';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -22,13 +18,13 @@ import { FinesMacRoutes } from '../enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
-  private businessUnitService = inject(BusinessUnitService);
-  private businessUnits!: IBusinessUnit[];
-  public data$: Observable<IGovUkSelectOptions[]> = this.businessUnitService
+  private opalFinesService = inject(OpalFines);
+  private businessUnits!: IFinesBusinessUnit[];
+  public data$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getBusinessUnits('MANUAL_ACCOUNT_CREATION')
     .pipe(
-      tap((response: IBusinessUnitRefData) => this.setBusinessUnit(response)),
-      map((response: IBusinessUnitRefData) => {
+      tap((response: IFinesBusinessUnitRefData) => this.setBusinessUnit(response)),
+      map((response: IFinesBusinessUnitRefData) => {
         return this.createAutoCompleteItems(response);
       }),
     );
@@ -40,13 +36,13 @@ export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
    *
    * @param response - The response containing the business unit reference data.
    */
-  private setBusinessUnit(response: IBusinessUnitRefData): void {
+  private setBusinessUnit(response: IFinesBusinessUnitRefData): void {
     const { count, refData } = response;
-    const { accountDetails } = this.finesService.fineMacState;
+    const { accountDetails } = this.finesService.finesMacState;
 
     if (count === 1 && accountDetails.BusinessUnit === null) {
       accountDetails.BusinessUnit = refData[0].businessUnitName;
-      this.finesService.fineMacState.businessUnit = refData[0];
+      this.finesService.finesMacState.businessUnit = refData[0];
     }
     this.businessUnits = refData;
   }
@@ -56,7 +52,7 @@ export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
    * @param response - The response object containing the business unit reference data.
    * @returns An array of autocomplete items.
    */
-  private createAutoCompleteItems(response: IBusinessUnitRefData): IAutoCompleteItem[] {
+  private createAutoCompleteItems(response: IFinesBusinessUnitRefData): IAutoCompleteItem[] {
     const businessUnits = response.refData;
 
     return businessUnits.map((item) => {
@@ -71,9 +67,9 @@ export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
    * Handles the form submission for account details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleAccountDetailsSubmit(formData: IManualAccountCreationAccountDetailsState): void {
-    this.finesService.fineMacState = {
-      ...this.finesService.fineMacState,
+  public handleAccountDetailsSubmit(formData: IFinesMacAccountDetailsState): void {
+    this.finesService.finesMacState = {
+      ...this.finesService.finesMacState,
       accountDetails: formData,
       businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === formData.BusinessUnit)!,
       unsavedChanges: false,
@@ -89,7 +85,7 @@ export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesService.fineMacState.unsavedChanges = unsavedChanges;
+    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

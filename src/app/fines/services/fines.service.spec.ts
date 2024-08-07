@@ -16,7 +16,7 @@ describe('FinesService', () => {
   });
 
   it('should store search state', () => {
-    service.fineMacState = FINES_MAC_STATE;
-    expect(service.fineMacState).toEqual(FINES_MAC_STATE);
+    service.finesMacState = FINES_MAC_STATE;
+    expect(service.finesMacState).toEqual(FINES_MAC_STATE);
   });
 });

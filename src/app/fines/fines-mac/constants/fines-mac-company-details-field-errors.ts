@@ -13,7 +13,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  CompanyName_0: {
+  AliasOrganisationName_0: {
     required: {
       message: `Enter company name for alias 1`,
       priority: 1,
@@ -27,7 +27,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  CompanyName_1: {
+  AliasOrganisationName_1: {
     required: {
       message: `Enter company name for alias 2`,
       priority: 1,
@@ -41,7 +41,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  CompanyName_2: {
+  AliasOrganisationName_2: {
     required: {
       message: `Enter company name for alias 3`,
       priority: 1,
@@ -55,7 +55,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  CompanyName_3: {
+  AliasOrganisationName_3: {
     required: {
       message: `Enter company name for alias 4`,
       priority: 1,
@@ -69,7 +69,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERROR = {
       priority: 3,
     },
   },
-  CompanyName_4: {
+  AliasOrganisationName_4: {
     required: {
       message: `Enter company name for alias 5`,
       priority: 1,

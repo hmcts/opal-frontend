@@ -60,7 +60,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { DefendantType } = this.finesService.fineMacState.accountDetails;
+    const { DefendantType } = this.finesService.finesMacState.accountDetails;
     if (DefendantType) {
       this.defendantType = this.defendantTypes[DefendantType as keyof IFinesMacDefendantTypes] || '';
     }
@@ -72,7 +72,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    */
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { AccountType } = this.finesService.fineMacState.accountDetails;
+    const { AccountType } = this.finesService.finesMacState.accountDetails;
     if (AccountType) {
       this.accountType = this.accountTypes[AccountType as keyof IFinesMacAccountTypes] || '';
     }
@@ -98,11 +98,11 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    * Updates the `accountCreationStatus` object based on the values in `manualAccountCreation`.
    */
   private checkStatus(): void {
-    const accountCreationKeys = Object.keys(this.finesService.fineMacState) as (keyof IFinesMacAccountStatus)[];
+    const accountCreationKeys = Object.keys(this.finesService.finesMacState) as (keyof IFinesMacAccountStatus)[];
 
     accountCreationKeys.forEach((key: keyof IFinesMacAccountStatus) => {
-      if (typeof this.finesService.fineMacState[key] !== 'boolean') {
-        const subFields = this.finesService.fineMacState[key];
+      if (typeof this.finesService.finesMacState[key] !== 'boolean') {
+        const subFields = this.finesService.finesMacState[key];
         this.accountCreationStatus[key] = Object.values(subFields).some(this.isTruthy);
       }
     });

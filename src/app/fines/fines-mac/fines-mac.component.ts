@@ -26,9 +26,9 @@ export class FinesMacComponent implements OnDestroy {
    */
   @HostListener('window:beforeunload', ['$event'])
   handleBeforeUnload(): boolean {
-    if (this.finesService.fineMacState.unsavedChanges) {
+    if (this.finesService.finesMacState.unsavedChanges) {
       return false;
-    } else if (this.finesService.fineMacState.stateChanges) {
+    } else if (this.finesService.finesMacState.stateChanges) {
       return false;
     } else {
       return true;
@@ -43,7 +43,7 @@ export class FinesMacComponent implements OnDestroy {
    * @returns boolean
    */
   canDeactivate(): CanDeactivateType {
-    if (this.finesService.fineMacState.stateChanges) {
+    if (this.finesService.finesMacState.stateChanges) {
       return false;
     } else {
       return true;
@@ -52,7 +52,7 @@ export class FinesMacComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.finesService.fineMacState = FINES_MAC_STATE;
+    this.finesService.finesMacState = FINES_MAC_STATE;
 
     // Clear any errors...
     this.globalStateService.error.set({

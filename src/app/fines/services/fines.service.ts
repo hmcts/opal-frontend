@@ -7,5 +7,5 @@ import { FINES_MAC_STATE } from '../fines-mac/constants';
 })
 export class FinesService {
   // Non reactive state
-  public fineMacState: IFinesMacState = FINES_MAC_STATE;
+  public finesMacState: IFinesMacState = FINES_MAC_STATE;
 }

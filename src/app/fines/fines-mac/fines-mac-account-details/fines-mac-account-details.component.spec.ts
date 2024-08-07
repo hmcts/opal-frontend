@@ -30,9 +30,9 @@ describe('FinesMacAccountDetailsComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj('FineService', ['fineMacState']);
+    mockFinesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
-    mockFinesService.fineMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState = FINES_MAC_STATE;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
@@ -46,7 +46,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   beforeEach(() => {
-    mockFinesService.fineMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE;
+    mockFinesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE;
   });
 
   it('should create', () => {
@@ -60,19 +60,19 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType correctly', () => {
-    mockFinesService.fineMacState.accountDetails.DefendantType = 'adultOrYouthOnly';
+    mockFinesService.finesMacState.accountDetails.DefendantType = 'adultOrYouthOnly';
 
     component['setDefendantType']();
 
     expect(component.defendantType).toEqual(
       FINES_MAC_DEFENDANT_TYPES_STATE[
-        mockFinesService.fineMacState.accountDetails.DefendantType as keyof IFinesMacDefendantTypes
+        mockFinesService.finesMacState.accountDetails.DefendantType as keyof IFinesMacDefendantTypes
       ],
     );
   });
 
   it('should set defendantType to be empty', () => {
-    mockFinesService.fineMacState.accountDetails.DefendantType = 'test';
+    mockFinesService.finesMacState.accountDetails.DefendantType = 'test';
 
     component['setDefendantType']();
 
@@ -81,26 +81,26 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should not set defendantType', () => {
     component.defendantType = '';
-    mockFinesService.fineMacState.accountDetails.DefendantType = null;
+    mockFinesService.finesMacState.accountDetails.DefendantType = null;
 
     component['setDefendantType']();
     expect(component.defendantType).toBe('');
   });
 
   it('should set accountType correctly', () => {
-    mockFinesService.fineMacState.accountDetails.AccountType = 'fine';
+    mockFinesService.finesMacState.accountDetails.AccountType = 'fine';
 
     component['setAccountType']();
 
     expect(component.accountType).toEqual(
       FINES_MAC_ACCOUNT_TYPES_STATE[
-        mockFinesService.fineMacState.accountDetails.AccountType as keyof IFinesMacAccountTypes
+        mockFinesService.finesMacState.accountDetails.AccountType as keyof IFinesMacAccountTypes
       ],
     );
   });
 
   it('should set accountType to be empty', () => {
-    mockFinesService.fineMacState.accountDetails.AccountType = 'test';
+    mockFinesService.finesMacState.accountDetails.AccountType = 'test';
 
     component['setAccountType']();
 
@@ -109,14 +109,14 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should not set accountType', () => {
     component.accountType = '';
-    mockFinesService.fineMacState.accountDetails.AccountType = null;
+    mockFinesService.finesMacState.accountDetails.AccountType = null;
 
     component['setAccountType']();
     expect(component.accountType).toBe('');
   });
 
   it('should correctly update accountCreationStatus based on manualAccountCreation state', () => {
-    mockFinesService.fineMacState = {
+    mockFinesService.finesMacState = {
       employerDetails: FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK,
       accountDetails: FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
       contactDetails: FINES_MAC_CONTACT_DETAILS_STATE_MOCK,
@@ -147,8 +147,8 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should correctly update accountCreationStatus based on empty manualAccountCreation state', () => {
-    mockFinesService.fineMacState = FINES_MAC_STATE;
-    mockFinesService.fineMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
 
     component['checkStatus']();
 
