@@ -5,18 +5,8 @@
       <span>{{ globalStateService.userState().userName }}</span>
     </li>
     <li>
-      <a class="govuk-link" [routerLink]="accountEnquiryRoutes.accountEnquiry" id="accountEnquiryLink"
-        >Account Enquiry</a
-      >
-    </li>
-    <li>
-      <a class="govuk-link" [routerLink]="manualAccountCreationRoutes.createAccount" id="manualAccountCreationLink"
-        >Manually Create Account</a
-      >
-    </li>
-    <li>
-      <a class="govuk-link" [routerLink]="manualAccountCreationRoutes.restructure" id="manualAccountCreationLink"
-        >Fines - Manual Account Creation</a
+      <a class="govuk-link" [routerLink]="finesMacRoutes.finesMacCreateAccount" id="finesMacLink"
+        >Manual Account Creation</a
       >
     </li>
   </ul>
