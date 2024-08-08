@@ -1,4 +1,3 @@
-import { DefendantAccountService } from './defendant-account-service/defendant-account.service';
 import { AuthService } from './auth-service/auth.service';
 import { GlobalStateService } from './global-state-service/global-state.service';
 import { UtilsService } from './utils/utils.service';
@@ -10,11 +9,9 @@ import { TransferStateService } from './transfer-state-service/transfer-state.se
 import { SessionService } from './session-service/session.service';
 import { BusinessUnitService } from './business-unit/business-unit.service';
 import { MacStateService } from './mac-state-service/mac-state.service';
-import { AeStateService } from './ae-state-service/ae-state.service';
 import { LocalJusticeAreaService } from './local-justice-area-service/local-justice-area.service';
 
 export {
-  DefendantAccountService,
   AuthService,
   GlobalStateService,
   UtilsService,
@@ -26,6 +23,5 @@ export {
   SessionService,
   BusinessUnitService,
   MacStateService,
-  AeStateService,
   LocalJusticeAreaService,
 };

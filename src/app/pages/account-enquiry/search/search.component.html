@@ -1,9 +1,0 @@
-@if (data$ | async; as data) {
-  <div class="govuk-grid-column-two-thirds">
-    <app-search-form
-      [selectOptions]="data"
-      [state]="aeStateService.accountEnquiry.search"
-      (formSubmit)="handleFormSubmit($event)"
-    ></app-search-form>
-  </div>
-}

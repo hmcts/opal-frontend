@@ -1,4 +1,4 @@
-export const ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS = {
+export const FORM_BASE_FIELD_ERRORS = {
   court: {
     required: {
       message: 'Select a court',

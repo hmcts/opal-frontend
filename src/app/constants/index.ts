@@ -1,6 +1,3 @@
-import { ACCOUNT_ENQUIRY_DEFAULT_STATE, ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH } from './account-enquiry-default-state';
-import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from './account-enquiry-search-form-field-errors';
-import { API_PATHS } from './api-paths';
 import { ADDRESS_LINE_ONE_FIELD_ERRORS } from './common/address-line-one-field-errors';
 import { ADDRESS_LINE_THREE_FIELD_ERRORS } from './common/address-line-three-field-errors';
 import { ADDRESS_LINE_TWO_FIELD_ERRORS } from './common/address-line-two-field-errors';
@@ -36,15 +33,13 @@ import { MANUAL_ACCOUNT_CREATION_COURT_DETAILS_FIELD_ERRORS } from './manual-acc
 import { ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from './account-type-defendant-types-state';
 import { ACCOUNT_TYPES_STATE } from './account-types-state';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_TYPE_DEFENDANT_TYPE_CONTROL_NAMES } from './manual-account-creation-account-type-defendant-type-control-names';
+import { API_PATHS } from './api-paths';
 
 export {
-  ACCOUNT_ENQUIRY_DEFAULT_STATE,
-  ACCOUNT_ENQUIRY_DEFAULT_STATE_SEARCH,
   ROUTE_PERMISSIONS,
   API_PATHS,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE,
   MANUAL_ACCOUNT_CREATION_STATE,
-  ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_FIELD_ERROR,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_FIELD_ERROR,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE,

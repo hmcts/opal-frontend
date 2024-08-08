@@ -1,15 +1,9 @@
-import { IGetDefendantAccountParams } from './get-defendant-account-params.interface';
 import { IDefendantAccount } from './defendant-account.interface';
 import { IGovUkRadioInput } from './govuk-radio-input.interface';
 import { IGovUkCheckboxInput } from './govuk-checkboxes-input.interface';
 import { IGovUkDateInput } from './govuk-date-input.interface';
 import { IGovUkSelectOptions } from './govuk-select-options.interface';
-import { IAccountEnquiryState, IAccountEnquiryStateSearch } from './account-enquiry-state.interface';
-import { ISearchDefendantAccountBody } from './search-defendant-account-body.interface';
-import { ISearchDefendantAccounts, ISearchDefendantAccount } from './search-defendant-accounts.interface';
-import { IDefendantAccountDetails } from './defendant-account-details.interface';
-import { IAddDefendantAccountNoteBody } from './add-defendant-account-note-body.interface';
-import { IDefendantAccountNote } from './defendant-account-note.interface';
+
 import { ISearchCourt } from './search-court.interface';
 import { ISearchCourtBody } from './search-court-body.interface';
 import { ILaunchDarklyConfig } from './launch-darkly-config.interface';
@@ -32,7 +26,6 @@ import { IDefendantTypes } from './defendant-types.interface';
 import { IManualAccountCreationContactDetailsState } from './manual-account-creation-contact-details-state.interface';
 import { IManualAccountCreationParentGuardianDetailsState } from './manual-account-creation-parent-guardian-details-state.interface';
 import { IBusinessUnit, IBusinessUnitRefData } from './business-unit-ref-data.interface';
-
 import { IManualAccountCreationPersonalAlias } from './manual-account-creation-personal-details-alias.interface';
 import { IManualAccountCreationPersonalDetailsState } from './manual-account-creation-personal-details-state.interface';
 import { IManualAccountCreationPersonalDetailsAliasState } from './manual-account-creation-personal-details-alias-state.interface';
@@ -65,20 +58,11 @@ import { IRadioOptions } from './radio-options.interface';
 import { IAccountTypeDefendantTypeControlNames } from './account-type-defendant-type-control-names.interface';
 
 export {
-  IGetDefendantAccountParams,
   IDefendantAccount,
   IGovUkRadioInput,
   IGovUkCheckboxInput,
   IGovUkDateInput,
   IGovUkSelectOptions,
-  IAccountEnquiryState,
-  IAccountEnquiryStateSearch,
-  ISearchDefendantAccountBody,
-  ISearchDefendantAccount,
-  ISearchDefendantAccounts,
-  IDefendantAccountDetails,
-  IAddDefendantAccountNoteBody,
-  IDefendantAccountNote,
   ISearchCourt,
   ISearchCourtBody,
   ILaunchDarklyConfig,

@@ -1,12 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBaseComponent } from './form-base.component';
 import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import {
-  FORM_CONTROL_ERROR_MOCK,
-  FORM_DATE_ERROR_SUMMARY_MOCK,
-  FORM_ERROR_SUMMARY_MOCK,
-  SEARCH_STATE_MOCK,
-} from '@mocks';
+import { FORM_CONTROL_ERROR_MOCK, FORM_DATE_ERROR_SUMMARY_MOCK, FORM_ERROR_SUMMARY_MOCK } from '@mocks';
 import {
   IFieldError,
   IFormArrayControlValidation,
@@ -15,7 +10,8 @@ import {
   IFormError,
   IFormErrorSummaryMessage,
 } from '@interfaces';
-import { ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS } from '@constants';
+import { FORM_BASE_STATE_MOCK } from '../mocks';
+import { FORM_BASE_FIELD_ERRORS } from '../constants';
 
 class TestFormBaseComponent extends FormBaseComponent {
   constructor() {
@@ -213,7 +209,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should repopulate the form', () => {
-    component['rePopulateForm'](SEARCH_STATE_MOCK);
+    component['rePopulateForm'](FORM_BASE_STATE_MOCK);
     expect(component.form.value.forename).toBe('Test');
   });
 
@@ -322,7 +318,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return an empty array if the form is valid', () => {
-    component.form.patchValue(SEARCH_STATE_MOCK);
+    component.form.patchValue(FORM_BASE_STATE_MOCK);
     const result = component['getFormErrors'](component.form);
 
     expect(result).toEqual([]);
@@ -374,7 +370,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return the error summary entries', () => {
-    component['fieldErrors'] = ACCOUNT_ENQUIRY_SEARCH_FORM_FIELD_ERRORS;
+    component['fieldErrors'] = FORM_BASE_FIELD_ERRORS;
     const errorMessage = component['getFieldErrorDetails'](['court']);
     const expectedResp = { message: 'Select a court', priority: 1, type: 'required' };
 
@@ -482,7 +478,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    const formValue = SEARCH_STATE_MOCK;
+    const formValue = FORM_BASE_STATE_MOCK;
     component['rePopulateForm'](formValue);
 
     component['handleErrorMessages']();
