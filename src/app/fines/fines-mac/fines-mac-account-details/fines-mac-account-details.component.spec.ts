@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacAccountDetailsComponent } from './fines-mac-account-details.component';
-import { FinesService } from '../../services/fines.service';
 import {
   FINES_MAC_ACCOUNT_DETAILS_STATE,
   FINES_MAC_ACCOUNT_TYPES_STATE,
   FINES_MAC_BUSINESS_UNIT_STATE,
   FINES_MAC_DEFENDANT_TYPES_STATE,
   FINES_MAC_STATE,
-} from '../constants';
+} from '@constants/fines/mac';
 import { provideRouter } from '@angular/router';
-import { IFinesMacAccountTypes, IFinesMacDefendantTypes } from '../interfaces';
+import { IFinesMacAccountTypes, IFinesMacDefendantTypes } from '@interfaces/fines/mac';
+import { FinesService } from '@services/fines';
 import {
   FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK,
   FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
@@ -22,7 +21,7 @@ import {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
   FINES_MAC_PAYMENT_TERMS_STATE_MOCK,
   FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
-} from '../mocks';
+} from '@mocks/fines/mac';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;

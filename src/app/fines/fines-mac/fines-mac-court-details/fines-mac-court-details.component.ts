@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormParentBaseComponent } from '@components/abstract';
-import { OpalFines } from '../../services/opal-fines.service';
 import { IAutoCompleteItem, IGovUkSelectOptions } from '@interfaces';
 import { Observable, forkJoin, map } from 'rxjs';
-import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '../../interfaces';
-import { IFinesMacCourtDetailsForm } from '../interfaces';
-import { FINES_MAC_NESTED_ROUTES } from '../constants/fines-mac-nested-routes';
-import { FinesMacRoutes } from '../enums';
+import { FinesMacRoutes } from '@enums/fines/mac';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
+import { OpalFines } from '@services/fines';
+import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-court-details',

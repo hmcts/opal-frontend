@@ -1,4 +1,4 @@
-import { IFinesBusinessUnitRefData } from '../interfaces';
+import { IFinesBusinessUnitRefData } from '@interfaces/fines';
 
 export const FINES_BUSINESS_UNIT_REF_DATA_MOCK: IFinesBusinessUnitRefData = {
   count: 7,

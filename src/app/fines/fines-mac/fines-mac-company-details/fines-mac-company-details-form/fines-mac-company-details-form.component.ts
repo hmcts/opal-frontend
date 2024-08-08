@@ -9,7 +9,6 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { IFinesMacCompanyDetailsForm } from '../../interfaces';
 import {
   ADDRESS_LINE_ONE_FIELD_ERRORS,
   ADDRESS_LINE_THREE_FIELD_ERRORS,
@@ -17,13 +16,17 @@ import {
   CUSTOM_ADDRESS_FIELD_IDS,
   POST_CODE_FIELD_ERRORS,
 } from '@constants';
-import { FinesMacRoutes } from '../../enums';
-import { FINES_MAC_NESTED_ROUTES } from '../../constants/fines-mac-nested-routes';
 import { IFieldErrors } from '@interfaces';
-import { FINES_MAC_COMPANY_DETAILS_ALIAS, FINES_MAC_COMPANY_DETAILS_FIELD_ERROR } from '../../constants';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
 import { CustomAddressBlockComponent } from '@components';
+import { IFinesMacCompanyDetailsForm } from '@interfaces/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
+import {
+  FINES_MAC_COMPANY_DETAILS_ALIAS,
+  FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
+  FINES_MAC_NESTED_ROUTES,
+} from '@constants/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',

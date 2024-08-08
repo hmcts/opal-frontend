@@ -7,11 +7,10 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { IFinesMacEmployerDetailsForm } from '../../interfaces';
-import { FinesMacRoutes } from '../../enums';
-import { FINES_MAC_NESTED_ROUTES } from '../../constants/fines-mac-nested-routes';
-import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR } from '../../constants';
+import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
 import { IFieldErrors } from '@interfaces';
+import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,

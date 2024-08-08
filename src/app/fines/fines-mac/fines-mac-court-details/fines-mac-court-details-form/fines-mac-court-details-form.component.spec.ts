@@ -1,12 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form.component';
-import { FinesService } from 'src/app/fines/services/fines.service';
-import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_STATE_MOCK } from '../../mocks';
-import { IFinesMacCourtDetailsForm } from '../../interfaces';
-import {
-  FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK,
-  FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK,
-} from 'src/app/fines/mocks';
+import { FinesService } from '@services/fines';
+import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
+import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK, FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from '@mocks/fines';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;

@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard, canDeactivateGuard } from '@guards';
 import { userStateResolver } from '@resolvers';
-import { routing as macRouting } from '../fines-mac/routing';
-import { FinesRoutingPaths } from '../enums/fines-routing-paths';
+import { routing as macRouting } from '@routing/fines/mac';
+import { FinesRoutingPaths } from '@enums/fines';
 
 export const routing: Routes = [
   {

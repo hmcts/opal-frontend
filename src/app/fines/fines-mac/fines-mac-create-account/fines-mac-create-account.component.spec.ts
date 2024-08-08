@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountComponent } from './fines-mac-create-account.component';
-import { FinesService } from '../../services/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks';
 import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { IAutoCompleteItem, IBusinessUnitRefData } from '@interfaces';
-import { FinesMacRoutes } from '../enums';
-import { IFinesMacAccountDetailsState } from '../interfaces';
-import { OpalFines } from '../../services/opal-fines.service';
-import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '../../mocks';
+import { FinesMacRoutes } from '@enums/fines/mac';
+import { IFinesMacAccountDetailsState } from '@interfaces/fines/mac';
+import { FinesService, OpalFines } from '@services/fines';
+import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;

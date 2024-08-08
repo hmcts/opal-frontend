@@ -1,4 +1,4 @@
-import { IFinesMacParentGuardianDetailsState } from './fines-mac-parent-guardian-details-state.interface';
+import { IFinesMacParentGuardianDetailsState } from '@interfaces/fines/mac';
 
 export interface IFinesMacParentGuardianDetailsForm {
   formData: IFinesMacParentGuardianDetailsState;

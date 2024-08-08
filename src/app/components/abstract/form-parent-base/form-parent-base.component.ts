@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CanDeactivateType } from '@interfaces';
 import { AeStateService, GlobalStateService, MacStateService } from '@services';
-import { FinesService } from 'src/app/fines/services/fines.service';
+import { FinesService } from 'src/app/fines/services/fines-service/fines.service';
 
 export abstract class FormParentBaseComponent {
   private readonly router = inject(Router);

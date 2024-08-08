@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard, canDeactivateGuard } from '@guards';
-import { FinesMacRoutingPaths } from '../enums';
+import { FinesMacRoutingPaths } from '@enums/fines/mac';
 
 export const routing: Routes = [
   {

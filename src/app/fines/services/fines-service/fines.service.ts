@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IFinesMacState } from '../fines-mac/interfaces';
-import { FINES_MAC_STATE } from '../fines-mac/constants';
+import { IFinesMacState } from '@interfaces/fines/mac';
+import { FINES_MAC_STATE } from '@constants/fines/mac';
 
 @Injectable({
   providedIn: 'root',

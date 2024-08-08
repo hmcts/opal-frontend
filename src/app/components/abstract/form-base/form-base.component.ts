@@ -14,7 +14,7 @@ import {
 } from '@interfaces';
 import { MacStateService, GlobalStateService } from '@services';
 import { Subscription } from 'rxjs';
-import { FinesService } from 'src/app/fines/services/fines.service';
+import { FinesService } from 'src/app/fines/services/fines-service/fines.service';
 
 @Component({
   standalone: true,

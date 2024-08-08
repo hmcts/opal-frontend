@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form.component';
-import { FinesService } from 'src/app/fines/services/fines.service';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK, FINES_MAC_STATE_MOCK } from '../../mocks';
 import { BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@mocks';
 import { Validators } from '@angular/forms';
+import { FinesService } from '@services/fines';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;

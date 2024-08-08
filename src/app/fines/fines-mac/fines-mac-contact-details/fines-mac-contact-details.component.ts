@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormParentBaseComponent } from '@components';
-import { IFinesMacContactDetailsForm } from '../interfaces';
-import { FINES_MAC_NESTED_ROUTES } from '../constants/fines-mac-nested-routes';
-import { FinesMacRoutes } from '../enums';
+import { IFinesMacContactDetailsForm } from '@interfaces/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form/fines-mac-contact-details-form.component';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-contact-details',

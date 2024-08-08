@@ -1,4 +1,6 @@
-export const FINES_COURT_REF_DATA_MOCK = {
+import { IFinesCourtRefData } from '@interfaces/fines';
+
+export const FINES_COURT_REF_DATA_MOCK: IFinesCourtRefData = {
   count: 4,
   refData: [
     {

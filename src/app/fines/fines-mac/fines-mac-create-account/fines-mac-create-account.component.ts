@@ -5,10 +5,10 @@ import { FormParentBaseComponent } from '@components/abstract';
 import { IGovUkSelectOptions, IAutoCompleteItem } from '@interfaces';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
-import { FinesMacRoutes } from '../enums';
-import { OpalFines } from '../../services/opal-fines.service';
-import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '../../interfaces';
-import { IFinesMacAccountDetailsState } from '../interfaces';
+import { FinesMacRoutes } from '@enums/fines/mac';
+import { IFinesMacAccountDetailsState } from '@interfaces/fines/mac';
+import { OpalFines } from '@services/fines';
+import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines';
 
 @Component({
   selector: 'app-fines-mac-create-account',

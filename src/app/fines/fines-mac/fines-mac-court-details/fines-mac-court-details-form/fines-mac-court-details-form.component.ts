@@ -8,11 +8,10 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { IFinesMacCourtDetailsForm } from '../../interfaces';
-import { FinesMacRoutes } from '../../enums';
-import { FINES_MAC_NESTED_ROUTES } from '../../constants/fines-mac-nested-routes';
-import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../../constants';
+import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
 import { IAutoCompleteItem, IFieldErrors } from '@interfaces';
+import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',

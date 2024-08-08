@@ -1,18 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import {
-  IFinesMacAccountDetailsState,
-  IFinesMacAccountTypes,
-  IFinesMacCreateAccountControlNames,
-} from '../../interfaces';
 import { IAutoCompleteItem, IFieldErrors, IRadioOptions } from '@interfaces';
 import { Subject, takeUntil } from 'rxjs';
-import { FinesMacRoutes } from '../../enums';
-import {
-  FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR,
-  FINES_MAC_ACCOUNT_TYPES_STATE,
-  FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
-  FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
-} from '../../constants';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -27,6 +15,18 @@ import {
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
 import { FormBaseComponent } from '@components/abstract';
 import { RoutingPaths } from '@enums';
+import {
+  IFinesMacAccountDetailsState,
+  IFinesMacAccountTypes,
+  IFinesMacCreateAccountControlNames,
+} from '@interfaces/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
+import {
+  FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR,
+  FINES_MAC_ACCOUNT_TYPES_STATE,
+  FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
+  FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
+} from '@constants/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',

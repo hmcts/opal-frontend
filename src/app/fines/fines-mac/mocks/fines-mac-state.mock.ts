@@ -1,4 +1,4 @@
-import { IFinesMacState } from '../interfaces';
+import { IFinesMacState } from '@interfaces/fines/mac';
 import {
   FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE,
   FINES_MAC_ACCOUNT_DETAILS_STATE,
@@ -11,7 +11,7 @@ import {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE,
   FINES_MAC_PAYMENT_TERMS_STATE,
   FINES_MAC_PERSONAL_DETAILS_STATE,
-} from '../constants';
+} from '@constants/fines/mac';
 
 export const FINES_MAC_STATE_MOCK: IFinesMacState = {
   accountDetails: { ...FINES_MAC_ACCOUNT_DETAILS_STATE, DefendantType: 'adultOrYouthOnly' },

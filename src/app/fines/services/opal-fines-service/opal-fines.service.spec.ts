@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-
-import { OpalFines } from './opal-fines.service';
-import { OPAL_FINES_PATHS } from '../constants';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   IFinesAddDefendantAccountNoteBody,
   IFinesBusinessUnitRefData,
@@ -11,22 +10,22 @@ import {
   IFinesSearchCourt,
   IFinesSearchCourtBody,
   IFinesSearchDefendantAccountBody,
-} from '../interfaces';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+} from '@interfaces/fines';
 import {
+  FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
   FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+  FINES_COURT_REF_DATA_MOCK,
+  FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
+  FINES_DEFENDANT_ACCOUNT_MOCK,
+  FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
+  FINES_DEFENDANT_ACCOUNT_NOTE_MOCK,
+  FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
   FINES_SEARCH_COURT_BODY_MOCK,
   FINES_SEARCH_COURT_MOCK,
-  FINES_COURT_REF_DATA_MOCK,
-  FINES_DEFENDANT_ACCOUNT_MOCK,
   FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK,
-  FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
-  FINES_DEFENDANT_ACCOUNT_NOTE_MOCK,
-  FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
-  FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
-  FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-} from '../mocks';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+} from '@mocks/fines';
+import { OPAL_FINES_PATHS } from '@constants/fines';
+import { OpalFines } from '@services/fines';
 
 describe('OpalFines', () => {
   let service: OpalFines;

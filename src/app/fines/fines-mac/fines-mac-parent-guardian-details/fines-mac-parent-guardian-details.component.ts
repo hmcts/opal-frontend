@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormParentBaseComponent } from '@components/abstract';
-import { IFinesMacParentGuardianDetailsForm } from '../interfaces';
-import { FINES_MAC_NESTED_ROUTES } from '../constants/fines-mac-nested-routes';
-import { FinesMacRoutes } from '../enums';
+import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',

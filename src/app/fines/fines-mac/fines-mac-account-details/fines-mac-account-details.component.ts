@@ -4,11 +4,14 @@ import {
   IFinesMacAccountTypes,
   IFinesMacDefendantTypes,
   IFinesMacFieldTypes,
-} from '../interfaces';
-import { FINES_MAC_ACCOUNT_STATUS, FINES_MAC_ACCOUNT_TYPES_STATE, FINES_MAC_DEFENDANT_TYPES_STATE } from '../constants';
+} from '@interfaces/fines/mac';
+import {
+  FINES_MAC_ACCOUNT_STATUS,
+  FINES_MAC_ACCOUNT_TYPES_STATE,
+  FINES_MAC_DEFENDANT_TYPES_STATE,
+} from '@constants/fines/mac';
 import { RoutingPaths } from '@enums';
-import { FinesMacRoutes } from '../enums';
-import { FinesService } from '../../services/fines.service';
+import { FinesMacRoutes } from '@enums/fines/mac';
 import {
   GovukButtonComponent,
   GovukHeadingWithCaptionComponent,
@@ -20,6 +23,7 @@ import {
 } from '@components/govuk';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-account-details',

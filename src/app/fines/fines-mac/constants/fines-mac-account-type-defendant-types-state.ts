@@ -1,5 +1,5 @@
-import { IFinesMacAccountTypeDefendantTypes } from '../interfaces';
-import { FINES_MAC_DEFENDANT_TYPES_STATE } from './fines-mac-defendant-types-state';
+import { IFinesMacAccountTypeDefendantTypes } from '@interfaces/fines/mac';
+import { FINES_MAC_DEFENDANT_TYPES_STATE } from '@constants/fines/mac';
 
 export const FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE: IFinesMacAccountTypeDefendantTypes = {
   fine: {

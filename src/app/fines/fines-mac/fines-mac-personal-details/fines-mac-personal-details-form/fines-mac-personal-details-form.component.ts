@@ -17,10 +17,6 @@ import {
   GovukTextInputComponent,
 } from '@components/govuk';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
-import { IFinesMacPersonalDetailsForm } from '../../interfaces';
-import { FinesMacRoutes } from '../../enums';
-import { FINES_MAC_NESTED_ROUTES } from '../../constants/fines-mac-nested-routes';
-import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR } from '../../constants';
 import {
   CUSTOM_ADDRESS_FIELD_IDS,
   DATE_OF_BIRTH_FIELD_ERRORS,
@@ -41,6 +37,13 @@ import {
   specialCharactersValidator,
   optionalMaxLengthValidator,
 } from '@validators';
+import { IFinesMacPersonalDetailsForm } from '@interfaces/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
+import {
+  FINES_MAC_NESTED_ROUTES,
+  FINES_MAC_PERSONAL_DETAILS_ALIAS,
+  FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
+} from '@constants/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',

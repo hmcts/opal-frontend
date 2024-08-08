@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBaseComponent } from '@components/abstract';
-import { IFinesMacParentGuardianDetailsForm } from '../../interfaces';
-import { FinesMacRoutes } from '../../enums';
-import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '../../constants';
 import {
   ADDRESS_LINE_ONE_FIELD_ERRORS,
   ADDRESS_LINE_THREE_FIELD_ERRORS,
@@ -33,6 +30,9 @@ import {
   specialCharactersValidator,
   optionalMaxLengthValidator,
 } from '@validators';
+import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
+import { FinesMacRoutes } from '@enums/fines/mac';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',

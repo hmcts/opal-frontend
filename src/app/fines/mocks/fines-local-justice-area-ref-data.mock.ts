@@ -1,4 +1,6 @@
-export const FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK = {
+import { IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
+
+export const FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK: IFinesLocalJusticeAreaRefData = {
   count: 5,
   refData: [
     {

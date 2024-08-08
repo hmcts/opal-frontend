@@ -1,4 +1,4 @@
-import { IFinesMacPersonalDetailsState } from './fines-mac-personal-details-state.interface';
+import { IFinesMacPersonalDetailsState } from '@interfaces/fines/mac';
 
 export interface IFinesMacPersonalDetailsForm {
   formData: IFinesMacPersonalDetailsState;

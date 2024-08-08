@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
-import { FinesMacRoutes } from '../enums';
+import { FinesMacRoutes } from '@enums/fines/mac';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes',

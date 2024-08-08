@@ -1,4 +1,4 @@
-import { IFinesMacAccountStatus } from '../interfaces';
+import { IFinesMacAccountStatus } from '@interfaces/fines/mac';
 
 export const FINES_MAC_ACCOUNT_STATUS: IFinesMacAccountStatus = {
   employerDetails: false,

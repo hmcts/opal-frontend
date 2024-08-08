@@ -1,14 +1,16 @@
-import { IBusinessUnit } from '../../../interfaces/business-unit-ref-data.interface';
-import { IFinesMacAccountCommentsNotesState } from './fines-mac-account-comments-notes-state.interface';
-import { IFinesMacAccountDetailsState } from './fines-mac-account-details-state.interface';
-import { IFinesMacCompanyDetailsState } from './fines-mac-company-details-state.interface';
-import { IFinesMacContactDetailsState } from './fines-mac-contact-details-state.interface';
-import { IFinesMacCourtDetailsState } from './fines-mac-court-details-state.interface';
-import { IFinesMacEmployerDetailsState } from './fines-mac-employer-details-state.interface';
-import { IFinesMacOffenceDetailsState } from './fines-mac-offence-details-state.interface';
-import { IFinesMacParentGuardianDetailsState } from './fines-mac-parent-guardian-details-state.interface';
-import { IFinesMacPaymentTermsState } from './fines-mac-payment-terms-state.interface';
-import { IFinesMacPersonalDetailsState } from './fines-mac-personal-details-state.interface';
+import { IFinesBusinessUnit } from '@interfaces/fines';
+import {
+  IFinesMacAccountCommentsNotesState,
+  IFinesMacAccountDetailsState,
+  IFinesMacCompanyDetailsState,
+  IFinesMacContactDetailsState,
+  IFinesMacCourtDetailsState,
+  IFinesMacEmployerDetailsState,
+  IFinesMacOffenceDetailsState,
+  IFinesMacParentGuardianDetailsState,
+  IFinesMacPaymentTermsState,
+  IFinesMacPersonalDetailsState,
+} from '@interfaces/fines/mac';
 
 export interface IFinesMacState {
   employerDetails: IFinesMacEmployerDetailsState;
@@ -21,7 +23,7 @@ export interface IFinesMacState {
   accountCommentsNotes: IFinesMacAccountCommentsNotesState;
   offenceDetails: IFinesMacOffenceDetailsState;
   paymentTerms: IFinesMacPaymentTermsState;
-  businessUnit: IBusinessUnit;
+  businessUnit: IFinesBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;
 }

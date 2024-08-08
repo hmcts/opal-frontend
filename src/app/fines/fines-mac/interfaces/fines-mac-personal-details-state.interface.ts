@@ -1,4 +1,4 @@
-import { IFinesMacPersonalDetailsAliasState } from './fines-mac-personal-details-alias-state.interface';
+import { IFinesMacPersonalDetailsAliasState } from '@interfaces/fines/mac';
 
 export interface IFinesMacPersonalDetailsState {
   Title: string | null;

@@ -1,4 +1,4 @@
-import { IFinesMacCourtDetailsState } from './fines-mac-court-details-state.interface';
+import { IFinesMacCourtDetailsState } from '@interfaces/fines/mac';
 
 export interface IFinesMacCourtDetailsForm {
   formData: IFinesMacCourtDetailsState;
