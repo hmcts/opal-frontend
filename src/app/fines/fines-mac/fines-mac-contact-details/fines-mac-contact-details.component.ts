@@ -3,7 +3,7 @@ import { FormParentBaseComponent } from '@components';
 import { IFinesMacContactDetailsForm } from '../interfaces';
 import { FINES_MAC_NESTED_ROUTES } from '../constants/fines-mac-nested-routes';
 import { FinesMacRoutes } from '../enums';
-import { FinesMacContactDetailsFormComponent } from "./fines-mac-contact-details-form/fines-mac-contact-details-form.component";
+import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form/fines-mac-contact-details-form.component';
 
 @Component({
   selector: 'app-fines-mac-contact-details',

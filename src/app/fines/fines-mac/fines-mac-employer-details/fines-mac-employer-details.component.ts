@@ -5,7 +5,7 @@ import { FormParentBaseComponent } from '@components/abstract';
 import { IFinesMacEmployerDetailsForm } from '../interfaces';
 import { FINES_MAC_NESTED_ROUTES } from '../constants/fines-mac-nested-routes';
 import { FinesMacRoutes } from '../enums';
-import { FinesMacEmployerDetailsFormComponent } from "./fines-mac-employer-details-form/fines-mac-employer-details-form.component";
+import { FinesMacEmployerDetailsFormComponent } from './fines-mac-employer-details-form/fines-mac-employer-details-form.component';
 
 @Component({
   selector: 'app-fines-mac-employer-details',

@@ -5,7 +5,7 @@ import { FINES_MAC_NESTED_ROUTES } from '../constants/fines-mac-nested-routes';
 import { FinesMacRoutes } from '../enums';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FinesMacParentGuardianDetailsFormComponent } from "./fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component";
+import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',

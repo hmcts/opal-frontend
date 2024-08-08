@@ -9,7 +9,7 @@ import { FINES_MAC_NESTED_ROUTES } from '../constants/fines-mac-nested-routes';
 import { FinesMacRoutes } from '../enums';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FinesMacCourtDetailsFormComponent } from "./fines-mac-court-details-form/fines-mac-court-details-form.component";
+import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 
 @Component({
   selector: 'app-fines-mac-court-details',

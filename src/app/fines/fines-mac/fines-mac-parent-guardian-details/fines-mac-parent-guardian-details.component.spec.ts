@@ -40,6 +40,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
+    formSubmit.nestedFlow = false;
     component.handleParentGuardianDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formData);
@@ -51,7 +52,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     component.defendantType = 'parentOrGuardianToPay';
 
     formSubmit.nestedFlow = true;
-
     component.handleParentGuardianDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formData);
