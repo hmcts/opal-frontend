@@ -5,7 +5,7 @@ import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } f
 
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
-import { routing as finesRouting } from './fines/routing';
+import { routing as flowRouting } from '@flows/routing';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -50,7 +50,7 @@ const routes: Routes = [
     data: { routePermissionId: ROUTE_PERMISSIONS[RoutingPaths.accountEnquiry] },
     resolve: { userState: userStateResolver },
   },
-  ...finesRouting,
+  ...flowRouting,
   {
     path: RoutingPaths.manualAccountCreation,
     loadComponent: () =>
