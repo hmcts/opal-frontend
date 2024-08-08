@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ROUTE_PERMISSIONS } from '@constants';
 import { authGuard, canDeactivateGuard, routePermissionsGuard, signedInGuard } from '@guards';
-
 import { RoutingPaths } from '@enums';
 import { userStateResolver } from '@resolvers';
 import { routing as pagesRouting } from '@routing/pages';

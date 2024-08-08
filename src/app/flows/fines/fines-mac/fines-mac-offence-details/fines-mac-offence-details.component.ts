@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
 import { FinesMacRoutes } from '@enums/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-offence-details',
@@ -12,6 +13,7 @@ import { FinesMacRoutes } from '@enums/fines/mac';
 })
 export class FinesMacOffenceDetailsComponent {
   private readonly router = inject(Router);
+  protected readonly finesService = inject(FinesService);
 
   protected readonly finesMacRoutes = FinesMacRoutes;
 

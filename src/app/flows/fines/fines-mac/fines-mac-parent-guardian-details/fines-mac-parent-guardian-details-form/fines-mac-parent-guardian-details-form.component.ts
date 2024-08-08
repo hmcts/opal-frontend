@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormBaseComponent } from '@components/abstract';
 import {
   ADDRESS_LINE_ONE_FIELD_ERRORS,
@@ -33,6 +33,7 @@ import {
 import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
@@ -54,6 +55,7 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants/fines/
 export class FinesMacParentGuardianDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
 
+  protected readonly finesService = inject(FinesService);
   protected readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
 

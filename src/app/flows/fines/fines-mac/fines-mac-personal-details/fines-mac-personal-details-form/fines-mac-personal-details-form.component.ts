@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormAliasBaseComponent } from '@components/abstract';
 import {
@@ -44,6 +53,7 @@ import {
   FINES_MAC_PERSONAL_DETAILS_ALIAS,
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
 } from '@constants/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -71,9 +81,10 @@ export class FinesMacPersonalDetailsFormComponent extends FormAliasBaseComponent
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
 
-  public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
-  public readonly finesMacRoutes = FinesMacRoutes;
-  public readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
+  protected readonly finesService = inject(FinesService);
+  protected readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
+  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,

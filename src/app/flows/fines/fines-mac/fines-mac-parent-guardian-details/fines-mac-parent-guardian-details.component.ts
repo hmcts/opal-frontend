@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormParentBaseComponent } from '@components/abstract';
 import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',
@@ -15,6 +16,7 @@ import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacParentGuardianDetailsComponent extends FormParentBaseComponent {
+  protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
 
   /**

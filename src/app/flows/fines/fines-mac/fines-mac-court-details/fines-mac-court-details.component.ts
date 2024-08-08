@@ -6,7 +6,7 @@ import { FinesMacRoutes } from '@enums/fines/mac';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
-import { OpalFines } from '@services/fines';
+import { FinesService, OpalFines } from '@services/fines';
 import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
@@ -20,6 +20,7 @@ import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
 })
 export class FinesMacCourtDetailsComponent extends FormParentBaseComponent {
   private opalFinesService = inject(OpalFines);
+  protected readonly finesService = inject(FinesService);
   private sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService.getLocalJusticeAreas().pipe(
     map((response: IFinesLocalJusticeAreaRefData) => {
       return this.createAutoCompleteItemsLja(response);

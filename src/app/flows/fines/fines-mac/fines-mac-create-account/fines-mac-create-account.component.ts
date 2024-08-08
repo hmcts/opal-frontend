@@ -7,7 +7,7 @@ import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IFinesMacAccountDetailsState } from '@interfaces/fines/mac';
-import { OpalFines } from '@services/fines';
+import { FinesService, OpalFines } from '@services/fines';
 import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines';
 
 @Component({
@@ -18,6 +18,7 @@ import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
+  protected readonly finesService = inject(FinesService);
   private opalFinesService = inject(OpalFines);
   private businessUnits!: IFinesBusinessUnit[];
   public data$: Observable<IGovUkSelectOptions[]> = this.opalFinesService

@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormBaseComponent } from '@components/abstract';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
@@ -12,6 +21,7 @@ import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS, FINES_MAC_NESTED_ROUTES } from '@
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IAutoCompleteItem, IFieldErrors } from '@interfaces';
 import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',
@@ -34,6 +44,7 @@ export class FinesMacCourtDetailsFormComponent extends FormBaseComponent impleme
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAutoCompleteItem[];
   @Output() private formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
 
+  protected readonly finesService = inject(FinesService);
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 

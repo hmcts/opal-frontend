@@ -196,6 +196,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component['setupCreateAccountForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['setupAccountTypeListener']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(component.finesService.finesMacState.accountDetails);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(component['finesService'].finesMacState.accountDetails);
   });
 });

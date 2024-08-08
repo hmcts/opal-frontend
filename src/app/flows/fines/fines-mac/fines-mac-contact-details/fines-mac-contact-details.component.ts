@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormParentBaseComponent } from '@components';
 import { IFinesMacContactDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form/fines-mac-contact-details-form.component';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-contact-details',
@@ -13,6 +14,7 @@ import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacContactDetailsComponent extends FormParentBaseComponent {
+  protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
 
   /**

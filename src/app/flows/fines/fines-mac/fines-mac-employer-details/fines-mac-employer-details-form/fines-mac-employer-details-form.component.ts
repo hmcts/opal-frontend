@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormBaseComponent } from '@components/abstract';
 import {
@@ -11,6 +20,7 @@ import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR, FINES_MAC_NESTED_ROUTES } from 
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IFieldErrors } from '@interfaces';
 import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
+import { FinesService } from '@services/fines';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,
@@ -37,6 +47,7 @@ export class FinesMacEmployerDetailsFormComponent extends FormBaseComponent impl
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
 
+  protected readonly finesService = inject(FinesService);
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 

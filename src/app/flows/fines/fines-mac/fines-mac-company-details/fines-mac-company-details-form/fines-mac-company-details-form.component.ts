@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { FormAliasBaseComponent } from '@components/abstract';
 import {
   GovukButtonComponent,
@@ -27,6 +36,7 @@ import {
   FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
   FINES_MAC_NESTED_ROUTES,
 } from '@constants/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -50,6 +60,7 @@ export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent 
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
+  protected readonly finesService = inject(FinesService);
   public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;

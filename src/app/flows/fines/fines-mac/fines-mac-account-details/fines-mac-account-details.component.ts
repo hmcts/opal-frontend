@@ -49,8 +49,8 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   private readonly router = inject(Router);
   protected readonly finesService = inject(FinesService);
 
-  public readonly routingPaths = RoutingPaths;
-  public readonly fineMacRoutes = FinesMacRoutes;
+  protected readonly routingPaths = RoutingPaths;
+  protected readonly fineMacRoutes = FinesMacRoutes;
   public accountCreationStatus: IFinesMacAccountStatus = FINES_MAC_ACCOUNT_STATUS;
 
   protected readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES_STATE;

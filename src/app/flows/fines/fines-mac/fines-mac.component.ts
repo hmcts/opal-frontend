@@ -13,8 +13,8 @@ import { FINES_MAC_STATE } from './constants/fines-mac-state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacComponent implements OnDestroy {
-  public readonly globalStateService = inject(GlobalStateService);
-  public readonly finesService = inject(FinesService);
+  private readonly globalStateService = inject(GlobalStateService);
+  protected readonly finesService = inject(FinesService);
 
   /**
    * If the user navigates externally from the site or closes the tab

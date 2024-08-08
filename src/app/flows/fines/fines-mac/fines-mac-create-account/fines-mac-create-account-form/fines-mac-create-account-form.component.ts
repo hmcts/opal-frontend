@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { IAutoCompleteItem, IFieldErrors, IRadioOptions } from '@interfaces';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -27,6 +27,7 @@ import {
   FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
   FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
 } from '@constants/fines/mac';
+import { FinesService } from '@services/fines';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
@@ -51,6 +52,7 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
   @Output() private formSubmit = new EventEmitter<IFinesMacAccountDetailsState>();
   @Input({ required: true }) public autoCompleteItems!: IAutoCompleteItem[];
 
+  protected readonly finesService = inject(FinesService);
   private ngUnsubscribe = new Subject<void>();
 
   protected readonly finesMacRoutes = FinesMacRoutes;

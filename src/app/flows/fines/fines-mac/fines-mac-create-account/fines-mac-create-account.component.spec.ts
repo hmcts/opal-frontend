@@ -39,7 +39,7 @@ describe('FinesMacCreateAccountComponent', () => {
     fixture = TestBed.createComponent(FinesMacCreateAccountComponent);
     component = fixture.componentInstance;
 
-    component.finesService.finesMacState.accountDetails.BusinessUnit = null;
+    component['finesService'].finesMacState.accountDetails.BusinessUnit = null;
 
     fixture.detectChanges();
   });
@@ -68,11 +68,11 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(component.finesService.finesMacState.unsavedChanges).toBeTruthy();
+    expect(component['finesService'].finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(component.finesService.finesMacState.unsavedChanges).toBeFalsy();
+    expect(component['finesService'].finesMacState.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 
@@ -81,7 +81,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     component['setBusinessUnit'](response);
 
-    expect(component.finesService.finesMacState.accountDetails.BusinessUnit).toEqual(
+    expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toEqual(
       FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
     );
   });
@@ -89,14 +89,14 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
     const response = { count: 1, refData: [FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
-    component.finesService.finesMacState.accountDetails.BusinessUnit =
+    component['finesService'].finesMacState.accountDetails.BusinessUnit =
       FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
 
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
-    expect(component.finesService.finesMacState.accountDetails.BusinessUnit).toEqual(
+    expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toEqual(
       FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
     );
   });
@@ -104,11 +104,11 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should not set the business unit for account details when there are multiple business units available', () => {
     const response = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
 
-    component.finesService.finesMacState.accountDetails.BusinessUnit = null;
+    component['finesService'].finesMacState.accountDetails.BusinessUnit = null;
 
     component['setBusinessUnit'](response);
 
-    expect(component.finesService.finesMacState.accountDetails.BusinessUnit).toBeNull();
+    expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toBeNull();
   });
 
   it('should create an array of autocomplete items from the response', () => {
