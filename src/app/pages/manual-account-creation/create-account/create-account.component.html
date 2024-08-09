@@ -1,9 +1,0 @@
-@if (data$ | async; as data) {
-  <div class="govuk-grid-column-two-thirds">
-    <app-create-account-form
-      [autoCompleteItems]="data"
-      (formSubmit)="handleAccountDetailsSubmit($event)"
-      (unsavedChanges)="handleUnsavedChanges($event)"
-    ></app-create-account-form>
-  </div>
-}
