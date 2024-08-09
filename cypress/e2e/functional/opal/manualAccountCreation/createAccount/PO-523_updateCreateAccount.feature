@@ -27,7 +27,8 @@ Feature: PO-523  Update the Create Account screen for new account types and func
     And I validate the "Adult or youth only" radio button is not selected
 
     When I select the "Conditional Caution" radio button
-    #And I see "Adult or youth only" text - line 63 in generic steps?
+    And I see help text "Adult or youth only" for the "Conditional Caution" radio button
+
     Then I validate the "Conditional Caution" radio button is selected
     And I validate the "Fine" radio button is not selected
     And I validate the "Fixed Penalty" radio button is not selected
@@ -38,31 +39,30 @@ Feature: PO-523  Update the Create Account screen for new account types and func
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
     Then I see the error message "Enter a business unit" at the top of the page
-    #Error message above radio button insert here
+    And I see the error message "Enter a business unit" above the business unit field
 
     When I select the "Conditional Caution" radio button
     And I click the "Continue" button
     Then I see the error message "Enter a business unit" at the top of the page
-    #Error message above radio button insert here
+    And I see the error message "Enter a business unit" above the business unit field
 
     When I select the "Fixed Penalty" radio button
     And I click the "Continue" button
     Then I see the error message "Enter a business unit" at the top of the page
     And I see the error message "Select a defendant type" at the top of the page
-  #Error message above radio button insert here
-  #Error message above radio button insert here
+    And I see the error message "Select a defendant type" above the "Adult or youth only" radio button
 
   Scenario: AC4b & AC4c - Error validation with BU populated
 
     When I enter "London South" into the business unit search box
     And I click the "Continue" button
     Then I see the error message "Select an account type" at the top of the page
-    #Error message above radio button insert here
+    And I see the error message "Select an account type" above the "Fine" radio button
 
     When I select the "Fixed Penalty" radio button
     And I click the "Continue" button
     Then I see the error message "Select a defendant type" at the top of the page
-  #Error message above radio button insert here
+    And I see the error message "Select a defendant type" above the "Adult or youth only" radio button
 
   Scenario: AC5 - Two BU user continues successfully
 

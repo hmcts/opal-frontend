@@ -74,6 +74,8 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
 
     Then I see the error message "Enter a business unit" at the top of the page
     And I see the error message "Select a defendant type" at the top of the page
+    And I see the error message "Enter a business unit" above the business unit field
+    And I see the error message "Select a defendant type" above the "Adult or youth only" radio button
 
 
   Scenario: AC5 - Business unit selection made - no defendant type selection - error message
@@ -90,6 +92,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     And I click the "Continue" button
 
     Then I see the error message "Select a defendant type" at the top of the page
+    And I see the error message "Select a defendant type" above the "Adult or youth only" radio button
 
   Scenario: AC6 - Defendant type selection made - no business unit selection - error message
     Given I am on the OPAL Frontend
@@ -105,6 +108,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     And I click the "Continue" button
 
     Then I see the error message "Enter a business unit" at the top of the page
+    And I see the error message "Enter a business unit" above the business unit field
 
   Scenario Outline: AC7,8,9 - Business unit and defendant type selections made - error message cleared
     Given I am on the OPAL Frontend
@@ -119,6 +123,8 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     And I click the "Continue" button
     Then I see the error message "Enter a business unit" at the top of the page
     And I see the error message "Select a defendant type" at the top of the page
+    And I see the error message "Enter a business unit" above the business unit field
+    And I see the error message "Select a defendant type" above the "Adult or youth only" radio button
 
     When I enter "London South" into the business unit search box
     And I select the "<defendantType>" radio button

@@ -34,7 +34,8 @@ Feature: PO-524 Account Details task list screen for all defendant types
 
     Scenario: AC1, AC2 -The new Account type section will be displayed for all Conditional Caution
         When I select the "Conditional Caution" radio button
-        And I see "Adult or youth only" below the "Conditional Caution" radio button
+        #And I see "Adult or youth only" below the "Conditional Caution" radio button
+        And I see help text "Adult or youth only" for the "Conditional Caution" radio button
         Then I click on continue button
 
         Then I see "Create account" as the caption on the page
