@@ -92,13 +92,7 @@ Then('I see the error message {string} above the Date of birth field', (errorMes
 Then(
   'I see the error message {string} above the {string} radio button',
   (errorMessage: string, radioButton: string) => {
-    cy.get('.govuk-radios')
-      .contains(radioButton)
-      .parent()
-      .parent()
-      .parent()
-      .find('.govuk-error-message')
-      .should('contain', errorMessage);
+    cy.contains('.govuk-radios', radioButton).prev().should('contain', errorMessage);
   },
 );
 Then('I enter {string} into the {string} field', (value: string, fieldName: string) => {
