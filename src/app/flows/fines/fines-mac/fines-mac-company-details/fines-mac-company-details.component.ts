@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormParentBaseComponent } from '@components/abstract';
+import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IFinesMacCompanyDetailsForm } from '@interfaces/fines/mac';
-import { FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form/fines-mac-company-details-form.component';
 import { FinesService } from '@services/fines';
@@ -13,7 +13,7 @@ import { FinesService } from '@services/fines';
   templateUrl: './fines-mac-company-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCompanyDetailsComponent extends FormParentBaseComponent {
+export class FinesMacCompanyDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
 
@@ -30,7 +30,7 @@ export class FinesMacCompanyDetailsComponent extends FormParentBaseComponent {
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC__NESTED_ROUTES[this.defendantType]['companyDetails'];
+      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['companyDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

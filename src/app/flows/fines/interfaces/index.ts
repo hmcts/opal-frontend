@@ -6,10 +6,12 @@ import { IFinesDefendantAccountNote } from './fines-defendant-account-note.inter
 import { IFinesDefendantAccount } from './fines-defendant-account.interface';
 import { IFinesGetDefendantAccountParams } from './fines-get-defendant-account-params.interface';
 import { IFinesLocalJusticeAreaRefData } from './fines-local-justice-area-ref-data.interface';
+import { IFinesRoutingPermissions } from './fines-routing-permissions.interface';
 import { IFinesSearchCourtBody } from './fines-search-court-body.interface';
 import { IFinesSearchCourt } from './fines-search-court.interface';
 import { IFinesSearchDefendantAccountBody } from './fines-search-defendant-account-body.interface';
 import { IFinesSearchDefendantAccounts } from './fines-search-defendant-accounts.interface';
+import { IOpalFinesPaths } from './opal-fines-paths.interface';
 
 export {
   IFinesAddDefendantAccountNoteBody,
@@ -25,4 +27,6 @@ export {
   IFinesSearchDefendantAccountBody,
   IFinesSearchDefendantAccounts,
   IFinesSearchCourt,
+  IFinesRoutingPermissions,
+  IOpalFinesPaths,
 };

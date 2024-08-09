@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form.component';
 import { FinesService } from '@services/fines';
 import { IFinesMacCompanyDetailsForm } from '@interfaces/fines/mac';
-import { FINES_MAC__COMPANY_DETAILS_FORM_MOCK, FINES_MAC__STATE_MOCK } from '@mocks/fines/mac';
-import { FINES_MAC__COMPANY_DETAILS_ALIAS } from '@constants/fines/mac';
+import { FINES_MAC_COMPANY_DETAILS_FORM_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '@constants/fines/mac';
 
 describe('FinesMacCompanyDetailsFormComponent', () => {
   let component: FinesMacCompanyDetailsFormComponent;
@@ -14,8 +14,8 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
-    formSubmit = FINES_MAC__COMPANY_DETAILS_FORM_MOCK;
+    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    formSubmit = FINES_MAC_COMPANY_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCompanyDetailsFormComponent],
@@ -79,7 +79,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   it('should set up the alias configuration for the company details form', () => {
     component['setupAliasConfiguration']();
     expect(component.aliasFields).toEqual(['AliasOrganisationName']);
-    expect(component.aliasControlsValidation).toEqual(FINES_MAC__COMPANY_DETAILS_ALIAS);
+    expect(component.aliasControlsValidation).toEqual(FINES_MAC_COMPANY_DETAILS_ALIAS);
   });
 
   it('should call the necessary setup methods', () => {

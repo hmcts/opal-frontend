@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormParentBaseComponent } from '@components/abstract';
+import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component';
-import { FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 
 @Component({
@@ -15,7 +15,7 @@ import { FinesService } from '@services/fines';
   templateUrl: './fines-mac-parent-guardian-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacParentGuardianDetailsComponent extends FormParentBaseComponent {
+export class FinesMacParentGuardianDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
 
@@ -32,7 +32,7 @@ export class FinesMacParentGuardianDetailsComponent extends FormParentBaseCompon
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC__NESTED_ROUTES[this.defendantType]['parentOrGuardianDetails'];
+      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['parentOrGuardianDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

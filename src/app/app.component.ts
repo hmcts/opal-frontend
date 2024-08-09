@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService, UtilsService } from '@services';
-import { Observable, Subscription, from, map, of, takeWhile, tap, timer } from 'rxjs';
+import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { DateTime } from 'luxon';
@@ -19,6 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private timerSub!: Subscription;
+  private ngUnsubscribe = new Subject<void>();
 
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         }),
         takeWhile((remainingMinutes) => remainingMinutes > 0, true),
+        takeUntil(this.ngUnsubscribe),
       )
       .subscribe();
   }
@@ -80,14 +82,16 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     from(this.launchDarklyService.initializeLaunchDarklyFlags())
-      .pipe(tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()))
+      .pipe(
+        tap(() => this.launchDarklyService.initializeLaunchDarklyChangeListener()),
+        takeUntil(this.ngUnsubscribe),
+      )
       .subscribe();
   }
 
   public ngOnDestroy(): void {
-    if (this.timerSub) {
-      this.timerSub.unsubscribe();
-    }
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   /**

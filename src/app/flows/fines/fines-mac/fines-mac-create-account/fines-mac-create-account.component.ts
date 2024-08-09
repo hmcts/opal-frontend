@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FormParentBaseComponent } from '@components/abstract';
+import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { IFinesMacAccountDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacCreateAccountState } from '@interfaces/fines/mac';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
@@ -18,7 +18,7 @@ import { IGovUkSelectOptions } from '@interfaces/components/govuk';
   templateUrl: './fines-mac-create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
+export class FinesMacCreateAccountComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
   private opalFinesService = inject(OpalFines);
   private businessUnits!: IFinesBusinessUnit[];
@@ -69,7 +69,7 @@ export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
    * Handles the form submission for account details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleAccountDetailsSubmit(formData: IFinesMacAccountDetailsState): void {
+  public handleAccountDetailsSubmit(formData: IFinesMacCreateAccountState): void {
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
       accountDetails: formData,

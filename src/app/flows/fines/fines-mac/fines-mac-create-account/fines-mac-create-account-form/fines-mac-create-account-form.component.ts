@@ -12,23 +12,23 @@ import {
   GovukRadiosItemComponent,
 } from '@components/govuk';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
-import { FormBaseComponent } from '@components/abstract';
+import { AbstractFormBaseComponent } from '@components/abstract';
 import { RoutingPaths } from '@enums';
 import {
-  IFinesMacAccountDetailsState,
-  IFinesMacAccountTypes,
+  IFinesMacCreateAccountAccountTypes,
   IFinesMacCreateAccountControlNames,
+  IFinesMacCreateAccountFieldErrors,
+  IFinesMacCreateAccountState,
 } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
-  FINES_MAC__ACCOUNT_DETAILS_FIELD_ERROR,
-  FINES_MAC__ACCOUNT_TYPES_STATE,
-  FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
-  FINES_MAC__CREATE_ACCOUNT_CONTROL_NAMES,
+  FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES,
+  FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
+  FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
+  FINES_MAC_CREATE_ACCOUNT_FIELD_ERROR,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
-import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
 
 @Component({
@@ -50,35 +50,35 @@ import { IGovUkRadioOptions } from '@interfaces/components/govuk';
   templateUrl: './fines-mac-create-account-form.component.html',
   styles: ``,
 })
-export class FinesMacCreateAccountFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IFinesMacAccountDetailsState>();
+export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+  @Output() private formSubmit = new EventEmitter<IFinesMacCreateAccountState>();
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
   protected readonly finesService = inject(FinesService);
-  private ngUnsubscribe = new Subject<void>();
+  private accountTypeSubject = new Subject<void>();
 
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly routingPath = RoutingPaths;
 
-  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC__ACCOUNT_TYPES_STATE).map(
+  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
       key,
       value,
     }),
   );
   public readonly fineDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
   ).map(([key, value]) => ({ key, value }));
   public readonly fixedPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
   ).map(([key, value]) => ({ key, value }));
   public readonly conditionalCautionPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
+    FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
   ).map(([key, value]) => ({ key, value }));
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
-    FINES_MAC__CREATE_ACCOUNT_CONTROL_NAMES;
+    FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC__ACCOUNT_DETAILS_FIELD_ERROR;
+  override fieldErrors: IFinesMacCreateAccountFieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERROR;
 
   /**
    * Sets up the account details form with the necessary form controls.
@@ -98,7 +98,7 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
   private setupAccountTypeListener(): void {
     this.form
       .get('AccountType')!
-      .valueChanges.pipe(takeUntil(this.ngUnsubscribe))
+      .valueChanges.pipe(takeUntil(this.accountTypeSubject))
       .subscribe((accountType: string) => this.handleAccountTypeChange(accountType));
   }
 
@@ -108,7 +108,7 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
    */
   private handleAccountTypeChange(accountType: string): void {
     const { fieldName, validators, fieldsToRemove } =
-      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? {};
+      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacCreateAccountAccountTypes] ?? {};
 
     fieldsToRemove?.forEach((field) => {
       this.removeControl(field);
@@ -124,16 +124,17 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
    */
   private setDefendantType(): void {
     const accountType = this.form.get('AccountType')?.value;
-    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? '';
+    const { fieldName } =
+      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacCreateAccountAccountTypes] ?? '';
     const fieldValue = this.form.get(fieldName)?.value;
 
-    const defendantTypeMap: IFinesMacAccountTypes = {
+    const defendantTypeMap: IFinesMacCreateAccountAccountTypes = {
       fine: fieldValue,
       fixedPenalty: fieldValue,
       conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
     };
 
-    this.form.get('DefendantType')?.setValue(defendantTypeMap[accountType as keyof IFinesMacAccountTypes]);
+    this.form.get('DefendantType')?.setValue(defendantTypeMap[accountType as keyof IFinesMacCreateAccountAccountTypes]);
   }
 
   /**
@@ -168,8 +169,8 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
   }
 
   public override ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+    this.accountTypeSubject.next();
+    this.accountTypeSubject.complete();
     super.ngOnDestroy();
   }
 }

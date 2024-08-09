@@ -34,7 +34,7 @@ describe('FinesMacAddressBlockComponent', () => {
   });
 
   it('should have legend labelText', () => {
-    const elem = fixture.debugElement.query(By.css('.govuk-fieldset__legend.govuk-fieldset__legend--m')).nativeElement;
+    const elem = fixture.debugElement.query(By.css('.govuk-fieldset_legend.govuk-fieldset_legend--m')).nativeElement;
     expect(elem.textContent).toContain('Test');
   });
 });

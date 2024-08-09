@@ -1,4 +1,4 @@
-export const FINES_MAC__EMPLOYER_DETAILS_FIELD_ERROR = {
+export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR = {
   EmployerCompanyName: {
     required: {
       message: 'Enter employer name',

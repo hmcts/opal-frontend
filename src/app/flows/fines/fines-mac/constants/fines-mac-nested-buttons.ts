@@ -1,4 +1,4 @@
-export const FINES_MAC__NESTED_BUTTONS = {
+export const FINES_MAC_NESTED_BUTTONS = {
   personalDetails: 'Add personal details',
   contactDetails: 'Add contact details',
   employerDetails: 'Add employer details',

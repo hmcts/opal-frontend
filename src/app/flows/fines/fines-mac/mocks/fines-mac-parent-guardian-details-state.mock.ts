@@ -1,6 +1,6 @@
 import { IFinesMacParentGuardianDetailsState } from '@interfaces/fines/mac';
 
-export const FINES_MAC__PARENT_GUARDIAN_DETAILS_STATE_MOCK: IFinesMacParentGuardianDetailsState = {
+export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK: IFinesMacParentGuardianDetailsState = {
   FullName: 'Test Full Name',
   DOB: '01/01/2023',
   NationalInsuranceNumber: 'QQ 12 34 56 C',

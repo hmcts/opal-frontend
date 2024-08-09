@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormAliasBaseComponent } from '@components/abstract';
+import { AbstractFormAliasBaseComponent } from '@components/abstract';
 import {
   FinesMacAddressBlockComponent,
   FinesMacDateOfBirthComponent,
@@ -47,10 +47,10 @@ import {
 import { IFinesMacPersonalDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
-  FINES_MAC__NESTED_ROUTES,
-  FINES_MAC__PERSONAL_DETAILS_ALIAS,
-  FINES_MAC__PERSONAL_DETAILS_FIELD_ERROR,
-  FINES_MAC__TITLE_DROPDOWN_OPTIONS,
+  FINES_MAC_NESTED_ROUTES,
+  FINES_MAC_PERSONAL_DETAILS_ALIAS,
+  FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
+  FINES_MAC_TITLE_DROPDOWN_OPTIONS,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
@@ -78,17 +78,17 @@ import { IAbstractFieldErrors } from '@interfaces/components/abstract';
   templateUrl: './fines-mac-personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacPersonalDetailsFormComponent extends FormAliasBaseComponent implements OnInit, OnDestroy {
+export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
-  protected readonly finesMacNestedRoutes = FINES_MAC__NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IAbstractFieldErrors = {
-    ...FINES_MAC__PERSONAL_DETAILS_FIELD_ERROR,
+    ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
     ...FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
     ...FINES_MAC_NATIONAL_INSURANCE_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
@@ -97,7 +97,7 @@ export class FinesMacPersonalDetailsFormComponent extends FormAliasBaseComponent
     ...FINES_MAC_POSTCODE_FIELD_ERRORS,
   };
 
-  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC__TITLE_DROPDOWN_OPTIONS;
+  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 
   /**
@@ -135,7 +135,7 @@ export class FinesMacPersonalDetailsFormComponent extends FormAliasBaseComponent
    */
   private setupAliasConfiguration(): void {
     this.aliasFields = ['AliasForenames', 'AliasSurname'];
-    this.aliasControlsValidation = FINES_MAC__PERSONAL_DETAILS_ALIAS;
+    this.aliasControlsValidation = FINES_MAC_PERSONAL_DETAILS_ALIAS;
   }
 
   /**

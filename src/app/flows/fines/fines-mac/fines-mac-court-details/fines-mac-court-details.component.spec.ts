@@ -8,9 +8,9 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService, OpalFines } from '@services/fines';
 import {
-  FINES_MAC__COURT_DETAILS_FORM_MOCK,
-  FINES_MAC__COURT_DETAILS_STATE_MOCK,
-  FINES_MAC__STATE_MOCK,
+  FINES_MAC_COURT_DETAILS_FORM_MOCK,
+  FINES_MAC_COURT_DETAILS_STATE_MOCK,
+  FINES_MAC_STATE_MOCK,
 } from '@mocks/fines/mac';
 import { FINES_COURT_REF_DATA_MOCK, FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@mocks/fines';
 
@@ -25,15 +25,15 @@ describe('FinesMacCourtDetailsComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     mockOpalFinesService = {
       getLocalJusticeAreas: jasmine
         .createSpy('getLocalJusticeAreas')
         .and.returnValue(of(FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(FINES_COURT_REF_DATA_MOCK)),
     };
-    formData = FINES_MAC__COURT_DETAILS_STATE_MOCK;
-    formSubmit = FINES_MAC__COURT_DETAILS_FORM_MOCK;
+    formData = FINES_MAC_COURT_DETAILS_STATE_MOCK;
+    formSubmit = FINES_MAC_COURT_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCourtDetailsComponent],

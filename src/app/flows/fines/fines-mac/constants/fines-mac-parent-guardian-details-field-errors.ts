@@ -1,4 +1,4 @@
-export const FINES_MAC__PARENT_GUARDIAN_DETAILS_FIELD_ERROR = {
+export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR = {
   FullName: {
     required: {
       message: 'You must enter a full name',

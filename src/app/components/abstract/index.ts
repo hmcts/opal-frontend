@@ -1,5 +1,5 @@
-import { FormAliasBaseComponent } from './form-alias-base/form-alias-base';
-import { FormBaseComponent } from './form-base/form-base.component';
-import { FormParentBaseComponent } from './form-parent-base/form-parent-base.component';
+import { AbstractFormAliasBaseComponent } from './abstract-form-alias-base/abstract-form-alias-base';
+import { AbstractFormBaseComponent } from './abstract-form-base/abstract-form-base.component';
+import { AbstractFormParentBaseComponent } from './abstract-form-parent-base/abstract-form-parent-base.component';
 
-export { FormBaseComponent, FormParentBaseComponent, FormAliasBaseComponent };
+export { AbstractFormBaseComponent, AbstractFormParentBaseComponent, AbstractFormAliasBaseComponent };

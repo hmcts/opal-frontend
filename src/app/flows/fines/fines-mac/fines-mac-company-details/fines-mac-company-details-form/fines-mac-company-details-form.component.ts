@@ -8,7 +8,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { FormAliasBaseComponent } from '@components/abstract';
+import { AbstractFormAliasBaseComponent } from '@components/abstract';
 import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -31,12 +31,12 @@ import { FinesMacAddressBlockComponent } from '@components/fines/mac';
 import { IFinesMacCompanyDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
-  FINES_MAC__COMPANY_DETAILS_ALIAS,
-  FINES_MAC__COMPANY_DETAILS_FIELD_ERROR,
-  FINES_MAC__NESTED_ROUTES,
+  FINES_MAC_COMPANY_DETAILS_ALIAS,
+  FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
+  FINES_MAC_NESTED_ROUTES,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
-import { IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -56,17 +56,17 @@ import { IAbstractFieldErrors } from '@interfaces/components/abstract';
   templateUrl: './fines-mac-company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent implements OnInit, OnDestroy {
+export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   public readonly customAddressFieldIds = FINES_MAC_ADDRESS_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
-  protected readonly finesMacNestedRoutes = FINES_MAC__NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = {
-    ...FINES_MAC__COMPANY_DETAILS_FIELD_ERROR,
+  override fieldErrors: IFinesMacCompanyDetailsFieldErrors = {
+    ...FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
     ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
@@ -98,7 +98,7 @@ export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent 
    */
   private setupAliasConfiguration(): void {
     this.aliasFields = ['AliasOrganisationName'];
-    this.aliasControlsValidation = FINES_MAC__COMPANY_DETAILS_ALIAS;
+    this.aliasControlsValidation = FINES_MAC_COMPANY_DETAILS_ALIAS;
   }
 
   /**

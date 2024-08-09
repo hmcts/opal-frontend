@@ -1,4 +1,4 @@
-export const FINES_MAC__COURT_DETAILS_FIELD_ERRORS = {
+export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS = {
   SendingCourt: {
     required: {
       message: 'Enter a sending area or Local Justice Area',

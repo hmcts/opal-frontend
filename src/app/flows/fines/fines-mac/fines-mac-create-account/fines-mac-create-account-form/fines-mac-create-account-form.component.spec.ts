@@ -3,7 +3,7 @@ import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-f
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@mocks/fines';
 import { Validators } from '@angular/forms';
 import { FinesService } from '@services/fines';
-import { FINES_MAC__ACCOUNT_DETAILS_STATE_MOCK, FINES_MAC__STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_CREATE_ACCOUNT_STATE_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
@@ -13,7 +13,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
@@ -53,7 +53,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    const formValue = FINES_MAC__ACCOUNT_DETAILS_STATE_MOCK;
+    const formValue = FINES_MAC_CREATE_ACCOUNT_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
 
     component['rePopulateForm'](formValue);
@@ -64,15 +64,15 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {
-    spyOn(component['ngUnsubscribe'], 'next');
-    spyOn(component['ngUnsubscribe'], 'complete');
+    spyOn(component['accountTypeSubject'], 'next');
+    spyOn(component['accountTypeSubject'], 'complete');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'ngOnDestroy').and.callThrough();
 
     component.ngOnDestroy();
 
-    expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
-    expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
+    expect(component['accountTypeSubject'].next).toHaveBeenCalled();
+    expect(component['accountTypeSubject'].complete).toHaveBeenCalled();
     expect(component['ngOnDestroy']).toHaveBeenCalled();
   });
 

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormParentBaseComponent } from '@components/abstract';
+import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, forkJoin, map } from 'rxjs';
 import { FinesMacRoutes } from '@enums/fines/mac';
@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
-import { FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
@@ -19,7 +19,7 @@ import { IGovUkSelectOptions } from '@interfaces/components/govuk';
   templateUrl: './fines-mac-court-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCourtDetailsComponent extends FormParentBaseComponent {
+export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseComponent {
   private opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService.getLocalJusticeAreas().pipe(
@@ -86,7 +86,7 @@ export class FinesMacCourtDetailsComponent extends FormParentBaseComponent {
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC__NESTED_ROUTES[this.defendantType]['courtDetails'];
+      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['courtDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

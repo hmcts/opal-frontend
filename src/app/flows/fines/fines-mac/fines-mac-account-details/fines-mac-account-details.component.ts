@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import {
-  IFinesMacAccountStatus,
-  IFinesMacAccountTypes,
-  IFinesMacDefendantTypes,
-  IFinesMacFieldTypes,
+  IFinesMacAccountDetailsAccountTypes,
+  IFinesMacAccountDetailsDefendantTypes,
+  IFinesMacAccountDetailsFieldTypes,
+  IFinesMacAccountDetailsAccountStatus,
 } from '@interfaces/fines/mac';
 import {
-  FINES_MAC__ACCOUNT_STATUS,
-  FINES_MAC__ACCOUNT_TYPES_STATE,
-  FINES_MAC__DEFENDANT_TYPES_STATE,
+  FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS,
+  FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES,
+  FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
 } from '@constants/fines/mac';
 import { RoutingPaths } from '@enums';
 import { FinesMacRoutes } from '@enums/fines/mac';
@@ -51,10 +51,10 @@ export class FinesMacAccountDetailsComponent implements OnInit {
 
   protected readonly routingPaths = RoutingPaths;
   protected readonly fineMacRoutes = FinesMacRoutes;
-  public accountCreationStatus: IFinesMacAccountStatus = FINES_MAC__ACCOUNT_STATUS;
+  public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
 
-  protected readonly defendantTypes = FINES_MAC__DEFENDANT_TYPES_STATE;
-  private readonly accountTypes = FINES_MAC__ACCOUNT_TYPES_STATE;
+  protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
+  private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
   public defendantType!: string;
   public accountType!: string;
 
@@ -66,7 +66,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
     // Moved to here as inline was adding extra spaces in HTML...
     const { DefendantType } = this.finesService.finesMacState.accountDetails;
     if (DefendantType) {
-      this.defendantType = this.defendantTypes[DefendantType as keyof IFinesMacDefendantTypes] || '';
+      this.defendantType = this.defendantTypes[DefendantType as keyof IFinesMacAccountDetailsDefendantTypes] || '';
     }
   }
 
@@ -78,7 +78,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
     // Moved to here as inline was adding extra spaces in HTML...
     const { AccountType } = this.finesService.finesMacState.accountDetails;
     if (AccountType) {
-      this.accountType = this.accountTypes[AccountType as keyof IFinesMacAccountTypes] || '';
+      this.accountType = this.accountTypes[AccountType as keyof IFinesMacAccountDetailsAccountTypes] || '';
     }
   }
 
@@ -87,7 +87,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    * @param subFieldValue - The value to check.
    * @returns A boolean indicating whether the value is truthy or not.
    */
-  private isTruthy(subFieldValue: IFinesMacFieldTypes): boolean {
+  private isTruthy(subFieldValue: IFinesMacAccountDetailsFieldTypes): boolean {
     if (typeof subFieldValue === 'string') {
       return !!subFieldValue;
     } else if (Array.isArray(subFieldValue)) {
@@ -102,9 +102,11 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    * Updates the `accountCreationStatus` object based on the values in `manualAccountCreation`.
    */
   private checkStatus(): void {
-    const accountCreationKeys = Object.keys(this.finesService.finesMacState) as (keyof IFinesMacAccountStatus)[];
+    const accountCreationKeys = Object.keys(
+      this.finesService.finesMacState,
+    ) as (keyof IFinesMacAccountDetailsAccountStatus)[];
 
-    accountCreationKeys.forEach((key: keyof IFinesMacAccountStatus) => {
+    accountCreationKeys.forEach((key: keyof IFinesMacAccountDetailsAccountStatus) => {
       if (typeof this.finesService.finesMacState[key] !== 'boolean') {
         const subFields = this.finesService.finesMacState[key];
         this.accountCreationStatus[key] = Object.values(subFields).some(this.isTruthy);

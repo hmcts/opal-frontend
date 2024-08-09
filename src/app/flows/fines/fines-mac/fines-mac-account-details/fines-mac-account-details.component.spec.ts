@@ -1,26 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountDetailsComponent } from './fines-mac-account-details.component';
 import {
-  FINES_MAC__ACCOUNT_DETAILS_STATE,
-  FINES_MAC__ACCOUNT_TYPES_STATE,
-  FINES_MAC__BUSINESS_UNIT_STATE,
-  FINES_MAC__DEFENDANT_TYPES_STATE,
-  FINES_MAC__STATE,
+  FINES_MAC_ACCOUNT_DETAILS_STATE,
+  FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES,
+  FINES_MAC_BUSINESS_UNIT_STATE,
+  FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
+  FINES_MAC_STATE,
 } from '@constants/fines/mac';
 import { provideRouter } from '@angular/router';
 import { IFinesMacAccountTypes, IFinesMacDefendantTypes } from '@interfaces/fines/mac';
 import { FinesService } from '@services/fines';
 import {
-  FINES_MAC__ACCOUNT_COMMENTS_NOTES_STATE_MOCK,
-  FINES_MAC__ACCOUNT_DETAILS_STATE_MOCK,
-  FINES_MAC__COMPANY_DETAILS_STATE_MOCK,
-  FINES_MAC__CONTACT_DETAILS_STATE_MOCK,
-  FINES_MAC__COURT_DETAILS_STATE_MOCK,
-  FINES_MAC__EMPLOYER_DETAILS_STATE_MOCK,
-  FINES_MAC__OFFENCE_DETAILS_STATE_MOCK,
-  FINES_MAC__PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-  FINES_MAC__PAYMENT_TERMS_STATE_MOCK,
-  FINES_MAC__PERSONAL_DETAILS_STATE_MOCK,
+  FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK,
+  FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+  FINES_MAC_COMPANY_DETAILS_STATE_MOCK,
+  FINES_MAC_CONTACT_DETAILS_STATE_MOCK,
+  FINES_MAC_COURT_DETAILS_STATE_MOCK,
+  FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK,
+  FINES_MAC_OFFENCE_DETAILS_STATE_MOCK,
+  FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+  FINES_MAC_PAYMENT_TERMS_STATE_MOCK,
+  FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
 } from '@mocks/fines/mac';
 
 describe('FinesMacAccountDetailsComponent', () => {
@@ -31,7 +31,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC__STATE;
+    mockFinesService.finesMacState = FINES_MAC_STATE;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
@@ -45,7 +45,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   beforeEach(() => {
-    mockFinesService.finesMacState.accountDetails = FINES_MAC__ACCOUNT_DETAILS_STATE;
+    mockFinesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE;
   });
 
   it('should create', () => {
@@ -64,7 +64,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['setDefendantType']();
 
     expect(component.defendantType).toEqual(
-      FINES_MAC__DEFENDANT_TYPES_STATE[
+      FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES[
         mockFinesService.finesMacState.accountDetails.DefendantType as keyof IFinesMacDefendantTypes
       ],
     );
@@ -92,7 +92,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['setAccountType']();
 
     expect(component.accountType).toEqual(
-      FINES_MAC__ACCOUNT_TYPES_STATE[
+      FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES[
         mockFinesService.finesMacState.accountDetails.AccountType as keyof IFinesMacAccountTypes
       ],
     );
@@ -116,17 +116,17 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should correctly update accountCreationStatus based on manualAccountCreation state', () => {
     mockFinesService.finesMacState = {
-      employerDetails: FINES_MAC__EMPLOYER_DETAILS_STATE_MOCK,
-      accountDetails: FINES_MAC__ACCOUNT_DETAILS_STATE_MOCK,
-      contactDetails: FINES_MAC__CONTACT_DETAILS_STATE_MOCK,
-      parentGuardianDetails: FINES_MAC__PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-      personalDetails: FINES_MAC__PERSONAL_DETAILS_STATE_MOCK,
-      companyDetails: FINES_MAC__COMPANY_DETAILS_STATE_MOCK,
-      courtDetails: FINES_MAC__COURT_DETAILS_STATE_MOCK,
-      accountCommentsNotes: FINES_MAC__ACCOUNT_COMMENTS_NOTES_STATE_MOCK,
-      offenceDetails: FINES_MAC__OFFENCE_DETAILS_STATE_MOCK,
-      paymentTerms: FINES_MAC__PAYMENT_TERMS_STATE_MOCK,
-      businessUnit: FINES_MAC__BUSINESS_UNIT_STATE,
+      employerDetails: FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK,
+      accountDetails: FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+      contactDetails: FINES_MAC_CONTACT_DETAILS_STATE_MOCK,
+      parentGuardianDetails: FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+      personalDetails: FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
+      companyDetails: FINES_MAC_COMPANY_DETAILS_STATE_MOCK,
+      courtDetails: FINES_MAC_COURT_DETAILS_STATE_MOCK,
+      accountCommentsNotes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK,
+      offenceDetails: FINES_MAC_OFFENCE_DETAILS_STATE_MOCK,
+      paymentTerms: FINES_MAC_PAYMENT_TERMS_STATE_MOCK,
+      businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
       unsavedChanges: false,
       stateChanges: true,
     };
@@ -146,8 +146,8 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should correctly update accountCreationStatus based on empty manualAccountCreation state', () => {
-    mockFinesService.finesMacState = FINES_MAC__STATE;
-    mockFinesService.finesMacState.accountDetails = FINES_MAC__ACCOUNT_DETAILS_STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
 
     component['checkStatus']();
 

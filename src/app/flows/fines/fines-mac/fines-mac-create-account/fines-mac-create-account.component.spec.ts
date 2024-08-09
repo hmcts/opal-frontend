@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountComponent } from './fines-mac-create-account.component';
-import { FINES_MAC__STATE_MOCK } from '../mocks';
+import { FINES_MAC_STATE_MOCK } from '../mocks';
 import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { IFinesMacAccountDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacCreateAccountState } from '@interfaces/fines/mac';
 import { FinesService, OpalFines } from '@services/fines';
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
@@ -24,7 +24,7 @@ describe('FinesMacCreateAccountComponent', () => {
     };
     finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
-    finesService.finesMacState = FINES_MAC__STATE_MOCK;
+    finesService.finesMacState = FINES_MAC_STATE_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountComponent],
@@ -55,7 +55,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IFinesMacAccountDetailsState = {
+    const formData: IFinesMacCreateAccountState = {
       BusinessUnit: 'Test',
       AccountType: 'Test',
       DefendantType: 'Test',

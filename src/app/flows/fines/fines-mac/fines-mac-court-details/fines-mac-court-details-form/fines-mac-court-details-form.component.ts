@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormBaseComponent } from '@components/abstract';
+import { AbstractFormBaseComponent } from '@components/abstract';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
 import {
   GovukButtonComponent,
@@ -17,7 +17,7 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { FINES_MAC__COURT_DETAILS_FIELD_ERRORS, FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
@@ -39,7 +39,7 @@ import { FinesService } from '@services/fines';
   templateUrl: './fines-mac-court-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCourtDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
@@ -47,9 +47,9 @@ export class FinesMacCourtDetailsFormComponent extends FormBaseComponent impleme
 
   protected readonly finesService = inject(FinesService);
   protected readonly finesMacRoutes = FinesMacRoutes;
-  protected readonly finesMacNestedRoutes = FINES_MAC__NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC__COURT_DETAILS_FIELD_ERRORS;
+  override fieldErrors: IAbstractFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
 
   /**
    * Sets up the court details form with the necessary form controls.

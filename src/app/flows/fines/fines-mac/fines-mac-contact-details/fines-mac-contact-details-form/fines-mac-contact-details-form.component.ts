@@ -15,13 +15,12 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { FormBaseComponent } from '@components/abstract';
+import { AbstractFormBaseComponent } from '@components/abstract';
 import { optionalMaxLengthValidator, optionalEmailAddressValidator, optionalPhoneNumberValidator } from '@validators';
-import { IFinesMacContactDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacContactDetailsFieldErrors, IFinesMacContactDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { FINES_MAC__NESTED_ROUTES, FINES_MAC__CONTACT_DETAILS_FIELD_ERROR } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES, FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
-import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
@@ -37,15 +36,15 @@ import { IAbstractFieldErrors } from '@interfaces/components/abstract';
   templateUrl: './fines-mac-contact-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacContactDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+export class FinesMacContactDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
   @Output() private formSubmit = new EventEmitter<IFinesMacContactDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   protected readonly finesMacRoutes = FinesMacRoutes;
-  protected readonly finesMacNestedRoutes = FINES_MAC__NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC__CONTACT_DETAILS_FIELD_ERROR;
+  override fieldErrors: IFinesMacContactDetailsFieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS;
 
   /**
    * Sets up the contact details form with the necessary form controls.

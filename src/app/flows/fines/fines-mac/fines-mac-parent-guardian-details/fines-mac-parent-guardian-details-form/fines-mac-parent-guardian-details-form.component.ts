@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { FormBaseComponent } from '@components/abstract';
+import { AbstractFormBaseComponent } from '@components/abstract';
 import {
   FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
   FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
@@ -31,7 +31,7 @@ import {
 } from '@validators';
 import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { FINES_MAC__PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants/fines/mac';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 
@@ -52,7 +52,7 @@ import { IAbstractFieldErrors } from '@interfaces/components/abstract';
   templateUrl: './fines-mac-parent-guardian-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacParentGuardianDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
+export class FinesMacParentGuardianDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
@@ -60,7 +60,7 @@ export class FinesMacParentGuardianDetailsFormComponent extends FormBaseComponen
   protected readonly finesMacRoutes = FinesMacRoutes;
 
   override fieldErrors: IAbstractFieldErrors = {
-    ...FINES_MAC__PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
+    ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
     ...FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
     ...FINES_MAC_NATIONAL_INSURANCE_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,

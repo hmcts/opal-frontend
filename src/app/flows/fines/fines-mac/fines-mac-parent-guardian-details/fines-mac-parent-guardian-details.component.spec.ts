@@ -4,9 +4,9 @@ import { IFinesMacParentGuardianDetailsForm, IFinesMacParentGuardianDetailsState
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
 import {
-  FINES_MAC__PARENT_GUARDIAN_DETAILS_FORM_MOCK,
-  FINES_MAC__PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-  FINES_MAC__STATE_MOCK,
+  FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK,
+  FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+  FINES_MAC_STATE_MOCK,
 } from '@mocks/fines/mac';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
@@ -19,9 +19,9 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
-    formData = FINES_MAC__PARENT_GUARDIAN_DETAILS_STATE_MOCK;
-    formSubmit = FINES_MAC__PARENT_GUARDIAN_DETAILS_FORM_MOCK;
+    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    formData = FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK;
+    formSubmit = FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacParentGuardianDetailsComponent],

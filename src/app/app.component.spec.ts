@@ -1,18 +1,15 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { GovukFooterComponent } from './components/govuk/govuk-footer/govuk-footer.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { MojHeaderComponent } from './components/moj/moj-header/moj-header.component';
-import { MojHeaderNavigationItemComponent } from './components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { SsoEndpoints } from '@enums';
 import { GlobalStateService, UtilsService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { Subscription } from 'rxjs';
-import { ITokenExpiry } from './interfaces/token-expiry.interface';
 import { TOKEN_EXPIRY_MOCK } from '@mocks';
 import { DateTime } from 'luxon';
-import { MojBannerComponent } from './components/moj/moj-banner/moj-banner.component';
+import { ITokenExpiry } from '@interfaces';
+import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
+import { GovukFooterComponent } from '@components/govuk';
 
 const mockTokenExpiry: ITokenExpiry = TOKEN_EXPIRY_MOCK;
 
@@ -106,12 +103,13 @@ describe('AppComponent', () => {
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    component['timerSub'] = new Subscription();
-    spyOn(component['timerSub'], 'unsubscribe');
+    spyOn(component['ngUnsubscribe'], 'next');
+    spyOn(component['ngUnsubscribe'], 'complete');
 
     component.ngOnDestroy();
 
-    expect(component['timerSub'].unsubscribe).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].next).toHaveBeenCalled();
+    expect(component['ngUnsubscribe'].complete).toHaveBeenCalled();
   });
 
   it('should show expired warning when remaining minutes is zero', fakeAsync(() => {
