@@ -26,6 +26,7 @@ import { FINES_MAC_PAYMENT_TERMS_STATE } from './fines-mac-payment-terms-state';
 import { FINES_MAC_NESTED_ROUTES } from './fines-mac-nested-routes';
 import { FINES_MAC_CONTACT_DETAILS_FIELD_ERROR } from './fines-mac-contact-details-field-errors';
 import { FINES_MAC_STATE } from './fines-mac-state';
+import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from './fines-mac-title-dropdown-options';
 
 export {
   FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR,
@@ -56,4 +57,5 @@ export {
   FINES_MAC_PAYMENT_TERMS_STATE,
   FINES_MAC_NESTED_ROUTES,
   FINES_MAC_STATE,
+  FINES_MAC_TITLE_DROPDOWN_OPTIONS,
 };

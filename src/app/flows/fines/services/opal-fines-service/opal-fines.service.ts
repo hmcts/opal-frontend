@@ -29,7 +29,7 @@ export class OpalFines {
   /**
    * Searches for courts based on the provided search criteria.
    * @param body - The search criteria.
-   * @returns An Observable that emits an array of ISearchCourt objects.
+   * @returns An Observable that emits an array of IFinesSearchCourt objects.
    */
   public searchCourt(body: IFinesSearchCourtBody): Observable<IFinesSearchCourt[]> {
     const key = `${JSON.stringify(body.courtId)}${JSON.stringify(body.courtCode)}}`;

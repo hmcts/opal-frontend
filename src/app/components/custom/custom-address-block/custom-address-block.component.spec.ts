@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { CustomAddressBlockComponent } from './custom-address-block.component';
-import { CUSTOM_ADDRESS_FIELD_IDS } from '@constants';
+import { CUSTOM_ADDRESS_FIELD_IDS } from '@constants/components/custom';
 
 describe('CustomAddressBlockComponent', () => {
   let component: CustomAddressBlockComponent;

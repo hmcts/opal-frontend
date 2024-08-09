@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MojHeaderLinks } from '@enums';
+import { MojHeaderLinks } from '@enums/components/moj';
 
 @Component({
   selector: 'app-moj-header',

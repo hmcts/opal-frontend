@@ -19,12 +19,12 @@ import {
   GovukTextInputComponent,
 } from '@components/govuk';
 import {
-  ADDRESS_LINE_ONE_FIELD_ERRORS,
-  ADDRESS_LINE_THREE_FIELD_ERRORS,
-  ADDRESS_LINE_TWO_FIELD_ERRORS,
+  CUSTOM_ADDRESS_LINE_ONE_FIELD_ERRORS,
+  CUSTOM_ADDRESS_LINE_THREE_FIELD_ERRORS,
+  CUSTOM_ADDRESS_LINE_TWO_FIELD_ERRORS,
   CUSTOM_ADDRESS_FIELD_IDS,
-  POST_CODE_FIELD_ERRORS,
-} from '@constants';
+  CUSTOM_POSTCODE_FIELD_ERRORS,
+} from '@constants/components/custom';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
 import { CustomAddressBlockComponent } from '@components';
@@ -67,10 +67,10 @@ export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent 
 
   override fieldErrors: IAbstractFieldErrors = {
     ...FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
-    ...ADDRESS_LINE_ONE_FIELD_ERRORS,
-    ...ADDRESS_LINE_TWO_FIELD_ERRORS,
-    ...ADDRESS_LINE_THREE_FIELD_ERRORS,
-    ...POST_CODE_FIELD_ERRORS,
+    ...CUSTOM_ADDRESS_LINE_ONE_FIELD_ERRORS,
+    ...CUSTOM_ADDRESS_LINE_TWO_FIELD_ERRORS,
+    ...CUSTOM_ADDRESS_LINE_THREE_FIELD_ERRORS,
+    ...CUSTOM_POSTCODE_FIELD_ERRORS,
   };
 
   /**

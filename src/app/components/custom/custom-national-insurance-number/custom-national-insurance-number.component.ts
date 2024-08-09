@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
-import { GovukTextInputComponent } from '../../govuk/govuk-text-input/govuk-text-input.component';
+import { GovukTextInputComponent } from '@components/govuk';
 
 @Component({
   selector: 'app-custom-national-insurance-number',

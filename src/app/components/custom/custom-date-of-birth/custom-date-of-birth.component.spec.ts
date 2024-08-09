@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CustomDateOfBirthComponent } from './custom-date-of-birth.component';
 import { FormGroup, FormControl } from '@angular/forms';
 

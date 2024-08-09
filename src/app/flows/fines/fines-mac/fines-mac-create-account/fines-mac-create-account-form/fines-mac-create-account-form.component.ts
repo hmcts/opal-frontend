@@ -29,7 +29,7 @@ import {
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
-import { IRadioOptions } from '@interfaces';
+import { IGovUkRadioOptions } from '@interfaces/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
@@ -60,17 +60,19 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly routingPath = RoutingPaths;
 
-  public readonly accountTypes: IRadioOptions[] = Object.entries(FINES_MAC_ACCOUNT_TYPES_STATE).map(([key, value]) => ({
-    key,
-    value,
-  }));
-  public readonly fineDefendantTypes: IRadioOptions[] = Object.entries(
+  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_ACCOUNT_TYPES_STATE).map(
+    ([key, value]) => ({
+      key,
+      value,
+    }),
+  );
+  public readonly fineDefendantTypes: IGovUkRadioOptions[] = Object.entries(
     FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
   ).map(([key, value]) => ({ key, value }));
-  public readonly fixedPenaltyDefendantTypes: IRadioOptions[] = Object.entries(
+  public readonly fixedPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
     FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
   ).map(([key, value]) => ({ key, value }));
-  public readonly conditionalCautionPenaltyDefendantTypes: IRadioOptions[] = Object.entries(
+  public readonly conditionalCautionPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
     FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
   ).map(([key, value]) => ({ key, value }));
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =

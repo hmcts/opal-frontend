@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AlphagovAccessibleAutocompleteComponent } from './alphagov-accessible-autocomplete.component';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
-import { AUTO_COMPLETE_ITEMS_MOCK } from '@mocks';
 import { FormControl, Validators } from '@angular/forms';
+import { ALPHAGOV_AUTO_COMPLETE_ITEMS_MOCK } from '@mocks/components/alphagov';
 
 describe('AlphagovAccessibleAutocompleteComponent', () => {
   let component: AlphagovAccessibleAutocompleteComponent;
@@ -24,7 +23,7 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     component.inputName = 'test';
     component.inputId = 'test';
     component.inputClasses = 'test';
-    component.autoCompleteItems = AUTO_COMPLETE_ITEMS_MOCK;
+    component.autoCompleteItems = ALPHAGOV_AUTO_COMPLETE_ITEMS_MOCK;
     component.control = formControl;
 
     fixture.detectChanges();
@@ -56,9 +55,9 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should handle on confirm and input should be marked as dirty', () => {
-    const selectedName = AUTO_COMPLETE_ITEMS_MOCK[0].name;
-    const inputValue = AUTO_COMPLETE_ITEMS_MOCK[0].name;
-    const selectedItem = AUTO_COMPLETE_ITEMS_MOCK[0];
+    const selectedName = ALPHAGOV_AUTO_COMPLETE_ITEMS_MOCK[0].name;
+    const inputValue = ALPHAGOV_AUTO_COMPLETE_ITEMS_MOCK[0].name;
+    const selectedItem = ALPHAGOV_AUTO_COMPLETE_ITEMS_MOCK[0];
 
     // Mock document.querySelector
     const mockInputElement = document.createElement('input');
@@ -111,8 +110,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should get the default value', () => {
-    const controlValue = AUTO_COMPLETE_ITEMS_MOCK[0].value;
-    const selectedItem = AUTO_COMPLETE_ITEMS_MOCK[0];
+    const controlValue = ALPHAGOV_AUTO_COMPLETE_ITEMS_MOCK[0].value;
+    const selectedItem = ALPHAGOV_AUTO_COMPLETE_ITEMS_MOCK[0];
 
     component['_control'].setValue(controlValue);
 

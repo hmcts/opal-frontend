@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { GovukTextInputComponent } from '@components';
-import { ICustomAddressFieldIds } from '@interfaces';
+import { GovukTextInputComponent } from '@components/govuk';
+import { ICustomAddressFieldIds } from '@interfaces/components/custom';
 import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 
 @Component({

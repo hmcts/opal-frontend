@@ -28,14 +28,13 @@ import {
 import { ScotgovDatePickerComponent } from '@components/scotgov';
 import {
   CUSTOM_ADDRESS_FIELD_IDS,
-  DATE_OF_BIRTH_FIELD_ERRORS,
-  NATIONAL_INSURANCE_FIELD_ERRORS,
-  ADDRESS_LINE_ONE_FIELD_ERRORS,
-  ADDRESS_LINE_TWO_FIELD_ERRORS,
-  ADDRESS_LINE_THREE_FIELD_ERRORS,
-  POST_CODE_FIELD_ERRORS,
-  TITLE_DROPDOWN_OPTIONS,
-} from '@constants';
+  CUSTOM_DATE_OF_BIRTH_FIELD_ERRORS,
+  CUSTOM_NATIONAL_INSURANCE_FIELD_ERRORS,
+  CUSTOM_ADDRESS_LINE_ONE_FIELD_ERRORS,
+  CUSTOM_ADDRESS_LINE_TWO_FIELD_ERRORS,
+  CUSTOM_ADDRESS_LINE_THREE_FIELD_ERRORS,
+  CUSTOM_POSTCODE_FIELD_ERRORS,
+} from '@constants/components/custom';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
@@ -51,6 +50,7 @@ import {
   FINES_MAC_NESTED_ROUTES,
   FINES_MAC_PERSONAL_DETAILS_ALIAS,
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
+  FINES_MAC_TITLE_DROPDOWN_OPTIONS,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
@@ -89,15 +89,15 @@ export class FinesMacPersonalDetailsFormComponent extends FormAliasBaseComponent
 
   override fieldErrors: IAbstractFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
-    ...DATE_OF_BIRTH_FIELD_ERRORS,
-    ...NATIONAL_INSURANCE_FIELD_ERRORS,
-    ...ADDRESS_LINE_ONE_FIELD_ERRORS,
-    ...ADDRESS_LINE_TWO_FIELD_ERRORS,
-    ...ADDRESS_LINE_THREE_FIELD_ERRORS,
-    ...POST_CODE_FIELD_ERRORS,
+    ...CUSTOM_DATE_OF_BIRTH_FIELD_ERRORS,
+    ...CUSTOM_NATIONAL_INSURANCE_FIELD_ERRORS,
+    ...CUSTOM_ADDRESS_LINE_ONE_FIELD_ERRORS,
+    ...CUSTOM_ADDRESS_LINE_TWO_FIELD_ERRORS,
+    ...CUSTOM_ADDRESS_LINE_THREE_FIELD_ERRORS,
+    ...CUSTOM_POSTCODE_FIELD_ERRORS,
   };
 
-  public readonly titleOptions: IGovUkSelectOptions[] = TITLE_DROPDOWN_OPTIONS;
+  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 
   /**

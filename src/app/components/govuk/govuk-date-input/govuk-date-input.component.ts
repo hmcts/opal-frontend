@@ -33,10 +33,6 @@ export class GovukDateInputComponent {
   }
 
   public hasError(): boolean {
-    return (
-      (this.errorDay !== null && this.errorDay !== undefined) ||
-      (this.errorMonth !== null && this.errorMonth !== undefined) ||
-      (this.errorYear !== null && this.errorYear !== undefined)
-    );
+    return this.errorDay !== null || this.errorMonth !== null || this.errorYear !== null;
   }
 }

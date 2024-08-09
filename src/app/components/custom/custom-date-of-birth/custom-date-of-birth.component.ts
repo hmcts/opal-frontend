@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { FormGroup } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 import { DateTime } from 'luxon';
-import { ScotgovDatePickerComponent } from '../../scotgov/scotgov-date-picker/scotgov-date-picker.component';
+import { ScotgovDatePickerComponent } from '@components/scotgov';
 
 @Component({
   selector: 'app-custom-date-of-birth',

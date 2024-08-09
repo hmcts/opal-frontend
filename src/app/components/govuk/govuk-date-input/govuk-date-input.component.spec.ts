@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukDateInputComponent } from './govuk-date-input.component';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DATE_INPUTS_MOCK } from '@mocks';
+import { GOVUK_DATE_INPUTS_MOCK } from '@mocks/components/govuk';
 import { By } from '@angular/platform-browser';
 
 describe('GovukDateInputComponent', () => {
@@ -28,7 +28,7 @@ describe('GovukDateInputComponent', () => {
     component.legendText = 'Date of Birth';
     component.legendHint = 'For example, 04 06 1991';
     component.legendClasses = 'test-class';
-    component.dateInputs = DATE_INPUTS_MOCK;
+    component.dateInputs = GOVUK_DATE_INPUTS_MOCK;
 
     fixture.detectChanges();
   });
