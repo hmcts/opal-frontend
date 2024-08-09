@@ -4,9 +4,9 @@ import { IFinesMacPersonalDetailsForm, IFinesMacPersonalDetailsState } from '@in
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
 import {
-  FINES_MAC_PERSONAL_DETAILS_FORM_MOCK,
-  FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
-  FINES_MAC_STATE_MOCK,
+  FINES_MAC__PERSONAL_DETAILS_FORM_MOCK,
+  FINES_MAC__PERSONAL_DETAILS_STATE_MOCK,
+  FINES_MAC__STATE_MOCK,
 } from '@mocks/fines/mac';
 
 describe('FinesMacPersonalDetailsComponent', () => {
@@ -19,10 +19,10 @@ describe('FinesMacPersonalDetailsComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
 
-    formData = FINES_MAC_PERSONAL_DETAILS_STATE_MOCK;
-    formSubmit = FINES_MAC_PERSONAL_DETAILS_FORM_MOCK;
+    formData = FINES_MAC__PERSONAL_DETAILS_STATE_MOCK;
+    formSubmit = FINES_MAC__PERSONAL_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPersonalDetailsComponent],

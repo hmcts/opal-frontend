@@ -1,4 +1,4 @@
-export const CUSTOM_ADDRESS_LINE_ONE_FIELD_ERRORS = {
+export const FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS = {
   AddressLine1: {
     required: {
       message: 'Enter address line 1, typically the building and street',

@@ -1,4 +1,4 @@
-export const FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR = {
+export const FINES_MAC__ACCOUNT_DETAILS_FIELD_ERROR = {
   AccountType: {
     required: {
       message: 'Select an account type',

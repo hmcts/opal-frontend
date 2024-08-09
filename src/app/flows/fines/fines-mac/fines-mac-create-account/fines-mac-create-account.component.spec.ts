@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountComponent } from './fines-mac-create-account.component';
-import { FINES_MAC_STATE_MOCK } from '../mocks';
+import { FINES_MAC__STATE_MOCK } from '../mocks';
 import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -24,7 +24,7 @@ describe('FinesMacCreateAccountComponent', () => {
     };
     finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
-    finesService.finesMacState = FINES_MAC_STATE_MOCK;
+    finesService.finesMacState = FINES_MAC__STATE_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountComponent],

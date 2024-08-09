@@ -1,4 +1,4 @@
-export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR = {
+export const FINES_MAC__PERSONAL_DETAILS_FIELD_ERROR = {
   Title: {
     required: {
       message: 'Select a title',

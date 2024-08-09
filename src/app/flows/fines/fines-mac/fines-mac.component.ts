@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { CanDeactivateType } from '@interfaces';
 import { GlobalStateService } from '@services';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_STATE } from './constants/fines-mac-state';
+import { FINES_MAC__STATE } from './constants/fines-mac-state';
 
 @Component({
   selector: 'app-fines-mac',
@@ -52,7 +52,7 @@ export class FinesMacComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.finesService.finesMacState = FINES_MAC_STATE;
+    this.finesService.finesMacState = FINES_MAC__STATE;
 
     // Clear any errors...
     this.globalStateService.error.set({

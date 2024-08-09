@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacEmployerDetailsFormComponent } from './fines-mac-employer-details-form.component';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC__EMPLOYER_DETAILS_FORM_MOCK, FINES_MAC__STATE_MOCK } from '@mocks/fines/mac';
 import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
 
 describe('FinesMacEmployerDetailsFormComponent', () => {
@@ -13,8 +13,8 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK;
+    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
+    formSubmit = FINES_MAC__EMPLOYER_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsFormComponent],

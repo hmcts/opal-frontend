@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesComponent } from './fines.component';
 import { FinesService } from '@services/fines';
 import { GlobalStateService } from '@services';
-import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC__STATE_MOCK } from '@mocks/fines/mac';
 
 describe('FinesComponent', () => {
   let component: FinesComponent;
@@ -19,7 +19,7 @@ describe('FinesComponent', () => {
     component = fixture.componentInstance;
 
     mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
     mockGlobalStateService = TestBed.inject(GlobalStateService);
 
     fixture.detectChanges();
@@ -36,7 +36,7 @@ describe('FinesComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(mockFinesService.finesMacState).toEqual(FINES_MAC_STATE_MOCK);
+    expect(mockFinesService.finesMacState).toEqual(FINES_MAC__STATE_MOCK);
     expect(mockGlobalStateService.error()).toEqual({ error: false, message: '' });
   });
 });

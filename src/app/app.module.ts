@@ -9,16 +9,11 @@ import {
   withInterceptorsFromDi,
   withXsrfConfiguration,
 } from '@angular/common/http';
-
-import {
-  MojHeaderComponent,
-  MojHeaderNavigationItemComponent,
-  GovukFooterComponent,
-  MojBannerComponent,
-} from '@components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors';
 import { AppInitializerService } from '@services';
+import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
+import { GovukFooterComponent } from '@components/govuk';
 
 @NgModule({
   declarations: [AppComponent],

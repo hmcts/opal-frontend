@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacComponent } from './fines-mac.component';
 import { GlobalStateService } from '@services';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC__STATE_MOCK } from '@mocks/fines/mac';
 
 describe('FinesMacComponent', () => {
   let component: FinesMacComponent;
@@ -19,7 +19,7 @@ describe('FinesMacComponent', () => {
     component = fixture.componentInstance;
 
     mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
     mockGlobalStateService = TestBed.inject(GlobalStateService);
 
     fixture.detectChanges();
@@ -36,7 +36,7 @@ describe('FinesMacComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(mockFinesService.finesMacState).toEqual(FINES_MAC_STATE_MOCK);
+    expect(mockFinesService.finesMacState).toEqual(FINES_MAC__STATE_MOCK);
     expect(mockGlobalStateService.error()).toEqual({ error: false, message: '' });
   });
 
@@ -56,7 +56,7 @@ describe('FinesMacComponent', () => {
 
   it('should call canDeactivate ', () => {
     // Empty state, should return true
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
     expect(component.canDeactivate()).toBeTruthy();
 
     mockFinesService.finesMacState.stateChanges = true;

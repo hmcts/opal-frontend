@@ -4,13 +4,13 @@ import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstrac
 import { GovukTextInputComponent } from '@components/govuk';
 
 @Component({
-  selector: 'app-custom-national-insurance-number',
+  selector: 'app-fines-mac-national-insurance-number',
   standalone: true,
   imports: [GovukTextInputComponent],
-  templateUrl: './custom-national-insurance-number.component.html',
+  templateUrl: './fines-mac-national-insurance-number.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomNationalInsuranceNumberComponent {
+export class FinesMacNationalInsuranceNumberComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
 }

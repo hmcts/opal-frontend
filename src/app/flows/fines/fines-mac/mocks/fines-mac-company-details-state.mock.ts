@@ -1,6 +1,6 @@
 import { IFinesMacCompanyDetailsState } from '@interfaces/fines/mac';
 
-export const FINES_MAC_COMPANY_DETAILS_STATE_MOCK: IFinesMacCompanyDetailsState = {
+export const FINES_MAC__COMPANY_DETAILS_STATE_MOCK: IFinesMacCompanyDetailsState = {
   CompanyName: 'Acme Org Ltd.',
   AddAlias: true,
   Aliases: [{ AliasOrganisationName_0: 'Boring Co.' }],

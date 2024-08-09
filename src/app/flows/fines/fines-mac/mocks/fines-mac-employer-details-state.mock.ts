@@ -1,6 +1,6 @@
 import { IFinesMacEmployerDetailsState } from '@interfaces/fines/mac';
 
-export const FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK: IFinesMacEmployerDetailsState = {
+export const FINES_MAC__EMPLOYER_DETAILS_STATE_MOCK: IFinesMacEmployerDetailsState = {
   EmployerCompanyName: 'Test Employer Name',
   EmployerReference: 'Test Reference',
   EmployerEmailAddress: 'abc@def.co.uk',

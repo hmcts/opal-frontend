@@ -1,4 +1,4 @@
-export const FINES_MAC_CONTACT_DETAILS_FIELD_ERROR = {
+export const FINES_MAC__CONTACT_DETAILS_FIELD_ERROR = {
   EmailAddress1: {
     maxlength: {
       message: 'The primary email address must be 76 characters or fewer',

@@ -21,10 +21,10 @@ import {
 } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
-  FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR,
-  FINES_MAC_ACCOUNT_TYPES_STATE,
-  FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
-  FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
+  FINES_MAC__ACCOUNT_DETAILS_FIELD_ERROR,
+  FINES_MAC__ACCOUNT_TYPES_STATE,
+  FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
+  FINES_MAC__CREATE_ACCOUNT_CONTROL_NAMES,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
@@ -60,25 +60,25 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly routingPath = RoutingPaths;
 
-  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_ACCOUNT_TYPES_STATE).map(
+  public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC__ACCOUNT_TYPES_STATE).map(
     ([key, value]) => ({
       key,
       value,
     }),
   );
   public readonly fineDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
+    FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fine'],
   ).map(([key, value]) => ({ key, value }));
   public readonly fixedPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
+    FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['fixedPenalty'],
   ).map(([key, value]) => ({ key, value }));
   public readonly conditionalCautionPenaltyDefendantTypes: IGovUkRadioOptions[] = Object.entries(
-    FINES_MAC_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
+    FINES_MAC__ACCOUNT_TYPE_DEFENDANT_TYPES_STATE['conditionalCaution'],
   ).map(([key, value]) => ({ key, value }));
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
-    FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
+    FINES_MAC__CREATE_ACCOUNT_CONTROL_NAMES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR;
+  override fieldErrors: IAbstractFieldErrors = FINES_MAC__ACCOUNT_DETAILS_FIELD_ERROR;
 
   /**
    * Sets up the account details form with the necessary form controls.

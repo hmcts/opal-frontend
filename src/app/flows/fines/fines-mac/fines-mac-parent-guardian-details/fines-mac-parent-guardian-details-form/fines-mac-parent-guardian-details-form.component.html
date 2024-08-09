@@ -9,22 +9,22 @@
     [control]="form.controls['FullName']"
     [errors]="formControlErrorMessages['FullName']"
   ></app-govuk-text-input>
-  <app-custom-date-of-birth
+  <app-fines-mac-date-of-birth
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
     (dateChange)="setInputValue($event, 'DOB')"
-  ></app-custom-date-of-birth>
-  <app-custom-national-insurance-number
+  ></app-fines-mac-date-of-birth>
+  <app-fines-mac-national-insurance-number
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
-  ></app-custom-national-insurance-number>
-  <app-custom-address-block
+  ></app-fines-mac-national-insurance-number>
+  <app-fines-mac-address-block
     [divider]="true"
     legendText="Address"
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
     [addressFieldIds]="customAddressFieldIds"
-  ></app-custom-address-block>
+  ></app-fines-mac-address-block>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>

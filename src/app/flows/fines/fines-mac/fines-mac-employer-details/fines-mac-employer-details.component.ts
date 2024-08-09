@@ -5,7 +5,7 @@ import { FormParentBaseComponent } from '@components/abstract';
 import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacEmployerDetailsFormComponent } from './fines-mac-employer-details-form/fines-mac-employer-details-form.component';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 
 @Component({
@@ -32,7 +32,7 @@ export class FinesMacEmployerDetailsComponent extends FormParentBaseComponent {
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['employerDetails'];
+      const nextRoute = FINES_MAC__NESTED_ROUTES[this.defendantType]['employerDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

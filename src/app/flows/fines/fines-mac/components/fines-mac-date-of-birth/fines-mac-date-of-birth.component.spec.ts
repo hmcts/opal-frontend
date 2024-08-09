@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CustomDateOfBirthComponent } from './custom-date-of-birth.component';
+import { FinesMacDateOfBirthComponent } from './fines-mac-date-of-birth.component';
 import { FormGroup, FormControl } from '@angular/forms';
 
-describe('CustomDateOfBirthComponent', () => {
-  let component: CustomDateOfBirthComponent;
-  let fixture: ComponentFixture<CustomDateOfBirthComponent>;
+describe('FinesMacDateOfBirthComponent', () => {
+  let component: FinesMacDateOfBirthComponent;
+  let fixture: ComponentFixture<FinesMacDateOfBirthComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomDateOfBirthComponent],
+      imports: [FinesMacDateOfBirthComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomDateOfBirthComponent);
+    fixture = TestBed.createComponent(FinesMacDateOfBirthComponent);
     component = fixture.componentInstance;
 
     component.form = new FormGroup({

@@ -6,9 +6,9 @@ import {
   IFinesMacFieldTypes,
 } from '@interfaces/fines/mac';
 import {
-  FINES_MAC_ACCOUNT_STATUS,
-  FINES_MAC_ACCOUNT_TYPES_STATE,
-  FINES_MAC_DEFENDANT_TYPES_STATE,
+  FINES_MAC__ACCOUNT_STATUS,
+  FINES_MAC__ACCOUNT_TYPES_STATE,
+  FINES_MAC__DEFENDANT_TYPES_STATE,
 } from '@constants/fines/mac';
 import { RoutingPaths } from '@enums';
 import { FinesMacRoutes } from '@enums/fines/mac';
@@ -51,10 +51,10 @@ export class FinesMacAccountDetailsComponent implements OnInit {
 
   protected readonly routingPaths = RoutingPaths;
   protected readonly fineMacRoutes = FinesMacRoutes;
-  public accountCreationStatus: IFinesMacAccountStatus = FINES_MAC_ACCOUNT_STATUS;
+  public accountCreationStatus: IFinesMacAccountStatus = FINES_MAC__ACCOUNT_STATUS;
 
-  protected readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES_STATE;
-  private readonly accountTypes = FINES_MAC_ACCOUNT_TYPES_STATE;
+  protected readonly defendantTypes = FINES_MAC__DEFENDANT_TYPES_STATE;
+  private readonly accountTypes = FINES_MAC__ACCOUNT_TYPES_STATE;
   public defendantType!: string;
   public accountType!: string;
 

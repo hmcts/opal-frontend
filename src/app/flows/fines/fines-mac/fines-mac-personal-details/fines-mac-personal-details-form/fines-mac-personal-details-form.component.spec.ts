@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form.component';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC__PERSONAL_DETAILS_FORM_MOCK, FINES_MAC__STATE_MOCK } from '@mocks/fines/mac';
 import { IFinesMacPersonalDetailsForm } from '@interfaces/fines/mac';
-import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '@constants/fines/mac';
+import { FINES_MAC__PERSONAL_DETAILS_ALIAS } from '@constants/fines/mac';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;
@@ -14,8 +14,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_PERSONAL_DETAILS_FORM_MOCK;
+    mockFinesService.finesMacState = FINES_MAC__STATE_MOCK;
+    formSubmit = FINES_MAC__PERSONAL_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPersonalDetailsFormComponent],
@@ -85,7 +85,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should set up the alias configuration for the personal details form', () => {
     component['setupAliasConfiguration']();
     expect(component.aliasFields).toEqual(['AliasForenames', 'AliasSurname']);
-    expect(component.aliasControlsValidation).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS);
+    expect(component.aliasControlsValidation).toEqual(FINES_MAC__PERSONAL_DETAILS_ALIAS);
   });
 
   it('should call the necessary setup methods', () => {

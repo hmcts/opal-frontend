@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { CustomAddressBlockComponent } from './custom-address-block.component';
-import { CUSTOM_ADDRESS_FIELD_IDS } from '@constants/components/custom';
+import { FinesMacAddressBlockComponent } from './fines-mac-address-block.component';
+import { FINES_MAC_ADDRESS_FIELD_IDS } from '@constants/components/fine/mac';
 
-describe('CustomAddressBlockComponent', () => {
-  let component: CustomAddressBlockComponent;
-  let fixture: ComponentFixture<CustomAddressBlockComponent>;
+describe('FinesMacAddressBlockComponent', () => {
+  let component: FinesMacAddressBlockComponent;
+  let fixture: ComponentFixture<FinesMacAddressBlockComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomAddressBlockComponent],
+      imports: [FinesMacAddressBlockComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomAddressBlockComponent);
+    fixture = TestBed.createComponent(FinesMacAddressBlockComponent);
     component = fixture.componentInstance;
 
     component.legendText = 'Test';
@@ -24,7 +24,7 @@ describe('CustomAddressBlockComponent', () => {
       Postcode: new FormControl(null),
     });
     component.formControlErrorMessages = {};
-    component.addressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
+    component.addressFieldIds = FINES_MAC_ADDRESS_FIELD_IDS;
 
     fixture.detectChanges();
   });

@@ -1,6 +1,6 @@
-import { ICustomAddressFieldIds } from '@interfaces/components/custom';
+import { IFinesMacAddressFieldIds } from '@interfaces/components/fines/mac';
 
-export const CUSTOM_ADDRESS_FIELD_IDS: ICustomAddressFieldIds = {
+export const FINES_MAC_ADDRESS_FIELD_IDS: IFinesMacAddressFieldIds = {
   addressLineOneFieldId: 'AddressLine1',
   addressLineTwoFieldId: 'AddressLine2',
   addressLineThreeFieldId: 'AddressLine3',

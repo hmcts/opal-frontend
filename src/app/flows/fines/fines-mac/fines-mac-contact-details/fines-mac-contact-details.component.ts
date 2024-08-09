@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormParentBaseComponent } from '@components';
+import { FormParentBaseComponent } from '@components/abstract';
 import { IFinesMacContactDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form/fines-mac-contact-details-form.component';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 
 @Component({
@@ -30,7 +30,7 @@ export class FinesMacContactDetailsComponent extends FormParentBaseComponent {
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['contactDetails'];
+      const nextRoute = FINES_MAC__NESTED_ROUTES[this.defendantType]['contactDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

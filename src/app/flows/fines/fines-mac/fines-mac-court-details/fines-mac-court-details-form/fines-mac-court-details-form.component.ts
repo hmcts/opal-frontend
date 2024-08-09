@@ -17,7 +17,7 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC__COURT_DETAILS_FIELD_ERRORS, FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
@@ -47,9 +47,9 @@ export class FinesMacCourtDetailsFormComponent extends FormBaseComponent impleme
 
   protected readonly finesService = inject(FinesService);
   protected readonly finesMacRoutes = FinesMacRoutes;
-  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC__NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
+  override fieldErrors: IAbstractFieldErrors = FINES_MAC__COURT_DETAILS_FIELD_ERRORS;
 
   /**
    * Sets up the court details form with the necessary form controls.

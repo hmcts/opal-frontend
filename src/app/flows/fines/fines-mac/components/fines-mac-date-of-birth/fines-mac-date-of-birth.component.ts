@@ -5,13 +5,13 @@ import { DateTime } from 'luxon';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
 
 @Component({
-  selector: 'app-custom-date-of-birth',
+  selector: 'app-fines-mac-date-of-birth',
   standalone: true,
   imports: [ScotgovDatePickerComponent],
-  templateUrl: './custom-date-of-birth.component.html',
+  templateUrl: './fines-mac-date-of-birth.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomDateOfBirthComponent {
+export class FinesMacDateOfBirthComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Output() dateChange = new EventEmitter<string>();

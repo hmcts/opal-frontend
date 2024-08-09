@@ -19,21 +19,21 @@ import {
   GovukTextInputComponent,
 } from '@components/govuk';
 import {
-  CUSTOM_ADDRESS_LINE_ONE_FIELD_ERRORS,
-  CUSTOM_ADDRESS_LINE_THREE_FIELD_ERRORS,
-  CUSTOM_ADDRESS_LINE_TWO_FIELD_ERRORS,
-  CUSTOM_ADDRESS_FIELD_IDS,
-  CUSTOM_POSTCODE_FIELD_ERRORS,
-} from '@constants/components/custom';
+  FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_FIELD_IDS,
+  FINES_MAC_POSTCODE_FIELD_ERRORS,
+} from '@constants/components/fine/mac';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
-import { CustomAddressBlockComponent } from '@components';
+import { FinesMacAddressBlockComponent } from '@components/fines/mac';
 import { IFinesMacCompanyDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
-  FINES_MAC_COMPANY_DETAILS_ALIAS,
-  FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
-  FINES_MAC_NESTED_ROUTES,
+  FINES_MAC__COMPANY_DETAILS_ALIAS,
+  FINES_MAC__COMPANY_DETAILS_FIELD_ERROR,
+  FINES_MAC__NESTED_ROUTES,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
@@ -51,7 +51,7 @@ import { IAbstractFieldErrors } from '@interfaces/components/abstract';
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCancelLinkComponent,
-    CustomAddressBlockComponent,
+    FinesMacAddressBlockComponent,
   ],
   templateUrl: './fines-mac-company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,16 +61,16 @@ export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent 
   @Output() private formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
-  public readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
+  public readonly customAddressFieldIds = FINES_MAC_ADDRESS_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
-  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC__NESTED_ROUTES;
 
   override fieldErrors: IAbstractFieldErrors = {
-    ...FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
-    ...CUSTOM_ADDRESS_LINE_ONE_FIELD_ERRORS,
-    ...CUSTOM_ADDRESS_LINE_TWO_FIELD_ERRORS,
-    ...CUSTOM_ADDRESS_LINE_THREE_FIELD_ERRORS,
-    ...CUSTOM_POSTCODE_FIELD_ERRORS,
+    ...FINES_MAC__COMPANY_DETAILS_FIELD_ERROR,
+    ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
+    ...FINES_MAC_POSTCODE_FIELD_ERRORS,
   };
 
   /**
@@ -98,7 +98,7 @@ export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent 
    */
   private setupAliasConfiguration(): void {
     this.aliasFields = ['AliasOrganisationName'];
-    this.aliasControlsValidation = FINES_MAC_COMPANY_DETAILS_ALIAS;
+    this.aliasControlsValidation = FINES_MAC__COMPANY_DETAILS_ALIAS;
   }
 
   /**

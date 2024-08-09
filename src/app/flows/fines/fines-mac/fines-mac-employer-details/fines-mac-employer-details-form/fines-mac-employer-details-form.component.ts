@@ -16,7 +16,7 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC__EMPLOYER_DETAILS_FIELD_ERROR, FINES_MAC__NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
@@ -49,9 +49,9 @@ export class FinesMacEmployerDetailsFormComponent extends FormBaseComponent impl
 
   protected readonly finesService = inject(FinesService);
   protected readonly finesMacRoutes = FinesMacRoutes;
-  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC__NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR;
+  override fieldErrors: IAbstractFieldErrors = FINES_MAC__EMPLOYER_DETAILS_FIELD_ERROR;
 
   /**
    * Sets up the employer details form with the necessary form controls.

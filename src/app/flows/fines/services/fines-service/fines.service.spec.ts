@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { FINES_MAC_STATE } from '@constants/fines/mac';
+import { FINES_MAC__STATE } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 
 describe('FinesService', () => {
@@ -15,7 +15,7 @@ describe('FinesService', () => {
   });
 
   it('should store search state', () => {
-    service.finesMacState = FINES_MAC_STATE;
-    expect(service.finesMacState).toEqual(FINES_MAC_STATE);
+    service.finesMacState = FINES_MAC__STATE;
+    expect(service.finesMacState).toEqual(FINES_MAC__STATE);
   });
 });

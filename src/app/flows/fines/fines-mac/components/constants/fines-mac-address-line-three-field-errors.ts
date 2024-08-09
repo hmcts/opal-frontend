@@ -1,4 +1,4 @@
-export const CUSTOM_ADDRESS_LINE_THREE_FIELD_ERRORS = {
+export const FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS = {
   AddressLine3: {
     maxlength: {
       message: `The address line 3 must be 16 characters or fewer`,

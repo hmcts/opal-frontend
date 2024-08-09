@@ -1,6 +1,6 @@
 import { IFinesMacParentGuardianDetailsState } from '@interfaces/fines/mac';
 
-export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE: IFinesMacParentGuardianDetailsState = {
+export const FINES_MAC__PARENT_GUARDIAN_DETAILS_STATE: IFinesMacParentGuardianDetailsState = {
   FullName: null,
   DOB: null,
   NationalInsuranceNumber: null,

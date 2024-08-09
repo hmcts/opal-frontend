@@ -1,6 +1,6 @@
 import { IFinesMacPersonalDetailsState } from '@interfaces/fines/mac';
 
-export const FINES_MAC_PERSONAL_DETAILS_STATE_MOCK: IFinesMacPersonalDetailsState = {
+export const FINES_MAC__PERSONAL_DETAILS_STATE_MOCK: IFinesMacPersonalDetailsState = {
   Title: 'Mr',
   Forenames: 'John',
   Surname: 'Doe',

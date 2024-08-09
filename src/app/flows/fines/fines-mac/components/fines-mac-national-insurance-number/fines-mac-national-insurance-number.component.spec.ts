@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomNationalInsuranceNumberComponent } from './custom-national-insurance-number.component';
+import { FinesMacNationalInsuranceNumberComponent } from './fines-mac-national-insurance-number.component';
 import { FormGroup, FormControl } from '@angular/forms';
 
-describe('CustomNationalInsuranceNumberComponent', () => {
-  let component: CustomNationalInsuranceNumberComponent;
-  let fixture: ComponentFixture<CustomNationalInsuranceNumberComponent>;
+describe('FinesMacNationalInsuranceNumberComponent', () => {
+  let component: FinesMacNationalInsuranceNumberComponent;
+  let fixture: ComponentFixture<FinesMacNationalInsuranceNumberComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomNationalInsuranceNumberComponent],
+      imports: [FinesMacNationalInsuranceNumberComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomNationalInsuranceNumberComponent);
+    fixture = TestBed.createComponent(FinesMacNationalInsuranceNumberComponent);
     component = fixture.componentInstance;
 
     component.form = new FormGroup({
