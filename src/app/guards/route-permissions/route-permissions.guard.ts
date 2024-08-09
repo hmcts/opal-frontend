@@ -8,6 +8,7 @@ export const routePermissionsGuard: CanActivateFn = (route: ActivatedRouteSnapsh
   const permissionService = inject(PermissionsService);
   const sessionService = inject(SessionService);
   const router = inject(Router);
+  console.log('routePermissionsGuard');
 
   return sessionService.getUserState().pipe(
     map((resp) => {
