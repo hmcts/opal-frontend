@@ -1,3 +1,3 @@
-import { FORM_BASE_FIELD_ERRORS } from './form-base-field-errors';
+import { ABSTRACT_FIELD_ERRORS } from './abstract-field-errors';
 
-export { FORM_BASE_FIELD_ERRORS };
+export { ABSTRACT_FIELD_ERRORS };

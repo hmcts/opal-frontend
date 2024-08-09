@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { IAutoCompleteItem, IFieldErrors, IRadioOptions } from '@interfaces';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -28,6 +27,9 @@ import {
   FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
+import { IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IRadioOptions } from '@interfaces';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
@@ -50,7 +52,7 @@ import { FinesService } from '@services/fines';
 })
 export class FinesMacCreateAccountFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Output() private formSubmit = new EventEmitter<IFinesMacAccountDetailsState>();
-  @Input({ required: true }) public autoCompleteItems!: IAutoCompleteItem[];
+  @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
   protected readonly finesService = inject(FinesService);
   private ngUnsubscribe = new Subject<void>();
@@ -74,7 +76,7 @@ export class FinesMacCreateAccountFormComponent extends FormBaseComponent implem
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
     FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
 
-  override fieldErrors: IFieldErrors = FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR;
+  override fieldErrors: IAbstractFieldErrors = FINES_MAC_ACCOUNT_DETAILS_FIELD_ERROR;
 
   /**
    * Sets up the account details form with the necessary form controls.

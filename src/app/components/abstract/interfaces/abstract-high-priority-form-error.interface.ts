@@ -1,4 +1,4 @@
-export interface IHighPriorityFormError {
+export interface IAbstractHighPriorityFormError {
   message: string;
   priority: number;
   type: string;

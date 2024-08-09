@@ -12,7 +12,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { IAutoCompleteItem } from '@interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
 import { Subscription, pairwise, startWith } from 'rxjs';
 
@@ -31,7 +31,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
   @Input({ required: false }) hintText!: string;
-  @Input({ required: true }) autoCompleteItems: IAutoCompleteItem[] = [];
+  @Input({ required: true }) autoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [];
   @Input() showAllValues = false;
   @Input({ required: false }) errors: string | null = null;
 

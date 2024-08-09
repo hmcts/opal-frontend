@@ -1,17 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBaseComponent } from './form-base.component';
 import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { FORM_CONTROL_ERROR_MOCK, FORM_DATE_ERROR_SUMMARY_MOCK, FORM_ERROR_SUMMARY_MOCK } from '@mocks';
 import {
-  IFieldError,
-  IFormArrayControlValidation,
-  IFormArrayControls,
-  IFormControlErrorMessage,
-  IFormError,
-  IFormErrorSummaryMessage,
-} from '@interfaces';
-import { FORM_BASE_STATE_MOCK } from '../mocks';
-import { FORM_BASE_FIELD_ERRORS } from '../constants';
+  IAbstractFieldError,
+  IAbstractFormArrayControlValidation,
+  IAbstractFormArrayControls,
+  IAbstractFormControlErrorMessage,
+  IAbstractFormError,
+  IAbstractFormErrorSummaryMessage,
+} from '@interfaces/components/abstract';
+import {
+  ABSTRACT_FORM_CONTROL_ERROR_MOCK,
+  ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK,
+  ABSTRACT_FORM_ERROR_SUMMARY_MOCK,
+  ABSTRACT_FORM_STATE_MOCK,
+} from '@mocks/components/abstract';
+import { ABSTRACT_FIELD_ERRORS } from '@constants/components/abstract';
 
 class TestFormBaseComponent extends FormBaseComponent {
   constructor() {
@@ -136,7 +140,7 @@ describe('FormBaseComponent', () => {
 
   it('should return the highest priority error', () => {
     const errorKeys = ['required', 'minLength'];
-    const fieldErrors: IFieldError = FORM_CONTROL_ERROR_MOCK;
+    const fieldErrors: IAbstractFieldError = ABSTRACT_FORM_CONTROL_ERROR_MOCK;
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
@@ -145,7 +149,7 @@ describe('FormBaseComponent', () => {
 
   it('should return null if errorKeys is empty', () => {
     const errorKeys: string[] = [];
-    const fieldErrors: IFieldError = FORM_CONTROL_ERROR_MOCK;
+    const fieldErrors: IAbstractFieldError = ABSTRACT_FORM_CONTROL_ERROR_MOCK;
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
     expect(result).toBe(null);
@@ -153,7 +157,7 @@ describe('FormBaseComponent', () => {
 
   it('should return null if fieldErrors is empty', () => {
     const errorKeys = ['required', 'minLength'];
-    const fieldErrors: IFieldError = {};
+    const fieldErrors: IAbstractFieldError = {};
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
@@ -168,7 +172,7 @@ describe('FormBaseComponent', () => {
 
   it('should return null if errorKeys and fieldErrors are empty', () => {
     const errorKeys: string[] = [];
-    const fieldErrors: IFieldError = {};
+    const fieldErrors: IAbstractFieldError = {};
 
     const result = component['getHighestPriorityError'](errorKeys, fieldErrors);
 
@@ -209,12 +213,12 @@ describe('FormBaseComponent', () => {
   });
 
   it('should repopulate the form', () => {
-    component['rePopulateForm'](FORM_BASE_STATE_MOCK);
+    component['rePopulateForm'](ABSTRACT_FORM_STATE_MOCK);
     expect(component.form.value.forename).toBe('Test');
   });
 
   it('should remove error summary messages', () => {
-    component.formErrorSummaryMessage = FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 1);
+    component.formErrorSummaryMessage = ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 1);
 
     component['removeErrorSummaryMessages'](component.formErrorSummaryMessage, [1]);
 
@@ -223,7 +227,7 @@ describe('FormBaseComponent', () => {
 
   it('should return the indices of form error summary messages for given field IDs', () => {
     const fieldIds = ['dayOfMonth', 'monthOfYear', 'year'];
-    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+    const formErrorSummaryMessage: IAbstractFormErrorSummaryMessage[] = ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK;
 
     const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
 
@@ -232,7 +236,7 @@ describe('FormBaseComponent', () => {
 
   it('should return an empty array if no form error summary messages match the field IDs', () => {
     const fieldIds = ['surname', 'address', 'phone'];
-    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+    const formErrorSummaryMessage: IAbstractFormErrorSummaryMessage[] = ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK;
 
     const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
 
@@ -240,7 +244,7 @@ describe('FormBaseComponent', () => {
   });
   it('should return the indices of form error summary messages for given field IDs', () => {
     const fieldIds = ['dayOfMonth', 'monthOfYear', 'year'];
-    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+    const formErrorSummaryMessage: IAbstractFormErrorSummaryMessage[] = ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK;
 
     const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
 
@@ -249,7 +253,7 @@ describe('FormBaseComponent', () => {
 
   it('should return an empty array if no form error summary messages match the field IDs', () => {
     const fieldIds = ['surname', 'address', 'phone'];
-    const formErrorSummaryMessage: IFormErrorSummaryMessage[] = FORM_DATE_ERROR_SUMMARY_MOCK;
+    const formErrorSummaryMessage: IAbstractFormErrorSummaryMessage[] = ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK;
 
     const result = component['getFormErrorSummaryIndex'](fieldIds, formErrorSummaryMessage);
 
@@ -257,7 +261,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return the indices of form error summary messages to remove for date fields', () => {
-    component.formErrorSummaryMessage = FORM_DATE_ERROR_SUMMARY_MOCK;
+    component.formErrorSummaryMessage = ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK;
 
     const result = component['getDateFieldsToRemoveIndexes']();
 
@@ -265,7 +269,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return the indices of form error summary messages to remove for date fields when only two fields are present', () => {
-    component.formErrorSummaryMessage = FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 2);
+    component.formErrorSummaryMessage = ABSTRACT_FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 2);
 
     const result = component['getDateFieldsToRemoveIndexes']();
 
@@ -281,7 +285,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should set the error messages', () => {
-    const errorSummaryEntry: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    const errorSummaryEntry: IAbstractFormError[] = ABSTRACT_FORM_ERROR_SUMMARY_MOCK;
 
     component['setErrorMessages'](errorSummaryEntry);
 
@@ -318,7 +322,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return an empty array if the form is valid', () => {
-    component.form.patchValue(FORM_BASE_STATE_MOCK);
+    component.form.patchValue(ABSTRACT_FORM_STATE_MOCK);
     const result = component['getFormErrors'](component.form);
 
     expect(result).toEqual([]);
@@ -370,7 +374,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return the error summary entries', () => {
-    component['fieldErrors'] = FORM_BASE_FIELD_ERRORS;
+    component['fieldErrors'] = ABSTRACT_FIELD_ERRORS;
     const errorMessage = component['getFieldErrorDetails'](['court']);
     const expectedResp = { message: 'Select a court', priority: 1, type: 'required' };
 
@@ -385,15 +389,15 @@ describe('FormBaseComponent', () => {
     const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'required';
-    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    const formErrors: IAbstractFormError[] = ABSTRACT_FORM_ERROR_SUMMARY_MOCK;
 
     const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
 
     expect(manipulatedFields).toEqual([
-      FORM_ERROR_SUMMARY_MOCK[0],
-      { ...FORM_ERROR_SUMMARY_MOCK[1], message: messageOverride },
-      { ...FORM_ERROR_SUMMARY_MOCK[2], message: messageOverride },
-      { ...FORM_ERROR_SUMMARY_MOCK[3], message: messageOverride },
+      ABSTRACT_FORM_ERROR_SUMMARY_MOCK[0],
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[1], message: messageOverride },
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[2], message: messageOverride },
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[3], message: messageOverride },
     ]);
   });
 
@@ -401,7 +405,7 @@ describe('FormBaseComponent', () => {
     const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'maxLength';
-    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    const formErrors: IAbstractFormError[] = ABSTRACT_FORM_ERROR_SUMMARY_MOCK;
 
     const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
 
@@ -412,7 +416,7 @@ describe('FormBaseComponent', () => {
     const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'required';
-    const formErrors: IFormError[] = [];
+    const formErrors: IAbstractFormError[] = [];
 
     const manipulatedFields = component['manipulateFormErrorMessage'](fields, messageOverride, errorType, formErrors);
 
@@ -420,34 +424,34 @@ describe('FormBaseComponent', () => {
   });
 
   it('should handle date input form errors', () => {
-    component.formErrors = FORM_ERROR_SUMMARY_MOCK;
+    component.formErrors = ABSTRACT_FORM_ERROR_SUMMARY_MOCK;
     const messageOverride = 'Please enter a DOB';
 
     const result = component['handleDateInputFormErrors']();
 
     expect(result).toEqual([
-      FORM_ERROR_SUMMARY_MOCK[0],
-      { ...FORM_ERROR_SUMMARY_MOCK[1], message: messageOverride },
-      { ...FORM_ERROR_SUMMARY_MOCK[2], message: messageOverride },
-      { ...FORM_ERROR_SUMMARY_MOCK[3], message: messageOverride },
+      ABSTRACT_FORM_ERROR_SUMMARY_MOCK[0],
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[1], message: messageOverride },
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[2], message: messageOverride },
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[3], message: messageOverride },
     ]);
   });
 
   it('should return the highest priority form errors', () => {
-    const formErrors: IFormError[] = [
-      FORM_ERROR_SUMMARY_MOCK[0],
-      { ...FORM_ERROR_SUMMARY_MOCK[1], priority: 2 },
-      { ...FORM_ERROR_SUMMARY_MOCK[2], priority: 2 },
-      { ...FORM_ERROR_SUMMARY_MOCK[3], priority: 2 },
+    const formErrors: IAbstractFormError[] = [
+      ABSTRACT_FORM_ERROR_SUMMARY_MOCK[0],
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[1], priority: 2 },
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[2], priority: 2 },
+      { ...ABSTRACT_FORM_ERROR_SUMMARY_MOCK[3], priority: 2 },
     ];
 
     const result = component['getHighPriorityFormErrors'](formErrors);
 
-    expect(result).toEqual([FORM_ERROR_SUMMARY_MOCK[0]]);
+    expect(result).toEqual([ABSTRACT_FORM_ERROR_SUMMARY_MOCK[0]]);
   });
 
   it('should return an empty array if formErrors is empty', () => {
-    const formErrors: IFormError[] = [];
+    const formErrors: IAbstractFormError[] = [];
 
     const result = component['getHighPriorityFormErrors'](formErrors);
 
@@ -455,7 +459,7 @@ describe('FormBaseComponent', () => {
   });
 
   it('should return all form errors if they have the same priority', () => {
-    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    const formErrors: IAbstractFormError[] = ABSTRACT_FORM_ERROR_SUMMARY_MOCK;
 
     const result = component['getHighPriorityFormErrors'](formErrors);
 
@@ -464,21 +468,21 @@ describe('FormBaseComponent', () => {
 
   it('should split form errors into clean and removed form errors', () => {
     const fieldIds = ['monthOfYear', 'dayOfMonth', 'year'];
-    const formErrors: IFormError[] = FORM_ERROR_SUMMARY_MOCK;
+    const formErrors: IAbstractFormError[] = ABSTRACT_FORM_ERROR_SUMMARY_MOCK;
 
     const [cleanFormErrors, removedFormErrors] = component['splitFormErrors'](fieldIds, formErrors);
 
-    expect(cleanFormErrors).toEqual([FORM_ERROR_SUMMARY_MOCK[0]]);
+    expect(cleanFormErrors).toEqual([ABSTRACT_FORM_ERROR_SUMMARY_MOCK[0]]);
 
     expect(removedFormErrors).toEqual([
-      FORM_ERROR_SUMMARY_MOCK[1],
-      FORM_ERROR_SUMMARY_MOCK[2],
-      FORM_ERROR_SUMMARY_MOCK[3],
+      ABSTRACT_FORM_ERROR_SUMMARY_MOCK[1],
+      ABSTRACT_FORM_ERROR_SUMMARY_MOCK[2],
+      ABSTRACT_FORM_ERROR_SUMMARY_MOCK[3],
     ]);
   });
 
   it('should emit form submit event with form value', () => {
-    const formValue = FORM_BASE_STATE_MOCK;
+    const formValue = ABSTRACT_FORM_STATE_MOCK;
     component['rePopulateForm'](formValue);
 
     component['handleErrorMessages']();
@@ -519,7 +523,7 @@ describe('FormBaseComponent', () => {
 
   it('should add controls to a form group', () => {
     const formGroup = new FormGroup({});
-    const controls: IFormArrayControlValidation[] = [
+    const controls: IAbstractFormArrayControlValidation[] = [
       { controlName: 'firstName', validators: [] },
       { controlName: 'lastName', validators: [] },
     ];
@@ -535,7 +539,7 @@ describe('FormBaseComponent', () => {
 
   it('should remove the form array control at the specified index', () => {
     const index = 1;
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -561,7 +565,7 @@ describe('FormBaseComponent', () => {
         },
       },
     ];
-    const expectedFormArrayControls: IFormArrayControls[] = [
+    const expectedFormArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -677,7 +681,7 @@ describe('FormBaseComponent', () => {
     // Arrange
     const formArrayName = 'aliases';
     const fieldNames = ['firstNames', 'lastName'];
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -733,7 +737,7 @@ describe('FormBaseComponent', () => {
 
   it('should remove field errors for the specified form array control', () => {
     const index = 0;
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -748,7 +752,7 @@ describe('FormBaseComponent', () => {
       },
     ];
     const fieldNames = ['firstNames', 'lastName'];
-    const errorMessage: IFormControlErrorMessage = {
+    const errorMessage: IAbstractFormControlErrorMessage = {
       firstNames_0: 'test message',
       lastName_0: 'test message',
     };
@@ -762,7 +766,7 @@ describe('FormBaseComponent', () => {
 
   it('should not remove field errors if the form array control does not exist', () => {
     const index = 1;
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -777,7 +781,7 @@ describe('FormBaseComponent', () => {
       },
     ];
     const fieldNames = ['firstNames', 'lastName'];
-    const errorMessage: IFormControlErrorMessage = {
+    const errorMessage: IAbstractFormControlErrorMessage = {
       firstNames_0: 'test message',
       lastName_0: 'test message',
     };
@@ -813,7 +817,7 @@ describe('FormBaseComponent', () => {
   it('should remove the form array control at the specified index', () => {
     const index = 1;
     const formArrayName = 'alias';
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -840,7 +844,7 @@ describe('FormBaseComponent', () => {
       },
     ];
     const fieldNames = ['firstNames', 'lastName'];
-    const errorMessage: IFormControlErrorMessage = {
+    const errorMessage: IAbstractFormControlErrorMessage = {
       firstNames_0: 'test message',
       lastName_0: 'test message',
       firstNames_1: 'test message',

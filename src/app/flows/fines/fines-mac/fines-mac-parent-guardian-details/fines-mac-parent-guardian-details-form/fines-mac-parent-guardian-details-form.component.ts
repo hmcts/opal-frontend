@@ -9,7 +9,6 @@ import {
   NATIONAL_INSURANCE_FIELD_ERRORS,
   POST_CODE_FIELD_ERRORS,
 } from '@constants';
-import { IFieldErrors } from '@interfaces';
 import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -34,6 +33,7 @@ import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
+import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
@@ -59,7 +59,7 @@ export class FinesMacParentGuardianDetailsFormComponent extends FormBaseComponen
   protected readonly customAddressFieldIds = CUSTOM_ADDRESS_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
 
-  override fieldErrors: IFieldErrors = {
+  override fieldErrors: IAbstractFieldErrors = {
     ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR,
     ...DATE_OF_BIRTH_FIELD_ERRORS,
     ...NATIONAL_INSURANCE_FIELD_ERRORS,

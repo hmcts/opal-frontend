@@ -10,9 +10,6 @@ import { LAUNCH_DARKLY_CONFIG_MOCK } from './launch-darkly-config.mock';
 import { SIGN_IN_STUB_FORM_MOCK } from './sign-in-stub-form.mock';
 import { TRANSFER_STATE_MOCK } from './transfer-state-mock';
 import { AUTO_COMPLETE_ITEMS_MOCK } from './auto-complete-items.mock';
-import { FORM_CONTROL_ERROR_MOCK } from './form-control-error.mock';
-import { FORM_ERROR_SUMMARY_MOCK } from './form-error-summary-entry.mock';
-import { FORM_DATE_ERROR_SUMMARY_MOCK } from './form-date-error-summary.mock';
 import { MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK } from './manual-account-creation-employer-details-state.mock';
 import { MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK } from './manual-account-creation-account-details-state.mock';
 import { MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK } from './manual-account-creation-contact-details-state.mock';
@@ -50,9 +47,6 @@ export {
   SIGN_IN_STUB_FORM_MOCK,
   TRANSFER_STATE_MOCK,
   AUTO_COMPLETE_ITEMS_MOCK,
-  FORM_CONTROL_ERROR_MOCK,
-  FORM_ERROR_SUMMARY_MOCK,
-  FORM_DATE_ERROR_SUMMARY_MOCK,
   MANUAL_ACCOUNT_CREATION_EMPLOYER_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_ACCOUNT_DETAILS_STATE_MOCK,
   MANUAL_ACCOUNT_CREATION_CONTACT_DETAILS_STATE_MOCK,

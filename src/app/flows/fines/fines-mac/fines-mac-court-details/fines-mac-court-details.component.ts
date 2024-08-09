@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormParentBaseComponent } from '@components/abstract';
-import { IAutoCompleteItem, IGovUkSelectOptions } from '@interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, forkJoin, map } from 'rxjs';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,7 @@ import { FinesService, OpalFines } from '@services/fines';
 import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
+import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-court-details',
@@ -45,7 +46,7 @@ export class FinesMacCourtDetailsComponent extends FormParentBaseComponent {
    * @param response - The response object containing the local justice area reference data.
    * @returns An array of autocomplete items.
    */
-  private createAutoCompleteItemsLja(response: IFinesLocalJusticeAreaRefData): IAutoCompleteItem[] {
+  private createAutoCompleteItemsLja(response: IFinesLocalJusticeAreaRefData): IAlphagovAccessibleAutocompleteItem[] {
     const localJusticeAreas = response.refData;
 
     return localJusticeAreas.map((item) => {
@@ -61,7 +62,7 @@ export class FinesMacCourtDetailsComponent extends FormParentBaseComponent {
    * @param response - The response object containing the local justice area reference data.
    * @returns An array of autocomplete items.
    */
-  private createAutoCompleteItemsCourts(response: IFinesCourtRefData): IAutoCompleteItem[] {
+  private createAutoCompleteItemsCourts(response: IFinesCourtRefData): IAlphagovAccessibleAutocompleteItem[] {
     const courts = response.refData;
 
     return courts.map((item) => {

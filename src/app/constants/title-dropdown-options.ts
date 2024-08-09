@@ -1,4 +1,4 @@
-import { IGovUkSelectOptions } from '@interfaces';
+import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
 export const TITLE_DROPDOWN_OPTIONS: IGovUkSelectOptions[] = [
   { value: 'Mr', name: 'Mr' },

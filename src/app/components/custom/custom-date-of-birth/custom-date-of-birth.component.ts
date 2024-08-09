@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { IFormControlErrorMessage } from '@interfaces';
+import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 import { DateTime } from 'luxon';
 import { ScotgovDatePickerComponent } from '../../scotgov/scotgov-date-picker/scotgov-date-picker.component';
 
@@ -13,7 +13,7 @@ import { ScotgovDatePickerComponent } from '../../scotgov/scotgov-date-picker/sc
 })
 export class CustomDateOfBirthComponent {
   @Input({ required: true }) form!: FormGroup;
-  @Input({ required: true }) formControlErrorMessages!: IFormControlErrorMessage;
+  @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Output() dateChange = new EventEmitter<string>();
 
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();

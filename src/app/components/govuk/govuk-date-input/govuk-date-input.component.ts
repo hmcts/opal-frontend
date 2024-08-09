@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { IGovUkDateInput } from '@interfaces';
+import { IGovUkDateInput } from '@interfaces/components/govuk';
 
 @Component({
   selector: 'app-govuk-date-input',

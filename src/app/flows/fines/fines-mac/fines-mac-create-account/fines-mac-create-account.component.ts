@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormParentBaseComponent } from '@components/abstract';
-import { IGovUkSelectOptions, IAutoCompleteItem } from '@interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IFinesMacAccountDetailsState } from '@interfaces/fines/mac';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines';
+import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -53,7 +54,7 @@ export class FinesMacCreateAccountComponent extends FormParentBaseComponent {
    * @param response - The response object containing the business unit reference data.
    * @returns An array of autocomplete items.
    */
-  private createAutoCompleteItems(response: IFinesBusinessUnitRefData): IAutoCompleteItem[] {
+  private createAutoCompleteItems(response: IFinesBusinessUnitRefData): IAlphagovAccessibleAutocompleteItem[] {
     const businessUnits = response.refData;
 
     return businessUnits.map((item) => {

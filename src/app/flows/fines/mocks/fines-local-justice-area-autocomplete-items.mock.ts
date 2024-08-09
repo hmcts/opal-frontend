@@ -1,6 +1,6 @@
-import { IAutoCompleteItem } from '@interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 
-export const FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK: IAutoCompleteItem[] = [
+export const FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
   {
     name: 'Asylum & Immigration Tribunal (9985)',
     value: 'Asylum & Immigration Tribunal (9985)',

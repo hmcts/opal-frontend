@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormAliasBaseComponent } from './form-alias-base';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { IFormArrayControlValidation, IFormArrayControls, IFormControlErrorMessage } from '@interfaces';
+import { IAbstractFormArrayControlValidation, IAbstractFormArrayControls, IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 import { of } from 'rxjs';
 
 class TestFormAliasBaseComponent extends FormAliasBaseComponent {
@@ -46,7 +46,7 @@ describe('FormArrayBase', () => {
 
   it('should add controls to a form group', () => {
     const formGroup = new FormGroup({});
-    const controls: IFormArrayControlValidation[] = [
+    const controls: IAbstractFormArrayControlValidation[] = [
       { controlName: 'firstName', validators: [] },
       { controlName: 'lastName', validators: [] },
     ];
@@ -62,7 +62,7 @@ describe('FormArrayBase', () => {
 
   it('should remove the form array control at the specified index', () => {
     const index = 1;
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -88,7 +88,7 @@ describe('FormArrayBase', () => {
         },
       },
     ];
-    const expectedFormArrayControls: IFormArrayControls[] = [
+    const expectedFormArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -204,7 +204,7 @@ describe('FormArrayBase', () => {
     // Arrange
     const formArrayName = 'aliases';
     const fieldNames = ['firstNames', 'lastName'];
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -261,7 +261,7 @@ describe('FormArrayBase', () => {
 
   it('should remove field errors for the specified form array control', () => {
     const index = 0;
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -276,7 +276,7 @@ describe('FormArrayBase', () => {
       },
     ];
     const fieldNames = ['firstNames', 'lastName'];
-    const errorMessage: IFormControlErrorMessage = {
+    const errorMessage: IAbstractFormControlErrorMessage = {
       firstNames_0: 'test message',
       lastName_0: 'test message',
     };
@@ -290,7 +290,7 @@ describe('FormArrayBase', () => {
 
   it('should not remove field errors if the form array control does not exist', () => {
     const index = 1;
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -305,7 +305,7 @@ describe('FormArrayBase', () => {
       },
     ];
     const fieldNames = ['firstNames', 'lastName'];
-    const errorMessage: IFormControlErrorMessage = {
+    const errorMessage: IAbstractFormControlErrorMessage = {
       firstNames_0: 'test message',
       lastName_0: 'test message',
     };
@@ -341,7 +341,7 @@ describe('FormArrayBase', () => {
   it('should remove the form array control at the specified index', () => {
     const index = 1;
     const formArrayName = 'aliases';
-    const formArrayControls: IFormArrayControls[] = [
+    const formArrayControls: IAbstractFormArrayControls[] = [
       {
         firstNames: {
           inputId: 'firstNames_0',
@@ -368,7 +368,7 @@ describe('FormArrayBase', () => {
       },
     ];
     const fieldNames = ['firstNames', 'lastName'];
-    const errorMessage: IFormControlErrorMessage = {
+    const errorMessage: IAbstractFormControlErrorMessage = {
       firstNames_0: 'test message',
       lastName_0: 'test message',
       firstNames_1: 'test message',

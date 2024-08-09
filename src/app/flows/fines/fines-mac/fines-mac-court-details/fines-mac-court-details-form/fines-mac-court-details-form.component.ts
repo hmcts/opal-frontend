@@ -19,7 +19,8 @@ import {
 } from '@components/govuk';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { IAutoCompleteItem, IFieldErrors } from '@interfaces';
+import { IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
 import { FinesService } from '@services/fines';
 
@@ -40,15 +41,15 @@ import { FinesService } from '@services/fines';
 })
 export class FinesMacCourtDetailsFormComponent extends FormBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
-  @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAutoCompleteItem[];
-  @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAutoCompleteItem[];
+  @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Output() private formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
+  override fieldErrors: IAbstractFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
 
   /**
    * Sets up the court details form with the necessary form controls.

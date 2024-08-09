@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { GovukTextInputComponent } from '@components';
-import { ICustomAddressFieldIds, IFormControlErrorMessage } from '@interfaces';
+import { ICustomAddressFieldIds } from '@interfaces';
+import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-custom-address-block',
@@ -14,6 +15,6 @@ export class CustomAddressBlockComponent {
   @Input({ required: false }) divider!: boolean;
   @Input({ required: true }) legendText!: string;
   @Input({ required: true }) form!: FormGroup;
-  @Input({ required: true }) formControlErrorMessages!: IFormControlErrorMessage;
+  @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Input({ required: true }) addressFieldIds!: ICustomAddressFieldIds;
 }

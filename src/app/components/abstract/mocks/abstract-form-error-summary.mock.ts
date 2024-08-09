@@ -1,4 +1,4 @@
-export const FORM_ERROR_SUMMARY_MOCK = [
+export const ABSTRACT_FORM_ERROR_SUMMARY_MOCK = [
   {
     fieldId: 'court',
     message: 'Select a court',

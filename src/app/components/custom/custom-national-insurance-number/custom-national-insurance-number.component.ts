@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { IFormControlErrorMessage } from '@interfaces';
+import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 import { GovukTextInputComponent } from '../../govuk/govuk-text-input/govuk-text-input.component';
 
 @Component({
@@ -12,5 +12,5 @@ import { GovukTextInputComponent } from '../../govuk/govuk-text-input/govuk-text
 })
 export class CustomNationalInsuranceNumberComponent {
   @Input({ required: true }) form!: FormGroup;
-  @Input({ required: true }) formControlErrorMessages!: IFormControlErrorMessage;
+  @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
 }

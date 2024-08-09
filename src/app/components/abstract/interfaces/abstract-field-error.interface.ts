@@ -1,4 +1,4 @@
-export interface IFieldError {
+export interface IAbstractFieldError {
   [key: string]: {
     message: string;
     priority: number;

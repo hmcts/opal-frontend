@@ -1,4 +1,4 @@
-export interface IFormError {
+export interface IAbstractFormError {
   fieldId: string;
   message: string | null;
   priority: number;

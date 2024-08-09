@@ -36,7 +36,6 @@ import {
   POST_CODE_FIELD_ERRORS,
   TITLE_DROPDOWN_OPTIONS,
 } from '@constants';
-import { IFieldErrors, IGovUkSelectOptions } from '@interfaces';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
@@ -54,6 +53,8 @@ import {
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
+import { IGovUkSelectOptions } from '@interfaces/components/govuk';
+import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -86,7 +87,7 @@ export class FinesMacPersonalDetailsFormComponent extends FormAliasBaseComponent
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IFieldErrors = {
+  override fieldErrors: IAbstractFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
     ...DATE_OF_BIRTH_FIELD_ERRORS,
     ...NATIONAL_INSURANCE_FIELD_ERRORS,

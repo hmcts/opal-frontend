@@ -25,7 +25,6 @@ import {
   CUSTOM_ADDRESS_FIELD_IDS,
   POST_CODE_FIELD_ERRORS,
 } from '@constants';
-import { IFieldErrors } from '@interfaces';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
 import { CustomAddressBlockComponent } from '@components';
@@ -37,6 +36,7 @@ import {
   FINES_MAC_NESTED_ROUTES,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
+import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -65,7 +65,7 @@ export class FinesMacCompanyDetailsFormComponent extends FormAliasBaseComponent 
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IFieldErrors = {
+  override fieldErrors: IAbstractFieldErrors = {
     ...FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
     ...ADDRESS_LINE_ONE_FIELD_ERRORS,
     ...ADDRESS_LINE_TWO_FIELD_ERRORS,

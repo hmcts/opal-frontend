@@ -5,11 +5,12 @@ import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { IAutoCompleteItem, IBusinessUnitRefData } from '@interfaces';
+import {  IBusinessUnitRefData } from '@interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IFinesMacAccountDetailsState } from '@interfaces/fines/mac';
 import { FinesService, OpalFines } from '@services/fines';
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
@@ -113,7 +114,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should create an array of autocomplete items from the response', () => {
     const response: IBusinessUnitRefData = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
-    const expectedAutoCompleteItems: IAutoCompleteItem[] = FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
+    const expectedAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
 
     const autoCompleteItems = component['createAutoCompleteItems'](response);
 
@@ -126,7 +127,7 @@ describe('FinesMacCreateAccountComponent', () => {
       refData: [],
     };
 
-    const expectedAutoCompleteItems: IAutoCompleteItem[] = [];
+    const expectedAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [];
 
     const autoCompleteItems = component['createAutoCompleteItems'](response);
 

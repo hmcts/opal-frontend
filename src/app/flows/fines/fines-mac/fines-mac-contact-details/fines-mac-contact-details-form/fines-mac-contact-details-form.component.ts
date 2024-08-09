@@ -15,13 +15,13 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { IFieldErrors } from '@interfaces';
 import { FormBaseComponent } from '@components/abstract';
 import { optionalMaxLengthValidator, optionalEmailAddressValidator, optionalPhoneNumberValidator } from '@validators';
 import { IFinesMacContactDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FINES_MAC_NESTED_ROUTES, FINES_MAC_CONTACT_DETAILS_FIELD_ERROR } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
+import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
@@ -45,7 +45,7 @@ export class FinesMacContactDetailsFormComponent extends FormBaseComponent imple
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IFieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERROR;
+  override fieldErrors: IAbstractFieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERROR;
 
   /**
    * Sets up the contact details form with the necessary form controls.

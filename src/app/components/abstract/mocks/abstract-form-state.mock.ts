@@ -1,4 +1,4 @@
-export const FORM_BASE_STATE_MOCK = {
+export const ABSTRACT_FORM_STATE_MOCK = {
   court: 'Bath',
   surname: 'Test',
   forename: 'Test',

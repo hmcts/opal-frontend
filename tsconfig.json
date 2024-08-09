@@ -38,17 +38,22 @@
       "@services/fines": ["./src/app/flows/fines/services/index.ts"],
       "@services/fines": ["./src/app/flows/fines/services/index.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],
+      "@interfaces/components/abstract": ["./src/app/components/abstract/interfaces/index.ts"],
+      "@interfaces/components/govuk": ["./src/app/components/govuk/interfaces/index.ts"],
+      "@interfaces/components/alphagov": ["./src/app/components/alphagov/interfaces/index.ts"],
       "@interfaces/fines": ["./src/app/flows/fines/interfaces/index.ts"],
       "@interfaces/fines/mac": ["./src/app/flows/fines/fines-mac/interfaces/index.ts"],
       "@interfaces/fines": ["./src/app/flows/fines/interfaces/index.ts"],
       "@interfaces/fines/mac": ["./src/app/flows/fines/fines-mac/interfaces/index.ts"],
       "@mocks": ["./src/app/mocks/index.ts"],
+      "@mocks/components/abstract": ["./src/app/components/abstract/mocks/index.ts"],
       "@mocks/fines": ["./src/app/flows/fines/mocks/index.ts"],
       "@mocks/fines/mac": ["./src/app/flows/fines/fines-mac/mocks/index.ts"],
       "@mocks/fines": ["./src/app/flows/fines/mocks/index.ts"],
       "@mocks/fines/mac": ["./src/app/flows/fines/fines-mac/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
+      "@constants/components/abstract": ["./src/app/components/abstract/constants/index.ts"],
       "@constants/fines": ["./src/app/flows/fines/constants/index.ts"],
       "@constants/fines/mac": ["./src/app/flows/fines/fines-mac/constants/index.ts"],
       "@constants/fines": ["./src/app/flows/fines/constants/index.ts"],
@@ -69,7 +74,7 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src", "node_modules/cypress"],
+  "include": ["src", "node_modules/cypress", "src/app/interfaces/.ts"],
   "exclude": ["node_modules/cypress", "**/*.mock.ts", "**/helpers/*.ts"]
 }
 

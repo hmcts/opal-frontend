@@ -1,8 +1,8 @@
 import { Validators } from '@angular/forms';
-import { IFormArrayControlValidation } from '../interfaces/form-array-control-validation.interface';
+import { IAbstractFormArrayControlValidation } from '@interfaces/components/abstract';
 import { alphabeticalTextValidator } from '../validators';
 
-export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS: IFormArrayControlValidation[] = [
+export const MANUAL_ACCOUNT_CREATION_COMPANY_DETAILS_ALIAS: IAbstractFormArrayControlValidation[] = [
   {
     controlName: 'AliasOrganisationName',
     validators: [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()],

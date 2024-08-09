@@ -1,19 +1,19 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  IFieldError,
-  IFieldErrors,
-  IFormArrayControl,
-  IFormArrayControlValidation,
-  IFormArrayControls,
-  IFormControlErrorMessage,
-  IFormError,
-  IFormErrorSummaryMessage,
-  IHighPriorityFormError,
-} from '@interfaces';
 import { GlobalStateService } from '@services';
 import { Subscription } from 'rxjs';
+import {
+  IAbstractFieldError,
+  IAbstractFieldErrors,
+  IAbstractFormArrayControl,
+  IAbstractFormArrayControlValidation,
+  IAbstractFormArrayControls,
+  IAbstractFormControlErrorMessage,
+  IAbstractFormError,
+  IAbstractFormErrorSummaryMessage,
+  IAbstractHighPriorityFormError,
+} from '@interfaces/components/abstract';
 
 @Component({
   standalone: true,
@@ -26,12 +26,12 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   public readonly globalStateService = inject(GlobalStateService);
 
   public form!: FormGroup;
-  public formControlErrorMessages!: IFormControlErrorMessage;
-  public formErrorSummaryMessage!: IFormErrorSummaryMessage[];
-  protected fieldErrors!: IFieldErrors;
+  public formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  public formErrorSummaryMessage!: IAbstractFormErrorSummaryMessage[];
+  protected fieldErrors!: IAbstractFieldErrors;
   protected formSubmitted = false;
   private formSub!: Subscription;
-  public formErrors!: IFormError[];
+  public formErrors!: IAbstractFormError[];
 
   constructor() {}
 
@@ -72,8 +72,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    */
   private getHighestPriorityError(
     errorKeys: string[] = [],
-    fieldErrors: IFieldError = {},
-  ): IHighPriorityFormError | null {
+    fieldErrors: IAbstractFieldError = {},
+  ): IAbstractHighPriorityFormError | null {
     if (errorKeys.length && Object.keys(fieldErrors).length) {
       const errors = errorKeys.map((errorType: string) => {
         return {
@@ -94,7 +94,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param controlPath - The path to the control in the form.
    * @returns The details of the highest priority form error, or null if there are no errors.
    */
-  private getFieldErrorDetails(controlPath: (string | number)[]): IHighPriorityFormError | null {
+  private getFieldErrorDetails(controlPath: (string | number)[]): IAbstractHighPriorityFormError | null {
     // Get the control
     const control = this.form.get(controlPath);
 
@@ -121,7 +121,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param controlPath - An optional array representing the path to the current control within the form group.
    * @returns An array of form errors, each containing the field ID, error message, priority, and type.
    */
-  private getFormErrors(form: FormGroup, controlPath: (string | number)[] = []): IFormError[] {
+  private getFormErrors(form: FormGroup, controlPath: (string | number)[] = []): IAbstractFormError[] {
     // recursively get all errors from all controls in the form including nested form group controls
     const formControls = form.controls;
 
@@ -168,7 +168,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * Sets the error messages for the form controls and error summary based on the provided form errors.
    * @param formErrors - An array of form errors containing field IDs and error messages.
    */
-  private setErrorMessages(formErrors: IFormError[]) {
+  private setErrorMessages(formErrors: IAbstractFormError[]) {
     // Reset the form error messages
     this.formControlErrorMessages = {};
     this.formErrorSummaryMessage = [];
@@ -215,7 +215,10 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formErrorSummaryMessage - An array of form error summary messages.
    * @returns An array of indices corresponding to the positions of the field IDs in the form error summary message array.
    */
-  private getFormErrorSummaryIndex(fieldIds: string[], formErrorSummaryMessage: IFormErrorSummaryMessage[]): number[] {
+  private getFormErrorSummaryIndex(
+    fieldIds: string[],
+    formErrorSummaryMessage: IAbstractFormErrorSummaryMessage[],
+  ): number[] {
     return fieldIds.reduce((acc: number[], field) => {
       const index = formErrorSummaryMessage.findIndex((error) => error.fieldId === field);
       return index !== -1 ? [...acc, index] : acc;
@@ -230,9 +233,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @returns The updated array of error summary messages.
    */
   private removeErrorSummaryMessages(
-    formErrorSummaryMessage: IFormErrorSummaryMessage[],
+    formErrorSummaryMessage: IAbstractFormErrorSummaryMessage[],
     indexes: number[],
-  ): IFormErrorSummaryMessage[] {
+  ): IAbstractFormErrorSummaryMessage[] {
     return formErrorSummaryMessage.filter((_, index) => !indexes.includes(index));
   }
 
@@ -245,9 +248,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formErrors - An array of form errors to be split.
    * @returns An array containing two arrays: cleanFormErrors and removedFormErrors.
    */
-  private splitFormErrors(fieldIds: string[], formErrors: IFormError[]): IFormError[][] {
-    const cleanFormErrors: IFormError[] = [];
-    const removedFormErrors: IFormError[] = [];
+  private splitFormErrors(fieldIds: string[], formErrors: IAbstractFormError[]): IAbstractFormError[][] {
+    const cleanFormErrors: IAbstractFormError[] = [];
+    const removedFormErrors: IAbstractFormError[] = [];
 
     formErrors.forEach((error) => {
       if (fieldIds.includes(error.fieldId)) {
@@ -272,9 +275,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     fields: string[],
     messageOverride: string,
     errorType: string,
-    formErrors: IFormError[],
-  ): IFormError[] {
-    const manipulatedFields: IFormError[] = [];
+    formErrors: IAbstractFormError[],
+  ): IAbstractFormError[] {
+    const manipulatedFields: IAbstractFormError[] = [];
     formErrors.forEach((field) => {
       if (fields.includes(field.fieldId)) {
         if (field.type === errorType) {
@@ -296,7 +299,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formErrors - An array of form errors.
    * @returns An array of form errors with the highest priority.
    */
-  private getHighPriorityFormErrors(formErrors: IFormError[]): IFormError[] {
+  private getHighPriorityFormErrors(formErrors: IAbstractFormError[]): IAbstractFormError[] {
     // Get the lowest priority (1 is the highest priority, 3 is the lowest priority)
     const lowestPriority = Math.min(...formErrors.map((item) => item.priority));
     return formErrors.filter((item) => item.priority === lowestPriority);
@@ -318,7 +321,11 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param controls - An array of form array control validations.
    * @param index - The index of the form array control.
    */
-  private addControlsToFormGroup(formGroup: FormGroup, controls: IFormArrayControlValidation[], index: number): void {
+  private addControlsToFormGroup(
+    formGroup: FormGroup,
+    controls: IAbstractFormArrayControlValidation[],
+    index: number,
+  ): void {
     controls.forEach(({ controlName, validators }) => {
       formGroup.addControl(`${controlName}_${index}`, new FormControl(null, validators));
     });
@@ -331,7 +338,10 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param formArrayControls - The array of form array controls.
    * @returns The updated array of form array controls after removing the control.
    */
-  protected removeFormArrayControl(index: number, formArrayControls: IFormArrayControls[]): IFormArrayControls[] {
+  protected removeFormArrayControl(
+    index: number,
+    formArrayControls: IAbstractFormArrayControls[],
+  ): IAbstractFormArrayControls[] {
     formArrayControls.splice(index, 1);
     return formArrayControls;
   }
@@ -379,7 +389,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     const dateInputFields = ['dayOfMonth', 'monthOfYear', 'year'];
     const splitFormErrors = this.splitFormErrors(dateInputFields, this.formErrors);
     const highPriorityDateControlErrors = this.getHighPriorityFormErrors(splitFormErrors[1]);
-    let manipulatedFormErrors: IFormError[] = highPriorityDateControlErrors;
+    let manipulatedFormErrors: IAbstractFormError[] = highPriorityDateControlErrors;
 
     // If we have more than one error then we want to manipulate the error message
     if (highPriorityDateControlErrors.length > 1) {
@@ -401,7 +411,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    */
   protected setInitialErrorMessages(): void {
     const formControls = this.form.controls;
-    const initialFormControlErrorMessages: IFormControlErrorMessage = {};
+    const initialFormControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
     Object.keys(formControls).map((controlName) => {
       initialFormControlErrorMessages[controlName] = null;
@@ -426,7 +436,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @param index - The index value.
    * @returns An object containing form controls configuration.
    */
-  protected createControls(fields: string[], index: number): { [key: string]: IFormArrayControl } {
+  protected createControls(fields: string[], index: number): { [key: string]: IAbstractFormArrayControl } {
     return fields.reduce(
       (controls, field) => ({
         ...controls,
@@ -453,8 +463,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     formControlCount: number[],
     formArrayName: string,
     fieldNames: string[],
-    controlValidation: IFormArrayControlValidation[],
-  ): IFormArrayControls[] {
+    controlValidation: IAbstractFormArrayControlValidation[],
+  ): IAbstractFormArrayControls[] {
     // Directly map each index to a control
     return formControlCount.map((_element, index) =>
       this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation),
@@ -470,7 +480,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    * @returns An empty array of form array controls.
    */
   protected removeAllFormArrayControls(
-    formArrayControls: IFormArrayControls[],
+    formArrayControls: IAbstractFormArrayControls[],
     formArrayName: string,
     fieldNames: string[],
   ): [] {
@@ -496,7 +506,7 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
    */
   protected removeFormArrayControlsErrors(
     index: number,
-    formArrayControls: IFormArrayControls[],
+    formArrayControls: IAbstractFormArrayControls[],
     fieldNames: string[],
   ): void {
     const formArrayControl = formArrayControls[index];
@@ -566,8 +576,8 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
     index: number,
     formArrayName: string,
     fieldNames: string[],
-    controlValidation: IFormArrayControlValidation[],
-  ): { [key: string]: IFormArrayControl } {
+    controlValidation: IAbstractFormArrayControlValidation[],
+  ): { [key: string]: IAbstractFormArrayControl } {
     const formArray = this.form.get(formArrayName) as FormArray;
     const formArrayFormGroup = new FormGroup({});
 
@@ -596,9 +606,9 @@ export abstract class FormBaseComponent implements OnInit, OnDestroy {
   public removeFormArrayControls(
     index: number,
     formArrayName: string,
-    formArrayControls: IFormArrayControls[],
+    formArrayControls: IAbstractFormArrayControls[],
     fieldNames: string[],
-  ): IFormArrayControls[] {
+  ): IAbstractFormArrayControls[] {
     // Get the form array...
     const control = this.form.get(formArrayName) as FormArray;
 
