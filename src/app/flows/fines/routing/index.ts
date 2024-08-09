@@ -22,7 +22,6 @@ export const routing: Routes = [
         children: macRouting,
         canActivate: [authGuard, routePermissionsGuard],
         canDeactivate: [canDeactivateGuard],
-
         data: { routePermissionId: FINES_ROUTE_PERMISSIONS[FinesRoutingPaths.finesMac] },
       },
     ],
