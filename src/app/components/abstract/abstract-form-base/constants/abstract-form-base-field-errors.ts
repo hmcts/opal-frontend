@@ -1,4 +1,4 @@
-export const ABSTRACT_FIELD_ERRORS = {
+export const ABSTRACT_FORM_BASE_FIELD_ERRORS = {
   court: {
     required: {
       message: 'Select a court',

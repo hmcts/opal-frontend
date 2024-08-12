@@ -1,8 +1,8 @@
-import { IAbstractFieldError, IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
-export interface IFinesMacCreateAccountFieldErrors extends IAbstractFieldErrors {
-  AccountType: IAbstractFieldError;
-  FineDefendantType: IAbstractFieldError;
-  FixedPenaltyDefendantType: IAbstractFieldError;
-  BusinessUnit: IAbstractFieldError;
+export interface IFinesMacCreateAccountFieldErrors extends IAbstractFormBaseFieldErrors {
+  AccountType: IAbstractFormBaseFieldError;
+  FineDefendantType: IAbstractFormBaseFieldError;
+  FixedPenaltyDefendantType: IAbstractFormBaseFieldError;
+  BusinessUnit: IAbstractFormBaseFieldError;
 }

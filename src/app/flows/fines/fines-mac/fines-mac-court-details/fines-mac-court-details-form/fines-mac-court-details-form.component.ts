@@ -19,8 +19,8 @@ import {
 } from '@components/govuk';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { IAbstractFieldErrors } from '@interfaces/components/abstract';
-import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
+import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
+import { IAlphagovAccessibleAutocompleteItem } from 'src/app/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IFinesMacCourtDetailsForm } from '../interfaces';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants';
@@ -50,7 +50,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
+  override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
 
   /**
    * Sets up the court details form with the necessary form controls.

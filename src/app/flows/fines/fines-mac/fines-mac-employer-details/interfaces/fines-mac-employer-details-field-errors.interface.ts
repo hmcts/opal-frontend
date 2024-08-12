@@ -1,14 +1,14 @@
-import { IAbstractFieldError, IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
-export interface IFinesMacEmployerDetailsFieldErrors extends IAbstractFieldErrors {
-  EmployerCompanyName: IAbstractFieldError;
-  EmployerReference: IAbstractFieldError;
-  EmployerEmailAddress: IAbstractFieldError;
-  EmployerTelephoneNumber: IAbstractFieldError;
-  EmployerAddressLine1: IAbstractFieldError;
-  EmployerAddressLine2: IAbstractFieldError;
-  EmployerAddressLine3: IAbstractFieldError;
-  EmployerAddressLine4: IAbstractFieldError;
-  EmployerAddressLine5: IAbstractFieldError;
-  EmployerPostcode: IAbstractFieldError;
+export interface IFinesMacEmployerDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
+  EmployerCompanyName: IAbstractFormBaseFieldError;
+  EmployerReference: IAbstractFormBaseFieldError;
+  EmployerEmailAddress: IAbstractFormBaseFieldError;
+  EmployerTelephoneNumber: IAbstractFormBaseFieldError;
+  EmployerAddressLine1: IAbstractFormBaseFieldError;
+  EmployerAddressLine2: IAbstractFormBaseFieldError;
+  EmployerAddressLine3: IAbstractFormBaseFieldError;
+  EmployerAddressLine4: IAbstractFormBaseFieldError;
+  EmployerAddressLine5: IAbstractFormBaseFieldError;
+  EmployerPostcode: IAbstractFormBaseFieldError;
 }

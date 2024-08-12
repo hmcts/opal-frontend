@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IAbstractFormErrorSummaryMessage } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-govuk-error-summary',
@@ -8,7 +8,7 @@ import { IAbstractFormErrorSummaryMessage } from '@interfaces/components/abstrac
   templateUrl: './govuk-error-summary.component.html',
 })
 export class GovukErrorSummaryComponent {
-  @Input() errors: IAbstractFormErrorSummaryMessage[] = [];
+  @Input() errors: IAbstractFormBaseFormErrorSummaryMessage[] = [];
   @Output() errorClick = new EventEmitter<string>();
 
   /**

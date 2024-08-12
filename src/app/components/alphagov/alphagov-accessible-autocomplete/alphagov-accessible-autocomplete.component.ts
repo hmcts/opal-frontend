@@ -12,7 +12,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
+import { IAlphagovAccessibleAutocompleteItem } from './interfaces';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
 import { Subject, Subscription, pairwise, startWith, takeUntil } from 'rxjs';
 

@@ -18,7 +18,7 @@ import {
 } from '@components/govuk';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { IFinesMacEmployerDetailsForm } from '../interfaces';
 import { FinesService } from '@services/fines';
 import {
@@ -52,7 +52,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS;
+  override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS;
 
   /**
    * Sets up the employer details form with the necessary form controls.

@@ -4,7 +4,6 @@ import { FINES_MAC_STATE } from '@constants/fines/mac';
 import { provideRouter } from '@angular/router';
 import { IFinesMacAccountTypes, IFinesMacDefendantTypes } from '../interfaces';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks';
 import {
   FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES,
   FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
@@ -104,6 +103,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should correctly update accountCreationStatus based on manualAccountCreation state', () => {
     mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState.accountDetails.AccountType = 'Test';
 
     component['checkStatus']();
 

@@ -1,10 +1,10 @@
-import { IAbstractFieldError, IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
-export interface IFinesMacCompanyDetailsFieldErrors extends IAbstractFieldErrors {
-  CompanyName: IAbstractFieldError;
-  AliasOrganisationName_0: IAbstractFieldError;
-  AliasOrganisationName_1: IAbstractFieldError;
-  AliasOrganisationName_2: IAbstractFieldError;
-  AliasOrganisationName_3: IAbstractFieldError;
-  AliasOrganisationName_4: IAbstractFieldError;
+export interface IFinesMacCompanyDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
+  CompanyName: IAbstractFormBaseFieldError;
+  AliasOrganisationName_0: IAbstractFormBaseFieldError;
+  AliasOrganisationName_1: IAbstractFormBaseFieldError;
+  AliasOrganisationName_2: IAbstractFormBaseFieldError;
+  AliasOrganisationName_3: IAbstractFormBaseFieldError;
+  AliasOrganisationName_4: IAbstractFormBaseFieldError;
 }

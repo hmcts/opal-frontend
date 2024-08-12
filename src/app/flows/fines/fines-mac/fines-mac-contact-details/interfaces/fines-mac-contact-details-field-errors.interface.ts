@@ -1,9 +1,9 @@
-import { IAbstractFieldError, IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
-export interface IFinesMacContactDetailsFieldErrors extends IAbstractFieldErrors {
-  EmailAddress1: IAbstractFieldError;
-  EmailAddress2: IAbstractFieldError;
-  TelephoneNumberMobile: IAbstractFieldError;
-  TelephoneNumberHome: IAbstractFieldError;
-  TelephoneNumberBusiness: IAbstractFieldError;
+export interface IFinesMacContactDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
+  EmailAddress1: IAbstractFormBaseFieldError;
+  EmailAddress2: IAbstractFormBaseFieldError;
+  TelephoneNumberMobile: IAbstractFormBaseFieldError;
+  TelephoneNumberHome: IAbstractFormBaseFieldError;
+  TelephoneNumberBusiness: IAbstractFormBaseFieldError;
 }

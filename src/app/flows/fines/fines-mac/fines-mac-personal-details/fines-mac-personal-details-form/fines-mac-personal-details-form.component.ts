@@ -46,13 +46,10 @@ import {
 } from '@validators';
 import { IFinesMacPersonalDetailsForm } from '../interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import {
-  FINES_MAC_NESTED_ROUTES,
-  FINES_MAC_TITLE_DROPDOWN_OPTIONS,
-} from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES, FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
-import { IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants';
 
 @Component({
@@ -86,7 +83,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFieldErrors = {
+  override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
     ...FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
     ...FINES_MAC_NATIONAL_INSURANCE_FIELD_ERRORS,

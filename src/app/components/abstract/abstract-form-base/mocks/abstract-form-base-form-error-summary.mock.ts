@@ -1,4 +1,6 @@
-export const ABSTRACT_FORM_ERROR_SUMMARY_MOCK = [
+import { IAbstractFormBaseFormError } from '../interfaces';
+
+export const ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK: IAbstractFormBaseFormError[] = [
   {
     fieldId: 'court',
     message: 'Select a court',

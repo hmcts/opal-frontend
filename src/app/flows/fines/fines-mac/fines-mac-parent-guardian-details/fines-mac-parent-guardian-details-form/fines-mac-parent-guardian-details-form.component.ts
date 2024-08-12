@@ -33,7 +33,7 @@ import { IFinesMacParentGuardianDetailsForm } from '../interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants';
 import { FinesService } from '@services/fines';
-import { IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
@@ -59,7 +59,7 @@ export class FinesMacParentGuardianDetailsFormComponent extends AbstractFormBase
   protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
 
-  override fieldErrors: IAbstractFieldErrors = {
+  override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS,
     ...FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
     ...FINES_MAC_NATIONAL_INSURANCE_FIELD_ERRORS,

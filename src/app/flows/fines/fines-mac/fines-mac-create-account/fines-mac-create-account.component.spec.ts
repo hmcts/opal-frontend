@@ -9,7 +9,7 @@ import { FinesMacRoutes } from '@enums/fines/mac';
 import { IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
-import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
+import { IAlphagovAccessibleAutocompleteItem } from 'src/app/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IFinesBusinessUnitRefData } from '@interfaces/fines';
 
 describe('FinesMacCreateAccountComponent', () => {

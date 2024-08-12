@@ -1,5 +1,5 @@
-import { IAbstractFieldError, IAbstractFieldErrors } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
-export interface IFinesMacParentGuardianDetailsFieldErrors extends IAbstractFieldErrors {
-  FullName: IAbstractFieldError;
+export interface IFinesMacParentGuardianDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
+  FullName: IAbstractFormBaseFieldError;
 }
