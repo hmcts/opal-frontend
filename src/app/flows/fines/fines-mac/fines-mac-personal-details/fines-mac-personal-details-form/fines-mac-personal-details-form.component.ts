@@ -80,7 +80,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
   protected readonly finesService = inject(FinesService);
   protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
-  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {

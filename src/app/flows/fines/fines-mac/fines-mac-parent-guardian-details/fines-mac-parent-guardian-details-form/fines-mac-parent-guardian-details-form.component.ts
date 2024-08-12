@@ -57,7 +57,7 @@ export class FinesMacParentGuardianDetailsFormComponent extends AbstractFormBase
 
   protected readonly finesService = inject(FinesService);
   protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
-  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS,

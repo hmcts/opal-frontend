@@ -18,8 +18,8 @@ import {
 import { AbstractFormBaseComponent } from '@components/abstract';
 import { optionalMaxLengthValidator, optionalEmailAddressValidator, optionalPhoneNumberValidator } from '@validators';
 import { IFinesMacContactDetailsFieldErrors, IFinesMacContactDetailsForm } from '../interfaces';
-import { FinesMacRoutes } from '@enums/fines/mac';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+
+import { FINES_MAC_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../constants';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants';
 
@@ -42,7 +42,7 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
   @Output() private formSubmit = new EventEmitter<IFinesMacContactDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
-  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IFinesMacContactDetailsFieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS;
