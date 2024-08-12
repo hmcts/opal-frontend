@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
@@ -13,6 +13,7 @@ import { FinesService } from '@services/fines';
 })
 export class FinesMacOffenceDetailsComponent {
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
 
   protected readonly finesMacRoutes = FinesMacRoutes;
@@ -23,6 +24,6 @@ export class FinesMacOffenceDetailsComponent {
    * @param route - The route to navigate to.
    */
   public handleRoute(route: string): void {
-    this.router.navigate([route]);
+    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 }

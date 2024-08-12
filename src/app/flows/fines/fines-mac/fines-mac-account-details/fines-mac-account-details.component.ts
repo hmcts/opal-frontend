@@ -22,7 +22,7 @@ import {
   GovukTaskListItemComponent,
 } from '@components/govuk';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FinesService } from '@services/fines';
 
 @Component({
@@ -47,6 +47,7 @@ import { FinesService } from '@services/fines';
 })
 export class FinesMacAccountDetailsComponent implements OnInit {
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
 
   protected readonly routingPaths = RoutingPaths;
@@ -129,7 +130,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    * @param route - The route to navigate to.
    */
   public handleRoute(route: string): void {
-    this.router.navigate([route]);
+    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 
   public ngOnInit(): void {
