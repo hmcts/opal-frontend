@@ -25,7 +25,7 @@ import {
   FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES,
   FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
   FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
-  FINES_MAC_CREATE_ACCOUNT_FIELD_ERROR,
+  FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
@@ -78,7 +78,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
     FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
 
-  override fieldErrors: IFinesMacCreateAccountFieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERROR;
+  override fieldErrors: IFinesMacCreateAccountFieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS;
 
   /**
    * Sets up the account details form with the necessary form controls.

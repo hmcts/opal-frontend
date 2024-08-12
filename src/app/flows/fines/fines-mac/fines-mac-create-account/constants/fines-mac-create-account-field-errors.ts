@@ -1,6 +1,6 @@
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces';
 
-export const FINES_MAC_CREATE_ACCOUNT_FIELD_ERROR: IFinesMacCreateAccountFieldErrors = {
+export const FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS: IFinesMacCreateAccountFieldErrors = {
   AccountType: {
     required: {
       message: 'Select an account type',

@@ -1,4 +1,6 @@
-export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERROR = {
+import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces';
+
+export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuardianDetailsFieldErrors = {
   FullName: {
     required: {
       message: 'You must enter a full name',

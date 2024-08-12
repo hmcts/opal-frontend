@@ -1,4 +1,6 @@
-export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS = {
+import { IFinesMacCourtDetailsFieldErrors } from '@interfaces/fines/mac';
+
+export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS: IFinesMacCourtDetailsFieldErrors = {
   SendingCourt: {
     required: {
       message: 'Enter a sending area or Local Justice Area',

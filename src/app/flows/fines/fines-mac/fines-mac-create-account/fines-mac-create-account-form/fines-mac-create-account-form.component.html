@@ -8,7 +8,7 @@
     <app-alphagov-accessible-autocomplete
       [control]="form.controls['BusinessUnit']"
       labelText="Business unit"
-      labelClasses="govuk-fieldset_legend--m"
+      labelClasses="govuk-fieldset__legend--m"
       inputId="BusinessUnit"
       inputName="BusinessUnit"
       label="Search for a user"
@@ -21,7 +21,7 @@
   <app-govuk-radio
     fieldSetId="AccountType"
     legendText="Account type"
-    legendClasses="govuk-fieldset_legend--m"
+    legendClasses="govuk-fieldset__legend--m"
     [errors]="formControlErrorMessages['AccountType']"
   >
     @for (accountType of accountTypes; track accountType.key) {
@@ -72,7 +72,7 @@
     <app-govuk-radio
       [fieldSetId]="isFine ? 'FineDefendantType' : 'FixedPenaltyDefendantType'"
       legendText="Defendant type"
-      legendClasses="govuk-fieldset_legend--m"
+      legendClasses="govuk-fieldset__legend--m"
       legendHint="If sole trader, choose 'Adult or youth only'"
       [errors]="
         isFine ? formControlErrorMessages['FineDefendantType'] : formControlErrorMessages['FixedPenaltyDefendantType']

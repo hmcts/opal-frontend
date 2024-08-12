@@ -1,6 +1,6 @@
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 
-export const FINES_MAC_COMPANY_DETAILS_FIELD_ERROR: IFinesMacCompanyDetailsFieldErrors = {
+export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFieldErrors = {
   CompanyName: {
     required: {
       message: `Enter company name`,

@@ -32,7 +32,7 @@ import { IFinesMacCompanyDetailsForm } from '@interfaces/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
   FINES_MAC_COMPANY_DETAILS_ALIAS,
-  FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
+  FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
   FINES_MAC_NESTED_ROUTES,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
@@ -66,7 +66,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IFinesMacCompanyDetailsFieldErrors = {
-    ...FINES_MAC_COMPANY_DETAILS_FIELD_ERROR,
+    ...FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,

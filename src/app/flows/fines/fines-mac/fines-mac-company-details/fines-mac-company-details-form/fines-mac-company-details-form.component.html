@@ -22,7 +22,7 @@
     <div app-govuk-checkboxes-conditional conditionalId="AddAlias" formArrayName="Aliases">
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset_legend govuk-fieldset_legend--m">Alias {{ rowIndex + 1 }}</legend>
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="Company name"
             [inputId]="aliasControls[rowIndex]['AliasOrganisationName'].inputId"

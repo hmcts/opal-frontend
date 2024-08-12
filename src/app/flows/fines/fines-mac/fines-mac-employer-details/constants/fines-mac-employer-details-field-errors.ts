@@ -1,4 +1,6 @@
-export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERROR = {
+import { IFinesMacEmployerDetailsFieldErrors } from '@interfaces/fines/mac';
+
+export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFieldErrors = {
   EmployerCompanyName: {
     required: {
       message: 'Enter employer name',

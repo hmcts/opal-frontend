@@ -49,7 +49,7 @@ import { FinesMacRoutes } from '@enums/fines/mac';
 import {
   FINES_MAC_NESTED_ROUTES,
   FINES_MAC_PERSONAL_DETAILS_ALIAS,
-  FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
+  FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   FINES_MAC_TITLE_DROPDOWN_OPTIONS,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
@@ -88,7 +88,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IAbstractFieldErrors = {
-    ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERROR,
+    ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
     ...FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
     ...FINES_MAC_NATIONAL_INSURANCE_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
