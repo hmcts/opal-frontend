@@ -1,4 +1,4 @@
-import { IAlphagovAccessibleAutocompleteItem } from 'src/app/components/alphagov/alphagov-accessible-autocomplete/interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 
 export const FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
   {

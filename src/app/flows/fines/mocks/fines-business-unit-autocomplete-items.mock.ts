@@ -1,4 +1,4 @@
-import { IAlphagovAccessibleAutocompleteItem } from 'src/app/components/alphagov/alphagov-accessible-autocomplete/interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 
 export const FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
   {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GovukFooter } from '@enums/components/govuk';
+import { GovukFooter } from './enums';
 
 @Component({
   selector: 'app-govuk-footer',

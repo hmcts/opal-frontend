@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GovukSelectComponent } from './govuk-select.component';
 import { By } from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
-import { GOVUK_SELECT_OPTIONS_MOCK } from '@mocks/components/govuk';
+import { GOVUK_SELECT_OPTIONS_MOCK } from './mocks';
 
 describe('GovukSelectComponent', () => {
   let component: GovukSelectComponent;

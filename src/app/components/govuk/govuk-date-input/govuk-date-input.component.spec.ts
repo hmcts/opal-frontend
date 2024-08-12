@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukDateInputComponent } from './govuk-date-input.component';
 import { FormControl, FormGroup } from '@angular/forms';
-import { GOVUK_DATE_INPUTS_MOCK } from '@mocks/components/govuk';
+import { GOVUK_DATE_INPUTS_MOCK } from './mocks';
 import { By } from '@angular/platform-browser';
 
 describe('GovukDateInputComponent', () => {

@@ -28,7 +28,7 @@ import {
   FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS,
 } from '../constants';
 import { FinesService } from '@services/fines';
-import { IAlphagovAccessibleAutocompleteItem } from 'src/app/components/alphagov/alphagov-accessible-autocomplete/interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
 
 @Component({
