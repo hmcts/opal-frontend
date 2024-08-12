@@ -11,5 +11,6 @@ export const FINES_MAC_ROUTING_PATHS = {
     offenceDetails: 'offence-details',
     courtDetails: 'court-details',
     accountCommentsNotes: 'account-comments-notes',
+    paymentDetails: 'payment-terms',
   },
 };

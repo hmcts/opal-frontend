@@ -1,27 +1,28 @@
 import { FINES_MAC_NESTED_BUTTONS } from './fines-mac-nested-buttons';
 import { IFinesMacNestedRoutes } from '../interfaces';
 import { FinesMacRoutes } from '../enums';
+import { FINES_MAC_ROUTING_PATHS } from './fines-mac-routing-paths';
 
 export const FINES_MAC_NESTED_ROUTES: Record<string, IFinesMacNestedRoutes> = {
   adultOrYouthOnly: {
     courtDetails: {
-      nextRoute: FinesMacRoutes.finesMacPersonalDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.personalDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.personalDetails,
     },
     personalDetails: {
-      nextRoute: FinesMacRoutes.finesMacContactDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.contactDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.contactDetails,
     },
     contactDetails: {
-      nextRoute: FinesMacRoutes.finesMacEmployerDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.employerDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.employerDetails,
     },
     employerDetails: {
-      nextRoute: FinesMacRoutes.finesMacOffenceDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: FinesMacRoutes.finesMacPaymentDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.paymentDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.paymentDetails,
     },
     companyDetails: null,
@@ -29,46 +30,46 @@ export const FINES_MAC_NESTED_ROUTES: Record<string, IFinesMacNestedRoutes> = {
   },
   parentOrGuardianToPay: {
     courtDetails: {
-      nextRoute: FinesMacRoutes.finesMacParentOrGuardianDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.parentGuardianDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.parentOrGuardianDetails,
     },
     parentOrGuardianDetails: {
-      nextRoute: FinesMacRoutes.finesMacContactDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.contactDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.contactDetails,
     },
     contactDetails: {
-      nextRoute: FinesMacRoutes.finesMacEmployerDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.employerDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.employerDetails,
     },
     employerDetails: {
-      nextRoute: FinesMacRoutes.finesMacPersonalDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.personalDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.personalDetails,
     },
     personalDetails: {
-      nextRoute: FinesMacRoutes.finesMacOffenceDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: FinesMacRoutes.finesMacPaymentDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.paymentDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.paymentDetails,
     },
     companyDetails: null,
   },
   company: {
     courtDetails: {
-      nextRoute: FinesMacRoutes.finesMacCompanyDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.companyDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.companyDetails,
     },
     companyDetails: {
-      nextRoute: FinesMacRoutes.finesMacContactDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.contactDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.contactDetails,
     },
     contactDetails: {
-      nextRoute: FinesMacRoutes.finesMacOffenceDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: FinesMacRoutes.finesMacPersonalDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.personalDetails,
       buttonText: FINES_MAC_NESTED_BUTTONS.personalDetails,
     },
     personalDetails: null,

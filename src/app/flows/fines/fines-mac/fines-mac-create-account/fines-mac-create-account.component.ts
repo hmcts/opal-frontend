@@ -5,11 +5,12 @@ import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
-import { FinesMacRoutes } from '@enums/fines/mac';
+
 import { IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
+import { FINES_MAC_ROUTING_PATHS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -78,7 +79,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
       stateChanges: true,
     };
 
-    this.routerNavigate(FinesMacRoutes.finesMacAccountDetails);
+    this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
   }
 
   /**

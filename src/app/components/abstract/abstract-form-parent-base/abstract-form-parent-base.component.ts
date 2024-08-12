@@ -1,10 +1,11 @@
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CanDeactivateType } from '@interfaces';
 import { GlobalStateService } from '@services';
 
 export abstract class AbstractFormParentBaseComponent {
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   public readonly globalStateService = inject(GlobalStateService);
 
   public stateUnsavedChanges!: boolean;
@@ -25,6 +26,6 @@ export abstract class AbstractFormParentBaseComponent {
   }
 
   protected routerNavigate(route: string): void {
-    this.router.navigate([route]);
+    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 }

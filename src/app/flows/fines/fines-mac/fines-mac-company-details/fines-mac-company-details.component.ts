@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IFinesMacCompanyDetailsForm } from './interfaces';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form/fines-mac-company-details-form.component';
 import { FinesService } from '@services/fines';
@@ -35,7 +35,7 @@ export class FinesMacCompanyDetailsComponent extends AbstractFormParentBaseCompo
         this.routerNavigate(nextRoute.nextRoute);
       }
     } else {
-      this.routerNavigate(FinesMacRoutes.finesMacAccountDetails);
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
     }
   }
 

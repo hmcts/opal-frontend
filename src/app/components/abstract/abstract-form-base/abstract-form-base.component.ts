@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalStateService } from '@services';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import {
@@ -25,6 +25,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected unsavedChanges = new EventEmitter<boolean>();
 
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   public readonly globalStateService = inject(GlobalStateService);
 
   public form!: FormGroup;
@@ -566,7 +567,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   public handleRoute(route: string): void {
     this.unsavedChanges.emit(this.hasUnsavedChanges());
-    this.router.navigate([route]);
+    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 
   /**

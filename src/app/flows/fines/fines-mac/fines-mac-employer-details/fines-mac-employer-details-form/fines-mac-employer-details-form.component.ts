@@ -16,8 +16,8 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
-import { FinesMacRoutes } from '@enums/fines/mac';
+
+import { FINES_MAC_ROUTING_PATHS, FINES_MAC_NESTED_ROUTES } from '../../constants';
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { IFinesMacEmployerDetailsForm } from '../interfaces';
 import { FinesService } from '@services/fines';
@@ -49,7 +49,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
   @Output() private formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
-  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS;

@@ -20,7 +20,7 @@ import {
   IFinesMacCreateAccountFieldErrors,
   IFinesMacCreateAccountState,
 } from '../interfaces';
-import { FinesMacRoutes } from '@enums/fines/mac';
+
 import {
   FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES,
   FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
@@ -30,6 +30,7 @@ import {
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
+import { FINES_MAC_ROUTING_PATHS } from '../../constants/';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
@@ -57,7 +58,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   protected readonly finesService = inject(FinesService);
   private accountTypeSubject = new Subject<void>();
 
-  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly routingPath = RoutingPaths;
 
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(

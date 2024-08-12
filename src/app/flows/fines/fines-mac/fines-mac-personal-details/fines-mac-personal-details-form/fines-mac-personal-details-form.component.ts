@@ -45,8 +45,8 @@ import {
   optionalMaxLengthValidator,
 } from '@validators';
 import { IFinesMacPersonalDetailsForm } from '../interfaces';
-import { FinesMacRoutes } from '@enums/fines/mac';
-import { FINES_MAC_NESTED_ROUTES, FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '@constants/fines/mac';
+
+import { FINES_MAC_ROUTING_PATHS, FINES_MAC_NESTED_ROUTES, FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';

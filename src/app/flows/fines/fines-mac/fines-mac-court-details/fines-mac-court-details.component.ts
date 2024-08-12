@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '@constants/fines/mac';
 import { IFinesMacCourtDetailsForm } from './interfaces';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
@@ -91,7 +91,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
         this.routerNavigate(nextRoute.nextRoute);
       }
     } else {
-      this.routerNavigate(FinesMacRoutes.finesMacAccountDetails);
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
     }
   }
 
