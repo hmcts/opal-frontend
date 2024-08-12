@@ -372,9 +372,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:18.1.3":
-  version: 18.1.3
-  resolution: "@angular/cdk@npm:18.1.3"
+"@angular/cdk@npm:18.1.4":
+  version: 18.1.4
+  resolution: "@angular/cdk@npm:18.1.4"
   dependencies:
     parse5: "npm:^7.1.2"
     tslib: "npm:^2.3.0"
@@ -385,7 +385,7 @@ __metadata:
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: 10/f80a684cdee4cdcc88f61551be6e9a8c359bf0373ef6d4d4101ec8cbb8307693a6ffd10457288241ba3134bfa2dd74a0dcf350c5502dac6930f8fd1a87809a16
+  checksum: 10/8b17e117de1dd7b3d214e1f0bf2c366a05b6f954215c28a4b0a4c323820e4c2e9172b35d35074306dc9cbd63184dd80ee482b958e16ae6c5a2d1450e975fdf92
   languageName: node
   linkType: hard
 
@@ -496,20 +496,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:18.1.3":
-  version: 18.1.3
-  resolution: "@angular/material@npm:18.1.3"
+"@angular/material@npm:18.1.4":
+  version: 18.1.4
+  resolution: "@angular/material@npm:18.1.4"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/animations": ^18.0.0 || ^19.0.0
-    "@angular/cdk": 18.1.3
+    "@angular/cdk": 18.1.4
     "@angular/common": ^18.0.0 || ^19.0.0
     "@angular/core": ^18.0.0 || ^19.0.0
     "@angular/forms": ^18.0.0 || ^19.0.0
     "@angular/platform-browser": ^18.0.0 || ^19.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/548996d7f8b364ac132c1804906d304a9416959becddcb08082611bb0ff66d6c5b16c3e239db432d75721ddbd7ffc2e4dd91aa21f50ac01167d9ade0252bd56e
+  checksum: 10/328d015b46a4bc735d740654cc3f3970ee77fe66f5ad94664c96987b5cf3c5412d0b9537a7c0cbf3c94ac024ab608065d653d38ccf1902ae18c24c90ba091a36
   languageName: node
   linkType: hard
 
@@ -2917,10 +2917,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.8.0":
-  version: 9.8.0
-  resolution: "@eslint/js@npm:9.8.0"
-  checksum: 10/1c6ddbcc9f45f0165d9e218c085543536c03b4b650449a6f38f4e2b65b1d6bcd5f24f7feae72fca14d3697073cbdb413f270baef0f744cb0fb9e11ce9c84dbcc
+"@eslint/js@npm:9.9.0":
+  version: 9.9.0
+  resolution: "@eslint/js@npm:9.9.0"
+  checksum: 10/9d6e94d0334aecaa7e5c78e654297d9b11679f56c8ec1b64db122cbecf64b5a04138617e901d0c79727d03abce8a898cce4288259435bde78460ebdab202998f
   languageName: node
   linkType: hard
 
@@ -4923,20 +4923,20 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:>=13.7.0":
-  version: 22.1.0
-  resolution: "@types/node@npm:22.1.0"
+  version: 22.2.0
+  resolution: "@types/node@npm:22.2.0"
   dependencies:
     undici-types: "npm:~6.13.0"
-  checksum: 10/c2ac1340509646b6c673b27fae2a46e501a97e540e7221be4dd2e0be7a0f61efefb5bf3be8bedf2dbce245fa49cfc49bba77bce73fa3c4296d0d19521ced3222
+  checksum: 10/2957c5c81f1a07a1210f28382adae65c11070c301e395fa819448516f1a2a710054b29e0ec7d8e28624afbcd90dae810403a497109545dea835b554fc76edf6c
   languageName: node
   linkType: hard
 
 "@types/node@npm:^20.11.5, @types/node@npm:^20.14.9":
-  version: 20.14.14
-  resolution: "@types/node@npm:20.14.14"
+  version: 20.14.15
+  resolution: "@types/node@npm:20.14.15"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10/035bc347e3de04888d537801e23eb4b4f99522975ca002dbfef978edd853710031b7cd43bf022670d6aba4ed5d4ac75ea1b5ff77ff8f80998bffd943b7bcef48
+  checksum: 10/87a4a4313e886c1db1c8042004956095477e040f67df993fd16a2d50488c750bda81e85bf702c2e629e964605034e8dfe0cb91b65ce22b6b8eec37ece61c6b6c
   languageName: node
   linkType: hard
 
@@ -8126,14 +8126,14 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^9.0.0":
-  version: 9.8.0
-  resolution: "eslint@npm:9.8.0"
+  version: 9.9.0
+  resolution: "eslint@npm:9.9.0"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.2.0"
     "@eslint-community/regexpp": "npm:^4.11.0"
     "@eslint/config-array": "npm:^0.17.1"
     "@eslint/eslintrc": "npm:^3.1.0"
-    "@eslint/js": "npm:9.8.0"
+    "@eslint/js": "npm:9.9.0"
     "@humanwhocodes/module-importer": "npm:^1.0.1"
     "@humanwhocodes/retry": "npm:^0.3.0"
     "@nodelib/fs.walk": "npm:^1.2.8"
@@ -8163,9 +8163,14 @@ __metadata:
     optionator: "npm:^0.9.3"
     strip-ansi: "npm:^6.0.1"
     text-table: "npm:^0.2.0"
+  peerDependencies:
+    jiti: "*"
+  peerDependenciesMeta:
+    jiti:
+      optional: true
   bin:
     eslint: bin/eslint.js
-  checksum: 10/b1dd864170ca359249c92d1d8e09a628497efcf8a4293b571308460125fb0367a15612b2b0f135ff21b92453bf324ce75843fcaac3e01734f4bee2ff79919cc3
+  checksum: 10/88616421c9cb873d8f116d1ef6aa665cc898d35361351739c8041f11c30fe004bcfa641a2b6074655393eac7e7e5f9a661675dd1c01a24cf1e65cc6b556e06b3
   languageName: node
   linkType: hard
 
@@ -9090,9 +9095,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.4.1
-  resolution: "govuk-frontend@npm:5.4.1"
-  checksum: 10/7876182c3c4ffebc43b05cc111e20298543527ab705304bd22e236c63818c398ebbd2d5711bece757b1626100658247a339a6e1bff2249174d9548bd618216a6
+  version: 5.5.0
+  resolution: "govuk-frontend@npm:5.5.0"
+  checksum: 10/1552831e99229053d2683121b82038407b5d18079e35d2f2dadef6bde0771e4de65d2a635d6e4eddef0aab279698d3422b5ca8d6f9d86e3d22c4375b591a900e
   languageName: node
   linkType: hard
 
@@ -11935,14 +11940,14 @@ __metadata:
     "@angular-eslint/schematics": "npm:18.2.0"
     "@angular-eslint/template-parser": "npm:18.2.0"
     "@angular/animations": "npm:^18.0.5"
-    "@angular/cdk": "npm:18.1.3"
+    "@angular/cdk": "npm:18.1.4"
     "@angular/cli": "npm:^18.0.6"
     "@angular/common": "npm:^18.0.5"
     "@angular/compiler": "npm:^18.0.5"
     "@angular/compiler-cli": "npm:^18.0.5"
     "@angular/core": "npm:^18.0.5"
     "@angular/forms": "npm:^18.0.5"
-    "@angular/material": "npm:18.1.3"
+    "@angular/material": "npm:18.1.4"
     "@angular/platform-browser": "npm:^18.0.5"
     "@angular/platform-browser-dynamic": "npm:^18.0.5"
     "@angular/platform-server": "npm:^18.0.5"
