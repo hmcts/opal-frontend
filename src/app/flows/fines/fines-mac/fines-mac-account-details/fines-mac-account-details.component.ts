@@ -4,12 +4,12 @@ import {
   IFinesMacAccountDetailsDefendantTypes,
   IFinesMacAccountDetailsFieldTypes,
   IFinesMacAccountDetailsAccountStatus,
-} from '@interfaces/fines/mac';
+} from './interfaces';
 import {
   FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS,
   FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES,
   FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
-} from '@constants/fines/mac';
+} from './constants';
 import { RoutingPaths } from '@enums';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {

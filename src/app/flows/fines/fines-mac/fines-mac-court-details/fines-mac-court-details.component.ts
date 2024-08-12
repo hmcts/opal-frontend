@@ -9,7 +9,7 @@ import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-for
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
-import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacCourtDetailsForm } from './interfaces';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
 @Component({

@@ -6,7 +6,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { IFinesMacCreateAccountState } from '@interfaces/fines/mac';
+import { IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';

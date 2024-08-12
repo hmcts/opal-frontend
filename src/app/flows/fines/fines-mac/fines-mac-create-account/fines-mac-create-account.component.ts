@@ -6,7 +6,7 @@ import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alph
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { IFinesMacCreateAccountState } from '@interfaces/fines/mac';
+import { IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';

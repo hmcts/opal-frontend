@@ -1,4 +1,4 @@
-import { IFinesMacParentGuardianDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacParentGuardianDetailsState } from '../interfaces';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK: IFinesMacParentGuardianDetailsState = {
   FullName: 'Test Full Name',

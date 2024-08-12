@@ -16,10 +16,10 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
-import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacEmployerDetailsForm } from '../interfaces';
 import { FinesService } from '@services/fines';
 import {
   optionalMaxLengthValidator,
@@ -27,6 +27,7 @@ import {
   optionalPhoneNumberValidator,
   specialCharactersValidator,
 } from '@validators';
+import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-employer-details-form',

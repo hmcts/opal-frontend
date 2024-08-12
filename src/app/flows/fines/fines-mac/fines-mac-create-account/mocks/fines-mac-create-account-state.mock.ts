@@ -1,6 +1,7 @@
-import { IFinesMacCreateAccountState } from '@interfaces/fines/mac';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '@mocks/fines/mac';
+import { IFinesMacCreateAccountState } from '../interfaces';
 
 export const FINES_MAC_CREATE_ACCOUNT_STATE_MOCK: IFinesMacCreateAccountState = {
-  ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+  BusinessUnit: 'Cambridgeshire',
+  AccountType: 'conditionalCaution',
+  DefendantType: 'adultOrYouthOnly',
 };

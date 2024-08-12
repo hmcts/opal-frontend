@@ -1,4 +1,4 @@
-import { IFinesMacContactDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacContactDetailsState } from '../interfaces';
 
 export const FINES_MAC_CONTACT_DETAILS_STATE_MOCK: IFinesMacContactDetailsState = {
   EmailAddress1: 'abc@def.co.uk',

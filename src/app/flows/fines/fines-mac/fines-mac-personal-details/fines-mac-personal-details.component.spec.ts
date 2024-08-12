@@ -1,13 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPersonalDetailsComponent } from './fines-mac-personal-details.component';
-import { IFinesMacPersonalDetailsForm, IFinesMacPersonalDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacPersonalDetailsForm, IFinesMacPersonalDetailsState } from './interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
-import {
-  FINES_MAC_PERSONAL_DETAILS_FORM_MOCK,
-  FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
-  FINES_MAC_STATE_MOCK,
-} from '@mocks/fines/mac';
+import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK, FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from './mocks';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let component: FinesMacPersonalDetailsComponent;

@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacEmployerDetailsFormComponent } from './fines-mac-employer-details-form.component';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
-import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
+import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { IFinesMacEmployerDetailsForm } from '../interfaces';
+import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK } from '../mocks';
 
 describe('FinesMacEmployerDetailsFormComponent', () => {
   let component: FinesMacEmployerDetailsFormComponent;

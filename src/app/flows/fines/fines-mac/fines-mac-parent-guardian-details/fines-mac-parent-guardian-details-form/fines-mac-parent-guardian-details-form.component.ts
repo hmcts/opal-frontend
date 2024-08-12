@@ -29,9 +29,9 @@ import {
   specialCharactersValidator,
   optionalMaxLengthValidator,
 } from '@validators';
-import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacParentGuardianDetailsForm } from '../interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
-import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '@constants/fines/mac';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants';
 import { FinesService } from '@services/fines';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 

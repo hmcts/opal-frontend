@@ -1,4 +1,4 @@
-import { IFinesMacCourtDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacCourtDetailsState } from '../interfaces';
 
 export const FINES_MAC_COURT_DETAILS_STATE_MOCK: IFinesMacCourtDetailsState = {
   SendingCourt: 'Asylum & Immigration Tribunal (9985)',

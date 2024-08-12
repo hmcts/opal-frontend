@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { IFinesMacPersonalDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacPersonalDetailsForm } from './interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form/fines-mac-personal-details-form.component';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';

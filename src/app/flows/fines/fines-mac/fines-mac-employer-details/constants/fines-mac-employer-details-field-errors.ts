@@ -1,4 +1,4 @@
-import { IFinesMacEmployerDetailsFieldErrors } from '@interfaces/fines/mac';
+import { IFinesMacEmployerDetailsFieldErrors } from '../interfaces';
 
 export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFieldErrors = {
   EmployerCompanyName: {

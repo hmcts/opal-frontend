@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { IFinesMacParentGuardianDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacParentGuardianDetailsForm } from './interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';

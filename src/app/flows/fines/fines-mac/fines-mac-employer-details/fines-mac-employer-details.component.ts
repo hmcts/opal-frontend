@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { IFinesMacEmployerDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacEmployerDetailsForm } from './interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesMacEmployerDetailsFormComponent } from './fines-mac-employer-details-form/fines-mac-employer-details-form.component';
 import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsComponent } from './fines-mac-court-details.component';
-import { IFinesMacCourtDetailsForm, IFinesMacCourtDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacCourtDetailsForm, IFinesMacCourtDetailsState } from './interfaces';
 import { of } from 'rxjs';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -8,11 +8,10 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService, OpalFines } from '@services/fines';
 import {
-  FINES_MAC_COURT_DETAILS_FORM_MOCK,
-  FINES_MAC_COURT_DETAILS_STATE_MOCK,
   FINES_MAC_STATE_MOCK,
 } from '@mocks/fines/mac';
 import { FINES_COURT_REF_DATA_MOCK, FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@mocks/fines';
+import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_COURT_DETAILS_STATE_MOCK } from './mocks';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let component: FinesMacCourtDetailsComponent;

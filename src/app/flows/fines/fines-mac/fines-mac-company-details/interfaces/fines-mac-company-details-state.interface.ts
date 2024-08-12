@@ -1,4 +1,4 @@
-import { IFinesMacCompanyDetailsAliasState } from '@interfaces/fines/mac';
+import { IFinesMacCompanyDetailsAliasState } from '../interfaces';
 
 export interface IFinesMacCompanyDetailsState {
   CompanyName: string | null;

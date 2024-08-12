@@ -1,4 +1,4 @@
-import { IFinesMacContactDetailsFieldErrors } from '@interfaces/fines/mac';
+import { IFinesMacContactDetailsFieldErrors } from '../interfaces';
 
 export const FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS: IFinesMacContactDetailsFieldErrors = {
   EmailAddress1: {

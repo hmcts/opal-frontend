@@ -19,14 +19,14 @@ import {
   IFinesMacCreateAccountControlNames,
   IFinesMacCreateAccountFieldErrors,
   IFinesMacCreateAccountState,
-} from '@interfaces/fines/mac';
+} from '../interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
   FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES,
   FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
   FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
   FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS,
-} from '@constants/fines/mac';
+} from '../constants';
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';

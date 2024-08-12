@@ -1,13 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacParentGuardianDetailsComponent } from './fines-mac-parent-guardian-details.component';
-import { IFinesMacParentGuardianDetailsForm, IFinesMacParentGuardianDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacParentGuardianDetailsForm, IFinesMacParentGuardianDetailsState } from './interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
-import {
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-  FINES_MAC_STATE_MOCK,
-} from '@mocks/fines/mac';
+import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK, FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from './mocks';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
   let component: FinesMacParentGuardianDetailsComponent;

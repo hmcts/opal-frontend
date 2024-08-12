@@ -1,4 +1,4 @@
-import { IFinesMacContactDetailsState } from '@interfaces/fines/mac';
+import { IFinesMacContactDetailsState } from '../interfaces';
 
 export interface IFinesMacContactDetailsForm {
   formData: IFinesMacContactDetailsState;

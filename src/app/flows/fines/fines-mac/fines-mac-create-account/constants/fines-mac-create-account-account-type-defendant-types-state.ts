@@ -1,4 +1,4 @@
-import { IFinesMacCreateAccountAccountTypeDefendantTypes } from '@interfaces/fines/mac';
+import { IFinesMacCreateAccountAccountTypeDefendantTypes } from '../interfaces';
 import { FINES_MAC_DEFENDANT_TYPES } from '@constants/fines/mac';
 
 export const FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE: IFinesMacCreateAccountAccountTypeDefendantTypes =

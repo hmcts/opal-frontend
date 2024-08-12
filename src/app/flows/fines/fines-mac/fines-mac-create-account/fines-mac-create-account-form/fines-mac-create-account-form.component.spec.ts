@@ -3,7 +3,8 @@ import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-f
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@mocks/fines';
 import { Validators } from '@angular/forms';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_CREATE_ACCOUNT_STATE_MOCK, FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_CREATE_ACCOUNT_STATE_MOCK } from '../mocks';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;

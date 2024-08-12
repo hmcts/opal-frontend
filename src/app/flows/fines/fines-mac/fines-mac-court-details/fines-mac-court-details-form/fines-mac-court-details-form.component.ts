@@ -17,12 +17,13 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS, FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import { IAbstractFieldErrors } from '@interfaces/components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
-import { IFinesMacCourtDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacCourtDetailsForm } from '../interfaces';
 import { FinesService } from '@services/fines';
+import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',

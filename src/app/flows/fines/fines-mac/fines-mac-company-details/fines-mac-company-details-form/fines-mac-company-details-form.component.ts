@@ -28,15 +28,14 @@ import {
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
 import { FinesMacAddressBlockComponent } from '@components/fines/mac';
-import { IFinesMacCompanyDetailsForm } from '@interfaces/fines/mac';
+import { IFinesMacCompanyDetailsForm } from '../interfaces';
 import { FinesMacRoutes } from '@enums/fines/mac';
 import {
-  FINES_MAC_COMPANY_DETAILS_ALIAS,
-  FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
   FINES_MAC_NESTED_ROUTES,
 } from '@constants/fines/mac';
 import { FinesService } from '@services/fines';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
+import { FINES_MAC_COMPANY_DETAILS_ALIAS, FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
