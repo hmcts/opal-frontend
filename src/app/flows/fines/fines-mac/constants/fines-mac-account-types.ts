@@ -1,4 +1,4 @@
-import { IFinesMacAccountTypes } from '@interfaces/fines/mac';
+import { IFinesMacAccountTypes } from '../interfaces';
 
 export const FINES_MAC_ACCOUNT_TYPES: IFinesMacAccountTypes = {
   fine: 'Fine',

@@ -1,6 +1,6 @@
-import { FinesMacRoutes } from '@enums/fines/mac';
-import { IFinesMacNestedRoutes } from '@interfaces/fines/mac';
-import { FINES_MAC_NESTED_BUTTONS } from '@constants/fines/mac';
+import { FINES_MAC_NESTED_BUTTONS } from './fines-mac-nested-buttons';
+import { IFinesMacNestedRoutes } from '../interfaces';
+import { FinesMacRoutes } from '../enums';
 
 export const FINES_MAC_NESTED_ROUTES: Record<string, IFinesMacNestedRoutes> = {
   adultOrYouthOnly: {
