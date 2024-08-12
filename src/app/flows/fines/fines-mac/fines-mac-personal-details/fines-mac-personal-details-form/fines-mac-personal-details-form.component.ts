@@ -27,13 +27,13 @@ import {
 } from '@components/govuk';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
 import {
-  FINES_MAC_ADDRESS_FIELD_IDS,
+  FINES_MAC_ADDRESS_BLOCK_FIELD_IDS,
   FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
-  FINES_MAC_NATIONAL_INSURANCE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
-  FINES_MAC_POSTCODE_FIELD_ERRORS,
+  FINES_MAC_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
 } from '@constants/components/fine/mac';
 import { DateTime } from 'luxon';
 import {
@@ -79,18 +79,18 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   @Output() private formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
-  protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_FIELD_IDS;
+  protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
     ...FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
-    ...FINES_MAC_NATIONAL_INSURANCE_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
-    ...FINES_MAC_POSTCODE_FIELD_ERRORS,
+    ...FINES_MAC_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
   };
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;

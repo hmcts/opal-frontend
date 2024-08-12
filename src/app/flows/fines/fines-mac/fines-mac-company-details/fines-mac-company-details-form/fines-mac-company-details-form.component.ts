@@ -19,11 +19,11 @@ import {
   GovukTextInputComponent,
 } from '@components/govuk';
 import {
-  FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_FIELD_IDS,
-  FINES_MAC_POSTCODE_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
+  FINES_MAC_ADDRESS_BLOCK_FIELD_IDS,
+  FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
 } from '@constants/components/fine/mac';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
@@ -58,16 +58,16 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   @Output() private formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
-  public readonly customAddressFieldIds = FINES_MAC_ADDRESS_FIELD_IDS;
+  public readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
   protected readonly finesMacRoutes = FinesMacRoutes;
   protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
 
   override fieldErrors: IFinesMacCompanyDetailsFieldErrors = {
     ...FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_LINE_ONE_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_LINE_TWO_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_LINE_THREE_FIELD_ERRORS,
-    ...FINES_MAC_POSTCODE_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
+    ...FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
   };
 
   /**
