@@ -5,7 +5,17 @@
       <span>{{ globalStateService.userState().userName }}</span>
     </li>
     <li>
-      <a class="govuk-link" [routerLink]="finesMacRoutes.finesMacCreateAccount" id="finesMacLink"
+      <a
+        class="govuk-link"
+        [routerLink]="
+          '/' +
+          finesRoutingPaths.root +
+          '/' +
+          finesRoutingPaths.children.mac.root +
+          '/' +
+          finesRoutingPaths.children.mac.children.createAccount
+        "
+        id="finesMacLink"
         >Manual Account Creation</a
       >
     </li>
