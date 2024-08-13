@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { OPAL_FINES_PATHS } from '@constants/fines';
+import { OPAL_FINES_PATHS } from './constants';
 import {
   IFinesAddDefendantAccountNoteBody,
   IFinesBusinessUnitRefData,

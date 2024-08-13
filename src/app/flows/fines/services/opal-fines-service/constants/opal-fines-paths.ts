@@ -1,4 +1,4 @@
-import { IOpalFinesPaths } from '@interfaces/fines';
+import { IOpalFinesPaths } from '../interfaces';
 
 const baseUrl = '/opal-fines-service/';
 const defendantAccountPath = 'defendant-account/';

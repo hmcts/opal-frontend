@@ -11,7 +11,6 @@ import { IFinesSearchCourtBody } from './fines-search-court-body.interface';
 import { IFinesSearchCourt } from './fines-search-court.interface';
 import { IFinesSearchDefendantAccountBody } from './fines-search-defendant-account-body.interface';
 import { IFinesSearchDefendantAccounts } from './fines-search-defendant-accounts.interface';
-import { IOpalFinesPaths } from './opal-fines-paths.interface';
 
 export {
   IFinesAddDefendantAccountNoteBody,
@@ -28,5 +27,4 @@ export {
   IFinesSearchDefendantAccounts,
   IFinesSearchCourt,
   IFinesRoutingPermissions,
-  IOpalFinesPaths,
 };
