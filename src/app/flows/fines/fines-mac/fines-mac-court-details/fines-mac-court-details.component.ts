@@ -8,10 +8,10 @@ import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+
 import { IFinesMacCourtDetailsForm } from './interfaces';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-court-details',
@@ -87,7 +87,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['courtDetails'];
+      const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['courtDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

@@ -3,9 +3,9 @@ import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IFinesMacContactDetailsForm } from './interfaces';
 
 import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form/fines-mac-contact-details-form.component';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+
 import { FinesService } from '@services/fines';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-contact-details',
@@ -31,7 +31,7 @@ export class FinesMacContactDetailsComponent extends AbstractFormParentBaseCompo
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['contactDetails'];
+      const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['contactDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

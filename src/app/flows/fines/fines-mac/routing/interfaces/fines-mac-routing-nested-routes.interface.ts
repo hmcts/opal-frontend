@@ -1,6 +1,6 @@
 import { INestedRoutes } from '@interfaces';
 
-export interface IFinesMacNestedRoutes {
+export interface IFinesMacRoutingNestedRoutes {
   courtDetails: INestedRoutes | null;
   personalDetails: INestedRoutes | null;
   contactDetails: INestedRoutes | null;

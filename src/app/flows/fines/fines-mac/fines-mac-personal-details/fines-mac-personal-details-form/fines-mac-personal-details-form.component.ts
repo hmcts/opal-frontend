@@ -46,12 +46,12 @@ import {
 } from '@validators';
 import { IFinesMacPersonalDetailsForm } from '../interfaces';
 
-import { FINES_MAC_NESTED_ROUTES, FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants';
+import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -82,7 +82,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   protected readonly finesService = inject(FinesService);
   protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesMacNestedRoutes = FINES_MAC_NESTED_ROUTES;
+  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,

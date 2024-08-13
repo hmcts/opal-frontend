@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IFinesMacPersonalDetailsForm } from './interfaces';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form/fines-mac-personal-details-form.component';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+
 import { FinesService } from '@services/fines';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-personal-details',
@@ -32,7 +32,7 @@ export class FinesMacPersonalDetailsComponent extends AbstractFormParentBaseComp
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['personalDetails'];
+      const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['personalDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

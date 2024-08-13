@@ -4,9 +4,9 @@ import { IFinesMacParentGuardianDetailsForm } from './interfaces';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component';
-import { FINES_MAC_NESTED_ROUTES } from '@constants/fines/mac';
+
 import { FinesService } from '@services/fines';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',
@@ -32,7 +32,7 @@ export class FinesMacParentGuardianDetailsComponent extends AbstractFormParentBa
     };
 
     if (form.nestedFlow && this.defendantType) {
-      const nextRoute = FINES_MAC_NESTED_ROUTES[this.defendantType]['parentOrGuardianDetails'];
+      const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['parentOrGuardianDetails'];
       if (nextRoute) {
         this.routerNavigate(nextRoute.nextRoute);
       }

@@ -1,8 +1,9 @@
-import { FINES_MAC_NESTED_BUTTONS } from './fines-mac-nested-buttons';
-import { IFinesMacNestedRoutes } from '../interfaces';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_NESTED_BUTTONS } from '../../constants/fines-mac-nested-buttons';
 
-export const FINES_MAC_NESTED_ROUTES: Record<string, IFinesMacNestedRoutes> = {
+import { IFinesMacRoutingNestedRoutes } from '../interfaces';
+import { FINES_MAC_ROUTING_PATHS } from './fines-mac-routing-paths';
+
+export const FINES_MAC_ROUTING_NESTED_ROUTES: Record<string, IFinesMacRoutingNestedRoutes> = {
   adultOrYouthOnly: {
     courtDetails: {
       nextRoute: FINES_MAC_ROUTING_PATHS.children.personalDetails,
