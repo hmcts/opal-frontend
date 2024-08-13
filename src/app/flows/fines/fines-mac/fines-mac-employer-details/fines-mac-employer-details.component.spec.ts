@@ -6,7 +6,7 @@ import { FinesService } from '@services/fines';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK, FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from './mocks';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FINES_MAC_ROUTING_PATHS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacEmployerDetailsComponent', () => {
   let component: FinesMacEmployerDetailsComponent;

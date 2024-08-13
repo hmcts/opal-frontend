@@ -6,7 +6,7 @@ import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
 import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK, FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from './mocks';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FINES_MAC_ROUTING_PATHS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let component: FinesMacPersonalDetailsComponent;

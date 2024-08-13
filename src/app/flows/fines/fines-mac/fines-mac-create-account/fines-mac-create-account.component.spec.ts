@@ -10,7 +10,7 @@ import { FinesService, OpalFines } from '@services/fines';
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IFinesBusinessUnitRefData } from '@interfaces/fines';
-import { FINES_MAC_ROUTING_PATHS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;

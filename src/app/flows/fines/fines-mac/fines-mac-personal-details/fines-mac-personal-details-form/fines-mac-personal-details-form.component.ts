@@ -45,12 +45,14 @@ import {
   optionalMaxLengthValidator,
 } from '@validators';
 import { IFinesMacPersonalDetailsForm } from '../interfaces';
-
-import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
-import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants';
+import {
+  FINES_MAC_PERSONAL_DETAILS_ALIAS,
+  FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS,
+} from '../constants';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
@@ -94,7 +96,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     ...FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
   };
 
-  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
+  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 
   /**

@@ -9,7 +9,7 @@ import { FinesService, OpalFines } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
 import { FINES_COURT_REF_DATA_MOCK, FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@mocks/fines';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_COURT_DETAILS_STATE_MOCK } from './mocks';
-import { FINES_MAC_ROUTING_PATHS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let component: FinesMacCourtDetailsComponent;

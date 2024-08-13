@@ -17,7 +17,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { handleObservableResult } from '../helpers';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-import { FINES_ROUTE_PERMISSIONS, FINES_ROUTING_PATHS } from '@constants/fines';
+import { FINES_ROUTING_PERMISSIONS, FINES_ROUTING_PATHS } from '@constants/fines';
 import { RoutingPaths } from '@enums';
 import { IFinesRoutingPermissions } from '@interfaces/fines';
 
@@ -81,12 +81,12 @@ describe('routePermissionsGuard', () => {
 
   it('should return true if user has permission id', fakeAsync(async () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([
-      FINES_ROUTE_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
+      FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
     ]);
 
     const guard = await runRoutePermissionGuard(
       routePermissionsGuard,
-      FINES_ROUTE_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
+      FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
       urlPath,
     );
     expect(guard).toBeTruthy();
@@ -96,7 +96,7 @@ describe('routePermissionsGuard', () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([999]);
     await runRoutePermissionGuard(
       routePermissionsGuard,
-      FINES_ROUTE_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
+      FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
       urlPath,
     );
     expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
@@ -107,7 +107,7 @@ describe('routePermissionsGuard', () => {
 
     await runRoutePermissionGuard(
       routePermissionsGuard,
-      FINES_ROUTE_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
+      FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
       urlPath,
     );
     expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
@@ -131,7 +131,7 @@ describe('routePermissionsGuard', () => {
     mockSessionService.getUserState.and.returnValue(throwError(() => 'Error'));
     const guard = await runRoutePermissionGuard(
       routePermissionsGuard,
-      FINES_ROUTE_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
+      FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
       urlPath,
     );
     expect(guard).toBeFalsy();
