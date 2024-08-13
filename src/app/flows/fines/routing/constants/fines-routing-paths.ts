@@ -1,4 +1,4 @@
-import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/routing/constants';
 
 export const FINES_ROUTING_PATHS = {
   root: 'fines',

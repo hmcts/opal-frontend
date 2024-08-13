@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, canDeactivateGuard } from '@guards';
 
-import { FINES_MAC_ROUTING_PATHS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from './constants';
 
 export const routing: Routes = [
   {

@@ -30,7 +30,7 @@ import {
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
-import { FINES_MAC_ROUTING_PATHS } from '../../constants/';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',

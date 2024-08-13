@@ -19,9 +19,10 @@ import { AbstractFormBaseComponent } from '@components/abstract';
 import { optionalMaxLengthValidator, optionalEmailAddressValidator, optionalPhoneNumberValidator } from '@validators';
 import { IFinesMacContactDetailsFieldErrors, IFinesMacContactDetailsForm } from '../interfaces';
 
-import { FINES_MAC_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../constants';
+import { FINES_MAC_NESTED_ROUTES } from '../../constants';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',

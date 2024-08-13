@@ -17,7 +17,7 @@ import {
   GovukTextInputComponent,
 } from '@components/govuk';
 
-import { FINES_MAC_ROUTING_PATHS, FINES_MAC_NESTED_ROUTES } from '../../constants';
+import { FINES_MAC_NESTED_ROUTES } from '../../constants';
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { IFinesMacEmployerDetailsForm } from '../interfaces';
 import { FinesService } from '@services/fines';
@@ -28,6 +28,7 @@ import {
   specialCharactersValidator,
 } from '@validators';
 import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-employer-details-form',

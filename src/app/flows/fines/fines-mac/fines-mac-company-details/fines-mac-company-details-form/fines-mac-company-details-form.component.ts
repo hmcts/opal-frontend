@@ -30,10 +30,11 @@ import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengt
 import { FinesMacAddressBlockComponent } from '@components/fines/mac';
 import { IFinesMacCompanyDetailsForm } from '../interfaces';
 
-import { FINES_MAC_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../constants';
+import { FINES_MAC_NESTED_ROUTES } from '../../constants';
 import { FinesService } from '@services/fines';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 import { FINES_MAC_COMPANY_DETAILS_ALIAS, FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',

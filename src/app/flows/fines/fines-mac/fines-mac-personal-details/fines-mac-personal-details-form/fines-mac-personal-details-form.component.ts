@@ -46,11 +46,12 @@ import {
 } from '@validators';
 import { IFinesMacPersonalDetailsForm } from '../interfaces';
 
-import { FINES_MAC_ROUTING_PATHS, FINES_MAC_NESTED_ROUTES, FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants';
+import { FINES_MAC_NESTED_ROUTES, FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',

@@ -33,7 +33,7 @@ import { IFinesMacParentGuardianDetailsForm } from '../interfaces';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants';
 import { FinesService } from '@services/fines';
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
-import { FINES_MAC_ROUTING_PATHS } from '../../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
