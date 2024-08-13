@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LaunchDarklyService } from './launch-darkly.service';
 import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
-import { LAUNCH_DARKLY_CHANGE_FLAGS_MOCK, LAUNCH_DARKLY_FLAGS_MOCK } from '@mocks';
+import { LAUNCH_DARKLY_CHANGE_FLAGS_MOCK, LAUNCH_DARKLY_FLAGS_MOCK } from './mocks';
 import { GlobalStateService } from '@services';
 
 describe('LaunchDarklyService', () => {

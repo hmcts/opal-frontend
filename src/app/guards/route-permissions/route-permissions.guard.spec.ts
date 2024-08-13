@@ -12,7 +12,7 @@ import { routePermissionsGuard } from './route-permissions.guard';
 import { PermissionsService, SessionService } from '@services';
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { USER_STATE_MOCK } from '@mocks';
+import { SESSION_USER_STATE_MOCK } from '@mocks';
 import { Observable, of, throwError } from 'rxjs';
 import { handleObservableResult } from '../helpers';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -48,7 +48,7 @@ describe('routePermissionsGuard', () => {
     mockPermissionsService = jasmine.createSpyObj(routePermissionsGuard, ['getUniquePermissions']);
 
     mockSessionService = jasmine.createSpyObj(routePermissionsGuard, ['getUserState']);
-    mockSessionService.getUserState.and.returnValue(of(USER_STATE_MOCK));
+    mockSessionService.getUserState.and.returnValue(of(SESSION_USER_STATE_MOCK));
 
     mockRouter = jasmine.createSpyObj(routePermissionsGuard, ['navigate', 'createUrlTree', 'parseUrl']);
     mockRouter.parseUrl.and.callFake((url: string) => {

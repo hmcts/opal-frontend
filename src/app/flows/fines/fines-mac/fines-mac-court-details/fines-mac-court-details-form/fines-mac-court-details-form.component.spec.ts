@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form.component';
 import { FinesService } from '@services/fines';
 import { IFinesMacCourtDetailsForm } from '../interfaces';
-import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_STATE_MOCK } from '../../mocks';
 import { FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK, FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from '@mocks/fines';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../mocks';
 import { ActivatedRoute } from '@angular/router';

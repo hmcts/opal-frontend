@@ -1,4 +1,4 @@
-export const USER_STATE_MOCK = {
+export const SESSION_USER_STATE_MOCK = {
   userId: 'gl.timTest',
   userName: 'timmyTest@HMCTS.NET',
   roles: [

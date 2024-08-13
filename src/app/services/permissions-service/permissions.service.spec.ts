@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { PermissionsService } from './permissions.service';
-import { USER_STATE_MOCK } from '@mocks';
+import { SESSION_USER_STATE_MOCK } from '@mocks';
 
 describe('PermissionsService', () => {
   let service: PermissionsService;
@@ -16,17 +16,17 @@ describe('PermissionsService', () => {
   });
 
   it('should return unique permission IDs', () => {
-    service.getUniquePermissions(USER_STATE_MOCK);
+    service.getUniquePermissions(SESSION_USER_STATE_MOCK);
     expect(service['storedUniquePermissionIds']).toEqual([54, 41]);
   });
 
   it('should return permission access', () => {
-    const hasPermissionAccess = service.hasPermissionAccess(54, 17, USER_STATE_MOCK.roles);
+    const hasPermissionAccess = service.hasPermissionAccess(54, 17, SESSION_USER_STATE_MOCK.roles);
     expect(hasPermissionAccess).toBeTrue();
   });
 
   it('should not return permission access', () => {
-    const hasPermissionAccess = service.hasPermissionAccess(54, 99, USER_STATE_MOCK.roles);
+    const hasPermissionAccess = service.hasPermissionAccess(54, 99, SESSION_USER_STATE_MOCK.roles);
     expect(hasPermissionAccess).toBeFalse();
   });
 

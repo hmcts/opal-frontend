@@ -4,9 +4,9 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { of } from 'rxjs';
 import { ISessionTokenExpiry } from '@interfaces';
-import { TOKEN_EXPIRY_MOCK } from '@mocks';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@mocks';
 
-const tokenExpiry: ISessionTokenExpiry = TOKEN_EXPIRY_MOCK;
+const tokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
 describe('AppInitializerService', () => {
   let service: AppInitializerService;

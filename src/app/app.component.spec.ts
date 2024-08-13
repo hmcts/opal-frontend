@@ -5,13 +5,13 @@ import { SsoEndpoints } from '@enums';
 import { GlobalStateService, UtilsService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { TOKEN_EXPIRY_MOCK } from '@mocks';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@mocks';
 import { DateTime } from 'luxon';
 import { ISessionTokenExpiry } from '@interfaces';
 import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
 import { GovukFooterComponent } from '@components/govuk';
 
-const mockTokenExpiry: ISessionTokenExpiry = TOKEN_EXPIRY_MOCK;
+const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
 describe('AppComponent', () => {
   const mockDocumentLocation = {

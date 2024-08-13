@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
-import { FinesMacRoutes } from '@enums/fines/mac';
+import { FinesMacRoutes } from '../enums';
 import { FinesService } from '@services/fines';
 
 @Component({

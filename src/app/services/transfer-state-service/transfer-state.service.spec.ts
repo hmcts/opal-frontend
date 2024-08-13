@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { TransferStateService } from './transfer-state.service';
 
-import { TRANSFER_STATE_MOCK } from '@mocks';
+import { TRANSFER_STATE_MOCK } from './mocks';
 import { GlobalStateService } from '../global-state-service/global-state.service';
 import { PLATFORM_ID, makeStateKey } from '@angular/core';
 import { ITransferStateServerState } from './interfaces';

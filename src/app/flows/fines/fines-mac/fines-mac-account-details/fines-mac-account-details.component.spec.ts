@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountDetailsComponent } from './fines-mac-account-details.component';
-import { FINES_MAC_STATE } from '@constants/fines/mac';
+import { FINES_MAC_STATE } from '../constants';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { IFinesMacAccountTypes, IFinesMacDefendantTypes } from '../interfaces';
 import { FinesService } from '@services/fines';

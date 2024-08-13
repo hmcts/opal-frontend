@@ -8,7 +8,7 @@ import {
   FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
   FINES_MAC_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
   FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
-} from '@constants/components/fine/mac';
+} from '../../components/constants';
 import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -19,7 +19,7 @@ import {
   FinesMacAddressBlockComponent,
   FinesMacDateOfBirthComponent,
   FinesMacNationalInsuranceNumberComponent,
-} from '@components/fines/mac';
+} from '../../components';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   alphabeticalTextValidator,

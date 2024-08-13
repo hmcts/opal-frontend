@@ -6,7 +6,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FinesService, OpalFines } from '@services/fines';
-import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
+import { FINES_MAC_STATE_MOCK } from '../mocks';
 import { FINES_COURT_REF_DATA_MOCK, FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@mocks/fines';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_COURT_DETAILS_STATE_MOCK } from './mocks';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';

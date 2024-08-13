@@ -24,10 +24,10 @@ import {
   FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
   FINES_MAC_ADDRESS_BLOCK_FIELD_IDS,
   FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
-} from '@constants/components/fine/mac';
+} from '../../components/constants';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
-import { FinesMacAddressBlockComponent } from '@components/fines/mac';
+import { FinesMacAddressBlockComponent } from '../../components';
 import { IFinesMacCompanyDetailsForm } from '../interfaces';
 
 import { FinesService } from '@services/fines';

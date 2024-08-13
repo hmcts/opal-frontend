@@ -5,7 +5,7 @@ import { userStateResolver } from './user-state.resolver';
 import { ISessionUserState } from '@interfaces';
 import { of } from 'rxjs';
 
-import { USER_STATE_MOCK } from '@mocks';
+import { SESSION_USER_STATE_MOCK } from '@mocks';
 import { SessionService } from '@services';
 
 describe('userStateResolver', () => {
@@ -25,7 +25,7 @@ describe('userStateResolver', () => {
   });
 
   it('should resolve user state', async () => {
-    const mockUserState: ISessionUserState = USER_STATE_MOCK;
+    const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
     mockSessionService.getUserState.and.returnValue(of(mockUserState));
 
     const urlPath = 'account-enquiry-search';

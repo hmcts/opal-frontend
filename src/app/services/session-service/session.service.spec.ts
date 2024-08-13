@@ -2,12 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
 import { SessionEndpoints } from '@enums';
-import { TOKEN_EXPIRY_MOCK, USER_STATE_MOCK } from '@mocks';
+import { SESSION_TOKEN_EXPIRY_MOCK, SESSION_USER_STATE_MOCK } from '@mocks';
 import { GlobalStateService } from '@services';
 import { ISessionTokenExpiry, ISessionUserState } from '@interfaces';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-const mockTokenExpiry: ISessionTokenExpiry = TOKEN_EXPIRY_MOCK;
+const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
 describe('SessionService', () => {
   let service: SessionService;
@@ -37,7 +37,7 @@ describe('SessionService', () => {
   });
 
   it('should return the user state', () => {
-    const mockUserState: ISessionUserState = USER_STATE_MOCK;
+    const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
@@ -50,7 +50,7 @@ describe('SessionService', () => {
   });
 
   it('should return cached response ', () => {
-    const mockUserState: ISessionUserState = USER_STATE_MOCK;
+    const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
@@ -72,7 +72,7 @@ describe('SessionService', () => {
   });
 
   it('should do a new request if the cached response is empty ', () => {
-    const mockUserState: ISessionUserState = USER_STATE_MOCK;
+    const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);

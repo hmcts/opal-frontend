@@ -14,7 +14,7 @@ import {
   FinesMacAddressBlockComponent,
   FinesMacDateOfBirthComponent,
   FinesMacNationalInsuranceNumberComponent,
-} from '@components/fines/mac';
+} from '../../components';
 import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
@@ -34,7 +34,7 @@ import {
   FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
   FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
   FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
-} from '@constants/components/fine/mac';
+} from '../../components/constants';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,

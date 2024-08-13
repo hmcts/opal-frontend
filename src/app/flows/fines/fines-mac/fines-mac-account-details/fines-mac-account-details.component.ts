@@ -11,7 +11,7 @@ import {
   FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
 } from './constants';
 import { RoutingPaths } from '@enums';
-import { FinesMacRoutes } from '@enums/fines/mac';
+import { FinesMacRoutes } from '../enums';
 import {
   GovukButtonComponent,
   GovukHeadingWithCaptionComponent,

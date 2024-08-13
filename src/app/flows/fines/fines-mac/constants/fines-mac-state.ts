@@ -1,4 +1,4 @@
-import { IFinesMacState } from '@interfaces/fines/mac';
+import { IFinesMacState } from '../interfaces';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from '../fines-mac-account-comments-notes/constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants';
 import { FINES_MAC_COMPANY_DETAILS_STATE } from '../fines-mac-company-details/constants';
