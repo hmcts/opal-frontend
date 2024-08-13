@@ -3,11 +3,12 @@ import { authGuard, canDeactivateGuard, routePermissionsGuard } from '@guards';
 import { userStateResolver } from '@resolvers';
 import { routing as macRouting } from '@routing/fines/mac';
 import { RoutingPaths } from '@enums';
-import { FINES_ROUTE_PERMISSIONS, FINES_ROUTING_PATHS } from '@constants/fines';
-import { IFinesRoutingPermissions } from '@interfaces/fines';
+
+import { IFinesRoutingPermissions } from './interfaces';
+import { FINES_ROUTING_PATHS, FINES_ROUTING_PERMISSIONS } from './constants';
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
-const macRootPermissionId = FINES_ROUTE_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];
+const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];
 
 export const routing: Routes = [
   {

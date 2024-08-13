@@ -1,3 +1,4 @@
+import { IFinesRoutingPermissions } from '../routing/interfaces';
 import { IFinesAddDefendantAccountNoteBody } from './fines-add-defendant-account-note-body.interface';
 import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from './fines-business-unit-ref-data.interface';
 import { IFinesCourtRefData } from './fines-court-ref-data.interface';
@@ -6,7 +7,6 @@ import { IFinesDefendantAccountNote } from './fines-defendant-account-note.inter
 import { IFinesDefendantAccount } from './fines-defendant-account.interface';
 import { IFinesGetDefendantAccountParams } from './fines-get-defendant-account-params.interface';
 import { IFinesLocalJusticeAreaRefData } from './fines-local-justice-area-ref-data.interface';
-import { IFinesRoutingPermissions } from './fines-routing-permissions.interface';
 import { IFinesSearchCourtBody } from './fines-search-court-body.interface';
 import { IFinesSearchCourt } from './fines-search-court.interface';
 import { IFinesSearchDefendantAccountBody } from './fines-search-defendant-account-body.interface';
