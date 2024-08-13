@@ -1,7 +1,7 @@
 import { CanDeactivateFn } from '@angular/router';
-import { CanComponentDeactivate } from '@interfaces';
+import { ICanDeactivateCanComponentDeactivate } from '@interfaces';
 
-export const canDeactivateGuard: CanDeactivateFn<CanComponentDeactivate> = (component: CanComponentDeactivate) => {
+export const canDeactivateGuard: CanDeactivateFn<ICanDeactivateCanComponentDeactivate> = (component: ICanDeactivateCanComponentDeactivate) => {
   return component.canDeactivate()
     ? true
     : confirm(

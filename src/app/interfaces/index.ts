@@ -1,21 +1,20 @@
-import { ILaunchDarklyConfig } from './launch-darkly-config.interface';
-import { IUserState, IUserStateRole, IUserStatePermission } from './user-state.interface';
-import { ITransferServerState } from './transfer-server-state.interface';
-import { ISignInStubForm } from './sign-in-stub-form.interface';
-
-import { CanComponentDeactivate, CanDeactivateType } from './can-component-deactivate.interface';
-import { ITokenExpiry } from './token-expiry.interface';
+import {
+  ISessionUserState,
+  ISessionUserStateRole,
+  ISessionUserStatePermission,
+} from '../services/session-service/interfaces';
+import { ICanDeactivateCanComponentDeactivate, CanDeactivateCanDeactivateType } from '../guards/can-deactivate/interfaces/index';
+import { ISessionTokenExpiry } from '../services/session-service/interfaces/';
 import { INestedRoutes } from './nested-routes.interface';
+import { ITransferStateLaunchDarklyConfig } from '../services/transfer-state-service/interfaces';
 
 export {
-  ILaunchDarklyConfig,
-  IUserState,
-  IUserStateRole,
-  IUserStatePermission,
-  ITransferServerState,
-  ISignInStubForm,
-  CanComponentDeactivate,
-  CanDeactivateType,
+  ITransferStateLaunchDarklyConfig,
+  ISessionUserState,
+  ISessionUserStateRole,
+  ISessionUserStatePermission,
+  ICanDeactivateCanComponentDeactivate,
+  CanDeactivateCanDeactivateType,
   INestedRoutes,
-  ITokenExpiry,
+  ISessionTokenExpiry,
 };

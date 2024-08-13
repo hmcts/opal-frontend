@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Optional, PLATFORM_ID, TransferState, inject, makeStateKey } from '@angular/core';
-import { ITransferServerState } from '@interfaces';
+import { ITransferStateServerState } from './interfaces';
 import { GlobalStateService } from '@services';
 
 @Injectable({
@@ -8,14 +8,14 @@ import { GlobalStateService } from '@services';
 })
 export class TransferStateService {
   private readonly globalStateService = inject(GlobalStateService);
-  private storedServerTransferState!: ITransferServerState;
+  private storedServerTransferState!: ITransferStateServerState;
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: typeof PLATFORM_ID,
-    @Optional() @Inject('serverTransferState') public readonly serverTransferState: ITransferServerState | null,
+    @Optional() @Inject('serverTransferState') public readonly serverTransferState: ITransferStateServerState | null,
     private readonly transferState: TransferState,
   ) {
-    const storeKeyTransferState = makeStateKey<ITransferServerState>('serverTransferState');
+    const storeKeyTransferState = makeStateKey<ITransferStateServerState>('serverTransferState');
 
     if (isPlatformBrowser(this.platformId)) {
       // get user state from transfer state if browser side

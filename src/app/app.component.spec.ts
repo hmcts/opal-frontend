@@ -7,11 +7,11 @@ import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TOKEN_EXPIRY_MOCK } from '@mocks';
 import { DateTime } from 'luxon';
-import { ITokenExpiry } from '@interfaces';
+import { ISessionTokenExpiry } from '@interfaces';
 import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
 import { GovukFooterComponent } from '@components/govuk';
 
-const mockTokenExpiry: ITokenExpiry = TOKEN_EXPIRY_MOCK;
+const mockTokenExpiry: ISessionTokenExpiry = TOKEN_EXPIRY_MOCK;
 
 describe('AppComponent', () => {
   const mockDocumentLocation = {

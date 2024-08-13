@@ -4,10 +4,10 @@ import { SessionService } from './session.service';
 import { SessionEndpoints } from '@enums';
 import { TOKEN_EXPIRY_MOCK, USER_STATE_MOCK } from '@mocks';
 import { GlobalStateService } from '@services';
-import { ITokenExpiry, IUserState } from '@interfaces';
+import { ISessionTokenExpiry, IUserState } from '@interfaces';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-const mockTokenExpiry: ITokenExpiry = TOKEN_EXPIRY_MOCK;
+const mockTokenExpiry: ISessionTokenExpiry = TOKEN_EXPIRY_MOCK;
 
 describe('SessionService', () => {
   let service: SessionService;

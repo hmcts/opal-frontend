@@ -4,7 +4,7 @@ import { GovukButtonComponent } from '@components/govuk';
 import { SignInSsoComponent } from './sign-in-sso/sign-in-sso.component';
 import { SignInStubComponent } from './sign-in-stub/sign-in-stub.component';
 import { GlobalStateService } from '@services';
-import { ISignInStubForm } from '@interfaces';
+import { ISignInStubForm } from './interfaces';
 import { SsoEndpoints } from '@enums';
 
 @Component({
