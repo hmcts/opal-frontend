@@ -511,6 +511,12 @@ describe('AbstractFormBaseComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 
+  it('should navigate to relative route', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.handleRoute('test', true);
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+  });
+
   it('should test hasUnsavedChanges', () => {
     component['formSubmitted'] = false;
     expect(component['hasUnsavedChanges']()).toBe(false);
