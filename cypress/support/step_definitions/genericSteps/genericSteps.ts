@@ -26,6 +26,18 @@ Then('I click the {string} button and see {string} on the page header', (buttonN
       cy.get('a').contains('Cancel').click();
       break;
     }
+    case 'Add parent or guardian details': {
+      cy.contains('button', buttonName).click();
+      cy.get('h1').should('contain', bodyHeader);
+      cy.get('a').contains('Cancel').click();
+      break;
+    }
+    case 'Add company details': {
+      cy.contains('button', buttonName).click();
+      cy.get('h1').should('contain', bodyHeader);
+      cy.get('a').contains('Cancel').click();
+      break;
+    }
   }
 });
 Then('I click the {string} button', (buttonName: string) => {
@@ -45,6 +57,9 @@ Then('I validate the {string} radio button is selected', (radioButton: string) =
 });
 Then('I validate the {string} radio button is not selected', (radioButton: string) => {
   cy.get('input[type="radio"]').next().contains('label', radioButton).prev().should('not.be.checked');
+});
+Then('I see help text {string} for the {string} radio button', (helpText: string, radioButton: string) => {
+  cy.get('.govuk-radios').contains(radioButton).next().should('contain', helpText);
 });
 Then('I go back in the browser', () => {
   cy.go('back');
@@ -86,6 +101,12 @@ Then('I see the error message {string} above the {string} field', (errorMessage:
 Then('I see the error message {string} above the Date of birth field', (errorMessage: string) => {
   cy.contains('.govuk-error-message', errorMessage).siblings('label').should('contain', 'Date of birth');
 });
+Then(
+  'I see the error message {string} above the {string} radio button',
+  (errorMessage: string, radioButton: string) => {
+    cy.contains('.govuk-radios', radioButton).prev().should('contain', errorMessage);
+  },
+);
 Then('I enter {string} into the {string} field', (value: string, fieldName: string) => {
   cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear().type(value);
 });
