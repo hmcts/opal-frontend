@@ -1,6 +1,5 @@
 import { FINES_MAC_NESTED_BUTTONS } from './fines-mac-nested-buttons';
 import { IFinesMacNestedRoutes } from '../interfaces';
-import { FinesMacRoutes } from '../enums';
 import { FINES_MAC_ROUTING_PATHS } from './fines-mac-routing-paths';
 
 export const FINES_MAC_NESTED_ROUTES: Record<string, IFinesMacNestedRoutes> = {

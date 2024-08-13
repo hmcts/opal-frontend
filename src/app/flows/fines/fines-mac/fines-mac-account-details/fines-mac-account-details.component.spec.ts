@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountDetailsComponent } from './fines-mac-account-details.component';
 import { FINES_MAC_STATE } from '@constants/fines/mac';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { IFinesMacAccountTypes, IFinesMacDefendantTypes } from '../interfaces';
 import { FinesService } from '@services/fines';
 import {
@@ -9,6 +9,7 @@ import {
   FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
   FINES_MAC_ACCOUNT_DETAILS_STATE,
 } from './constants';
+import { of } from 'rxjs';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -22,7 +23,16 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
-      providers: [{ provide: FinesService, useValue: mockFinesService }, provideRouter([])],
+      providers: [
+        { provide: FinesService, useValue: mockFinesService },
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacAccountDetailsComponent);
@@ -42,7 +52,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should navigate on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleRoute('test');
-    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 
   it('should set defendantType correctly', () => {

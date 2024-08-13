@@ -4,11 +4,14 @@ import { FinesService } from '@services/fines';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces';
 import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK } from '../mocks';
+import { ActivatedRoute } from '@angular/router';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacParentGuardianDetailsFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
+  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacParentGuardianDetailsForm;
 
   beforeEach(async () => {
@@ -19,7 +22,10 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacParentGuardianDetailsFormComponent],
-      providers: [{ provide: FinesService, useValue: mockFinesService }],
+      providers: [
+        { provide: FinesService, useValue: mockFinesService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);

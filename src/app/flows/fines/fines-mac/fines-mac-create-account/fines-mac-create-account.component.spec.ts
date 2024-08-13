@@ -4,13 +4,13 @@ import { FINES_MAC_STATE_MOCK } from '../mocks';
 import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
-import { FinesMacRoutes } from '@enums/fines/mac';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IFinesBusinessUnitRefData } from '@interfaces/fines';
+import { FINES_MAC_ROUTING_PATHS } from '../constants';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
@@ -34,6 +34,12 @@ describe('FinesMacCreateAccountComponent', () => {
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
@@ -64,7 +70,9 @@ describe('FinesMacCreateAccountComponent', () => {
     component.handleAccountDetailsSubmit(formData);
 
     expect(finesService.finesMacState.accountDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacAccountDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should test handleUnsavedChanges', () => {

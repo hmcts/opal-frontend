@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsComponent } from './fines-mac-offence-details.component';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
@@ -8,6 +10,14 @@ describe('FinesMacOffenceDetailsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsComponent);
@@ -22,6 +32,8 @@ describe('FinesMacOffenceDetailsComponent', () => {
   it('should navigate to account-details page on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleRoute('test');
-    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(routerSpy).toHaveBeenCalledWith(['test'], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 });

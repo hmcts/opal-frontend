@@ -2,9 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacEmployerDetailsComponent } from './fines-mac-employer-details.component';
 import { IFinesMacEmployerDetailsForm, IFinesMacEmployerDetailsState } from './interfaces';
 import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK, FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from './mocks';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { FINES_MAC_ROUTING_PATHS } from '../constants';
 
 describe('FinesMacEmployerDetailsComponent', () => {
   let component: FinesMacEmployerDetailsComponent;
@@ -22,7 +24,15 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsComponent],
-      providers: [{ provide: FinesService, useValue: mockFinesService }],
+      providers: [
+        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacEmployerDetailsComponent);
@@ -45,7 +55,9 @@ describe('FinesMacEmployerDetailsComponent', () => {
     component.handleEmployerDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.employerDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacAccountDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should handle form submission and navigate to offence details - adult or youth only', () => {
@@ -56,7 +68,9 @@ describe('FinesMacEmployerDetailsComponent', () => {
     component.handleEmployerDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.employerDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacOffenceDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.offenceDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should handle form submission and navigate to personal details - parent or guardian to pay', () => {
@@ -67,7 +81,9 @@ describe('FinesMacEmployerDetailsComponent', () => {
     component.handleEmployerDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.employerDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacPersonalDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.personalDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should test handleUnsavedChanges', () => {

@@ -16,6 +16,8 @@ import {
   ABSTRACT_FORM_BASE_FORM_STATE_MOCK,
 } from './mocks';
 import { ABSTRACT_FORM_BASE_FIELD_ERRORS } from './constants';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 class TestAbstractFormBaseComponent extends AbstractFormBaseComponent {
   constructor() {
@@ -45,6 +47,14 @@ describe('AbstractFormBaseComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TestAbstractFormBaseComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
   });
 
@@ -498,7 +508,7 @@ describe('AbstractFormBaseComponent', () => {
   it('should navigate to account-details page on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleRoute('test');
-    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 
   it('should test hasUnsavedChanges', () => {

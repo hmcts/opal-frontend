@@ -1,6 +1,8 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { AbstractFormParentBaseComponent } from './abstract-form-parent-base.component';
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-test-form-parent-base',
@@ -19,6 +21,14 @@ describe('AbstractFormParentBaseComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestAbstractFormParentBaseComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestAbstractFormParentBaseComponent);
@@ -38,6 +48,6 @@ describe('AbstractFormParentBaseComponent', () => {
   it('should navigate to account-details page on handleBack', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component['routerNavigate']('test');
-    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 });

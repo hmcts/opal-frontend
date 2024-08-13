@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacParentGuardianDetailsComponent } from './fines-mac-parent-guardian-details.component';
 import { IFinesMacParentGuardianDetailsForm, IFinesMacParentGuardianDetailsState } from './interfaces';
-import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK, FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from './mocks';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { FINES_MAC_ROUTING_PATHS } from '../constants';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
   let component: FinesMacParentGuardianDetailsComponent;
@@ -22,7 +24,15 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacParentGuardianDetailsComponent],
-      providers: [{ provide: FinesService, useValue: mockFinesService }],
+      providers: [
+        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacParentGuardianDetailsComponent);
@@ -41,7 +51,9 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     component.handleParentGuardianDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacAccountDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should handle form submission and navigate', () => {
@@ -52,7 +64,9 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     component.handleParentGuardianDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacContactDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.contactDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should test handleUnsavedChanges', () => {

@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPersonalDetailsComponent } from './fines-mac-personal-details.component';
 import { IFinesMacPersonalDetailsForm, IFinesMacPersonalDetailsState } from './interfaces';
-import { FinesMacRoutes } from '@enums/fines/mac';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '@mocks/fines/mac';
 import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK, FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from './mocks';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { FINES_MAC_ROUTING_PATHS } from '../constants';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let component: FinesMacPersonalDetailsComponent;
@@ -23,7 +25,15 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPersonalDetailsComponent],
-      providers: [{ provide: FinesService, useValue: mockFinesService }],
+      providers: [
+        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacPersonalDetailsComponent);
@@ -46,7 +56,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
     component.handlePersonalDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.personalDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacAccountDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should handle form submission and navigate next route', () => {
@@ -57,7 +69,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
     component.handlePersonalDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.personalDetails).toEqual(formData);
-    expect(routerSpy).toHaveBeenCalledWith([FinesMacRoutes.finesMacContactDetails]);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.contactDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should test handleUnsavedChanges', () => {

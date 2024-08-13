@@ -5,7 +5,6 @@ import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
-
 import { IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import { IFinesBusinessUnit, IFinesBusinessUnitRefData } from '@interfaces/fines';

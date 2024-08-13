@@ -7,6 +7,7 @@ import {
   IAbstractFormAliasBaseFormControlErrorMessage,
 } from './interfaces';
 import { of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 class TestAbstractFormAliasBaseComponent extends AbstractFormAliasBaseComponent {
   constructor() {
@@ -25,6 +26,7 @@ describe('FormArrayBase', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TestAbstractFormAliasBaseComponent],
+      providers: [{ provide: ActivatedRoute, useValue: {} }],
     }).compileComponents();
   });
 
