@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form.component';
-import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@mocks/fines';
+import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../services/opal-fines-service/mocks';
 import { Validators } from '@angular/forms';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '../../mocks';
@@ -29,7 +29,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacCreateAccountFormComponent);
     component = fixture.componentInstance;
 
-    component.autoCompleteItems = FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
+    component.autoCompleteItems = OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
 
     fixture.detectChanges();
   });

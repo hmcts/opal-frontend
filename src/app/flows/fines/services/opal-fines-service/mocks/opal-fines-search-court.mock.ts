@@ -1,4 +1,4 @@
-export const FINES_SEARCH_COURT_MOCK = [
+export const OPAL_FINES_SEARCH_COURT_MOCK = [
   {
     courtId: 500000000,
     name: 'Kingston-upon-Thames Mags Court',

@@ -1,4 +1,4 @@
-export const FINES_DEFENDANT_ACCOUNT_MOCK = {
+export const OPAL_FINES_DEFENDANT_ACCOUNT_MOCK = {
   defendantAccountId: 1,
   businessUnitId: 1,
   accountNumber: '1212',

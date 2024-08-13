@@ -1,4 +1,4 @@
-export const FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK = {
+export const OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK = {
   count: 100,
   totalCount: 100,
   cursor: 0,

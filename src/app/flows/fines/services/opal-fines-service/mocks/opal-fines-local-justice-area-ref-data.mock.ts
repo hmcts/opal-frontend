@@ -1,6 +1,6 @@
-import { IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
+import { IOpalFinesLocalJusticeAreaRefData } from '@interfaces/fines';
 
-export const FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK: IFinesLocalJusticeAreaRefData = {
+export const OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK: IOpalFinesLocalJusticeAreaRefData = {
   count: 5,
   refData: [
     {

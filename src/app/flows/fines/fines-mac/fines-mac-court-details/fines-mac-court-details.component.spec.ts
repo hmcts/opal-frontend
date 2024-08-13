@@ -7,7 +7,10 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FinesService, OpalFines } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_COURT_REF_DATA_MOCK, FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@mocks/fines';
+import {
+  OPAL_FINES_COURT_REF_DATA_MOCK,
+  OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+} from '../../services/opal-fines-service/mocks';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_COURT_DETAILS_STATE_MOCK } from './mocks';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
@@ -26,8 +29,8 @@ describe('FinesMacCourtDetailsComponent', () => {
     mockOpalFinesService = {
       getLocalJusticeAreas: jasmine
         .createSpy('getLocalJusticeAreas')
-        .and.returnValue(of(FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
-      getCourts: jasmine.createSpy('getCourts').and.returnValue(of(FINES_COURT_REF_DATA_MOCK)),
+        .and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
+      getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
     };
     formData = FINES_MAC_COURT_DETAILS_STATE_MOCK;
     formSubmit = FINES_MAC_COURT_DETAILS_FORM_MOCK;

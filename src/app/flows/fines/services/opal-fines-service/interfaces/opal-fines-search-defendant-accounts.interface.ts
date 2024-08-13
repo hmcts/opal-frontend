@@ -1,4 +1,4 @@
-export interface IFinesSearchDefendantAccount {
+export interface IOpalFinesSearchDefendantAccount {
   accountNo: string;
   name: string;
   dateOfBirth: string;
@@ -7,10 +7,10 @@ export interface IFinesSearchDefendantAccount {
   court: string;
   defendantAccountId: number;
 }
-export interface IFinesSearchDefendantAccounts {
+export interface IOpalFinesSearchDefendantAccounts {
   count: number;
   totalCount: number;
   cursor: number;
   pageSize: number;
-  searchResults: IFinesSearchDefendantAccount[];
+  searchResults: IOpalFinesSearchDefendantAccount[];
 }

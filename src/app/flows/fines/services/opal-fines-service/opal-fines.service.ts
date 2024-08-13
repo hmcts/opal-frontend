@@ -2,18 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from './constants';
 import {
-  IFinesAddDefendantAccountNoteBody,
-  IFinesBusinessUnitRefData,
-  IFinesCourtRefData,
-  IFinesDefendantAccount,
-  IFinesDefendantAccountDetails,
-  IFinesDefendantAccountNote,
-  IFinesGetDefendantAccountParams,
-  IFinesLocalJusticeAreaRefData,
-  IFinesSearchCourt,
-  IFinesSearchCourtBody,
-  IFinesSearchDefendantAccountBody,
-  IFinesSearchDefendantAccounts,
+  IOpalFinesAddDefendantAccountNoteBody,
+  IOpalFinesBusinessUnitRefData,
+  IOpalFinesCourtRefData,
+  IOpalFinesDefendantAccount,
+  IOpalFinesDefendantAccountDetails,
+  IOpalFinesDefendantAccountNote,
+  IOpalFinesGetDefendantAccountParams,
+  IOpalFinesLocalJusticeAreaRefData,
+  IOpalFinesSearchCourt,
+  IOpalFinesSearchCourtBody,
+  IOpalFinesSearchDefendantAccountBody,
+  IOpalFinesSearchDefendantAccounts,
 } from '@interfaces/fines';
 import { Observable, shareReplay } from 'rxjs';
 @Injectable({
@@ -21,23 +21,23 @@ import { Observable, shareReplay } from 'rxjs';
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
-  private courtCache$: { [key: string]: Observable<IFinesSearchCourt[]> } = {};
-  private courtRefDataCache$: { [key: string]: Observable<IFinesCourtRefData> } = {};
-  private businessUnitsCache$: { [key: string]: Observable<IFinesBusinessUnitRefData> } = {};
-  private localJusticeAreasCache$!: Observable<IFinesLocalJusticeAreaRefData>;
+  private courtCache$: { [key: string]: Observable<IOpalFinesSearchCourt[]> } = {};
+  private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
+  private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
+  private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
 
   /**
    * Searches for courts based on the provided search criteria.
    * @param body - The search criteria.
    * @returns An Observable that emits an array of IFinesSearchCourt objects.
    */
-  public searchCourt(body: IFinesSearchCourtBody): Observable<IFinesSearchCourt[]> {
+  public searchCourt(body: IOpalFinesSearchCourtBody): Observable<IOpalFinesSearchCourt[]> {
     const key = `${JSON.stringify(body.courtId)}${JSON.stringify(body.courtCode)}}`;
 
     // Court search is cached to prevent multiple requests for the same data.
     if (!this.courtCache$[key]) {
       this.courtCache$[key] = this.http
-        .post<IFinesSearchCourt[]>(OPAL_FINES_PATHS.courtSearch, body)
+        .post<IOpalFinesSearchCourt[]>(OPAL_FINES_PATHS.courtSearch, body)
         .pipe(shareReplay(1));
     }
 
@@ -53,7 +53,7 @@ export class OpalFines {
   public getCourts(businessUnit: number) {
     if (!this.courtRefDataCache$[businessUnit]) {
       this.courtRefDataCache$[businessUnit] = this.http
-        .get<IFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { businessUnit } })
+        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { businessUnit } })
         .pipe(shareReplay(1));
     }
 
@@ -65,8 +65,8 @@ export class OpalFines {
    * @param params - The parameters for retrieving the defendant account.
    * @returns An Observable that emits the defendant account.
    */
-  public getDefendantAccount(params: IFinesGetDefendantAccountParams): Observable<IFinesDefendantAccount> {
-    return this.http.get<IFinesDefendantAccount>(
+  public getDefendantAccount(params: IOpalFinesGetDefendantAccountParams): Observable<IOpalFinesDefendantAccount> {
+    return this.http.get<IOpalFinesDefendantAccount>(
       `${OPAL_FINES_PATHS.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`,
     );
   }
@@ -76,8 +76,10 @@ export class OpalFines {
    * @param body - The search criteria.
    * @returns An Observable that emits the search results.
    */
-  public searchDefendantAccounts(body: IFinesSearchDefendantAccountBody): Observable<IFinesSearchDefendantAccounts> {
-    return this.http.post<IFinesSearchDefendantAccounts>(OPAL_FINES_PATHS.defendantAccountSearch, body);
+  public searchDefendantAccounts(
+    body: IOpalFinesSearchDefendantAccountBody,
+  ): Observable<IOpalFinesSearchDefendantAccounts> {
+    return this.http.post<IOpalFinesSearchDefendantAccounts>(OPAL_FINES_PATHS.defendantAccountSearch, body);
   }
 
   /**
@@ -85,8 +87,10 @@ export class OpalFines {
    * @param defendantAccountId - The ID of the defendant account.
    * @returns An Observable that emits the defendant account details.
    */
-  public getDefendantAccountDetails(defendantAccountId: number): Observable<IFinesDefendantAccountDetails> {
-    return this.http.get<IFinesDefendantAccountDetails>(`${OPAL_FINES_PATHS.defendantAccount}/${defendantAccountId}`);
+  public getDefendantAccountDetails(defendantAccountId: number): Observable<IOpalFinesDefendantAccountDetails> {
+    return this.http.get<IOpalFinesDefendantAccountDetails>(
+      `${OPAL_FINES_PATHS.defendantAccount}/${defendantAccountId}`,
+    );
   }
 
   /**
@@ -94,8 +98,10 @@ export class OpalFines {
    * @param body - The body of the note to be added.
    * @returns An observable that emits the added defendant account note.
    */
-  public addDefendantAccountNote(body: IFinesAddDefendantAccountNoteBody): Observable<IFinesDefendantAccountNote> {
-    return this.http.post<IFinesDefendantAccountNote>(OPAL_FINES_PATHS.defendantAccountAddNote, body);
+  public addDefendantAccountNote(
+    body: IOpalFinesAddDefendantAccountNoteBody,
+  ): Observable<IOpalFinesDefendantAccountNote> {
+    return this.http.post<IOpalFinesDefendantAccountNote>(OPAL_FINES_PATHS.defendantAccountAddNote, body);
   }
 
   /**
@@ -103,8 +109,8 @@ export class OpalFines {
    * @param defendantAccountId - The ID of the defendant account.
    * @returns An Observable that emits an array of defendant account notes.
    */
-  public getDefendantAccountNotes(defendantAccountId: number): Observable<IFinesDefendantAccountNote[]> {
-    return this.http.get<IFinesDefendantAccountNote[]>(
+  public getDefendantAccountNotes(defendantAccountId: number): Observable<IOpalFinesDefendantAccountNote[]> {
+    return this.http.get<IOpalFinesDefendantAccountNote[]>(
       `${OPAL_FINES_PATHS.defendantAccountNotes}/${defendantAccountId}`,
     );
   }
@@ -115,7 +121,7 @@ export class OpalFines {
     // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, MANUAL_ACCOUNT_CREATION
     if (!this.businessUnitsCache$[permission]) {
       this.businessUnitsCache$[permission] = this.http
-        .get<IFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
+        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
         .pipe(shareReplay(1));
     }
 
@@ -131,7 +137,7 @@ export class OpalFines {
   public getLocalJusticeAreas() {
     if (!this.localJusticeAreasCache$) {
       this.localJusticeAreasCache$ = this.http
-        .get<IFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+        .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
         .pipe(shareReplay(1));
     }
 

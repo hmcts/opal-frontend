@@ -6,8 +6,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { FinesService, OpalFines } from '@services/fines';
-import { IFinesCourtRefData, IFinesLocalJusticeAreaRefData } from '@interfaces/fines';
-
+import { IOpalFinesCourtRefData, IOpalFinesLocalJusticeAreaRefData } from '@interfaces/fines';
 import { IFinesMacCourtDetailsForm } from './interfaces';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
@@ -23,14 +22,14 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
   private opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService.getLocalJusticeAreas().pipe(
-    map((response: IFinesLocalJusticeAreaRefData) => {
+    map((response: IOpalFinesLocalJusticeAreaRefData) => {
       return this.createAutoCompleteItemsLja(response);
     }),
   );
   private enforcementCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.businessUnitId)
     .pipe(
-      map((response: IFinesCourtRefData) => {
+      map((response: IOpalFinesCourtRefData) => {
         return this.createAutoCompleteItemsCourts(response);
       }),
     );
@@ -46,7 +45,9 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
    * @param response - The response object containing the local justice area reference data.
    * @returns An array of autocomplete items.
    */
-  private createAutoCompleteItemsLja(response: IFinesLocalJusticeAreaRefData): IAlphagovAccessibleAutocompleteItem[] {
+  private createAutoCompleteItemsLja(
+    response: IOpalFinesLocalJusticeAreaRefData,
+  ): IAlphagovAccessibleAutocompleteItem[] {
     const localJusticeAreas = response.refData;
 
     return localJusticeAreas.map((item) => {
@@ -62,7 +63,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
    * @param response - The response object containing the local justice area reference data.
    * @returns An array of autocomplete items.
    */
-  private createAutoCompleteItemsCourts(response: IFinesCourtRefData): IAlphagovAccessibleAutocompleteItem[] {
+  private createAutoCompleteItemsCourts(response: IOpalFinesCourtRefData): IAlphagovAccessibleAutocompleteItem[] {
     const courts = response.refData;
 
     return courts.map((item) => {

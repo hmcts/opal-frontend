@@ -2,28 +2,28 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
-  IFinesAddDefendantAccountNoteBody,
-  IFinesBusinessUnitRefData,
-  IFinesCourtRefData,
-  IFinesGetDefendantAccountParams,
-  IFinesLocalJusticeAreaRefData,
-  IFinesSearchCourt,
-  IFinesSearchCourtBody,
-  IFinesSearchDefendantAccountBody,
+  IOpalFinesAddDefendantAccountNoteBody,
+  IOpalFinesBusinessUnitRefData,
+  IOpalFinesCourtRefData,
+  IOpalFinesGetDefendantAccountParams,
+  IOpalFinesLocalJusticeAreaRefData,
+  IOpalFinesSearchCourt,
+  IOpalFinesSearchCourtBody,
+  IOpalFinesSearchDefendantAccountBody,
 } from '@interfaces/fines';
 import {
-  FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
-  FINES_BUSINESS_UNIT_REF_DATA_MOCK,
-  FINES_COURT_REF_DATA_MOCK,
-  FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
-  FINES_DEFENDANT_ACCOUNT_MOCK,
-  FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
-  FINES_DEFENDANT_ACCOUNT_NOTE_MOCK,
-  FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-  FINES_SEARCH_COURT_BODY_MOCK,
-  FINES_SEARCH_COURT_MOCK,
-  FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK,
-} from '@mocks/fines';
+  OPAL_FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
+  OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+  OPAL_FINES_COURT_REF_DATA_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
+  OPAL_FINES_DEFENDANT_ACCOUNT_NOTE_MOCK,
+  OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+  OPAL_FINES_SEARCH_COURT_BODY_MOCK,
+  OPAL_FINES_SEARCH_COURT_MOCK,
+  OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK,
+} from '../opal-fines-service/mocks';
 import { OPAL_FINES_PATHS } from './constants';
 import { OpalFines } from '@services/fines';
 
@@ -50,7 +50,7 @@ describe('OpalFines', () => {
 
   it('should send a GET request to business unit ref data API', () => {
     const permission = 'ACCOUNT_ENQUIRY';
-    const mockBusinessUnits: IFinesBusinessUnitRefData = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const mockBusinessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
     service.getBusinessUnits(permission).subscribe((response) => {
@@ -65,7 +65,7 @@ describe('OpalFines', () => {
 
   it('should return cached response for the same ref data search', () => {
     const permission = 'ACCOUNT_ENQUIRY';
-    const mockBusinessUnits: IFinesBusinessUnitRefData = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const mockBusinessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
     service.getBusinessUnits(permission).subscribe((response) => {
@@ -87,8 +87,8 @@ describe('OpalFines', () => {
   });
 
   it('should send a POST request to court search API', () => {
-    const searchBody: IFinesSearchCourtBody = FINES_SEARCH_COURT_BODY_MOCK;
-    const expectedResponse: IFinesSearchCourt[] = FINES_SEARCH_COURT_MOCK;
+    const searchBody: IOpalFinesSearchCourtBody = OPAL_FINES_SEARCH_COURT_BODY_MOCK;
+    const expectedResponse: IOpalFinesSearchCourt[] = OPAL_FINES_SEARCH_COURT_MOCK;
 
     service.searchCourt(searchBody).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
@@ -101,8 +101,8 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same court search', () => {
-    const searchBody: IFinesSearchCourtBody = FINES_SEARCH_COURT_BODY_MOCK;
-    const expectedResponse: IFinesSearchCourt[] = FINES_SEARCH_COURT_MOCK;
+    const searchBody: IOpalFinesSearchCourtBody = OPAL_FINES_SEARCH_COURT_BODY_MOCK;
+    const expectedResponse: IOpalFinesSearchCourt[] = OPAL_FINES_SEARCH_COURT_MOCK;
 
     service.searchCourt(searchBody).subscribe((response) => {
       expect(response).toEqual(expectedResponse);
@@ -124,7 +124,7 @@ describe('OpalFines', () => {
 
   it('should send a GET request to court ref data API', () => {
     const businessUnit = 1;
-    const mockCourts: IFinesCourtRefData = FINES_COURT_REF_DATA_MOCK;
+    const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
@@ -139,7 +139,7 @@ describe('OpalFines', () => {
 
   it('should return cached response for the same ref data search', () => {
     const businessUnit = 1;
-    const mockCourts: IFinesCourtRefData = FINES_COURT_REF_DATA_MOCK;
+    const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
 
     service.getCourts(businessUnit).subscribe((response) => {
@@ -161,24 +161,24 @@ describe('OpalFines', () => {
   });
 
   it('should GET the defendant account', () => {
-    const params: IFinesGetDefendantAccountParams = {
+    const params: IOpalFinesGetDefendantAccountParams = {
       businessUnitId: 1,
       accountNumber: '1212',
     };
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccount}?businessUnitId=${params.businessUnitId}&accountNumber=${params.accountNumber}`;
 
     service.getDefendantAccount(params).subscribe((defendantAccount) => {
-      expect(defendantAccount).toEqual(FINES_DEFENDANT_ACCOUNT_MOCK);
+      expect(defendantAccount).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_MOCK);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
 
-    req.flush(FINES_DEFENDANT_ACCOUNT_MOCK);
+    req.flush(OPAL_FINES_DEFENDANT_ACCOUNT_MOCK);
   });
 
   it('should RETURN the defendant account search', () => {
-    const body: IFinesSearchDefendantAccountBody = {
+    const body: IOpalFinesSearchDefendantAccountBody = {
       court: 'Bath',
       surname: 'Test',
       forename: 'Test',
@@ -195,28 +195,28 @@ describe('OpalFines', () => {
     const apiUrl = OPAL_FINES_PATHS.defendantAccountSearch;
 
     service.searchDefendantAccounts(body).subscribe((searchDefendantAccounts) => {
-      expect(searchDefendantAccounts).toEqual(FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK);
+      expect(searchDefendantAccounts).toEqual(OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
 
-    req.flush(FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK);
+    req.flush(OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK);
   });
 
   it('should POST the defendant account note', () => {
-    const body: IFinesAddDefendantAccountNoteBody = FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK;
+    const body: IOpalFinesAddDefendantAccountNoteBody = OPAL_FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK;
 
     const apiUrl = OPAL_FINES_PATHS.defendantAccountAddNote;
 
     service.addDefendantAccountNote(body).subscribe((defendantAccountNote) => {
-      expect(defendantAccountNote).toEqual(FINES_DEFENDANT_ACCOUNT_NOTE_MOCK);
+      expect(defendantAccountNote).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_NOTE_MOCK);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
 
-    req.flush(FINES_DEFENDANT_ACCOUNT_NOTE_MOCK);
+    req.flush(OPAL_FINES_DEFENDANT_ACCOUNT_NOTE_MOCK);
   });
 
   it('should GET the defendant account notes', () => {
@@ -224,13 +224,13 @@ describe('OpalFines', () => {
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccountNotes}/${defendantAccountId}`;
 
     service.getDefendantAccountNotes(defendantAccountId).subscribe((defendantAccountNotes) => {
-      expect(defendantAccountNotes).toEqual(FINES_DEFENDANT_ACCOUNT_NOTES_MOCK);
+      expect(defendantAccountNotes).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_NOTES_MOCK);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
 
-    req.flush(FINES_DEFENDANT_ACCOUNT_NOTES_MOCK);
+    req.flush(OPAL_FINES_DEFENDANT_ACCOUNT_NOTES_MOCK);
   });
 
   it('should GET the defendant account details', () => {
@@ -238,17 +238,17 @@ describe('OpalFines', () => {
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccount}/${defendantAccountId}`;
 
     service.getDefendantAccountDetails(defendantAccountId).subscribe((defendantAccountDetails) => {
-      expect(defendantAccountDetails).toEqual(FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK);
+      expect(defendantAccountDetails).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
 
-    req.flush(FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK);
+    req.flush(OPAL_FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK);
   });
 
   it('should send a GET request to court ref data API', () => {
-    const mockLocalJusticeArea: IFinesLocalJusticeAreaRefData = FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
 
     service.getLocalJusticeAreas().subscribe((response) => {
@@ -262,7 +262,7 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same ref data search', () => {
-    const mockLocalJusticeArea: IFinesLocalJusticeAreaRefData = FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
+    const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
 
     service.getLocalJusticeAreas().subscribe((response) => {

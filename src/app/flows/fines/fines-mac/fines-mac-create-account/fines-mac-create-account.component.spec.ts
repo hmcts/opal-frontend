@@ -7,9 +7,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
-import { FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@mocks/fines';
+import {
+  OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK,
+  OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+} from '../../services/opal-fines-service/mocks';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
-import { IFinesBusinessUnitRefData } from '@interfaces/fines';
+import { IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacCreateAccountComponent', () => {
@@ -20,7 +23,9 @@ describe('FinesMacCreateAccountComponent', () => {
 
   beforeEach(async () => {
     opalFinesService = {
-      getBusinessUnits: jasmine.createSpy('getBusinessUnits').and.returnValue(of(FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
+      getBusinessUnits: jasmine
+        .createSpy('getBusinessUnits')
+        .and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
     };
     finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
@@ -86,32 +91,32 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should set the business unit for account details when there is only one business unit available and the current business unit is null', () => {
-    const response = { count: 1, refData: [FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+    const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
     component['setBusinessUnit'](response);
 
     expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toEqual(
-      FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
     );
   });
 
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
-    const response = { count: 1, refData: [FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+    const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
     component['finesService'].finesMacState.accountDetails.BusinessUnit =
-      FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
 
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
     expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toEqual(
-      FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
     );
   });
 
   it('should not set the business unit for account details when there are multiple business units available', () => {
-    const response = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const response = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
 
     component['finesService'].finesMacState.accountDetails.BusinessUnit = null;
 
@@ -121,9 +126,9 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should create an array of autocomplete items from the response', () => {
-    const response: IFinesBusinessUnitRefData = FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const response: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] =
-      FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
+      OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
 
     const autoCompleteItems = component['createAutoCompleteItems'](response);
 
@@ -131,7 +136,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should return an empty array if the response does not contain any business units', () => {
-    const response: IFinesBusinessUnitRefData = {
+    const response: IOpalFinesBusinessUnitRefData = {
       count: 0,
       refData: [],
     };
@@ -145,7 +150,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should transform business unit reference data results into select options', () => {
     component.data$.subscribe((result) => {
-      expect(result).toEqual(FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
+      expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
       expect(opalFinesService.getBusinessUnits).toHaveBeenCalled();
     });
   });

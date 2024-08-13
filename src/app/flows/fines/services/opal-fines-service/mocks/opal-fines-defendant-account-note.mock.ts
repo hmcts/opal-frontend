@@ -1,4 +1,4 @@
-export const FINES_DEFENDANT_ACCOUNT_NOTE_MOCK = {
+export const OPAL_FINES_DEFENDANT_ACCOUNT_NOTE_MOCK = {
   noteId: 361,
   noteType: 'AA',
   associatedRecordType: 'defendant_accounts',

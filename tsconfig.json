@@ -38,7 +38,7 @@
       "@interfaces/components/alphagov": ["src/app/components/alphagov/interfaces/index.ts"],
       "@interfaces/fines": ["./src/app/flows/fines/interfaces/index.ts"],
       "@mocks": ["./src/app/mocks/index.ts"],
-      "@mocks/fines": ["./src/app/flows/fines/mocks/index.ts"],
+      "@mocks/fines": ["src/app/flows/fines/services/opal-fines-service/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
       "@constants/fines": ["./src/app/flows/fines/constants/index.ts"],

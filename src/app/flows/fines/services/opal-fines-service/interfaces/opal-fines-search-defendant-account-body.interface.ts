@@ -1,4 +1,4 @@
-export interface IFinesSearchDefendantAccountBody {
+export interface IOpalFinesSearchDefendantAccountBody {
   court: string | null;
   surname: string | null;
   forename: string | null;

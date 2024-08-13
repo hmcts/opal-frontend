@@ -1,4 +1,4 @@
-export const FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK = {
+export const OPAL_FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK = {
   defendantAccountId: 500000000,
   accountNumber: '10000000000A',
   fullName: 'Ms Anna K Graham',

@@ -1,4 +1,4 @@
-export interface IFinesDefendantAccountNote {
+export interface IOpalFinesDefendantAccountNote {
   noteId: number;
   noteType: string;
   associatedRecordType: string;

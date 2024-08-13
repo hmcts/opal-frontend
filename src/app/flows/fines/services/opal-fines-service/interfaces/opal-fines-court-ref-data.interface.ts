@@ -1,4 +1,4 @@
-interface IFinesCourt {
+interface IOpalFinesCourt {
   courtId: number;
   courtCode: number;
   name: string;
@@ -7,7 +7,7 @@ interface IFinesCourt {
   businessUnitId: number;
 }
 
-export interface IFinesCourtRefData {
+export interface IOpalFinesCourtRefData {
   count: number;
-  refData: IFinesCourt[];
+  refData: IOpalFinesCourt[];
 }

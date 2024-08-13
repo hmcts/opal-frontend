@@ -1,4 +1,4 @@
-export interface IFinesSearchCourt {
+export interface IOpalFinesSearchCourt {
   courtId: number;
   name: string;
   addressLine1: string;

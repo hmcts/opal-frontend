@@ -1,6 +1,6 @@
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 
-export const FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
+export const OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
   {
     value: 'Historic Debt Database (101)',
     name: 'Historic Debt Database (101)',

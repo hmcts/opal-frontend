@@ -1,4 +1,4 @@
-export const FINES_SEARCH_COURT_BODY_MOCK = {
+export const OPAL_FINES_SEARCH_COURT_BODY_MOCK = {
   courtId: 500000000,
   courtCode: 2812,
   parentCourtId: null,

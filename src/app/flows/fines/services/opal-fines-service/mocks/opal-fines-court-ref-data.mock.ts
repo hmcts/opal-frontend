@@ -1,6 +1,6 @@
-import { IFinesCourtRefData } from '@interfaces/fines';
+import { IOpalFinesCourtRefData } from '@interfaces/fines';
 
-export const FINES_COURT_REF_DATA_MOCK: IFinesCourtRefData = {
+export const OPAL_FINES_COURT_REF_DATA_MOCK: IOpalFinesCourtRefData = {
   count: 4,
   refData: [
     {

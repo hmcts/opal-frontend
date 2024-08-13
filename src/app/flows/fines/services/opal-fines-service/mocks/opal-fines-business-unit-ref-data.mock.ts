@@ -1,6 +1,6 @@
-import { IFinesBusinessUnitRefData } from '@interfaces/fines';
+import { IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 
-export const FINES_BUSINESS_UNIT_REF_DATA_MOCK: IFinesBusinessUnitRefData = {
+export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefData = {
   count: 7,
   refData: [
     {

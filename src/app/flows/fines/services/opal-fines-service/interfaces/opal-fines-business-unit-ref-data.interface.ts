@@ -1,4 +1,4 @@
-export interface IFinesBusinessUnit {
+export interface IOpalFinesBusinessUnit {
   businessUnitCode: string;
   businessUnitType: string;
   accountNumberPrefix: null | string;
@@ -7,7 +7,7 @@ export interface IFinesBusinessUnit {
   businessUnitName: string;
 }
 
-export interface IFinesBusinessUnitRefData {
+export interface IOpalFinesBusinessUnitRefData {
   count: number;
-  refData: IFinesBusinessUnit[];
+  refData: IOpalFinesBusinessUnit[];
 }

@@ -1,4 +1,4 @@
-import { IFinesBusinessUnit } from '@interfaces/fines';
+import { IOpalFinesBusinessUnit } from '@interfaces/fines';
 import { IFinesMacAccountCommentsNotesState } from '../fines-mac-account-comments-notes/interfaces';
 import { IFinesMacAccountDetailsState } from '../fines-mac-account-details/interfaces';
 import { IFinesMacCompanyDetailsState } from '../fines-mac-company-details/interfaces';
@@ -21,7 +21,7 @@ export interface IFinesMacState {
   accountCommentsNotes: IFinesMacAccountCommentsNotesState;
   offenceDetails: IFinesMacOffenceDetailsState;
   paymentTerms: IFinesMacPaymentTermsState;
-  businessUnit: IFinesBusinessUnit;
+  businessUnit: IOpalFinesBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;
 }

@@ -1,4 +1,4 @@
-export const FINES_DEFENDANT_ACCOUNT_NOTES_MOCK = [
+export const OPAL_FINES_DEFENDANT_ACCOUNT_NOTES_MOCK = [
   {
     noteId: 341,
     noteType: 'AA',

@@ -1,6 +1,6 @@
-import { IFinesBusinessUnit } from '@interfaces/fines';
+import { IOpalFinesBusinessUnit } from '@interfaces/fines';
 
-export const FINES_MAC_BUSINESS_UNIT_STATE: IFinesBusinessUnit = {
+export const FINES_MAC_BUSINESS_UNIT_STATE: IOpalFinesBusinessUnit = {
   businessUnitCode: '',
   businessUnitType: '',
   accountNumberPrefix: null,

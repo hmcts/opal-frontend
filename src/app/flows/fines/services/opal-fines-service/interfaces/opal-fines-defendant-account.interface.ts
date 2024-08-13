@@ -1,4 +1,4 @@
-export interface IFinesDefendantAccount {
+export interface IOpalFinesDefendantAccount {
   defendantAccountId: number | null;
   businessUnitId: number | null;
   accountNumber: string | null;

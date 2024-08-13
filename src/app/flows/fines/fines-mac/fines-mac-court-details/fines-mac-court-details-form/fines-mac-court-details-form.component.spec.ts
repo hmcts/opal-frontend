@@ -3,7 +3,10 @@ import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-for
 import { FinesService } from '@services/fines';
 import { IFinesMacCourtDetailsForm } from '../interfaces';
 import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import { FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK, FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from '@mocks/fines';
+import {
+  OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK,
+  OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK,
+} from '../../../services/opal-fines-service/mocks';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../mocks';
 import { ActivatedRoute } from '@angular/router';
 
@@ -32,8 +35,8 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     component.defendantType = 'adultOrYouthOnly';
-    component.sendingCourtAutoCompleteItems = FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK;
-    component.enforcingCourtAutoCompleteItems = FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    component.sendingCourtAutoCompleteItems = OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK;
+    component.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
 
     fixture.detectChanges();
   });
