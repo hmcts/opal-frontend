@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { SessionEndpoints } from '@enums';
-import { ISessionTokenExpiry, IUserState } from '@interfaces';
+import { ISessionTokenExpiry, ISessionUserState } from '@interfaces';
 import { GlobalStateService } from '@services';
 
 import { Observable, shareReplay, tap } from 'rxjs';
@@ -12,7 +12,7 @@ import { Observable, shareReplay, tap } from 'rxjs';
 export class SessionService {
   private readonly http = inject(HttpClient);
   private readonly globalStateService = inject(GlobalStateService);
-  private userStateCache$!: Observable<IUserState>;
+  private userStateCache$!: Observable<ISessionUserState>;
   private tokenExpiryCache$!: Observable<ISessionTokenExpiry>;
 
   /**
@@ -22,7 +22,7 @@ export class SessionService {
    * The user state is cached using the `shareReplay` operator to avoid unnecessary HTTP requests.
    * @returns An observable that emits the user state.
    */
-  public getUserState(): Observable<IUserState> {
+  public getUserState(): Observable<ISessionUserState> {
     // The backend can return an empty object so...
     // If we don't have a user state, then we need to refresh it...
     // And override the shareReplay cache...
@@ -30,7 +30,7 @@ export class SessionService {
 
     if (!this.userStateCache$ || refresh) {
       this.userStateCache$ = this.http
-        .get<IUserState>(SessionEndpoints.userState)
+        .get<ISessionUserState>(SessionEndpoints.userState)
         .pipe(shareReplay(1))
         .pipe(
           tap((userState) => {

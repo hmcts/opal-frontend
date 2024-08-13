@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IUserState, IUserStatePermission, IUserStateRole } from '@interfaces';
+import { ISessionUserState, ISessionUserStatePermission, ISessionUserStateRole } from '@interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ export class PermissionsService {
    * If the unique permission IDs have not been stored yet, it calculates them based on the user's roles and permissions.
    * @returns An array of unique permission IDs.
    */
-  public getUniquePermissions(userState: IUserState | null): number[] {
+  public getUniquePermissions(userState: ISessionUserState | null): number[] {
     const roles = userState?.roles;
 
     if (!this.storedUniquePermissionIds.length && roles) {
@@ -26,14 +26,14 @@ export class PermissionsService {
     return this.storedUniquePermissionIds;
   }
 
-  public hasPermissionAccess(permissionId: number, businessUnitId: number, roles: IUserStateRole[]): boolean {
+  public hasPermissionAccess(permissionId: number, businessUnitId: number, roles: ISessionUserStateRole[]): boolean {
     if (roles?.length) {
       // First we need to find the matching role
       const role = roles?.find((role) => role.businessUnitId === businessUnitId);
 
       // Then we need to find the matching permission
       const hasPermission = !!role?.permissions.find(
-        (permission: IUserStatePermission) => permission.permissionId === permissionId,
+        (permission: ISessionUserStatePermission) => permission.permissionId === permissionId,
       );
 
       return hasPermission;

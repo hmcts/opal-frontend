@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CanDeactivateType } from '@interfaces';
+import { CanDeactivateCanDeactivateType } from '@interfaces';
 import { GlobalStateService } from '@services';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE } from './constants/fines-mac-state';
@@ -42,7 +42,7 @@ export class FinesMacComponent implements OnDestroy {
    *
    * @returns boolean
    */
-  canDeactivate(): CanDeactivateType {
+  canDeactivate(): CanDeactivateCanDeactivateType {
     if (this.finesService.finesMacState.stateChanges) {
       return false;
     } else {
