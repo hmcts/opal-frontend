@@ -2,11 +2,11 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <app-govuk-button buttonId="submitForm" (buttonClickEvent)="handleRoute(finesMacRoutes.finesMacAccountDetails)">
+    <app-govuk-button buttonId="submitForm" (buttonClickEvent)="handleRoute(finesMacRoutes.children.accountDetails)">
       Return to account details
     </app-govuk-button>
     <app-govuk-cancel-link
-      (linkClickEvent)="handleRoute(finesMacRoutes.finesMacAccountDetails)"
+      (linkClickEvent)="handleRoute(finesMacRoutes.children.accountDetails)"
     ></app-govuk-cancel-link>
   </div>
 </div>

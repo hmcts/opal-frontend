@@ -11,5 +11,5 @@ export {
   IFinesMacCreateAccountState,
   IFinesMacCreateAccountAccountTypeDefendantTypes,
   IFinesMacCreateAccountAccountTypes,
-  IFinesMacCreateAccountDefendantTypes
+  IFinesMacCreateAccountDefendantTypes,
 };

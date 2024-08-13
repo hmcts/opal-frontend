@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
-import { FinesMacRoutes } from '../enums';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { FinesService } from '@services/fines';
 
 @Component({
@@ -16,7 +16,7 @@ export class FinesMacOffenceDetailsComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
 
-  protected readonly finesMacRoutes = FinesMacRoutes;
+  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
 
   /**
    * Navigates to the specified route.
