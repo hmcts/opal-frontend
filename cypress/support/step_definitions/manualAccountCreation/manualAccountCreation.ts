@@ -2,7 +2,7 @@ import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import manualAccountPageObjects from '../../projectConfig/manual_account_page';
 
 Then('I navigate to Manual Account Creation', () => {
-  cy.get('#manualAccountCreationLink').should('contain', 'Manually Create Account').click();
+  cy.get('#finesMacLink').should('contain', 'Manual Account Creation').click();
 });
 
 Then('I see {string} on the page header', (bodyHeader) => {

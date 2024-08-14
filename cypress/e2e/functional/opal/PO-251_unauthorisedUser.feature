@@ -1,12 +1,14 @@
-Feature: PO-251 unauthorised user presented with access denied screen
-  Scenario: Unauthorised user presented with access denied screen
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
+#Due to changes in PO-598 this test has been descoped
 
-    When I sign in as "opal-test-2@HMCTS.NET"
-    Then I am on the dashboard
+# Feature: PO-251 unauthorised user presented with access denied screen
+#   Scenario: Unauthorised user presented with access denied screen
+#     Given I am on the OPAL Frontend
+#     Then I see "Opal" in the header
 
-    When I navigate to Account Enquiry
-    Then I see an access denied error
-    And The error message is "You do not have the appropriate permissions to access this page."
-    And There is a button to go back to the dashboard
+#     When I sign in as "opal-test-2@HMCTS.NET"
+#     Then I am on the dashboard
+
+#     When I navigate to Account Enquiry
+#     Then I see an access denied error
+#     And The error message is "You do not have the appropriate permissions to access this page."
+#     And There is a button to go back to the dashboard
