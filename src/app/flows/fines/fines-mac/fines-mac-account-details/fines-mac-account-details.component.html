@@ -304,7 +304,9 @@
   @if (accountCreationStatus['personalDetails']) {
     <a
       class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-      [routerLink]=""
+      (click)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
+      (keyup.enter)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
+      tabindex="0"
       aria-describedby="paymentTermsStatus"
     >
       Payment terms
