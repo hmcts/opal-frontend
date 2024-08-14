@@ -517,6 +517,16 @@ describe('AbstractFormBaseComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 
+  it('should navigate to relative route with event', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const event = jasmine.createSpyObj('event', ['preventDefault']);
+
+    component.handleRoute('test', true, event);
+
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
   it('should test hasUnsavedChanges', () => {
     component['formSubmitted'] = false;
     expect(component['hasUnsavedChanges']()).toBe(false);

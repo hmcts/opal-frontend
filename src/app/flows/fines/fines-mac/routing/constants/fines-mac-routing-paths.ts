@@ -1,6 +1,6 @@
-import { IFinesMacRoutingPath } from '../interfaces';
+import { IFinesMacRoutingPaths } from '../interfaces';
 
-export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPath = {
+export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPaths = {
   root: 'manual-account-creation',
   children: {
     accountDetails: 'account-details',

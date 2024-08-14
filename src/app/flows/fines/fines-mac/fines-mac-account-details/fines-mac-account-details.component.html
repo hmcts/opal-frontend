@@ -70,10 +70,9 @@
   </p>
   <p class="govuk-body">
     <a
-      href="#"
       class="govuk-link govuk-color_error"
-      (click)="handleRoute(routingPaths.dashboard, true)"
-      (keyup.enter)="handleRoute(routingPaths.dashboard, true)"
+      (click)="handleRoute(routingPaths.dashboard, true, $event)"
+      (keyup.enter)="handleRoute(routingPaths.dashboard, true, $event)"
       tabindex="0"
       >Cancel account creation</a
     >
@@ -97,8 +96,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.contactDetails)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.contactDetails)"
+        (click)="handleRoute(fineMacRoutes.children.contactDetails, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.contactDetails, false, $event)"
         tabindex="0"
         aria-describedby="contactDetailsStatus"
       >
@@ -125,8 +124,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.employerDetails)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.employerDetails)"
+        (click)="handleRoute(fineMacRoutes.children.employerDetails, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.employerDetails, false, $event)"
         tabindex="0"
         aria-describedby="employerDetailsStatus"
       >
@@ -153,8 +152,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.companyDetails)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.companyDetails)"
+        (click)="handleRoute(fineMacRoutes.children.companyDetails, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.companyDetails, false, $event)"
         tabindex="0"
         aria-describedby="companyDetailsStatus"
       >
@@ -181,8 +180,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.personalDetails)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.personalDetails)"
+        (click)="handleRoute(fineMacRoutes.children.personalDetails, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.personalDetails, false, $event)"
         tabindex="0"
         aria-describedby="personalDetailsStatus"
       >
@@ -210,8 +209,8 @@
       <ng-container name>
         <a
           class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-          (click)="handleRoute(fineMacRoutes.children.courtDetails)"
-          (keyup.enter)="handleRoute(fineMacRoutes.children.courtDetails)"
+          (click)="handleRoute(fineMacRoutes.children.courtDetails, false, $event)"
+          (keyup.enter)="handleRoute(fineMacRoutes.children.courtDetails, false, $event)"
           tabindex="0"
           aria-describedby="courtDetailsStatus"
         >
@@ -239,8 +238,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.parentGuardianDetails)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.parentGuardianDetails)"
+        (click)="handleRoute(fineMacRoutes.children.parentGuardianDetails, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.parentGuardianDetails, false, $event)"
         tabindex="0"
         aria-describedby="parentOrGuardianDetailsStatus"
       >
@@ -267,8 +266,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.offenceDetails)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.offenceDetails)"
+        (click)="handleRoute(fineMacRoutes.children.offenceDetails, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.offenceDetails, false, $event)"
         tabindex="0"
         aria-describedby="offenceDetailsStatus"
       >
@@ -321,8 +320,8 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutes.children.accountCommentsNotes)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.accountCommentsNotes)"
+        (click)="handleRoute(fineMacRoutes.children.accountCommentsNotes, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.accountCommentsNotes, false, $event)"
         tabindex="0"
         aria-describedby="accountCommentsAndNotesStatus"
       >

@@ -23,7 +23,10 @@ export class FinesMacOffenceDetailsComponent {
    *
    * @param route - The route to navigate to.
    */
-  public handleRoute(route: string): void {
+  public handleRoute(route: string, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
     this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 }

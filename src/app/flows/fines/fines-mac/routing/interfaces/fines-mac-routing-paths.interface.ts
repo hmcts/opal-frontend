@@ -1,5 +1,6 @@
-export interface IFinesMacRoutingPath {
-  root: string;
+import { IChildRoutingPaths } from '@interfaces/flows/routing';
+
+export interface IFinesMacRoutingPaths extends IChildRoutingPaths {
   children: {
     accountDetails: string;
     createAccount: string;

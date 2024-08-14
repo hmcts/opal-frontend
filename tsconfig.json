@@ -37,6 +37,7 @@
       "@interfaces/components/govuk": ["./src/app/components/govuk/interfaces/index.ts"],
       "@interfaces/components/alphagov": ["src/app/components/alphagov/interfaces/index.ts"],
       "@interfaces/fines": ["./src/app/flows/fines/interfaces/index.ts"],
+      "@interfaces/flows/routing": ["./src/app/flows/routing/interfaces/index.ts"],
       "@mocks": ["./src/app/mocks/index.ts"],
       "@mocks/fines": ["src/app/flows/fines/services/opal-fines-service/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],

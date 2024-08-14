@@ -1,4 +1,4 @@
 import { IFinesMacRoutingNestedRoutes } from './fines-mac-routing-nested-routes.interface';
-import { IFinesMacRoutingPath } from './fines-mac-routing-path.interface';
+import { IFinesMacRoutingPaths } from './fines-mac-routing-paths.interface';
 
-export { IFinesMacRoutingNestedRoutes, IFinesMacRoutingPath };
+export { IFinesMacRoutingNestedRoutes, IFinesMacRoutingPaths };

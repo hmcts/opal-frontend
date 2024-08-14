@@ -31,9 +31,24 @@ describe('FinesMacOffenceDetailsComponent', () => {
 
   it('should navigate to account-details page on handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+
     component.handleRoute('test');
+
     expect(routerSpy).toHaveBeenCalledWith(['test'], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should navigate to account-details page on handleRoute with event', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const event = jasmine.createSpyObj('event', ['preventDefault']);
+
+    component.handleRoute('test', event);
+
+    expect(routerSpy).toHaveBeenCalledWith(['test'], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+
+    expect(event.preventDefault).toHaveBeenCalled();
   });
 });

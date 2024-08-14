@@ -566,7 +566,10 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    * @param route string of route
    * @param nonRelative boolean indicating if route is relative to the parent
    */
-  public handleRoute(route: string, nonRelative: boolean = false): void {
+  public handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
     this.unsavedChanges.emit(this.hasUnsavedChanges());
     if (nonRelative) {
       this.router.navigate([route]);

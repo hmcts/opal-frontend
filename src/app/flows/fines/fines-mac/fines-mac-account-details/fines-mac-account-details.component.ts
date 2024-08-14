@@ -129,7 +129,10 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    *
    * @param route - The route to navigate to.
    */
-  public handleRoute(route: string, nonRelative: boolean = false): void {
+  public handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
     if (nonRelative) {
       this.router.navigate([route]);
     } else {
