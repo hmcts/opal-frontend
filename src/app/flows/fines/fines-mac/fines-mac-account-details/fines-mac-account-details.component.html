@@ -69,7 +69,12 @@
     <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
   </p>
   <p class="govuk-body">
-    <a href="#" class="govuk-link govuk-color_error" (click)="handleRoute(routingPaths.dashboard, true)"
+    <a
+      href="#"
+      class="govuk-link govuk-color_error"
+      (click)="handleRoute(routingPaths.dashboard, true)"
+      (keyup.enter)="handleRoute(routingPaths.dashboard, true)"
+      tabindex="0"
       >Cancel account creation</a
     >
   </p>
@@ -93,6 +98,8 @@
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
         (click)="handleRoute(fineMacRoutes.children.contactDetails)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.contactDetails)"
+        tabindex="0"
         aria-describedby="contactDetailsStatus"
       >
         Contact details
@@ -119,6 +126,8 @@
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
         (click)="handleRoute(fineMacRoutes.children.employerDetails)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.employerDetails)"
+        tabindex="0"
         aria-describedby="employerDetailsStatus"
       >
         Employer details
@@ -145,6 +154,8 @@
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
         (click)="handleRoute(fineMacRoutes.children.companyDetails)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.companyDetails)"
+        tabindex="0"
         aria-describedby="companyDetailsStatus"
       >
         Company details
@@ -171,6 +182,8 @@
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
         (click)="handleRoute(fineMacRoutes.children.personalDetails)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.personalDetails)"
+        tabindex="0"
         aria-describedby="personalDetailsStatus"
       >
         Personal details
@@ -198,6 +211,8 @@
         <a
           class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
           (click)="handleRoute(fineMacRoutes.children.courtDetails)"
+          (keyup.enter)="handleRoute(fineMacRoutes.children.courtDetails)"
+          tabindex="0"
           aria-describedby="courtDetailsStatus"
         >
           Court details
@@ -225,6 +240,8 @@
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
         (click)="handleRoute(fineMacRoutes.children.parentGuardianDetails)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.parentGuardianDetails)"
+        tabindex="0"
         aria-describedby="parentOrGuardianDetailsStatus"
       >
         Parent or guardian details
@@ -251,6 +268,8 @@
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
         (click)="handleRoute(fineMacRoutes.children.offenceDetails)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.offenceDetails)"
+        tabindex="0"
         aria-describedby="offenceDetailsStatus"
       >
         Offence details
@@ -303,6 +322,8 @@
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
         (click)="handleRoute(fineMacRoutes.children.accountCommentsNotes)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.accountCommentsNotes)"
+        tabindex="0"
         aria-describedby="accountCommentsAndNotesStatus"
       >
         Account comments and notes
