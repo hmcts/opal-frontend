@@ -129,8 +129,12 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    *
    * @param route - The route to navigate to.
    */
-  public handleRoute(route: string): void {
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  public handleRoute(route: string, nonRelative: boolean = false): void {
+    if (nonRelative) {
+      this.router.navigate([route]);
+    } else {
+      this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+    }
   }
 
   public ngOnInit(): void {

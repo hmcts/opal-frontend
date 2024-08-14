@@ -69,7 +69,7 @@
     <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
   </p>
   <p class="govuk-body">
-    <a href="#" class="govuk-link govuk-color_error" (onclick)="handleRoute(routingPaths.dashboard)"
+    <a href="#" class="govuk-link govuk-color_error" (click)="handleRoute(routingPaths.dashboard, true)"
       >Cancel account creation</a
     >
   </p>
@@ -92,7 +92,7 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]="fineMacRoutes.children.contactDetails"
+        (click)="handleRoute(fineMacRoutes.children.contactDetails)"
         aria-describedby="contactDetailsStatus"
       >
         Contact details
@@ -118,7 +118,7 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]="fineMacRoutes.children.employerDetails"
+        (click)="handleRoute(fineMacRoutes.children.employerDetails)"
         aria-describedby="employerDetailsStatus"
       >
         Employer details
@@ -144,7 +144,7 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]="fineMacRoutes.children.companyDetails"
+        (click)="handleRoute(fineMacRoutes.children.companyDetails)"
         aria-describedby="companyDetailsStatus"
       >
         Company details
@@ -170,7 +170,7 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]="fineMacRoutes.children.personalDetails"
+        (click)="handleRoute(fineMacRoutes.children.personalDetails)"
         aria-describedby="personalDetailsStatus"
       >
         Personal details
@@ -197,7 +197,7 @@
       <ng-container name>
         <a
           class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-          [routerLink]="fineMacRoutes.children.courtDetails"
+          (click)="handleRoute(fineMacRoutes.children.courtDetails)"
           aria-describedby="courtDetailsStatus"
         >
           Court details
@@ -224,7 +224,7 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]="fineMacRoutes.children.parentGuardianDetails"
+        (click)="handleRoute(fineMacRoutes.children.parentGuardianDetails)"
         aria-describedby="parentOrGuardianDetailsStatus"
       >
         Parent or guardian details
@@ -250,7 +250,7 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]="fineMacRoutes.children.offenceDetails"
+        (click)="handleRoute(fineMacRoutes.children.offenceDetails)"
         aria-describedby="offenceDetailsStatus"
       >
         Offence details
@@ -302,7 +302,7 @@
     <ng-container name>
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]="fineMacRoutes.children.accountCommentsNotes"
+        (click)="handleRoute(fineMacRoutes.children.accountCommentsNotes)"
         aria-describedby="accountCommentsAndNotesStatus"
       >
         Account comments and notes
