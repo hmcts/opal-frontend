@@ -369,9 +369,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:18.1.4":
-  version: 18.1.4
-  resolution: "@angular/cdk@npm:18.1.4"
+"@angular/cdk@npm:18.2.0":
+  version: 18.2.0
+  resolution: "@angular/cdk@npm:18.2.0"
   dependencies:
     parse5: "npm:^7.1.2"
     tslib: "npm:^2.3.0"
@@ -382,7 +382,7 @@ __metadata:
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: 10/8b17e117de1dd7b3d214e1f0bf2c366a05b6f954215c28a4b0a4c323820e4c2e9172b35d35074306dc9cbd63184dd80ee482b958e16ae6c5a2d1450e975fdf92
+  checksum: 10/4427e9ffd1d60a29e21e168576dcf1336b32448d1e857d8dfdee80787d55cd0b49f00fbfac509ed1a62bd8cf66cb48b868b590ce6d1b4242e56c1abe78b75b6a
   languageName: node
   linkType: hard
 
@@ -493,20 +493,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:18.1.4":
-  version: 18.1.4
-  resolution: "@angular/material@npm:18.1.4"
+"@angular/material@npm:18.2.0":
+  version: 18.2.0
+  resolution: "@angular/material@npm:18.2.0"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/animations": ^18.0.0 || ^19.0.0
-    "@angular/cdk": 18.1.4
+    "@angular/cdk": 18.2.0
     "@angular/common": ^18.0.0 || ^19.0.0
     "@angular/core": ^18.0.0 || ^19.0.0
     "@angular/forms": ^18.0.0 || ^19.0.0
     "@angular/platform-browser": ^18.0.0 || ^19.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/328d015b46a4bc735d740654cc3f3970ee77fe66f5ad94664c96987b5cf3c5412d0b9537a7c0cbf3c94ac024ab608065d653d38ccf1902ae18c24c90ba091a36
+  checksum: 10/ad9f98c6b52ed9713f7ce91a4a6da060296c382db8bae09b0ec8222082a59a6661ebb15261157332d66aaefa7054308a635e84c726d5762784cc04b04e42bad8
   languageName: node
   linkType: hard
 
@@ -12412,14 +12412,14 @@ __metadata:
     "@angular-eslint/schematics": "npm:18.2.0"
     "@angular-eslint/template-parser": "npm:18.2.0"
     "@angular/animations": "npm:^18.0.5"
-    "@angular/cdk": "npm:18.1.4"
+    "@angular/cdk": "npm:18.2.0"
     "@angular/cli": "npm:^18.0.6"
     "@angular/common": "npm:^18.0.5"
     "@angular/compiler": "npm:^18.0.5"
     "@angular/compiler-cli": "npm:^18.0.5"
     "@angular/core": "npm:^18.0.5"
     "@angular/forms": "npm:^18.0.5"
-    "@angular/material": "npm:18.1.4"
+    "@angular/material": "npm:18.2.0"
     "@angular/platform-browser": "npm:^18.0.5"
     "@angular/platform-browser-dynamic": "npm:^18.0.5"
     "@angular/platform-server": "npm:^18.0.5"
