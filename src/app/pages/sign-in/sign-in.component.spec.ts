@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignInComponent } from './sign-in.component';
-import { ISignInStubForm } from '@interfaces';
+import { ISignInStubForm } from './interfaces';
 import { GlobalStateService } from '@services';
 import { ChangeDetectorRef } from '@angular/core';
 import { SsoEndpoints } from '@enums';

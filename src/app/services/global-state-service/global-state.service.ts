@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { ILaunchDarklyConfig, ITokenExpiry, IUserState } from '@interfaces';
+import { ITransferStateLaunchDarklyConfig, ISessionTokenExpiry, ISessionUserState } from '@interfaces';
 import { LDFlagSet } from 'launchdarkly-js-client-sdk';
 
 @Injectable({
@@ -10,10 +10,10 @@ export class GlobalStateService {
   public readonly authenticated = signal<boolean>(false);
   public readonly error = signal({ error: false, message: '' });
   public readonly featureFlags = signal<LDFlagSet>({});
-  public readonly userState = signal<IUserState>({} as IUserState);
+  public readonly userState = signal<ISessionUserState>({} as ISessionUserState);
 
   // Non reactive state
   public ssoEnabled: boolean | null = false;
-  public launchDarklyConfig: ILaunchDarklyConfig | null = null;
-  public tokenExpiry!: ITokenExpiry;
+  public launchDarklyConfig: ITransferStateLaunchDarklyConfig | null = null;
+  public tokenExpiry!: ISessionTokenExpiry;
 }

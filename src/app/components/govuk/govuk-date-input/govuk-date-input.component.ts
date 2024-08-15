@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { IGovUkDateInput } from '@interfaces';
+import { IGovUkDateInput } from '@interfaces/components/govuk';
 
 @Component({
   selector: 'app-govuk-date-input',
@@ -33,10 +33,6 @@ export class GovukDateInputComponent {
   }
 
   public hasError(): boolean {
-    return (
-      (this.errorDay !== null && this.errorDay !== undefined) ||
-      (this.errorMonth !== null && this.errorMonth !== undefined) ||
-      (this.errorYear !== null && this.errorYear !== undefined)
-    );
+    return this.errorDay !== null || this.errorMonth !== null || this.errorYear !== null;
   }
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AccountEnquiryRoutes, ManualAccountCreationRoutes } from '@enums';
+import { FINES_ROUTING_PATHS } from '@constants/fines';
 import { GlobalStateService } from '@services';
 
 @Component({
@@ -12,6 +12,5 @@ import { GlobalStateService } from '@services';
 })
 export class DashboardComponent {
   public readonly globalStateService = inject(GlobalStateService);
-  public readonly manualAccountCreationRoutes = ManualAccountCreationRoutes;
-  public readonly accountEnquiryRoutes = AccountEnquiryRoutes;
+  public readonly finesRoutingPaths = FINES_ROUTING_PATHS;
 }

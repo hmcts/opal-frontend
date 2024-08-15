@@ -1,7 +1,8 @@
 {
   "node-env": "NODE_ENV",
   "opal-api": {
-    "url": "OPAL_API_URL"
+    "url": "OPAL_API_URL",
+    "opal-fines-service": "OPAL_FINES_SERVICE_API_URL"
   },
   "frontend-hostname": {
     "prod": "FRONTEND_HOSTNAME"

@@ -2,14 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, UrlSegment } from '@angular/router';
 
 import { userStateResolver } from './user-state.resolver';
-import { IUserState } from '@interfaces';
+import { ISessionUserState } from '@interfaces';
 import { of } from 'rxjs';
 
-import { USER_STATE_MOCK } from '@mocks';
+import { SESSION_USER_STATE_MOCK } from '@mocks';
 import { SessionService } from '@services';
 
 describe('userStateResolver', () => {
-  const executeResolver: ResolveFn<IUserState> = (...resolverParameters) =>
+  const executeResolver: ResolveFn<ISessionUserState> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => userStateResolver(...resolverParameters));
   let mockSessionService: jasmine.SpyObj<SessionService>;
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe('userStateResolver', () => {
   });
 
   it('should resolve user state', async () => {
-    const mockUserState: IUserState = USER_STATE_MOCK;
+    const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
     mockSessionService.getUserState.and.returnValue(of(mockUserState));
 
     const urlPath = 'account-enquiry-search';

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { GovukButtonComponent } from '@components';
+import { GovukButtonComponent } from '@components/govuk';
 
 @Component({
   selector: 'app-access-denied',

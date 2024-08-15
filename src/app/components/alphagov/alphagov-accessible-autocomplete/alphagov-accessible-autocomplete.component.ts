@@ -12,9 +12,9 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { IAutoCompleteItem } from '@interfaces';
+import { IAlphagovAccessibleAutocompleteItem } from './interfaces';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
-import { Subscription, pairwise, startWith } from 'rxjs';
+import { Subject, Subscription, pairwise, startWith, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-alphagov-accessible-autocomplete',
@@ -31,7 +31,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
   @Input({ required: false }) hintText!: string;
-  @Input({ required: true }) autoCompleteItems: IAutoCompleteItem[] = [];
+  @Input({ required: true }) autoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [];
   @Input() showAllValues = false;
   @Input({ required: false }) errors: string | null = null;
 
@@ -40,6 +40,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _control!: FormControl;
   private controlSub!: Subscription;
+  private ngUnsubscribe = new Subject<void>();
   public autoCompleteId!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl) {
@@ -63,7 +64,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   }
 
   public hasError(): boolean {
-    return this.errors !== null && typeof this.errors !== 'undefined';
+    return this.errors !== null;
   }
 
   /**
@@ -136,18 +137,20 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
    * If the new value is null, it clears the autocomplete container and configures the autocomplete.
    */
   private setupControlSub(): void {
-    this.controlSub = this._control.valueChanges.pipe(startWith(null), pairwise()).subscribe(([prev, next]) => {
-      // If both values are null, we don't need to do anything
-      if (prev === null && next === null) {
-        return;
-      }
+    this.controlSub = this._control.valueChanges
+      .pipe(startWith(null), pairwise(), takeUntil(this.ngUnsubscribe))
+      .subscribe(([prev, next]) => {
+        // If both values are null, we don't need to do anything
+        if (prev === null && next === null) {
+          return;
+        }
 
-      // Otherwise, next is null, we need to clear the autocomplete
-      if (next === null) {
-        this.autocompleteContainer.nativeElement.innerHTML = '';
-        this.configureAutoComplete();
-      }
-    });
+        // Otherwise, next is null, we need to clear the autocomplete
+        if (next === null) {
+          this.autocompleteContainer.nativeElement.innerHTML = '';
+          this.configureAutoComplete();
+        }
+      });
   }
 
   ngOnInit(): void {
@@ -156,6 +159,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   }
 
   ngOnDestroy(): void {
-    this.controlSub.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

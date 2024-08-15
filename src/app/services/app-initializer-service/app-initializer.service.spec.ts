@@ -3,10 +3,10 @@ import { AppInitializerService } from './app-initializer.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { of } from 'rxjs';
-import { ITokenExpiry } from '@interfaces';
-import { TOKEN_EXPIRY_MOCK } from '@mocks';
+import { ISessionTokenExpiry } from '@interfaces';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@mocks';
 
-const tokenExpiry: ITokenExpiry = TOKEN_EXPIRY_MOCK;
+const tokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
 describe('AppInitializerService', () => {
   let service: AppInitializerService;

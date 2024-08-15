@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { GovukButtonComponent, GovukTextInputComponent } from '@components';
-import { ISignInStubForm } from '@interfaces';
+import { GovukButtonComponent, GovukTextInputComponent } from '@components/govuk';
+import { ISignInStubForm } from '../interfaces';
 
 @Component({
   selector: 'app-sign-in-stub',

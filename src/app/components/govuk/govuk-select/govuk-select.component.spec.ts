@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukSelectComponent } from './govuk-select.component';
 import { By } from '@angular/platform-browser';
-import { CT_LIST_MOCK } from '@mocks';
 import { FormControl } from '@angular/forms';
+import { GOVUK_SELECT_OPTIONS_MOCK } from './mocks';
 
 describe('GovukSelectComponent', () => {
   let component: GovukSelectComponent;
@@ -20,7 +20,7 @@ describe('GovukSelectComponent', () => {
     formControl = new FormControl(null);
 
     component.control = formControl;
-    component.options = CT_LIST_MOCK;
+    component.options = GOVUK_SELECT_OPTIONS_MOCK;
     component.labelText = 'Court';
     component.labelClasses = 'ct-list';
     component.selectId = 'court';
@@ -56,7 +56,7 @@ describe('GovukSelectComponent', () => {
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
 
-    expect(fixture.debugElement.query(By.css('#court')).nativeElement.value).toBe(CT_LIST_MOCK[2].value);
+    expect(fixture.debugElement.query(By.css('#court')).nativeElement.value).toBe(GOVUK_SELECT_OPTIONS_MOCK[2].value);
   });
 
   it('should return false when errors is undefined', () => {

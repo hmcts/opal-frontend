@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { TransferStateService } from './transfer-state.service';
 
-import { TRANSFER_STATE_MOCK } from '@mocks';
+import { TRANSFER_STATE_MOCK } from './mocks';
 import { GlobalStateService } from '../global-state-service/global-state.service';
 import { PLATFORM_ID, makeStateKey } from '@angular/core';
-import { ITransferServerState } from '@interfaces';
+import { ITransferStateServerState } from './interfaces';
 
 describe('TransferStateService', () => {
   let service: TransferStateService;
@@ -31,7 +31,7 @@ describe('TransferStateService', () => {
   });
 
   it('should get the transfer state from the server', () => {
-    const storeKeyTransferState = makeStateKey<ITransferServerState>('serverTransferState');
+    const storeKeyTransferState = makeStateKey<ITransferStateServerState>('serverTransferState');
     const serverTransferState = service['transferState'].get(storeKeyTransferState, undefined);
     expect(serverTransferState).toEqual(TRANSFER_STATE_MOCK);
   });

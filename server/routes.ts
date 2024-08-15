@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import config from 'config';
 
 import type { NextFunction, Request, Response } from 'express';
-import { proxy } from './api';
+import { opalFinesServiceProxy, proxy } from './api';
 import { ssoAuthenticated, ssoLoginCallback, ssoLogin, ssoLogout, ssoLogoutCallback } from './sso';
 import {
   ssoLoginStub,
@@ -19,6 +19,7 @@ export default class Routes {
     const ssoEnabled: boolean = config.get('features.sso.enabled');
 
     app.use('/api', proxy());
+    app.use('/opal-fines-service', opalFinesServiceProxy());
 
     // Declare use of body-parser AFTER the use of proxy https://github.com/villadora/express-http-proxy
     app.use(bodyParser.json());

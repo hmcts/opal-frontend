@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { IGovUkSelectOptions } from '@interfaces';
+import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
 @Component({
   selector: 'app-govuk-select',

@@ -22,15 +22,33 @@
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
     "paths": {
-      "@components": ["./src/app/components/index.ts"],
+      "@components/govuk": ["./src/app/components/govuk/index.ts"],
+      "@components/moj": ["./src/app/components/moj/index.ts"],
+      "@components/scotgov": ["./src/app/components/scotgov/index.ts"],
+      "@components/custom": ["./src/app/components/custom/index.ts"],
+      "@components/alphagov": ["./src/app/components/alphagov/index.ts"],
+      "@components/abstract": ["./src/app/components/abstract/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
+      "@enums/fines": ["./src/app/flows/fines/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
+      "@services/fines": ["./src/app/flows/fines/services/index.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],
+      "@interfaces/components/abstract": ["./src/app/components/abstract/interfaces/index.ts"],
+      "@interfaces/components/govuk": ["./src/app/components/govuk/interfaces/index.ts"],
+      "@interfaces/components/alphagov": ["src/app/components/alphagov/interfaces/index.ts"],
+      "@interfaces/fines": ["./src/app/flows/fines/interfaces/index.ts"],
+      "@interfaces/flows/routing": ["./src/app/flows/routing/interfaces/index.ts"],
       "@mocks": ["./src/app/mocks/index.ts"],
+      "@mocks/fines": ["src/app/flows/fines/services/opal-fines-service/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
+      "@constants/fines": ["./src/app/flows/fines/constants/index.ts"],
       "@interceptors": ["./src/app/interceptors/index.ts"],
-      "@resolvers": ["./src/app/resolvers/index.ts"]
+      "@resolvers": ["./src/app/resolvers/index.ts"],
+      "@routing/pages": ["./src/app/pages/routing/index.ts"],
+      "@routing/fines": ["./src/app/flows/fines/routing/index.ts"],
+      "@routing/flows": ["./src/app/flows/routing/index.ts"],
+      "@validators": ["./src/app/validators/index.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
@@ -40,7 +58,7 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src", "node_modules/cypress"],
+  "include": ["src", "node_modules/cypress", "src/app/interfaces/.ts"],
   "exclude": ["node_modules/cypress", "**/*.mock.ts", "**/helpers/*.ts"]
 }
 

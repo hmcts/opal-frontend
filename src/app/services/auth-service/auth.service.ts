@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { catchError, tap, throwError } from 'rxjs';
 
-import { SsoEndpoints } from 'src/app/enums/sso-endpoints';
+import { SsoEndpoints } from '../../enums/sso-endpoints';
 import { GlobalStateService } from '../global-state-service/global-state.service';
 
 @Injectable({

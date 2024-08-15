@@ -6,7 +6,8 @@
   },
 
   "opal-api": {
-    "url": "http://localhost:4550"
+    "url": "http://localhost:4550",
+    "opal-fines-service": "http://localhost:4550"
   },
   "features": {
     "redis": {
