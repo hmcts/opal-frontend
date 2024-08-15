@@ -96,4 +96,12 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.languagePreferences,
+    loadComponent: () =>
+      import('../fines-mac-language-preferences/fines-mac-language-preferences.component').then(
+        (c) => c.FinesMacLanguagePreferencesComponent,
+      ),
+    canActivate: [authGuard],
+  },
 ];

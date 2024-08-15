@@ -1,27 +1,72 @@
-<div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-column-three-quarters">
   <app-govuk-heading-with-caption
     captionText="Create account"
     headingText="Account details"
   ></app-govuk-heading-with-caption>
   <app-govuk-summary-list summaryListId="accountDetails">
-    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="businessUnit">
+    <div
+      app-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      summaryListId="accountDetails"
+      summaryListRowId="businessUnit"
+    >
       <ng-container name>Business unit</ng-container>
       <ng-container value>
         <p class="govuk-body">{{ finesService.finesMacState.accountDetails.BusinessUnit }}</p>
       </ng-container>
     </div>
-    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="accountType">
+    <div
+      app-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      summaryListId="accountDetails"
+      summaryListRowId="accountType"
+    >
       <ng-container name>Account type</ng-container>
       <ng-container value>
         <p class="govuk-body">{{ accountType }}</p>
       </ng-container>
     </div>
-    <div app-govuk-summary-list-row summaryListId="accountDetails" summaryListRowId="defendantType">
+    <div
+      app-govuk-summary-list-row
+      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+      summaryListId="accountDetails"
+      summaryListRowId="defendantType"
+    >
       <ng-container name>Defendant type</ng-container>
       <ng-container value>
         <p class="govuk-body">{{ defendantType }}</p>
       </ng-container>
     </div>
+    <!-- @if (finesService.finesMacState.businessUnit.welshLanguage) { -->
+    <div
+      app-govuk-summary-list-row
+      class="govuk-summary-list__row"
+      summaryListId="accountDetails"
+      summaryListRowId="languagePreferences"
+      [actionEnabled]="true"
+      (actionClick)="handleRoute(fineMacRoutes.children.languagePreferences)"
+    >
+      <ng-container name>Document language</ng-container>
+      <ng-container value>
+        <p class="govuk-body">Welsh and English</p>
+      </ng-container>
+      <ng-container action>Change</ng-container>
+    </div>
+    <div
+      app-govuk-summary-list-row
+      class="govuk-summary-list__row"
+      summaryListId="accountDetails"
+      summaryListRowId="languagePreferences"
+      [actionEnabled]="true"
+      (actionClick)="handleRoute(fineMacRoutes.children.languagePreferences)"
+    >
+      <ng-container name>Hearing language</ng-container>
+      <ng-container value>
+        <p class="govuk-body">Welsh and English</p>
+      </ng-container>
+      <ng-container action>Change</ng-container>
+    </div>
+    <!-- } -->
   </app-govuk-summary-list>
   <h2 class="govuk-heading-m">Court details</h2>
   <ng-container *ngTemplateOutlet="courtDetails"></ng-container>

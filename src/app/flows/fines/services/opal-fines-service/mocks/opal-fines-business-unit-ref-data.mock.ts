@@ -10,6 +10,8 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [],
+      welshLanguage: false,
     },
     {
       businessUnitId: 67,
@@ -18,6 +20,8 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [],
+      welshLanguage: false,
     },
     {
       businessUnitId: 68,
@@ -26,6 +30,8 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Confiscation',
+      configurationItems: [],
+      welshLanguage: false,
     },
     {
       businessUnitId: 69,
@@ -34,6 +40,8 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [],
+      welshLanguage: false,
     },
     {
       businessUnitId: 70,
@@ -42,6 +50,8 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [],
+      welshLanguage: false,
     },
     {
       businessUnitId: 71,
@@ -50,6 +60,8 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [],
+      welshLanguage: false,
     },
     {
       businessUnitId: 73,
@@ -58,6 +70,8 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'RM',
+      configurationItems: [],
+      welshLanguage: false,
     },
   ],
 };

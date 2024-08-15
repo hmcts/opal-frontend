@@ -5,6 +5,8 @@ export interface IOpalFinesBusinessUnit {
   opalDomain: null | string;
   businessUnitId: number;
   businessUnitName: string;
+  configurationItems: [];
+  welshLanguage: boolean | null;
 }
 
 export interface IOpalFinesBusinessUnitRefData {
