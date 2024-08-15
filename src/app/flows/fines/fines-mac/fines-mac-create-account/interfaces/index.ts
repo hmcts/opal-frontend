@@ -1,5 +1,6 @@
 import { IFinesMacCreateAccountAccountTypeDefendantTypes } from './fines-mac-create-account-account-type-defendant-types.interface';
 import { IFinesMacCreateAccountAccountTypes } from './fines-mac-create-account-account-types.interface';
+import { IFinesMacCreateAccountConfigurationItems } from './fines-mac-create-account-configuration-items.interface';
 import { IFinesMacCreateAccountControlNames } from './fines-mac-create-account-control-names.interface';
 import { IFinesMacCreateAccountDefendantTypes } from './fines-mac-create-account-defendant-types.interface';
 import { IFinesMacCreateAccountFieldErrors } from './fines-mac-create-account-field-errors.interface';
@@ -12,4 +13,5 @@ export {
   IFinesMacCreateAccountAccountTypeDefendantTypes,
   IFinesMacCreateAccountAccountTypes,
   IFinesMacCreateAccountDefendantTypes,
+  IFinesMacCreateAccountConfigurationItems,
 };

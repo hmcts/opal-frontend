@@ -1,30 +1,49 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
+import { AbstractFormParentBaseComponent } from '@components/abstract';
+import { IFinesMacLanguagePreferencesState } from './interfaces';
+import { FinesService } from '@services/fines';
+import { FinesMacLanguagePreferencesFormComponent } from './fines-mac-language-preferences-form/fines-mac-language-preferences-form.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-fines-mac-language-preferences',
   standalone: true,
-  imports: [GovukButtonComponent, GovukCancelLinkComponent],
+  imports: [CommonModule, RouterModule, FinesMacLanguagePreferencesFormComponent],
   templateUrl: './fines-mac-language-preferences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacLanguagePreferencesComponent {
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+export class FinesMacLanguagePreferencesComponent extends AbstractFormParentBaseComponent {
+  protected readonly finesService = inject(FinesService);
 
   public readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
   /**
-   * Navigates to the specified route.
+   * Handles the submission of language preferences form.
+   * Updates the finesMacState with the new language preferences,
+   * sets unsavedChanges to false, and stateChanges to true.
+   * Navigates to the account details page.
    *
-   * @param route - The route to navigate to.
+   * @param languagePreferencesForm - The form data containing the language preferences.
    */
-  public handleRoute(route: string, event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  public handleLanguagePreferencesSubmit(languagePreferencesForm: IFinesMacLanguagePreferencesState): void {
+    this.finesService.finesMacState = {
+      ...this.finesService.finesMacState,
+      languagePreferences: languagePreferencesForm,
+      unsavedChanges: false,
+      stateChanges: true,
+    };
+
+    this.routerNavigate(this.finesMacRoutingPaths.children.accountDetails);
+  }
+
+  /**
+   * Handles the changes in unsaved state for the fines-mac-language-preferences component.
+   * @param unsavedChanges - A boolean value indicating whether there are unsaved changes.
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }

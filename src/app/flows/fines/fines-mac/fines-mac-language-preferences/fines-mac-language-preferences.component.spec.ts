@@ -3,15 +3,29 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacLanguagePreferencesComponent } from './fines-mac-language-preferences.component';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
+import { FinesService } from '@services/fines';
+import { IFinesMacLanguagePreferencesState } from './interfaces';
+import { FINES_MAC_STATE_MOCK } from '../mocks';
+import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from './mocks';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacLanguagePreferencesComponent', () => {
   let component: FinesMacLanguagePreferencesComponent;
   let fixture: ComponentFixture<FinesMacLanguagePreferencesComponent>;
+  let finesService: jasmine.SpyObj<FinesService>;
+  let formData: IFinesMacLanguagePreferencesState;
 
   beforeEach(async () => {
+    finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
+
+    finesService.finesMacState = FINES_MAC_STATE_MOCK;
+
+    formData = FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK;
+
     await TestBed.configureTestingModule({
       imports: [FinesMacLanguagePreferencesComponent],
       providers: [
+        { provide: FinesService, useValue: finesService },
         provideRouter([]),
         {
           provide: ActivatedRoute,
@@ -31,21 +45,24 @@ describe('FinesMacLanguagePreferencesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate on handleRoute', () => {
+  it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component.handleRoute('test');
+    component.handleLanguagePreferencesSubmit(formData);
 
-    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
+    expect(finesService.finesMacState.languagePreferences).toEqual(formData);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
-  it('should navigate on handleRoute with event', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
+  it('should test handleUnsavedChanges', () => {
+    component.handleUnsavedChanges(true);
+    expect(component['finesService'].finesMacState.unsavedChanges).toBeTruthy();
+    expect(component.stateUnsavedChanges).toBeTruthy();
 
-    component.handleRoute('test', event);
-
-    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
-    expect(event.preventDefault).toHaveBeenCalled();
+    component.handleUnsavedChanges(false);
+    expect(component['finesService'].finesMacState.unsavedChanges).toBeFalsy();
+    expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

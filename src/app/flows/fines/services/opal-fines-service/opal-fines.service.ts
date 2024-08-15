@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from './constants';
 import {
   IOpalFinesAddDefendantAccountNoteBody,
+  IOpalFinesBusinessUnit,
   IOpalFinesBusinessUnitRefData,
   IOpalFinesCourtRefData,
   IOpalFinesDefendantAccount,
@@ -142,5 +143,15 @@ export class OpalFines {
     }
 
     return this.localJusticeAreasCache$;
+  }
+
+  /**
+   * Retrieves the value of a configuration item for a specific business unit.
+   * @param businessUnit - The business unit for which to retrieve the configuration item value.
+   * @param itemName - The name of the configuration item.
+   * @returns The value of the configuration item, or null if the item is not found.
+   */
+  public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
+    return businessUnit.configurationItems.find((item) => item.itemName === itemName)?.itemValue ?? null;
   }
 }
