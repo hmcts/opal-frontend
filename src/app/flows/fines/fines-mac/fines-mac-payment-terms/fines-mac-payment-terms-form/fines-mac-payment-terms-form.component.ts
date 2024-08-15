@@ -5,7 +5,6 @@ import { FinesService } from '../../../services/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
-import { FINES_MAC_PAYMENT_TERMS_PAYMENT_TERMS } from '../constants/fines-mac-payment-terms-payment-terms';
 import { CommonModule } from '@angular/common';
 import {
   GovukButtonComponent,
@@ -15,6 +14,7 @@ import {
   GovukRadioComponent,
   GovukRadiosItemComponent,
 } from '@components/govuk';
+import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -39,7 +39,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   protected readonly finesService = inject(FinesService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
-  public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(FINES_MAC_PAYMENT_TERMS_PAYMENT_TERMS).map(
+  public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(FINES_MAC_PAYMENT_TERMS_OPTIONS).map(
     ([key, value]) => ({ key, value }),
   );
 
