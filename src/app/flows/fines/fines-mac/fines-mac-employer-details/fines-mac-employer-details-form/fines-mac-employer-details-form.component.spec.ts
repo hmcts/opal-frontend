@@ -64,4 +64,19 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
   });
+
+  it('should call initialCreateAccountSetup method', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupEmployerDetailsForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setInitialErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'rePopulateForm');
+
+    component['initialEmployerDetailsSetup']();
+
+    expect(component['setupEmployerDetailsForm']).toHaveBeenCalled();
+    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(component['finesService'].finesMacState.employerDetails);
+  });
 });

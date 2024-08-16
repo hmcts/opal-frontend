@@ -55,7 +55,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../
 })
 export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
-  @Output() private formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   public readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
@@ -99,28 +99,11 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   }
 
   /**
-   * Handles the form submission event.
-   *
-   * @param event - The form submission event.
-   * @returns void
-   */
-  public handleFormSubmit(event: SubmitEvent): void {
-    this.handleErrorMessages();
-
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
-    }
-  }
-
-  /**
    * Performs the initial setup for the personal details form component.
    * This method sets up the personal details form, alias configuration, aliases,
    * initial error messages, nested route, form population, and alias checkbox listener.
    */
-  private initialSetup(): void {
+  private initialCompanyDetailsSetup(): void {
     const { companyDetails } = this.finesService.finesMacState;
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
@@ -131,7 +114,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   }
 
   public override ngOnInit(): void {
-    this.initialSetup();
+    this.initialCompanyDetailsSetup();
     super.ngOnInit();
   }
 }
