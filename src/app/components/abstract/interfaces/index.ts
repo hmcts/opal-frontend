@@ -1,6 +1,7 @@
 import {
   IAbstractFormBaseFieldError,
   IAbstractFormBaseFieldErrors,
+  IAbstractFormBaseForm,
   IAbstractFormBaseFormError,
   IAbstractFormBaseFormErrorSummaryMessage,
   IAbstractFormBaseHighPriorityFormError,
@@ -20,4 +21,5 @@ export {
   IAbstractFormBaseFormError,
   IAbstractFormBaseHighPriorityFormError,
   IAbstractFormArrayControl,
+  IAbstractFormBaseForm,
 };

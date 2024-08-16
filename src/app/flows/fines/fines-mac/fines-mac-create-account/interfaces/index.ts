@@ -4,12 +4,14 @@ import { IFinesMacCreateAccountConfigurationItems } from './fines-mac-create-acc
 import { IFinesMacCreateAccountControlNames } from './fines-mac-create-account-control-names.interface';
 import { IFinesMacCreateAccountDefendantTypes } from './fines-mac-create-account-defendant-types.interface';
 import { IFinesMacCreateAccountFieldErrors } from './fines-mac-create-account-field-errors.interface';
+import { IFinesMacCreateAccountForm } from './fines-mac-create-account-form.interface';
 import { IFinesMacCreateAccountState } from './fines-mac-create-account-state.interface';
 
 export {
   IFinesMacCreateAccountControlNames,
   IFinesMacCreateAccountFieldErrors,
   IFinesMacCreateAccountState,
+  IFinesMacCreateAccountForm,
   IFinesMacCreateAccountAccountTypeDefendantTypes,
   IFinesMacCreateAccountAccountTypes,
   IFinesMacCreateAccountDefendantTypes,

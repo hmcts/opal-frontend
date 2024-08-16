@@ -46,7 +46,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../
 })
 export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
-  @Output() private formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -81,31 +81,14 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
    * This method sets up the employer details form, initializes error messages,
    * and repopulates the form with the initial values.
    */
-  private initialSetup(): void {
+  private initialEmployerDetailsSetup(): void {
     this.setupEmployerDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.finesService.finesMacState.employerDetails);
   }
 
-  /**
-   * Handles the form submission event.
-   *
-   * @param event - The form submission event.
-   * @returns void
-   */
-  public handleFormSubmit(event: SubmitEvent): void {
-    this.handleErrorMessages();
-
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
-    }
-  }
-
   public override ngOnInit(): void {
-    this.initialSetup();
+    this.initialEmployerDetailsSetup();
     super.ngOnInit();
   }
 }

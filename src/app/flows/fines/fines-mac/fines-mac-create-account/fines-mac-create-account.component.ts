@@ -5,7 +5,7 @@ import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
-import { IFinesMacCreateAccountState } from './interfaces';
+import { IFinesMacCreateAccountForm } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
@@ -71,9 +71,9 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    * Handles the form submission for account details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleAccountDetailsSubmit(formData: IFinesMacCreateAccountState): void {
+  public handleAccountDetailsSubmit(formSubmit: IFinesMacCreateAccountForm): void {
     // Get the business unit and default language from the business unit if applicable
-    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formData.BusinessUnit)!;
+    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formSubmit.formData.BusinessUnit)!;
     const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
       businessUnit,
       this.configurationItems.defaultDocumentLanguagePreference,
@@ -85,7 +85,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
 
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      accountDetails: formData,
+      accountDetails: formSubmit.formData,
       businessUnit: businessUnit,
       languagePreferences: {
         ...this.finesService.finesMacState.languagePreferences,

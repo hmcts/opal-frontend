@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { IFinesMacCreateAccountState } from './interfaces';
+import { IFinesMacCreateAccountForm, IFinesMacCreateAccountState } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import {
   OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK,
@@ -14,12 +14,15 @@ import {
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK, FINES_MAC_CREATE_ACCOUNT_STATE_MOCK } from './mocks';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountComponent>;
   let finesService: jasmine.SpyObj<FinesService>;
   let opalFinesService: Partial<OpalFines>;
+  let formData: IFinesMacCreateAccountState;
+  let formSubmit: IFinesMacCreateAccountForm;
 
   beforeEach(async () => {
     opalFinesService = {
@@ -31,6 +34,8 @@ describe('FinesMacCreateAccountComponent', () => {
     finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
     finesService.finesMacState = FINES_MAC_STATE_MOCK;
+    formData = FINES_MAC_CREATE_ACCOUNT_STATE_MOCK;
+    formSubmit = FINES_MAC_CREATE_ACCOUNT_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountComponent],
@@ -67,13 +72,8 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should handle form submission and navigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const formData: IFinesMacCreateAccountState = {
-      BusinessUnit: 'Test',
-      AccountType: 'Test',
-      DefendantType: 'Test',
-    };
 
-    component.handleAccountDetailsSubmit(formData);
+    component.handleAccountDetailsSubmit(formSubmit);
 
     expect(finesService.finesMacState.accountDetails).toEqual(formData);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
