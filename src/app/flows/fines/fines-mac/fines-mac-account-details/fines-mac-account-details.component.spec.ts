@@ -173,15 +173,18 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component.accountCreationStatus['paymentTerms']).toBeTruthy();
   });
 
-  it('should call setDefendantType and setAccountType on initialSetup', () => {
+  it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setAccountType');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'checkStatus');
 
-    component['initialSetup']();
+    component['initialAccountDetailsSetup']();
 
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
+    expect(component['checkStatus']).toHaveBeenCalled();
   });
 });

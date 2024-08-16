@@ -4,19 +4,22 @@ import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../servi
 import { Validators } from '@angular/forms';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import { FINES_MAC_CREATE_ACCOUNT_STATE_MOCK } from '../mocks';
+import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks';
 import { ActivatedRoute } from '@angular/router';
+import { IFinesMacCreateAccountForm } from '../interfaces';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+  let formSubmit: IFinesMacCreateAccountForm;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    formSubmit = FINES_MAC_CREATE_ACCOUNT_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
@@ -59,14 +62,14 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    const formValue = FINES_MAC_CREATE_ACCOUNT_STATE_MOCK;
     spyOn(component['formSubmit'], 'emit');
+    const event = {} as SubmitEvent;
 
-    component['rePopulateForm'](formValue);
+    component['rePopulateForm'](formSubmit.formData);
 
-    component.handleFormSubmit();
+    component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formValue);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {
@@ -187,7 +190,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component.form.get('DefendantType')?.value).not.toBeDefined();
   });
 
-  it('should call initialSetup method', () => {
+  it('should call initialCreateAccountSetup method', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupCreateAccountForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -197,7 +200,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
 
-    component['initialSetup']();
+    component['initialCreateAccountSetup']();
 
     expect(component['setupCreateAccountForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();

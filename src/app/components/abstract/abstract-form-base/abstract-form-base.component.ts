@@ -11,6 +11,7 @@ import {
   IAbstractFormBaseHighPriorityFormError,
 } from '../interfaces';
 import {
+  IAbstractFormBaseForm,
   IAbstractFormBaseFormArrayControl,
   IAbstractFormBaseFormArrayControlValidation,
   IAbstractFormBaseFormArrayControls,
@@ -23,6 +24,8 @@ import {
 })
 export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected unsavedChanges = new EventEmitter<boolean>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @Output() protected formSubmit = new EventEmitter<IAbstractFormBaseForm<any>>();
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -635,6 +638,23 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
 
     // Return the new list of form array controls...
     return this.removeFormArrayControl(index, formArrayControls);
+  }
+
+  /**
+   * Handles the form submission event.
+   *
+   * @param event - The form submission event.
+   * @returns void
+   */
+  public handleFormSubmit(event: SubmitEvent): void {
+    this.handleErrorMessages();
+
+    if (this.form.valid) {
+      this.formSubmitted = true;
+      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
+    }
   }
 
   public ngOnInit(): void {
