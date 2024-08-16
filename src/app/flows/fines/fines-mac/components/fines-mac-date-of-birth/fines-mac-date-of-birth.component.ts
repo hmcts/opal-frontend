@@ -15,6 +15,7 @@ export class FinesMacDateOfBirthComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Output() dateChange = new EventEmitter<string>();
+  @Input({ required: true }) componentName!: string;
 
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
 

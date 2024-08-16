@@ -18,6 +18,7 @@ describe('FinesMacNationalInsuranceNumberComponent', () => {
     component.form = new FormGroup({
       NationalInsuranceNumber: new FormControl(null),
     });
+    component.componentName = 'testComponent';
     component.formControlErrorMessages = {};
 
     fixture.detectChanges();
