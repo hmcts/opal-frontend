@@ -13,4 +13,5 @@ import { GovukTextInputComponent } from '@components/govuk';
 export class FinesMacNationalInsuranceNumberComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
+  @Input({ required: true }) componentName!: string;
 }
