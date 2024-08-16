@@ -1,7 +1,7 @@
 <app-govuk-heading-with-caption captionText="Create account" headingText="Business unit and defendant type">
 </app-govuk-heading-with-caption>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
-<form (submit)="handleFormSubmit()">
+<form (submit)="handleFormSubmit($event)">
   @if (autoCompleteItems.length === 1) {
     <p>The account will be created in {{ form.get('BusinessUnit')?.value }}</p>
   } @else {

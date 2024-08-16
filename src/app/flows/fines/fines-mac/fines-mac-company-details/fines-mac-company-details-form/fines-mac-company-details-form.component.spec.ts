@@ -102,7 +102,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setUpAliasCheckboxListener');
 
-    component['initialSetup']();
+    component['initialCompanyDetailsSetup']();
 
     expect(component['setupCompanyDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
