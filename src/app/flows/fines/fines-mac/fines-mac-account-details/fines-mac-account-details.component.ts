@@ -119,9 +119,10 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    * Performs the initial setup for the fines-mac-account-details component.
    * Sets the defendant type and account type.
    */
-  private initialSetup(): void {
+  private initialAccountDetailsSetup(): void {
     this.setDefendantType();
     this.setAccountType();
+    this.checkStatus();
   }
 
   /**
@@ -141,7 +142,6 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.initialSetup();
-    this.checkStatus();
+    this.initialAccountDetailsSetup();
   }
 }

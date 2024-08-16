@@ -53,7 +53,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacParentGuardianDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
@@ -89,35 +89,19 @@ export class FinesMacParentGuardianDetailsFormComponent extends AbstractFormBase
   }
 
   /**
-   * Performs the initial setup for the fines-mac-parent-guardian-details-form component.
-   * This method sets up the parent guardian details form, initializes error messages,
-   * and repopulates the form with the previously entered data.
+   * Sets up the initial parent guardian details.
+   * This method initializes the parent guardian details form,
+   * sets the initial error messages, and repopulates the form
+   * with the existing parent guardian details.
    */
-  private initialSetup(): void {
+  private initialParentGuardianDetailsSetup(): void {
     this.setupParentGuardianDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.finesService.finesMacState.parentGuardianDetails);
   }
 
-  /**
-   * Handles the form submission event.
-   *
-   * @param event - The form submission event.
-   * @returns void
-   */
-  public handleFormSubmit(event: SubmitEvent): void {
-    this.handleErrorMessages();
-
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
-    }
-  }
-
   public override ngOnInit(): void {
-    this.initialSetup();
+    this.initialParentGuardianDetailsSetup();
     super.ngOnInit();
   }
 }
