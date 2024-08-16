@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,7 +27,7 @@ import {
   IFinesMacCreateAccountAccountTypes,
   IFinesMacCreateAccountControlNames,
   IFinesMacCreateAccountFieldErrors,
-  IFinesMacCreateAccountState,
+  IFinesMacCreateAccountForm,
 } from '../interfaces';
 
 import {
@@ -49,10 +58,10 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
     AlphagovAccessibleAutocompleteComponent,
   ],
   templateUrl: './fines-mac-create-account-form.component.html',
-  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IFinesMacCreateAccountState>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacCreateAccountForm>();
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
   protected readonly finesService = inject(FinesService);
@@ -143,7 +152,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    * This method sets up the create account form, initializes error messages,
    * sets up the account type listener, and repopulates the form with account details.
    */
-  private initialSetup(): void {
+  private initialCreateAccountSetup(): void {
     this.setupCreateAccountForm();
     this.setInitialErrorMessages();
     this.setupAccountTypeListener();
@@ -153,19 +162,13 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   /**
    * Handles the form submission event.
    */
-  public handleFormSubmit(): void {
+  public override handleFormSubmit(event: SubmitEvent): void {
     this.setDefendantType();
-    this.handleErrorMessages();
-
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
-    }
+    super.handleFormSubmit(event);
   }
 
   public override ngOnInit(): void {
-    this.initialSetup();
+    this.initialCreateAccountSetup();
     super.ngOnInit();
   }
 

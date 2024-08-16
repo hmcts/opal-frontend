@@ -44,7 +44,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   @Input() public defendantType!: string;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Output() private formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -72,31 +72,14 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
    * This method sets up the court details form, initializes error messages,
    * and repopulates the form with the initial court details data.
    */
-  private initialSetup(): void {
+  private initialCourtDetailsSetup(): void {
     this.setupCourtDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.finesService.finesMacState.courtDetails);
   }
 
-  /**
-   * Handles the form submission event.
-   *
-   * @param event - The form submission event.
-   * @returns void
-   */
-  public handleFormSubmit(event: SubmitEvent): void {
-    this.handleErrorMessages();
-
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
-    }
-  }
-
   public override ngOnInit(): void {
-    this.initialSetup();
+    this.initialCourtDetailsSetup();
     super.ngOnInit();
   }
 }
