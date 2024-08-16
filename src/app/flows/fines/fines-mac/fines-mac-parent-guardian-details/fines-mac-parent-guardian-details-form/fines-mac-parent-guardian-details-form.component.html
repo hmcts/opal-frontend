@@ -13,10 +13,12 @@
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
     (dateChange)="setInputValue($event, 'DOB')"
+    componentName="parentGuardianDetails"
   ></app-fines-mac-date-of-birth>
   <app-fines-mac-national-insurance-number
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
+    componentName="parentGuardianDetails"
   ></app-fines-mac-national-insurance-number>
   <app-fines-mac-address-block
     [divider]="true"
@@ -24,6 +26,7 @@
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
     [addressFieldIds]="customAddressFieldIds"
+    componentName="parentGuardianDetails"
   ></app-fines-mac-address-block>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
