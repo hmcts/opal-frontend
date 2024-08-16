@@ -17,4 +17,5 @@ export class FinesMacAddressBlockComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input({ required: true }) formControlErrorMessages!: IAbstractFormControlErrorMessage;
   @Input({ required: true }) addressFieldIds!: IFinesMacAddressFieldIds;
+  @Input({ required: true }) componentName!: string;
 }

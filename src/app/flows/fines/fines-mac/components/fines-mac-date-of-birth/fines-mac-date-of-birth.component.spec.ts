@@ -17,6 +17,7 @@ describe('FinesMacDateOfBirthComponent', () => {
     component.form = new FormGroup({
       DOB: new FormControl(null),
     });
+    component.componentName = 'testComponent';
     component.formControlErrorMessages = {};
 
     fixture.detectChanges();
