@@ -25,6 +25,7 @@ describe('FinesMacAddressBlockComponent', () => {
     });
     component.formControlErrorMessages = {};
     component.addressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
+    component.componentName = 'testComponent';
 
     fixture.detectChanges();
   });
