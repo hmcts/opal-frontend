@@ -4,23 +4,23 @@ import { FinesMacLanguagePreferencesComponent } from './fines-mac-language-prefe
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesService } from '@services/fines';
-import { IFinesMacLanguagePreferencesState } from './interfaces';
+import { IFinesMacLanguagePreferencesForm } from './interfaces';
 import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from './mocks';
+import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from './mocks';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacLanguagePreferencesComponent', () => {
   let component: FinesMacLanguagePreferencesComponent;
   let fixture: ComponentFixture<FinesMacLanguagePreferencesComponent>;
   let finesService: jasmine.SpyObj<FinesService>;
-  let formData: IFinesMacLanguagePreferencesState;
+  let formSubmit: IFinesMacLanguagePreferencesForm;
 
   beforeEach(async () => {
     finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
     finesService.finesMacState = FINES_MAC_STATE_MOCK;
 
-    formData = FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK;
+    formSubmit = FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacLanguagePreferencesComponent],
@@ -48,9 +48,9 @@ describe('FinesMacLanguagePreferencesComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component.handleLanguagePreferencesSubmit(formData);
+    component.handleLanguagePreferencesSubmit(formSubmit);
 
-    expect(finesService.finesMacState.languagePreferences).toEqual(formData);
+    expect(finesService.finesMacState.languagePreferences).toEqual(formSubmit.formData);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });

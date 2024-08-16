@@ -7,7 +7,7 @@ import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
 } from '@components/govuk';
-import { IFinesMacLanguagePreferencesState } from '../interfaces';
+import { IFinesMacLanguagePreferencesForm } from '../interfaces';
 import { FinesService } from '../../../services/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants';
@@ -27,7 +27,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IFinesMacLanguagePreferencesState>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacLanguagePreferencesForm>();
 
   protected readonly finesService = inject(FinesService);
 
@@ -52,29 +52,13 @@ export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseCo
    * This method sets up the language preferences form and repopulates it with the
    * saved language preferences from the fines service.
    */
-  private initialSetup(): void {
+  private initialLanguagePreferencesSetup(): void {
     this.setupLanguagePreferencesForm();
     this.rePopulateForm(this.finesService.finesMacState.languagePreferences);
   }
 
-  /**
-   * Handles the form submission event.
-   *
-   * @param event - The form submission event.
-   * @returns void
-   */
-  public handleFormSubmit(): void {
-    this.handleErrorMessages();
-
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit(this.form.value);
-    }
-  }
-
   public override ngOnInit(): void {
-    this.initialSetup();
+    this.initialLanguagePreferencesSetup();
     super.ngOnInit();
   }
 }

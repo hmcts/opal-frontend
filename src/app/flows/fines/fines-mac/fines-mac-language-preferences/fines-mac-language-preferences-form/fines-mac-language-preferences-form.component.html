@@ -3,7 +3,7 @@
   These language preferences are for the defendant, or a parent or guardian if they are paying on behalf of the
   defendant.
 </p>
-<form (submit)="handleFormSubmit()" [formGroup]="form">
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-radio fieldSetId="documentLanguage" legendText="Documents" legendClasses="govuk-fieldset__legend--s">
     @for (languageOption of languageOptions; track languageOption.key) {
       <div

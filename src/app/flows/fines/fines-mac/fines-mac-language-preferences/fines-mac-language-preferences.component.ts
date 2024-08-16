@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { IFinesMacLanguagePreferencesState } from './interfaces';
+import { IFinesMacLanguagePreferencesForm } from './interfaces';
 import { FinesService } from '@services/fines';
 import { FinesMacLanguagePreferencesFormComponent } from './fines-mac-language-preferences-form/fines-mac-language-preferences-form.component';
 import { CommonModule } from '@angular/common';
@@ -27,10 +27,10 @@ export class FinesMacLanguagePreferencesComponent extends AbstractFormParentBase
    *
    * @param languagePreferencesForm - The form data containing the language preferences.
    */
-  public handleLanguagePreferencesSubmit(languagePreferencesForm: IFinesMacLanguagePreferencesState): void {
+  public handleLanguagePreferencesSubmit(formSubmit: IFinesMacLanguagePreferencesForm): void {
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      languagePreferences: languagePreferencesForm,
+      languagePreferences: formSubmit.formData,
       unsavedChanges: false,
       stateChanges: true,
     };
