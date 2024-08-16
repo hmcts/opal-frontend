@@ -34,7 +34,7 @@ import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() private formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
 
   protected readonly finesService = inject(FinesService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -58,28 +58,13 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * This method sets up the payment terms form and repopulates it with the
    * payment terms from the finesMacState.
    */
-  private initialSetup(): void {
+  private initialPaymentTermsSetup(): void {
     this.setupPaymentTermsForm();
     this.rePopulateForm(this.finesService.finesMacState.paymentTerms);
   }
 
-  /**
-   * Handles the form submission event.
-   *
-   * @param event - The submit event object.
-   * @returns void
-   */
-  public handleFormSubmit(event: SubmitEvent): void {
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
-    }
-  }
-
   public override ngOnInit(): void {
-    this.initialSetup();
+    this.initialPaymentTermsSetup();
     super.ngOnInit();
   }
 }

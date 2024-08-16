@@ -60,4 +60,16 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
   });
+
+  it('should call initialPaymentTermsSetup method', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupPaymentTermsForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'rePopulateForm');
+
+    component['initialPaymentTermsSetup']();
+
+    expect(component['setupPaymentTermsForm']).toHaveBeenCalled();
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(component['finesService'].finesMacState.paymentTerms);
+  });
 });
