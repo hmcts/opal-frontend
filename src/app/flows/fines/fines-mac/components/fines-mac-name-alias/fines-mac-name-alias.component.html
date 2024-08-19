@@ -1,0 +1,59 @@
+<div [class]="componentName">
+  <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
+    <div
+      app-govuk-checkboxes-item
+      labelText="Add aliases"
+      inputId="AddAlias"
+      inputName="AddAlias"
+      [control]="form.get('AddAlias')"
+    ></div>
+  </app-govuk-checkboxes>
+
+  @if (form.get('AddAlias')?.value === true) {
+    <div app-govuk-checkboxes-conditional conditionalId="AddAlias" formArrayName="Aliases">
+      @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
+          <app-govuk-text-input
+            labelText="First names"
+            [inputId]="aliasControls[rowIndex]['AliasForenames'].inputId"
+            [inputName]="aliasControls[rowIndex]['AliasForenames'].inputName"
+            inputClasses="govuk-input--width-20"
+            [control]="form.get(['Aliases', rowIndex, aliasControls[rowIndex]['AliasForenames'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['AliasForenames'].controlName]"
+          ></app-govuk-text-input>
+          <app-govuk-text-input
+            labelText="Last name"
+            [inputId]="aliasControls[rowIndex]['AliasSurname'].inputId"
+            [inputName]="aliasControls[rowIndex]['AliasSurname'].inputName"
+            inputClasses="govuk-input--width-20"
+            [control]="form.get(['Aliases', rowIndex, aliasControls[rowIndex]['AliasSurname'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['AliasSurname'].controlName]"
+          ></app-govuk-text-input>
+        </fieldset>
+      }
+
+      @if (aliasControls.length > 1) {
+        <div class="govuk-!-margin-bottom-3">
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            (click)="emitAction(aliasControls.length - 1, 'Aliases', true)"
+            (keyup.enter)="emitAction(aliasControls.length - 1, 'Aliases', true)"
+            tabindex="0"
+          >
+            Remove
+          </a>
+        </div>
+      }
+      @if (aliasControls.length < 5) {
+        <app-govuk-button
+          buttonId="addAlias"
+          buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+          type="button"
+          (buttonClickEvent)="emitAction(aliasControls.length, 'Aliases')"
+          >Add another alias</app-govuk-button
+        >
+      }
+    </div>
+  }
+</div>

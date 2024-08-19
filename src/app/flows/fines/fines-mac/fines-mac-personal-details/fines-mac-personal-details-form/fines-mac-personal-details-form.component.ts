@@ -13,28 +13,18 @@ import { AbstractFormAliasBaseComponent } from '@components/abstract';
 import {
   FinesMacAddressBlockComponent,
   FinesMacDateOfBirthComponent,
+  FinesMacNameAliasComponent,
   FinesMacNationalInsuranceNumberComponent,
+  FinesMacVehicleDetailsComponent,
 } from '../../components';
 import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
-  GovukCheckboxesComponent,
-  GovukCheckboxesConditionalComponent,
-  GovukCheckboxesItemComponent,
   GovukErrorSummaryComponent,
   GovukSelectComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
-import {
-  FINES_MAC_ADDRESS_BLOCK_FIELD_IDS,
-  FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
-  FINES_MAC_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
-} from '../../components/constants';
 import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
@@ -44,14 +34,22 @@ import {
   specialCharactersValidator,
   optionalMaxLengthValidator,
 } from '@validators';
-import { IFinesMacPersonalDetailsForm } from '../interfaces';
+import { IFinesMacPersonalDetailsFieldErrors, IFinesMacPersonalDetailsForm } from '../interfaces';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
-import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import {
+  FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS,
+  FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_ONE_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_THREE_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_TWO_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_ALIAS,
+  FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS,
+  FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS,
 } from '../constants';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 
@@ -65,14 +63,13 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../
     GovukButtonComponent,
     GovukErrorSummaryComponent,
     ScotgovDatePickerComponent,
-    GovukCheckboxesComponent,
-    GovukCheckboxesItemComponent,
-    GovukCheckboxesConditionalComponent,
     GovukSelectComponent,
     GovukCancelLinkComponent,
     FinesMacAddressBlockComponent,
     FinesMacDateOfBirthComponent,
     FinesMacNationalInsuranceNumberComponent,
+    FinesMacNameAliasComponent,
+    FinesMacVehicleDetailsComponent,
   ],
   templateUrl: './fines-mac-personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -82,18 +79,20 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
-  protected readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
+  protected readonly customAddressFieldIds = FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS;
+  protected readonly customVehicleDetailsFieldIds = FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS;
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFormBaseFieldErrors = {
+  override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
-    ...FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS,
-    ...FINES_MAC_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
+    ...FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS,
+    ...FINES_MAC_PERSONAL_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
+    ...FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
+    ...FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_ONE_FIELD_ERRORS,
+    ...FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_TWO_FIELD_ERRORS,
+    ...FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_THREE_FIELD_ERRORS,
+    ...FINES_MAC_PERSONAL_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS,
   };
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS;
@@ -133,7 +132,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    * The alias configuration includes the alias fields and controls validation.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = ['AliasForenames', 'AliasSurname'];
+    this.aliasFields = FINES_MAC_PERSONAL_DETAILS_ALIAS.map((control) => control.controlName);
     this.aliasControlsValidation = FINES_MAC_PERSONAL_DETAILS_ALIAS;
   }
 

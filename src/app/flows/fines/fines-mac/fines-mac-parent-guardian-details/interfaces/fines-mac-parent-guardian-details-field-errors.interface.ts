@@ -1,5 +1,8 @@
 import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
 export interface IFinesMacParentGuardianDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
-  FullName: IAbstractFormBaseFieldError;
+  Forenames: IAbstractFormBaseFieldError;
+  Surname: IAbstractFormBaseFieldError;
+  VehicleMake: IAbstractFormBaseFieldError;
+  VehicleRegistrationMark: IAbstractFormBaseFieldError;
 }

@@ -1,0 +1,28 @@
+@if (divider) {
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+}
+<fieldset class="govuk-fieldset {{ componentName }}">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ legendText }}</legend>
+  @if (vehicleDetailsFieldIds.vehicleMake) {
+    <app-govuk-text-input
+      labelText="Make and model"
+      inputId="{{ vehicleDetailsFieldIds.vehicleMake }}"
+      inputName="{{ vehicleDetailsFieldIds.vehicleMake }}"
+      inputClasses="govuk-input--width-20"
+      labelClasses="govuk-label--s"
+      [control]="form.controls[vehicleDetailsFieldIds.vehicleMake]"
+      [errors]="formControlErrorMessages[vehicleDetailsFieldIds.vehicleMake]"
+    ></app-govuk-text-input>
+  }
+  @if (vehicleDetailsFieldIds.vehicleRegistrationMark) {
+    <app-govuk-text-input
+      labelText="Registration number"
+      inputId="{{ vehicleDetailsFieldIds.vehicleRegistrationMark }}"
+      inputName="{{ vehicleDetailsFieldIds.vehicleRegistrationMark }}"
+      inputClasses="govuk-input--width-10"
+      labelClasses="govuk-label--s"
+      [control]="form.controls[vehicleDetailsFieldIds.vehicleRegistrationMark]"
+      [errors]="formControlErrorMessages[vehicleDetailsFieldIds.vehicleRegistrationMark]"
+    ></app-govuk-text-input>
+  }
+</fieldset>
