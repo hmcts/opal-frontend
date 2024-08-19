@@ -301,7 +301,7 @@
 </ng-template>
 
 <ng-template #paymentTermsLink>
-  @if (accountCreationStatus['personalDetails']) {
+  @if (accountCreationStatus['personalDetails'] || defendantType === defendantTypes['company']) {
     <a
       class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
       [routerLink]=""
@@ -315,7 +315,7 @@
 </ng-template>
 
 <ng-template #paymentTermsStatus>
-  @if (accountCreationStatus['personalDetails']) {
+  @if (accountCreationStatus['personalDetails'] || defendantType === defendantTypes['company']) {
     <ng-container
       *ngTemplateOutlet="
         accountCreationStatus['paymentTerms'] ? provided : notProvided;
