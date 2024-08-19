@@ -1,4 +1,4 @@
-import { IFinesMacAddressBlockLineTwoFieldErrors } from "../interfaces";
+import { IFinesMacAddressBlockLineTwoFieldErrors } from '../interfaces';
 
 export const FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS: IFinesMacAddressBlockLineTwoFieldErrors = {
   AddressLine2: {
