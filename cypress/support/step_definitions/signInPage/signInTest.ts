@@ -83,6 +83,7 @@ Then('I see {string} in the page body header', (bodyHeader) => {
 Then('I see {string} on the sign in page', (bodyHeader) => {
   cy.location('href').then((href: string) => {
     if (href.includes('pr-') || href.includes('localhost') || href.includes('staging')) {
+    if (href.includes('pr-') || href.includes('localhost') || href.includes('staging')) {
       cy.get('.govuk-fieldset__heading').should('contain', bodyHeader);
     } else {
       cy.get('.govuk-heading-m').should('contain', bodyHeader);
