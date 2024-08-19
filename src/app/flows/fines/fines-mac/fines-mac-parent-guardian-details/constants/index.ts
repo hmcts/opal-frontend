@@ -11,6 +11,8 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_IDS } from './fines-mac-pa
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS } from './fines-mac-parent-guardian-details-national-insurance-number-field-errors';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE } from './fines-mac-parent-guardian-details-state';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_IDS } from './fines-mac-parent-guardian-details-vehicle-details-field-ids';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS } from './fines-mac-parent-guardian-details-name-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS } from './fines-mac-parent-guardian-details-vehicle-details-field-errors';
 
 export {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS,
@@ -26,4 +28,6 @@ export {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS,
   FINES_MAC_PARENT_GUARDIAN_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
   FINES_MAC_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
+  FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS,
+  FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
 };

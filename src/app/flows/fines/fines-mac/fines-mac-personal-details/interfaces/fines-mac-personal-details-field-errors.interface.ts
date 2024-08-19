@@ -2,8 +2,4 @@ import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@inte
 
 export interface IFinesMacPersonalDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
   Title: IAbstractFormBaseFieldError;
-  Forenames: IAbstractFormBaseFieldError;
-  Surname: IAbstractFormBaseFieldError;
-  VehicleMake: IAbstractFormBaseFieldError;
-  VehicleRegistrationMark: IAbstractFormBaseFieldError;
 }

@@ -1,3 +1,3 @@
-import { IFinesMacVehicleDetailsFieldIds } from '../../components/fines-mac-vehicle-details/interfaces/fines-mac-vehicle-details-field-ids';
+import { IFinesMacVehicleDetailsFieldIds } from '../../components/fines-mac-vehicle-details/interfaces';
 
 export interface IFinesMacParentGuardianDetailsVehicleDetailsFieldIds extends IFinesMacVehicleDetailsFieldIds {}

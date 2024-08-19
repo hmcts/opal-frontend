@@ -1,6 +1,6 @@
-import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces';
+import { IFinesMacVehicleDetailsFieldErrors } from '../interfaces';
 
-export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuardianDetailsFieldErrors = {
+export const FINES_MAC_VEHICLE_DETAILS_FIELD_ERRORS: IFinesMacVehicleDetailsFieldErrors = {
   VehicleMake: {
     maxlength: {
       message: `The make of car must be 30 characters or fewer`,

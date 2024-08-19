@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { IFinesMacVehicleDetailsFieldIds } from './interfaces/fines-mac-vehicle-details-field-ids';
+import { IFinesMacVehicleDetailsFieldIds } from './interfaces';
 import { FormGroup } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 import { GovukTextInputComponent } from '@components/govuk';
