@@ -22,6 +22,7 @@ When('I sign in as {string}', (email: string) => {
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
   cy.location('href').then((href: string) => {
+    cy.log(href);
     if (href.includes('pr-') || href.includes('localhost') || href.includes('staging')) {
       cy.wait(50);
       cy.get('input[type="text"]').type(emailSSO);
@@ -92,7 +93,7 @@ Then('I see {string} on the sign in page', (bodyHeader) => {
 When('I click the Sign out link', () => {
   cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out').click();
   cy.location('href').then((href: string) => {
-    if (href.includes('pr-') || href.includes('localhost')) {
+    if (href.includes('pr-') || href.includes('localhost') || href.includes('staging')) {
       cy.log('no SSO signing out');
     } else {
       cy.origin('https://login.microsoftonline.com', () => {
