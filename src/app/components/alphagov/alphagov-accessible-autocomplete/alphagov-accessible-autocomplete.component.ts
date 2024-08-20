@@ -14,7 +14,7 @@ import {
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { IAlphagovAccessibleAutocompleteItem } from './interfaces';
 import { AccessibleAutocompleteProps } from 'accessible-autocomplete';
-import { Subject, Subscription, pairwise, startWith, takeUntil } from 'rxjs';
+import { Subject, pairwise, startWith, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-alphagov-accessible-autocomplete',
@@ -39,7 +39,6 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
 
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _control!: FormControl;
-  private controlSub!: Subscription;
   private ngUnsubscribe = new Subject<void>();
   public autoCompleteId!: string;
 
@@ -64,7 +63,8 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   }
 
   public hasError(): boolean {
-    return this.errors !== null;
+    console.log(this.errors);
+    return this.errors !== null && this.errors !== undefined;
   }
 
   /**
@@ -137,7 +137,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
    * If the new value is null, it clears the autocomplete container and configures the autocomplete.
    */
   private setupControlSub(): void {
-    this.controlSub = this._control.valueChanges
+    this._control.valueChanges
       .pipe(startWith(null), pairwise(), takeUntil(this.ngUnsubscribe))
       .subscribe(([prev, next]) => {
         // If both values are null, we don't need to do anything
