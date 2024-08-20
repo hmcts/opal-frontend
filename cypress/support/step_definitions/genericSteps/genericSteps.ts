@@ -74,7 +74,7 @@ Then('I see the {string} section heading', (sectionName: string) => {
   cy.contains('h2', sectionName);
 });
 Then('I see the {string} link under the {string} section', (linkName: string, sectionName: string) => {
-  cy.contains('h2', sectionName).next().contains('a', linkName);
+  cy.contains('h2', sectionName).next().contains('li', linkName);
 });
 Then('I see the {string} text under the {string} section', (text: string, sectionName: string) => {
   cy.contains('h2', sectionName).next().contains('p', text);
