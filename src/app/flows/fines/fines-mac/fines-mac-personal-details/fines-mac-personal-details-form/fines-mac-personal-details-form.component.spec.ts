@@ -46,7 +46,6 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   afterEach(() => {
     component.ngOnDestroy();
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
   });
 
   it('should create', () => {
@@ -126,11 +125,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
     const dateOfBirth = '01/01/1990';
-    mockFinesService.finesMacState.personalDetails.DOB = dateOfBirth;
+    component.form.controls['DOB'].setValue(dateOfBirth);
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(34);
 
-    component.ngOnInit();
+    component['dateOfBirthListener']();
 
     expect(component.age).toEqual(34);
     expect(component.ageLabel).toEqual('Adult');
