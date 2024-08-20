@@ -41,6 +41,12 @@
     (dateChange)="setInputValue($event, 'DOB')"
     componentName="personalDetails"
   ></app-fines-mac-date-of-birth>
+  @if (age && ageLabel) {
+    <app-moj-ticket-panel componentClasses="govuk-!-width-one-third" sectionClasses="moj-ticket-panel__content--blue">
+      <strong>Age: {{ age }}</strong>
+      <p>{{ ageLabel }}</p>
+    </app-moj-ticket-panel>
+  }
   <app-fines-mac-national-insurance-number
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"

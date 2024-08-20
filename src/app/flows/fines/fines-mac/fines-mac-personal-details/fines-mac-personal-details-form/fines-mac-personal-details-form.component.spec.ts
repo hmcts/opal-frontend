@@ -6,16 +6,19 @@ import { IFinesMacPersonalDetailsFieldErrors, IFinesMacPersonalDetailsForm } fro
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks';
 import { ActivatedRoute } from '@angular/router';
+import { DateService } from '@services';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacPersonalDetailsFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
+  let mockDateService: jasmine.SpyObj<DateService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacPersonalDetailsForm;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
+    mockDateService = jasmine.createSpyObj('DateService', ['isValidDate', 'calculateAge']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     formSubmit = FINES_MAC_PERSONAL_DETAILS_FORM_MOCK;
@@ -24,6 +27,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       imports: [FinesMacPersonalDetailsFormComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
+        { provide: DateService, useValue: mockDateService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
@@ -42,6 +46,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   afterEach(() => {
     component.ngOnDestroy();
+    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
   });
 
   it('should create', () => {
@@ -94,6 +99,43 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.aliasControlsValidation).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS);
   });
 
+  it('should call dateOfBirthListener on DOB value changes Adult', () => {
+    const dateOfBirth = '01/01/1990';
+    mockDateService.isValidDate.and.returnValue(true);
+    mockDateService.calculateAge.and.returnValue(34);
+
+    component.form.controls['DOB'].setValue(dateOfBirth);
+
+    expect(mockDateService.isValidDate).toHaveBeenCalledWith(dateOfBirth);
+    expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
+    expect(component.age).toEqual(34);
+    expect(component.ageLabel).toEqual('Adult');
+  });
+
+  it('should call dateOfBirthListener on DOB value changes Youth', () => {
+    const dateOfBirth = '01/01/2014';
+    mockDateService.isValidDate.and.returnValue(true);
+    mockDateService.calculateAge.and.returnValue(10);
+
+    component.form.controls['DOB'].setValue(dateOfBirth);
+
+    expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
+    expect(component.age).toEqual(10);
+    expect(component.ageLabel).toEqual('Youth');
+  });
+
+  it('should call dateOfBirthListener on DOB value changes Adult', () => {
+    const dateOfBirth = '01/01/1990';
+    mockFinesService.finesMacState.personalDetails.DOB = dateOfBirth;
+    mockDateService.isValidDate.and.returnValue(true);
+    mockDateService.calculateAge.and.returnValue(34);
+
+    component.ngOnInit();
+
+    expect(component.age).toEqual(34);
+    expect(component.ageLabel).toEqual('Adult');
+  });
+
   it('should call the necessary setup methods', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPersonalDetailsForm');
@@ -109,6 +151,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     spyOn<any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setUpAliasCheckboxListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'dateOfBirthListener');
 
     component['initialPersonalDetailsSetup']();
 
@@ -122,6 +166,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
+    expect(component['dateOfBirthListener']).toHaveBeenCalled();
   });
 
   it('should call the necessary setup methods - parent/guardian', () => {
@@ -139,6 +184,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     spyOn<any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setUpAliasCheckboxListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'dateOfBirthListener');
 
     component.defendantType = 'parentOrGuardianToPay';
     component['initialPersonalDetailsSetup']();
@@ -153,6 +200,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
+    expect(component['dateOfBirthListener']).toHaveBeenCalled();
   });
 
   it('should add vehicle details field errors', () => {

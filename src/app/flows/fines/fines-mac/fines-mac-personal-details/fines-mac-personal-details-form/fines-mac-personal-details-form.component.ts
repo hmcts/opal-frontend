@@ -58,6 +58,9 @@ import {
   FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS,
 } from '../constants';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { MojTicketPanelComponent } from '@components/moj';
+import { DateService } from '@services';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -71,6 +74,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../
     ScotgovDatePickerComponent,
     GovukSelectComponent,
     GovukCancelLinkComponent,
+    MojTicketPanelComponent,
     FinesMacAddressBlockComponent,
     FinesMacDateOfBirthComponent,
     FinesMacNationalInsuranceNumberComponent,
@@ -85,6 +89,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
+  protected readonly dateService = inject(DateService);
   protected readonly customAddressFieldIds = FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS;
   protected readonly customVehicleDetailsFieldIds = FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS;
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -104,6 +109,9 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS;
   public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
+
+  public age!: number;
+  public ageLabel!: string;
 
   /**
    * Sets up the personal details form.
@@ -156,6 +164,35 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   }
 
   /**
+   * Listens for changes in the date of birth control and updates the age and label accordingly.
+   */
+  private dateOfBirthListener(): void {
+    const dobControl = this.form.controls['DOB'];
+
+    // Initial update if the date of birth is already populated
+    if (dobControl.value) {
+      this.updateAgeAndLabel(dobControl.value);
+    }
+
+    // Subscribe to changes in the date of birth control
+    dobControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((dateOfBirth) => {
+      this.updateAgeAndLabel(dateOfBirth);
+    });
+  }
+
+  /**
+   * Updates the age and age label based on the provided date of birth.
+   *
+   * @param dateOfBirth - The date of birth in string format.
+   */
+  private updateAgeAndLabel(dateOfBirth: string): void {
+    if (this.dateService.isValidDate(dateOfBirth)) {
+      this.age = this.dateService.calculateAge(dateOfBirth);
+      this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
+    }
+  }
+
+  /**
    * Sets up the initial personal details for the fines-mac-personal-details-form component.
    * This method initializes the personal details form, alias configuration, alias form controls,
    * adds vehicle details field errors if the defendant type is 'adultOrYouthOnly', sets initial
@@ -173,6 +210,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     this.setInitialErrorMessages();
     this.rePopulateForm(personalDetails);
     this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
+    this.dateOfBirthListener();
   }
 
   public override ngOnInit(): void {

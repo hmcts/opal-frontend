@@ -7,6 +7,7 @@ import { AppInitializerService } from './app-initializer-service/app-initializer
 import { PermissionsService } from './permissions-service/permissions.service';
 import { TransferStateService } from './transfer-state-service/transfer-state.service';
 import { SessionService } from './session-service/session.service';
+import { DateService } from './date-service/date.service';
 
 export {
   AuthService,
@@ -17,4 +18,5 @@ export {
   PermissionsService,
   TransferStateService,
   SessionService,
+  DateService,
 };
