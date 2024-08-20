@@ -63,7 +63,6 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   }
 
   public hasError(): boolean {
-    console.log(this.errors);
     return this.errors !== null && this.errors !== undefined;
   }
 
