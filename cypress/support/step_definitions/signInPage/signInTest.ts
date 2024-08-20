@@ -22,6 +22,7 @@ When('I sign in as {string}', (email: string) => {
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
   cy.location('href').then((href: string) => {
+    cy.log(href);
     if (href.includes('pr-') || href.includes('localhost')) {
       cy.wait(50);
       cy.get('input[type="text"]').type(emailSSO);
