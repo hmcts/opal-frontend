@@ -210,7 +210,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     this.rePopulateForm(personalDetails);
     this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
     this.dateOfBirthListener();
-    this.yesterday = this.dateService.getYesterdaysDate();
+    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
   public override ngOnInit(): void {

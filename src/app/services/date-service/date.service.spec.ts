@@ -153,7 +153,7 @@ describe('DateServiceService', () => {
 
   it("should get yesterday's date", () => {
     const yesterday = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
-    const result = service.getYesterdaysDate();
+    const result = service.getPreviousDate({ days: 1 });
     expect(result).toEqual(yesterday);
   });
 });

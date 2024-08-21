@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DateTime, Duration } from 'luxon';
+import { DateTime, Duration, DurationLikeObject } from 'luxon';
 
 @Injectable({
   providedIn: 'root',
@@ -50,10 +50,11 @@ export class DateService {
   }
 
   /**
-   * Returns a string representation of yesterday's date.
-   * @returns A string representing yesterday's date in the format specified by the current locale.
+   * Returns a string representation of a date subtracted by the given duration.
+   * @param duration A DurationLikeObject representing the amount of time to subtract from the current date.
+   * @returns A string representing the subtracted date in the format specified by the current locale.
    */
-  public getYesterdaysDate(): string {
-    return DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
+  public getPreviousDate(duration: DurationLikeObject): string {
+    return DateTime.now().minus(duration).setLocale('en-gb').toLocaleString();
   }
 }
