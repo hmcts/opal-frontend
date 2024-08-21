@@ -364,23 +364,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:18.2.0":
-  version: 18.2.0
-  resolution: "@angular/cdk@npm:18.2.0"
-  dependencies:
-    parse5: "npm:^7.1.2"
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/common": ^18.0.0 || ^19.0.0
-    "@angular/core": ^18.0.0 || ^19.0.0
-    rxjs: ^6.5.3 || ^7.4.0
-  dependenciesMeta:
-    parse5:
-      optional: true
-  checksum: 10/4427e9ffd1d60a29e21e168576dcf1336b32448d1e857d8dfdee80787d55cd0b49f00fbfac509ed1a62bd8cf66cb48b868b590ce6d1b4242e56c1abe78b75b6a
-  languageName: node
-  linkType: hard
-
 "@angular/cli@npm:^18.0.6":
   version: 18.2.0
   resolution: "@angular/cli@npm:18.2.0"
@@ -485,23 +468,6 @@ __metadata:
     "@angular/platform-browser": 18.2.0
     rxjs: ^6.5.3 || ^7.4.0
   checksum: 10/e8459c7b468f93392a400d187517e807350b9de5b5efc0b68687985bd7ae22232de0ee64abdc4de1f5037e3290751d6a9963036aa544afbacd8d96e8764937be
-  languageName: node
-  linkType: hard
-
-"@angular/material@npm:18.2.0":
-  version: 18.2.0
-  resolution: "@angular/material@npm:18.2.0"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/animations": ^18.0.0 || ^19.0.0
-    "@angular/cdk": 18.2.0
-    "@angular/common": ^18.0.0 || ^19.0.0
-    "@angular/core": ^18.0.0 || ^19.0.0
-    "@angular/forms": ^18.0.0 || ^19.0.0
-    "@angular/platform-browser": ^18.0.0 || ^19.0.0
-    rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/ad9f98c6b52ed9713f7ce91a4a6da060296c382db8bae09b0ec8222082a59a6661ebb15261157332d66aaefa7054308a635e84c726d5762784cc04b04e42bad8
   languageName: node
   linkType: hard
 
@@ -12018,14 +11984,12 @@ __metadata:
     "@angular-eslint/schematics": "npm:18.3.0"
     "@angular-eslint/template-parser": "npm:18.3.0"
     "@angular/animations": "npm:^18.0.5"
-    "@angular/cdk": "npm:18.2.0"
     "@angular/cli": "npm:^18.0.6"
     "@angular/common": "npm:^18.0.5"
     "@angular/compiler": "npm:^18.0.5"
     "@angular/compiler-cli": "npm:^18.0.5"
     "@angular/core": "npm:^18.0.5"
     "@angular/forms": "npm:^18.0.5"
-    "@angular/material": "npm:18.2.0"
     "@angular/platform-browser": "npm:^18.0.5"
     "@angular/platform-browser-dynamic": "npm:^18.0.5"
     "@angular/platform-server": "npm:^18.0.5"
@@ -12351,7 +12315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:^7.0.0, parse5@npm:^7.1.2":
+"parse5@npm:^7.0.0":
   version: 7.1.2
   resolution: "parse5@npm:7.1.2"
   dependencies:
