@@ -150,4 +150,10 @@ describe('DateServiceService', () => {
 
     expect(result).toBe(false);
   });
+
+  it("should get yesterday's date", () => {
+    const yesterday = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
+    const result = service.getYesterdaysDate();
+    expect(result).toEqual(yesterday);
+  });
 });

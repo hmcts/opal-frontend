@@ -48,4 +48,12 @@ export class DateService {
     const date = typeof dateInput === 'string' ? DateTime.fromFormat(dateInput, 'dd/MM/yyyy') : dateInput;
     return date.isValid;
   }
+
+  /**
+   * Returns a string representation of yesterday's date.
+   * @returns A string representing yesterday's date in the format specified by the current locale.
+   */
+  public getYesterdaysDate(): string {
+    return DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
+  }
 }

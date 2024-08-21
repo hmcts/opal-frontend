@@ -25,7 +25,6 @@ import {
   GovukTextInputComponent,
 } from '@components/govuk';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
-import { DateTime } from 'luxon';
 import {
   alphabeticalTextValidator,
   optionalValidDateValidator,
@@ -108,7 +107,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   };
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS;
-  public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
+  public yesterday!: string;
 
   public age!: number;
   public ageLabel!: string;
@@ -211,6 +210,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     this.rePopulateForm(personalDetails);
     this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
     this.dateOfBirthListener();
+    this.yesterday = this.dateService.getYesterdaysDate();
   }
 
   public override ngOnInit(): void {

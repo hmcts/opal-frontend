@@ -18,7 +18,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
-    mockDateService = jasmine.createSpyObj('DateService', ['isValidDate', 'calculateAge']);
+    mockDateService = jasmine.createSpyObj('DateService', ['isValidDate', 'calculateAge', 'getYesterdaysDate']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     formSubmit = FINES_MAC_PERSONAL_DETAILS_FORM_MOCK;
@@ -152,6 +152,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     spyOn<any>(component, 'setUpAliasCheckboxListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'dateOfBirthListener');
+    mockDateService.getYesterdaysDate.and.returnValue('19/08/2024');
 
     component['initialPersonalDetailsSetup']();
 
@@ -166,6 +167,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
+    expect(mockDateService.getYesterdaysDate).toHaveBeenCalled();
+    expect(component.yesterday).toBeDefined();
   });
 
   it('should call the necessary setup methods - parent/guardian', () => {
@@ -185,6 +188,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     spyOn<any>(component, 'setUpAliasCheckboxListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'dateOfBirthListener');
+    mockDateService.getYesterdaysDate.and.returnValue('19/08/2024');
 
     component.defendantType = 'parentOrGuardianToPay';
     component['initialPersonalDetailsSetup']();
@@ -200,6 +204,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
+    expect(mockDateService.getYesterdaysDate).toHaveBeenCalled();
+    expect(component.yesterday).toBeDefined();
   });
 
   it('should add vehicle details field errors', () => {
