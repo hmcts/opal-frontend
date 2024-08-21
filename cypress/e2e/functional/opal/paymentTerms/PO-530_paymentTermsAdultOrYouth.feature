@@ -19,7 +19,8 @@ Feature: PO-530 Disabling and enabling of Payment Terms on Account details scree
         Then I see "Account details" on the page header
 
     Scenario: AC1, AC2-  If the user has not completed Personal Details then payment terms link should not be enabled
-        And I see the "Payment terms" link under the "Offence and imposition details" section
+
+        And I see the greyed out "Payment terms" under the "Offence and imposition details" section
         Then "Offence details" is verified as enabled
         Then "Payment terms" is verified as disabled
         And I see the status of "Payment terms" is "Cannot start yet"
