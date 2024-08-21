@@ -5,7 +5,7 @@ export const FINES_MAC_NESTED_BUTTONS = {
   offenceDetails: 'Add offence details',
   companyDetails: 'Add company details',
   parentOrGuardianDetails: 'Add parent or guardian details',
-  paymentDetails: 'Add payment terms',
+  paymentTerms: 'Add payment terms',
   additionalDetails: 'Add additional details',
   accountDetails: 'Add account details',
   createAccount: 'Create account',

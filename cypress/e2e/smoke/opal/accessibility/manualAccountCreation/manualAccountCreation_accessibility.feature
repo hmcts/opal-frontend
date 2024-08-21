@@ -54,6 +54,6 @@ Feature: Manual Account Creation - Accessibility
       | contactDetails        | Contact details                  | /fines/manual-account-creation/contact-details         |
       | employerDetails       | Employer details                 | /fines/manual-account-creation/employer-details        |
       | offenceDetails        | Offence details                  | /fines/manual-account-creation/offence-details         |
-      #| paymentTerms          | Payment terms                    | /fines/manual-account-creation/payment-terms           |
+      | paymentTerms          | Payment terms                    | /fines/manual-account-creation/payment-terms           |
       | accountCommentsNotes  | Account comments and notes       | /fines/manual-account-creation/account-comments-notes  |
     Then I click the Sign out link
