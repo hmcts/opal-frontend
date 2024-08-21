@@ -31,18 +31,18 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
   # #And I click on the "Court details" link
   # #Then I see "Court details" on the page header
 
-  # Scenario: AC4 - Parent of guardian details
+  Scenario: AC4 - Parent of guardian details
 
-  #   When I see the "Parent or guardian details" section heading
-  #   And I see the "Parent or guardian details" link under the "Parent or guardian details" section
-  #   And I see the "Contact details" link under the "Parent or guardian details" section
-  #   And I see the "Employer details" link under the "Parent or guardian details" section
-  #   And I click on the "Parent or guardian details" link
-  #   Then I see "Parent or guardian details" on the page header
+    When I see the "Parent or guardian details" section heading
+    And I see the "Parent or guardian details" link under the "Parent or guardian details" section
+    And I see the "Contact details" link under the "Parent or guardian details" section
+    And I see the "Employer details" link under the "Parent or guardian details" section
+    And I click on the "Parent or guardian details" link
+    Then I see "Parent or guardian details" on the page header
 
-  #   When I click on the "Cancel" link
-  #   And I click on the "Contact details" link
-  #   Then I see "Contact details" on the page header
+    When I click on the "Cancel" link
+    And I click on the "Contact details" link
+    Then I see "Parent or guardian contact details" on the page header
 
   #   When I click on the "Cancel" link
   #   And I click on the "Employer details" link
@@ -59,8 +59,8 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
 
     When I see the "Offence and imposition details" section heading
     And I see the "Offence details" link under the "Offence and imposition details" section
-    # due to new design descoping this step, implemented on PO-530
-   # And I see the "Payment terms" link under the "Offence and imposition details" section
+  # due to new design descoping this step, implemented on PO-530
+  # And I see the "Payment terms" link under the "Offence and imposition details" section
 
   #Screens not configured yet, commenting out follow up until they are ready
   #And I click on the "Offence details" link
