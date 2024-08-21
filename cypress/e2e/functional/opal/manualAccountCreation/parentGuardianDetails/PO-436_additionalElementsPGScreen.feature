@@ -106,7 +106,7 @@ Feature: PO-436 Additional elements of the Parent or Guardian details screen
     And I enter "<pgAddress3>" into the "Address line 3" field
     And I enter "<pgPostCode>" into the "Postcode" field
     And I click the "Add contact details" button
-    Then I see "Contact details" on the page header
+    Then I see "Parent or guardian contact details" on the page header
 
     When I click on the "Cancel" link
     And I see the status of "Parent or guardian details" is "Provided"

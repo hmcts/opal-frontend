@@ -42,7 +42,7 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
 
     When I click on the "Cancel" link
     And I click on the "Contact details" link
-    Then I see "Contact details" on the page header
+    Then I see "Parent or guardian contact details" on the page header
 
     When I click on the "Cancel" link
     And I click on the "Employer details" link
