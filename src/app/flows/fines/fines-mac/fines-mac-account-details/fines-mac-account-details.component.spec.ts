@@ -187,4 +187,26 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['checkStatus']).toHaveBeenCalled();
   });
+
+  it('should return true if personalDetails is true', () => {
+    component.accountCreationStatus['personalDetails'] = true;
+    const result = component['canAccessPaymentTerms']();
+    expect(result).toBe(true);
+  });
+
+  it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
+    component.accountCreationStatus['personalDetails'] = false;
+    component.defendantType = 'parentOrGuardianToPay';
+    component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+    const result = component['canAccessPaymentTerms']();
+    expect(result).toBe(true);
+  });
+
+  it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
+    component.accountCreationStatus['personalDetails'] = false;
+    component.defendantType = 'test';
+    component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+    const result = component['canAccessPaymentTerms']();
+    expect(result).toBe(false);
+  });
 });
