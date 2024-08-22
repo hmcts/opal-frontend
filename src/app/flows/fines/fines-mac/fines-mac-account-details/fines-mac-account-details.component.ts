@@ -58,6 +58,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
   public defendantType!: string;
   public accountType!: string;
+  public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
 
   /**
    * Sets the defendant type based on the value stored in the account details.
