@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
@@ -10,6 +10,7 @@ import { FinesService, OpalFines } from '@services/fines';
 import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_STATE } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -18,7 +19,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
   templateUrl: './fines-mac-create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacCreateAccountComponent extends AbstractFormParentBaseComponent {
+export class FinesMacCreateAccountComponent extends AbstractFormParentBaseComponent implements OnInit {
   protected readonly finesService = inject(FinesService);
   private opalFinesService = inject(OpalFines);
   private businessUnits!: IOpalFinesBusinessUnit[];
@@ -89,5 +90,10 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.finesService.finesMacState.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  public ngOnInit(): void {
+    const { accountDetails } = this.finesService.finesMacState;
+    this.finesService.finesMacState = { ...FINES_MAC_STATE, accountDetails: accountDetails };
   }
 }
