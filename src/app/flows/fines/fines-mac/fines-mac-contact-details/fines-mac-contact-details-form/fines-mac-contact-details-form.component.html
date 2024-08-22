@@ -1,4 +1,5 @@
-<h1 class="govuk-heading-l">Contact details</h1>
+@let heading = defendantType === 'parentOrGuardianToPay' ? 'Parent or guardian contact details' : 'Contact details';
+<h1 class="govuk-heading-l">{{ heading }}</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   <app-govuk-text-input

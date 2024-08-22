@@ -98,4 +98,13 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.paymentTerms,
+    loadComponent: () =>
+      import('../fines-mac-payment-terms/fines-mac-payment-terms.component').then(
+        (c) => c.FinesMacPaymentTermsComponent,
+      ),
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
+  },
 ];

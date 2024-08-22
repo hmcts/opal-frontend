@@ -4,7 +4,7 @@
       <h2 class="govuk-error-summary__title">There is a problem</h2>
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
-          @for (error of errors; track error) {
+          @for (error of errors; track error.fieldId) {
             <li>
               <a href="#" (click)="handleErrorClick($event, error.fieldId)">{{ error.message }}</a>
             </li>
