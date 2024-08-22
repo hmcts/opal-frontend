@@ -1,13 +1,5 @@
-import { UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
-
-export type CanDeactivateCanDeactivateType =
-  | Observable<boolean | UrlTree>
-  | Promise<boolean | UrlTree>
-  | boolean
-  | UrlTree;
+import { CanDeactivateTypes } from '../../types';
 
 export interface ICanDeactivateCanComponentDeactivate {
-  canDeactivate: () => CanDeactivateCanDeactivateType;
-  showWarningOnBack: () => CanDeactivateCanDeactivateType;
+  canDeactivate: () => CanDeactivateTypes;
 }

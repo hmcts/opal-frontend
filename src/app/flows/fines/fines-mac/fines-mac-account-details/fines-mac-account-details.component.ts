@@ -22,10 +22,10 @@ import {
   GovukTaskListItemComponent,
 } from '@components/govuk';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router, RouterModule } from '@angular/router';
 import { FinesService } from '@services/fines';
-import { CanDeactivateCanDeactivateType } from '@interfaces';
-
+import { CanDeactivateTypes } from '@types-guards';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-fines-mac-account-details',
   standalone: true,
@@ -54,6 +54,8 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   protected readonly routingPaths = RoutingPaths;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
+  private ngUnsubscribe = new Subject<void>();
+  private userNavigatingBack = false;
 
   protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
@@ -67,7 +69,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    *
    * @returns boolean
    */
-  canDeactivate(): CanDeactivateCanDeactivateType {
+  canDeactivate(): CanDeactivateTypes {
     if (this.finesService.finesMacState.unsavedChanges) {
       return false;
     } else {
@@ -75,8 +77,21 @@ export class FinesMacAccountDetailsComponent implements OnInit {
     }
   }
 
-  showWarningOnBack(): CanDeactivateCanDeactivateType {
-    return true;
+  preventDataLossOnBackGuard(): CanDeactivateTypes {
+    if (this.userNavigatingBack) {
+      return true;
+    }
+    return false;
+  }
+
+  private routerListener(): void {
+    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event) => {
+      if (event instanceof NavigationStart && event.navigationTrigger === 'popstate') {
+        this.userNavigatingBack = true;
+      } else {
+        this.userNavigatingBack = false;
+      }
+    });
   }
 
   /**
@@ -143,6 +158,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
     this.setDefendantType();
     this.setAccountType();
     this.checkStatus();
+    this.routerListener();
   }
 
   /**

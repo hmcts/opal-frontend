@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard, canDeactivateGuard } from '@guards';
+import { authGuard, canDeactivateGuard, preventDataLossOnBackGuard } from '@guards';
 
 import { FINES_MAC_ROUTING_PATHS } from './constants';
-import { preventBackNavigationGuard } from 'src/app/guards/can-deactivate/can-deactivate.guard';
 
 export const routing: Routes = [
   {
@@ -26,7 +25,7 @@ export const routing: Routes = [
         (c) => c.FinesMacAccountDetailsComponent,
       ),
     canActivate: [authGuard],
-    canDeactivate: [canDeactivateGuard, preventBackNavigationGuard],
+    canDeactivate: [canDeactivateGuard, preventDataLossOnBackGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.employerDetails,
