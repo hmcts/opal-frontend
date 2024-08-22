@@ -301,7 +301,7 @@
 </ng-template>
 
 <ng-template #paymentTermsLink>
-  @if (accountCreationStatus['personalDetails'] || paymentTermsBypassDefendantTypes.includes(defendantType)) {
+  @if (canAccessPaymentTerms()) {
     <a
       class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
       (click)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
@@ -317,7 +317,7 @@
 </ng-template>
 
 <ng-template #paymentTermsStatus>
-  @if (accountCreationStatus['personalDetails'] || paymentTermsBypassDefendantTypes.includes(defendantType)) {
+  @if (canAccessPaymentTerms()) {
     <ng-container
       *ngTemplateOutlet="
         accountCreationStatus['paymentTerms'] ? provided : notProvided;
