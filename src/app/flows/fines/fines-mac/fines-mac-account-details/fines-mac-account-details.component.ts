@@ -24,6 +24,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FinesService } from '@services/fines';
+import { CanDeactivateCanDeactivateType } from '@interfaces';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -58,6 +59,25 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
   public defendantType!: string;
   public accountType!: string;
+
+  /**
+   * If the user navigates externally from the site or closes the tab
+   * Check if there is unsaved changes form state -> warning message
+   * Otherwise -> no warning message
+   *
+   * @returns boolean
+   */
+  canDeactivate(): CanDeactivateCanDeactivateType {
+    if (this.finesService.finesMacState.unsavedChanges) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  showWarningOnBack(): CanDeactivateCanDeactivateType {
+    return true;
+  }
 
   /**
    * Sets the defendant type based on the value stored in the account details.

@@ -9,4 +9,5 @@ export type CanDeactivateCanDeactivateType =
 
 export interface ICanDeactivateCanComponentDeactivate {
   canDeactivate: () => CanDeactivateCanDeactivateType;
+  showWarningOnBack: () => CanDeactivateCanDeactivateType;
 }
