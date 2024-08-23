@@ -61,6 +61,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
   public defendantType!: string;
   public accountType!: string;
+  public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
   public pageNavigation!: boolean;
 
   /**
@@ -147,6 +148,20 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
     this.setAccountType();
     this.checkStatus();
     this.routerListener();
+  }
+
+  /**
+   * Determines whether the user can access the payment terms.
+   * The user can access the payment terms if either the personal details have been provided
+   * or the defendant type is included in the payment terms bypass defendant types.
+   *
+   * @returns A boolean value indicating whether the user can access the payment terms.
+   */
+  protected canAccessPaymentTerms(): boolean {
+    return (
+      this.accountCreationStatus['personalDetails'] ||
+      this.paymentTermsBypassDefendantTypes.includes(this.defendantType)
+    );
   }
 
   /**
