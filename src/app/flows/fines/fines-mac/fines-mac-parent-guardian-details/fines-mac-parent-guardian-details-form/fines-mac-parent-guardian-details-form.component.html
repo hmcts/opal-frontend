@@ -1,14 +1,20 @@
 <h1 class="govuk-heading-l">Parent or guardian details</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
-  <app-govuk-text-input
-    labelText="Full name"
-    inputId="FullName"
-    inputName="FullName"
-    labelClasses="govuk-label--s"
-    [control]="form.controls['FullName']"
-    [errors]="formControlErrorMessages['FullName']"
-  ></app-govuk-text-input>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  <app-fines-mac-name
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
+    [nameFieldIds]="customNameFieldIds"
+    componentName="parentGuardianDetails"
+  ></app-fines-mac-name>
+  <app-fines-mac-name-alias
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
+    [aliasControls]="aliasControls"
+    (addAlias)="addAlias($event.aliasControlLength, $event.aliasFieldName)"
+    (removeAlias)="removeAlias($event.aliasControlLength, $event.aliasFieldName)"
+    componentName="parentGuardianDetails"
+  ></app-fines-mac-name-alias>
   <app-fines-mac-date-of-birth
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
@@ -28,6 +34,15 @@
     [addressFieldIds]="customAddressFieldIds"
     componentName="parentGuardianDetails"
   ></app-fines-mac-address-block>
+  <app-fines-mac-vehicle-details
+    [divider]="true"
+    legendText="Vehicle details"
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
+    [vehicleDetailsFieldIds]="customVehicleDetailsFieldIds"
+    componentName="parentGuardianDetails"
+  >
+  </app-fines-mac-vehicle-details>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>

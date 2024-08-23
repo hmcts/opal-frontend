@@ -1,4 +1,6 @@
-export const FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS = {
+import { IFinesMacDateOfBirthFieldErrors } from '../interfaces';
+
+export const FINES_MAC_DATE_OF_BIRTH_FIELD_ERRORS: IFinesMacDateOfBirthFieldErrors = {
   DOB: {
     invalidDateFormat: {
       message: `Enter date of birth in the format DD/MM/YYYY`,
