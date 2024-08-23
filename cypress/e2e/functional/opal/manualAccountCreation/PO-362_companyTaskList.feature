@@ -141,7 +141,8 @@ Feature: PO-362 Company task list screen
     And I click the "Continue" button
 
     Then I see the "Offence and imposition details" section heading
-    And I see the "Payment terms" link under the "Offence and imposition details" section
+  # due to new design descoping this step, implemented on PO-530
+  #And I see the "Payment terms" link under the "Offence and imposition details" section
   # Then "Payment terms" is clicked, nothing happens
 
   Scenario: AC6a.b company task list Review and Publish section

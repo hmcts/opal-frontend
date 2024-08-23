@@ -151,7 +151,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     mockFinesService.finesMacState.accountDetails.AccountType = 'Test';
     mockFinesService.finesMacState.employerDetails.EmployerCompanyName = 'Test';
     mockFinesService.finesMacState.contactDetails.EmailAddress1 = 'Test';
-    mockFinesService.finesMacState.parentGuardianDetails.FullName = 'Test';
+    mockFinesService.finesMacState.parentGuardianDetails.Forenames = 'Test';
     mockFinesService.finesMacState.personalDetails.Forenames = 'Test';
     mockFinesService.finesMacState.companyDetails.CompanyName = 'Test';
     mockFinesService.finesMacState.courtDetails.SendingCourt = 'Test';
@@ -186,5 +186,27 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['checkStatus']).toHaveBeenCalled();
+  });
+
+  it('should return true if personalDetails is true', () => {
+    component.accountCreationStatus['personalDetails'] = true;
+    const result = component['canAccessPaymentTerms']();
+    expect(result).toBe(true);
+  });
+
+  it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
+    component.accountCreationStatus['personalDetails'] = false;
+    component.defendantType = 'parentOrGuardianToPay';
+    component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+    const result = component['canAccessPaymentTerms']();
+    expect(result).toBe(true);
+  });
+
+  it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
+    component.accountCreationStatus['personalDetails'] = false;
+    component.defendantType = 'test';
+    component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+    const result = component['canAccessPaymentTerms']();
+    expect(result).toBe(false);
   });
 });
