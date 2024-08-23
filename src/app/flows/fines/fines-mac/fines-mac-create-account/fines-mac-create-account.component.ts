@@ -11,6 +11,7 @@ import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from '@interfac
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { FINES_MAC_STATE } from '../constants';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -93,7 +94,13 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   }
 
   public ngOnInit(): void {
-    const { accountDetails } = this.finesService.finesMacState;
-    this.finesService.finesMacState = { ...FINES_MAC_STATE, accountDetails: accountDetails };
+    const { BusinessUnit } = this.finesService.finesMacState.accountDetails;
+    this.finesService.finesMacState = {
+      ...FINES_MAC_STATE,
+      accountDetails: {
+        ...FINES_MAC_ACCOUNT_DETAILS_STATE,
+        BusinessUnit: BusinessUnit,
+      },
+    };
   }
 }
