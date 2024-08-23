@@ -55,7 +55,7 @@ Feature: PO-367 create the account details for adult or youth with parent or gua
 
     When I click on the "Cancel" link
     And I click on the "Contact details" link
-    And I see "Contact details" on the page header
+    And I see "Parent or guardian contact details" on the page header
     And I click on the "Cancel" link
     Then I see "Account details" on the page header
 

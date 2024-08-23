@@ -22,8 +22,8 @@ export const FINES_MAC_ROUTING_NESTED_ROUTES: Record<string, IFinesMacRoutingNes
       buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: FINES_MAC_ROUTING_PATHS.children.paymentDetails,
-      buttonText: FINES_MAC_NESTED_BUTTONS.paymentDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.paymentTerms,
+      buttonText: FINES_MAC_NESTED_BUTTONS.paymentTerms,
     },
     companyDetails: null,
     parentOrGuardianDetails: null,
@@ -50,8 +50,8 @@ export const FINES_MAC_ROUTING_NESTED_ROUTES: Record<string, IFinesMacRoutingNes
       buttonText: FINES_MAC_NESTED_BUTTONS.offenceDetails,
     },
     offenceDetails: {
-      nextRoute: FINES_MAC_ROUTING_PATHS.children.paymentDetails,
-      buttonText: FINES_MAC_NESTED_BUTTONS.paymentDetails,
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.paymentTerms,
+      buttonText: FINES_MAC_NESTED_BUTTONS.paymentTerms,
     },
     companyDetails: null,
   },
