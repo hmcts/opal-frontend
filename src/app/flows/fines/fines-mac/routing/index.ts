@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, canDeactivateGuard, preventDataLossOnBackGuard } from '@guards';
+import { authGuard, canDeactivateGuard } from '@guards';
 
 import { FINES_MAC_ROUTING_PATHS } from './constants';
 
@@ -25,7 +25,7 @@ export const routing: Routes = [
         (c) => c.FinesMacAccountDetailsComponent,
       ),
     canActivate: [authGuard],
-    canDeactivate: [canDeactivateGuard, preventDataLossOnBackGuard],
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.employerDetails,

@@ -13,6 +13,7 @@ import {
 import { RoutingPaths } from '@enums';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import {
+  GovukBackLinkComponent,
   GovukButtonComponent,
   GovukHeadingWithCaptionComponent,
   GovukSummaryListComponent,
@@ -22,10 +23,9 @@ import {
   GovukTaskListItemComponent,
 } from '@components/govuk';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, NavigationStart, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
 import { FinesService } from '@services/fines';
 import { CanDeactivateTypes } from '@types-guards';
-import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-fines-mac-account-details',
   standalone: true,
@@ -36,12 +36,12 @@ import { Subject, takeUntil } from 'rxjs';
     GovukTaskListComponent,
     GovukTaskListItemComponent,
     GovukButtonComponent,
-    GovukHeadingWithCaptionComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukHeadingWithCaptionComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,44 +54,15 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   protected readonly routingPaths = RoutingPaths;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
-  private ngUnsubscribe = new Subject<void>();
-  private userNavigatingBack = false;
 
   protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
   public defendantType!: string;
   public accountType!: string;
+  public pageNavigation!: boolean;
 
-  /**
-   * If the user navigates externally from the site or closes the tab
-   * Check if there is unsaved changes form state -> warning message
-   * Otherwise -> no warning message
-   *
-   * @returns boolean
-   */
   canDeactivate(): CanDeactivateTypes {
-    if (this.finesService.finesMacState.unsavedChanges) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  preventDataLossOnBackGuard(): CanDeactivateTypes {
-    if (this.userNavigatingBack) {
-      return true;
-    }
-    return false;
-  }
-
-  private routerListener(): void {
-    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event) => {
-      if (event instanceof NavigationStart && event.navigationTrigger === 'popstate') {
-        this.userNavigatingBack = true;
-      } else {
-        this.userNavigatingBack = false;
-      }
-    });
+    return this.pageNavigation;
   }
 
   /**
@@ -151,6 +122,21 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   }
 
   /**
+   * Listens to router events and updates the `pageNavigation` property accordingly.
+   */
+  private routerListener(): void {
+    this.router.events.pipe().subscribe((event: NavigationEvent) => {
+      if (event instanceof NavigationStart) {
+        if (event.url.includes(this.fineMacRoutes.children.createAccount)) {
+          this.pageNavigation = false;
+        } else {
+          this.pageNavigation = true;
+        }
+      }
+    });
+  }
+
+  /**
    * Performs the initial setup for the fines-mac-account-details component.
    * Sets the defendant type and account type.
    */
@@ -158,7 +144,11 @@ export class FinesMacAccountDetailsComponent implements OnInit {
     this.setDefendantType();
     this.setAccountType();
     this.checkStatus();
-    this.routerListener();
+  }
+
+  public navigateBack(): void {
+    this.pageNavigation = false;
+    this.handleRoute(this.fineMacRoutes.children.createAccount);
   }
 
   /**
@@ -179,5 +169,6 @@ export class FinesMacAccountDetailsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.initialAccountDetailsSetup();
+    this.routerListener();
   }
 }
