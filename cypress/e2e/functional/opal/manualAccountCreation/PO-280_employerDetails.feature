@@ -77,11 +77,19 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #Due to changes in PO-360
     #Then I click save and return to tasks
     Then I click the "Return to account details" button
-    Then I verify the error message
+    Then I see the error message "The employer name must be 35 characters or fewer" at the top of the page
+    Then I see the error message "The employee reference must be 20 characters or fewer" at the top of the page
+    Then I see the error message "The employer address line 1 must be 30 characters or fewer" at the top of the page
+    Then I see the error message "The employer email address must be 76 characters or fewer" at the top of the page
+    And I see the error message "Enter employer telephone number in the correct format" at the top of the page
+    And I see the error message "The employer address line 2 must be 30 characters or fewer" at the top of the page
+    And I see the error message "The employer address line 3 must be 30 characters or fewer" at the top of the page
+    And I see the error message "The employer address line 4 must be 30 characters or fewer" at the top of the page
+    And I see the error message "The employer address line 5 must be 30 characters or fewer" at the top of the page
     # Due to changes in PO-360
     #Then I click save and return to tasks
-    Then I click the "Return to account details" button
-    Then I verify the error message
+    #Then I click the "Return to account details" button
+
     Then I see "Employer details" on the page header
 
     Examples:
@@ -102,6 +110,7 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     And I enter "<incorrectPostCode>" into the "Postcode" field
     And I click the "Return to account details" button
 
+
     Then I see the error message "Enter employer email address in the correct format like, name@example.com" at the top of the page
     And I see the error message "Enter employer telephone number in the correct format" at the top of the page
     And I see the error message "The employer address line 1 must not contain special characters" at the top of the page
@@ -121,8 +130,8 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #Note: Ongoing discussions about Employer name, Employee reference and Postcode
 
     Examples:
-      | incorrectEmployerName | incorrectEmpNino | incorrectEmail | incorrectTelephone | incorrectAddressLine1 | incorrectAddressLine2 | incorrectAddressLine3 | incorrectAddressLine4 | incorrectAddressLine5 | incorrectPostCode |
-      | John Maddy & co       | XNJ#5567         | test-test-com  | 0123 456 789#      | 12* test road         | Avenue_test*          | Avenue_test*          | Avenue_test*          | Avenue_test*          | AB124BM#          |
+      | incorrectEmployerName             | incorrectEmpNino | incorrectEmail | incorrectTelephone | incorrectAddressLine1 | incorrectAddressLine2 | incorrectAddressLine3 | incorrectAddressLine4 | incorrectAddressLine5 | incorrectPostCode |
+      | John Maddy & co., Limited company | XNJ#5567         | test-test-com  | 0123 456 789#      | 12* test road         | Avenue_test*          | Avenue_test*          | Avenue_test*          | Avenue_test*          | AB124BM#          |
 
   #AC3, AC1b
   Scenario Outline:AC3, 1b-unhappy: verifying the employer details page when user not enters all the mandatory fields where filling the details on optional fields then save and return to tasks
@@ -185,6 +194,9 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
   #AC6
   Scenario Outline:AC6-Unhappy: Verifying  If a user amends all fields where validation failures occurred and all validation is adhered to,
 
+    And I enter "<employerName>" into the "Employer name" field
+    And I enter "<employeeNino>" into the "Employee reference" field
+    And I enter "<employerAddress1>" into the "Address line 1" field
     When I enter "<incorrectEmail>" into the "Employer email address" field
     And I enter "<incorrectTelephone>" into the "Employer telephone" field
     And I enter "<incorrectAddressLine2>" into the "Address line 2" field
@@ -196,13 +208,16 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #Due to changes in PO-360
     #Then I click save and return to tasks
     Then I click the "Return to account details" button
-    Then I verify the error message
+    Then I see the error message "Enter employer email address in the correct format like, name@example.com" at the top of the page
+    Then I see the error message "Enter employer telephone number in the correct format" at the top of the page
+    Then I see the error message "The employer address line 2 must be 30 characters or fewer" at the top of the page
+    Then I see the error message "The employer address line 3 must not contain special characters" at the top of the page
+    Then I see the error message "The employer address line 4 must not contain special characters" at the top of the page
+    Then I see the error message "The employer address line 5 must not contain special characters" at the top of the page
 
-    And I enter "<employerName>" into the "Employer name" field
-    And I enter "<employeeNino>" into the "Employee reference" field
     And I enter "<employerEmail>" into the "Employer email address" field
     And I enter "<employerTelephone>" into the "Employer telephone" field
-    And I enter "<employerAddress1>" into the "Address line 1" field
+
     And I enter "<employerAddress2>" into the "Address line 2" field
     And I enter "<employerAddress3>" into the "Address line 3" field
     And I enter "<employerAddress4>" into the "Address line 4" field
@@ -239,7 +254,9 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
     #Due to changes in PO-360
     #Then I click save and return to tasks
     Then I click the "Return to account details" button
-    Then I verify the error message
+    Then I see the error message "Enter employer name" at the top of the page
+    Then I see the error message "Enter employee reference or National Insurance number" at the top of the page
+    Then I see the error message "Enter employer address line 1, typically the building and street" at the top of the page
     Then I see "Employer details" on the page header
 
   #AC8

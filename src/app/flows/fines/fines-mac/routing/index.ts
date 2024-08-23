@@ -97,6 +97,15 @@ export const routing: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: FINES_MAC_ROUTING_PATHS.children.paymentTerms,
+    loadComponent: () =>
+      import('../fines-mac-payment-terms/fines-mac-payment-terms.component').then(
+        (c) => c.FinesMacPaymentTermsComponent,
+      ),
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
+  },
+  {
     path: FINES_MAC_ROUTING_PATHS.children.languagePreferences,
     loadComponent: () =>
       import('../fines-mac-language-preferences/fines-mac-language-preferences.component').then(

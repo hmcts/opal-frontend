@@ -1,7 +1,9 @@
+import { IAbstractFormAliasBaseAliasControls } from '../abstract-form-alias-base/interfaces';
 import {
   IAbstractFormBaseFieldError,
   IAbstractFormBaseFieldErrors,
   IAbstractFormBaseForm,
+  IAbstractFormBaseFormControlErrorMessage,
   IAbstractFormBaseFormError,
   IAbstractFormBaseFormErrorSummaryMessage,
   IAbstractFormBaseHighPriorityFormError,
@@ -22,4 +24,6 @@ export {
   IAbstractFormBaseHighPriorityFormError,
   IAbstractFormArrayControl,
   IAbstractFormBaseForm,
+  IAbstractFormAliasBaseAliasControls,
+  IAbstractFormBaseFormControlErrorMessage,
 };
