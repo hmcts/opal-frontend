@@ -1,0 +1,44 @@
+<h1 class="govuk-heading-l">Payment terms</h1>
+<form (submit)="handleFormSubmit($event)">
+  <app-govuk-radio
+    fieldSetId="paymentTerms"
+    legendText="Select payment terms"
+    legendClasses="govuk-fieldset__legend--s"
+  >
+    @for (paymentTerm of paymentTerms; track paymentTerm.key) {
+      <div
+        app-govuk-radios-item
+        [labelText]="paymentTerm.value"
+        [inputId]="paymentTerm.key"
+        inputName="paymentTerms"
+        [inputValue]="paymentTerm.key"
+        [control]="form.get('paymentTerms')"
+      ></div>
+    }
+  </app-govuk-radio>
+  <app-govuk-checkboxes
+    fieldSetId="enforcementActions"
+    checkboxClasses=""
+    legendText="Enforcement action"
+    legendClasses="govuk-fieldset__legend--s"
+  >
+    <div
+      app-govuk-checkboxes-item
+      labelText="Hold enforcement on account (NOENF)"
+      inputId="holdEnforcementOnAccount"
+      inputName="holdEnforcementOnAccount"
+      [control]="form.get('holdEnforcementOnAccount')"
+    ></div>
+  </app-govuk-checkboxes>
+  <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
+  <app-govuk-button
+    buttonId="submitForm"
+    type="submit"
+    buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
+  >
+    Add account comments and notes
+  </app-govuk-button>
+  <app-govuk-cancel-link
+    (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
+  ></app-govuk-cancel-link>
+</form>

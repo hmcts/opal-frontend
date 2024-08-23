@@ -337,23 +337,41 @@
     taskListItemClasses="govuk-task-list_item--with-link border-top_none"
   >
     <ng-container name>
-      <a
-        class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        [routerLink]=""
-        aria-describedby="paymentTermsStatus"
-      >
-        Payment terms
-      </a>
+      <ng-container *ngTemplateOutlet="paymentTermsLink"></ng-container>
     </ng-container>
     <ng-container status>
-      <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['paymentTerms'] ? provided : notProvided;
-          context: { $implicit: 'paymentTermsStatusTag' }
-        "
-      ></ng-container>
+      <ng-container *ngTemplateOutlet="paymentTermsStatus"></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
+</ng-template>
+
+<ng-template #paymentTermsLink>
+  @if (canAccessPaymentTerms()) {
+    <a
+      class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
+      (click)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
+      (keyup.enter)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
+      tabindex="0"
+      aria-describedby="paymentTermsStatus"
+    >
+      Payment terms
+    </a>
+  } @else {
+    Payment terms
+  }
+</ng-template>
+
+<ng-template #paymentTermsStatus>
+  @if (canAccessPaymentTerms()) {
+    <ng-container
+      *ngTemplateOutlet="
+        accountCreationStatus['paymentTerms'] ? provided : notProvided;
+        context: { $implicit: 'paymentTermsStatusTag' }
+      "
+    ></ng-container>
+  } @else {
+    Cannot start yet
+  }
 </ng-template>
 
 <ng-template #accountCommentsAndNotes>
