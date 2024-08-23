@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   IFinesMacAccountDetailsAccountTypes,
   IFinesMacAccountDetailsDefendantTypes,
@@ -26,6 +26,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
 import { FinesService } from '@services/fines';
 import { CanDeactivateTypes } from '@types-guards';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-fines-mac-account-details',
   standalone: true,
@@ -46,7 +47,7 @@ import { CanDeactivateTypes } from '@types-guards';
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountDetailsComponent implements OnInit {
+export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
@@ -54,6 +55,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   protected readonly routingPaths = RoutingPaths;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
@@ -61,6 +63,10 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   public accountType!: string;
   public pageNavigation!: boolean;
 
+  /**
+   * Determines whether the component can be deactivated.
+   * @returns A CanDeactivateTypes object representing the navigation status.
+   */
   canDeactivate(): CanDeactivateTypes {
     return this.pageNavigation;
   }
@@ -125,13 +131,9 @@ export class FinesMacAccountDetailsComponent implements OnInit {
    * Listens to router events and updates the `pageNavigation` property accordingly.
    */
   private routerListener(): void {
-    this.router.events.pipe().subscribe((event: NavigationEvent) => {
+    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event: NavigationEvent) => {
       if (event instanceof NavigationStart) {
-        if (event.url.includes(this.fineMacRoutes.children.createAccount)) {
-          this.pageNavigation = false;
-        } else {
-          this.pageNavigation = true;
-        }
+        this.pageNavigation = !event.url.includes(this.fineMacRoutes.children.createAccount);
       }
     });
   }
@@ -144,8 +146,13 @@ export class FinesMacAccountDetailsComponent implements OnInit {
     this.setDefendantType();
     this.setAccountType();
     this.checkStatus();
+    this.routerListener();
   }
 
+  /**
+   * Navigates back to the previous page
+   * Page navigation set to false to trigger the canDeactivate guard
+   */
   public navigateBack(): void {
     this.pageNavigation = false;
     this.handleRoute(this.fineMacRoutes.children.createAccount);
@@ -169,6 +176,10 @@ export class FinesMacAccountDetailsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.initialAccountDetailsSetup();
-    this.routerListener();
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }
