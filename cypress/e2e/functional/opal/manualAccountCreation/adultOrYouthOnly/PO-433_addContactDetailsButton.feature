@@ -447,7 +447,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     Then I see "12 test's road" in the "Address line 1" field
     Then I see "London Road" in the "Address line 2" field
     Then I see "London city" in the "Address line 3" field
-    Then I see "Ambassdor Volkswagen" in the "Make of the car" field
+    Then I see "Ambassdor Volkswagen" in the "Make and model" field
     Then I see "AP28 AAR" in the "Registration number" field
 
     When I select the "Add aliases" checkbox
