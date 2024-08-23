@@ -65,7 +65,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I enter "London city chec" into the "Address line 3" field
     And I enter "AB12 7MH" into the "Postcode" field
 
-    And I enter "Ambassdor Volkswagen" into the "Make of the car" field
+    And I enter "Ambassdor Volkswagen" into the "Make and model" field
     And I enter "AP28 AAR" into the "Registration number" field
 
     Then I click the "Return to account details" button

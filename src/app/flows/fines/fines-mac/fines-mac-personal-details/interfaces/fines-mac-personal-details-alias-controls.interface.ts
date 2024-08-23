@@ -1,10 +1,3 @@
-interface Detail {
-  inputId: string;
-  inputName: string;
-  controlName: string;
-}
+import { IFinesMacNameAliasControls } from '../../interfaces';
 
-export interface IFinesMacPersonalDetailsAliasControls {
-  firstNames: Detail;
-  lastName: Detail;
-}
+export interface IFinesMacPersonalDetailsAliasControls extends IFinesMacNameAliasControls {}
