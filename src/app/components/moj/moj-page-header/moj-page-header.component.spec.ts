@@ -51,11 +51,6 @@ describe('MojPageHeaderComponent', () => {
     expect(element.textContent).toContain('Documents');
   });
 
-  it('should render Documents header', () => {
-    const element = fixture.debugElement.query(By.css('.govuk-heading-xl')).nativeElement;
-    expect(element.textContent).toContain('Documents');
-  });
-
   it('should contain two buttons with the specified classes', () => {
     const buttons = fixture.debugElement.queryAll(
       By.css('.govuk-button.moj-button-menu__item.govuk-button--secondary.moj-page-header-actions__action'),
