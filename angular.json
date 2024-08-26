@@ -56,9 +56,10 @@
             ],
             "scripts": [
               "./node_modules/govuk-frontend/dist/govuk/all.bundle.js",
-              "./node_modules/@scottish-government/design-system/dist/scripts/design-system.js"
+              "./node_modules/@scottish-government/design-system/dist/scripts/design-system.js",
+              "./node_modules/@ministryofjustice/frontend/moj/all.js"
             ],
-            "allowedCommonJsDependencies": ["accessible-autocomplete", "@scottish-government"]
+            "allowedCommonJsDependencies": ["accessible-autocomplete", "@scottish-government", "@ministryofjustice"],
           },
           "configurations": {
             "production": {
