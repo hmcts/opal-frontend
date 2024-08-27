@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MojButtonMenuComponent } from '@components/moj';
 import { FINES_ROUTING_PATHS } from '@constants/fines';
 import { GlobalStateService } from '@services';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterModule, MojButtonMenuComponent],
+  imports: [RouterModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
