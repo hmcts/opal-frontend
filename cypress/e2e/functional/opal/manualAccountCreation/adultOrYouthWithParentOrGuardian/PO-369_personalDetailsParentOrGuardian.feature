@@ -64,9 +64,6 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     And I enter "12 test road checking address2" into the "Address line 2" field
     And I enter "London city chec" into the "Address line 3" field
     And I enter "AB12 7MH" into the "Postcode" field
-    And I enter "Ambassdor Volkswagen" into the "Make and model" field
-    And I enter "AP28 AAR" into the "Registration number" field
-
     Then I click the "Return to account details" button
 
   Scenario Outline: AC1b & 1c-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
