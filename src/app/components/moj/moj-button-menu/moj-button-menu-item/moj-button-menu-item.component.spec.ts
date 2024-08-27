@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MojButtonMenuItemComponent } from './moj-button-menu-item.component';
 import { Component } from '@angular/core';
 import { MojButtonMenuComponent } from '../moj-button-menu.component';
-import { By } from '@angular/platform-browser';
 
 @Component({
   template: `<app-moj-button-menu menuButtonTitle="More actions">
