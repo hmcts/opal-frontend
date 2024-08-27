@@ -41,7 +41,7 @@ Feature: PO-366 updating the account details page to manage the account creation
     #De-scoped by PO-360
     #When "Personal details" is clicked, nothing happens
     When I click on the "Contact details" link
-    And I see "Contact details" on the page header
+    And I see "Defendant contact details" on the page header
     And I click on the "Cancel" link
     And I click on the "Employer details" link
     Then I see "Employer details" on the page header

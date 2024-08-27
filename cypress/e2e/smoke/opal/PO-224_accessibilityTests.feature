@@ -102,7 +102,7 @@ Feature: PO-224 Accesibility Tests
       | page                  | header                           | url                                                    |
       | createAccount         | Business unit and defendant type | /fines/manual-account-creation/create-account          |
       | taskList              | Account details                  | /fines/manual-account-creation/account-details         |
-      | contactDetails        | Contact details                  | /fines/manual-account-creation/contact-details         |
+      | contactDetails        | Defendant contact details        | /fines/manual-account-creation/contact-details         |
       | employerDetails       | Employer details                 | /fines/manual-account-creation/employer-details        |
       | parentGuardianDetails | Parent or guardian details       | /fines/manual-account-creation/parent-guardian-details |
 
