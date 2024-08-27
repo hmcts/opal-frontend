@@ -9,18 +9,6 @@
     {{ menuButtonTitle }}
   </button>
   <div class="moj-button-menu__wrapper" role="menu">
-    @for (action of actions; track action.id) {
-      <a
-        href=""
-        role="menuitem"
-        draggable="false"
-        class="moj-button-menu__item"
-        data-module="govuk-button"
-        data-secondary="true"
-        (click)="onActionClick(action.id, $event)"
-      >
-        {{ action.title }}
-      </a>
-    }
+    <ng-content></ng-content>
   </div>
 </div>

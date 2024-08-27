@@ -2,16 +2,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MojButtonMenuComponent } from './moj-button-menu.component';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { MOJ_BUTTON_MENU_ACTIONS_MOCK } from './mocks';
-
-const mockActions = MOJ_BUTTON_MENU_ACTIONS_MOCK;
+import { MojButtonMenuItemComponent } from './moj-button-menu-item/moj-button-menu-item.component';
 
 @Component({
-  template: `<app-moj-button-menu menuButtonTitle="More actions" [actions]="mockActions"> </app-moj-button-menu>`,
+  template: `<app-moj-button-menu menuButtonTitle="More actions">
+    <app-moj-button-menu-item>
+      <ng-container linkText>Action 1</ng-container>
+    </app-moj-button-menu-item>
+  </app-moj-button-menu>`,
 })
-class TestHostComponent {
-  mockActions = mockActions;
-}
+class TestHostComponent {}
 
 describe('MojButtonMenuComponent - TestHostComponent', () => {
   let component: TestHostComponent;
@@ -19,7 +19,7 @@ describe('MojButtonMenuComponent - TestHostComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojButtonMenuComponent],
+      imports: [MojButtonMenuComponent, MojButtonMenuItemComponent],
       declarations: [TestHostComponent],
     }).compileComponents();
 
@@ -35,30 +35,6 @@ describe('MojButtonMenuComponent - TestHostComponent', () => {
   it('should render More actions header', () => {
     const element = fixture.debugElement.query(By.css('.moj-button-menu__toggle-button')).nativeElement;
     expect(element.textContent).toContain('More actions');
-  });
-
-  it('should contain two buttons with the specified classes', () => {
-    const actions = fixture.debugElement.queryAll(By.css('.moj-button-menu__item'));
-
-    expect(actions.length).toBe(3);
-  });
-
-  it('should toggle the button menu', () => {
-    const button = fixture.debugElement.query(By.css('.moj-button-menu__toggle-button')).nativeElement;
-    const initialExpandedState = button.getAttribute('aria-expanded');
-    button.click();
-
-    fixture.detectChanges();
-
-    const updatedExpandedState = button.getAttribute('aria-expanded');
-    expect(updatedExpandedState).toEqual(String(initialExpandedState !== 'true'));
-  });
-
-  it('should toggle the button menu', () => {
-    const button = fixture.debugElement.query(By.css('.moj-button-menu__item')).nativeElement;
-    button.click();
-
-    fixture.detectChanges();
   });
 });
 
@@ -89,23 +65,5 @@ describe('MojButtonMenuComponent', () => {
     fixture.detectChanges();
 
     expect(button.getAttribute('aria-expanded')).toBe('false');
-  });
-
-  it('should emit the actionClick event with the correct actionId', () => {
-    spyOn(component.actionClick, 'emit');
-
-    const mockEvent = new Event('click');
-    component.onActionClick('action1', mockEvent);
-
-    expect(component.actionClick.emit).toHaveBeenCalledWith('action1');
-  });
-
-  it('should prevent the default event behavior', () => {
-    const mockEvent = new Event('click');
-    spyOn(mockEvent, 'preventDefault');
-
-    component.onActionClick('action1', mockEvent);
-
-    expect(mockEvent.preventDefault).toHaveBeenCalled();
   });
 });
