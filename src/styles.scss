@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'govuk-frontend/dist/govuk/helpers/colour';
+@import 'govuk-frontend/dist/govuk/settings/colours-applied';
 
 html,
 body {
@@ -50,5 +51,5 @@ app-govuk-footer {
 }
 
 .govuk-error-colour {
-  color: #d4351c;
+  color: $govuk-error-colour
 }
