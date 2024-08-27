@@ -361,7 +361,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     And I enter "<updateAddressline1>" into the "Address line 1" field
 
     Then I click the "Add contact details" button
-    Then I see "Contact details" on the page header
+    Then I see "Defendant contact details" on the page header
     And I click the "Return to account details" button
 
     Then I see "Create account" as the caption on the page
@@ -428,7 +428,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     When I select the "Add aliases" checkbox
 
     Then I click the "Add contact details" button
-    Then I see "Contact details" on the page header
+    Then I see "Defendant contact details" on the page header
 
     And I click the "Return to account details" button
 
@@ -541,9 +541,3 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
     Then I see "Alias 1", "First names" is set to ""
     Then I see "Alias 1", "Last name" is set to ""
-
-
-
-
-
-
