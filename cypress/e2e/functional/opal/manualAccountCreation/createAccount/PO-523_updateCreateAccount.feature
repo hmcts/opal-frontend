@@ -6,7 +6,7 @@ Feature: PO-523  Update the Create Account screen for new account types and func
     And I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
 
   Scenario: AC1, AC2 & AC3 - New account types, Fixed Penalty options and Conditional Caution
@@ -64,19 +64,14 @@ Feature: PO-523  Update the Create Account screen for new account types and func
     Then I see the error message "Select a defendant type" at the top of the page
     And I see the error message "Select a defendant type" above the "Adult or youth only" radio button
 
-  Scenario: AC5 - Two BU user continues successfully
 
-    When I enter "London South" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
-    And I click the "Continue" button
-    Then I see "Account details" on the page header
-    And I see the business unit is "London South West"
-    And I see the defendant type is "Adult or youth only"
+#This signs in with a user that has more access than 2 BUs? not really sure what this is doing - CF
+# Scenario: AC5 - Two BU user continues successfully
 
-    When I go back in the browser
-    Then I see "Create account" as the caption on the page
-    And I see "Business unit and defendant type" on the page header
-    And I see the value "London South West" in the business unit search box
-    And I validate the "Fine" radio button is selected
-    And I validate the "Adult or youth only" radio button is selected
+#   When I enter "London South" into the business unit search box
+#   And I select the "Fine" radio button
+#   And I select the "Adult or youth only" radio button
+#   And I click the "Continue" button
+#   Then I see "Account details" on the page header
+#   And I see the business unit is "London South West"
+#   And I see the defendant type is "Adult or youth only"

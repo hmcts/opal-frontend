@@ -9,7 +9,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I sign in as "opal-test-3@HMCTS.NET"
     And I am on the dashboard
     When I navigate to Manual Account Creation
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
 
   #AC1, AC2
@@ -158,7 +158,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     Then I am on the dashboard
 
 # Scenario: AC12b & AC12bi-negative: When user selects cancel button and user has selected defendant type
-#     When I see "Create account" as the caption on the page
+#     #Descoped by PO-426 --- When I see "Create account" as the caption on the page
 #     Then I see "Business unit and defendant type" on the page header
 #     When I see "Defendant type" section on the page
 #     And I see "If sole trader, choose 'Adult or youth only'" below the defendant type subheading
