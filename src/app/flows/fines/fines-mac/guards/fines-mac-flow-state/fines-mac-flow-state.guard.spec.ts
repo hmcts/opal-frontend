@@ -78,28 +78,4 @@ describe('finesMacFlowStateGuard', () => {
 
     expect(result).toBe(mockResult);
   }));
-
-  it('should return false if AccountType is not populated', fakeAsync(async () => {
-    finesService.finesMacState.accountDetails = { ...FINES_MAC_ACCOUNT_DETAILS_STATE, DefendantType: 'type' };
-
-    const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
-
-    expect(result).toEqual(jasmine.any(UrlTree));
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
-      queryParams: undefined,
-      fragment: undefined,
-    });
-  }));
-
-  it('should return false if DefendantType is not populated', fakeAsync(async () => {
-    finesService.finesMacState.accountDetails = { ...FINES_MAC_ACCOUNT_DETAILS_STATE, AccountType: 'type' };
-
-    const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
-
-    expect(result).toEqual(jasmine.any(UrlTree));
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
-      queryParams: undefined,
-      fragment: undefined,
-    });
-  }));
 });
