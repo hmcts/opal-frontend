@@ -126,11 +126,12 @@
     "mocha-junit-reporter": "^2.2.1",
     "typescript": "~5.5.0"
   },
-  "packageManager": "yarn@4.4.0",
+  "packageManager": "yarn@4.4.1",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
-    "@cucumber/messages": "^26.0.0"
+    "@cucumber/messages": "^26.0.0",
+    "micromatch": "^4.0.8"
   }
 }
