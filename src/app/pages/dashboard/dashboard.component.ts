@@ -13,4 +13,6 @@ import { GlobalStateService } from '@services';
 export class DashboardComponent {
   public readonly globalStateService = inject(GlobalStateService);
   public readonly finesRoutingPaths = FINES_ROUTING_PATHS;
+
+  public active: string = 'nav1';
 }
