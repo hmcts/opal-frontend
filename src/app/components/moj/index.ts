@@ -19,7 +19,6 @@ export {
   MojTimelineComponent,
   MojTimelineItemComponent,
   MojTicketPanelComponent,
-  MojTicketPanelSectionComponent,
   MojPageHeaderComponent,
   MojButtonMenuComponent,
   MojButtonMenuItemComponent,
