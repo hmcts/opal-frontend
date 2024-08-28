@@ -106,7 +106,7 @@ Feature: PO-362 Company task list screen
     And I see the "Contact details" link under the "Defendant details" section
 
     When "Contact details" is clicked
-    Then I see "Contact details" on the page header
+    Then I see "Defendant contact details" on the page header
 
   Scenario: AC5.a company task list Offence and Imposition details section
     Given I am on the OPAL Frontend
