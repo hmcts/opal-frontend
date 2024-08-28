@@ -7,7 +7,7 @@ import { hasFlowStateGuard } from './has-flow-state.guard';
 import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../flows/fines/fines-mac/fines-mac-account-details/constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks';
-import { getGuardWithDummyUrl, runCanActivateGuardWithContext } from '../helpers';
+import { getGuardWithDummyUrl, runHasFlowStateGuardWithContext } from '../helpers';
 
 describe('hasFlowStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;
@@ -58,7 +58,7 @@ describe('hasFlowStateGuard', () => {
   it('should return true if AccountType and DefendantType are populated', fakeAsync(async () => {
     finesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
 
-    const result = await runCanActivateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
+    const result = await runHasFlowStateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
 
     expect(result).toBeTrue();
     expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe('hasFlowStateGuard', () => {
   it('should navigate to create account page if AccountType and DefendantType are not populated', fakeAsync(async () => {
     finesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE;
 
-    const result = await runCanActivateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
+    const result = await runHasFlowStateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
 
     expect(result).toEqual(jasmine.any(UrlTree));
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([expectedUrl], {
@@ -80,7 +80,7 @@ describe('hasFlowStateGuard', () => {
     const mockResult = true;
     const guardReturningObservable = () => of(mockResult);
 
-    const result = await runCanActivateGuardWithContext(guardReturningObservable);
+    const result = await runHasFlowStateGuardWithContext(guardReturningObservable);
 
     expect(result).toBe(mockResult);
   }));
