@@ -1,4 +1,6 @@
 import { MojBannerComponent } from './moj-banner/moj-banner.component';
+import { MojButtonMenuItemComponent } from './moj-button-menu/moj-button-menu-item/moj-button-menu-item.component';
+import { MojButtonMenuComponent } from './moj-button-menu/moj-button-menu.component';
 import { MojHeaderNavigationItemComponent } from './moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojHeaderComponent } from './moj-header/moj-header.component';
 import { MojPageHeaderComponent } from './moj-page-header/moj-page-header.component';
@@ -22,6 +24,8 @@ export {
   MojTicketPanelComponent,
   MojTicketPanelSectionComponent,
   MojPageHeaderComponent,
+  MojButtonMenuComponent,
+  MojButtonMenuItemComponent,
   MojPrimaryNavigationComponent,
   MojPrimaryNavigationItemComponent,
 };
