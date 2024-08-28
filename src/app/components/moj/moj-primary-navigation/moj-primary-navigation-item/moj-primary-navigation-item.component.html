@@ -1,0 +1,10 @@
+<li class="moj-primary-navigation__item" [class.last-item]="isLastItem" [id]="primaryNavigationItemId">
+  <a
+    href=""
+    class="moj-primary-navigation__link cursor-pointer"
+    [attr.aria-current]="primaryNavigationItemFragment === activeItemFragment ? 'page' : null"
+    (click)="handleItemClick($event, primaryNavigationItemFragment)"
+    (keyup.enter)="handleItemClick($event, primaryNavigationItemFragment)"
+    >{{ primaryNavigationItemText }}</a
+  >
+</li>
