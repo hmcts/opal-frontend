@@ -1,0 +1,14 @@
+<div class="moj-button-menu">
+  <button
+    class="govuk-button moj-button-menu__toggle-button govuk-button--secondary moj-button-menu__toggle-button--secondary"
+    type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    (click)="toggleButtonMenu()"
+  >
+    {{ menuButtonTitle }}
+  </button>
+  <div class="moj-button-menu__wrapper" role="menu">
+    <ng-content></ng-content>
+  </div>
+</div>
