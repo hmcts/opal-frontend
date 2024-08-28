@@ -1,3 +1,3 @@
-import { finesMacEmptyFlowGuard } from './fines-mac-empty-flow/fines-mac-empty-flow.guard';
+import { finesMacFlowStateGuard } from './fines-mac-flow-state/fines-mac-flow-state.guard';
 
-export { finesMacEmptyFlowGuard };
+export { finesMacFlowStateGuard };

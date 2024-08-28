@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard, canDeactivateGuard } from '@guards';
 
 import { FINES_MAC_ROUTING_PATHS } from './constants';
-import { finesMacEmptyFlowGuard } from '../guards';
+import { finesMacFlowStateGuard } from '../guards';
 
 export const routing: Routes = [
   {
@@ -25,7 +25,7 @@ export const routing: Routes = [
       import('../fines-mac-account-details/fines-mac-account-details.component').then(
         (c) => c.FinesMacAccountDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.employerDetails,
@@ -33,7 +33,7 @@ export const routing: Routes = [
       import('../fines-mac-employer-details/fines-mac-employer-details.component').then(
         (c) => c.FinesMacEmployerDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
   {
@@ -42,7 +42,7 @@ export const routing: Routes = [
       import('../fines-mac-contact-details/fines-mac-contact-details.component').then(
         (c) => c.FinesMacContactDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
   {
@@ -51,7 +51,7 @@ export const routing: Routes = [
       import('../fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component').then(
         (c) => c.FinesMacParentGuardianDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
   {
@@ -60,7 +60,7 @@ export const routing: Routes = [
       import('../fines-mac-personal-details/fines-mac-personal-details.component').then(
         (c) => c.FinesMacPersonalDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
   {
@@ -69,7 +69,7 @@ export const routing: Routes = [
       import('../fines-mac-offence-details/fines-mac-offence-details.component').then(
         (c) => c.FinesMacOffenceDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.companyDetails,
@@ -77,7 +77,7 @@ export const routing: Routes = [
       import('../fines-mac-company-details/fines-mac-company-details.component').then(
         (c) => c.FinesMacCompanyDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
   {
@@ -86,7 +86,7 @@ export const routing: Routes = [
       import('../fines-mac-court-details/fines-mac-court-details.component').then(
         (c) => c.FinesMacCourtDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
   {
@@ -95,7 +95,7 @@ export const routing: Routes = [
       import('../fines-mac-account-comments-notes/fines-mac-account-comments-notes.component').then(
         (c) => c.FinesMacAccountCommentsNotesComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.paymentTerms,
@@ -103,7 +103,7 @@ export const routing: Routes = [
       import('../fines-mac-payment-terms/fines-mac-payment-terms.component').then(
         (c) => c.FinesMacPaymentTermsComponent,
       ),
-    canActivate: [authGuard, finesMacEmptyFlowGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
 ];

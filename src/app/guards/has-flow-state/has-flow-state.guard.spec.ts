@@ -3,13 +3,13 @@ import { FinesService } from '@services/fines';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { FINES_ROUTING_PATHS } from '@constants/fines';
 import { of } from 'rxjs';
-import { canActivateGuard } from './can-activate.guard';
-import { FINES_MAC_ROUTING_PATHS } from '../..//flows/fines/fines-mac/routing/constants';
+import { hasFlowStateGuard } from './has-flow-state.guard';
+import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../flows/fines/fines-mac/fines-mac-account-details/constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks';
 import { getGuardWithDummyUrl, runCanActivateGuardWithContext } from '../helpers';
 
-describe('finesMacEmptyFlowGuard', () => {
+describe('hasFlowStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;
   let finesService: jasmine.SpyObj<FinesService>;
 
@@ -17,7 +17,7 @@ describe('finesMacEmptyFlowGuard', () => {
   const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`;
 
   // Create an instance of the can activate guard for testing
-  const finesMacEmptyFlowGuard = canActivateGuard(
+  const finesMacEmptyFlowGuard = hasFlowStateGuard(
     () => finesService.finesMacState.accountDetails,
     (accountDetails) => !!accountDetails.AccountType && !!accountDetails.DefendantType,
     () => expectedUrl,

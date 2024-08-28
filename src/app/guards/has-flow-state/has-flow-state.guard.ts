@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 
-export function canActivateGuard<T>(
+export function hasFlowStateGuard<T>(
   getState: () => T,
   checkCondition: (state: T) => boolean,
   getNavigationPath: () => string,

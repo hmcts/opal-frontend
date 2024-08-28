@@ -1,10 +1,10 @@
 import { FinesService } from '@services/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 import { FINES_ROUTING_PATHS } from '@constants/fines';
-import { canActivateGuard } from '@guards';
+import { hasFlowStateGuard } from '@guards';
 import { inject } from '@angular/core';
 
-export const finesMacEmptyFlowGuard = canActivateGuard(
+export const finesMacFlowStateGuard = hasFlowStateGuard(
   () => inject(FinesService).finesMacState.accountDetails,
   (accountDetails) => !!accountDetails.AccountType && !!accountDetails.DefendantType,
   () =>
