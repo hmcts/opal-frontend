@@ -2,6 +2,7 @@ import { UrlTree, ActivatedRouteSnapshot, UrlSegment, RouterStateSnapshot, Redir
 import { Observable } from 'rxjs';
 import { authGuard } from '../auth/auth.guard';
 import { signedInGuard } from '../signed-in/signed-in.guard';
+import { finesMacEmptyFlowGuard } from '../../flows/fines/fines-mac/guards';
 
 /**
  * Returns a function that invokes the specified guard with a dummy route and state.
@@ -12,7 +13,7 @@ import { signedInGuard } from '../signed-in/signed-in.guard';
  * @returns A function that invokes the guard with the dummy route and state.
  */
 export function getGuardWithDummyUrl(
-  guard: typeof authGuard | typeof signedInGuard,
+  guard: typeof authGuard | typeof signedInGuard | typeof finesMacEmptyFlowGuard,
   urlPath: string,
 ): () =>
   | boolean
