@@ -21,3 +21,36 @@
     </li>
   </ul>
 </div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<app-moj-primary-navigation primaryNavigationId="primaryNavigation" (activeItemFragment)="active = $event">
+  <app-moj-primary-navigation-item
+    primaryNavigationItemId="nav1"
+    primaryNavigationItemFragment="nav1"
+    primaryNavigationItemText="Nav item 1"
+    [activeItemFragment]="active"
+  ></app-moj-primary-navigation-item>
+  <app-moj-primary-navigation-item
+    primaryNavigationItemId="nav2"
+    primaryNavigationItemFragment="nav2"
+    primaryNavigationItemText="Nav item 2"
+    [activeItemFragment]="active"
+  ></app-moj-primary-navigation-item>
+  <app-moj-primary-navigation-item
+    primaryNavigationItemId="nav3"
+    primaryNavigationItemFragment="nav3"
+    primaryNavigationItemText="Nav item 3"
+    [activeItemFragment]="active"
+    [isLastItem]="true"
+  ></app-moj-primary-navigation-item>
+</app-moj-primary-navigation>

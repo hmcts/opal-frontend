@@ -2,20 +2,8 @@
   <div class="moj-primary-navigation__container">
     <div class="moj-primary-navigation__nav">
       <nav class="moj-primary-navigation" aria-label="Primary navigation">
-        <ul class="moj-primary-navigation__list" role="list">
-          @for (navigationItem of navigationItems; track navigationItem.itemId) {
-            <li class="moj-primary-navigation__item" [id]="navigationItem.itemId">
-              <a
-                class="moj-primary-navigation__link cursor-pointer"
-                [attr.aria-current]="navigationItem.itemFragment === navigationItem.activeFragment ? 'page' : null"
-                (click)="handleItemClick($event, navigationItem.itemFragment)"
-                (keyup.enter)="handleItemClick($event, navigationItem.itemFragment)"
-                role="link"
-                tabindex="0"
-                >{{ navigationItem.itemText }}</a
-              >
-            </li>
-          }
+        <ul class="moj-primary-navigation__list">
+          <ng-content></ng-content>
         </ul>
       </nav>
     </div>

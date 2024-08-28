@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { IMojPrimaryNavigationItem } from './interfaces';
 
 @Component({
   selector: 'app-moj-primary-navigation',
@@ -25,7 +24,6 @@ export class MojPrimaryNavigationComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
 
   @Input({ required: true }) public primaryNavigationId!: string;
-  @Input({ required: true }) public navigationItems!: IMojPrimaryNavigationItem[];
   @Output() activeItemFragment = new EventEmitter<string>();
 
   /**
@@ -39,17 +37,6 @@ export class MojPrimaryNavigationComponent implements OnInit, OnDestroy {
         this.activeItemFragment.emit(fragment);
       }
     });
-  }
-
-  /**
-   * Handles the click event of a sub-navigation item.
-   * @param event - The click event.
-   * @param item - The item string.
-   */
-  public handleItemClick(event: Event, item: string): void {
-    event.preventDefault();
-    // Basically we want to mimic the behaviour of the GDS tabs component, as this is how these will be used.
-    this.router.navigate(['./'], { relativeTo: this.route, fragment: item });
   }
 
   /**
