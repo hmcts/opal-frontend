@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MojPrimaryNavigationComponent } from './moj-primary-navigation.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { MojSubNavigationComponent } from './moj-sub-navigation.component';
 
-describe('MojSubNavigationComponent', () => {
-  let component: MojSubNavigationComponent;
-  let fixture: ComponentFixture<MojSubNavigationComponent>;
+describe('MojPrimaryNavigationComponent', () => {
+  let component: MojPrimaryNavigationComponent;
+  let fixture: ComponentFixture<MojPrimaryNavigationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojSubNavigationComponent],
+      imports: [MojPrimaryNavigationComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -20,29 +20,29 @@ describe('MojSubNavigationComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MojSubNavigationComponent);
+    fixture = TestBed.createComponent(MojPrimaryNavigationComponent);
     component = fixture.componentInstance;
+    component.primaryNavigationId = 'testPrimaryNavigation';
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {
-    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should have an id', () => {
-    component.subNavId = 'example';
     fixture.detectChanges();
-
-    const element = fixture.nativeElement.querySelector('#example');
+    const element = fixture.nativeElement.querySelector('#testPrimaryNavigation');
     expect(element).toBeTruthy();
   });
 
   it('should emit the fragment', () => {
-    spyOn(component.activeSubNavItemFragment, 'emit');
+    spyOn(component.activeItemFragment, 'emit');
 
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(component.activeSubNavItemFragment.emit).toHaveBeenCalledWith('test');
+    expect(component.activeItemFragment.emit).toHaveBeenCalledWith('test');
   });
 });
