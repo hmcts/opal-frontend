@@ -6,10 +6,6 @@ declare module '@scottish-government/design-system/src/all' {
   export function initAll(): void;
 }
 
-declare module '@ministryofjustice/frontend/moj/all' {
-  export function initAll(): void;
-}
-
 declare module 'accessible-autocomplete' {
   type SourceFunction = (query: string, populateResults: (values: string[]) => void) => string[];
 
