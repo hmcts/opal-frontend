@@ -18,7 +18,7 @@ Feature: PO-518 delete account confirmation screen
     And I click the "Continue" button
 
     When I click on the "Contact details" link
-    Then I see "Defendant contact details" on the page header
+    Then I see "<contactDetailsHeading>" on the page header
     And I enter "test@test.com" into the "Primary email address" field
     And I click the "Return to account details" button
     And I see the status of "Contact details" is "Provided"
@@ -36,7 +36,7 @@ Feature: PO-518 delete account confirmation screen
     Then I see "Business unit and defendant type" on the page header
     And I see "London South West" in the "Business unit" searchbox
     Examples:
-      | defendantType                                 |
-      | Adult or youth only                           |
-      | Adult or youth with parent or guardian to pay |
-      | Company                                       |
+      | defendantType                                 | contactDetailsHeading              |
+      | Adult or youth only                           | Defendant contact details          |
+      | Adult or youth with parent or guardian to pay | Parent or guardian contact details |
+      | Company                                       | Defendant contact details          |
