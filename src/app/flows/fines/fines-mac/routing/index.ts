@@ -25,6 +25,7 @@ export const routing: Routes = [
         (c) => c.FinesMacAccountDetailsComponent,
       ),
     canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.employerDetails,

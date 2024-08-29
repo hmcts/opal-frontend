@@ -6,7 +6,7 @@ Feature: PO-436 Additional elements of the Parent or Guardian details screen
     And I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
 
     When I enter "London South" into the business unit search box

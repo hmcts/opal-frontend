@@ -22,4 +22,45 @@ Then('I click {string}, a window pops up and I click Cancel', (link: string) => 
   cy.on('window:alert', () => {
     return false;
   });
+  cy.on('window:confirm', () => {
+    return false;
+  });
+});
+
+Then('I click the browser back button, a window pops up and I click Ok', (link: string) => {
+  cy.go('back');
+  cy.on('window:alert', () => {});
+});
+
+Then('I click the browser back button, a window pops up and I click Cancel', (link: string) => {
+  cy.go('back');
+  cy.on('window:alert', () => {
+    return false;
+  });
+  cy.on('window:confirm', () => {
+    return false;
+  });
+});
+
+Then('I click the browser back button {int} times, a window pops up and I click Ok', (numberOfBack: number) => {
+  // Justification for not using something like:   cy.go(-numberOfBack);
+  // reason being that the above does not go to each page, it goes back directly to the page X pages back
+  for (let i = 0; i < numberOfBack; i++) {
+    cy.go('back');
+  }
+  cy.on('window:alert', () => {});
+});
+
+Then('I click the browser back button {int} times, a window pops up and I click Cancel', (numberOfBack: number) => {
+  // Justification for not using something like:   cy.go(-numberOfBack);
+  // reason being that the above does not go to each page, it goes back directly to the page X pages back
+  for (let i = 0; i < numberOfBack; i++) {
+    cy.go('back');
+  }
+  cy.on('window:alert', () => {
+    return false;
+  });
+  cy.on('window:confirm', () => {
+    return false;
+  });
 });
