@@ -1,5 +1,4 @@
-import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
-import { SrvRecord } from 'dns';
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I select the add aliases checkbox', () => {
   cy.get('[data-cy=add-aliases-checkbox]').click();
@@ -115,4 +114,48 @@ When('I select add another alias', () => {
 
 Then('I see the {string} sub heading in aliases', (aliasText: string) => {
   cy.contains('#AddAlias-conditional > fieldset > legend', aliasText).invoke('text');
+});
+Then('I see {string} link below the {string} field', (removeLink: string, lastName: string) => {
+  cy.get('#addAlias-conditional > fieldset >app-govuk-text-input > div >h1 ')
+    .find('#addAlias-conditional>div > a')
+    .invoke('text')
+    .should('contains', removeLink);
+});
+
+Then('I no longer see {string} sub heading', (aliasText: string) => {
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText).should('not.exist', aliasText);
+});
+Then('I verify the {string} text box below the {string} sub heading', (firstName: string, aliasText: string) => {
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText)
+    .next()
+    .contains('h1', firstName)
+    .invoke('text')
+    .then((firstName) => firstName.replace(' ', '').trim());
+});
+Then(
+  'I verify the {string} text box below the {string} sub heading and first names',
+  (lastName: string, aliasText: string) => {
+    cy.contains('#addAlias-conditional > fieldset > legend', aliasText)
+      .next()
+      .next()
+      .contains('h1', lastName)
+      .invoke('text')
+      .then((lastName) => lastName.replace(' ', '').trim());
+  },
+);
+Then('I verify the {string} button below the {string}', (removeLink: string, aliasText: string) => {
+  cy.contains('#addAlias-conditional > fieldset > legend', aliasText)
+    .invoke('text')
+    .next()
+    .contains('h1', 'First names')
+    .invoke('text')
+    .then((firstName) => firstName.replace(' ', '').trim())
+    .next()
+    .contains('h1', 'Last name')
+    .invoke('text')
+    .then((lastName) => lastName.replace(' ', '').trim())
+    .prev()
+    .contains('#addAlias-conditional > div > a', removeLink)
+    .invoke('text')
+    .should('have.text', removeLink);
 });
