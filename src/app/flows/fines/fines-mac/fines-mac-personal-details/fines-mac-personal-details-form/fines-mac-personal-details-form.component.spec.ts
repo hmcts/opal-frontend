@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form.component';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import { IFinesMacPersonalDetailsForm } from '../interfaces';
-import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants';
+import { IFinesMacPersonalDetailsFieldErrors, IFinesMacPersonalDetailsForm } from '../interfaces';
+import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks';
 import { ActivatedRoute } from '@angular/router';
 
@@ -102,6 +102,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAliasFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addVehicleDetailsFieldErrors');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
@@ -116,8 +118,68 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       [...Array(mockFinesService.finesMacState.personalDetails.Aliases.length).keys()],
       'Aliases',
     );
+    expect(component['addVehicleDetailsFieldErrors']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
+  });
+
+  it('should call the necessary setup methods - parent/guardian', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupPersonalDetailsForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupAliasConfiguration');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupAliasFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addVehicleDetailsFieldErrors');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setInitialErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'rePopulateForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setUpAliasCheckboxListener');
+
+    component.defendantType = 'parentOrGuardianToPay';
+    component['initialPersonalDetailsSetup']();
+
+    expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
+    expect(component['setupAliasConfiguration']).toHaveBeenCalled();
+    expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
+      [...Array(mockFinesService.finesMacState.personalDetails.Aliases.length).keys()],
+      'Aliases',
+    );
+    expect(component['addVehicleDetailsFieldErrors']).not.toHaveBeenCalled();
+    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails);
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
+  });
+
+  it('should add vehicle details field errors', () => {
+    const expectedFieldErrors: IFinesMacPersonalDetailsFieldErrors = {
+      Title: {
+        required: {
+          message: 'Select a title',
+          priority: 1,
+        },
+      },
+      VehicleMake: {
+        maxlength: {
+          message: `The make of car must be 30 characters or fewer`,
+          priority: 1,
+        },
+      },
+      VehicleRegistrationMark: {
+        maxlength: {
+          message: `The registration number must be 11 characters or fewer`,
+          priority: 1,
+        },
+      },
+    };
+
+    component.fieldErrors = FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS;
+    component['addVehicleDetailsFieldErrors']();
+
+    expect(component.fieldErrors).toEqual(expectedFieldErrors);
   });
 });
