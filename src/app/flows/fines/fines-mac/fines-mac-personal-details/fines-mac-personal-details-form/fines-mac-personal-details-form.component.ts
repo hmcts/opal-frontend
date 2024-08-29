@@ -34,7 +34,11 @@ import {
   specialCharactersValidator,
   optionalMaxLengthValidator,
 } from '@validators';
-import { IFinesMacPersonalDetailsFieldErrors, IFinesMacPersonalDetailsForm } from '../interfaces';
+import {
+  IFinesMacPersonalDetailsDefendantTypes,
+  IFinesMacPersonalDetailsFieldErrors,
+  IFinesMacPersonalDetailsForm,
+} from '../interfaces';
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import {
@@ -96,7 +100,6 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     ...FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_TWO_FIELD_ERRORS,
     ...FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_THREE_FIELD_ERRORS,
     ...FINES_MAC_PERSONAL_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS,
-    ...FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
   };
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS;
@@ -141,15 +144,32 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   }
 
   /**
-   * Performs the initial setup for the personal details form component.
-   * This method sets up the personal details form, alias configuration, aliases,
-   * initial error messages, nested route, form population, and alias checkbox listener.
+   * Adds vehicle details field errors to the existing field errors object.
+   * The field errors are merged with the existing field errors using the spread operator.
+   * @returns void
+   */
+  private addVehicleDetailsFieldErrors(): void {
+    this.fieldErrors = {
+      ...this.fieldErrors,
+      ...FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
+    };
+  }
+
+  /**
+   * Sets up the initial personal details for the fines-mac-personal-details-form component.
+   * This method initializes the personal details form, alias configuration, alias form controls,
+   * adds vehicle details field errors if the defendant type is 'adultOrYouthOnly', sets initial
+   * error messages, repopulates the form with personal details, and sets up the alias checkbox listener.
    */
   private initialPersonalDetailsSetup(): void {
     const { personalDetails } = this.finesService.finesMacState;
+    const key = this.defendantType as keyof IFinesMacPersonalDetailsDefendantTypes;
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls([...Array(personalDetails.Aliases.length).keys()], 'Aliases');
+    if (key === 'adultOrYouthOnly') {
+      this.addVehicleDetailsFieldErrors();
+    }
     this.setInitialErrorMessages();
     this.rePopulateForm(personalDetails);
     this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
