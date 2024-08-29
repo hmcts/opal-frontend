@@ -51,9 +51,9 @@ Feature: Manual Account Creation - Accessibility
       | companyDetails        | Company details                  | /fines/manual-account-creation/company-details         |
       | parentGuardianDetails | Parent or guardian details       | /fines/manual-account-creation/parent-guardian-details |
       | personalDetails       | Personal details                 | /fines/manual-account-creation/personal-details        |
-      | contactDetails        | Contact details                  | /fines/manual-account-creation/contact-details         |
+      | contactDetails        | Defendant contact details        | /fines/manual-account-creation/contact-details         |
       | employerDetails       | Employer details                 | /fines/manual-account-creation/employer-details        |
       | offenceDetails        | Offence details                  | /fines/manual-account-creation/offence-details         |
-      #| paymentTerms          | Payment terms                    | /fines/manual-account-creation/payment-terms           |
+      | paymentTerms          | Payment terms                    | /fines/manual-account-creation/payment-terms           |
       | accountCommentsNotes  | Account comments and notes       | /fines/manual-account-creation/account-comments-notes  |
     Then I click the Sign out link

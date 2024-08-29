@@ -7,7 +7,7 @@ Feature: PO-419 Contact Details for adult or youth
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
 
@@ -15,12 +15,12 @@ Feature: PO-419 Contact Details for adult or youth
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Account details" on the page header
     And I see the status of "Contact details" is "Not provided"
 
     When I click on the "Contact details" link
-    Then I see "Contact details" on the page header
+    Then I see "Defendant contact details" on the page header
 
   Scenario Outline: AC1,3,4,5,6 - contact details - 'Return to account details' Happy path
     When I enter "<primaryEmail>" into the "Primary email address" field
@@ -34,7 +34,7 @@ Feature: PO-419 Contact Details for adult or youth
     And I see the status of "Contact details" is "Provided"
 
     Then I click on the "Contact details" link
-    And I see "Contact details" on the page header
+    And I see "Defendant contact details" on the page header
 
     And I see "<primaryEmail>" in the "Primary email address" field
     And I see "<secondaryEmail>" in the "Secondary email address" field
@@ -61,7 +61,7 @@ Feature: PO-419 Contact Details for adult or youth
     And I see the status of "Contact details" is "Provided"
 
     Then I click on the "Contact details" link
-    And I see "Contact details" on the page header
+    And I see "Defendant contact details" on the page header
 
     And I see "<primaryEmail>" in the "Primary email address" field
     And I see "<secondaryEmail>" in the "Secondary email address" field
@@ -190,7 +190,7 @@ Feature: PO-419 Contact Details for adult or youth
     And I see the status of "Contact details" is "Not provided"
 
     When I click on the "Contact details" link
-    Then I see "Contact details" on the page header
+    Then I see "Defendant contact details" on the page header
     And I see "" in the "Primary email address" field
     And I see "" in the "Secondary email address" field
     And I see "" in the "Mobile telephone number" field
@@ -210,7 +210,7 @@ Feature: PO-419 Contact Details for adult or youth
     And I enter "<workTelephone>" into the "Work telephone number" field
 
     And I click Cancel, a window pops up and I click Cancel
-    Then I see "Contact details" on the page header
+    Then I see "Defendant contact details" on the page header
 
     And I see "<primaryEmail>" in the "Primary email address" field
     And I see "<secondaryEmail>" in the "Secondary email address" field
@@ -231,7 +231,7 @@ Feature: PO-419 Contact Details for adult or youth
 
     When I click the "Return to account details" button
     And I click Cancel, a window pops up and I click Cancel
-    Then I see "Contact details" on the page header
+    Then I see "Defendant contact details" on the page header
 
     Then I see the error message "Enter primary email address in the correct format like, name@example.com" at the top of the page
     And I see the error message "Enter a mobile telephone number, like 07700 900 982" at the top of the page

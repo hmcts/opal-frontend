@@ -8,14 +8,14 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Company" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the "Defendant details" section heading
@@ -55,9 +55,9 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
 
     Then I click the "<returnButton>" button and see "<pageName>" on the page header
     Examples:
-      | returnButton              | pageName        |
-      | Return to account details | Account details |
-      | Add contact details       | Contact details |
+      | returnButton              | pageName                  |
+      | Return to account details | Account details           |
+      | Add contact details       | Defendant contact details |
 
   Scenario Outline: AC2,AC3,AC4,AC5,AC7- positive: verifying 'Add company aliases' box & 'Add another alias' & Remove' [alias]
     When I enter "Amazon_1*(2) Ltd's.," into the "Company name" field
@@ -252,13 +252,13 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
     Then I see "Alias 5", "Company name" is set to "<alias5>"
 
     Examples:
-      | returnButton              | updateCompanyName | updateAddressLine1  | updateAddressLine2 | updateAddressLine3 | updatePostcode | alias1               | alias2                | alias3             | alias4             | alias5              | pageName        |
-      | Return to account details | Amaxon Ltd.       | 12 Carnoustie Court | Abbey Lane         | England            | SL9 4GH        | (Alias) Home 1 Ltd., | Alias Home's22* Ltd., | Advice Cycle's Org | Managekick*-22 Ltd | Reliance Industries | Account details |
-      | Add contact details       | Amaxon Ltd.       | 12 Carnoustie Court | Abbey Lane         | England            | SL9 4GH        | (Alias) Home 1 Ltd., | Alias Home's22* Ltd., | Advice Cycle's Org | Managekick*-22 Ltd | Reliance Industries | Contact details |
+      | returnButton              | updateCompanyName | updateAddressLine1  | updateAddressLine2 | updateAddressLine3 | updatePostcode | alias1               | alias2                | alias3             | alias4             | alias5              | pageName                  |
+      | Return to account details | Amaxon Ltd.       | 12 Carnoustie Court | Abbey Lane         | England            | SL9 4GH        | (Alias) Home 1 Ltd., | Alias Home's22* Ltd., | Advice Cycle's Org | Managekick*-22 Ltd | Reliance Industries | Account details           |
+      | Add contact details       | Amaxon Ltd.       | 12 Carnoustie Court | Abbey Lane         | England            | SL9 4GH        | (Alias) Home 1 Ltd., | Alias Home's22* Ltd., | Advice Cycle's Org | Managekick*-22 Ltd | Reliance Industries | Defendant contact details |
 
   Scenario: AC13-negative: user has selected 'Cancel' button and not entered data into any fields
     When "Cancel" is clicked
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
   Scenario: AC14a-negative: user selects the 'Cancel' button and the user has entered data into one or more fields and selecting 'OK' on warning message
@@ -275,4 +275,3 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
     When I enter "12 Warwickshire, West midlands of England" into the "Address line 1" field
     Then I click Cancel, a window pops up and I click Cancel
     Then I see "Company details" on the page header
-

@@ -13,7 +13,7 @@ export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPaths = {
     offenceDetails: 'offence-details',
     courtDetails: 'court-details',
     accountCommentsNotes: 'account-comments-notes',
-    paymentDetails: 'payment-terms',
+    paymentTerms: 'payment-terms',
     languagePreferences: 'language-preferences',
   },
 };

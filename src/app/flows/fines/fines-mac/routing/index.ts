@@ -25,6 +25,7 @@ export const routing: Routes = [
         (c) => c.FinesMacAccountDetailsComponent,
       ),
     canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.employerDetails,
@@ -95,6 +96,15 @@ export const routing: Routes = [
         (c) => c.FinesMacAccountCommentsNotesComponent,
       ),
     canActivate: [authGuard],
+  },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.paymentTerms,
+    loadComponent: () =>
+      import('../fines-mac-payment-terms/fines-mac-payment-terms.component').then(
+        (c) => c.FinesMacPaymentTermsComponent,
+      ),
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.languagePreferences,
