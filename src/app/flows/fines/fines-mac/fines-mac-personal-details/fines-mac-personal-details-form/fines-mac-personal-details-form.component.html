@@ -54,14 +54,16 @@
     [addressFieldIds]="customAddressFieldIds"
     componentName="personalDetails"
   ></app-fines-mac-address-block>
-  <app-fines-mac-vehicle-details
-    [divider]="true"
-    legendText="Vehicle details"
-    [form]="form"
-    [formControlErrorMessages]="formControlErrorMessages"
-    [vehicleDetailsFieldIds]="customVehicleDetailsFieldIds"
-    componentName="personalDetails"
-  ></app-fines-mac-vehicle-details>
+  @if (defendantType === 'adultOrYouthOnly') {
+    <app-fines-mac-vehicle-details
+      [divider]="true"
+      legendText="Vehicle details"
+      [form]="form"
+      [formControlErrorMessages]="formControlErrorMessages"
+      [vehicleDetailsFieldIds]="customVehicleDetailsFieldIds"
+      componentName="personalDetails"
+    ></app-fines-mac-vehicle-details>
+  }
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit"> Return to account details </app-govuk-button>
