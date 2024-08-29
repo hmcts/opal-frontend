@@ -9,14 +9,14 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the "Defendant details" section heading
@@ -364,7 +364,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
     Then I see "Defendant contact details" on the page header
     And I click the "Return to account details" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the status of "Personal details" is "Provided"
@@ -432,7 +432,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
     And I click the "Return to account details" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the status of "Personal details" is "Provided"
@@ -478,7 +478,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
   Scenario: AC8-negative: When user has selected the 'Cancel' button and has not entered any data, the status remain as 'Not Provided'
     When "Cancel" is clicked
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
     Then I see the status of "Personal details" is "Not provided"
 
@@ -496,7 +496,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
     Then I click the "Return to account details" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the status of "Personal details" is "Provided"

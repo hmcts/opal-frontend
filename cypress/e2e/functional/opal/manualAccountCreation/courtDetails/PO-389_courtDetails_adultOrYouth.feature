@@ -8,14 +8,14 @@ Feature: PO-389 Test scenarios for court details screen - creating a fines accou
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the "Court details" section heading
