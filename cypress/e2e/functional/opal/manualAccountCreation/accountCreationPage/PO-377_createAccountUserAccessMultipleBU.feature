@@ -11,7 +11,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
 
     When I navigate to Manual Account Creation
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
   Scenario: AC2 - Business unit search box
@@ -138,31 +138,33 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
       | Adult or youth with parent or guardian to pay |
       | Company                                       |
 
-  Scenario Outline: AC10,11,12 - Business unit and defendant type selections made - selections are stored when user navigates back
-    Given I am on the OPAL Frontend
-    When I see "Opal" in the header
 
-    And I sign in as "opal-test@HMCTS.NET"
-    And I am on the dashboard
+  #Descoped --- this is not a valid scenario, user state should not be stored in this way
+  # Scenario Outline: AC10,11,12 - Business unit and defendant type selections made - selections are stored when user navigates back
+  #   Given I am on the OPAL Frontend
+  #   When I see "Opal" in the header
 
-    And I navigate to Manual Account Creation
+  #   And I sign in as "opal-test@HMCTS.NET"
+  #   And I am on the dashboard
 
-    When I enter "London South" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "<defendantType>" radio button
-    And I click the "Continue" button
-    Then I see the business unit is "London South West"
-    And I see the defendant type is "<defendantType>"
+  #   And I navigate to Manual Account Creation
 
-    When I go back in the browser
-    Then I see the value "London South West" in the business unit search box
-    And I validate the "<defendantType>" radio button is selected
+  #   When I enter "London South" into the business unit search box
+  #   And I select the "Fine" radio button
+  #   And I select the "<defendantType>" radio button
+  #   And I click the "Continue" button
+  #   Then I see the business unit is "London South West"
+  #   And I see the defendant type is "<defendantType>"
 
-    Examples:
-      | defendantType                                 |
-      | Adult or youth only                           |
-      | Adult or youth with parent or guardian to pay |
-      | Company                                       |
+  #   When I go back in the browser
+  #   Then I see the value "London South West" in the business unit search box
+  #   And I validate the "<defendantType>" radio button is selected
+
+  #   Examples:
+  #     | defendantType                                 |
+  #     | Adult or youth only                           |
+  #     | Adult or youth with parent or guardian to pay |
+  #     | Company                                       |
 
   Scenario: AC13 - Business unit and defendant type selections not made - user navigates back to dashboard
     Given I am on the OPAL Frontend
@@ -203,7 +205,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     And I select the "Adult or youth only" radio button
     And I click Cancel, a window pops up and I click Cancel
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
     And I see the value "London South West" in the business unit search box
     And I validate the "Adult or youth only" radio button is selected

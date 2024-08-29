@@ -48,6 +48,7 @@
       "@routing/pages": ["./src/app/pages/routing/index.ts"],
       "@routing/fines": ["./src/app/flows/fines/routing/index.ts"],
       "@routing/flows": ["./src/app/flows/routing/index.ts"],
+      "@types-guards": ["./src/app/guards/types/index.ts"],
       "@validators": ["./src/app/validators/index.ts"]
     },
     "allowSyntheticDefaultImports": true

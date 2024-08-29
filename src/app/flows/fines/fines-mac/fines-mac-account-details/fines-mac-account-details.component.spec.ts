@@ -10,6 +10,7 @@ import {
   FINES_MAC_ACCOUNT_DETAILS_STATE,
 } from './constants';
 import { of } from 'rxjs';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -180,12 +181,49 @@ describe('FinesMacAccountDetailsComponent', () => {
     spyOn<any>(component, 'setAccountType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'checkStatus');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'routerListener');
 
     component['initialAccountDetailsSetup']();
 
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['checkStatus']).toHaveBeenCalled();
+    expect(component['routerListener']).toHaveBeenCalled();
+  });
+
+  it('should navigate back on navigateBack', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.pageNavigation = true;
+
+    component.navigateBack();
+
+    expect(component.pageNavigation).toBe(false);
+    expect(routerSpy).toHaveBeenCalledWith([component['fineMacRoutes'].children.createAccount], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should set pageNavigation to true if URL does not include createAccount', () => {
+    component['routerListener']();
+    component.navigateBack();
+
+    expect(component.pageNavigation).toBeTrue();
+  });
+
+  it('should set pageNavigation to false if URL includes createAccount', () => {
+    component['routerListener']();
+    component.handleRoute(FINES_MAC_ROUTING_PATHS.children.courtDetails);
+
+    expect(component.pageNavigation).toBeTruthy();
+  });
+
+  it('should call canDeactivate ', () => {
+    component['pageNavigation'] = true;
+    expect(component.canDeactivate()).toBeTruthy();
+
+    component['pageNavigation'] = false;
+    expect(component.canDeactivate()).toBeFalsy();
   });
 
   it('should return true if personalDetails is true', () => {
