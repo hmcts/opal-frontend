@@ -1,3 +1,4 @@
+import { CanDeactivateTypes } from './can-deactivate.type';
 import { GuardReturnType } from './guard-return.type';
 
-export { GuardReturnType };
+export { CanDeactivateTypes, GuardReturnType };
