@@ -17,6 +17,7 @@ import { IFinesMacPersonalDetailsVehicleDetailsFieldIds } from './fines-mac-pers
 import { IFinesMacPersonalDetailsTitleDropdownOptions } from './fines-mac-personal-details-title-dropdown-options.interface';
 import { IFinesMacPersonalDetailsNameFieldErrors } from './fines-mac-personal-details-name-field-errors.interface';
 import { IFinesMacPersonalDetailsVehicleDetailsFieldErrors } from './fines-mac-personal-details-vehicle-details-field-errors.interface';
+import { IFinesMacPersonalDetailsDefendantTypes } from './fines-mac-personal-details-defendant-types.interface';
 
 export {
   IFinesMacPersonalDetailsFieldErrors,
@@ -38,4 +39,5 @@ export {
   IFinesMacPersonalDetailsTitleDropdownOptions,
   IFinesMacPersonalDetailsNameFieldErrors,
   IFinesMacPersonalDetailsVehicleDetailsFieldErrors,
+  IFinesMacPersonalDetailsDefendantTypes,
 };
