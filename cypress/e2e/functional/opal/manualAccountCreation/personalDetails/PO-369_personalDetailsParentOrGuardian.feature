@@ -9,14 +9,14 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the "Defendant details" section heading
@@ -64,9 +64,6 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     And I enter "12 test road checking address2" into the "Address line 2" field
     And I enter "London city chec" into the "Address line 3" field
     And I enter "AB12 7MH" into the "Postcode" field
-    And I enter "Ambassdor Volkswagen" into the "Make and model" field
-    And I enter "AP28 AAR" into the "Registration number" field
-
     Then I click the "Return to account details" button
 
   Scenario Outline: AC1b & 1c-negative: user will not be able to add asteriks (*) address lines 1,2 & 3
@@ -635,7 +632,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
   #   And I enter "<addressLine1>" into the "Address line 1" field
 
   #   Then I click the "Return to account details" button
-  #   Then I see "Create account" as the caption on the page
+  #   #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
   #   Then I see "Account details" on the page header
 
   #   And I click on the "Personal details" link
@@ -651,7 +648,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
   #   Then I set the "Alias 1", "Last name" to "<lastName>"
 
   #   Then I click the "Return to account details" button
-  #   Then I see "Create account" as the caption on the page
+  #   #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
   #   Then I see "Account details" on the page header
   #   Then I see the status of "Personal details" is "Provided"
 
@@ -714,7 +711,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
 
   Scenario: AC14-negative: When user selects cancel button without entering any data into fields
     When "Cancel" is clicked
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
     Then I see the status of "Personal details" is "Not provided"
 

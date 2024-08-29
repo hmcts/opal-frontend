@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CanDeactivateCanDeactivateType } from '@interfaces';
 import { GlobalStateService } from '@services';
+import { CanDeactivateTypes } from '@types-guards';
 
 export abstract class AbstractFormParentBaseComponent {
   private readonly router = inject(Router);
@@ -17,7 +17,7 @@ export abstract class AbstractFormParentBaseComponent {
    *
    * @returns boolean
    */
-  canDeactivate(): CanDeactivateCanDeactivateType {
+  canDeactivate(): CanDeactivateTypes {
     if (this.stateUnsavedChanges) {
       return false;
     } else {
