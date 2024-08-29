@@ -21,3 +21,34 @@ Then('I see help text {string} for the {string} radio button', (helpText: string
 When('I see {string} below the {string} radio button', (text: string, radioButton: string) => {
   cy.contains('label', radioButton).next().contains('div', text).invoke('text').should('contains', text);
 });
+Then('I see the {string} radio button under the {string} section', (radioButton: string, section: string) => {
+  cy.get('[legendtext="' + section + '"]')
+    .find('.govuk-radios')
+    .should('contain.text', radioButton);
+});
+Then(
+  'I see the {string} radio button under the {string} section is selected',
+  (radioButton: string, section: string) => {
+    cy.get('[legendtext="' + section + '"]')
+      .find('.govuk-radios')
+      .contains('label', radioButton)
+      .prev()
+      .should('be.checked');
+  },
+);
+Then(
+  'I see the {string} radio button under the {string} section is not selected',
+  (radioButton: string, section: string) => {
+    cy.get('[legendtext="' + section + '"]')
+      .find('.govuk-radios')
+      .contains('label', radioButton)
+      .prev()
+      .should('not.be.checked');
+  },
+);
+When('I select the {string} radio button under the {string} section', (radioButton: string, section: string) => {
+  cy.get('[legendtext="' + section + '"]')
+    .find('.govuk-radios')
+    .contains('label', radioButton)
+    .click();
+});
