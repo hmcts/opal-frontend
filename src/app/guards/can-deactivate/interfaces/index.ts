@@ -1,6 +1,3 @@
-import {
-  ICanDeactivateCanComponentDeactivate,
-  CanDeactivateCanDeactivateType,
-} from './can-deactivate-can-component-deactivate.interface';
+import { ICanDeactivateCanComponentDeactivate } from './can-deactivate-can-component-deactivate.interface';
 
-export { ICanDeactivateCanComponentDeactivate, CanDeactivateCanDeactivateType };
+export { ICanDeactivateCanComponentDeactivate };

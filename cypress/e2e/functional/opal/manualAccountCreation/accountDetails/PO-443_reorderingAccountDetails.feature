@@ -6,7 +6,7 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
     And I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
 
     When I enter "London South" into the business unit search box
@@ -17,7 +17,7 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
 
   # Scenario: AC1 & AC2 - Heading, sub-heading, business unit and defendant type
 
-  #   When I see "Create account" as the caption on the page
+  #   #Descoped by PO-426 --- When I see "Create account" as the caption on the page
   #   And I see "Account details" on the page header
   #   And I see the business unit is "London South West"
   #   And I see the defendant type is "Adult or youth with parent or guardian to pay"
