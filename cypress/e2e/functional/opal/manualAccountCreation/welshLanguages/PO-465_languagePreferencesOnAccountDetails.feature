@@ -9,6 +9,8 @@ Feature: PO-465 language preferences page for all defendant types
 
     Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
+    And I select the "Fine" radio button
+
 
   Scenario Outline:AC1,2,3,4 Language preferences for All defendants - happy path
 
@@ -20,7 +22,7 @@ Feature: PO-465 language preferences page for all defendant types
     And I see the "Document language" is "Welsh and English" in the account details table
     And I see the "Hearing language" is "Welsh and English" in the account details table
 
-    Then I see "Defendant type" below "Business unit" in the account details table
+    Then I see "Defendant type" below "Account type" in the account details table
     And I see "Document language" below "Defendant type" in the account details table
     And I see "Hearing language" below "Document language" in the account details table
 
@@ -40,7 +42,7 @@ Feature: PO-465 language preferences page for all defendant types
 
     Then I see the "Defendant type" is "<defendantType>" in the account details table
 
-    Then I see "Defendant type" below "Business unit" in the account details table
+    Then I see "Defendant type" below "Account type" in the account details table
     And I do not see "Document language" in the account details table
     And I do not see "Hearing language" in the account details table
 
