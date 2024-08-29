@@ -10,11 +10,15 @@ import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
   GovukCheckboxesComponent,
+  GovukCheckboxesConditionalComponent,
   GovukCheckboxesItemComponent,
   GovukRadioComponent,
   GovukRadiosItemComponent,
+  GovukTextInputPrefixSuffixComponent,
 } from '@components/govuk';
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants';
+import { ScotgovDatePickerComponent } from '@components/scotgov';
+import { FinesMacDefaultDaysComponent } from '../../components';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -28,7 +32,11 @@ import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants';
     GovukRadiosItemComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
+    GovukCheckboxesConditionalComponent,
     GovukCancelLinkComponent,
+    ScotgovDatePickerComponent,
+    GovukTextInputPrefixSuffixComponent,
+    FinesMacDefaultDaysComponent,
   ],
   templateUrl: './fines-mac-payment-terms-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +58,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     this.form = new FormGroup({
       paymentTerms: new FormControl(null),
       holdEnforcementOnAccount: new FormControl(null),
+      hasDaysInDefault: new FormControl(null),
+      daysInDefaultDate: new FormControl(null),
+      daysInDefault: new FormControl(null),
     });
   }
 

@@ -16,9 +16,55 @@
       ></div>
     }
   </app-govuk-radio>
+  <fieldset class="govuk-fieldset">
+    <app-govuk-checkboxes
+      fieldSetId="daysInDefaultCheckbox"
+      legendText="Days in default"
+      legendClasses="govuk-fieldset__legend--s"
+    >
+      <div
+        app-govuk-checkboxes-item
+        labelText="There are days in default"
+        inputId="hasDaysInDefault"
+        inputName="hasDaysInDefault"
+        [control]="form.get('hasDaysInDefault')"
+      ></div>
+
+      @if (form.get('hasDaysInDefault')?.value) {
+        <div app-govuk-checkboxes-conditional conditionalId="hasDaysInDefault">
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+              <app-scotgov-date-picker
+                labelText="Date days in default were imposed"
+                labelClasses="govuk-label--s"
+                inputId="daysInDefaultDate"
+                inputName="daysInDefaultDate"
+                inputClasses="govuk-input--width-10"
+                [control]="form.controls['daysInDefaultDate']"
+                hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
+              ></app-scotgov-date-picker>
+              <app-govuk-text-input-prefix-suffix
+                labelText="Enter days in default"
+                labelClasses="govuk-label--s"
+                inputId="daysInDefault"
+                inputName="daysInDefault"
+                inputClasses="govuk-input--width-5"
+                [control]="form.controls['daysInDefault']"
+                suffixText="days"
+              ></app-govuk-text-input-prefix-suffix>
+            </div>
+            <div class="govuk-grid-column-full govuk-!-margin-top-5">
+              <app-fines-mac-default-days
+                [date]="form.controls['daysInDefaultDate'].value"
+              ></app-fines-mac-default-days>
+            </div>
+          </div>
+        </div>
+      }
+    </app-govuk-checkboxes>
+  </fieldset>
   <app-govuk-checkboxes
     fieldSetId="enforcementActions"
-    checkboxClasses=""
     legendText="Enforcement action"
     legendClasses="govuk-fieldset__legend--s"
   >

@@ -1,71 +1,69 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, SimpleChanges, inject } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import {
-  GovukCheckboxesComponent,
-  GovukCheckboxesConditionalComponent,
-  GovukCheckboxesItemComponent,
-  GovukDetailsComponent,
-  GovukTextInputComponent,
-  GovukTextInputPrefixSuffixComponent,
-} from '@components/govuk';
+import { GovukDetailsComponent, GovukTextInputComponent } from '@components/govuk';
 import { MojTicketPanelComponent } from '@components/moj';
-import { ScotgovDatePickerComponent } from '@components/scotgov';
 import { UtilsService } from '@services';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-fines-mac-default-days',
   standalone: true,
-  imports: [
-    GovukDetailsComponent,
-    GovukTextInputComponent,
-    MojTicketPanelComponent,
-    ScotgovDatePickerComponent,
-    GovukTextInputPrefixSuffixComponent,
-    GovukCheckboxesComponent,
-    GovukCheckboxesItemComponent,
-    GovukCheckboxesConditionalComponent,
-  ],
+  imports: [GovukDetailsComponent, GovukTextInputComponent, MojTicketPanelComponent],
   templateUrl: './fines-mac-default-days.component.html',
   styleUrl: './fines-mac-default-days.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacDefaultDaysComponent implements OnInit {
+export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy {
+  @Input({ required: true }) date!: string;
   private utilsService = inject(UtilsService);
-  public form = new FormGroup({
-    isDaysInDefault: new FormControl(null),
-    imposedDate: new FormControl(null),
-    daysInDefault: new FormControl(null),
-    years: new FormControl(null),
-    months: new FormControl(null),
-    weeks: new FormControl(null),
-    days: new FormControl(null),
+  private ngUnsubscribe = new Subject<void>();
+  public daysInDefaultCalculatorForm = new FormGroup({
+    years: new FormControl<number | null>(null),
+    months: new FormControl<number | null>(null),
+    weeks: new FormControl<number | null>(null),
+    days: new FormControl<number | null>(null),
   });
 
-  public imposedDate!: string;
   public daysInDefault!: number;
 
-  protected setInputValue(value: any): void {
-    if (this.utilsService.isValidDate(value)) {
-      this.form.controls['imposedDate'].patchValue(value);
-      this.form.controls['imposedDate'].markAsTouched();
+  /**
+   * Calculates the number of days in default based on the selected date and duration values.
+   * If the selected date is valid, it adds the specified duration to the date and calculates the difference in days.
+   */
+  public calculateDaysInDefault(): void {
+    if (this.utilsService.isValidDate(this.date)) {
+      const { years, months, weeks, days } = this.daysInDefaultCalculatorForm.value;
+      const newDate = this.utilsService.addDurationToDate(
+        this.date,
+        Number(years),
+        Number(months),
+        Number(weeks),
+        Number(days),
+      );
+      this.daysInDefault = this.utilsService.calculateDaysBetweenDates(this.date, newDate);
     }
   }
 
-  public calculateDaysInDefault(): void {
-    if (this.utilsService.isValidDate(this.form.value.imposedDate ?? '')) {
-      const imposedDate = String(this.form.value.imposedDate);
-      const newDate = this.utilsService.addDurationToDate(
-        imposedDate,
-        Number(this.form.value.years),
-        Number(this.form.value.months),
-        Number(this.form.value.weeks),
-        Number(this.form.value.days),
-      );
-      this.daysInDefault = this.utilsService.calculateDaysBetweenDates(imposedDate, newDate);
+  /**
+   * Lifecycle hook that is called when one or more data-bound input properties of the component change.
+   *
+   * @param changes - An object containing the changed properties and their current and previous values.
+   * @returns void
+   */
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['date'] && !changes['date'].isFirstChange()) {
+      this.calculateDaysInDefault();
     }
   }
 
   public ngOnInit(): void {
-    this.form.valueChanges.subscribe(() => this.calculateDaysInDefault());
+    this.daysInDefaultCalculatorForm.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => this.calculateDaysInDefault());
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

@@ -35,13 +35,6 @@ export class UtilsService {
     return Math.max(0, Math.ceil(minutes));
   }
 
-  public calculateDays(startDate: string, years: number, months: number, weeks: number, days: number): number {
-    const date = DateTime.fromFormat(startDate, 'dd/MM/yyyy');
-    const newDate = date.plus({ years, months, weeks, days });
-    const diff = newDate.diff(date, 'days');
-    return diff.days;
-  }
-
   /**
    * Checks if a given date is valid.
    *
