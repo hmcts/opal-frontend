@@ -13,5 +13,6 @@ export interface IFinesMacRoutingPaths extends IChildRoutingPaths {
     courtDetails: string;
     accountCommentsNotes: string;
     paymentTerms: string;
+    review: string;
   };
 }

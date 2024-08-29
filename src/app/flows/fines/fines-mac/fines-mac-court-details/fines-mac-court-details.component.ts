@@ -10,6 +10,7 @@ import { IOpalFinesCourtRefData, IOpalFinesLocalJusticeAreaRefData } from '@inte
 import { IFinesMacCourtDetailsForm } from './interfaces';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-court-details',
@@ -38,7 +39,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
     enforcementCourtData: this.enforcementCourtData$,
   });
 
-  public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.DefendantType!;
 
   /**
    * Creates an array of autocomplete items based on the response from the server.
@@ -79,9 +80,13 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
    * @param formData - The form data containing the search parameters.
    */
   public handleCourtDetailsSubmit(form: IFinesMacCourtDetailsForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
+
+    // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      courtDetails: form.formData,
+      courtDetails: form,
       unsavedChanges: false,
       stateChanges: true,
     };

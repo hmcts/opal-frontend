@@ -7,6 +7,7 @@ import {
   IAbstractFormBaseFormError,
   IAbstractFormBaseFormErrorSummaryMessage,
   IAbstractFormBaseHighPriorityFormError,
+  IAbstractFormBaseStatus,
 } from '../abstract-form-base/interfaces';
 import { IAbstractFormArrayControlValidation } from './abstract-form-array-control-validation.interface';
 import { IAbstractFormArrayControl } from './abstract-form-array-control.interface';
@@ -26,4 +27,5 @@ export {
   IAbstractFormBaseForm,
   IAbstractFormAliasBaseAliasControls,
   IAbstractFormBaseFormControlErrorMessage,
+  IAbstractFormBaseStatus,
 };

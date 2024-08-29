@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacParentGuardianDetailsComponent } from './fines-mac-parent-guardian-details.component';
-import { IFinesMacParentGuardianDetailsForm, IFinesMacParentGuardianDetailsState } from './interfaces';
+import { IFinesMacParentGuardianDetailsForm } from './interfaces';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK, FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from './mocks';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK } from './mocks';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
@@ -12,14 +12,12 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   let component: FinesMacParentGuardianDetailsComponent;
   let fixture: ComponentFixture<FinesMacParentGuardianDetailsComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
-  let formData: IFinesMacParentGuardianDetailsState;
   let formSubmit: IFinesMacParentGuardianDetailsForm;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formData = FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK;
     formSubmit = FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
@@ -50,7 +48,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     formSubmit.nestedFlow = false;
     component.handleParentGuardianDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formData);
+    expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -63,7 +61,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     formSubmit.nestedFlow = true;
     component.handleParentGuardianDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formData);
+    expect(mockFinesService.finesMacState.parentGuardianDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.contactDetails], {
       relativeTo: component['activatedRoute'].parent,
     });

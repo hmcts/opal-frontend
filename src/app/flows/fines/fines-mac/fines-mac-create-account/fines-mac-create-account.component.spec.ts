@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { IFinesMacCreateAccountForm, IFinesMacCreateAccountState } from './interfaces';
+import { IFinesMacCreateAccountForm } from './interfaces';
 import { FinesService, OpalFines } from '@services/fines';
 import {
   OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK,
@@ -14,14 +14,13 @@ import {
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK, FINES_MAC_CREATE_ACCOUNT_STATE_MOCK } from './mocks';
+import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from './mocks';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountComponent>;
   let finesService: jasmine.SpyObj<FinesService>;
   let opalFinesService: Partial<OpalFines>;
-  let formData: IFinesMacCreateAccountState;
   let formSubmit: IFinesMacCreateAccountForm;
 
   beforeEach(async () => {
@@ -33,7 +32,6 @@ describe('FinesMacCreateAccountComponent', () => {
     finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
     finesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formData = FINES_MAC_CREATE_ACCOUNT_STATE_MOCK;
     formSubmit = FINES_MAC_CREATE_ACCOUNT_FORM_MOCK;
 
     await TestBed.configureTestingModule({
@@ -56,7 +54,7 @@ describe('FinesMacCreateAccountComponent', () => {
     fixture = TestBed.createComponent(FinesMacCreateAccountComponent);
     component = fixture.componentInstance;
 
-    component['finesService'].finesMacState.accountDetails.BusinessUnit = null;
+    component['finesService'].finesMacState.accountDetails.formData.BusinessUnit = null;
 
     fixture.detectChanges();
   });
@@ -74,7 +72,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     component.handleAccountDetailsSubmit(formSubmit);
 
-    expect(finesService.finesMacState.accountDetails).toEqual(formData);
+    expect(finesService.finesMacState.accountDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -95,7 +93,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     component['setBusinessUnit'](response);
 
-    expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toEqual(
+    expect(component['finesService'].finesMacState.accountDetails.formData.BusinessUnit).toEqual(
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
     );
   });
@@ -103,14 +101,14 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
     const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
-    component['finesService'].finesMacState.accountDetails.BusinessUnit =
+    component['finesService'].finesMacState.accountDetails.formData.BusinessUnit =
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
 
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
-    expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toEqual(
+    expect(component['finesService'].finesMacState.accountDetails.formData.BusinessUnit).toEqual(
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
     );
   });
@@ -118,11 +116,11 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should not set the business unit for account details when there are multiple business units available', () => {
     const response = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
 
-    component['finesService'].finesMacState.accountDetails.BusinessUnit = null;
+    component['finesService'].finesMacState.accountDetails.formData.BusinessUnit = null;
 
     component['setBusinessUnit'](response);
 
-    expect(component['finesService'].finesMacState.accountDetails.BusinessUnit).toBeNull();
+    expect(component['finesService'].finesMacState.accountDetails.formData.BusinessUnit).toBeNull();
   });
 
   it('should create an array of autocomplete items from the response', () => {

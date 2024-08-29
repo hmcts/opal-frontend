@@ -10,8 +10,8 @@ import { FinesService, OpalFines } from '@services/fines';
 import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { FINES_MAC_STATE } from '../constants';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants';
+import { FINES_MAC_STATE, FINES_MAC_STATUS } from '../constants';
+import { FINES_MAC_CREATE_ACCOUNT_FORM, FINES_MAC_CREATE_ACCOUNT_STATE } from './constants';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -42,10 +42,10 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   private setBusinessUnit(response: IOpalFinesBusinessUnitRefData): void {
     const { count, refData } = response;
-    const { accountDetails } = this.finesService.finesMacState;
+    const { formData } = this.finesService.finesMacState.accountDetails;
 
-    if (count === 1 && accountDetails.BusinessUnit === null) {
-      accountDetails.BusinessUnit = refData[0].businessUnitName;
+    if (count === 1 && formData.BusinessUnit === null) {
+      formData.BusinessUnit = refData[0].businessUnitName;
       this.finesService.finesMacState.businessUnit = refData[0];
     }
     this.businessUnits = refData;
@@ -71,11 +71,15 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    * Handles the form submission for account details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleAccountDetailsSubmit(formSubmit: IFinesMacCreateAccountForm): void {
+  public handleAccountDetailsSubmit(form: IFinesMacCreateAccountForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
+
+    // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      accountDetails: formSubmit.formData,
-      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === formSubmit.formData.BusinessUnit)!,
+      accountDetails: form,
+      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === form.formData.BusinessUnit)!,
       unsavedChanges: false,
       stateChanges: true,
     };
@@ -94,12 +98,15 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   }
 
   public ngOnInit(): void {
-    const { BusinessUnit } = this.finesService.finesMacState.accountDetails;
+    const { BusinessUnit } = this.finesService.finesMacState.accountDetails.formData;
     this.finesService.finesMacState = {
       ...FINES_MAC_STATE,
       accountDetails: {
-        ...FINES_MAC_ACCOUNT_DETAILS_STATE,
-        BusinessUnit: BusinessUnit,
+        ...FINES_MAC_CREATE_ACCOUNT_FORM,
+        formData: {
+          ...FINES_MAC_CREATE_ACCOUNT_STATE,
+          BusinessUnit: BusinessUnit,
+        },
       },
     };
   }
