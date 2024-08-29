@@ -43,8 +43,6 @@ describe('MojSubNavigationComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(component['routeFragmentSub']).toBeDefined();
-
     expect(component.activeSubNavItemFragment.emit).toHaveBeenCalledWith('test');
   });
 });

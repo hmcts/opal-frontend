@@ -17,7 +17,7 @@ Feature: PO-566 Basic Payment Terms screen - all defendant types
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Account details" on the page header
 
     When I see the status of "Payment terms" is "Cannot start yet"
@@ -55,7 +55,7 @@ Feature: PO-566 Basic Payment Terms screen - all defendant types
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Account details" on the page header
 
     #When I see the status of "Payment terms" is "Cannot start yet" - This will be uncommented once Offence Details is delivered
@@ -83,7 +83,7 @@ Feature: PO-566 Basic Payment Terms screen - all defendant types
     And I select the "Company" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Account details" on the page header
 
     #When I see the status of "Payment terms" is "Cannot start yet" - This will be uncommented once Offence Details is delivered
