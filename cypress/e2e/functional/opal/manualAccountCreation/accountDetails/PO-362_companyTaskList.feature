@@ -22,7 +22,7 @@ Feature: PO-362 Company task list screen
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
 
     And I enter "London South" into the business unit search box
@@ -31,7 +31,7 @@ Feature: PO-362 Company task list screen
     And I click the "Continue" button
 
     Then I see "Account details" on the page header
-    And I see "Create account" above "Account details"
+  #Descoped by PO-426 --- And I see "Create account" above "Account details"
 
   Scenario: AC2 Business unit and Defendant type are displayed correctly
     Given I am on the OPAL Frontend
@@ -197,18 +197,20 @@ Feature: PO-362 Company task list screen
 
   #   When "Cancel account creation" is clicked, nothing happens
 
-  Scenario: AC7 company task list no back button or link
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
 
-    When I sign in as "opal-test@hmcts.net"
-    Then I am on the dashboard
+#De-scoped by PO-426
+  # Scenario: AC7 company task list no back button or link
+  #   Given I am on the OPAL Frontend
+  #   Then I see "Opal" in the header
 
-    When I navigate to Manual Account Creation
+  #   When I sign in as "opal-test@hmcts.net"
+  #   Then I am on the dashboard
 
-    And I enter "London South" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Company" radio button
-    And I click the "Continue" button
+  #   When I navigate to Manual Account Creation
 
-    Then I do not see a back button or back link
+  #   And I enter "London South" into the business unit search box
+  #   And I select the "Fine" radio button
+  #   And I select the "Company" radio button
+  #   And I click the "Continue" button
+
+  #   Then I do not see a back button or back link
