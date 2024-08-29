@@ -8,14 +8,14 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
     And I enter "London South" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Company" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the "Defendant details" section heading
@@ -258,7 +258,7 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
 
   Scenario: AC13-negative: user has selected 'Cancel' button and not entered data into any fields
     When "Cancel" is clicked
-    Then I see "Create account" as the caption on the page
+    #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
   Scenario: AC14a-negative: user selects the 'Cancel' button and the user has entered data into one or more fields and selecting 'OK' on warning message

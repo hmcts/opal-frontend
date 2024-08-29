@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   IFinesMacAccountDetailsAccountTypes,
   IFinesMacAccountDetailsDefendantTypes,
@@ -13,6 +13,7 @@ import {
 import { RoutingPaths } from '@enums';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import {
+  GovukBackLinkComponent,
   GovukButtonComponent,
   GovukHeadingWithCaptionComponent,
   GovukSummaryListComponent,
@@ -22,9 +23,10 @@ import {
   GovukTaskListItemComponent,
 } from '@components/govuk';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants';
+import { CanDeactivateTypes } from '@types-guards';
+import { Subject, takeUntil } from 'rxjs';import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces';
 
 @Component({
@@ -37,17 +39,17 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
     GovukTaskListComponent,
     GovukTaskListItemComponent,
     GovukButtonComponent,
-    GovukHeadingWithCaptionComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukHeadingWithCaptionComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
+    GovukBackLinkComponent,
   ],
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountDetailsComponent implements OnInit {
+export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
@@ -55,6 +57,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   protected readonly routingPaths = RoutingPaths;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
+  private ngUnsubscribe: Subject<void> = new Subject<void>();
 
   protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
@@ -64,6 +67,15 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   public documentLanguage!: string;
   public courtHearingLanguage!: string;
   public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
+  public pageNavigation!: boolean;
+
+  /**
+   * Determines whether the component can be deactivated.
+   * @returns A CanDeactivateTypes object representing the navigation status.
+   */
+  canDeactivate(): CanDeactivateTypes {
+    return this.pageNavigation;
+  }
 
   /**
    * Sets the defendant type based on the value stored in the account details.
@@ -135,6 +147,17 @@ export class FinesMacAccountDetailsComponent implements OnInit {
   }
 
   /**
+   * Listens to router events and updates the `pageNavigation` property accordingly.
+   */
+  private routerListener(): void {
+    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event: NavigationEvent) => {
+      if (event instanceof NavigationStart) {
+        this.pageNavigation = !event.url.includes(this.fineMacRoutes.children.createAccount);
+      }
+    });
+  }
+
+  /**
    * Performs the initial setup for the fines-mac-account-details component.
    * Sets the defendant type and account type.
    */
@@ -143,6 +166,7 @@ export class FinesMacAccountDetailsComponent implements OnInit {
     this.setAccountType();
     this.setLanguage();
     this.checkStatus();
+    this.routerListener();
   }
 
   /**
@@ -157,6 +181,15 @@ export class FinesMacAccountDetailsComponent implements OnInit {
       this.accountCreationStatus['personalDetails'] ||
       this.paymentTermsBypassDefendantTypes.includes(this.defendantType)
     );
+  }
+
+  /**
+   * Navigates back to the previous page
+   * Page navigation set to false to trigger the canDeactivate guard
+   */
+  public navigateBack(): void {
+    this.pageNavigation = false;
+    this.handleRoute(this.fineMacRoutes.children.createAccount);
   }
 
   /**
@@ -177,5 +210,10 @@ export class FinesMacAccountDetailsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.initialAccountDetailsSetup();
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }
