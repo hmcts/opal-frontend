@@ -34,6 +34,7 @@ import { ScotgovDatePickerComponent } from '@components/scotgov';
 import { FinesMacDefaultDaysComponent } from '../../components';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
+import { DateService } from '@services';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -62,6 +63,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
 
   protected readonly finesService = inject(FinesService);
+  protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
   override fieldErrors: IFinesMacPaymentTermsFieldErrors = {
@@ -71,6 +73,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(FINES_MAC_PAYMENT_TERMS_OPTIONS).map(
     ([key, value]) => ({ key, value }),
   );
+  public yesterday!: string;
 
   /**
    * Sets up the payment terms form.
@@ -92,10 +95,12 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * - Repopulates the form with the payment terms data from the fines service.
    */
   private initialPaymentTermsSetup(): void {
+    const { paymentTerms } = this.finesService.finesMacState;
     this.setupPaymentTermsForm();
     this.hasDaysInDefaultListener();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.finesService.finesMacState.paymentTerms);
+    this.rePopulateForm(paymentTerms);
+    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
   /**

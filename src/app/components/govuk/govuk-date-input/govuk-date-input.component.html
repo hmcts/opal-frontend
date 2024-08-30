@@ -1,4 +1,8 @@
-<div class="govuk-form-group" [formGroup]="getGroup" [class.govuk-form-group--error]="hasError()">
+<div
+  class="govuk-form-group"
+  [formGroup]="getGroup"
+  [class.govuk-form-group--error]="!!errorDay || !!errorMonth || !!errorYear"
+>
   <fieldset class="govuk-fieldset" role="group" [id]="fieldSetId">
     <legend
       class="govuk-fieldset__legend {{ legendClasses }}"
@@ -11,7 +15,7 @@
         {{ legendHint }}
       </div>
     }
-    @if (hasError()) {
+    @if (errorDay || errorMonth || errorYear) {
       <p id="{{ this.fieldSetId }}-error-message" class="govuk-error-message">
         <span class="govuk-visually-hidden">Error:</span> {{ errorDay || errorMonth || errorYear }}
       </p>

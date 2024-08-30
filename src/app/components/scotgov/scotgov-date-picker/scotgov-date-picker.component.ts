@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, afterNextRender } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  afterNextRender,
+} from '@angular/core';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -9,8 +17,9 @@ import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/form
   templateUrl: './scotgov-date-picker.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ScotgovDatePickerComponent {
+export class ScotgovDatePickerComponent implements OnInit {
   private _control!: FormControl;
+  public disabledDatesConcatenated!: string;
 
   @Input({ required: true }) labelText!: string;
   @Input({ required: false }) labelClasses!: string;
@@ -41,6 +50,22 @@ export class ScotgovDatePickerComponent {
   }
 
   /**
+   * Retrieves the disabled dates and concatenates them into a single string.
+   */
+  private concatenateDisabledDates(): void {
+    this.disabledDatesConcatenated = this.disabledDates ? this.disabledDates.join(' ') : '';
+  }
+
+  /**
+   * Sets the date value and emits the updated value through the `dateChange` event.
+   *
+   * @param value - The new date value to set.
+   */
+  protected setDateValue(value: string) {
+    this.dateChange.emit(value);
+  }
+
+  /**
    * Configures the date picker functionality using the scottish government library.
    */
   public configureDatePicker(): void {
@@ -49,21 +74,7 @@ export class ScotgovDatePickerComponent {
     });
   }
 
-  /**
-   * Converts the `disabledDates` array into a space-separated string.
-   *
-   * @returns A space-separated string of dates from the `disabledDates` array.
-   * If `disabledDates` is not an array or is undefined, it returns an empty string.
-   */
-  public getDisabledDates(): string {
-    return this.disabledDates ? this.disabledDates.join(' ') : '';
-  }
-
-  protected setDateValue(value: string) {
-    this.dateChange.emit(value);
-  }
-
-  public hasError(): boolean {
-    return !!this.errors;
+  public ngOnInit(): void {
+    this.concatenateDisabledDates();
   }
 }

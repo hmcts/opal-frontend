@@ -42,6 +42,7 @@
                 inputName="daysInDefaultDate"
                 inputClasses="govuk-input--width-10"
                 hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
+                [maxDate]="yesterday"
                 [control]="form.controls['daysInDefaultDate']"
                 [errors]="formControlErrorMessages['daysInDefaultDate']"
                 (dateChange)="setInputValue($event, 'daysInDefaultDate')"
