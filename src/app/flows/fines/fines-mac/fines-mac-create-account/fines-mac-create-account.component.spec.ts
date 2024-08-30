@@ -29,6 +29,7 @@ describe('FinesMacCreateAccountComponent', () => {
       getBusinessUnits: jasmine
         .createSpy('getBusinessUnits')
         .and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
+      getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
     };
     finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
 
@@ -78,6 +79,7 @@ describe('FinesMacCreateAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
+    expect(opalFinesService.getConfigurationItemValue).toHaveBeenCalled();
   });
 
   it('should test handleUnsavedChanges', () => {

@@ -34,3 +34,11 @@ Then('I do not see {string} in the account details table', (valueOne: string) =>
 Then('I see {string} has a change link in the account details table', (value: string) => {
   cy.get('[summarylistid="accountDetails"]').contains(value).siblings().find('a').should('have.text', 'Change');
 });
+Then('I click the {string} change link in the account details table', (row: string) => {
+  cy.get('[summarylistrowid="languagePreferences"]')
+    .contains(row)
+    .siblings()
+    .find('a')
+    .should('have.text', 'Change')
+    .click();
+});

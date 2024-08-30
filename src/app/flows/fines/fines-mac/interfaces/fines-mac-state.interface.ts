@@ -9,6 +9,7 @@ import { IFinesMacOffenceDetailsState } from '../fines-mac-offence-details/inter
 import { IFinesMacParentGuardianDetailsState } from '../fines-mac-parent-guardian-details/interfaces';
 import { IFinesMacPaymentTermsState } from '../fines-mac-payment-terms/interfaces';
 import { IFinesMacPersonalDetailsState } from '../fines-mac-personal-details/interfaces';
+import { IFinesMacLanguagePreferencesState } from '../fines-mac-language-preferences/interfaces';
 
 export interface IFinesMacState {
   employerDetails: IFinesMacEmployerDetailsState;
@@ -21,6 +22,7 @@ export interface IFinesMacState {
   accountCommentsNotes: IFinesMacAccountCommentsNotesState;
   offenceDetails: IFinesMacOffenceDetailsState;
   paymentTerms: IFinesMacPaymentTermsState;
+  languagePreferences: IFinesMacLanguagePreferencesState;
   businessUnit: IOpalFinesBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;

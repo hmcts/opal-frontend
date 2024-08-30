@@ -113,5 +113,6 @@ export const routing: Routes = [
         (c) => c.FinesMacLanguagePreferencesComponent,
       ),
     canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
   },
 ];

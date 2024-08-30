@@ -1,3 +1,9 @@
+export interface IOpalFinesBusinessUnitConfigurationItems {
+  itemName: string | null;
+  itemValue: string | null;
+  itemValues: string[] | null;
+}
+
 export interface IOpalFinesBusinessUnit {
   businessUnitCode: string;
   businessUnitType: string;
@@ -5,7 +11,7 @@ export interface IOpalFinesBusinessUnit {
   opalDomain: null | string;
   businessUnitId: number;
   businessUnitName: string;
-  configurationItems: [];
+  configurationItems: IOpalFinesBusinessUnitConfigurationItems[];
   welshLanguage: boolean | null;
 }
 
