@@ -76,15 +76,23 @@
       [control]="form.get('holdEnforcementOnAccount')"
     ></div>
   </app-govuk-checkboxes>
-  <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
-  <app-govuk-button
-    buttonId="submitForm"
-    type="submit"
-    buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
-  >
-    Add account comments and notes
-  </app-govuk-button>
-  <app-govuk-cancel-link
-    (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
-  ></app-govuk-cancel-link>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
+      <app-govuk-button
+        buttonId="submitForm"
+        type="submit"
+        buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
+      >
+        Add account comments and notes
+      </app-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <app-govuk-cancel-link
+        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
+      ></app-govuk-cancel-link>
+    </div>
+  </div>
 </form>
