@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, SimpleChanges, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { GovukDetailsComponent, GovukTextInputComponent } from '@components/govuk';
 import { MojTicketPanelComponent } from '@components/moj';
@@ -13,7 +22,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './fines-mac-default-days.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy {
+export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy, OnChanges {
   @Input({ required: true }) date!: string;
   private utilsService = inject(UtilsService);
   private ngUnsubscribe = new Subject<void>();
@@ -24,7 +33,7 @@ export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy {
     days: new FormControl<number | null>(null),
   });
 
-  public daysInDefault!: number;
+  public daysInDefaultCalculated!: number;
 
   /**
    * Calculates the number of days in default based on the selected date and duration values.
@@ -40,7 +49,7 @@ export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy {
         Number(weeks),
         Number(days),
       );
-      this.daysInDefault = this.utilsService.calculateDaysBetweenDates(this.date, newDate);
+      this.daysInDefaultCalculated = this.utilsService.calculateDaysBetweenDates(this.date, newDate);
     }
   }
 

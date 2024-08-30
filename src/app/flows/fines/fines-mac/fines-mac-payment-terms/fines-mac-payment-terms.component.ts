@@ -14,6 +14,7 @@ import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-for
 })
 export class FinesMacPaymentTermsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
+  public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
 
   /**
    * Handles the submission of the payment terms form.

@@ -30,7 +30,7 @@ describe('FinesMacDefaultDaysComponent', () => {
       days: 4,
     });
     component.calculateDaysInDefault();
-    expect(component.daysInDefault).toBe(449);
+    expect(component.daysInDefaultCalculated).toBe(449);
   });
 
   it('should not calculate days in default if date is invalid', () => {
@@ -42,7 +42,7 @@ describe('FinesMacDefaultDaysComponent', () => {
       days: 4,
     });
     component.calculateDaysInDefault();
-    expect(component.daysInDefault).toBeUndefined();
+    expect(component.daysInDefaultCalculated).toBeUndefined();
   });
 
   it('should recalculate days in default when date changes and it is not the first change', () => {
@@ -54,11 +54,11 @@ describe('FinesMacDefaultDaysComponent', () => {
       days: 4,
     });
     component.calculateDaysInDefault();
-    expect(component.daysInDefault).toBe(450);
+    expect(component.daysInDefaultCalculated).toBe(450);
 
     component.date = '01/01/2024';
     component.ngOnChanges({ date: new SimpleChange('01/01/2023', '01/01/2024', false) });
-    expect(component.daysInDefault).toBe(450); 
+    expect(component.daysInDefaultCalculated).toBe(450);
   });
 
   it('should unsubscribe from valueChanges on component destroy', () => {

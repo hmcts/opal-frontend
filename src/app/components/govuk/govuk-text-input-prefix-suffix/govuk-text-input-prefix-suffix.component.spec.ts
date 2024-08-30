@@ -68,4 +68,10 @@ describe('GovukTextInputPrefixSuffixComponent', () => {
     expect(prefixElem.nativeElement.textContent.trim()).toBe(component.prefixText);
     expect(suffixElem.nativeElement.textContent.trim()).toBe(component.suffixText);
   });
+
+  it('should return false when errors is undefined', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any).errors = undefined;
+    expect(component.hasError()).toBe(false);
+  });
 });

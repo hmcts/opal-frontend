@@ -1,5 +1,10 @@
 <app-govuk-details summaryText="Help calculate days in default">
   <app-moj-ticket-panel componentClasses="govuk-!-width-full">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+        <h1 class="govuk-fieldset__heading">Calculate days in default</h1>
+      </legend>
+    </fieldset>
     <div class="days-in-default-container">
       <div class="days-in-default-input">
         <div class="days-in-default-input-item">
@@ -40,10 +45,10 @@
         </div>
       </div>
       <div class="days-in-default-results">
-        @if (date && daysInDefault) {
-          @let daysText = daysInDefault > 1 ? 'days' : 'day';
+        @if (date && daysInDefaultCalculated) {
+          @let daysText = daysInDefaultCalculated > 1 ? 'days' : 'day';
           <strong> Total time in days</strong>
-          <p>{{ daysInDefault }} {{ daysText }}</p>
+          <p>{{ daysInDefaultCalculated }} {{ daysText }}</p>
         } @else {
           <strong> Cannot calculate total time in days</strong>
           <p>You must enter a date days in default were imposed</p>

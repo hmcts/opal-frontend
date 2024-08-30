@@ -65,11 +65,37 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPaymentTermsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'hasDaysInDefaultListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setInitialErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
 
     component['initialPaymentTermsSetup']();
 
     expect(component['setupPaymentTermsForm']).toHaveBeenCalled();
+    expect(component['hasDaysInDefaultListener']).toHaveBeenCalled();
+    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(component['finesService'].finesMacState.paymentTerms);
+  });
+
+  it('should add controls when hasDaysInDefault is true', () => {
+    const hasDaysInDefaultControl = component.form.controls['hasDaysInDefault'];
+    hasDaysInDefaultControl.setValue(true);
+
+    component['hasDaysInDefaultListener']();
+
+    expect(component.form.contains('daysInDefaultDate')).toBe(true);
+    expect(component.form.contains('daysInDefault')).toBe(true);
+  });
+
+  it('should remove controls when hasDaysInDefault is false', () => {
+    const hasDaysInDefaultControl = component.form.controls['hasDaysInDefault'];
+    hasDaysInDefaultControl.setValue(false);
+
+    component['hasDaysInDefaultListener']();
+
+    expect(component.form.contains('daysInDefaultDate')).toBe(false);
+    expect(component.form.contains('daysInDefault')).toBe(false);
   });
 });

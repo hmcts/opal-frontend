@@ -1,6 +1,6 @@
-<div class="govuk-form-group" [class.govuk-form-group--error]="errors !== null">
+<div class="govuk-form-group" [class.govuk-form-group--error]="hasError()">
   <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
-  @if (errors) {
+  @if (hasError()) {
     <p id="{{ this.inputId }}-error-message" class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> {{ errors }}
     </p>

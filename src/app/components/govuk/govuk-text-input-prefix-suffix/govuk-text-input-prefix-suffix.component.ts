@@ -22,12 +22,16 @@ export class GovukTextInputPrefixSuffixComponent {
   @Input({ required: false }) prefixText!: string;
   @Input({ required: false }) suffixText!: string;
 
-  @Input({ required: true }) set control(abstractControl: AbstractControl) {
+  @Input({ required: true }) set control(abstractControl: AbstractControl | null) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
     this._control = abstractControl as FormControl;
   }
 
   get getControl() {
     return this._control;
+  }
+
+  public hasError(): boolean {
+    return this.errors !== null && typeof this.errors !== 'undefined';
   }
 }
