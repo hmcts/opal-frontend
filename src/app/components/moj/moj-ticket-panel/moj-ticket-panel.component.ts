@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-moj-ticket-panel',
@@ -7,4 +7,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './moj-ticket-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MojTicketPanelComponent {}
+export class MojTicketPanelComponent {
+  @Input({ required: false }) componentClasses!: string;
+  @Input({ required: false }) sectionClasses!: string;
+}
