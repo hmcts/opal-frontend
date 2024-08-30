@@ -111,13 +111,14 @@
   <p class="govuk-body">
     <app-govuk-button buttonId="reviewAccountButton"> Review account</app-govuk-button>
   </p>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <p class="govuk-body">
     <a
-      class="govuk-link govuk-color_error"
-      (click)="handleRoute(routingPaths.dashboard, true, $event)"
-      (keyup.enter)="handleRoute(routingPaths.dashboard, true, $event)"
+      class="govuk-link govuk-error-colour"
+      (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+      (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
       tabindex="0"
-      >Cancel account creation</a
+      >Delete account</a
     >
   </p>
 </div>

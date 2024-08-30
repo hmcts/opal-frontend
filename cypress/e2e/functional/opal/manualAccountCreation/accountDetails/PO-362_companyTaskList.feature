@@ -162,55 +162,54 @@ Feature: PO-362 Company task list screen
     Then I see the "Review and publish" section heading
     And I see the "Check that all required fields have been entered before you publish" text under the "Review and publish" section
     And I see the "Review account" button under the "Review and publish" section
-    And I see the "Cancel account creation" link
 
-  # Descoped
-  # Scenario: AC6.c company task list Review account button
-  #   Given I am on the OPAL Frontend
-  #   Then I see "Opal" in the header
+# Descoped
+# Scenario: AC6.c company task list Review account button
+#   Given I am on the OPAL Frontend
+#   Then I see "Opal" in the header
 
-  #   When I sign in as "opal-test@hmcts.net"
-  #   Then I am on the dashboard
+#   When I sign in as "opal-test@hmcts.net"
+#   Then I am on the dashboard
 
-  #   When I navigate to Manual Account Creation
+#   When I navigate to Manual Account Creation
 
-  #   And I enter "London South" into the business unit search box
-  #   When I select company
-  #   And I click on continue button
+#   And I enter "London South" into the business unit search box
+#   When I select company
+#   And I click on continue button
 
-  #   Then I see "Account details" on the page header
-  #   When The button "Review account" is clicked, nothing happens
+#   Then I see "Account details" on the page header
+#   When The button "Review account" is clicked, nothing happens
 
 
-  # Descoped
-  # Scenario: AC6.d company task list cancel account creation link
-  #   Given I am on the OPAL Frontend
-  #   Then I see "Opal" in the header
+# Descoped
+# Scenario: AC6.d company task list cancel account creation link
+#   Given I am on the OPAL Frontend
+#   Then I see "Opal" in the header
 
-  #   When I sign in as "opal-test@hmcts.net"
-  #   Then I am on the dashboard
+#   When I sign in as "opal-test@hmcts.net"
+#   Then I am on the dashboard
 
-  #   When I navigate to Manual Account Creation
+#   When I navigate to Manual Account Creation
 
-  #   When I select company
-  #   And I click on continue button
+#   When I select company
+#   And I click on continue button
 
-  #   When "Cancel account creation" is clicked, nothing happens
+#   When "Cancel account creation" is clicked, nothing happens
 
 
 #De-scoped by PO-426
-  # Scenario: AC7 company task list no back button or link
-  #   Given I am on the OPAL Frontend
-  #   Then I see "Opal" in the header
+# Scenario: AC7 company task list no back button or link
+#   Given I am on the OPAL Frontend
+#   Then I see "Opal" in the header
 
-  #   When I sign in as "opal-test@hmcts.net"
-  #   Then I am on the dashboard
+#   When I sign in as "opal-test@hmcts.net"
+#   Then I am on the dashboard
 
-  #   When I navigate to Manual Account Creation
+#   When I navigate to Manual Account Creation
 
-  #   And I enter "London South" into the business unit search box
-  #   And I select the "Fine" radio button
-  #   And I select the "Company" radio button
-  #   And I click the "Continue" button
+#   And I enter "London South" into the business unit search box
+#   And I select the "Fine" radio button
+#   And I select the "Company" radio button
+#   And I click the "Continue" button
 
-  #   Then I do not see a back button or back link
+#   Then I do not see a back button or back link
