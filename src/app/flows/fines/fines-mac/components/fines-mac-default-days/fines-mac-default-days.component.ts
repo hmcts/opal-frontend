@@ -19,7 +19,6 @@ import { Subject, takeUntil } from 'rxjs';
   standalone: true,
   imports: [GovukDetailsComponent, GovukTextInputComponent, MojTicketPanelComponent],
   templateUrl: './fines-mac-default-days.component.html',
-  styleUrl: './fines-mac-default-days.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy, OnChanges {

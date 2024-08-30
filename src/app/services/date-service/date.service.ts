@@ -41,12 +41,15 @@ export class DateService {
   /**
    * Checks if a given date is valid.
    *
-   * @param dateInput - The date to be checked. It can be either a `DateTime` object or a string in the format 'dd/MM/yyyy'.
-   * @returns `true` if the date is valid, `false` otherwise.
+   * @param dateInput - The date to be checked. It can be a DateTime object, a string in the format 'dd/MM/yyyy', or null.
+   * @returns A boolean indicating whether the date is valid or not.
    */
-  public isValidDate(dateInput: DateTime | string): boolean {
-    const date = typeof dateInput === 'string' ? DateTime.fromFormat(dateInput, 'dd/MM/yyyy') : dateInput;
-    return date.isValid;
+  public isValidDate(dateInput: DateTime | string | null): boolean {
+    if (dateInput) {
+      const date = typeof dateInput === 'string' ? DateTime.fromFormat(dateInput, 'dd/MM/yyyy') : dateInput;
+      return date.isValid;
+    }
+    return false;
   }
 
   /**

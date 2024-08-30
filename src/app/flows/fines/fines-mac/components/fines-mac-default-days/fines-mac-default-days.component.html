@@ -4,56 +4,58 @@
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
         <h1 class="govuk-fieldset__heading">Calculate days in default</h1>
       </legend>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <div class="govuk-form-group govuk-grid-row">
+            <div class="govuk-grid-column-one-quarter">
+              <app-govuk-text-input
+                labelText="Years"
+                inputId="years"
+                inputName="years"
+                inputClasses="govuk-input--width-2"
+                [control]="daysInDefaultCalculatorForm.controls['years']"
+              ></app-govuk-text-input>
+            </div>
+            <div class="govuk-grid-column-one-quarter">
+              <app-govuk-text-input
+                labelText="Months"
+                inputId="months"
+                inputName="months"
+                inputClasses="govuk-input--width-2"
+                [control]="daysInDefaultCalculatorForm.controls['months']"
+              ></app-govuk-text-input>
+            </div>
+            <div class="govuk-grid-column-one-quarter">
+              <app-govuk-text-input
+                labelText="Weeks"
+                inputId="weeks"
+                inputName="weeks"
+                inputClasses="govuk-input--width-2"
+                [control]="daysInDefaultCalculatorForm.controls['weeks']"
+              ></app-govuk-text-input>
+            </div>
+            <div class="govuk-grid-column-one-quarter">
+              <app-govuk-text-input
+                labelText="Days"
+                inputId="days"
+                inputName="days"
+                inputClasses="govuk-input--width-2"
+                [control]="daysInDefaultCalculatorForm.controls['days']"
+              ></app-govuk-text-input>
+            </div>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+          @if (date && daysInDefaultCalculated) {
+            @let daysText = daysInDefaultCalculated > 1 ? 'days' : 'day';
+            <strong>Total time in days</strong>
+            <p>{{ daysInDefaultCalculated }} {{ daysText }}</p>
+          } @else {
+            <strong>Cannot calculate total time in days</strong>
+            <p>You must enter a date days in default were imposed</p>
+          }
+        </div>
+      </div>
     </fieldset>
-    <div class="days-in-default-container">
-      <div class="days-in-default-input">
-        <div class="days-in-default-input-item">
-          <app-govuk-text-input
-            labelText="Years"
-            inputId="years"
-            inputName="years"
-            inputClasses="govuk-input--width-2"
-            [control]="daysInDefaultCalculatorForm.controls['years']"
-          ></app-govuk-text-input>
-        </div>
-        <div class="days-in-default-input-item">
-          <app-govuk-text-input
-            labelText="Months"
-            inputId="months"
-            inputName="months"
-            inputClasses="govuk-input--width-2"
-            [control]="daysInDefaultCalculatorForm.controls['months']"
-          ></app-govuk-text-input>
-        </div>
-        <div class="days-in-default-input-item">
-          <app-govuk-text-input
-            labelText="Weeks"
-            inputId="weeks"
-            inputName="weeks"
-            inputClasses="govuk-input--width-2"
-            [control]="daysInDefaultCalculatorForm.controls['weeks']"
-          ></app-govuk-text-input>
-        </div>
-        <div class="days-in-default-input-item">
-          <app-govuk-text-input
-            labelText="Days"
-            inputId="days"
-            inputName="days"
-            inputClasses="govuk-input--width-2"
-            [control]="daysInDefaultCalculatorForm.controls['days']"
-          ></app-govuk-text-input>
-        </div>
-      </div>
-      <div class="days-in-default-results">
-        @if (date && daysInDefaultCalculated) {
-          @let daysText = daysInDefaultCalculated > 1 ? 'days' : 'day';
-          <strong> Total time in days</strong>
-          <p>{{ daysInDefaultCalculated }} {{ daysText }}</p>
-        } @else {
-          <strong> Cannot calculate total time in days</strong>
-          <p>You must enter a date days in default were imposed</p>
-        }
-      </div>
-    </div>
   </app-moj-ticket-panel>
 </app-govuk-details>

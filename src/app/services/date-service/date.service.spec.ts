@@ -151,6 +151,12 @@ describe('DateServiceService', () => {
     expect(result).toBe(false);
   });
 
+  it('should return false for null', () => {
+    const result = service.isValidDate(null);
+
+    expect(result).toBe(false);
+  });
+
   it("should get yesterday's date", () => {
     const yesterday = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
     const result = service.getPreviousDate({ days: 1 });
