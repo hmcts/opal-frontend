@@ -5,7 +5,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
   standalone: true,
   imports: [],
   templateUrl: './govuk-cancel-link.component.html',
-  styleUrl: './govuk-cancel-link.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukCancelLinkComponent {

@@ -107,4 +107,12 @@ export const routing: Routes = [
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
   },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.deleteAccountConfirmation,
+    loadComponent: () =>
+      import('../fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component').then(
+        (c) => c.FinesMacDeleteAccountConfirmationComponent,
+      ),
+    canActivate: [authGuard],
+  },
 ];
