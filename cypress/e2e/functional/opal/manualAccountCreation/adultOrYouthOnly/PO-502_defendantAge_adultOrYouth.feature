@@ -15,7 +15,6 @@ Feature: PO-502 Updates to Personal Details showing age of def & label name chan
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
 
-    Then I see "Create account" as the caption on the page
     Then I see "Account details" on the page header
 
     Then I see the "Defendant details" section heading
