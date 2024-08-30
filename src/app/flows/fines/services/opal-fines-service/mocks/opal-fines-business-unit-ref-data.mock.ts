@@ -10,6 +10,14 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [
+        {
+          itemName: 'Item1',
+          itemValue: 'Item1',
+          itemValues: [],
+        },
+      ],
+      welshLanguage: false,
     },
     {
       businessUnitId: 67,
@@ -18,6 +26,14 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [
+        {
+          itemName: 'Item2',
+          itemValue: 'Item2',
+          itemValues: [],
+        },
+      ],
+      welshLanguage: false,
     },
     {
       businessUnitId: 68,
@@ -26,6 +42,14 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Confiscation',
+      configurationItems: [
+        {
+          itemName: 'Item3',
+          itemValue: 'Item3',
+          itemValues: [],
+        },
+      ],
+      welshLanguage: false,
     },
     {
       businessUnitId: 69,
@@ -34,6 +58,14 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [
+        {
+          itemName: 'Item4',
+          itemValue: 'Item4',
+          itemValues: [],
+        },
+      ],
+      welshLanguage: false,
     },
     {
       businessUnitId: 70,
@@ -42,6 +74,14 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [
+        {
+          itemName: 'Item5',
+          itemValue: 'Item5',
+          itemValues: [],
+        },
+      ],
+      welshLanguage: false,
     },
     {
       businessUnitId: 71,
@@ -50,6 +90,14 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'Fines',
+      configurationItems: [
+        {
+          itemName: 'Item6',
+          itemValue: 'Item6',
+          itemValues: [],
+        },
+      ],
+      welshLanguage: false,
     },
     {
       businessUnitId: 73,
@@ -58,6 +106,14 @@ export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefDa
       businessUnitType: 'Accounting Division',
       accountNumberPrefix: null,
       opalDomain: 'RM',
+      configurationItems: [
+        {
+          itemName: 'Item7',
+          itemValue: 'Item7',
+          itemValues: [],
+        },
+      ],
+      welshLanguage: false,
     },
   ],
 };

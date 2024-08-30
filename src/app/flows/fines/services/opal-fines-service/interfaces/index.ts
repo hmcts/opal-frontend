@@ -1,5 +1,10 @@
 import { IOpalFinesAddDefendantAccountNoteBody } from './opal-fines-add-defendant-account-note-body.interface';
-import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from './opal-fines-business-unit-ref-data.interface';
+import {
+  IOpalFinesBusinessUnit,
+  IOpalFinesBusinessUnitConfigurationItems,
+  IOpalFinesBusinessUnitRefData,
+} from './opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesConfigurationItems } from './opal-fines-configuration-items.interface';
 import { IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
 import { IOpalFinesDefendantAccountDetails } from './opal-fines-defendant-account-details.interface';
 import { IOpalFinesDefendantAccountNote } from './opal-fines-defendant-account-note.interface';
@@ -15,6 +20,8 @@ import { IOpalFinesSearchDefendantAccounts } from './opal-fines-search-defendant
 export {
   IOpalFinesPaths,
   IOpalFinesAddDefendantAccountNoteBody,
+  IOpalFinesConfigurationItems,
+  IOpalFinesBusinessUnitConfigurationItems,
   IOpalFinesBusinessUnit,
   IOpalFinesBusinessUnitRefData,
   IOpalFinesCourtRefData,
