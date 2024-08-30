@@ -11,7 +11,7 @@ import {
 import { FormGroup, FormControl } from '@angular/forms';
 import { GovukDetailsComponent, GovukTextInputComponent } from '@components/govuk';
 import { MojTicketPanelComponent } from '@components/moj';
-import { UtilsService } from '@services';
+import { DateService } from '@services';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -24,7 +24,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy, OnChanges {
   @Input({ required: true }) date!: string;
-  private utilsService = inject(UtilsService);
+  private dateService = inject(DateService);
   private ngUnsubscribe = new Subject<void>();
   public daysInDefaultCalculatorForm = new FormGroup({
     years: new FormControl<number | null>(null),
@@ -40,16 +40,16 @@ export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy, OnChange
    * If the selected date is valid, it adds the specified duration to the date and calculates the difference in days.
    */
   public calculateDaysInDefault(): void {
-    if (this.utilsService.isValidDate(this.date)) {
+    if (this.dateService.isValidDate(this.date)) {
       const { years, months, weeks, days } = this.daysInDefaultCalculatorForm.value;
-      const newDate = this.utilsService.addDurationToDate(
+      const newDate = this.dateService.addDurationToDate(
         this.date,
         Number(years),
         Number(months),
         Number(weeks),
         Number(days),
       );
-      this.daysInDefaultCalculated = this.utilsService.calculateDaysBetweenDates(this.date, newDate);
+      this.daysInDefaultCalculated = this.dateService.calculateDaysBetweenDates(this.date, newDate);
     }
   }
 
