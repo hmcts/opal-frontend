@@ -56,4 +56,5 @@ Feature: Manual Account Creation - Accessibility
       | offenceDetails        | Offence details                  | /fines/manual-account-creation/offence-details         |
       | paymentTerms          | Payment terms                    | /fines/manual-account-creation/payment-terms           |
       | accountCommentsNotes  | Account comments and notes       | /fines/manual-account-creation/account-comments-notes  |
+      | languagePreferences   | Language preferences             | /fines/manual-account-creation/language-preferences    |
     Then I click the Sign out link

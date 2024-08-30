@@ -1,5 +1,5 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { LaunchDarklyService, GlobalStateService, SessionService, UtilsService } from '@services';
+import { LaunchDarklyService, GlobalStateService, SessionService, DateService } from '@services';
 import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
@@ -14,7 +14,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public readonly globalStateService = inject(GlobalStateService);
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
-  public utilsService = inject(UtilsService);
+  public dateService = inject(DateService);
   public minutesRemaining$!: Observable<number>;
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
@@ -46,7 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     const { expiry, warningThresholdInMilliseconds } = this.globalStateService.tokenExpiry;
-    this.thresholdInMinutes = this.utilsService.convertMillisecondsToMinutes(warningThresholdInMilliseconds ?? 0);
+    this.thresholdInMinutes = this.dateService.convertMillisecondsToMinutes(warningThresholdInMilliseconds ?? 0);
 
     if (!expiry) {
       return;
@@ -63,7 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const expiryTime = DateTime.fromISO(expiry);
     this.timerSub = timer(0, this.POLL_INTERVAL * 1000)
       .pipe(
-        map(() => this.utilsService.calculateMinutesDifference(DateTime.now(), expiryTime)),
+        map(() => this.dateService.calculateMinutesDifference(DateTime.now(), expiryTime)),
         tap((remainingMinutes) => {
           this.ngZone.run(() => {
             this.minutesRemaining$ = of(remainingMinutes);

@@ -2,7 +2,7 @@ import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SsoEndpoints } from '@enums';
-import { GlobalStateService, UtilsService } from '@services';
+import { DateService, GlobalStateService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@mocks';
@@ -20,10 +20,10 @@ describe('AppComponent', () => {
     },
   };
   let globalStateService: GlobalStateService;
-  let utilsService: jasmine.SpyObj<UtilsService>;
+  let dateService: jasmine.SpyObj<DateService>;
 
   beforeEach(() => {
-    const utilsServiceSpy = jasmine.createSpyObj('UtilsService', [
+    const dateServiceSpy = jasmine.createSpyObj('DateService', [
       'convertMillisecondsToMinutes',
       'calculateMinutesDifference',
     ]);
@@ -41,12 +41,12 @@ describe('AppComponent', () => {
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        { provide: UtilsService, useValue: utilsServiceSpy },
+        { provide: DateService, useValue: dateServiceSpy },
       ],
     });
 
     globalStateService = TestBed.inject(GlobalStateService);
-    utilsService = TestBed.inject(UtilsService) as jasmine.SpyObj<UtilsService>;
+    dateService = TestBed.inject(DateService) as jasmine.SpyObj<DateService>;
   });
 
   beforeEach(() => {
@@ -117,8 +117,8 @@ describe('AppComponent', () => {
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().toISO();
     globalStateService.tokenExpiry = { expiry: expiryTime, warningThresholdInMilliseconds: 300000 }; // 5 minutes
-    utilsService.convertMillisecondsToMinutes.and.returnValue(5);
-    utilsService.calculateMinutesDifference.and.returnValue(0);
+    dateService.convertMillisecondsToMinutes.and.returnValue(5);
+    dateService.calculateMinutesDifference.and.returnValue(0);
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
@@ -136,7 +136,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     globalStateService.tokenExpiry = { expiry: null, warningThresholdInMilliseconds: 300000 }; // 5 minutes
-    utilsService.convertMillisecondsToMinutes.and.returnValue(5);
+    dateService.convertMillisecondsToMinutes.and.returnValue(5);
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
@@ -152,12 +152,12 @@ describe('AppComponent', () => {
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().plus({ minutes: 10 }).toISO();
     globalStateService.tokenExpiry = { expiry: expiryTime, warningThresholdInMilliseconds: null };
-    utilsService.convertMillisecondsToMinutes.and.returnValue(0);
+    dateService.convertMillisecondsToMinutes.and.returnValue(0);
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
 
-    expect(utilsService.convertMillisecondsToMinutes).toHaveBeenCalledWith(0);
+    expect(dateService.convertMillisecondsToMinutes).toHaveBeenCalledWith(0);
     expect(component.thresholdInMinutes).toBe(0);
 
     // Clean up pending timers
