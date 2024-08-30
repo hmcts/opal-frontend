@@ -4740,9 +4740,9 @@ __metadata:
   linkType: hard
 
 "@scottish-government/design-system@npm:^2.0.0":
-  version: 2.2.0
-  resolution: "@scottish-government/design-system@npm:2.2.0"
-  checksum: 10/47f3ae07ee4a166372df5ec3ee860b223bd0c7022ecf4b5c1ee8168c5f35e28874d22a12b9607bfe9bd56dba04a6e0f373912700cd8763b41f01e3f35178f761
+  version: 2.3.0
+  resolution: "@scottish-government/design-system@npm:2.3.0"
+  checksum: 10/2894759fe6bed3ad6af6bb01e85fefe55dabca7045e960615bd33e526e84689752fd008ea72b14cc744a0e720568891d47b6e660a2b0ebc2b03dad76ba0d9eff
   languageName: node
   linkType: hard
 
@@ -9266,9 +9266,9 @@ __metadata:
   linkType: hard
 
 "govuk-frontend@npm:^5.0.0":
-  version: 5.5.0
-  resolution: "govuk-frontend@npm:5.5.0"
-  checksum: 10/1552831e99229053d2683121b82038407b5d18079e35d2f2dadef6bde0771e4de65d2a635d6e4eddef0aab279698d3422b5ca8d6f9d86e3d22c4375b591a900e
+  version: 5.6.0
+  resolution: "govuk-frontend@npm:5.6.0"
+  checksum: 10/ae4e7d42e36bf7393bebbfa4a44bd3b03fc36aa4d1886fd35a02c4e2c344f3fdf2bde86c5aa7afbdaf0a9d4d61ac03b72f19534441dbed22b11887c91b90d2f8
   languageName: node
   linkType: hard
 
