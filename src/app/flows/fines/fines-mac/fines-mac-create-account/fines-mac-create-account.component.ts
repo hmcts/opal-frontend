@@ -12,6 +12,7 @@ import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { FINES_MAC_STATE, FINES_MAC_STATUS } from '../constants';
 import { FINES_MAC_CREATE_ACCOUNT_FORM, FINES_MAC_CREATE_ACCOUNT_STATE } from './constants';
+import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-mac-create-account-configuration-items';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -24,6 +25,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   protected readonly finesService = inject(FinesService);
   private opalFinesService = inject(OpalFines);
   private businessUnits!: IOpalFinesBusinessUnit[];
+  private configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
   public data$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getBusinessUnits('MANUAL_ACCOUNT_CREATION')
     .pipe(
@@ -72,6 +74,17 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    * @param formData - The form data containing the search parameters.
    */
   public handleAccountDetailsSubmit(form: IFinesMacCreateAccountForm): void {
+    // Get the business unit and default language from the business unit if applicable
+    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formSubmit.formData.BusinessUnit)!;
+    const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
+      businessUnit,
+      this.configurationItems.defaultDocumentLanguagePreference,
+    );
+    const defaultCourtHearingLanguage = this.opalFinesService.getConfigurationItemValue(
+      businessUnit,
+      this.configurationItems.defaultDocumentCourtHearingPreference,
+    );
+
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
 
@@ -80,6 +93,11 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
       ...this.finesService.finesMacState,
       accountDetails: form,
       businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === form.formData.BusinessUnit)!,
+      languagePreferences: {
+        ...this.finesService.finesMacState.languagePreferences,
+        courtHearingLanguage: defaultCourtHearingLanguage,
+        documentLanguage: defaultDocumentLanguage,
+      },
       unsavedChanges: false,
       stateChanges: true,
     };

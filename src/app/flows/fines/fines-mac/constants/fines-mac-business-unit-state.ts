@@ -7,4 +7,6 @@ export const FINES_MAC_BUSINESS_UNIT_STATE: IOpalFinesBusinessUnit = {
   opalDomain: null,
   businessUnitId: 0,
   businessUnitName: '',
+  configurationItems: [],
+  welshLanguage: false,
 };

@@ -25,7 +25,10 @@ import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, Navigat
 import { FinesService } from '@services/fines';
 import { CanDeactivateTypes } from '@types-guards';
 import { Subject, takeUntil } from 'rxjs';
+import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants';
+import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces';
 import { FINES_MAC_STATUS } from '../constants';
+
 @Component({
   selector: 'app-fines-mac-account-details',
   standalone: true,
@@ -57,8 +60,11 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
 
   protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;
+  protected readonly languageOptions = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public defendantType!: string;
   public accountType!: string;
+  public documentLanguage!: string;
+  public courtHearingLanguage!: string;
   public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
   public pageNavigation!: boolean;
 
@@ -83,14 +89,28 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sets the account type based on the value stored in the `manualAccountCreation.accountDetails.accountType` property.
-   * If a valid account type is found, it assigns the corresponding value from `accountTypes` to the `accountType` property.
+   * Sets the account type based on the value in the `finesMacState.accountDetails` object.
+   * If the `AccountType` property is defined, it maps the value to the corresponding account type
+   * from the `accountTypes` array and assigns it to the `accountType` property.
    */
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
     const { AccountType } = this.finesService.finesMacState.accountDetails.formData;
     if (AccountType) {
       this.accountType = this.accountTypes[AccountType as keyof IFinesMacAccountDetailsAccountTypes] || '';
+    }
+  }
+
+  /**
+   * Sets the document language and court hearing language based on the language preferences
+   * stored in the finesMacState.
+   */
+  private setLanguage(): void {
+    const { documentLanguage, courtHearingLanguage } = this.finesService.finesMacState.languagePreferences;
+    if (documentLanguage && courtHearingLanguage) {
+      this.documentLanguage = this.languageOptions[documentLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
+      this.courtHearingLanguage =
+        this.languageOptions[courtHearingLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
     }
   }
 
@@ -112,6 +132,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private initialAccountDetailsSetup(): void {
     this.setDefendantType();
     this.setAccountType();
+    this.setLanguage();
     this.routerListener();
   }
 

@@ -21,6 +21,7 @@ export interface IFinesMacState {
   accountCommentsNotes: IFinesMacAccountCommentsNotesForm;
   offenceDetails: IFinesMacOffenceDetailsForm;
   paymentTerms: IFinesMacPaymentTermsForm;
+  languagePreferences: IFinesMacLanguagePreferencesState;
   businessUnit: IOpalFinesBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;

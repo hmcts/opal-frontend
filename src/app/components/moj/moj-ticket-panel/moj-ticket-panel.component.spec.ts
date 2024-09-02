@@ -4,7 +4,9 @@ import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 @Component({
-  template: `<app-moj-ticket-panel></app-moj-ticket-panel>`,
+  template: `<app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--blue">
+    <h1>Hello world!</h1>
+  </app-moj-ticket-panel>`,
 })
 class TestHostComponent {}
 
@@ -29,6 +31,16 @@ describe('MojTicketPanelComponent', () => {
 
   it('should render ticket panel', () => {
     const element = fixture.debugElement.query(By.css('.moj-ticket-panel'));
+    expect(element).toBeTruthy();
+  });
+
+  it('should render ticket panel section content - Hello world!', () => {
+    const element = fixture.debugElement.query(By.css('.moj-ticket-panel__content'));
+    expect(element.nativeElement.textContent).toContain('Hello world!');
+  });
+
+  it('should render ticket panel section with incoming classes', () => {
+    const element = fixture.debugElement.query(By.css('.moj-ticket-panel__content--blue'));
     expect(element).toBeTruthy();
   });
 });

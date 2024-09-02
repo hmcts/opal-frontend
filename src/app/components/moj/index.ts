@@ -8,7 +8,6 @@ import { MojPrimaryNavigationItemComponent } from './moj-primary-navigation/moj-
 import { MojPrimaryNavigationComponent } from './moj-primary-navigation/moj-primary-navigation.component';
 import { MojSubNavigationItemComponent } from './moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { MojSubNavigationComponent } from './moj-sub-navigation/moj-sub-navigation.component';
-import { MojTicketPanelSectionComponent } from './moj-ticket-panel/moj-ticket-panel-section/moj-ticket-panel-section.component';
 import { MojTicketPanelComponent } from './moj-ticket-panel/moj-ticket-panel.component';
 import { MojTimelineItemComponent } from './moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTimelineComponent } from './moj-timeline/moj-timeline.component';
@@ -22,7 +21,6 @@ export {
   MojTimelineComponent,
   MojTimelineItemComponent,
   MojTicketPanelComponent,
-  MojTicketPanelSectionComponent,
   MojPageHeaderComponent,
   MojButtonMenuComponent,
   MojButtonMenuItemComponent,

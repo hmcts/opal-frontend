@@ -11,6 +11,7 @@ import {
 } from './constants';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -132,11 +133,45 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component.accountType).toBe('');
   });
 
+  it('should set documentLanguage and courtHearingLanguage correctly', () => {
+    const documentLanguage = 'CY';
+    const courtHearingLanguage = 'EN';
+    component['finesService'].finesMacState.languagePreferences = {
+      documentLanguage,
+      courtHearingLanguage,
+    };
+
+    component['setLanguage']();
+
+    expect(component.documentLanguage).toEqual(
+      component['languageOptions'][documentLanguage as keyof IFinesMacLanguagePreferencesOptions],
+    );
+    expect(component.courtHearingLanguage).toEqual(
+      component['languageOptions'][courtHearingLanguage as keyof IFinesMacLanguagePreferencesOptions],
+    );
+  });
+
+  it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
+    const documentLanguage = 'german';
+    const courtHearingLanguage = 'french';
+    component['finesService'].finesMacState.languagePreferences = {
+      documentLanguage,
+      courtHearingLanguage,
+    };
+
+    component['setLanguage']();
+
+    expect(component.documentLanguage).toBe('');
+    expect(component.courtHearingLanguage).toBe('');
+  });
+
   it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setAccountType');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setLanguage');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'routerListener');
 
@@ -144,6 +179,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
+    expect(component['setLanguage']).toHaveBeenCalled();
     expect(component['routerListener']).toHaveBeenCalled();
   });
 
