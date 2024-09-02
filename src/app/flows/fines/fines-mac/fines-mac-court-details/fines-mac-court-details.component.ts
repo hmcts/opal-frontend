@@ -38,7 +38,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
     enforcementCourtData: this.enforcementCourtData$,
   });
 
-  public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
+  public defendantType = this.finesService.finesMacState.accountDetails.defendant_type!;
 
   /**
    * Creates an array of autocomplete items based on the response from the server.

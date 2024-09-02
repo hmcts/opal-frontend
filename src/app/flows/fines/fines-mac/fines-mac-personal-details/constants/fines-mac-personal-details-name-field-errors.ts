@@ -1,7 +1,7 @@
 import { IFinesMacPersonalDetailsNameFieldErrors } from '../interfaces';
 
 export const FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS: IFinesMacPersonalDetailsNameFieldErrors = {
-  Forenames: {
+  forenames: {
     required: {
       message: `Enter defendant's first name(s)`,
       priority: 1,
@@ -15,7 +15,7 @@ export const FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS: IFinesMacPersonalDeta
       priority: 2,
     },
   },
-  Surname: {
+  surname: {
     required: {
       message: `Enter defendant's last name`,
       priority: 1,

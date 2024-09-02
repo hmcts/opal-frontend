@@ -46,7 +46,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component.ngOnInit();
-    component.form.controls['AccountType'].setValue('fine');
+    component.form.controls['account_type'].setValue('fine');
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -56,7 +56,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component['setupAccountTypeListener']();
-    component.form.get('AccountType')!.setValue('fine');
+    component.form.get('account_type')!.setValue('fine');
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -145,12 +145,12 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fieldName = 'FixedPenaltyDefendantType';
     const fieldValue = 'adultOrYouthOnly';
 
-    component.form.get('AccountType')?.setValue(accountType);
+    component.form.get('account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('DefendantType')?.value).toEqual(fieldValue);
+    expect(component.form.get('defendant_type')?.value).toEqual(fieldValue);
   });
 
   it('should set defendant type based on account type - fine', () => {
@@ -158,23 +158,23 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fieldName = 'FineDefendantType';
     const fieldValue = 'adultOrYouthOnly';
 
-    component.form.get('AccountType')?.setValue(accountType);
+    component.form.get('account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('DefendantType')?.value).toEqual(fieldValue);
+    expect(component.form.get('defendant_type')?.value).toEqual(fieldValue);
   });
 
   it('should set defendant type to default for conditional caution account type', () => {
     const accountType = 'conditionalCaution';
     const defaultDefendantType = component.conditionalCautionPenaltyDefendantTypes[0].key;
 
-    component.form.get('AccountType')?.setValue(accountType);
+    component.form.get('account_type')?.setValue(accountType);
 
     component['setDefendantType']();
 
-    expect(component.form.get('DefendantType')?.value).toEqual(defaultDefendantType);
+    expect(component.form.get('defendant_type')?.value).toEqual(defaultDefendantType);
   });
 
   it('should not do anything as the account, fieldName, and fieldValue are not real', () => {
@@ -182,12 +182,12 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fieldName = 'test';
     const fieldValue = 'test';
 
-    component.form.get('AccountType')?.setValue(accountType);
+    component.form.get('account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('DefendantType')?.value).not.toBeDefined();
+    expect(component.form.get('defendant_type')?.value).not.toBeDefined();
   });
 
   it('should call initialCreateAccountSetup method', () => {

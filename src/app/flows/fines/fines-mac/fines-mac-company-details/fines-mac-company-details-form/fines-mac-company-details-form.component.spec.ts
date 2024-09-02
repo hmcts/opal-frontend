@@ -73,18 +73,18 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   it('should set up the company details form', () => {
     component['setupCompanyDetailsForm']();
     expect(component.form).toBeTruthy();
-    expect(component.form.get('CompanyName')).toBeTruthy();
-    expect(component.form.get('AddAlias')).toBeTruthy();
-    expect(component.form.get('Aliases')).toBeTruthy();
-    expect(component.form.get('AddressLine1')).toBeTruthy();
-    expect(component.form.get('AddressLine2')).toBeTruthy();
-    expect(component.form.get('AddressLine3')).toBeTruthy();
-    expect(component.form.get('Postcode')).toBeTruthy();
+    expect(component.form.get('company_name')).toBeTruthy();
+    expect(component.form.get('add_alias')).toBeTruthy();
+    expect(component.form.get('aliases')).toBeTruthy();
+    expect(component.form.get('address_line_1')).toBeTruthy();
+    expect(component.form.get('address_line_2')).toBeTruthy();
+    expect(component.form.get('address_line_3')).toBeTruthy();
+    expect(component.form.get('postcode')).toBeTruthy();
   });
 
   it('should set up the alias configuration for the company details form', () => {
     component['setupAliasConfiguration']();
-    expect(component.aliasFields).toEqual(['AliasOrganisationName']);
+    expect(component.aliasFields).toEqual(FINES_MAC_COMPANY_DETAILS_ALIAS.map((item) => item.controlName));
     expect(component.aliasControlsValidation).toEqual(FINES_MAC_COMPANY_DETAILS_ALIAS);
   });
 
@@ -107,11 +107,11 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component['setupCompanyDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.companyDetails.Aliases.length).keys()],
-      'Aliases',
+      [...Array(mockFinesService.finesMacState.companyDetails.aliases.length).keys()],
+      'aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.companyDetails);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('add_alias', 'aliases');
   });
 });

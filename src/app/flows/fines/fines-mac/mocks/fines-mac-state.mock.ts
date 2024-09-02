@@ -13,7 +13,7 @@ import { FINES_MAC_PERSONAL_DETAILS_STATE } from '../fines-mac-personal-details/
 import { IFinesMacState } from '../interfaces';
 
 export const FINES_MAC_STATE_MOCK: IFinesMacState = {
-  accountDetails: { ...FINES_MAC_ACCOUNT_DETAILS_STATE, DefendantType: 'adultOrYouthOnly' },
+  accountDetails: { ...FINES_MAC_ACCOUNT_DETAILS_STATE, defendant_type: 'adultOrYouthOnly' },
   employerDetails: FINES_MAC_EMPLOYER_DETAILS_STATE,
   contactDetails: FINES_MAC_CONTACT_DETAILS_STATE,
   parentGuardianDetails: FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE,

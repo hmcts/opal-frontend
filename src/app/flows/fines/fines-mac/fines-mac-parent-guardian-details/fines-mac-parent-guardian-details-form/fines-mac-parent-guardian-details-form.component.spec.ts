@@ -31,7 +31,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);
     component = fixture.componentInstance;
 
-    mockFinesService.finesMacState.accountDetails.DefendantType = 'parentOrGuardianToPay';
+    mockFinesService.finesMacState.accountDetails.defendant_type = 'parentOrGuardianToPay';
 
     fixture.detectChanges();
   });

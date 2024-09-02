@@ -57,13 +57,13 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
    */
   private setupCourtDetailsForm(): void {
     this.form = new FormGroup({
-      SendingCourt: new FormControl(null, [Validators.required]),
-      ProsecutorCaseReference: new FormControl(null, [
+      sending_court: new FormControl(null, [Validators.required]),
+      prosecutor_case_reference: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z0-9 ]*$/),
       ]),
-      EnforcingCourt: new FormControl(null, [Validators.required]),
+      enforcing_court: new FormControl(null, [Validators.required]),
     });
   }
 

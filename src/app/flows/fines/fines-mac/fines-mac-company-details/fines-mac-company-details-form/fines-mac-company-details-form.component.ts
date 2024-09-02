@@ -75,17 +75,17 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    */
   private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
-      CompanyName: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
-      AddAlias: new FormControl(null),
-      Aliases: new FormArray([]),
-      AddressLine1: new FormControl(null, [
+      company_name: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
+      add_alias: new FormControl(null),
+      aliases: new FormArray([]),
+      address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      AddressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      AddressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
-      Postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      address_line_3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
+      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 
@@ -94,7 +94,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    * This method initializes the aliasFields and aliasControlsValidation properties.
    */
   private setupAliasConfiguration(): void {
-    this.aliasFields = ['AliasOrganisationName'];
+    this.aliasFields = FINES_MAC_COMPANY_DETAILS_ALIAS.map((item) => item.controlName);
     this.aliasControlsValidation = FINES_MAC_COMPANY_DETAILS_ALIAS;
   }
 
@@ -107,10 +107,10 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
     const { companyDetails } = this.finesService.finesMacState;
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(companyDetails.Aliases.length).keys()], 'Aliases');
+    this.setupAliasFormControls([...Array(companyDetails.aliases.length).keys()], 'aliases');
     this.setInitialErrorMessages();
     this.rePopulateForm(companyDetails);
-    this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
+    this.setUpAliasCheckboxListener('add_alias', 'aliases');
   }
 
   public override ngOnInit(): void {

@@ -44,10 +44,10 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   private setBusinessUnit(response: IOpalFinesBusinessUnitRefData): void {
     const { count, refData } = response;
-    const { accountDetails } = this.finesService.finesMacState;
+    const { business_unit: businessUnit } = this.finesService.finesMacState.accountDetails;
 
-    if (count === 1 && accountDetails.BusinessUnit === null) {
-      accountDetails.BusinessUnit = refData[0].businessUnitName;
+    if (count === 1 && businessUnit === null) {
+      this.finesService.finesMacState.accountDetails.business_unit = refData[0].businessUnitName;
       this.finesService.finesMacState.businessUnit = refData[0];
     }
     this.businessUnits = refData;
@@ -75,7 +75,9 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   public handleAccountDetailsSubmit(formSubmit: IFinesMacCreateAccountForm): void {
     // Get the business unit and default language from the business unit if applicable
-    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formSubmit.formData.BusinessUnit)!;
+    const businessUnit = this.businessUnits.find(
+      (unit) => unit.businessUnitName === formSubmit.formData.business_unit,
+    )!;
     const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
       businessUnit,
       this.configurationItems.defaultDocumentLanguagePreference,
@@ -112,12 +114,12 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   }
 
   public ngOnInit(): void {
-    const { BusinessUnit } = this.finesService.finesMacState.accountDetails;
+    const { business_unit: businessUnit } = this.finesService.finesMacState.accountDetails;
     this.finesService.finesMacState = {
       ...FINES_MAC_STATE,
       accountDetails: {
         ...FINES_MAC_ACCOUNT_DETAILS_STATE,
-        BusinessUnit: BusinessUnit,
+        business_unit: businessUnit,
       },
     };
   }

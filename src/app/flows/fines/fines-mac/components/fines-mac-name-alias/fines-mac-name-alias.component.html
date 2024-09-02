@@ -3,32 +3,32 @@
     <div
       app-govuk-checkboxes-item
       labelText="Add aliases"
-      inputId="AddAlias"
-      inputName="AddAlias"
-      [control]="form.get('AddAlias')"
+      inputId="add_alias"
+      inputName="add_alias"
+      [control]="form.get('add_alias')"
     ></div>
   </app-govuk-checkboxes>
 
-  @if (form.get('AddAlias')?.value === true) {
-    <div app-govuk-checkboxes-conditional conditionalId="AddAlias" formArrayName="Aliases">
+  @if (form.get('add_alias')?.value === true) {
+    <div app-govuk-checkboxes-conditional conditionalId="add_alias" formArrayName="aliases">
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="First names"
-            [inputId]="aliasControls[rowIndex]['AliasForenames'].inputId"
-            [inputName]="aliasControls[rowIndex]['AliasForenames'].inputName"
+            [inputId]="aliasControls[rowIndex]['alias_forenames'].inputId"
+            [inputName]="aliasControls[rowIndex]['alias_forenames'].inputName"
             inputClasses="govuk-input--width-20"
-            [control]="form.get(['Aliases', rowIndex, aliasControls[rowIndex]['AliasForenames'].controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex]['AliasForenames'].controlName]"
+            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['alias_forenames'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['alias_forenames'].controlName]"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Last name"
-            [inputId]="aliasControls[rowIndex]['AliasSurname'].inputId"
-            [inputName]="aliasControls[rowIndex]['AliasSurname'].inputName"
+            [inputId]="aliasControls[rowIndex]['alias_surname'].inputId"
+            [inputName]="aliasControls[rowIndex]['alias_surname'].inputName"
             inputClasses="govuk-input--width-20"
-            [control]="form.get(['Aliases', rowIndex, aliasControls[rowIndex]['AliasSurname'].controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex]['AliasSurname'].controlName]"
+            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['alias_surname'].controlName])"
+            [errors]="formControlErrorMessages[aliasControls[rowIndex]['alias_surname'].controlName]"
           ></app-govuk-text-input>
         </fieldset>
       }
@@ -37,8 +37,8 @@
         <div class="govuk-!-margin-bottom-3">
           <a
             class="govuk-link govuk-link--no-visited-state"
-            (click)="emitAction(aliasControls.length - 1, 'Aliases', true)"
-            (keyup.enter)="emitAction(aliasControls.length - 1, 'Aliases', true)"
+            (click)="emitAction(aliasControls.length - 1, 'aliases', true)"
+            (keyup.enter)="emitAction(aliasControls.length - 1, 'aliases', true)"
             tabindex="0"
           >
             Remove
@@ -50,7 +50,7 @@
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
-          (buttonClickEvent)="emitAction(aliasControls.length, 'Aliases')"
+          (buttonClickEvent)="emitAction(aliasControls.length, 'aliases')"
           >Add another alias</app-govuk-button
         >
       }

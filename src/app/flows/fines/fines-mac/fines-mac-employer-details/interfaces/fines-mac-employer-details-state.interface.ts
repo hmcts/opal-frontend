@@ -1,12 +1,12 @@
 export interface IFinesMacEmployerDetailsState {
-  EmployerCompanyName: string | null;
-  EmployerReference: string | null;
-  EmployerEmailAddress: string | null;
-  EmployerTelephoneNumber: string | null;
-  EmployerAddressLine1: string | null;
-  EmployerAddressLine2: string | null;
-  EmployerAddressLine3: string | null;
-  EmployerAddressLine4: string | null;
-  EmployerAddressLine5: string | null;
-  EmployerPostcode: string | null;
+  employer_company_name: string | null;
+  employer_reference: string | null;
+  employer_email_address: string | null;
+  employer_telephone_number: string | null;
+  employer_address_line_1: string | null;
+  employer_address_line_2: string | null;
+  employer_address_line_3: string | null;
+  employer_address_line_4: string | null;
+  employer_address_line_5: string | null;
+  employer_postcode: string | null;
 }

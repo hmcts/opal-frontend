@@ -15,7 +15,7 @@ describe('FinesMacDateOfBirthComponent', () => {
     component = fixture.componentInstance;
 
     component.form = new FormGroup({
-      DOB: new FormControl(null),
+      dob: new FormControl(null),
     });
     component.componentName = 'testComponent';
     component.formControlErrorMessages = {};

@@ -48,8 +48,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
-      paymentTerms: new FormControl(null),
-      holdEnforcementOnAccount: new FormControl(null),
+      payment_terms: new FormControl(null),
+      hold_enforcement_on_account: new FormControl(null),
     });
   }
 

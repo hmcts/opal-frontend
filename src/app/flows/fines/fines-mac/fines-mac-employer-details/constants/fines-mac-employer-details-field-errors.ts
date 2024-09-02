@@ -1,7 +1,7 @@
 import { IFinesMacEmployerDetailsFieldErrors } from '../interfaces';
 
 export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFieldErrors = {
-  EmployerCompanyName: {
+  employer_company_name: {
     required: {
       message: 'Enter employer name',
       priority: 1,
@@ -11,7 +11,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerReference: {
+  employer_reference: {
     required: {
       message: 'Enter employee reference or National Insurance number',
       priority: 1,
@@ -21,7 +21,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerEmailAddress: {
+  employer_email_address: {
     maxlength: {
       message: 'The employer email address must be 76 characters or fewer',
       priority: 2,
@@ -31,7 +31,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerTelephoneNumber: {
+  employer_telephone_number: {
     maxlength: {
       message: 'Enter employer telephone number in the correct format',
       priority: 1,
@@ -41,7 +41,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerAddressLine1: {
+  employer_address_line_1: {
     required: {
       message: 'Enter employer address line 1, typically the building and street',
       priority: 1,
@@ -55,7 +55,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 3,
     },
   },
-  EmployerAddressLine2: {
+  employer_address_line_2: {
     maxlength: {
       message: 'The employer address line 2 must be 30 characters or fewer',
       priority: 1,
@@ -65,7 +65,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerAddressLine3: {
+  employer_address_line_3: {
     maxlength: {
       message: 'The employer address line 3 must be 30 characters or fewer',
       priority: 1,
@@ -75,7 +75,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerAddressLine4: {
+  employer_address_line_4: {
     maxlength: {
       message: 'The employer address line 4 must be 30 characters or fewer',
       priority: 1,
@@ -85,7 +85,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerAddressLine5: {
+  employer_address_line_5: {
     maxlength: {
       message: 'The employer address line 5 must be 30 characters or fewer',
       priority: 1,
@@ -95,7 +95,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  EmployerPostcode: {
+  employer_postcode: {
     maxlength: {
       message: 'The employer postcode must be 8 characters or fewer',
       priority: 1,

@@ -1,7 +1,7 @@
 import { IFinesMacParentGuardianDetailsNameFieldErrors } from '../interfaces';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS: IFinesMacParentGuardianDetailsNameFieldErrors = {
-  Forenames: {
+  forenames: {
     required: {
       message: `Enter parent or guardian's first name(s)`,
       priority: 1,
@@ -15,7 +15,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS: IFinesMacParen
       priority: 2,
     },
   },
-  Surname: {
+  surname: {
     required: {
       message: `Enter parent or guardian's last name`,
       priority: 1,

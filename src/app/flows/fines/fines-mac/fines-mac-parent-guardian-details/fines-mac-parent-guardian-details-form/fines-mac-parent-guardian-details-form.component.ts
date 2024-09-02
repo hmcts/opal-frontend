@@ -91,22 +91,22 @@ export class FinesMacParentGuardianDetailsFormComponent
    */
   private setupParentGuardianDetailsForm(): void {
     this.form = new FormGroup({
-      Forenames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      Surname: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      AddAlias: new FormControl(null),
-      Aliases: new FormArray([]),
-      DOB: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      NationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      AddressLine1: new FormControl(null, [
+      forenames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
+      surname: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      add_alias: new FormControl(null),
+      aliases: new FormArray([]),
+      dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      AddressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      AddressLine3: new FormControl(null, [optionalMaxLengthValidator(13), specialCharactersValidator()]),
-      Postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-      VehicleMake: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      VehicleRegistrationMark: new FormControl(null, [optionalMaxLengthValidator(11)]),
+      address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      address_line_3: new FormControl(null, [optionalMaxLengthValidator(13), specialCharactersValidator()]),
+      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
+      vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(11)]),
     });
   }
 
@@ -129,10 +129,10 @@ export class FinesMacParentGuardianDetailsFormComponent
     const { parentGuardianDetails } = this.finesService.finesMacState;
     this.setupParentGuardianDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(parentGuardianDetails.Aliases.length).keys()], 'Aliases');
+    this.setupAliasFormControls([...Array(parentGuardianDetails.aliases.length).keys()], 'aliases');
     this.setInitialErrorMessages();
     this.rePopulateForm(this.finesService.finesMacState.parentGuardianDetails);
-    this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
+    this.setUpAliasCheckboxListener('add_alias', 'aliases');
   }
 
   public override ngOnInit(): void {

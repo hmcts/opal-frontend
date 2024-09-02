@@ -78,19 +78,19 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType correctly', () => {
-    mockFinesService.finesMacState.accountDetails.DefendantType = 'adultOrYouthOnly';
+    mockFinesService.finesMacState.accountDetails.defendant_type = 'adultOrYouthOnly';
 
     component['setDefendantType']();
 
     expect(component.defendantType).toEqual(
       FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES[
-        mockFinesService.finesMacState.accountDetails.DefendantType as keyof IFinesMacDefendantTypes
+        mockFinesService.finesMacState.accountDetails.defendant_type as keyof IFinesMacDefendantTypes
       ],
     );
   });
 
   it('should set defendantType to be empty', () => {
-    mockFinesService.finesMacState.accountDetails.DefendantType = 'test';
+    mockFinesService.finesMacState.accountDetails.defendant_type = 'test';
 
     component['setDefendantType']();
 
@@ -99,26 +99,26 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should not set defendantType', () => {
     component.defendantType = '';
-    mockFinesService.finesMacState.accountDetails.DefendantType = null;
+    mockFinesService.finesMacState.accountDetails.defendant_type = null;
 
     component['setDefendantType']();
     expect(component.defendantType).toBe('');
   });
 
   it('should set accountType correctly', () => {
-    mockFinesService.finesMacState.accountDetails.AccountType = 'fine';
+    mockFinesService.finesMacState.accountDetails.account_type = 'fine';
 
     component['setAccountType']();
 
     expect(component.accountType).toEqual(
       FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES[
-        mockFinesService.finesMacState.accountDetails.AccountType as keyof IFinesMacAccountTypes
+        mockFinesService.finesMacState.accountDetails.account_type as keyof IFinesMacAccountTypes
       ],
     );
   });
 
   it('should set accountType to be empty', () => {
-    mockFinesService.finesMacState.accountDetails.AccountType = 'test';
+    mockFinesService.finesMacState.accountDetails.account_type = 'test';
 
     component['setAccountType']();
 
@@ -127,7 +127,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should not set accountType', () => {
     component.accountType = '';
-    mockFinesService.finesMacState.accountDetails.AccountType = null;
+    mockFinesService.finesMacState.accountDetails.account_type = null;
 
     component['setAccountType']();
     expect(component.accountType).toBe('');
@@ -167,7 +167,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should correctly update accountCreationStatus based on manualAccountCreation state', () => {
     mockFinesService.finesMacState = FINES_MAC_STATE;
-    mockFinesService.finesMacState.accountDetails.AccountType = 'Test';
+    mockFinesService.finesMacState.accountDetails.account_type = 'Test';
 
     component['checkStatus']();
 
@@ -182,16 +182,16 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component.accountCreationStatus['offenceDetails']).toBeFalsy();
     expect(component.accountCreationStatus['paymentTerms']).toBeFalsy();
 
-    mockFinesService.finesMacState.accountDetails.AccountType = 'Test';
-    mockFinesService.finesMacState.employerDetails.EmployerCompanyName = 'Test';
-    mockFinesService.finesMacState.contactDetails.EmailAddress1 = 'Test';
-    mockFinesService.finesMacState.parentGuardianDetails.Forenames = 'Test';
-    mockFinesService.finesMacState.personalDetails.Forenames = 'Test';
-    mockFinesService.finesMacState.companyDetails.CompanyName = 'Test';
-    mockFinesService.finesMacState.courtDetails.SendingCourt = 'Test';
+    mockFinesService.finesMacState.accountDetails.account_type = 'Test';
+    mockFinesService.finesMacState.employerDetails.employer_company_name = 'Test';
+    mockFinesService.finesMacState.contactDetails.email_address_1 = 'Test';
+    mockFinesService.finesMacState.parentGuardianDetails.forenames = 'Test';
+    mockFinesService.finesMacState.personalDetails.forenames = 'Test';
+    mockFinesService.finesMacState.companyDetails.company_name = 'Test';
+    mockFinesService.finesMacState.courtDetails.sending_court = 'Test';
     mockFinesService.finesMacState.accountCommentsNotes.notes = 'Test';
     mockFinesService.finesMacState.offenceDetails.offenceDetails = 'Test';
-    mockFinesService.finesMacState.paymentTerms.paymentTerms = 'Test';
+    mockFinesService.finesMacState.paymentTerms.payment_terms = 'Test';
 
     component['checkStatus']();
 

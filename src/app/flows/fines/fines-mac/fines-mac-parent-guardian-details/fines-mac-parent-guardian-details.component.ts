@@ -17,7 +17,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../rou
 })
 export class FinesMacParentGuardianDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
+  public defendantType = this.finesService.finesMacState.accountDetails.defendant_type!;
 
   /**
    * Handles the form submission for parent/guardian details.

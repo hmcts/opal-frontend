@@ -82,9 +82,9 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { DefendantType } = this.finesService.finesMacState.accountDetails;
-    if (DefendantType) {
-      this.defendantType = this.defendantTypes[DefendantType as keyof IFinesMacAccountDetailsDefendantTypes] || '';
+    const { defendant_type: defendantType } = this.finesService.finesMacState.accountDetails;
+    if (defendantType) {
+      this.defendantType = this.defendantTypes[defendantType as keyof IFinesMacAccountDetailsDefendantTypes] || '';
     }
   }
 
@@ -94,9 +94,9 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * from the `accountTypes` array and assigns it to the `accountType` property.
    */
   private setAccountType(): void {
-    const { AccountType } = this.finesService.finesMacState.accountDetails;
-    if (AccountType) {
-      this.accountType = this.accountTypes[AccountType as keyof IFinesMacAccountDetailsAccountTypes] || '';
+    const { account_type: accountType } = this.finesService.finesMacState.accountDetails;
+    if (accountType) {
+      this.accountType = this.accountTypes[accountType as keyof IFinesMacAccountDetailsAccountTypes] || '';
     }
   }
 
