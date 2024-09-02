@@ -134,29 +134,29 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
-    const document_language = 'CY';
-    const hearing_language = 'EN';
+    const documentLanguage = 'CY';
+    const hearingLanguage = 'EN';
     component['finesService'].finesMacState.languagePreferences = {
-      document_language,
-      hearing_language,
+      document_language: documentLanguage,
+      hearing_language: hearingLanguage,
     };
 
     component['setLanguage']();
 
     expect(component.documentLanguage).toEqual(
-      component['languageOptions'][document_language as keyof IFinesMacLanguagePreferencesOptions],
+      component['languageOptions'][documentLanguage as keyof IFinesMacLanguagePreferencesOptions],
     );
     expect(component.courtHearingLanguage).toEqual(
-      component['languageOptions'][hearing_language as keyof IFinesMacLanguagePreferencesOptions],
+      component['languageOptions'][hearingLanguage as keyof IFinesMacLanguagePreferencesOptions],
     );
   });
 
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
-    const document_language = 'german';
-    const hearing_language = 'french';
+    const documentLanguage = 'german';
+    const hearingLanguage = 'french';
     component['finesService'].finesMacState.languagePreferences = {
-      document_language,
-      hearing_language,
+      document_language: documentLanguage,
+      hearing_language: hearingLanguage,
     };
 
     component['setLanguage']();
