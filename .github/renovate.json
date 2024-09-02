@@ -9,7 +9,7 @@
     }
   ],
   "schedule": [
-    "after 5pm every weekday",
-    "before 9am every weekday"
-    ]
+      "7am to 9am every weekday",
+      "5pm to 8pm every weekday"
+  ]
 }
