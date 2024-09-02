@@ -206,12 +206,12 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.personalDetails.Aliases.length).keys()],
+      [...Array(mockFinesService.finesMacState.personalDetails.formData.Aliases.length).keys()],
       'Aliases',
     );
     expect(component['addVehicleDetailsFieldErrors']).not.toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails.formData);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });

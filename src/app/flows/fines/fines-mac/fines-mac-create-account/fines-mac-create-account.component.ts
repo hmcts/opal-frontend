@@ -75,7 +75,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   public handleAccountDetailsSubmit(form: IFinesMacCreateAccountForm): void {
     // Get the business unit and default language from the business unit if applicable
-    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formSubmit.formData.BusinessUnit)!;
+    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === form.formData.BusinessUnit)!;
     const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
       businessUnit,
       this.configurationItems.defaultDocumentLanguagePreference,
@@ -95,8 +95,11 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
       businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === form.formData.BusinessUnit)!,
       languagePreferences: {
         ...this.finesService.finesMacState.languagePreferences,
-        courtHearingLanguage: defaultCourtHearingLanguage,
-        documentLanguage: defaultDocumentLanguage,
+        formData: {
+          ...this.finesService.finesMacState.languagePreferences.formData,
+          documentLanguage: defaultDocumentLanguage,
+          courtHearingLanguage: defaultCourtHearingLanguage,
+        },
       },
       unsavedChanges: false,
       stateChanges: true,

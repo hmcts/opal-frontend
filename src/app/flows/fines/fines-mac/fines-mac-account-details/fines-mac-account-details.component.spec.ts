@@ -136,7 +136,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
     const documentLanguage = 'CY';
     const courtHearingLanguage = 'EN';
-    component['finesService'].finesMacState.languagePreferences = {
+    component['finesService'].finesMacState.languagePreferences.formData = {
       documentLanguage,
       courtHearingLanguage,
     };
@@ -154,7 +154,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
     const documentLanguage = 'german';
     const courtHearingLanguage = 'french';
-    component['finesService'].finesMacState.languagePreferences = {
+    component['finesService'].finesMacState.languagePreferences.formData = {
       documentLanguage,
       courtHearingLanguage,
     };

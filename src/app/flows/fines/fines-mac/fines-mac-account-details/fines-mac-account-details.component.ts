@@ -106,7 +106,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * stored in the finesMacState.
    */
   private setLanguage(): void {
-    const { documentLanguage, courtHearingLanguage } = this.finesService.finesMacState.languagePreferences;
+    const { documentLanguage, courtHearingLanguage } = this.finesService.finesMacState.languagePreferences.formData;
     if (documentLanguage && courtHearingLanguage) {
       this.documentLanguage = this.languageOptions[documentLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
       this.courtHearingLanguage =

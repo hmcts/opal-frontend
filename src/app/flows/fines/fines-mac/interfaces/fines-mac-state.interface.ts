@@ -9,6 +9,7 @@ import { IFinesMacPaymentTermsForm } from '../fines-mac-payment-terms/interfaces
 import { IFinesMacPersonalDetailsForm } from '../fines-mac-personal-details/interfaces';
 import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interfaces';
 import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments-notes/interfaces';
+import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces';
 
 export interface IFinesMacState {
   employerDetails: IFinesMacEmployerDetailsForm;
@@ -21,7 +22,7 @@ export interface IFinesMacState {
   accountCommentsNotes: IFinesMacAccountCommentsNotesForm;
   offenceDetails: IFinesMacOffenceDetailsForm;
   paymentTerms: IFinesMacPaymentTermsForm;
-  languagePreferences: IFinesMacLanguagePreferencesState;
+  languagePreferences: IFinesMacLanguagePreferencesForm;
   businessUnit: IOpalFinesBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;

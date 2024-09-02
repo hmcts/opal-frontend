@@ -30,7 +30,7 @@ export class FinesMacLanguagePreferencesComponent extends AbstractFormParentBase
   public handleLanguagePreferencesSubmit(formSubmit: IFinesMacLanguagePreferencesForm): void {
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      languagePreferences: formSubmit.formData,
+      languagePreferences: formSubmit,
       unsavedChanges: false,
       stateChanges: true,
     };
