@@ -15,5 +15,6 @@ export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPaths = {
     accountCommentsNotes: 'account-comments-notes',
     paymentTerms: 'payment-terms',
     deleteAccountConfirmation: 'delete-account-confirmation',
+    languagePreferences: 'language-preferences',
   },
 };

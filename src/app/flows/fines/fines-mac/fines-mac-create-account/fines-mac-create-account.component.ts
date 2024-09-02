@@ -12,6 +12,7 @@ import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { FINES_MAC_STATE } from '../constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants';
+import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-mac-create-account-configuration-items';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -24,6 +25,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   protected readonly finesService = inject(FinesService);
   private opalFinesService = inject(OpalFines);
   private businessUnits!: IOpalFinesBusinessUnit[];
+  private configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
   public data$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getBusinessUnits('MANUAL_ACCOUNT_CREATION')
     .pipe(
@@ -72,10 +74,26 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    * @param formData - The form data containing the search parameters.
    */
   public handleAccountDetailsSubmit(formSubmit: IFinesMacCreateAccountForm): void {
+    // Get the business unit and default language from the business unit if applicable
+    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === formSubmit.formData.BusinessUnit)!;
+    const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
+      businessUnit,
+      this.configurationItems.defaultDocumentLanguagePreference,
+    );
+    const defaultCourtHearingLanguage = this.opalFinesService.getConfigurationItemValue(
+      businessUnit,
+      this.configurationItems.defaultDocumentCourtHearingPreference,
+    );
+
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
       accountDetails: formSubmit.formData,
-      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === formSubmit.formData.BusinessUnit)!,
+      businessUnit: businessUnit,
+      languagePreferences: {
+        ...this.finesService.finesMacState.languagePreferences,
+        courtHearingLanguage: defaultCourtHearingLanguage,
+        documentLanguage: defaultDocumentLanguage,
+      },
       unsavedChanges: false,
       stateChanges: true,
     };
