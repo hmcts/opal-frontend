@@ -105,12 +105,12 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * stored in the finesMacState.
    */
   private setLanguage(): void {
-    const { document_language, hearing_language } = this.finesService.finesMacState.languagePreferences;
-    if (document_language && hearing_language) {
-      this.documentLanguage =
-        this.languageOptions[document_language as keyof IFinesMacLanguagePreferencesOptions] || '';
+    const { document_language: documentLanguage, hearing_language: hearingLanguage } =
+      this.finesService.finesMacState.languagePreferences;
+    if (documentLanguage && hearingLanguage) {
+      this.documentLanguage = this.languageOptions[documentLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
       this.courtHearingLanguage =
-        this.languageOptions[hearing_language as keyof IFinesMacLanguagePreferencesOptions] || '';
+        this.languageOptions[hearingLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
     }
   }
 
