@@ -42,8 +42,8 @@ export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseCo
    */
   private setupLanguagePreferencesForm(): void {
     this.form = new FormGroup({
-      documentLanguage: new FormControl(null),
-      courtHearingLanguage: new FormControl(null),
+      document_language: new FormControl(null),
+      hearing_language: new FormControl(null),
     });
   }
 
@@ -54,7 +54,7 @@ export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseCo
    */
   private initialLanguagePreferencesSetup(): void {
     this.setupLanguagePreferencesForm();
-    this.rePopulateForm(this.finesService.finesMacState.languagePreferences);
+    this.rePopulateForm(this.finesService.finesMacState.languagePreferences.formData);
   }
 
   public override ngOnInit(): void {

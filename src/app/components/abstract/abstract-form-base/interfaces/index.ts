@@ -8,6 +8,7 @@ import { IAbstractFormBaseFormErrorSummaryMessage } from './abstract-form-base-f
 import { IAbstractFormBaseFormError } from './abstract-form-base-form-error.interface';
 import { IAbstractFormBaseHighPriorityFormError } from './abstract-form-base-high-priority-form-error.interface';
 import { IAbstractFormBaseForm } from './abstract-form-base-form.interface';
+import { IAbstractFormBaseStatus } from './abstract-form-base-status.interface';
 
 export {
   IAbstractFormBaseFieldError,
@@ -20,4 +21,5 @@ export {
   IAbstractFormBaseHighPriorityFormError,
   IAbstractFormBaseFormArrayControl,
   IAbstractFormBaseForm,
+  IAbstractFormBaseStatus,
 };

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsComponent } from './fines-mac-court-details.component';
-import { IFinesMacCourtDetailsForm, IFinesMacCourtDetailsState } from './interfaces';
+import { IFinesMacCourtDetailsForm } from './interfaces';
 import { of } from 'rxjs';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -11,7 +11,7 @@ import {
   OPAL_FINES_COURT_REF_DATA_MOCK,
   OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
 } from '../../services/opal-fines-service/mocks';
-import { FINES_MAC_COURT_DETAILS_FORM_MOCK, FINES_MAC_COURT_DETAILS_STATE_MOCK } from './mocks';
+import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from './mocks';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 
 describe('FinesMacCourtDetailsComponent', () => {
@@ -19,7 +19,6 @@ describe('FinesMacCourtDetailsComponent', () => {
   let fixture: ComponentFixture<FinesMacCourtDetailsComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let formData: IFinesMacCourtDetailsState;
   let formSubmit: IFinesMacCourtDetailsForm;
 
   beforeEach(async () => {
@@ -32,7 +31,6 @@ describe('FinesMacCourtDetailsComponent', () => {
         .and.returnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
     };
-    formData = FINES_MAC_COURT_DETAILS_STATE_MOCK;
     formSubmit = FINES_MAC_COURT_DETAILS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
@@ -77,7 +75,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     component.handleCourtDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.courtDetails).toEqual(formData);
+    expect(mockFinesService.finesMacState.courtDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -90,7 +88,7 @@ describe('FinesMacCourtDetailsComponent', () => {
 
     component.handleCourtDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.courtDetails).toEqual(formData);
+    expect(mockFinesService.finesMacState.courtDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.personalDetails], {
       relativeTo: component['activatedRoute'].parent,
     });

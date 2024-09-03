@@ -126,12 +126,12 @@ export class FinesMacParentGuardianDetailsFormComponent
    * with the existing parent guardian details.
    */
   private initialParentGuardianDetailsSetup(): void {
-    const { parentGuardianDetails } = this.finesService.finesMacState;
+    const { formData } = this.finesService.finesMacState.parentGuardianDetails;
     this.setupParentGuardianDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(parentGuardianDetails.Aliases.length).keys()], 'Aliases');
+    this.setupAliasFormControls([...Array(formData.Aliases.length).keys()], 'Aliases');
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.finesService.finesMacState.parentGuardianDetails);
+    this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
   }
 

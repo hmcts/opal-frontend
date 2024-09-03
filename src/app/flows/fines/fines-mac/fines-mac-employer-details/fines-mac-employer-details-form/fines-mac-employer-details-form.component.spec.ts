@@ -51,7 +51,12 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: true,
+      }),
+    );
   });
 
   it('should emit form submit event with form value', () => {
@@ -62,7 +67,12 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: false,
+      }),
+    );
   });
 
   it('should call initialCreateAccountSetup method', () => {
@@ -77,6 +87,8 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
 
     expect(component['setupEmployerDetailsForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(component['finesService'].finesMacState.employerDetails);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(
+      component['finesService'].finesMacState.employerDetails.formData,
+    );
   });
 });

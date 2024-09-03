@@ -31,7 +31,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);
     component = fixture.componentInstance;
 
-    mockFinesService.finesMacState.accountDetails.DefendantType = 'parentOrGuardianToPay';
+    mockFinesService.finesMacState.accountDetails.formData.DefendantType = 'parentOrGuardianToPay';
 
     fixture.detectChanges();
   });
@@ -49,7 +49,12 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: true,
+      }),
+    );
   });
 
   it('should emit form submit event with form value', () => {
@@ -61,6 +66,11 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: false,
+      }),
+    );
   });
 });

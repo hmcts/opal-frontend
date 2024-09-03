@@ -198,16 +198,16 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    * error messages, repopulates the form with personal details, and sets up the alias checkbox listener.
    */
   private initialPersonalDetailsSetup(): void {
-    const { personalDetails } = this.finesService.finesMacState;
+    const { formData } = this.finesService.finesMacState.personalDetails;
     const key = this.defendantType as keyof IFinesMacPersonalDetailsDefendantTypes;
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(personalDetails.Aliases.length).keys()], 'Aliases');
+    this.setupAliasFormControls([...Array(formData.Aliases.length).keys()], 'Aliases');
     if (key === 'adultOrYouthOnly') {
       this.addVehicleDetailsFieldErrors();
     }
     this.setInitialErrorMessages();
-    this.rePopulateForm(personalDetails);
+    this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });

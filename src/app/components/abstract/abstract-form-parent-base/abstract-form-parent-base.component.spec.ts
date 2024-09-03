@@ -50,4 +50,24 @@ describe('AbstractFormParentBaseComponent', () => {
     component['routerNavigate']('test');
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
+
+  it('should return true if any form value is truthy', () => {
+    const form = {
+      name: 'John Doe',
+      age: 25,
+      email: '',
+    };
+    const result = component['hasFormValues'](form);
+    expect(result).toBe(true);
+  });
+
+  it('should return false if all form values are falsy', () => {
+    const form = {
+      name: '',
+      age: 0,
+      email: null,
+    };
+    const result = component['hasFormValues'](form);
+    expect(result).toBe(false);
+  });
 });

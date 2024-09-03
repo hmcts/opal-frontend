@@ -45,7 +45,12 @@ describe('FinesMacContactDetailsFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: true,
+      }),
+    );
   });
 
   it('should emit form submit event with form value', () => {
@@ -58,6 +63,11 @@ describe('FinesMacContactDetailsFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: false,
+      }),
+    );
   });
 });
