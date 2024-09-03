@@ -8,6 +8,7 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS_FIELD_ERRORS } from './fines-ma
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS } from './fines-mac-parent-guardian-details-date-of-birth-field-errors';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_IDS } from './fines-mac-parent-guardian-details-name-field-ids';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS } from './fines-mac-parent-guardian-details-national-insurance-number-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM } from './fines-mac-parent-guardian-details-form';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE } from './fines-mac-parent-guardian-details-state';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_IDS } from './fines-mac-parent-guardian-details-vehicle-details-field-ids';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS } from './fines-mac-parent-guardian-details-name-field-errors';
@@ -15,6 +16,7 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS } from '
 
 export {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE,
+  FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM,
   FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS,
   FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS_FIELD_ERRORS,
   FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_BLOCK_FIELD_IDS,

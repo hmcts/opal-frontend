@@ -1,7 +1,6 @@
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../fines-mac-account-details/constants';
 import { IFinesMacCreateAccountState } from '../interfaces';
 
 export const FINES_MAC_CREATE_ACCOUNT_STATE: IFinesMacCreateAccountState = {
-  AccountType: null,
-  BusinessUnit: null,
-  DefendantType: null,
+  ...FINES_MAC_ACCOUNT_DETAILS_STATE,
 };

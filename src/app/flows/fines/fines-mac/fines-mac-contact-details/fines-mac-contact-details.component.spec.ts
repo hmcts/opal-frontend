@@ -1,26 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacContactDetailsComponent } from './fines-mac-contact-details.component';
-import { IFinesMacContactDetailsForm, IFinesMacContactDetailsState } from './interfaces';
+import { IFinesMacContactDetailsForm } from './interfaces';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK, FINES_MAC_CONTACT_DETAILS_STATE_MOCK } from './mocks';
+import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from './mocks';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_CONTACT_DETAILS_STATE } from './constants';
 
 describe('FinesMacContactDetailsComponent', () => {
   let component: FinesMacContactDetailsComponent;
   let fixture: ComponentFixture<FinesMacContactDetailsComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let formSubmit: IFinesMacContactDetailsForm;
-  let formData: IFinesMacContactDetailsState;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     formSubmit = FINES_MAC_CONTACT_DETAILS_FORM_MOCK;
-    formData = FINES_MAC_CONTACT_DETAILS_STATE_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacContactDetailsComponent],
@@ -54,7 +53,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
     component.handleContactDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.contactDetails).toEqual(formData);
+    expect(mockFinesService.finesMacState.contactDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -67,7 +66,23 @@ describe('FinesMacContactDetailsComponent', () => {
 
     component.handleContactDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.contactDetails).toEqual(formData);
+    expect(mockFinesService.finesMacState.contactDetails).toEqual(formSubmit);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.employerDetails], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should handle form submission and navigate to next route - form empty', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    const form: IFinesMacContactDetailsForm = {
+      formData: FINES_MAC_CONTACT_DETAILS_STATE,
+      nestedFlow: true,
+    };
+
+    component.handleContactDetailsSubmit(form);
+
+    expect(mockFinesService.finesMacState.contactDetails).toEqual(form);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.employerDetails], {
       relativeTo: component['activatedRoute'].parent,
     });

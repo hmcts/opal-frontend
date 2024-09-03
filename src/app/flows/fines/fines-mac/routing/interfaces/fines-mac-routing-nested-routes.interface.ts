@@ -8,4 +8,5 @@ export interface IFinesMacRoutingNestedRoutes {
   offenceDetails: INestedRoutes | null;
   companyDetails: INestedRoutes | null;
   parentOrGuardianDetails: INestedRoutes | null;
+  accountCommentsNotes: INestedRoutes | null;
 }
