@@ -99,10 +99,10 @@ export class FinesMacParentGuardianDetailsFormComponent
       NationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
       AddressLine1: new FormControl(null, [
         Validators.required,
-        Validators.maxLength(30),
+        Validators.maxLength(25),
         specialCharactersValidator(),
       ]),
-      AddressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      AddressLine2: new FormControl(null, [optionalMaxLengthValidator(25), specialCharactersValidator()]),
       AddressLine3: new FormControl(null, [optionalMaxLengthValidator(13), specialCharactersValidator()]),
       Postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
       VehicleMake: new FormControl(null, [optionalMaxLengthValidator(30)]),

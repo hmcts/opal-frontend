@@ -10,23 +10,12 @@
     [control]="form.controls['Title']"
     [errors]="formControlErrorMessages['Title']"
   ></app-govuk-select>
-  <app-govuk-text-input
-    labelText="First names"
-    inputId="Forenames"
-    inputName="Forenames"
-    labelClasses="govuk-label--s"
-    hintText="This can include their middle names"
-    [control]="form.controls['Forenames']"
-    [errors]="formControlErrorMessages['Forenames']"
-  ></app-govuk-text-input>
-  <app-govuk-text-input
-    labelText="Last name"
-    inputId="Surname"
-    inputName="Surname"
-    labelClasses="govuk-label--s"
-    [control]="form.controls['Surname']"
-    [errors]="formControlErrorMessages['Surname']"
-  ></app-govuk-text-input>
+  <app-fines-mac-name
+    [form]="form"
+    [formControlErrorMessages]="formControlErrorMessages"
+    [nameFieldIds]="customNameFieldIds"
+    componentName="personalDetails"
+  ></app-fines-mac-name>
   <app-fines-mac-name-alias
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
