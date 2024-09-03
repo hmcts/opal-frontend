@@ -76,3 +76,6 @@ Then('I see {string} below the {string} header', (defendantType: string, account
 Then('I see {string} is {string}', (accountList: string, value: string) => {
   cy.contains('dt', accountList).siblings().invoke('text').should('contains', value);
 });
+When('I reload the page', () => {
+  cy.reload();
+});
