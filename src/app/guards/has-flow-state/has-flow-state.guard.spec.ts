@@ -8,6 +8,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/con
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../flows/fines/fines-mac/fines-mac-account-details/constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks';
 import { getGuardWithDummyUrl, runHasFlowStateGuardWithContext } from '../helpers';
+import { FINES_MAC_STATE } from 'src/app/flows/fines/fines-mac/constants';
 
 describe('hasFlowStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;
@@ -38,7 +39,7 @@ describe('hasFlowStateGuard', () => {
         {
           provide: FinesService,
           useValue: jasmine.createSpyObj('FinesService', [], {
-            finesMacState: { accountDetails: FINES_MAC_ACCOUNT_DETAILS_STATE },
+            finesMacState: FINES_MAC_STATE,
           }),
         },
       ],
@@ -53,6 +54,10 @@ describe('hasFlowStateGuard', () => {
 
   beforeAll(() => {
     window.onbeforeunload = () => 'Oh no!';
+  });
+
+  beforeEach(() => {
+    finesService.finesMacState = FINES_MAC_STATE;
   });
 
   it('should return true if AccountType and DefendantType are populated', fakeAsync(async () => {
