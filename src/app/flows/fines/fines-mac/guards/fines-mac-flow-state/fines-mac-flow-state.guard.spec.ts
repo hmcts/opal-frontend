@@ -33,7 +33,7 @@ describe('finesMacFlowStateGuard', () => {
         {
           provide: FinesService,
           useValue: jasmine.createSpyObj('FinesService', [], {
-            finesMacState: { accountDetails: FINES_MAC_ACCOUNT_DETAILS_STATE },
+            finesMacState: FINES_MAC_STATE,
           }),
         },
       ],
@@ -50,7 +50,7 @@ describe('finesMacFlowStateGuard', () => {
     window.onbeforeunload = () => 'Oh no!';
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     finesService.finesMacState = FINES_MAC_STATE;
   });
 
