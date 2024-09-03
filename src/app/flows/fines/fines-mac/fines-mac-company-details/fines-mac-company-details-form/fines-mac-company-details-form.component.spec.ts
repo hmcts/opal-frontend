@@ -56,7 +56,12 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: true,
+      }),
+    );
   });
 
   it('should emit form submit event with form value - nestedFlow false', () => {
@@ -67,7 +72,12 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     component['rePopulateForm'](formSubmit.formData);
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: false,
+      }),
+    );
   });
 
   it('should set up the company details form', () => {
@@ -107,11 +117,11 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component['setupCompanyDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.companyDetails.aliases.length).keys()],
+      [...Array(mockFinesService.finesMacState.companyDetails.formData.aliases.length).keys()],
       'aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.companyDetails);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.companyDetails.formData);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('add_alias', 'aliases');
   });
 });

@@ -50,7 +50,7 @@ describe('FinesMacLanguagePreferencesComponent', () => {
 
     component.handleLanguagePreferencesSubmit(formSubmit);
 
-    expect(finesService.finesMacState.languagePreferences).toEqual(formSubmit.formData);
+    expect(finesService.finesMacState.languagePreferences).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });

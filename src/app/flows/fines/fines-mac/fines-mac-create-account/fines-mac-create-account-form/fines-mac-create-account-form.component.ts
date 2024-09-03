@@ -155,10 +155,11 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    * sets up the account type listener, and repopulates the form with account details.
    */
   private initialCreateAccountSetup(): void {
+    const { formData } = this.finesService.finesMacState.accountDetails;
     this.setupCreateAccountForm();
     this.setInitialErrorMessages();
     this.setupAccountTypeListener();
-    this.rePopulateForm(this.finesService.finesMacState.accountDetails);
+    this.rePopulateForm(formData);
   }
 
   /**

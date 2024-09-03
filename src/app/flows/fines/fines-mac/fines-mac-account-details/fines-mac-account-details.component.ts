@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@
 import {
   IFinesMacAccountDetailsAccountTypes,
   IFinesMacAccountDetailsDefendantTypes,
-  IFinesMacAccountDetailsFieldTypes,
   IFinesMacAccountDetailsAccountStatus,
 } from './interfaces';
 import {
@@ -28,6 +27,7 @@ import { CanDeactivateTypes } from '@types-guards';
 import { Subject, takeUntil } from 'rxjs';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -82,7 +82,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { defendant_type: defendantType } = this.finesService.finesMacState.accountDetails;
+    const { defendant_type: defendantType } = this.finesService.finesMacState.accountDetails.formData;
     if (defendantType) {
       this.defendantType = this.defendantTypes[defendantType as keyof IFinesMacAccountDetailsDefendantTypes] || '';
     }
@@ -94,7 +94,8 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * from the `accountTypes` array and assigns it to the `accountType` property.
    */
   private setAccountType(): void {
-    const { account_type: accountType } = this.finesService.finesMacState.accountDetails;
+    // Moved to here as inline was adding extra spaces in HTML...
+    const { account_type: accountType } = this.finesService.finesMacState.accountDetails.formData;
     if (accountType) {
       this.accountType = this.accountTypes[accountType as keyof IFinesMacAccountDetailsAccountTypes] || '';
     }
@@ -106,44 +107,12 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   private setLanguage(): void {
     const { document_language: documentLanguage, hearing_language: hearingLanguage } =
-      this.finesService.finesMacState.languagePreferences;
+      this.finesService.finesMacState.languagePreferences.formData;
     if (documentLanguage && hearingLanguage) {
       this.documentLanguage = this.languageOptions[documentLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
       this.courtHearingLanguage =
         this.languageOptions[hearingLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
     }
-  }
-
-  /**
-   * Checks if a value is truthy.
-   * @param subFieldValue - The value to check.
-   * @returns A boolean indicating whether the value is truthy or not.
-   */
-  private isTruthy(subFieldValue: IFinesMacAccountDetailsFieldTypes): boolean {
-    if (typeof subFieldValue === 'string') {
-      return !!subFieldValue;
-    } else if (Array.isArray(subFieldValue)) {
-      return false;
-    } else {
-      return !!subFieldValue;
-    }
-  }
-
-  /**
-   * Checks the status of the manual account creation process.
-   * Updates the `accountCreationStatus` object based on the values in `manualAccountCreation`.
-   */
-  private checkStatus(): void {
-    const accountCreationKeys = Object.keys(
-      this.finesService.finesMacState,
-    ) as (keyof IFinesMacAccountDetailsAccountStatus)[];
-
-    accountCreationKeys.forEach((key: keyof IFinesMacAccountDetailsAccountStatus) => {
-      if (typeof this.finesService.finesMacState[key] !== 'boolean') {
-        const subFields = this.finesService.finesMacState[key];
-        this.accountCreationStatus[key] = Object.values(subFields).some(this.isTruthy);
-      }
-    });
   }
 
   /**
@@ -165,7 +134,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
     this.setDefendantType();
     this.setAccountType();
     this.setLanguage();
-    this.checkStatus();
     this.routerListener();
   }
 
@@ -178,7 +146,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   protected canAccessPaymentTerms(): boolean {
     return (
-      this.accountCreationStatus['personalDetails'] ||
+      this.finesService.finesMacState.personalDetails.status === FINES_MAC_STATUS.PROVIDED ||
       this.paymentTermsBypassDefendantTypes.includes(this.defendantType)
     );
   }

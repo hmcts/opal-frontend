@@ -85,9 +85,10 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
    * and repopulates the form with the initial values.
    */
   private initialEmployerDetailsSetup(): void {
+    const { formData } = this.finesService.finesMacState.employerDetails;
     this.setupEmployerDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.finesService.finesMacState.employerDetails);
+    this.rePopulateForm(formData);
   }
 
   public override ngOnInit(): void {

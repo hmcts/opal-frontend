@@ -6,6 +6,7 @@ import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details
 
 import { FinesService } from '@services/fines';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-contact-details',
@@ -16,16 +17,20 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../rou
 })
 export class FinesMacContactDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.defendant_type!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
 
   /**
    * Handles the form submission for contact details.
    * @param formData - The form data containing the search parameters.
    */
   public handleContactDetailsSubmit(form: IFinesMacContactDetailsForm): void {
+    // Update the status based on whether data has been provided or not
+    form.status = this.hasFormValues(form.formData) ? FINES_MAC_STATUS.PROVIDED : FINES_MAC_STATUS.NOT_PROVIDED;
+
+    // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      contactDetails: form.formData,
+      contactDetails: form,
       unsavedChanges: false,
       stateChanges: true,
     };

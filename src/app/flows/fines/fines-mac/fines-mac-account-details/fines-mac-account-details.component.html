@@ -10,7 +10,7 @@
     >
       <ng-container name>Business unit</ng-container>
       <ng-container value>
-        <p class="govuk-body">{{ finesService.finesMacState.accountDetails.business_unit }}</p>
+        <p class="govuk-body">{{ finesService.finesMacState.accountDetails.formData.BusinessUnit }}</p>
       </ng-container>
     </div>
     <div
@@ -123,12 +123,13 @@
   </p>
 </div>
 
-<ng-template #notProvided let-tagId>
-  <app-govuk-tag tagClasses="govuk-tag--grey" [tagId]="tagId">Not provided</app-govuk-tag>
-</ng-template>
-
-<ng-template #provided let-tagId>
-  <app-govuk-tag tagClasses="govuk-tag" [tagId]="tagId">Provided</app-govuk-tag>
+<ng-template #statusTag let-status>
+  <app-govuk-tag
+    [tagClasses]="status === 'Provided' ? 'govuk-tag' : status === 'Incomplete' ? 'govuk-tag--red' : 'govuk-tag--grey'"
+    [tagId]="status"
+  >
+    {{ status }}</app-govuk-tag
+  >
 </ng-template>
 
 <ng-template #contactDetails>
@@ -150,10 +151,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['contactDetails'] ? provided : notProvided;
-          context: { $implicit: 'contactDetailsStatusTag' }
-        "
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.contactDetails.status }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -178,10 +176,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['employerDetails'] ? provided : notProvided;
-          context: { $implicit: 'employerDetailsStatusTag' }
-        "
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.employerDetails.status }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -206,10 +201,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['companyDetails'] ? provided : notProvided;
-          context: { $implicit: 'companyDetailsStatusTag' }
-        "
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.companyDetails.status }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -234,10 +226,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['personalDetails'] ? provided : notProvided;
-          context: { $implicit: 'personalDetailsStatusTag' }
-        "
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.personalDetails.status }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -263,10 +252,7 @@
       </ng-container>
       <ng-container status>
         <ng-container
-          *ngTemplateOutlet="
-            accountCreationStatus['courtDetails'] ? provided : notProvided;
-            context: { $implicit: 'courtDetailsStatusTag' }
-          "
+          *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.courtDetails.status }"
         ></ng-container>
       </ng-container>
     </app-govuk-task-list-item>
@@ -292,10 +278,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['parentGuardianDetails'] ? provided : notProvided;
-          context: { $implicit: 'parentGuardianDetailsStatusTag' }
-        "
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.parentGuardianDetails.status }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -320,10 +303,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['offenceDetails'] ? provided : notProvided;
-          context: { $implicit: 'offenceDetailsStatusTag' }
-        "
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.offenceDetails.status }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -363,10 +343,7 @@
 <ng-template #paymentTermsStatus>
   @if (canAccessPaymentTerms()) {
     <ng-container
-      *ngTemplateOutlet="
-        accountCreationStatus['paymentTerms'] ? provided : notProvided;
-        context: { $implicit: 'paymentTermsStatusTag' }
-      "
+      *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.paymentTerms.status }"
     ></ng-container>
   } @else {
     Cannot start yet
@@ -392,10 +369,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="
-          accountCreationStatus['accountCommentsNotes'] ? provided : notProvided;
-          context: { $implicit: 'accountCommentsAndNotesStatusTag' }
-        "
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.accountCommentsNotes.status }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>

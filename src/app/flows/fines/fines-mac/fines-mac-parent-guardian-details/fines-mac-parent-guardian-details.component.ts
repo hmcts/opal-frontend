@@ -7,6 +7,7 @@ import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-g
 
 import { FinesService } from '@services/fines';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',
@@ -17,16 +18,20 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../rou
 })
 export class FinesMacParentGuardianDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.defendant_type!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
 
   /**
    * Handles the form submission for parent/guardian details.
    * @param formData - The form data containing the search parameters.
    */
   public handleParentGuardianDetailsSubmit(form: IFinesMacParentGuardianDetailsForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
+
+    // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      parentGuardianDetails: form.formData,
+      parentGuardianDetails: form,
       unsavedChanges: false,
       stateChanges: true,
     };

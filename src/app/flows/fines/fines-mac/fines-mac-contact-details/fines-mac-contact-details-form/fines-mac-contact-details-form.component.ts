@@ -68,9 +68,10 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
    * This method sets up the contact details form, initializes error messages, and populates the form with data.
    */
   private initialContactDetailsSetup(): void {
+    const { formData } = this.finesService.finesMacState.contactDetails;
     this.setupContactDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.finesService.finesMacState.contactDetails);
+    this.rePopulateForm(formData);
   }
 
   public override ngOnInit(): void {

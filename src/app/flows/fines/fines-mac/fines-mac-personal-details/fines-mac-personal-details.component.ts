@@ -4,6 +4,7 @@ import { IFinesMacPersonalDetailsForm } from './interfaces';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form/fines-mac-personal-details-form.component';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-personal-details',
@@ -14,7 +15,7 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../rou
 })
 export class FinesMacPersonalDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.defendant_type!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
 
   /**
    * Handles the submission of personal details form.
@@ -23,9 +24,13 @@ export class FinesMacPersonalDetailsComponent extends AbstractFormParentBaseComp
    * @returns void
    */
   public handlePersonalDetailsSubmit(form: IFinesMacPersonalDetailsForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
+
+    // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      personalDetails: form.formData,
+      personalDetails: form,
       unsavedChanges: false,
       stateChanges: true,
     };
