@@ -19,7 +19,7 @@ describe('hasFlowStateGuard', () => {
   // Create an instance of the can activate guard for testing
   const finesMacEmptyFlowGuard = hasFlowStateGuard(
     () => finesService.finesMacState.accountDetails,
-    (accountDetails) => !!accountDetails.formData.AccountType && !!accountDetails.formData.DefendantType,
+    (accountDetails) => !!accountDetails.formData.account_type && !!accountDetails.formData.defendant_type,
     () => expectedUrl,
   );
 
