@@ -19,7 +19,7 @@ describe('hasFlowStateGuard', () => {
   // Create an instance of the can activate guard for testing
   const finesMacEmptyFlowGuard = hasFlowStateGuard(
     () => finesService.finesMacState.accountDetails,
-    (accountDetails) => !!accountDetails.AccountType && !!accountDetails.DefendantType,
+    (accountDetails) => !!accountDetails.formData.AccountType && !!accountDetails.formData.DefendantType,
     () => expectedUrl,
   );
 
@@ -56,7 +56,7 @@ describe('hasFlowStateGuard', () => {
   });
 
   it('should return true if AccountType and DefendantType are populated', fakeAsync(async () => {
-    finesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
+    finesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
 
     const result = await runHasFlowStateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
 
@@ -65,7 +65,7 @@ describe('hasFlowStateGuard', () => {
   }));
 
   it('should navigate to create account page if AccountType and DefendantType are not populated', fakeAsync(async () => {
-    finesService.finesMacState.accountDetails = FINES_MAC_ACCOUNT_DETAILS_STATE;
+    finesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE;
 
     const result = await runHasFlowStateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
 

@@ -6,7 +6,7 @@ import { inject } from '@angular/core';
 
 export const finesMacFlowStateGuard = hasFlowStateGuard(
   () => inject(FinesService).finesMacState.accountDetails,
-  (accountDetails) => !!accountDetails.AccountType && !!accountDetails.DefendantType,
+  (accountDetails) => !!accountDetails.formData.AccountType && !!accountDetails.formData.DefendantType,
   () =>
     `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`,
 );
