@@ -97,8 +97,8 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
         ...this.finesService.finesMacState.languagePreferences,
         formData: {
           ...this.finesService.finesMacState.languagePreferences.formData,
-          documentLanguage: defaultDocumentLanguage,
-          courtHearingLanguage: defaultCourtHearingLanguage,
+          document_language: defaultDocumentLanguage,
+          hearing_language: defaultCourtHearingLanguage,
         },
       },
       unsavedChanges: false,

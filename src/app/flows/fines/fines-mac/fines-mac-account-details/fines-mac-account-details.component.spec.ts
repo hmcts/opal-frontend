@@ -135,10 +135,10 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
     const documentLanguage = 'CY';
-    const courtHearingLanguage = 'EN';
+    const hearingLanguage = 'EN';
     component['finesService'].finesMacState.languagePreferences.formData = {
-      documentLanguage,
-      courtHearingLanguage,
+      document_language: documentLanguage,
+      hearing_language: hearingLanguage,
     };
 
     component['setLanguage']();
@@ -147,16 +147,16 @@ describe('FinesMacAccountDetailsComponent', () => {
       component['languageOptions'][documentLanguage as keyof IFinesMacLanguagePreferencesOptions],
     );
     expect(component.courtHearingLanguage).toEqual(
-      component['languageOptions'][courtHearingLanguage as keyof IFinesMacLanguagePreferencesOptions],
+      component['languageOptions'][hearingLanguage as keyof IFinesMacLanguagePreferencesOptions],
     );
   });
 
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
     const documentLanguage = 'german';
-    const courtHearingLanguage = 'french';
+    const hearingLanguage = 'french';
     component['finesService'].finesMacState.languagePreferences.formData = {
-      documentLanguage,
-      courtHearingLanguage,
+      document_language: documentLanguage,
+      hearing_language: hearingLanguage,
     };
 
     component['setLanguage']();
