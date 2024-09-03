@@ -9,4 +9,5 @@ export const FINES_MAC_NESTED_BUTTONS = {
   additionalDetails: 'Add additional details',
   accountDetails: 'Add account details',
   createAccount: 'Create account',
+  reviewSubmit: 'Review and submit account details',
 };

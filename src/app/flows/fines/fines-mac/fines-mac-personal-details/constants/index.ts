@@ -14,10 +14,12 @@ import { FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_IDS } from './fines-mac-personal-
 import { FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS } from './fines-mac-personal-details-national-insurance-number-field-errors';
 import { FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS } from './fines-mac-personal-details-name-field-errors';
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS } from './fines-mac-personal-details-vehicle-details-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_FORM } from './fines-mac-personal-details-form';
 
 export {
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_STATE,
+  FINES_MAC_PERSONAL_DETAILS_FORM,
   FINES_MAC_PERSONAL_DETAILS_ALIAS,
   FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS,
   FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS,

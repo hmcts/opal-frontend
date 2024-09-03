@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacPaymentTermsComponent } from './fines-mac-payment-terms.component';
 import { FinesService } from '@services/fines';
-import { IFinesMacPaymentTermsForm, IFinesMacPaymentTermsState } from './interfaces';
+import { IFinesMacPaymentTermsForm } from './interfaces';
 import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK, FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from './mocks';
+import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from './mocks';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
@@ -14,14 +14,12 @@ describe('FinesMacPaymentTermsComponent', () => {
   let fixture: ComponentFixture<FinesMacPaymentTermsComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let formSubmit: IFinesMacPaymentTermsForm;
-  let formData: IFinesMacPaymentTermsState;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj('FinesService', ['finesMacState']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     formSubmit = FINES_MAC_PAYMENT_TERMS_FORM_MOCK;
-    formData = FINES_MAC_PAYMENT_TERMS_STATE_MOCK;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsComponent],
@@ -52,7 +50,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     component.handlePaymentTermsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formData);
+    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -65,7 +63,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     component.handlePaymentTermsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formData);
+    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes], {
       relativeTo: component['activatedRoute'].parent,
     });

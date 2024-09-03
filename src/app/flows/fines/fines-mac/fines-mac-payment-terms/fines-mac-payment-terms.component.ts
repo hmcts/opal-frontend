@@ -4,6 +4,7 @@ import { FinesService } from '@services/fines';
 import { IFinesMacPaymentTermsForm } from './interfaces';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form/fines-mac-payment-terms-form.component';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-payment-terms',
@@ -23,9 +24,13 @@ export class FinesMacPaymentTermsComponent extends AbstractFormParentBaseCompone
    * @param form - The payment terms form data.
    */
   public handlePaymentTermsSubmit(form: IFinesMacPaymentTermsForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
+
+    // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      paymentTerms: form.formData,
+      paymentTerms: form,
       unsavedChanges: false,
       stateChanges: true,
     };
