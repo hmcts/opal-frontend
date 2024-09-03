@@ -1,7 +1,3 @@
-import { IAbstractFormBaseForm } from '@interfaces/components/abstract';
-import { IFinesMacCreateAccountState } from './fines-mac-create-account-state.interface';
+import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces';
 
-export interface IFinesMacCreateAccountForm extends IAbstractFormBaseForm<IFinesMacCreateAccountState> {
-  formData: IFinesMacCreateAccountState;
-  nestedFlow: boolean;
-}
+export interface IFinesMacCreateAccountForm extends IFinesMacAccountDetailsForm {}

@@ -95,11 +95,11 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * - Repopulates the form with the payment terms data from the fines service.
    */
   private initialPaymentTermsSetup(): void {
-    const { paymentTerms } = this.finesService.finesMacState;
+    const { formData } = this.finesService.finesMacState.paymentTerms;
     this.setupPaymentTermsForm();
     this.hasDaysInDefaultListener();
     this.setInitialErrorMessages();
-    this.rePopulateForm(paymentTerms);
+    this.rePopulateForm(formData);
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
