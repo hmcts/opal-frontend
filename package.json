@@ -131,7 +131,6 @@
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
-    "@cucumber/messages": "^26.0.0",
-    "micromatch": "^4.0.8"
+    "@cucumber/messages": "^26.0.0"
   }
 }
