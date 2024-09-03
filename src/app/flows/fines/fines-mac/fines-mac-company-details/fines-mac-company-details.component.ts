@@ -5,6 +5,7 @@ import { IFinesMacCompanyDetailsForm } from './interfaces';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form/fines-mac-company-details-form.component';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-company-details',
@@ -15,16 +16,20 @@ import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../rou
 })
 export class FinesMacCompanyDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.DefendantType!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.DefendantType!;
 
   /**
    * Handles the form submission for company details.
    * @param companyDetailsForm - The form data containing the company details.
    */
   public handleCompanyDetailsSubmit(form: IFinesMacCompanyDetailsForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
+
+    // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      companyDetails: form.formData,
+      companyDetails: form,
       unsavedChanges: false,
       stateChanges: true,
     };

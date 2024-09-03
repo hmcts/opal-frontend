@@ -1,4 +1,4 @@
 export interface IFinesMacLanguagePreferencesState {
-  documentLanguage: string | null;
-  courtHearingLanguage: string | null;
+  document_language: string | null;
+  hearing_language: string | null;
 }

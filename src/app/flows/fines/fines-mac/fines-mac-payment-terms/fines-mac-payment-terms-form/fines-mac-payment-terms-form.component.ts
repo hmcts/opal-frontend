@@ -59,8 +59,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * payment terms from the finesMacState.
    */
   private initialPaymentTermsSetup(): void {
+    const { formData } = this.finesService.finesMacState.paymentTerms;
     this.setupPaymentTermsForm();
-    this.rePopulateForm(this.finesService.finesMacState.paymentTerms);
+    this.rePopulateForm(formData);
   }
 
   public override ngOnInit(): void {
