@@ -1,32 +1,58 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { FinesService } from '@services/fines';
+import { AbstractFormParentBaseComponent } from '@components/abstract';
+import { IFinesMacAccountCommentsNotesForm } from './interfaces';
+import { FinesMacAccountCommentsNotesFormComponent } from './fines-mac-account-comments-notes-form/fines-mac-account-comments-notes-form.component';
+import { FINES_MAC_STATUS } from '../constants';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes',
   standalone: true,
-  imports: [GovukButtonComponent, GovukCancelLinkComponent],
+  imports: [FinesMacAccountCommentsNotesFormComponent],
   templateUrl: './fines-mac-account-comments-notes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountCommentsNotesComponent {
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+export class FinesMacAccountCommentsNotesComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-
-  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.DefendantType!;
 
   /**
-   * Navigates to the specified route.
+   * Handles the submission of the account comments and notes form.
    *
-   * @param route - The route to navigate to.
+   * @param form - The form data for the account comments and notes.
+   * @returns void
    */
-  public handleRoute(route: string, event?: Event): void {
-    if (event) {
-      event.preventDefault();
+  public handleAccountCommentsNoteSubmit(form: IFinesMacAccountCommentsNotesForm): void {
+    // Update the status based on whether data has been provided or not
+    form.status = this.hasFormValues(form.formData) ? FINES_MAC_STATUS.PROVIDED : FINES_MAC_STATUS.NOT_PROVIDED;
+
+    // Update the state with the form data
+    this.finesService.finesMacState = {
+      ...this.finesService.finesMacState,
+      accountCommentsNotes: form,
+      unsavedChanges: false,
+      stateChanges: true,
+    };
+
+    // Navigate to the next route
+    if (form.nestedFlow && this.defendantType) {
+      const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['accountCommentsNotes'];
+      if (nextRoute) {
+        this.routerNavigate(nextRoute.nextRoute);
+      }
+    } else {
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
     }
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  }
+
+  /**
+   * Handles unsaved changes coming from the child component
+   *
+   * @param unsavedChanges boolean value from child component
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }

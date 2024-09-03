@@ -69,7 +69,12 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(formSubmit);
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        formData: formSubmit.formData,
+        nestedFlow: false,
+      }),
+    );
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {
@@ -205,6 +210,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component['setupCreateAccountForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['setupAccountTypeListener']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(component['finesService'].finesMacState.accountDetails);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(
+      component['finesService'].finesMacState.accountDetails.formData,
+    );
   });
 });

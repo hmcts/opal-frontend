@@ -73,9 +73,10 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
    * and repopulates the form with the initial court details data.
    */
   private initialCourtDetailsSetup(): void {
+    const { formData } = this.finesService.finesMacState.courtDetails;
     this.setupCourtDetailsForm();
     this.setInitialErrorMessages();
-    this.rePopulateForm(this.finesService.finesMacState.courtDetails);
+    this.rePopulateForm(formData);
   }
 
   public override ngOnInit(): void {

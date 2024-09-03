@@ -97,6 +97,7 @@ export const routing: Routes = [
         (c) => c.FinesMacAccountCommentsNotesComponent,
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.paymentTerms,
