@@ -23,7 +23,7 @@ describe('AppComponent', () => {
   let dateService: jasmine.SpyObj<DateService>;
 
   beforeEach(() => {
-    const dateServiceSpy = jasmine.createSpyObj('DateService', [
+    const dateServiceSpy = jasmine.createSpyObj(DateService, [
       'convertMillisecondsToMinutes',
       'calculateMinutesDifference',
     ]);
