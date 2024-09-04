@@ -30,7 +30,7 @@ describe('FinesMacCreateAccountComponent', () => {
         .and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
       getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
     };
-    finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
+    finesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
     finesService.finesMacState = FINES_MAC_STATE_MOCK;
     formSubmit = FINES_MAC_CREATE_ACCOUNT_FORM_MOCK;

@@ -16,7 +16,7 @@ describe('GovukErrorSummaryComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    eventMock = jasmine.createSpyObj('Event', ['preventDefault']);
+    eventMock = jasmine.createSpyObj(Event, ['preventDefault']);
     spyOn(component.errorClick, 'emit');
   });
 
