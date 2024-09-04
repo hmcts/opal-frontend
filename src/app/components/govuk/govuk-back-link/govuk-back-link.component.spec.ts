@@ -21,7 +21,7 @@ describe('GovukBackLinkComponent', () => {
   });
 
   it('should call preventDefault and emit event when onBack is called', () => {
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
+    const event = jasmine.createSpyObj(Event, ['preventDefault']);
     spyOn(component.clickEvent, 'emit');
 
     component.onBack(event);

@@ -41,7 +41,7 @@ describe('FinesMacOffenceDetailsComponent', () => {
 
   it('should navigate to account-details page on handleRoute with event', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
+    const event = jasmine.createSpyObj(Event, ['preventDefault']);
 
     component.handleRoute('test', event);
 

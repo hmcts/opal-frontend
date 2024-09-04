@@ -49,7 +49,7 @@ describe('GovukSummaryCardActionComponent', () => {
   });
 
   it('should test onClick', () => {
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
+    const event = jasmine.createSpyObj(Event, ['preventDefault']);
     spyOn(component.clickEvent, 'emit');
 
     component.onClick(event, 'test');
