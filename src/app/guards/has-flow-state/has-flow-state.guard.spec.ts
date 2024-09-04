@@ -11,6 +11,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/f
 import { FINES_MAC_STATE } from 'src/app/flows/fines/fines-mac/constants';
 
 describe('hasFlowStateGuard', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let finesMacEmptyFlowGuard: any;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
