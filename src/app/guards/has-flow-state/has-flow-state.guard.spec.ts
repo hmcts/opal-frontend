@@ -11,12 +11,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/f
 import { FINES_MAC_STATE } from 'src/app/flows/fines/fines-mac/constants';
 
 describe('hasFlowStateGuard', () => {
-  const finesMacEmptyFlowGuard = hasFlowStateGuard(
-    () => mockFinesService.finesMacState.accountDetails,
-    (accountDetails) => !!accountDetails.formData.AccountType && !!accountDetails.formData.DefendantType,
-    () => expectedUrl,
-  );
-
+  let finesMacEmptyFlowGuard: any;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
 
@@ -24,7 +19,13 @@ describe('hasFlowStateGuard', () => {
   const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`;
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj(finesMacEmptyFlowGuard, ['navigate', 'createUrlTree', 'parseUrl']);
+    finesMacEmptyFlowGuard = hasFlowStateGuard(
+      () => mockFinesService.finesMacState.accountDetails,
+      (accountDetails) => !!accountDetails.formData.AccountType && !!accountDetails.formData.DefendantType,
+      () => expectedUrl,
+    );
+
+    mockRouter = jasmine.createSpyObj(hasFlowStateGuard, ['navigate', 'createUrlTree', 'parseUrl']);
     mockRouter.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
       const urlSegment = new UrlSegment(url, {});

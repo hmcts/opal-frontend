@@ -16,7 +16,7 @@ describe('FinesMacLanguagePreferencesComponent', () => {
   let formSubmit: IFinesMacLanguagePreferencesForm;
 
   beforeEach(async () => {
-    finesService = jasmine.createSpyObj('FineService', ['finesMacState']);
+    finesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
     finesService.finesMacState = FINES_MAC_STATE_MOCK;
 
