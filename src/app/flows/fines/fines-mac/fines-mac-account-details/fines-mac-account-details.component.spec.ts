@@ -1,17 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountDetailsComponent } from './fines-mac-account-details.component';
 import { FINES_MAC_STATE, FINES_MAC_STATUS } from '../constants';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { IFinesMacAccountTypes, IFinesMacDefendantTypes } from '../interfaces';
+import { ActivatedRoute } from '@angular/router';
 import { FinesService } from '@services/fines';
-import {
-  FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES,
-  FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
-  FINES_MAC_ACCOUNT_DETAILS_STATE,
-} from './constants';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from './constants';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -19,15 +15,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj('FineService', ['finesMacState']);
-
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockFinesService.finesMacState = FINES_MAC_STATE;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
-        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -41,10 +35,6 @@ describe('FinesMacAccountDetailsComponent', () => {
     component = fixture.componentInstance;
 
     fixture.detectChanges();
-  });
-
-  beforeEach(() => {
-    mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE;
   });
 
   it('should create', () => {
@@ -69,7 +59,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should navigate on handleRoute with event', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const event = jasmine.createSpyObj('event', ['preventDefault']);
+    const event = jasmine.createSpyObj(Event, ['preventDefault']);
 
     component.handleRoute('test', true, event);
 
@@ -77,60 +67,24 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(event.preventDefault).toHaveBeenCalled();
   });
 
-  it('should set defendantType correctly', () => {
-    mockFinesService.finesMacState.accountDetails.formData.defendant_type = 'adultOrYouthOnly';
+  it('should set defendantType and accountType to be empty string', () => {
+    mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE;
 
     component['setDefendantType']();
+    component['setAccountType']();
 
-    expect(component.defendantType).toEqual(
-      FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES[
-        mockFinesService.finesMacState.accountDetails.formData.defendant_type as keyof IFinesMacDefendantTypes
-      ],
-    );
+    expect(component.defendantType).toEqual('');
+    expect(component.accountType).toEqual('');
   });
 
-  it('should set defendantType to be empty', () => {
-    mockFinesService.finesMacState.accountDetails.formData.defendant_type = 'test';
+  it('should set defendantType and accountType to values', () => {
+    mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
 
     component['setDefendantType']();
-
-    expect(component.defendantType).toBe('');
-  });
-
-  it('should not set defendantType', () => {
-    component.defendantType = '';
-    mockFinesService.finesMacState.accountDetails.formData.defendant_type = null;
-
-    component['setDefendantType']();
-    expect(component.defendantType).toBe('');
-  });
-
-  it('should set accountType correctly', () => {
-    mockFinesService.finesMacState.accountDetails.formData.account_type = 'fine';
-
     component['setAccountType']();
 
-    expect(component.accountType).toEqual(
-      FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES[
-        mockFinesService.finesMacState.accountDetails.formData.account_type as keyof IFinesMacAccountTypes
-      ],
-    );
-  });
-
-  it('should set accountType to be empty', () => {
-    mockFinesService.finesMacState.accountDetails.formData.account_type = 'test';
-
-    component['setAccountType']();
-
-    expect(component.accountType).toBe('');
-  });
-
-  it('should not set accountType', () => {
-    component.accountType = '';
-    mockFinesService.finesMacState.accountDetails.formData.account_type = null;
-
-    component['setAccountType']();
-    expect(component.accountType).toBe('');
+    expect(component.defendantType).toEqual('Adult or youth only');
+    expect(component.accountType).toEqual('Conditional Caution');
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {

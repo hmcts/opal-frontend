@@ -18,7 +18,7 @@ import { IFinesMacState } from '../interfaces';
 export const FINES_MAC_STATE_MOCK: IFinesMacState = {
   accountDetails: {
     ...FINES_MAC_ACCOUNT_DETAILS_FORM,
-    formData: { ...FINES_MAC_ACCOUNT_DETAILS_STATE, defendant_type: 'adultOrYouthOnly' },
+    formData: { ...FINES_MAC_ACCOUNT_DETAILS_STATE, defendant_type: 'adultOrYouthOnly', account_type: 'fine' },
   },
   employerDetails: FINES_MAC_EMPLOYER_DETAILS_FORM,
   contactDetails: FINES_MAC_CONTACT_DETAILS_FORM,

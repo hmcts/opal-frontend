@@ -5,50 +5,47 @@ import { FINES_ROUTING_PATHS } from '@constants/fines';
 import { of } from 'rxjs';
 import { hasFlowStateGuard } from './has-flow-state.guard';
 import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../flows/fines/fines-mac/fines-mac-account-details/constants';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks';
 import { getGuardWithDummyUrl, runHasFlowStateGuardWithContext } from '../helpers';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/fines-mac-account-details/constants';
 import { FINES_MAC_STATE } from 'src/app/flows/fines/fines-mac/constants';
 
 describe('hasFlowStateGuard', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let finesMacEmptyFlowGuard: any;
   let mockRouter: jasmine.SpyObj<Router>;
-  let finesService: jasmine.SpyObj<FinesService>;
+  let mockFinesService: jasmine.SpyObj<FinesService>;
 
   const urlPath = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
   const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`;
 
-  // Create an instance of the can activate guard for testing
-  const finesMacEmptyFlowGuard = hasFlowStateGuard(
-    () => finesService.finesMacState.accountDetails,
-    (accountDetails) => !!accountDetails.formData.account_type && !!accountDetails.formData.defendant_type,
-    () => expectedUrl,
-  );
-
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj(finesMacEmptyFlowGuard, ['navigate', 'createUrlTree', 'parseUrl']);
+    finesMacEmptyFlowGuard = hasFlowStateGuard(
+      () => mockFinesService.finesMacState.accountDetails,
+      (accountDetails) => !!accountDetails.formData.account_type && !!accountDetails.formData.defendant_type,
+      () => expectedUrl,
+    );
+
+    mockRouter = jasmine.createSpyObj(hasFlowStateGuard, ['navigate', 'createUrlTree', 'parseUrl']);
     mockRouter.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
       const urlSegment = new UrlSegment(url, {});
       urlTree.root = new UrlSegmentGroup([urlSegment], {});
       return urlTree;
     });
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService.finesMacState = FINES_MAC_STATE;
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: mockRouter },
         {
           provide: FinesService,
-          useValue: jasmine.createSpyObj('FinesService', [], {
-            finesMacState: FINES_MAC_STATE,
-          }),
+          useValue: mockFinesService,
         },
       ],
     });
 
-    mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    finesService = TestBed.inject(FinesService) as jasmine.SpyObj<FinesService>;
-
-    // Return a dummy UrlTree for createUrlTree calls
     mockRouter.createUrlTree.and.returnValue(new UrlTree());
   });
 
@@ -57,11 +54,11 @@ describe('hasFlowStateGuard', () => {
   });
 
   beforeEach(() => {
-    finesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState = FINES_MAC_STATE;
   });
 
   it('should return true if AccountType and DefendantType are populated', fakeAsync(async () => {
-    finesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
+    mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
 
     const result = await runHasFlowStateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
 
@@ -70,8 +67,7 @@ describe('hasFlowStateGuard', () => {
   }));
 
   it('should navigate to create account page if AccountType and DefendantType are not populated', fakeAsync(async () => {
-    finesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE;
-
+    mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE;
     const result = await runHasFlowStateGuardWithContext(getGuardWithDummyUrl(finesMacEmptyFlowGuard, urlPath));
 
     expect(result).toEqual(jasmine.any(UrlTree));
