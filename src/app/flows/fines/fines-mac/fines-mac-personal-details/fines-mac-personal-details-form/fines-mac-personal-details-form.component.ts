@@ -50,6 +50,7 @@ import {
   FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_FORM_GROUP,
   FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS,
@@ -120,25 +121,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    * @returns void
    */
   private setupPersonalDetailsForm(): void {
-    this.form = new FormGroup({
-      title: new FormControl(null, [Validators.required]),
-      forenames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      surname: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      add_alias: new FormControl(null),
-      aliases: new FormArray([]),
-      dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      address_line_1: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        specialCharactersValidator(),
-      ]),
-      address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      address_line_3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
-      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-      vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(11)]),
-    });
+    this.form = new FormGroup(FINES_MAC_PERSONAL_DETAILS_FORM_GROUP);
   }
 
   /**
