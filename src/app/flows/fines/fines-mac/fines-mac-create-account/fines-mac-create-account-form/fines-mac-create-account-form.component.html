@@ -74,12 +74,14 @@
 <ng-template #defendantTypesRadioOptions let-defendantTypes="defendantTypes" let-isFine="isFine">
   <div app-govuk-radios-conditional conditionalId="radio">
     <app-govuk-radio
-      [fieldSetId]="isFine ? 'FineDefendantType' : 'FixedPenaltyDefendantType'"
+      [fieldSetId]="isFine ? 'fine_defendant_type' : 'fixed_penalty_defendant_type'"
       legendText="Defendant type"
       legendClasses="govuk-fieldset__legend--m"
       legendHint="If sole trader, choose 'Adult or youth only'"
       [errors]="
-        isFine ? formControlErrorMessages['FineDefendantType'] : formControlErrorMessages['FixedPenaltyDefendantType']
+        isFine
+          ? formControlErrorMessages['fine_defendant_type']
+          : formControlErrorMessages['fixed_penalty_defendant_type']
       "
     >
       @for (defendantType of defendantTypes; track defendantType.key) {
@@ -87,9 +89,9 @@
           app-govuk-radios-item
           [labelText]="defendantType.value"
           [inputId]="defendantType.key"
-          [inputName]="isFine ? 'FineDefendantType' : 'FixedPenaltyDefendantType'"
+          [inputName]="isFine ? 'fine_defendant_type' : 'fixed_penalty_defendant_type'"
           [inputValue]="defendantType.key"
-          [control]="isFine ? form.get('FineDefendantType') : form.get('FixedPenaltyDefendantType')"
+          [control]="isFine ? form.get('fine_defendant_type') : form.get('fixed_penalty_defendant_type')"
         ></div>
       }
     </app-govuk-radio>
