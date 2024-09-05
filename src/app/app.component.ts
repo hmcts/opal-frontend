@@ -3,7 +3,6 @@ import { LaunchDarklyService, GlobalStateService, SessionService, DateService } 
 import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { SsoEndpoints } from '@enums';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-root',
@@ -60,10 +59,10 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param expiry - The expiry time in ISO format.
    */
   private setupTimerSub(expiry: string) {
-    const expiryTime = DateTime.fromISO(expiry);
+    const expiryTime = this.dateService.getFromIso(expiry);
     this.timerSub = timer(0, this.POLL_INTERVAL * 1000)
       .pipe(
-        map(() => this.dateService.calculateMinutesDifference(DateTime.now(), expiryTime)),
+        map(() => this.dateService.calculateMinutesDifference(this.dateService.getDateNow(), expiryTime)),
         tap((remainingMinutes) => {
           this.ngZone.run(() => {
             this.minutesRemaining$ = of(remainingMinutes);
