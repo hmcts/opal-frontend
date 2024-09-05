@@ -74,6 +74,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     ([key, value]) => ({ key, value }),
   );
   public yesterday!: string;
+  public isAdult!: boolean;
 
   /**
    * Sets up the payment terms form.
@@ -100,6 +101,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     this.hasDaysInDefaultListener();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+    this.checkDefendantAge();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
@@ -122,6 +124,17 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
         });
       }
     });
+  }
+
+  /**
+   * Checks the age of the defendant based on their date of birth.
+   * If the defendant's date of birth is not provided or their age is 18 or above,
+   * the `isAdult` property is set to `true`, indicating that the defendant is an adult.
+   * Otherwise, the `isAdult` property is set to `false`.
+   */
+  private checkDefendantAge(): void {
+    const { formData } = this.finesService.finesMacState.personalDetails;
+    this.isAdult = !formData.DOB || this.dateService.calculateAge(formData.DOB) >= 18;
   }
 
   public override ngOnInit(): void {

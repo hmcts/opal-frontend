@@ -186,8 +186,14 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    */
   private updateAgeAndLabel(dateOfBirth: string): void {
     if (this.dateService.isValidDate(dateOfBirth)) {
+      const { formData: paymentTermsFormData } = this.finesService.finesMacState.paymentTerms;
       this.age = this.dateService.calculateAge(dateOfBirth);
       this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
+
+      // Reset payment terms default date data
+      paymentTermsFormData.hasDaysInDefault = false;
+      paymentTermsFormData.daysInDefaultDate = null;
+      paymentTermsFormData.daysInDefault = null;
     }
   }
 

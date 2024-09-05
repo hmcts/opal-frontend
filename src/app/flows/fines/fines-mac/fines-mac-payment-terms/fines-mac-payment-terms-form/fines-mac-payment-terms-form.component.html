@@ -17,7 +17,7 @@
       ></div>
     }
   </app-govuk-radio>
-  @if (defendantType === 'adultOrYouthOnly') {
+  @if (defendantType === 'adultOrYouthOnly' && isAdult) {
     <fieldset class="govuk-fieldset">
       <app-govuk-checkboxes
         fieldSetId="daysInDefaultCheckbox"

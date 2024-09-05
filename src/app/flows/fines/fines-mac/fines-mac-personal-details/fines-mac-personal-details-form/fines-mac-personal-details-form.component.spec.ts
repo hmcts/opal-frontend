@@ -119,6 +119,10 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
     expect(component.age).toEqual(34);
     expect(component.ageLabel).toEqual('Adult');
+    const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
+    expect(paymentTermsFormData.hasDaysInDefault).toBeFalsy();
+    expect(paymentTermsFormData.daysInDefault).toBeNull();
+    expect(paymentTermsFormData.daysInDefaultDate).toBeNull();
   });
 
   it('should call dateOfBirthListener on DOB value changes Youth', () => {
@@ -131,6 +135,10 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
     expect(component.age).toEqual(10);
     expect(component.ageLabel).toEqual('Youth');
+    const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
+    expect(paymentTermsFormData.hasDaysInDefault).toBeFalsy();
+    expect(paymentTermsFormData.daysInDefault).toBeNull();
+    expect(paymentTermsFormData.daysInDefaultDate).toBeNull();
   });
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
@@ -143,6 +151,10 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     expect(component.age).toEqual(34);
     expect(component.ageLabel).toEqual('Adult');
+    const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
+    expect(paymentTermsFormData.hasDaysInDefault).toBeFalsy();
+    expect(paymentTermsFormData.daysInDefault).toBeNull();
+    expect(paymentTermsFormData.daysInDefaultDate).toBeNull();
   });
 
   it('should call the necessary setup methods', () => {
