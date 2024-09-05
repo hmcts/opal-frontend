@@ -9,7 +9,12 @@ import {
   inject,
 } from '@angular/core';
 import { AbstractFormBaseComponent } from '@components/abstract';
-import { IFinesMacPaymentTermsFieldErrors, IFinesMacPaymentTermsForm } from '../interfaces';
+import {
+  IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation,
+  IFinesMacPaymentTermsFieldErrors,
+  IFinesMacPaymentTermsForm,
+  IFinesMacPaymentTermsPaymentTermOptionsControlValidation,
+} from '../interfaces';
 import { FinesService } from '../../../services/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,11 +28,14 @@ import {
   GovukCheckboxesItemComponent,
   GovukErrorSummaryComponent,
   GovukRadioComponent,
+  GovukRadiosConditionalComponent,
   GovukRadiosItemComponent,
   GovukTextInputPrefixSuffixComponent,
 } from '@components/govuk';
 import {
+  FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION,
   FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION,
+  FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS,
   FINES_MAC_PAYMENT_TERMS_OPTIONS,
 } from '../constants';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
@@ -46,6 +54,7 @@ import { DateService } from '@services';
     GovukButtonComponent,
     GovukRadioComponent,
     GovukRadiosItemComponent,
+    GovukRadiosConditionalComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
@@ -70,9 +79,16 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
   };
 
-  public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(FINES_MAC_PAYMENT_TERMS_OPTIONS).map(
-    ([key, value]) => ({ key, value }),
-  );
+  public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
+  public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
+    key,
+    value,
+  }));
+  public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(
+    FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS,
+  ).map(([key, value]) => ({ key, value }));
+  public readonly paymentTermsControls: IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation =
+    FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION;
   public yesterday!: string;
   public isAdult!: boolean;
 
@@ -82,8 +98,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
       paymentTerms: new FormControl(null),
-      holdEnforcementOnAccount: new FormControl(null),
+      requestPaymentCard: new FormControl(null),
       hasDaysInDefault: new FormControl(null),
+      addEnforcementAction: new FormControl(null),
     });
   }
 
@@ -99,6 +116,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     const { formData } = this.finesService.finesMacState.paymentTerms;
     this.setupPaymentTermsForm();
     this.hasDaysInDefaultListener();
+    this.paymentTermsListener();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.checkDefendantAge();
@@ -135,6 +153,24 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private checkDefendantAge(): void {
     const { formData } = this.finesService.finesMacState.personalDetails;
     this.isAdult = !formData.DOB || this.dateService.calculateAge(formData.DOB) >= 18;
+  }
+
+  private paymentTermsListener(): void {
+    const { paymentTerms } = this.form.controls;
+
+    paymentTerms.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((selectedTerm) => {
+      const controls =
+        this.paymentTermsControls[selectedTerm as keyof IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation];
+
+      controls.fieldsToRemove.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
+        this.removeControl(control.controlName);
+        this.removeControlErrors(control.controlName);
+      });
+
+      controls.fieldsToAdd.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
+        this.createControl(control.controlName, control.validators);
+      });
+    });
   }
 
   public override ngOnInit(): void {

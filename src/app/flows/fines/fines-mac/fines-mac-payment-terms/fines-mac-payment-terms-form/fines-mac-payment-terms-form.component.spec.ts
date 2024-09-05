@@ -82,6 +82,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'hasDaysInDefaultListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'paymentTermsListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
@@ -93,6 +95,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(component['setupPaymentTermsForm']).toHaveBeenCalled();
     expect(component['hasDaysInDefaultListener']).toHaveBeenCalled();
+    expect(component['paymentTermsListener']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(
       component['finesService'].finesMacState.paymentTerms.formData,

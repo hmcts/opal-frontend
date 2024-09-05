@@ -15,8 +15,64 @@
         [inputValue]="paymentTerm.key"
         [control]="form.controls['paymentTerms']"
       ></div>
+
+      @switch (paymentTerm.key) {
+        @case ('payInFull') {
+          @if (form.get('paymentTerms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="paymentTerms">
+              <div class="govuk-form-group">
+                <app-scotgov-date-picker
+                  labelText="Enter pay by date"
+                  labelClasses="govuk-label--s"
+                  inputId="payByDate"
+                  inputName="payByDate"
+                  inputClasses="govuk-input--width-10"
+                  hintText="For example, 31/01/2023"
+                  [control]="form.controls['payByDate']"
+                  [errors]="formControlErrorMessages['payByDate']"
+                  (dateChange)="setInputValue($event, 'payByDate')"
+                ></app-scotgov-date-picker>
+              </div>
+            </div>
+          }
+        }
+        @case ('instalmentsOnly') {
+          @if (form.get('paymentTerms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="paymentTerms">
+              <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+            </div>
+          }
+        }
+        @case ('lumpSumPlusInstalments') {
+          @if (form.get('paymentTerms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="paymentTerms">
+              <div class="govuk-form-group">
+                <app-govuk-text-input-prefix-suffix
+                  labelText="Lump sum"
+                  labelClasses="govuk-label--s"
+                  inputId="lumpSum"
+                  inputName="lumpSum"
+                  inputClasses="govuk-input--width-5"
+                  prefixText="£"
+                  [control]="form.controls['lumpSum']"
+                  [errors]="formControlErrorMessages['lumpSum']"
+                >
+                </app-govuk-text-input-prefix-suffix>
+              </div>
+              <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+            </div>
+          }
+        }
+      }
     }
   </app-govuk-radio>
+  <div
+    app-govuk-checkboxes-item
+    labelText="Request payment card"
+    inputId="requestPaymentCard"
+    inputName="requestPaymentCard"
+    [control]="form.controls['requestPaymentCard']"
+  ></div>
   @if (defendantType === 'adultOrYouthOnly' && isAdult) {
     <fieldset class="govuk-fieldset">
       <app-govuk-checkboxes
@@ -75,10 +131,10 @@
   >
     <div
       app-govuk-checkboxes-item
-      labelText="Hold enforcement on account (NOENF)"
-      inputId="holdEnforcementOnAccount"
-      inputName="holdEnforcementOnAccount"
-      [control]="form.controls['holdEnforcementOnAccount']"
+      labelText="Add enforcement action"
+      inputId="addEnforcementAction"
+      inputName="addEnforcementAction"
+      [control]="form.controls['addEnforcementAction']"
     ></div>
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">
@@ -101,3 +157,52 @@
     </div>
   </div>
 </form>
+
+<ng-template #instalmentsFrequencyStartDate>
+  <div class="govuk-form-group">
+    <app-govuk-text-input-prefix-suffix
+      labelText="Instalment"
+      labelClasses="govuk-label--s"
+      inputId="instalment"
+      inputName="instalment"
+      inputClasses="govuk-input--width-5"
+      prefixText="£"
+      [control]="form.controls['instalment']"
+      [errors]="formControlErrorMessages['instalment']"
+    >
+    </app-govuk-text-input-prefix-suffix>
+  </div>
+  <div class="govuk-form-group">
+    <app-govuk-radio
+      fieldSetId="frequency"
+      legendText="Frequency"
+      legendClasses="govuk-fieldset__legend--s"
+      [errors]="formControlErrorMessages['frequency']"
+    >
+      @for (frequency of frequencyOptions; track frequency.key) {
+        <div
+          app-govuk-radios-item
+          [labelText]="frequency.value"
+          [inputId]="frequency.key"
+          inputName="frequency"
+          [inputValue]="frequency.key"
+          [control]="form.controls['frequency']"
+        ></div>
+      }
+    </app-govuk-radio>
+  </div>
+  <div class="govuk-form-group">
+    <app-scotgov-date-picker
+      labelText="Start date"
+      labelClasses="govuk-label--s"
+      inputId="startDate"
+      inputName="startDate"
+      inputClasses="govuk-input--width-10"
+      hintText="For example, 31/01/2023"
+      [maxDate]="yesterday"
+      [control]="form.controls['startDate']"
+      [errors]="formControlErrorMessages['startDate']"
+      (dateChange)="setInputValue($event, 'startDate')"
+    ></app-scotgov-date-picker>
+  </div>
+</ng-template>
