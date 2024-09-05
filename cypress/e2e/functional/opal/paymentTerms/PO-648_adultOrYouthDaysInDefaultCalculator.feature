@@ -104,4 +104,6 @@ Feature: PO-648 days in default calculator on payment terms page - adult or yout
     And I enter "1" into the "years" input in the calculator
     And I see the text "365 days" in the calculator
 
-
+####################################################
+# MAY NEED REVISION FOR NEGATIVE CALCULATION TESTS #
+####################################################
