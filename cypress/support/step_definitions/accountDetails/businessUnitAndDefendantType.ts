@@ -56,8 +56,8 @@ When('I select parent or guardian to pay', () => {
 When('I select company', () => {
   cy.get('input[id="company"]').check().should('be.checked');
 });
-Then('I click on cancel', () => {
-  cy.contains('Cancel').click();
+Then('I click on {string}', (cancelLink: string) => {
+  cy.contains('a', cancelLink).click();
 });
 Then('I verify if adults and youth only checked', () => {
   cy.get('input[id="adultOrYouthOnly"]').should('be.checked');

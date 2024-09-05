@@ -79,3 +79,6 @@ Then('I see {string} is {string}', (accountList: string, value: string) => {
 When('I reload the page', () => {
   cy.reload();
 });
+Then('I see {string} link', (buttonName: string) => {
+  cy.contains('a', buttonName).should('exist', buttonName);
+});

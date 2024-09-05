@@ -1,4 +1,6 @@
-Feature: PO-365 Creating a fines account for a Company where defendant type is company
+Feature: PO-365 PO-652 Creating a fines account for a Company where defendant type is company
+
+  #Cancel link steps adding in this feature to save execution time (stpes added on AC6)
 
   Background:
     Given I am on the OPAL Frontend
@@ -133,6 +135,11 @@ Feature: PO-365 Creating a fines account for a Company where defendant type is c
 
     And I select "Remove" link below the "Alias 2", "Company name" input
     And I see "Add another alias" button
+
+    #verifying cancel button which is developed on PO-652
+    When I see "Cancel" link
+    Then I click on "Cancel"
+    Then I see "Account details" on the page header
 
 
   Scenario Outline: AC8- positive: user has not entered data into any mandatory fields (Company name, Address line 1) but has entered data into one or more other optional fields, then upon selecting the 'Return to account details' or 'Add contact details' buttons
