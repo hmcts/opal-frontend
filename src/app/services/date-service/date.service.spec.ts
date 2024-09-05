@@ -156,4 +156,45 @@ describe('DateServiceService', () => {
     const result = service.getPreviousDate({ days: 1 });
     expect(result).toEqual(yesterday);
   });
+
+  it('should return a DateTime object from a formatted string', () => {
+    const value = '2022-01-01T10:00:00';
+    const format = "yyyy-MM-dd'T'HH:mm:ss";
+    const result = service.getFromFormat(value, format);
+    expect(result).toBeInstanceOf(DateTime);
+    expect(result.isValid).toBe(true);
+    expect(result.year).toBe(2022);
+    expect(result.month).toBe(1);
+    expect(result.day).toBe(1);
+    expect(result.hour).toBe(10);
+    expect(result.minute).toBe(0);
+    expect(result.second).toBe(0);
+  });
+
+  it('should return an invalid DateTime object from an invalid formatted string', () => {
+    const value = '2022-01-01T10:00:00';
+    const format = 'dd/MM/yyyy';
+    const result = service.getFromFormat(value, format);
+    expect(result).toBeInstanceOf(DateTime);
+    expect(result.isValid).toBe(false);
+  });
+
+  it('should return a DateTime object from an ISO string', () => {
+    const value = '2022-01-01T10:00:00';
+    const result = service.getFromIso(value);
+    expect(result).toBeInstanceOf(DateTime);
+    expect(result.isValid).toBe(true);
+    expect(result.year).toBe(2022);
+    expect(result.month).toBe(1);
+    expect(result.day).toBe(1);
+    expect(result.hour).toBe(10);
+    expect(result.minute).toBe(0);
+    expect(result.second).toBe(0);
+  });
+
+  it('should return the current date and time', () => {
+    const result = service.getDateNow();
+    const currentDate = DateTime.now();
+    expect(result).toEqual(currentDate);
+  });
 });
