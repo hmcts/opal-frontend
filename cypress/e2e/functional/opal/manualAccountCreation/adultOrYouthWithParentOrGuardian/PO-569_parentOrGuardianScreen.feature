@@ -1,4 +1,4 @@
-Feature: PO-569 Updates to Parent or guardian details screen
+Feature: PO-569 PO-678 Updates to Parent or guardian details screen
 
     Background:
         Given I am on the OPAL Frontend
@@ -219,6 +219,7 @@ Feature: PO-569 Updates to Parent or guardian details screen
         Then I set the "Alias 5", "Last name" to "Checking alias5 maximum characters in last name"
 
         And I enter "12 Test road Newcastle Upon Tyne" into the "Address line 1" field
+        And I enter "address line 2 Newcastle Upon tyne" into the "Address line 2" field
         And I enter "NE32 3QJ Newcastle Upon Tyne" into the "Address line 3" field
         Then I click the "Return to account details" button
 
@@ -234,7 +235,21 @@ Feature: PO-569 Updates to Parent or guardian details screen
         And I see the error message "The last name must be 30 characters or fewer for alias 4" at the top of the page
         And I see the error message "The first name(s) must be 20 characters or fewer for alias 5" at the top of the page
         And I see the error message "The last name must be 30 characters or fewer for alias 5" at the top of the page
-        And I see the error message "The address line 1 must be 30 characters or fewer" at the top of the page
+        And I see the error message "The address line 1 must be 25 characters or fewer" at the top of the page
+        And I see the error message "The address line 2 must be 25 characters or fewer" at the top of the page
         And I see the error message "The address line 3 must be 13 characters or fewer" at the top of the page
+
+    #PO-678 AC's
+    Scenario: AC1, AC2,AC3 - positive: verifying sub headings and maximum characters of address line 1 & 2
+        When I see "Include their middle names" under the "First names" field
+        When I enter "this is first names" into the "First names" field
+        And I enter "checking Last name characters" into the "Last name" field
+        And I enter "address line 1 Newcastle" into the "Address line 1" field
+        And I enter "address line 2 Newcastle" into the "Address line 2" field
+
+        And I see "Parent or guardian address" above the "Address line 1" field
+        And I see "Parent or guardian vehicle details" above the "Make and model" field
+        Then I click the "Return to account details" button
+
 
 
