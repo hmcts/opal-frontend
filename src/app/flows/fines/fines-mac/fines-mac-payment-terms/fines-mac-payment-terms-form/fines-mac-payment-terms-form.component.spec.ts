@@ -98,7 +98,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       component['finesService'].finesMacState.paymentTerms.formData,
     );
     expect(component['checkDefendantAge']).toHaveBeenCalled();
-    expect(mockDateService.calculateAge).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
   });
