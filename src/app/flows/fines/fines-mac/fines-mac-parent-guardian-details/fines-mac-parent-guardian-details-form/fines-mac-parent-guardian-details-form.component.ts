@@ -14,15 +14,8 @@ import {
   FinesMacVehicleDetailsComponent,
   FinesMacNameComponent,
 } from '../../components';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  alphabeticalTextValidator,
-  optionalValidDateValidator,
-  dateOfBirthValidator,
-  nationalInsuranceNumberValidator,
-  specialCharactersValidator,
-  optionalMaxLengthValidator,
-} from '@validators';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { IFinesMacParentGuardianDetailsFieldErrors, IFinesMacParentGuardianDetailsForm } from '../interfaces';
 import {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_BLOCK_FIELD_IDS,
@@ -38,6 +31,7 @@ import {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
   FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
   FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_IDS,
+  FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_GROUP,
 } from '../constants';
 import { FinesService } from '@services/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
@@ -90,24 +84,7 @@ export class FinesMacParentGuardianDetailsFormComponent
    * Sets up the parent/guardian details form with the necessary form controls.
    */
   private setupParentGuardianDetailsForm(): void {
-    this.form = new FormGroup({
-      forenames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      surname: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      add_alias: new FormControl(null),
-      aliases: new FormArray([]),
-      dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      address_line_1: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        specialCharactersValidator(),
-      ]),
-      address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      address_line_3: new FormControl(null, [optionalMaxLengthValidator(13), specialCharactersValidator()]),
-      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-      vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(11)]),
-    });
+    this.form = new FormGroup(FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_GROUP);
   }
 
   /**
