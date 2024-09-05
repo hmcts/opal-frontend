@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
-import { DateTime } from 'luxon';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
+import { DateService } from '@services';
 
 @Component({
   selector: 'app-fines-mac-date-of-birth',
@@ -17,7 +17,9 @@ export class FinesMacDateOfBirthComponent {
   @Output() dateChange = new EventEmitter<string>();
   @Input({ required: true }) componentName!: string;
 
-  public yesterday: string = DateTime.now().minus({ days: 1 }).setLocale('en-gb').toLocaleString();
+  private readonly dateService = inject(DateService);
+
+  public yesterday: string = this.dateService.getPreviousDate({ days: 1 });
 
   public emitDateChange(date: string): void {
     this.dateChange.emit(date);
