@@ -79,6 +79,11 @@ Then('I see {string} is {string}', (accountList: string, value: string) => {
 When('I reload the page', () => {
   cy.reload();
 });
+
 Then('I see {string} link', (buttonName: string) => {
   cy.contains('a', buttonName).should('exist', buttonName);
+
+Then('I see {string} above the {string} field', (subHeading: string, fieldName: string) => {
+  cy.contains('fieldset', fieldName).find('legend').invoke('text').should('contains', subHeading);
+
 });
