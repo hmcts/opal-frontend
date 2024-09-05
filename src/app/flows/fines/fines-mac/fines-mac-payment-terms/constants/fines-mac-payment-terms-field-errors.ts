@@ -7,7 +7,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 1,
     },
     invalidDateFormat: {
-      message: `Default date must be in the format dd/mm/yyyy`,
+      message: `Default date must be in the format DD/MM/YYYY`,
       priority: 2,
     },
     invalidDate: {
@@ -27,6 +27,10 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
     numericalTextPattern: {
       message: `Enter number of days in default`,
       priority: 2,
+    },
+    maxlength: {
+      message: `Days in default needs to be less than 5 digits`,
+      priority: 3,
     },
   },
 };

@@ -10,6 +10,6 @@ export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IFinesMac
     },
     {
       controlName: 'daysInDefault',
-      validators: [Validators.required, numericalTextValidator()],
+      validators: [Validators.required, Validators.maxLength(5), numericalTextValidator()],
     },
   ];
