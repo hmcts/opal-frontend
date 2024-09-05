@@ -14,6 +14,7 @@ import {
   FinesMacAddressBlockComponent,
   FinesMacDateOfBirthComponent,
   FinesMacNameAliasComponent,
+  FinesMacNameComponent,
   FinesMacNationalInsuranceNumberComponent,
   FinesMacVehicleDetailsComponent,
 } from '../../components';
@@ -22,9 +23,7 @@ import {
   GovukCancelLinkComponent,
   GovukErrorSummaryComponent,
   GovukSelectComponent,
-  GovukTextInputComponent,
 } from '@components/govuk';
-import { ScotgovDatePickerComponent } from '@components/scotgov';
 import {
   alphabeticalTextValidator,
   optionalValidDateValidator,
@@ -51,6 +50,7 @@ import {
   FINES_MAC_PERSONAL_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_IDS,
   FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS,
   FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
@@ -67,10 +67,8 @@ import { takeUntil } from 'rxjs';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    GovukTextInputComponent,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    ScotgovDatePickerComponent,
     GovukSelectComponent,
     GovukCancelLinkComponent,
     MojTicketPanelComponent,
@@ -79,6 +77,7 @@ import { takeUntil } from 'rxjs';
     FinesMacNationalInsuranceNumberComponent,
     FinesMacNameAliasComponent,
     FinesMacVehicleDetailsComponent,
+    FinesMacNameComponent,
   ],
   templateUrl: './fines-mac-personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,6 +88,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
+  protected readonly customNameFieldIds = FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_IDS;
   protected readonly customAddressFieldIds = FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS;
   protected readonly customVehicleDetailsFieldIds = FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS;
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
