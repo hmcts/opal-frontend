@@ -111,7 +111,7 @@ Feature: PO-569 PO-652 PO_678 Updates to Parent or guardian details screen
         Then I see the "Alias 1" sub heading in aliases
 
         #verifying cancel button which is developed on PO-652
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 

@@ -17,7 +17,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I select the "Fine" radio button
         And I select the "Adult or youth only" radio button
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click Cancel, a window pops up and I click Ok
         And I am on the dashboard
 
@@ -35,7 +35,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         Then I see the status of "Court details" is "Not provided"
         And I click on the "Court details" link
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -44,7 +44,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -53,7 +53,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Contact details" link
         Then I see "Defendant contact details" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -62,7 +62,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Employer details" link
         Then I see "Employer details" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -71,7 +71,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Account comments and notes" link
         Then I see "Account comments and notes" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -81,7 +81,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         When I navigate to Manual Account Creation
 
         Then I see "Business unit and defendant type" on the page header
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I am on the dashboard
         When I navigate to Manual Account Creation
@@ -100,7 +100,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         Then I see the status of "Court details" is "Not provided"
         And I click on the "Court details" link
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -109,7 +109,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Personal details" link
         Then I see "Personal details" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -118,7 +118,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Contact details" link
         Then I see "Defendant contact details" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -127,7 +127,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Employer details" link
         Then I see "Employer details" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
@@ -136,7 +136,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         And I click on the "Account comments and notes" link
         Then I see "Account comments and notes" on the page header
 
-        When I see "Cancel" link
+        When I see the "Cancel" link
         Then I click on "Cancel"
         Then I see "Account details" on the page header
 
