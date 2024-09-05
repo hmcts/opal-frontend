@@ -62,6 +62,33 @@ export class DateService {
   }
 
   /**
+   * Parses a string value into a DateTime object based on the specified format.
+   * @param value - The string value to parse.
+   * @param format - The format of the string value.
+   * @returns A DateTime object representing the parsed value.
+   */
+  public getFromFormat(value: string, format: string): DateTime<true> | DateTime<false> {
+    return DateTime.fromFormat(value, format);
+  }
+
+  /**
+   * Converts a string in ISO format to a DateTime object.
+   * @param value - The string value in ISO format.
+   * @returns A DateTime object representing the given value.
+   */
+  public getFromIso(value: string): DateTime {
+    return DateTime.fromISO(value);
+  }
+
+  /**
+   * Returns the current date and time.
+   * @returns {DateTime} The current date and time.
+   */
+  public getDateNow(): DateTime {
+    return DateTime.now();
+  }
+
+  /**
    * Adds a duration to a given date and returns the resulting date.
    * @param date - The date to which the duration will be added. Should be in the format 'dd/MM/yyyy'.
    * @param years - The number of years to add to the date. Default is 0.
