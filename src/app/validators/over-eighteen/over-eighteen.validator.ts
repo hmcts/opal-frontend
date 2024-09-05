@@ -1,5 +1,5 @@
 import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { DateTime } from 'luxon';
+import { DateService } from '@services';
 
 /**
  * Validates whether a date, constructed from provided form controls for day, month and year
@@ -8,10 +8,16 @@ import { DateTime } from 'luxon';
  * @param dayControl - Name of the control for the day portion of the date
  * @param monthControl - Name of the control for the month portion of the date
  * @param yearControl  - Name of the control for the year portion of the date
+ * @param dateService - An instance of DateService
  * @returns Validator function that returns null if the date is valid and the age is 18 years older,
  * or an error object within { underEighteen: true } if under 18.
  */
-export const overEighteenValidator = (dayControl: string, monthControl: string, yearControl: string): ValidatorFn => {
+export const overEighteenValidator = (
+  dayControl: string,
+  monthControl: string,
+  yearControl: string,
+  dateService: DateService,
+): ValidatorFn => {
   return (group: AbstractControl): ValidationErrors | null => {
     const day = group.get(dayControl);
     const month = group.get(monthControl);
@@ -29,7 +35,7 @@ export const overEighteenValidator = (dayControl: string, monthControl: string, 
 
     // Create the date string in the format dd/MM/yyyy
     const dateValue = `${formattedDay}/${formattedMonth}/${formattedYear}`;
-    const inputDate = DateTime.fromFormat(dateValue, 'dd/MM/yyyy');
+    const inputDate = dateService.getFromFormat(dateValue, 'dd/MM/yyyy');
 
     if (inputDate.isValid) {
       // Verify if the entered date is at least 18 years in the past

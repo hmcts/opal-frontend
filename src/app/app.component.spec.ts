@@ -26,6 +26,8 @@ describe('AppComponent', () => {
     const dateServiceSpy = jasmine.createSpyObj(DateService, [
       'convertMillisecondsToMinutes',
       'calculateMinutesDifference',
+      'getFromIso',
+      'getDateNow',
     ]);
 
     TestBed.configureTestingModule({
