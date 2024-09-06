@@ -10,4 +10,5 @@ Feature: PO-615 - manual account creation - unauthorised user presented with acc
     When I navigate to Manual Account Creation
     Then I see an access denied error
     And The error message is "You do not have the appropriate permissions to access this page."
+    
     And There is a button to go back to the dashboard
