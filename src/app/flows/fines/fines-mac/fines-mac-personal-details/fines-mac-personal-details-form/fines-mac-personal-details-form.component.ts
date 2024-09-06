@@ -179,13 +179,11 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
-    this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
     if (key === 'adultOrYouthOnly') {
       this.addVehicleDetailsFieldErrors();
     }
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.setUpAliasCheckboxListener('add_alias', 'aliases');
     this.setUpAliasCheckboxListener('add_alias', 'aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
