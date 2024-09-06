@@ -5,7 +5,7 @@ Feature: PO-542 Language Preferences Screen - parent or guardian to pay
 
 
 
-  Scenario Outline: AC1,2aii,3 - South Wales BU - 'English Only' default
+  Scenario Outline: AC1,2aii,3,4 - South Wales BU - 'English Only' default
     When I sign in as "opal-test-8@hmcts.net"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
@@ -46,7 +46,7 @@ Feature: PO-542 Language Preferences Screen - parent or guardian to pay
       | Adult or youth with parent or guardian to pay |
 
 
-  Scenario Outline: AC1,2aii,3 - Wales BU - 'Welsh and English' default
+  Scenario Outline: AC1,2aii,3,4 - Wales BU - 'Welsh and English' default
     When I sign in as "opal-test-7@hmcts.net"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
@@ -61,7 +61,7 @@ Feature: PO-542 Language Preferences Screen - parent or guardian to pay
       | defendantType                                 |
       | Adult or youth with parent or guardian to pay |
 
-  Scenario Outline: AC4 - Cancel clicked on the language preferences screen
+  Scenario Outline: AC5 - Cancel clicked on the language preferences screen
     When I sign in as "opal-test-8@hmcts.net"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
