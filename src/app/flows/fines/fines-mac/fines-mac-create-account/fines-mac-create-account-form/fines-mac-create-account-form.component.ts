@@ -95,9 +95,9 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private setupCreateAccountForm(): void {
     this.form = new FormGroup({
-      BusinessUnit: new FormControl(null, [Validators.required]),
-      AccountType: new FormControl(null, [Validators.required]),
-      DefendantType: new FormControl(null),
+      business_unit: new FormControl(null, [Validators.required]),
+      account_type: new FormControl(null, [Validators.required]),
+      defendant_type: new FormControl(null),
     });
   }
 
@@ -107,7 +107,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private setupAccountTypeListener(): void {
     this.form
-      .get('AccountType')!
+      .get('account_type')!
       .valueChanges.pipe(takeUntil(this.accountTypeSubject))
       .subscribe((accountType: string) => this.handleAccountTypeChange(accountType));
   }
@@ -133,7 +133,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    * Sets the defendant type based on the selected account type.
    */
   private setDefendantType(): void {
-    const accountType = this.form.get('AccountType')?.value;
+    const accountType = this.form.get('account_type')?.value;
     const { fieldName } =
       this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacCreateAccountAccountTypes] ?? '';
     const fieldValue = this.form.get(fieldName)?.value;
@@ -144,7 +144,9 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
       conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
     };
 
-    this.form.get('DefendantType')?.setValue(defendantTypeMap[accountType as keyof IFinesMacCreateAccountAccountTypes]);
+    this.form
+      .get('defendant_type')
+      ?.setValue(defendantTypeMap[accountType as keyof IFinesMacCreateAccountAccountTypes]);
   }
 
   /**

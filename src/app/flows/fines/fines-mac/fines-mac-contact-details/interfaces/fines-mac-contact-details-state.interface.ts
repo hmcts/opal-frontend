@@ -1,7 +1,7 @@
 export interface IFinesMacContactDetailsState {
-  EmailAddress1: string | null;
-  EmailAddress2: string | null;
-  TelephoneNumberMobile: string | null;
-  TelephoneNumberHome: string | null;
-  TelephoneNumberBusiness: string | null;
+  email_address_1: string | null;
+  email_address_2: string | null;
+  telephone_number_mobile: string | null;
+  telephone_number_home: string | null;
+  telephone_number_business: string | null;
 }

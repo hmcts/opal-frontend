@@ -115,6 +115,12 @@ Feature:PO-426 Application and browser Back buttons on Account Details screen - 
     Then I click the "Return to account details" button
     And I see the status of "Personal details" is "Provided"
 
-    When I click the browser back button 3 times, a window pops up and I click Cancel
+    When I go back in the browser
+    Then I see "Personal details" on the page header
+
+    And I go back in the browser
+    Then I see "Account details" on the page header
+
+    When I click the browser back button 1 times, a window pops up and I click Cancel
 
     Then I see the status of "Personal details" is "Provided"

@@ -1,16 +1,16 @@
 import { IFinesMacParentGuardianDetailsState } from '../interfaces';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE: IFinesMacParentGuardianDetailsState = {
-  Forenames: null,
-  Surname: null,
-  AddAlias: null,
-  Aliases: [],
-  DOB: null,
-  NationalInsuranceNumber: null,
-  AddressLine1: null,
-  AddressLine2: null,
-  AddressLine3: null,
-  Postcode: null,
-  VehicleMake: null,
-  VehicleRegistrationMark: null,
+  forenames: null,
+  surname: null,
+  add_alias: null,
+  aliases: [],
+  dob: null,
+  national_insurance_number: null,
+  address_line_1: null,
+  address_line_2: null,
+  address_line_3: null,
+  postcode: null,
+  vehicle_make: null,
+  vehicle_registration_mark: null,
 };

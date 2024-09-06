@@ -1,4 +1,4 @@
 export interface IFinesMacPaymentTermsState {
-  paymentTerms: string | null;
-  holdEnforcementOnAccount: boolean | null;
+  payment_terms: string | null;
+  hold_enforcement_on_account: boolean | null;
 }

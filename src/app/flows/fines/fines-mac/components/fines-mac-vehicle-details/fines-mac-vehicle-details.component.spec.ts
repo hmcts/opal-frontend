@@ -18,8 +18,8 @@ describe('FinesMacVehicleDetailsComponent', () => {
 
     component.legendText = 'Test';
     component.form = new FormGroup({
-      VehicleMake: new FormControl(null),
-      VehicleRegistrationMark: new FormControl(null),
+      vehicle_make: new FormControl(null),
+      vehicle_registration_mark: new FormControl(null),
     });
     component.formControlErrorMessages = {};
     component.vehicleDetailsFieldIds = FINES_MAC_VEHICLE_DETAILS_FIELD_IDS;

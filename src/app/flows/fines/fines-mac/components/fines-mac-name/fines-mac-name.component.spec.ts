@@ -16,13 +16,13 @@ describe('FinesMacNameComponent', () => {
     component = fixture.componentInstance;
 
     component.form = new FormGroup({
-      Forenames: new FormControl(null),
-      Surname: new FormControl(null),
+      forenames: new FormControl(null),
+      surname: new FormControl(null),
     });
     component.formControlErrorMessages = {};
     component.nameFieldIds = {
-      forenames: 'Forenames',
-      surname: 'Surname',
+      forenames: 'forenames',
+      surname: 'surname',
     };
     component.componentName = 'testComponent';
 

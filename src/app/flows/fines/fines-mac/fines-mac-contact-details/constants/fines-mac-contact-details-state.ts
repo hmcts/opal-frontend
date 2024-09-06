@@ -1,9 +1,9 @@
 import { IFinesMacContactDetailsState } from '../interfaces';
 
 export const FINES_MAC_CONTACT_DETAILS_STATE: IFinesMacContactDetailsState = {
-  EmailAddress1: null,
-  EmailAddress2: null,
-  TelephoneNumberMobile: null,
-  TelephoneNumberHome: null,
-  TelephoneNumberBusiness: null,
+  email_address_1: null,
+  email_address_2: null,
+  telephone_number_mobile: null,
+  telephone_number_home: null,
+  telephone_number_business: null,
 };

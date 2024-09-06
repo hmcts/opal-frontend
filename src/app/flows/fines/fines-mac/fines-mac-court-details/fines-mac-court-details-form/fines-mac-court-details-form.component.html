@@ -2,37 +2,37 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   <app-alphagov-accessible-autocomplete
-    [control]="form.controls['SendingCourt']"
+    [control]="form.controls['sending_court']"
     labelText="Sending area or Local Justice Area (LJA)"
     labelClasses="govuk-fieldset__legend--s"
-    inputId="SendingCourt"
-    inputName="SendingCourt"
+    inputId="sending_court"
+    inputName="sending_court"
     label=""
     hintText="Search using the code or name of the area that sent the transfer"
     [autoCompleteItems]="sendingCourtAutoCompleteItems"
-    [errors]="formControlErrorMessages['SendingCourt']"
+    [errors]="formControlErrorMessages['sending_court']"
   ></app-alphagov-accessible-autocomplete>
   <app-govuk-text-input
     labelText="Prosecutor Case Reference (PCR)"
-    inputId="ProsecutorCaseReference"
-    inputName="ProsecutorCaseReference"
+    inputId="prosecutor_case_reference"
+    inputName="prosecutor_case_reference"
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     hintText="Enter the prosecutor's reference number or original account number"
-    [control]="form.controls['ProsecutorCaseReference']"
-    [errors]="formControlErrorMessages['ProsecutorCaseReference']"
+    [control]="form.controls['prosecutor_case_reference']"
+    [errors]="formControlErrorMessages['prosecutor_case_reference']"
   ></app-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <app-alphagov-accessible-autocomplete
-    [control]="form.controls['EnforcingCourt']"
+    [control]="form.controls['enforcing_court']"
     labelText="Enforcement court"
     labelClasses="govuk-fieldset__legend--s"
-    inputId="EnforcingCourt"
-    inputName="EnforcingCourt"
+    inputId="enforcing_court"
+    inputName="enforcing_court"
     label=""
     hintText="Search using enforcement court or code"
     [autoCompleteItems]="enforcingCourtAutoCompleteItems"
-    [errors]="formControlErrorMessages['EnforcingCourt']"
+    [errors]="formControlErrorMessages['enforcing_court']"
   ></app-alphagov-accessible-autocomplete>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
