@@ -84,8 +84,8 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
     ###   Subject to Change    ####
     Then I enter "123456" into the days in default input field
     When I click the "Return to account details" button
-    Then I see the error message "Days in default needs to be less that 5 digits" at the top of the page
-    And I see the error message "Days in default needs to be less that 5 digits" above the days in default input field
+    Then I see the error message "Days in default needs to be less than 5 digits" at the top of the page
+    And I see the error message "Days in default needs to be less than 5 digits" above the days in default input field
 
     ####   Awaiting Fix   ####
     Then I enter "monday" into the "Date days in default were imposed" date field
