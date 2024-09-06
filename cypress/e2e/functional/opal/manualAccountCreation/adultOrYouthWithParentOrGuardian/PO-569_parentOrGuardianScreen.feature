@@ -112,7 +112,7 @@ Feature: PO-569 PO-652 PO_678 Updates to Parent or guardian details screen
 
         #verifying cancel button which is developed on PO-652
         When I see the "Cancel" link
-        Then I click the "Cancel" link
+        Then I click on the "Cancel" link
         Then I see "Account details" on the page header
 
     Scenario: AC7- positive: If the user unticks the 'Add aliases' tick box

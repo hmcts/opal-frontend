@@ -138,7 +138,7 @@ Feature: PO-365 PO-652 Creating a fines account for a Company where defendant ty
 
     #verifying cancel button which is developed on PO-652
     When I see the "Cancel" link
-    Then I click the "Cancel" link
+    Then I click on the "Cancel" link
     Then I see "Account details" on the page header
 
 
