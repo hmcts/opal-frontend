@@ -54,25 +54,25 @@ When('I select cancel on the pop up window', () => {
 });
 
 Then('I see the business unit heading is {string}', (businessUnitHeading: string) => {
-  cy.get('#BusinessUnit-hint').prev().should('contains.text', businessUnitHeading);
+  cy.get('#business_unit-hint').prev().should('contains.text', businessUnitHeading);
 });
 Then('I see the business unit help text is {string}', (businessUnitHelpText: string) => {
-  cy.get('#BusinessUnit-hint').should('contains.text', businessUnitHelpText);
+  cy.get('#business_unit-hint').should('contains.text', businessUnitHelpText);
 });
 Then('I see the search box below the business unit help text', () => {
-  cy.get('#BusinessUnit-hint')
+  cy.get('#business_unit-hint')
     .next()
     .children()
     .children('input')
-    .should('have.attr', 'id', 'BusinessUnit-autocomplete');
+    .should('have.attr', 'id', 'business_unit-autocomplete');
 });
 Then('I enter {string} into the business unit search box', (businessUnit: string) => {
-  cy.get('#BusinessUnit-autocomplete').type(businessUnit);
-  cy.get('#BusinessUnit-autocomplete__listbox').should('not.contain', 'No results found');
-  cy.get('#BusinessUnit-autocomplete').type('{downArrow}{enter}');
+  cy.get('#business_unit-autocomplete').type(businessUnit);
+  cy.get('#business_unit-autocomplete').should('not.contain', 'No results found');
+  cy.get('#business_unit-autocomplete').type('{downArrow}{enter}');
 });
 Then('I see the value {string} in the business unit search box', (businessUnit: string) => {
-  cy.get('#BusinessUnit-autocomplete').should('have.value', businessUnit);
+  cy.get('#business_unit-autocomplete').should('have.value', businessUnit);
 });
 Then('I see the defendant type heading is {string}', (businessUnitHeading: string) => {
   cy.get('#defendantTypeHint').prev().should('contains.text', businessUnitHeading);

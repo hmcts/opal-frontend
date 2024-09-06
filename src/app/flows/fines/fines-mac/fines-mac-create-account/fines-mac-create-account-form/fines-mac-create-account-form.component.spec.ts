@@ -92,9 +92,9 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should handle account type change - fine', () => {
     const accountType = 'fine';
-    const fieldName = 'FineDefendantType';
+    const fieldName = 'fine_defendant_type';
     const validators = [Validators.required];
-    const fieldsToRemove = ['FixedPenaltyDefendantType'];
+    const fieldsToRemove = ['fixed_penalty_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,9 +111,9 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should handle account type change - fixed penalty', () => {
     const accountType = 'fixedPenalty';
-    const fieldName = 'FixedPenaltyDefendantType';
+    const fieldName = 'fixed_penalty_defendant_type';
     const validators = [Validators.required];
-    const fieldsToRemove = ['FineDefendantType'];
+    const fieldsToRemove = ['fine_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -130,7 +130,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should handle account type change - conditional caution', () => {
     const accountType = 'conditionalCaution';
-    const fieldsToRemove = ['FineDefendantType', 'FixedPenaltyDefendantType'];
+    const fieldsToRemove = ['fine_defendant_type', 'fixed_penalty_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -147,7 +147,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should set defendant type based on account type - fixed penalty', () => {
     const accountType = 'fixedPenalty';
-    const fieldName = 'FixedPenaltyDefendantType';
+    const fieldName = 'fixed_penalty_defendant_type';
     const fieldValue = 'adultOrYouthOnly';
 
     component.form.get('account_type')?.setValue(accountType);
@@ -160,7 +160,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should set defendant type based on account type - fine', () => {
     const accountType = 'fine';
-    const fieldName = 'FineDefendantType';
+    const fieldName = 'fine_defendant_type';
     const fieldValue = 'adultOrYouthOnly';
 
     component.form.get('account_type')?.setValue(accountType);

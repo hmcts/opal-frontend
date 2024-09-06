@@ -14,6 +14,7 @@ import {
   FinesMacAddressBlockComponent,
   FinesMacDateOfBirthComponent,
   FinesMacNameAliasComponent,
+  FinesMacNameComponent,
   FinesMacNationalInsuranceNumberComponent,
   FinesMacVehicleDetailsComponent,
 } from '../../components';
@@ -22,9 +23,7 @@ import {
   GovukCancelLinkComponent,
   GovukErrorSummaryComponent,
   GovukSelectComponent,
-  GovukTextInputComponent,
 } from '@components/govuk';
-import { ScotgovDatePickerComponent } from '@components/scotgov';
 import {
   alphabeticalTextValidator,
   optionalValidDateValidator,
@@ -52,6 +51,7 @@ import {
   FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_FORM_GROUP,
   FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS,
+  FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_IDS,
   FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS,
   FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
@@ -68,10 +68,8 @@ import { takeUntil } from 'rxjs';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    GovukTextInputComponent,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    ScotgovDatePickerComponent,
     GovukSelectComponent,
     GovukCancelLinkComponent,
     MojTicketPanelComponent,
@@ -80,6 +78,7 @@ import { takeUntil } from 'rxjs';
     FinesMacNationalInsuranceNumberComponent,
     FinesMacNameAliasComponent,
     FinesMacVehicleDetailsComponent,
+    FinesMacNameComponent,
   ],
   templateUrl: './fines-mac-personal-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,6 +89,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
+  protected readonly customNameFieldIds = FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_IDS;
   protected readonly customAddressFieldIds = FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS;
   protected readonly customVehicleDetailsFieldIds = FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS;
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -150,6 +150,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    */
   private dateOfBirthListener(): void {
     const dobControl = this.form.controls['dob'];
+    const dobControl = this.form.controls['dob'];
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
@@ -186,11 +187,13 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
+    this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
     if (key === 'adultOrYouthOnly') {
       this.addVehicleDetailsFieldErrors();
     }
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+    this.setUpAliasCheckboxListener('add_alias', 'aliases');
     this.setUpAliasCheckboxListener('add_alias', 'aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });

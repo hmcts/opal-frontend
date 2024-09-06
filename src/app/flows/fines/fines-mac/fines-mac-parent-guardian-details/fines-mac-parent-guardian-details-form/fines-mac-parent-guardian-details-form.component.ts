@@ -107,8 +107,10 @@ export class FinesMacParentGuardianDetailsFormComponent
     this.setupParentGuardianDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
+    this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+    this.setUpAliasCheckboxListener('add_alias', 'aliases');
     this.setUpAliasCheckboxListener('add_alias', 'aliases');
   }
 
