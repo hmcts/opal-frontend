@@ -8,7 +8,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@components/abstract';
 import {
   FinesMacAddressBlockComponent,
@@ -24,14 +24,7 @@ import {
   GovukErrorSummaryComponent,
   GovukSelectComponent,
 } from '@components/govuk';
-import {
-  alphabeticalTextValidator,
-  optionalValidDateValidator,
-  dateOfBirthValidator,
-  nationalInsuranceNumberValidator,
-  specialCharactersValidator,
-  optionalMaxLengthValidator,
-} from '@validators';
+
 import {
   IFinesMacPersonalDetailsDefendantTypes,
   IFinesMacPersonalDetailsFieldErrors,
@@ -149,7 +142,6 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    * Listens for changes in the date of birth control and updates the age and label accordingly.
    */
   private dateOfBirthListener(): void {
-    const dobControl = this.form.controls['dob'];
     const dobControl = this.form.controls['dob'];
 
     // Initial update if the date of birth is already populated
