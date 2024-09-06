@@ -1,6 +1,7 @@
 Feature: PO-224 Accesibility Tests
   Scenario: Sign in Page - Accessibility
     Given I am on the OPAL Frontend
+    And I see "Sign in" in the page body header
     Then I check accessibility
 
   Scenario: Dashboard - Accessibility
