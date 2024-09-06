@@ -1,12 +1,12 @@
 export interface IFinesMacNameAliasState {
-  AliasForenames_0?: string;
-  AliasSurname_0?: string;
-  AliasForenames_1?: string;
-  AliasSurname_1?: string;
-  AliasForenames_2?: string;
-  AliasSurname_2?: string;
-  AliasForenames_3?: string;
-  AliasSurname_3?: string;
-  AliasForenames_4?: string;
-  AliasSurname_4?: string;
+  alias_forenames_0?: string;
+  alias_surname_0?: string;
+  alias_forenames_1?: string;
+  alias_surname_1?: string;
+  alias_forenames_2?: string;
+  alias_surname_2?: string;
+  alias_forenames_3?: string;
+  alias_surname_3?: string;
+  alias_forenames_4?: string;
+  alias_surname_4?: string;
 }

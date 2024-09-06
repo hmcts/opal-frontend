@@ -1,22 +1,22 @@
 import { IFinesMacPersonalDetailsState } from '../interfaces/fines-mac-personal-details-state.interface';
 
 export const FINES_MAC_PERSONAL_DETAILS_STATE_MOCK: IFinesMacPersonalDetailsState = {
-  Title: 'Mr',
-  Forenames: 'John',
-  Surname: 'Doe',
-  AddAlias: true,
-  Aliases: [
+  title: 'Mr',
+  forenames: 'John',
+  surname: 'Doe',
+  add_alias: true,
+  aliases: [
     {
-      AliasForenames_0: 'Testing',
-      AliasSurname_0: 'Test',
+      alias_forenames_0: 'Testing',
+      alias_surname_0: 'Test',
     },
   ],
-  DOB: '01/01/1990',
-  NationalInsuranceNumber: 'AB123456C',
-  AddressLine1: '123 Street',
-  AddressLine2: 'City',
-  AddressLine3: 'County',
-  Postcode: 'AB12 3CD',
-  VehicleMake: 'Ford',
-  VehicleRegistrationMark: 'AB123CDE',
+  dob: '01/01/1990',
+  national_insurance_number: 'AB123456C',
+  address_line_1: '123 Street',
+  address_line_2: 'City',
+  address_line_3: 'County',
+  postcode: 'AB12 3CD',
+  vehicle_make: 'Ford',
+  vehicle_registration_mark: 'AB123CDE',
 };

@@ -87,24 +87,24 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should set up the personal details form', () => {
     component['setupPersonalDetailsForm']();
     expect(component.form).toBeTruthy();
-    expect(component.form.get('Title')).toBeTruthy();
-    expect(component.form.get('Forenames')).toBeTruthy();
-    expect(component.form.get('Surname')).toBeTruthy();
-    expect(component.form.get('AddAlias')).toBeTruthy();
-    expect(component.form.get('Aliases')).toBeTruthy();
-    expect(component.form.get('DOB')).toBeTruthy();
-    expect(component.form.get('NationalInsuranceNumber')).toBeTruthy();
-    expect(component.form.get('AddressLine1')).toBeTruthy();
-    expect(component.form.get('AddressLine2')).toBeTruthy();
-    expect(component.form.get('AddressLine3')).toBeTruthy();
-    expect(component.form.get('Postcode')).toBeTruthy();
-    expect(component.form.get('VehicleMake')).toBeTruthy();
-    expect(component.form.get('VehicleRegistrationMark')).toBeTruthy();
+    expect(component.form.get('title')).toBeTruthy();
+    expect(component.form.get('forenames')).toBeTruthy();
+    expect(component.form.get('surname')).toBeTruthy();
+    expect(component.form.get('add_alias')).toBeTruthy();
+    expect(component.form.get('aliases')).toBeTruthy();
+    expect(component.form.get('dob')).toBeTruthy();
+    expect(component.form.get('national_insurance_number')).toBeTruthy();
+    expect(component.form.get('address_line_1')).toBeTruthy();
+    expect(component.form.get('address_line_2')).toBeTruthy();
+    expect(component.form.get('address_line_3')).toBeTruthy();
+    expect(component.form.get('postcode')).toBeTruthy();
+    expect(component.form.get('vehicle_make')).toBeTruthy();
+    expect(component.form.get('vehicle_registration_mark')).toBeTruthy();
   });
 
   it('should set up the alias configuration for the personal details form', () => {
     component['setupAliasConfiguration']();
-    expect(component.aliasFields).toEqual(['AliasForenames', 'AliasSurname']);
+    expect(component.aliasFields).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS.map((item) => item.controlName));
     expect(component.aliasControlsValidation).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS);
   });
 
@@ -113,7 +113,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(34);
 
-    component.form.controls['DOB'].setValue(dateOfBirth);
+    component.form.controls['dob'].setValue(dateOfBirth);
 
     expect(mockDateService.isValidDate).toHaveBeenCalledWith(dateOfBirth);
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
@@ -126,7 +126,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(10);
 
-    component.form.controls['DOB'].setValue(dateOfBirth);
+    component.form.controls['dob'].setValue(dateOfBirth);
 
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
     expect(component.age).toEqual(10);
@@ -135,7 +135,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
     const dateOfBirth = '01/01/1990';
-    component.form.controls['DOB'].setValue(dateOfBirth);
+    component.form.controls['dob'].setValue(dateOfBirth);
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(34);
 
@@ -169,13 +169,13 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.personalDetails.formData.Aliases.length).keys()],
-      'Aliases',
+      [...Array(mockFinesService.finesMacState.personalDetails.formData.aliases.length).keys()],
+      'aliases',
     );
     expect(component['addVehicleDetailsFieldErrors']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails.formData);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('add_alias', 'aliases');
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
@@ -206,13 +206,13 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.personalDetails.formData.Aliases.length).keys()],
-      'Aliases',
+      [...Array(mockFinesService.finesMacState.personalDetails.formData.aliases.length).keys()],
+      'aliases',
     );
     expect(component['addVehicleDetailsFieldErrors']).not.toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails.formData);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('add_alias', 'aliases');
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
@@ -220,78 +220,19 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should add vehicle details field errors', () => {
     const expectedFieldErrors: IFinesMacPersonalDetailsFieldErrors = {
-      Title: {
+      title: {
         required: {
           message: 'Select a title',
           priority: 1,
         },
       },
-      VehicleMake: {
+      vehicle_make: {
         maxlength: {
           message: `The make of car must be 30 characters or fewer`,
           priority: 1,
         },
       },
-      VehicleRegistrationMark: {
-        maxlength: {
-          message: `The registration number must be 11 characters or fewer`,
-          priority: 1,
-        },
-      },
-    };
-
-    component.fieldErrors = FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS;
-    component['addVehicleDetailsFieldErrors']();
-
-    expect(component.fieldErrors).toEqual(expectedFieldErrors);
-  });
-
-  it('should call the necessary setup methods - parent/guardian', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupPersonalDetailsForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasConfiguration');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAliasFormControls');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addVehicleDetailsFieldErrors');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setUpAliasCheckboxListener');
-
-    component.defendantType = 'parentOrGuardianToPay';
-    component['initialPersonalDetailsSetup']();
-
-    expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
-    expect(component['setupAliasConfiguration']).toHaveBeenCalled();
-    expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.personalDetails.formData.Aliases.length).keys()],
-      'Aliases',
-    );
-    expect(component['addVehicleDetailsFieldErrors']).not.toHaveBeenCalled();
-    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails.formData);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('AddAlias', 'Aliases');
-  });
-
-  it('should add vehicle details field errors', () => {
-    const expectedFieldErrors: IFinesMacPersonalDetailsFieldErrors = {
-      Title: {
-        required: {
-          message: 'Select a title',
-          priority: 1,
-        },
-      },
-      VehicleMake: {
-        maxlength: {
-          message: `The make of car must be 30 characters or fewer`,
-          priority: 1,
-        },
-      },
-      VehicleRegistrationMark: {
+      vehicle_registration_mark: {
         maxlength: {
           message: `The registration number must be 11 characters or fewer`,
           priority: 1,

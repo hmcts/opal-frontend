@@ -17,7 +17,7 @@ import { FINES_MAC_STATUS } from '../constants';
 })
 export class FinesMacContactDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.formData.DefendantType!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
 
   /**
    * Handles the form submission for contact details.

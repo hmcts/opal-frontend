@@ -1,7 +1,7 @@
 import { IFinesMacAddressBlockLineOneFieldErrors } from '../interfaces';
 
 export const FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS: IFinesMacAddressBlockLineOneFieldErrors = {
-  AddressLine1: {
+  address_line_1: {
     required: {
       message: 'Enter address line 1, typically the building and street',
       priority: 1,

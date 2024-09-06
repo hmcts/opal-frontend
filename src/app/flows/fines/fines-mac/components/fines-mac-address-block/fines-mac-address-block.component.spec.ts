@@ -18,10 +18,10 @@ describe('FinesMacAddressBlockComponent', () => {
 
     component.legendText = 'Test';
     component.form = new FormGroup({
-      AddressLine1: new FormControl(null),
-      AddressLine2: new FormControl(null),
-      AddressLine3: new FormControl(null),
-      Postcode: new FormControl(null),
+      address_line_1: new FormControl(null),
+      address_line_2: new FormControl(null),
+      address_line_3: new FormControl(null),
+      postcode: new FormControl(null),
     });
     component.formControlErrorMessages = {};
     component.addressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;

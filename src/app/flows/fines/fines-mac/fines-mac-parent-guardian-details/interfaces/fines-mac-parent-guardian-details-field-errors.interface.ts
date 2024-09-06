@@ -1,6 +1,3 @@
-import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
+import { IFinesMacVehicleDetailsFieldErrors } from '../../components/fines-mac-vehicle-details/interfaces';
 
-export interface IFinesMacParentGuardianDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
-  VehicleMake: IAbstractFormBaseFieldError;
-  VehicleRegistrationMark: IAbstractFormBaseFieldError;
-}
+export interface IFinesMacParentGuardianDetailsFieldErrors extends IFinesMacVehicleDetailsFieldErrors {}

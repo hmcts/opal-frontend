@@ -22,7 +22,7 @@ describe('hasFlowStateGuard', () => {
   beforeEach(() => {
     finesMacEmptyFlowGuard = hasFlowStateGuard(
       () => mockFinesService.finesMacState.accountDetails,
-      (accountDetails) => !!accountDetails.formData.AccountType && !!accountDetails.formData.DefendantType,
+      (accountDetails) => !!accountDetails.formData.account_type && !!accountDetails.formData.defendant_type,
       () => expectedUrl,
     );
 
@@ -51,6 +51,10 @@ describe('hasFlowStateGuard', () => {
 
   beforeAll(() => {
     window.onbeforeunload = () => 'Oh no!';
+  });
+
+  beforeEach(() => {
+    mockFinesService.finesMacState = FINES_MAC_STATE;
   });
 
   it('should return true if AccountType and DefendantType are populated', fakeAsync(async () => {

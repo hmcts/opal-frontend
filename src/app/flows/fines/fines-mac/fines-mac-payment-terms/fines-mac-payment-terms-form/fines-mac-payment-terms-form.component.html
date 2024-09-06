@@ -2,7 +2,7 @@
   <h1 class="govuk-heading-l">Payment terms</h1>
   <form (submit)="handleFormSubmit($event)">
     <app-govuk-radio
-      fieldSetId="paymentTerms"
+      fieldSetId="payment_terms"
       legendText="Select payment terms"
       legendClasses="govuk-fieldset__legend--s"
     >
@@ -11,9 +11,9 @@
           app-govuk-radios-item
           [labelText]="paymentTerm.value"
           [inputId]="paymentTerm.key"
-          inputName="paymentTerms"
+          inputName="payment_terms"
           [inputValue]="paymentTerm.key"
-          [control]="form.get('paymentTerms')"
+          [control]="form.get('payment_terms')"
         ></div>
       }
     </app-govuk-radio>
@@ -26,9 +26,9 @@
       <div
         app-govuk-checkboxes-item
         labelText="Hold enforcement on account (NOENF)"
-        inputId="holdEnforcementOnAccount"
-        inputName="holdEnforcementOnAccount"
-        [control]="form.get('holdEnforcementOnAccount')"
+        inputId="hold_enforcement_on_account"
+        inputName="hold_enforcement_on_account"
+        [control]="form.get('hold_enforcement_on_account')"
       ></div>
     </app-govuk-checkboxes>
     <div class="govuk-grid-row">
