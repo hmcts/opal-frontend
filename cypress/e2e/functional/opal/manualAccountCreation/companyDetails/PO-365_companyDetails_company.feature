@@ -137,7 +137,7 @@ Feature: PO-365 PO-652 Creating a fines account for a Company where defendant ty
     And I see "Add another alias" button
 
     #verifying cancel button which is developed on PO-652
-    When I see "Cancel" link
+    When I see the "Cancel" link
     Then I click on "Cancel"
     Then I see "Account details" on the page header
 
