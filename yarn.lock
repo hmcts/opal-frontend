@@ -9522,16 +9522,16 @@ __metadata:
   linkType: hard
 
 "http-proxy-middleware@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "http-proxy-middleware@npm:3.0.1"
+  version: 3.0.2
+  resolution: "http-proxy-middleware@npm:3.0.2"
   dependencies:
     "@types/http-proxy": "npm:^1.17.15"
     debug: "npm:^4.3.6"
     http-proxy: "npm:^1.18.1"
     is-glob: "npm:^4.0.3"
-    is-plain-obj: "npm:^3.0.0"
+    is-plain-object: "npm:^5.0.0"
     micromatch: "npm:^4.0.8"
-  checksum: 10/ff70f016d850812a3e96b8dc0165eb4fa335c5fb9b8fa6a946a6ab038bf50ea15a55c6b29b820aac1779f20eb55b354f8d86992c4cacb21d12d962e2b3c01b20
+  checksum: 10/59be307aca2e0a8ba016bc8356e8a87cbfd53d65db5386edc65acd867ebd0a4683ff9be2e0eea12388cac13dffe387f0d374d35b01e625c98aee30c8f3023e72
   languageName: node
   linkType: hard
 
@@ -9970,6 +9970,13 @@ __metadata:
   dependencies:
     isobject: "npm:^3.0.1"
   checksum: 10/2a401140cfd86cabe25214956ae2cfee6fbd8186809555cd0e84574f88de7b17abacb2e477a6a658fa54c6083ecbda1e6ae404c7720244cd198903848fca70ca
+  languageName: node
+  linkType: hard
+
+"is-plain-object@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "is-plain-object@npm:5.0.0"
+  checksum: 10/e32d27061eef62c0847d303125440a38660517e586f2f3db7c9d179ae5b6674ab0f469d519b2e25c147a1a3bc87156d0d5f4d8821e0ce4a9ee7fe1fcf11ce45c
   languageName: node
   linkType: hard
 
