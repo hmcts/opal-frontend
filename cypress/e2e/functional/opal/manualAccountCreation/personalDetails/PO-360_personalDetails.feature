@@ -25,6 +25,8 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
   Scenario: AC1-positive: Personal details page will be created with all fields
     When I select title "Mr" from dropdown
+    #this step is implemente on PO-688
+    When I see "Include their middle names" under the "First names" field
     And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
 

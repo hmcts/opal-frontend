@@ -23,6 +23,9 @@ Feature: PO-465 language preferences page for all defendant types
 
     Then I see "Document language" has a change link in the account details table
     And I see "Hearing language" has a change link in the account details table
+
+
+
     Examples:
       | defendantType                                 |
       | Adult or youth only                           |
