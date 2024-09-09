@@ -1,7 +1,7 @@
 import { optionalMaxLengthValidator } from '@validators';
-import { IFinesMacFormControl } from '../../interfaces/fines-mac-form-control.interface';
+import { IFlowFormControl } from '../../../../interfaces/fines-form-control.interface';
 
-export const FINES_MAC_CONTROLS_POSTCODE: IFinesMacFormControl = {
+export const FINES_MAC_CONTROLS_POSTCODE: IFlowFormControl = {
   fieldName: 'postcode',
   validators: [optionalMaxLengthValidator(8)],
 };

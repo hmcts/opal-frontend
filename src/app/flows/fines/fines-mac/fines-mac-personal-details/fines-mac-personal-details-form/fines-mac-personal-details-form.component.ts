@@ -123,10 +123,6 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
   /**
    * Sets up the personal details form.
-   *
-   * This method initializes the form group and its form controls with the necessary validators.
-   *
-   * @returns void
    */
   private setupPersonalDetailsForm(): void {
     this.form = new FormGroup({

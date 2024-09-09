@@ -1,7 +1,7 @@
 import { nationalInsuranceNumberValidator } from '@validators';
-import { IFinesMacFormControl } from '../../interfaces/fines-mac-form-control.interface';
+import { IFlowFormControl } from '../../../../interfaces/fines-form-control.interface';
 
-export const FINES_MAC_CONTROLS_NATIONAL_INSURANCE_NUMBER: IFinesMacFormControl = {
+export const FINES_MAC_CONTROLS_NATIONAL_INSURANCE_NUMBER: IFlowFormControl = {
   fieldName: 'national_insurance_number',
   validators: [nationalInsuranceNumberValidator()],
 };

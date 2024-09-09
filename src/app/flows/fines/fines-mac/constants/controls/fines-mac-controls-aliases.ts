@@ -1,6 +1,6 @@
-import { IFinesMacFormControl } from '../../interfaces/fines-mac-form-control.interface';
+import { IFlowFormControl } from '../../../../interfaces/fines-form-control.interface';
 
-export const FINES_MAC_CONTROLS_ALIASES: IFinesMacFormControl = {
+export const FINES_MAC_CONTROLS_ALIASES: IFlowFormControl = {
   fieldName: 'aliases',
   validators: [],
 };

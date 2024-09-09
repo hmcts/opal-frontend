@@ -1,6 +1,6 @@
 import { ValidatorFn } from '@angular/forms';
 
-export interface IFinesMacFormControl {
+export interface IFlowFormControl {
   fieldName: string;
   validators: ValidatorFn[];
 }
