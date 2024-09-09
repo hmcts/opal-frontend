@@ -3,7 +3,7 @@ import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comm
 import { FINES_MAC_ACCOUNT_DETAILS_FORM } from '../fines-mac-account-details/constants/fines-mac-account-details-form';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants/fines-mac-account-details-state';
 import { FINES_MAC_COMPANY_DETAILS_FORM } from '../fines-mac-company-details/constants/fines-mac-company-details-form';
-import { FINES_MAC_CONTACT_DETAILS_FORM } from '../fines-mac-contact-details/constants';
+import { FINES_MAC_CONTACT_DETAILS_FORM } from '../fines-mac-contact-details/constants/fines-mac-contact-details-form';
 import { FINES_MAC_COURT_DETAILS_FORM } from '../fines-mac-court-details/constants';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM } from '../fines-mac-employer-details/constants';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants';

@@ -17,11 +17,13 @@ import {
 } from '@components/govuk';
 import { AbstractFormBaseComponent } from '@components/abstract';
 import { optionalMaxLengthValidator, optionalEmailAddressValidator, optionalPhoneNumberValidator } from '@validators';
-import { IFinesMacContactDetailsFieldErrors, IFinesMacContactDetailsForm } from '../interfaces';
+import { IFinesMacContactDetailsFieldErrors } from '../interfaces/fines-mac-contact-details-field-errors.interface';
+import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-details-form.interface';
 
 import { FinesService } from '@services/fines';
-import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants';
-import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-contact-details-field-errors';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',

@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { IFinesMacContactDetailsForm } from './interfaces';
-
+import { IFinesMacContactDetailsForm } from './interfaces/fines-mac-contact-details-form.interface';
 import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form/fines-mac-contact-details-form.component';
-
 import { FinesService } from '@services/fines';
-import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { FINES_MAC_STATUS } from '../constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-contact-details',

@@ -1,7 +1,7 @@
 import { IOpalFinesBusinessUnit } from '@interfaces/fines';
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { IFinesMacCompanyDetailsForm } from '../fines-mac-company-details/interfaces/fines-mac-company-details-form.interface';
-import { IFinesMacContactDetailsForm } from '../fines-mac-contact-details/interfaces';
+import { IFinesMacContactDetailsForm } from '../fines-mac-contact-details/interfaces/fines-mac-contact-details-form.interface';
 import { IFinesMacCourtDetailsForm } from '../fines-mac-court-details/interfaces';
 import { IFinesMacEmployerDetailsForm } from '../fines-mac-employer-details/interfaces';
 import { IFinesMacParentGuardianDetailsForm } from '../fines-mac-parent-guardian-details/interfaces';
