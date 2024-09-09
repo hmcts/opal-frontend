@@ -11,10 +11,11 @@ import {
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@components/abstract';
 import { GovukButtonComponent, GovukCancelLinkComponent, GovukTextAreaComponent } from '@components/govuk';
-import { IFinesMacAccountCommentsNotesForm } from '../interfaces';
-import { FINES_MAC_ROUTING_PATHS, FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants';
+import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_STATUS } from '../../constants';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',

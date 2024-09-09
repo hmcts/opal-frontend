@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FinesService } from '@services/fines';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { IFinesMacAccountCommentsNotesForm } from './interfaces';
+import { IFinesMacAccountCommentsNotesForm } from './interfaces/fines-mac-account-comments-notes-form.interface';
 import { FinesMacAccountCommentsNotesFormComponent } from './fines-mac-account-comments-notes-form/fines-mac-account-comments-notes-form.component';
-import { FINES_MAC_STATUS } from '../constants';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes',

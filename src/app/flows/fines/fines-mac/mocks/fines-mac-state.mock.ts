@@ -1,5 +1,5 @@
 import { FINES_MAC_BUSINESS_UNIT_STATE } from '../constants';
-import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comments-notes/constants';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-form';
 import {
   FINES_MAC_ACCOUNT_DETAILS_FORM,
   FINES_MAC_ACCOUNT_DETAILS_STATE,
