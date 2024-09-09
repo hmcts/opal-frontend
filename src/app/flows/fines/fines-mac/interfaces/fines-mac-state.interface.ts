@@ -1,5 +1,5 @@
 import { IOpalFinesBusinessUnit } from '@interfaces/fines';
-import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces';
+import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { IFinesMacCompanyDetailsForm } from '../fines-mac-company-details/interfaces';
 import { IFinesMacContactDetailsForm } from '../fines-mac-contact-details/interfaces';
 import { IFinesMacCourtDetailsForm } from '../fines-mac-court-details/interfaces';

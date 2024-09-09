@@ -1,4 +1,4 @@
-import { IFinesMacAccountDetailsState } from '../interfaces';
+import { IFinesMacAccountDetailsState } from '../interfaces/fines-mac-account-details-state.interface';
 
 export const FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK: IFinesMacAccountDetailsState = {
   account_type: 'conditionalCaution',

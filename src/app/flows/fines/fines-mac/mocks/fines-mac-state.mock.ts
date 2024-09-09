@@ -1,9 +1,7 @@
 import { FINES_MAC_BUSINESS_UNIT_STATE } from '../constants';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-form';
-import {
-  FINES_MAC_ACCOUNT_DETAILS_FORM,
-  FINES_MAC_ACCOUNT_DETAILS_STATE,
-} from '../fines-mac-account-details/constants';
+import { FINES_MAC_ACCOUNT_DETAILS_FORM } from '../fines-mac-account-details/constants/fines-mac-account-details-form';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants/fines-mac-account-details-state';
 import { FINES_MAC_COMPANY_DETAILS_FORM } from '../fines-mac-company-details/constants';
 import { FINES_MAC_CONTACT_DETAILS_FORM } from '../fines-mac-contact-details/constants';
 import { FINES_MAC_COURT_DETAILS_FORM } from '../fines-mac-court-details/constants';

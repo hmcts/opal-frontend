@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountDetailsComponent } from './fines-mac-account-details.component';
-import { FINES_MAC_STATE, FINES_MAC_STATUS } from '../constants';
+import { FINES_MAC_STATE } from '../constants/fines-mac-state';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { ActivatedRoute } from '@angular/router';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE } from './constants';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from './constants/fines-mac-account-details-state';
 import { of } from 'rxjs';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks/fines-mac-account-details-state.mock';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
