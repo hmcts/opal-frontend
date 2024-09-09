@@ -18,22 +18,24 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import {
-  FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
-  FINES_MAC_ADDRESS_BLOCK_FIELD_IDS,
-  FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
-} from '../../components/constants';
+
+import { FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-one-field-errors';
+import { FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-two-field-errors';
+import { FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-three-field-errors';
+import { FINES_MAC_ADDRESS_BLOCK_FIELD_IDS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-field-ids';
+import { FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-postcode-field-errors';
+
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
-import { FinesMacAddressBlockComponent } from '../../components';
-import { IFinesMacCompanyDetailsForm } from '../interfaces';
+import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
+import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 
 import { FinesService } from '@services/fines';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
-import { FINES_MAC_COMPANY_DETAILS_ALIAS, FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants';
-import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
+import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-company-details-field-errors';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',

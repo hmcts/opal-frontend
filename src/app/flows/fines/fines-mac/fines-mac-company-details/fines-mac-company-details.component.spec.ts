@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCompanyDetailsComponent } from './fines-mac-company-details.component';
-import { IFinesMacCompanyDetailsForm } from './interfaces';
+import { IFinesMacCompanyDetailsForm } from './interfaces/fines-mac-company-details-form.interface';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_COMPANY_DETAILS_FORM_MOCK } from './mocks';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FINES_MAC_COMPANY_DETAILS_FORM_MOCK } from './mocks/fines-mac-company-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 
 describe('FinesMacCompanyDetailsComponent', () => {
   let component: FinesMacCompanyDetailsComponent;

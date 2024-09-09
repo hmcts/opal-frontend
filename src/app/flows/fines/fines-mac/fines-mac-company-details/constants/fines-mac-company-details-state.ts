@@ -1,4 +1,4 @@
-import { IFinesMacCompanyDetailsState } from '../interfaces';
+import { IFinesMacCompanyDetailsState } from '../interfaces/fines-mac-company-details-state.interface';
 
 export const FINES_MAC_COMPANY_DETAILS_STATE: IFinesMacCompanyDetailsState = {
   company_name: null,
