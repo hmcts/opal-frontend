@@ -1,7 +1,6 @@
 import { optionalMaxLengthValidator } from '@validators';
 
 export const FINES_MAC_CONTROLS_VEHICLE_MAKE = {
-  controlName: 'vehicle_make',
-  initialValue: null,
+  fieldName: 'vehicle_make',
   validators: [optionalMaxLengthValidator(30)],
 };

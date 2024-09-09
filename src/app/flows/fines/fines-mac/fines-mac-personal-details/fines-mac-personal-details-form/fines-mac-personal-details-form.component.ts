@@ -8,7 +8,15 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@components/abstract';
 import {
   FinesMacAddressBlockComponent,
@@ -24,14 +32,7 @@ import {
   GovukErrorSummaryComponent,
   GovukSelectComponent,
 } from '@components/govuk';
-import {
-  alphabeticalTextValidator,
-  optionalValidDateValidator,
-  dateOfBirthValidator,
-  nationalInsuranceNumberValidator,
-  specialCharactersValidator,
-  optionalMaxLengthValidator,
-} from '@validators';
+
 import {
   IFinesMacPersonalDetailsDefendantTypes,
   IFinesMacPersonalDetailsFieldErrors,
@@ -56,25 +57,26 @@ import {
   FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
   FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS,
 } from '../constants';
+
+// FORM CONTROLS
+import { FINES_MAC_CONTROLS_ALIASES as PD_CONTROL_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
+import { FINES_MAC_CONTROLS_FORENAMES as PD_CONTROL_FORENAMES } from '../../constants/controls/fines-mac-controls-forenames';
+import { FINES_MAC_CONTROLS_SURNAME as PD_CONTROL_SURNAME } from '../../constants/controls/fines-mac-controls-surname';
+import { FINES_MAC_CONTROLS_ADD_ALIAS as PD_CONTROL_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
+import { FINES_MAC_CONTROLS_DOB as PD_CONTROL_DOB } from '../../constants/controls/fines-mac-controls-dob';
+import { FINES_MAC_CONTROLS_NATIONAL_INSURANCE_NUMBER as PD_CONTROL_NATIONAL_INSURANCE_NUMBER } from '../../constants/controls/fines-mac-controls-national-insurance-number';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as PD_CONTROL_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as PD_CONTROL_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
+import { FINES_MAC_CONTROLS_POSTCODE as PD_CONTROL_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
+import { FINES_MAC_CONTROLS_VEHICLE_MAKE as PD_CONTROL_VEHICLE_MAKE } from '../../constants/controls/fines-mac-controls-vehicle-make';
+import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PD_CONTROL_VEHICLE_REGISTRATION_MARK } from '../../constants/controls/fines-mac-controls-vehicle-registration-mark';
+import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE as PD_CONTROL_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-personal-details-controls-address-line-three';
+import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE as PD_CONTROL_TITLE } from '../constants/controls/fines-mac-personal-details-controls-title';
+
 import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 import { MojTicketPanelComponent } from '@components/moj';
 import { DateService } from '@services';
 import { takeUntil } from 'rxjs';
-import {
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADD_ALIAS,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_ONE,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_TWO,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_ALIASES,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_DOB,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_FORENAMES,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_NATIONAL_INSURANCE_NUMBER,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_POSTCODE,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_SURNAME,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_MAKE,
-  FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_REGISTRATION_MARK,
-} from '../constants/controls';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -136,54 +138,23 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    */
   private setupPersonalDetailsForm(): void {
     this.form = new FormGroup({
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE.validators],
+      [PD_CONTROL_ALIASES.fieldName]: this.createFormArray(PD_CONTROL_ALIASES.validators, []),
+      [PD_CONTROL_FORENAMES.fieldName]: this.createFormControl(PD_CONTROL_FORENAMES.validators),
+      [PD_CONTROL_SURNAME.fieldName]: this.createFormControl(PD_CONTROL_SURNAME.validators),
+      [PD_CONTROL_ADD_ALIAS.fieldName]: this.createFormControl(PD_CONTROL_ADD_ALIAS.validators),
+      [PD_CONTROL_DOB.fieldName]: this.createFormControl(PD_CONTROL_DOB.validators),
+      [PD_CONTROL_NATIONAL_INSURANCE_NUMBER.fieldName]: this.createFormControl(
+        PD_CONTROL_NATIONAL_INSURANCE_NUMBER.validators,
       ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_FORENAMES.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_FORENAMES.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_FORENAMES.validators],
+      [PD_CONTROL_ADDRESS_LINE_ONE.fieldName]: this.createFormControl(PD_CONTROL_ADDRESS_LINE_ONE.validators),
+      [PD_CONTROL_ADDRESS_LINE_TWO.fieldName]: this.createFormControl(PD_CONTROL_ADDRESS_LINE_TWO.validators),
+      [PD_CONTROL_ADDRESS_LINE_THREE.fieldName]: this.createFormControl(PD_CONTROL_ADDRESS_LINE_THREE.validators),
+      [PD_CONTROL_POSTCODE.fieldName]: this.createFormControl(PD_CONTROL_POSTCODE.validators),
+      [PD_CONTROL_VEHICLE_MAKE.fieldName]: this.createFormControl(PD_CONTROL_VEHICLE_MAKE.validators),
+      [PD_CONTROL_VEHICLE_REGISTRATION_MARK.fieldName]: this.createFormControl(
+        PD_CONTROL_VEHICLE_REGISTRATION_MARK.validators,
       ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_SURNAME.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_SURNAME.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_SURNAME.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADD_ALIAS.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADD_ALIAS.initialValue,
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_ALIASES.controlName]: new FormArray([]),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_DOB.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_DOB.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_DOB.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_NATIONAL_INSURANCE_NUMBER.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_NATIONAL_INSURANCE_NUMBER.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_NATIONAL_INSURANCE_NUMBER.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_ONE.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_ONE.controlName,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_ONE.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_TWO.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_TWO.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_TWO.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_POSTCODE.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_POSTCODE.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_POSTCODE.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_MAKE.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_MAKE.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_MAKE.validators],
-      ),
-      [FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_REGISTRATION_MARK.controlName]: new FormControl(
-        FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_REGISTRATION_MARK.initialValue,
-        [...FINES_MAC_PERSONAL_DETAILS_CONTROLS_VEHICLE_REGISTRATION_MARK.validators],
-      ),
+      [PD_CONTROL_TITLE.fieldName]: this.createFormControl(PD_CONTROL_TITLE.validators),
     });
   }
 
@@ -247,6 +218,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     const { formData } = this.finesService.finesMacState.personalDetails;
     const key = this.defendantType as keyof IFinesMacPersonalDetailsDefendantTypes;
     this.setupPersonalDetailsForm();
+
     this.setupAliasConfiguration();
     this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
     if (key === 'adultOrYouthOnly') {
