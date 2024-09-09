@@ -8,15 +8,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@components/abstract';
 import {
   FinesMacAddressBlockComponent,

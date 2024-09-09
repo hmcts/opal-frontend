@@ -14,15 +14,8 @@ import {
   FinesMacVehicleDetailsComponent,
   FinesMacNameComponent,
 } from '../../components';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  alphabeticalTextValidator,
-  optionalValidDateValidator,
-  dateOfBirthValidator,
-  nationalInsuranceNumberValidator,
-  specialCharactersValidator,
-  optionalMaxLengthValidator,
-} from '@validators';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { IFinesMacParentGuardianDetailsFieldErrors, IFinesMacParentGuardianDetailsForm } from '../interfaces';
 import {
   FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_BLOCK_FIELD_IDS,
