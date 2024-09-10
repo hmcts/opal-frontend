@@ -7,7 +7,7 @@ import { IFinesMacEmployerDetailsForm } from '../fines-mac-employer-details/inte
 import { IFinesMacParentGuardianDetailsForm } from '../fines-mac-parent-guardian-details/interfaces';
 import { IFinesMacPaymentTermsForm } from '../fines-mac-payment-terms/interfaces';
 import { IFinesMacPersonalDetailsForm } from '../fines-mac-personal-details/interfaces';
-import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interfaces';
+import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-form.interface';
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
 
