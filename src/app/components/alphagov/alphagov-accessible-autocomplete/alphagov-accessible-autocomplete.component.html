@@ -1,4 +1,4 @@
-<div class="govuk-form-group" [class.govuk-form-group--error]="hasError()">
+<div class="govuk-form-group" [class.govuk-form-group--error]="!!errors">
   <label class="govuk-label {{ labelClasses }}" [for]="autoCompleteId"> {{ labelText }} </label>
   @if (hintText) {
     <div id="{{ inputId }}-hint" class="govuk-hint">
@@ -6,7 +6,7 @@
     </div>
   }
 
-  @if (hasError()) {
+  @if (errors) {
     <p id="{{ this.autoCompleteId }}-error-message" class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> {{ errors }}
     </p>
