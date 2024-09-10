@@ -1,4 +1,4 @@
-<div class="govuk-form-group" [class.govuk-form-group--error]="errors !== null">
+<div class="govuk-form-group" [class.govuk-form-group--error]="!!errors">
   <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
   @if (errors) {
     <p id="{{ this.inputId }}-error-message" class="govuk-error-message">

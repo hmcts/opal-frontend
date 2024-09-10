@@ -28,8 +28,4 @@ export class GovukTextInputComponent {
   get getControl() {
     return this._control;
   }
-
-  public hasError(): boolean {
-    return this.errors !== null && typeof this.errors !== 'undefined';
-  }
 }

@@ -54,10 +54,4 @@ describe('GovukTextInputComponent', () => {
 
     expect(elem.classes[labelClass]).toBeTruthy();
   });
-
-  it('should return false when errors is undefined', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (component as any).errors = undefined;
-    expect(component.hasError()).toBe(false);
-  });
 });

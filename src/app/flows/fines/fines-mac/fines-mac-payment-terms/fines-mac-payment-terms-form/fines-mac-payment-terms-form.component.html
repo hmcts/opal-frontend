@@ -1,54 +1,103 @@
-<div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Payment terms</h1>
-  <form (submit)="handleFormSubmit($event)">
-    <app-govuk-radio
-      fieldSetId="payment_terms"
-      legendText="Select payment terms"
-      legendClasses="govuk-fieldset__legend--s"
-    >
-      @for (paymentTerm of paymentTerms; track paymentTerm.key) {
-        <div
-          app-govuk-radios-item
-          [labelText]="paymentTerm.value"
-          [inputId]="paymentTerm.key"
-          inputName="payment_terms"
-          [inputValue]="paymentTerm.key"
-          [control]="form.get('payment_terms')"
-        ></div>
-      }
-    </app-govuk-radio>
-    <app-govuk-checkboxes
-      fieldSetId="enforcementActions"
-      checkboxClasses=""
-      legendText="Enforcement action"
-      legendClasses="govuk-fieldset__legend--s"
-    >
+<h1 class="govuk-heading-l">Payment terms</h1>
+<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  <app-govuk-radio
+    fieldSetId="payment_terms"
+    legendText="Select payment terms"
+    legendClasses="govuk-fieldset__legend--s"
+  >
+    @for (paymentTerm of paymentTerms; track paymentTerm.key) {
       <div
-        app-govuk-checkboxes-item
-        labelText="Hold enforcement on account (NOENF)"
-        inputId="hold_enforcement_on_account"
-        inputName="hold_enforcement_on_account"
-        [control]="form.get('hold_enforcement_on_account')"
+        app-govuk-radios-item
+        [labelText]="paymentTerm.value"
+        [inputId]="paymentTerm.key"
+        inputName="payment_terms"
+        [inputValue]="paymentTerm.key"
+        [control]="form.controls['payment_terms']"
       ></div>
-    </app-govuk-checkboxes>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
-        <app-govuk-button
-          buttonId="submitForm"
-          type="submit"
-          buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
-        >
-          Add account comments and notes
-        </app-govuk-button>
-      </div>
+    }
+  </app-govuk-radio>
+  @if (defendantType === 'adultOrYouthOnly' && isAdult) {
+    <fieldset class="govuk-fieldset">
+      <app-govuk-checkboxes
+        fieldSetId="daysInDefaultCheckbox"
+        legendText="Days in default"
+        legendClasses="govuk-fieldset__legend--s"
+      >
+        <div
+          app-govuk-checkboxes-item
+          labelText="There are days in default"
+          inputId="has_days_in_default"
+          inputName="has_days_in_default"
+          [control]="form.controls['has_days_in_default']"
+        ></div>
+
+        @if (form.get('has_days_in_default')?.value) {
+          <div app-govuk-checkboxes-conditional conditionalId="has_days_in_default">
+            <div class="govuk-grid-row">
+              <app-scotgov-date-picker
+                labelText="Date days in default were imposed"
+                labelClasses="govuk-label--s"
+                inputId="days_in_default_date"
+                inputName="days_in_default_date"
+                inputClasses="govuk-input--width-10"
+                hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
+                [maxDate]="yesterday"
+                [control]="form.controls['days_in_default_date']"
+                [errors]="formControlErrorMessages['days_in_default_date']"
+                (dateChange)="setInputValue($event, 'days_in_default_date')"
+              ></app-scotgov-date-picker>
+              <app-govuk-text-input-prefix-suffix
+                labelText="Enter days in default"
+                labelClasses="govuk-label--s"
+                inputId="days_in_default"
+                inputName="days_in_default"
+                inputClasses="govuk-input--width-5"
+                suffixText="days"
+                [control]="form.controls['days_in_default']"
+                [errors]="formControlErrorMessages['days_in_default']"
+              ></app-govuk-text-input-prefix-suffix>
+              <div class="govuk-!-margin-top-5">
+                <app-fines-mac-default-days
+                  [date]="form.controls['days_in_default_date'].value"
+                ></app-fines-mac-default-days>
+              </div>
+            </div>
+          </div>
+        }
+      </app-govuk-checkboxes>
+    </fieldset>
+  }
+  <app-govuk-checkboxes
+    fieldSetId="enforcementActions"
+    legendText="Enforcement action"
+    legendClasses="govuk-fieldset__legend--s"
+  >
+    <div
+      app-govuk-checkboxes-item
+      labelText="Hold enforcement on account (NOENF)"
+      inputId="hold_enforcement_on_account"
+      inputName="hold_enforcement_on_account"
+      [control]="form.controls['hold_enforcement_on_account']"
+    ></div>
+  </app-govuk-checkboxes>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
+      <app-govuk-button
+        buttonId="submitForm"
+        type="submit"
+        buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
+      >
+        Add account comments and notes
+      </app-govuk-button>
     </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <app-govuk-cancel-link
-          (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
-        ></app-govuk-cancel-link>
-      </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <app-govuk-cancel-link
+        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
+      ></app-govuk-cancel-link>
     </div>
-  </form>
-</div>
+  </div>
+</form>

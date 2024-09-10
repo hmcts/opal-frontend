@@ -31,8 +31,4 @@ export class GovukDateInputComponent {
   get getGroup() {
     return this._group;
   }
-
-  public hasError(): boolean {
-    return this.errorDay !== null || this.errorMonth !== null || this.errorYear !== null;
-  }
 }

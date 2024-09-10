@@ -1,4 +1,4 @@
-<div class="govuk-form-group" [class.govuk-form-group--error]="hasError()">
+<div class="govuk-form-group" [class.govuk-form-group--error]="!!errors">
   <h1 class="govuk-label-wrapper">
     <label class="govuk-label {{ labelClasses }}" [for]="inputId">
       {{ labelText }}
@@ -10,7 +10,7 @@
     </div>
   }
 
-  @if (hasError()) {
+  @if (errors) {
     <p id="{{ this.inputId }}-error-message" class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> {{ errors }}
     </p>

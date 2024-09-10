@@ -1,5 +1,8 @@
-<app-fines-mac-payment-terms-form
-  (formSubmit)="handlePaymentTermsSubmit($event)"
-  (unsavedChanges)="handleUnsavedChanges($event)"
->
-</app-fines-mac-payment-terms-form>
+<div class="govuk-grid-column-three-quarters">
+  <app-fines-mac-payment-terms-form
+    [defendantType]="defendantType"
+    (formSubmit)="handlePaymentTermsSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+  >
+  </app-fines-mac-payment-terms-form>
+</div>

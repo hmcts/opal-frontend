@@ -8,10 +8,28 @@ describe('optionalValidDateValidator', () => {
     expect(result).toBeNull();
   });
 
-  it('should return null for a valid date with single digits', () => {
-    const control = new FormControl('1/1/2020');
+  it('should return an error object for a day not being 2 length', () => {
+    const control = new FormControl('1/01/2020');
     const result = optionalValidDateValidator()(control);
-    expect(result).toBeNull();
+    expect(result).toEqual({ invalidDateFormat: { value: '1/01/2020' } });
+  });
+
+  it('should return an error object for a month not being 2 length', () => {
+    const control = new FormControl('01/1/2020');
+    const result = optionalValidDateValidator()(control);
+    expect(result).toEqual({ invalidDateFormat: { value: '01/1/2020' } });
+  });
+
+  it('should return an error object for a year not being 4 length', () => {
+    const control = new FormControl('01/01/20');
+    const result = optionalValidDateValidator()(control);
+    expect(result).toEqual({ invalidDateFormat: { value: '01/01/20' } });
+  });
+
+  it('should return an error object for a day not being 2 length, month not being 2 length and a year not being 4 length', () => {
+    const control = new FormControl('1/1/20');
+    const result = optionalValidDateValidator()(control);
+    expect(result).toEqual({ invalidDateFormat: { value: '1/1/20' } });
   });
 
   it('should return an error object for an invalid date format', () => {
