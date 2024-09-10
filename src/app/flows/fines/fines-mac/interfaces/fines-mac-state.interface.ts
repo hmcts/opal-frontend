@@ -3,7 +3,7 @@ import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interf
 import { IFinesMacCompanyDetailsForm } from '../fines-mac-company-details/interfaces/fines-mac-company-details-form.interface';
 import { IFinesMacContactDetailsForm } from '../fines-mac-contact-details/interfaces/fines-mac-contact-details-form.interface';
 import { IFinesMacCourtDetailsForm } from '../fines-mac-court-details/interfaces/fines-mac-court-details-form.interface';
-import { IFinesMacEmployerDetailsForm } from '../fines-mac-employer-details/interfaces';
+import { IFinesMacEmployerDetailsForm } from '../fines-mac-employer-details/interfaces/fines-mac-employer-details-form.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../fines-mac-parent-guardian-details/interfaces';
 import { IFinesMacPaymentTermsForm } from '../fines-mac-payment-terms/interfaces';
 import { IFinesMacPersonalDetailsForm } from '../fines-mac-personal-details/interfaces';
