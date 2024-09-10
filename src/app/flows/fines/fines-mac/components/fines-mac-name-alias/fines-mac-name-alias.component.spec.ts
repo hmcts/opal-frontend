@@ -16,8 +16,8 @@ describe('FinesMacNameAliasComponent', () => {
     component = fixture.componentInstance;
 
     component.form = new FormGroup({
-      AddAlias: new FormControl(null),
-      Aliases: new FormArray([]),
+      add_alias: new FormControl(null),
+      aliases: new FormArray([]),
     });
     component.formControlErrorMessages = {};
     component.aliasControls = [];

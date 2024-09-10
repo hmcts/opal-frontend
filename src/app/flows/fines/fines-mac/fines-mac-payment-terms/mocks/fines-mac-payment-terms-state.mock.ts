@@ -1,15 +1,11 @@
 import { IFinesMacPaymentTermsState } from '../interfaces';
 
 export const FINES_MAC_PAYMENT_TERMS_STATE_MOCK: IFinesMacPaymentTermsState = {
-  paymentTerms: 'Pay in full',
-  payByDate: '01/01/2024',
-  lumpSum: null,
-  instalment: null,
-  frequency: null,
-  startDate: null,
-  requestPaymentCard: true,
-  hasDaysInDefault: true,
-  daysInDefaultDate: '01/01/2024',
-  daysInDefault: 100,
-  addEnforcementAction: true,
+  payment_terms: 'payInFull',
+  pay_by_date: '01/01/2024',
+  request_payment_card: true,
+  has_days_in_default: true,
+  days_in_default_date: '01/01/2024',
+  days_in_default: 100,
+  add_enforcement_action: true,
 };

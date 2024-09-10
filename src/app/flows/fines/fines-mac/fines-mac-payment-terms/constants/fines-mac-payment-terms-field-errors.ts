@@ -1,7 +1,7 @@
 import { IFinesMacPaymentTermsFieldErrors } from '../interfaces';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErrors = {
-  payByDate: {
+  pay_by_date: {
     required: {
       message: `Enter a pay by date`,
       priority: 1,
@@ -15,7 +15,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 3,
     },
   },
-  lumpSum: {
+  lump_sum: {
     required: {
       message: `Enter lump sum`,
       priority: 1,
@@ -33,7 +33,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 1,
     },
   },
-  startDate: {
+  start_date: {
     required: {
       message: `Enter start date`,
       priority: 1,
@@ -47,7 +47,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 3,
     },
   },
-  daysInDefaultDate: {
+  days_in_default_date: {
     required: {
       message: `Enter date days in default were imposed`,
       priority: 1,
@@ -65,7 +65,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 4,
     },
   },
-  daysInDefault: {
+  days_in_default: {
     required: {
       message: `Enter days in default`,
       priority: 1,

@@ -5,7 +5,7 @@ import { FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION } from './f
 export const FINES_MAC_PAYMENT_TERMS_LUMP_SUM_CONTROL_VALIDATION: IFinesMacPaymentTermsPaymentTermOptionsControlValidation[] =
   [
     {
-      controlName: 'lumpSum',
+      controlName: 'lump_sum',
       validators: [Validators.required],
     },
     ...FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION,

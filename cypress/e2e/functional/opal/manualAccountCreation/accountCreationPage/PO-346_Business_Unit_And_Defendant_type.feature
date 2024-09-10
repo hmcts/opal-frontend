@@ -142,7 +142,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     When I select the "Fine" radio button
     And I see the heading under the fine radio button is "Defendant type"
     And I see "If sole trader, choose 'Adult or youth only'" below the defendant type subheading
-    And I click on cancel
+    And I click on the "Cancel" link
     Then I am on the dashboard
 
   #AC1 #AC2 #ACa
@@ -153,7 +153,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
     And I see "If sole trader, choose 'Adult or youth only'" below the defendant type subheading
 
     And I select the "Adult or youth only" radio button
-    And I click on cancel
+    And I click on the "Cancel" link
     And I select OK on the pop up window
     Then I am on the dashboard
 

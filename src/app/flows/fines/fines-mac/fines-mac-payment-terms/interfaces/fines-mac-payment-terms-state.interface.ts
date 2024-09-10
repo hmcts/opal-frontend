@@ -1,13 +1,13 @@
 export interface IFinesMacPaymentTermsState {
-  paymentTerms: string | null;
-  payByDate: string | null;
-  lumpSum: number | null;
-  instalment: number | null;
-  frequency: string | null;
-  startDate: string | null;
-  requestPaymentCard: boolean | null;
-  hasDaysInDefault: boolean | null;
-  daysInDefaultDate: string | null;
-  daysInDefault: number | null;
-  addEnforcementAction: boolean | null;
+  payment_terms: string | null;
+  pay_by_date?: string | null;
+  lump_sum?: number | null;
+  instalment?: number | null;
+  frequency?: string | null;
+  start_date?: string | null;
+  request_payment_card: boolean | null;
+  has_days_in_default: boolean | null;
+  days_in_default_date: string | null;
+  days_in_default: number | null;
+  add_enforcement_action: boolean | null;
 }

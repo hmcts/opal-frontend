@@ -2,7 +2,7 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-radio
-    fieldSetId="paymentTerms"
+    fieldSetId="payment_terms"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
   >
@@ -11,51 +11,51 @@
         app-govuk-radios-item
         [labelText]="paymentTerm.value"
         [inputId]="paymentTerm.key"
-        inputName="paymentTerms"
+        inputName="payment_terms"
         [inputValue]="paymentTerm.key"
-        [control]="form.controls['paymentTerms']"
+        [control]="form.controls['payment_terms']"
       ></div>
 
       @switch (paymentTerm.key) {
         @case ('payInFull') {
-          @if (form.get('paymentTerms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="paymentTerms">
+          @if (form.get('payment_terms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="payment_terms">
               <div class="govuk-form-group">
                 <app-scotgov-date-picker
                   labelText="Enter pay by date"
                   labelClasses="govuk-label--s"
-                  inputId="payByDate"
-                  inputName="payByDate"
+                  inputId="pay_by_date"
+                  inputName="pay_by_date"
                   inputClasses="govuk-input--width-10"
                   hintText="For example, 31/01/2023"
-                  [control]="form.controls['payByDate']"
-                  [errors]="formControlErrorMessages['payByDate']"
-                  (dateChange)="setInputValue($event, 'payByDate')"
+                  [control]="form.controls['pay_by_date']"
+                  [errors]="formControlErrorMessages['pay_by_date']"
+                  (dateChange)="setInputValue($event, 'pay_by_date')"
                 ></app-scotgov-date-picker>
               </div>
             </div>
           }
         }
         @case ('instalmentsOnly') {
-          @if (form.get('paymentTerms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="paymentTerms">
+          @if (form.get('payment_terms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="payment_terms">
               <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
             </div>
           }
         }
         @case ('lumpSumPlusInstalments') {
-          @if (form.get('paymentTerms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="paymentTerms">
+          @if (form.get('payment_terms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="payment_terms">
               <div class="govuk-form-group">
                 <app-govuk-text-input-prefix-suffix
                   labelText="Lump sum"
                   labelClasses="govuk-label--s"
-                  inputId="lumpSum"
-                  inputName="lumpSum"
+                  inputId="lump_sum"
+                  inputName="lump_sum"
                   inputClasses="govuk-input--width-5"
                   prefixText="£"
-                  [control]="form.controls['lumpSum']"
-                  [errors]="formControlErrorMessages['lumpSum']"
+                  [control]="form.controls['lump_sum']"
+                  [errors]="formControlErrorMessages['lump_sum']"
                 >
                 </app-govuk-text-input-prefix-suffix>
               </div>
@@ -69,9 +69,9 @@
   <div
     app-govuk-checkboxes-item
     labelText="Request payment card"
-    inputId="requestPaymentCard"
-    inputName="requestPaymentCard"
-    [control]="form.controls['requestPaymentCard']"
+    inputId="request_payment_card"
+    inputName="request_payment_card"
+    [control]="form.controls['request_payment_card']"
   ></div>
   @if (defendantType === 'adultOrYouthOnly' && isAdult) {
     <fieldset class="govuk-fieldset">
@@ -83,39 +83,39 @@
         <div
           app-govuk-checkboxes-item
           labelText="There are days in default"
-          inputId="hasDaysInDefault"
-          inputName="hasDaysInDefault"
-          [control]="form.controls['hasDaysInDefault']"
+          inputId="has_days_in_default"
+          inputName="has_days_in_default"
+          [control]="form.controls['has_days_in_default']"
         ></div>
 
-        @if (form.get('hasDaysInDefault')?.value) {
-          <div app-govuk-checkboxes-conditional conditionalId="hasDaysInDefault">
+        @if (form.get('has_days_in_default')?.value) {
+          <div app-govuk-checkboxes-conditional conditionalId="has_days_in_default">
             <div class="govuk-grid-row">
               <app-scotgov-date-picker
                 labelText="Date days in default were imposed"
                 labelClasses="govuk-label--s"
-                inputId="daysInDefaultDate"
-                inputName="daysInDefaultDate"
+                inputId="days_in_default_date"
+                inputName="days_in_default_date"
                 inputClasses="govuk-input--width-10"
                 hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
                 [maxDate]="yesterday"
-                [control]="form.controls['daysInDefaultDate']"
-                [errors]="formControlErrorMessages['daysInDefaultDate']"
-                (dateChange)="setInputValue($event, 'daysInDefaultDate')"
+                [control]="form.controls['days_in_default_date']"
+                [errors]="formControlErrorMessages['days_in_default_date']"
+                (dateChange)="setInputValue($event, 'days_in_default_date')"
               ></app-scotgov-date-picker>
               <app-govuk-text-input-prefix-suffix
                 labelText="Enter days in default"
                 labelClasses="govuk-label--s"
-                inputId="daysInDefault"
-                inputName="daysInDefault"
+                inputId="days_in_default"
+                inputName="days_in_default"
                 inputClasses="govuk-input--width-5"
                 suffixText="days"
-                [control]="form.controls['daysInDefault']"
-                [errors]="formControlErrorMessages['daysInDefault']"
+                [control]="form.controls['days_in_default']"
+                [errors]="formControlErrorMessages['days_in_default']"
               ></app-govuk-text-input-prefix-suffix>
               <div class="govuk-!-margin-top-5">
                 <app-fines-mac-default-days
-                  [date]="form.controls['daysInDefaultDate'].value"
+                  [date]="form.controls['days_in_default_date'].value"
                 ></app-fines-mac-default-days>
               </div>
             </div>
@@ -132,9 +132,9 @@
     <div
       app-govuk-checkboxes-item
       labelText="Add enforcement action"
-      inputId="addEnforcementAction"
-      inputName="addEnforcementAction"
-      [control]="form.controls['addEnforcementAction']"
+      inputId="add_enforcement_action"
+      inputName="add_enforcement_action"
+      [control]="form.controls['add_enforcement_action']"
     ></div>
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">
@@ -195,14 +195,14 @@
     <app-scotgov-date-picker
       labelText="Start date"
       labelClasses="govuk-label--s"
-      inputId="startDate"
-      inputName="startDate"
+      inputId="start_date"
+      inputName="start_date"
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
       [maxDate]="yesterday"
-      [control]="form.controls['startDate']"
-      [errors]="formControlErrorMessages['startDate']"
-      (dateChange)="setInputValue($event, 'startDate')"
+      [control]="form.controls['start_date']"
+      [errors]="formControlErrorMessages['start_date']"
+      (dateChange)="setInputValue($event, 'start_date')"
     ></app-scotgov-date-picker>
   </div>
 </ng-template>

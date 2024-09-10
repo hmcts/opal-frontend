@@ -1,7 +1,7 @@
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 
 export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFieldErrors = {
-  CompanyName: {
+  company_name: {
     required: {
       message: `Enter company name`,
       priority: 1,
@@ -15,7 +15,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 3,
     },
   },
-  AliasOrganisationName_0: {
+  alias_organisation_name_0: {
     required: {
       message: `Enter company name for alias 1`,
       priority: 1,
@@ -29,7 +29,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 3,
     },
   },
-  AliasOrganisationName_1: {
+  alias_organisation_name_1: {
     required: {
       message: `Enter company name for alias 2`,
       priority: 1,
@@ -43,7 +43,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 3,
     },
   },
-  AliasOrganisationName_2: {
+  alias_organisation_name_2: {
     required: {
       message: `Enter company name for alias 3`,
       priority: 1,
@@ -57,7 +57,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 3,
     },
   },
-  AliasOrganisationName_3: {
+  alias_organisation_name_3: {
     required: {
       message: `Enter company name for alias 4`,
       priority: 1,
@@ -71,7 +71,7 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 3,
     },
   },
-  AliasOrganisationName_4: {
+  alias_organisation_name_4: {
     required: {
       message: `Enter company name for alias 5`,
       priority: 1,

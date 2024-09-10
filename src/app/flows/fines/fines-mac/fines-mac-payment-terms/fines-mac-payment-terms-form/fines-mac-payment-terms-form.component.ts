@@ -97,10 +97,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
-      paymentTerms: new FormControl(null),
-      requestPaymentCard: new FormControl(null),
-      hasDaysInDefault: new FormControl(null),
-      addEnforcementAction: new FormControl(null),
+      payment_terms: new FormControl(null),
+      request_payment_card: new FormControl(null),
+      has_days_in_default: new FormControl(null),
+      add_enforcement_action: new FormControl(null),
     });
   }
 
@@ -129,7 +129,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * If the value of 'hasDaysInDefault' is false, it removes the unnecessary form controls.
    */
   private hasDaysInDefaultListener(): void {
-    const { hasDaysInDefault } = this.form.controls;
+    const { has_days_in_default: hasDaysInDefault } = this.form.controls;
 
     hasDaysInDefault.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       if (hasDaysInDefault.value === true) {
@@ -152,22 +152,26 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private checkDefendantAge(): void {
     const { formData } = this.finesService.finesMacState.personalDetails;
-    this.isAdult = !formData.DOB || this.dateService.calculateAge(formData.DOB) >= 18;
+    this.isAdult = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
   }
 
   private paymentTermsListener(): void {
-    const { paymentTerms } = this.form.controls;
+    const { payment_terms: paymentTerms } = this.form.controls;
 
     paymentTerms.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((selectedTerm) => {
       const controls =
         this.paymentTermsControls[selectedTerm as keyof IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation];
 
-      controls.fieldsToRemove.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
+      if (!controls) {
+        return;
+      }
+
+      controls.fieldsToRemove?.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
         this.removeControl(control.controlName);
         this.removeControlErrors(control.controlName);
       });
 
-      controls.fieldsToAdd.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
+      controls.fieldsToAdd?.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
         this.createControl(control.controlName, control.validators);
       });
     });

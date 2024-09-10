@@ -4,11 +4,11 @@
   <app-govuk-select
     labelText="Title"
     labelClasses="govuk-label--s"
-    selectId="Title"
-    selectName="Title"
+    selectId="title"
+    selectName="title"
     [options]="titleOptions"
-    [control]="form.controls['Title']"
-    [errors]="formControlErrorMessages['Title']"
+    [control]="form.controls['title']"
+    [errors]="formControlErrorMessages['title']"
   ></app-govuk-select>
   <app-fines-mac-name
     [form]="form"
@@ -27,7 +27,7 @@
   <app-fines-mac-date-of-birth
     [form]="form"
     [formControlErrorMessages]="formControlErrorMessages"
-    (dateChange)="setInputValue($event, 'DOB')"
+    (dateChange)="setInputValue($event, 'dob')"
     componentName="personalDetails"
   ></app-fines-mac-date-of-birth>
   @if (age && ageLabel) {

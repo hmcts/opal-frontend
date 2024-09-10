@@ -13,7 +13,7 @@ export const FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION: IFines
       validators: [Validators.required],
     },
     {
-      controlName: 'startDate',
+      controlName: 'start_date',
       validators: [Validators.required, optionalValidDateValidator()],
     },
   ];

@@ -1,7 +1,7 @@
 import { IFinesMacAddressBlockLineTwoFieldErrors } from '../interfaces';
 
 export const FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS: IFinesMacAddressBlockLineTwoFieldErrors = {
-  AddressLine2: {
+  address_line_2: {
     maxlength: {
       message: 'The address line 2 must be 30 characters or fewer',
       priority: 1,

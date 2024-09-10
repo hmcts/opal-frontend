@@ -1,12 +1,12 @@
 <app-scotgov-date-picker
   labelText="Date of birth"
   labelClasses="govuk-label--s {{ componentName }}"
-  inputId="DOB"
-  inputName="DOB"
+  inputId="dob"
+  inputName="dob"
   inputClasses="govuk-input--width-10"
   hintText="For example, 31/01/2023"
-  [control]="form.controls['DOB']"
+  [control]="form.controls['dob']"
   [maxDate]="yesterday"
   (dateChange)="emitDateChange($event)"
-  [errors]="formControlErrorMessages['DOB']"
+  [errors]="formControlErrorMessages['dob']"
 ></app-scotgov-date-picker>

@@ -121,23 +121,23 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    */
   private setupPersonalDetailsForm(): void {
     this.form = new FormGroup({
-      Title: new FormControl(null, [Validators.required]),
-      Forenames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
-      Surname: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
-      AddAlias: new FormControl(null),
-      Aliases: new FormArray([]),
-      DOB: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      NationalInsuranceNumber: new FormControl(null, [nationalInsuranceNumberValidator()]),
-      AddressLine1: new FormControl(null, [
+      title: new FormControl(null, [Validators.required]),
+      forenames: new FormControl(null, [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()]),
+      surname: new FormControl(null, [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]),
+      add_alias: new FormControl(null),
+      aliases: new FormArray([]),
+      dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
+      national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      AddressLine2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      AddressLine3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
-      Postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
-      VehicleMake: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      VehicleRegistrationMark: new FormControl(null, [optionalMaxLengthValidator(11)]),
+      address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
+      address_line_3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
+      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
+      vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(11)]),
     });
   }
 
@@ -166,7 +166,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    * Listens for changes in the date of birth control and updates the age and label accordingly.
    */
   private dateOfBirthListener(): void {
-    const dobControl = this.form.controls['DOB'];
+    const dobControl = this.form.controls['dob'];
 
     // Initial update if the date of birth is already populated
     if (dobControl.value) {
@@ -191,9 +191,9 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
 
       // Reset payment terms default date data
-      paymentTermsFormData.hasDaysInDefault = false;
-      paymentTermsFormData.daysInDefaultDate = null;
-      paymentTermsFormData.daysInDefault = null;
+      paymentTermsFormData.has_days_in_default = false;
+      paymentTermsFormData.days_in_default_date = null;
+      paymentTermsFormData.days_in_default = null;
     }
   }
 
@@ -208,13 +208,13 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     const key = this.defendantType as keyof IFinesMacPersonalDetailsDefendantTypes;
     this.setupPersonalDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(formData.Aliases.length).keys()], 'Aliases');
+    this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
     if (key === 'adultOrYouthOnly') {
       this.addVehicleDetailsFieldErrors();
     }
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.setUpAliasCheckboxListener('AddAlias', 'Aliases');
+    this.setUpAliasCheckboxListener('add_alias', 'aliases');
     this.dateOfBirthListener();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }

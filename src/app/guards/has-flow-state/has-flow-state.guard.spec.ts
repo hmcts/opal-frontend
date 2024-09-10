@@ -22,7 +22,7 @@ describe('hasFlowStateGuard', () => {
   beforeEach(() => {
     finesMacEmptyFlowGuard = hasFlowStateGuard(
       () => mockFinesService.finesMacState.accountDetails,
-      (accountDetails) => !!accountDetails.formData.AccountType && !!accountDetails.formData.DefendantType,
+      (accountDetails) => !!accountDetails.formData.account_type && !!accountDetails.formData.defendant_type,
       () => expectedUrl,
     );
 

@@ -26,6 +26,8 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
 
   Scenario: AC1-positive: Personal details page will be created with all fields
     When I select title "Mr" from dropdown
+    #this step implemented on PO-688
+    When I see "Include their middle names" under the "First names" field
     And I enter "John Smithy Michaele" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
 

@@ -1,5 +1,5 @@
 export interface IFinesMacCourtDetailsState {
-  SendingCourt: string | null;
-  ProsecutorCaseReference: string | null;
-  EnforcingCourt: string | null;
+  sending_court: string | null;
+  prosecutor_case_reference: string | null;
+  enforcing_court: string | null;
 }

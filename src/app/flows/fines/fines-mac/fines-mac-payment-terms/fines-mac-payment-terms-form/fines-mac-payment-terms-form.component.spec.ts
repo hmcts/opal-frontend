@@ -101,34 +101,33 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       component['finesService'].finesMacState.paymentTerms.formData,
     );
     expect(component['checkDefendantAge']).toHaveBeenCalled();
-    expect(mockDateService.calculateAge).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
   });
 
-  it('should add controls when hasDaysInDefault is true', () => {
-    const hasDaysInDefaultControl = component.form.controls['hasDaysInDefault'];
+  it('should add controls when has_days_in_default is true', () => {
+    const hasDaysInDefaultControl = component.form.controls['has_days_in_default'];
     hasDaysInDefaultControl.setValue(true);
 
     component['hasDaysInDefaultListener']();
 
-    expect(component.form.contains('daysInDefaultDate')).toBe(true);
-    expect(component.form.contains('daysInDefault')).toBe(true);
+    expect(component.form.contains('days_in_default_date')).toBe(true);
+    expect(component.form.contains('days_in_default')).toBe(true);
   });
 
-  it('should remove controls when hasDaysInDefault is false', () => {
-    const hasDaysInDefaultControl = component.form.controls['hasDaysInDefault'];
+  it('should remove controls when has_days_in_default is false', () => {
+    const hasDaysInDefaultControl = component.form.controls['has_days_in_default'];
     hasDaysInDefaultControl.setValue(false);
 
     component['hasDaysInDefaultListener']();
 
-    expect(component.form.contains('daysInDefaultDate')).toBe(false);
-    expect(component.form.contains('daysInDefault')).toBe(false);
+    expect(component.form.contains('days_in_default_date')).toBe(false);
+    expect(component.form.contains('days_in_default')).toBe(false);
   });
 
   it('should check defendant age and set isAdult to true when age is 18 or above', () => {
     const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.DOB = dob;
+    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
     mockDateService.calculateAge.and.returnValue(30);
 
     component['checkDefendantAge']();
@@ -139,7 +138,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should check defendant age and set isAdult to false when age is below 18', () => {
     const dob = DateTime.now().minus({ years: 10 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.DOB = dob;
+    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
     mockDateService.calculateAge.and.returnValue(10);
 
     component['checkDefendantAge']();
