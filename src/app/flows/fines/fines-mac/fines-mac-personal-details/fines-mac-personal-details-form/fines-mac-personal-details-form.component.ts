@@ -25,30 +25,28 @@ import {
   GovukSelectComponent,
 } from '@components/govuk';
 
-import {
-  IFinesMacPersonalDetailsDefendantTypes,
-  IFinesMacPersonalDetailsFieldErrors,
-  IFinesMacPersonalDetailsForm,
-} from '../interfaces';
+import { IFinesMacPersonalDetailsDefendantTypes } from '../interfaces/fines-mac-personal-details-defendant-types.interface';
+import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
+import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
+
 import { FinesService } from '@services/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
-import {
-  FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS,
-  FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_ONE_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_THREE_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_TWO_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_ALIAS,
-  FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_IDS,
-  FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS,
-  FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
-  FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS,
-} from '../constants';
+
+import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS } from '../constants/fines-mac-personal-details-address-block-field-ids';
+import { FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-alias-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS } from '../constants/fines-mac-personal-details-date-of-birth-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS } from '../constants/fines-mac-personal-details-name-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS } from '../constants/fines-mac-personal-details-title-dropdown-options';
+import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_IDS } from '../constants/fines-mac-personal-details-vehicle-details-field-ids';
+import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_ONE_FIELD_ERRORS } from '../constants/fines-mac-personal-details-address-line-one-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_THREE_FIELD_ERRORS } from '../constants/fines-mac-personal-details-address-line-three-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_LINE_TWO_FIELD_ERRORS } from '../constants/fines-mac-personal-details-address-line-two-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS } from '../constants/fines-mac-personal-details-address-postcode-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
+import { FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_IDS } from '../constants/fines-mac-personal-details-name-field-ids';
+import { FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS } from '../constants/fines-mac-personal-details-national-insurance-number-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-vehicle-details-field-errors';
 
 // FORM CONTROLS
 import { FINES_MAC_CONTROLS_ALIASES as PD_CONTROL_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
@@ -65,7 +63,8 @@ import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PD_CONTROL_VEHICLE_REGI
 import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE as PD_CONTROL_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-personal-details-controls-address-line-three';
 import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE as PD_CONTROL_TITLE } from '../constants/controls/fines-mac-personal-details-controls-title';
 
-import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { MojTicketPanelComponent } from '@components/moj';
 import { DateService } from '@services';
 import { takeUntil } from 'rxjs';

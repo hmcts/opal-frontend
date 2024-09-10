@@ -1,4 +1,4 @@
-import { IFinesMacPersonalDetailsState } from '../interfaces';
+import { IFinesMacPersonalDetailsState } from '../interfaces/fines-mac-personal-details-state.interface';
 
 export const FINES_MAC_PERSONAL_DETAILS_STATE: IFinesMacPersonalDetailsState = {
   title: null,
