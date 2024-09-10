@@ -8,7 +8,7 @@ import {
   GovukCancelLinkComponent,
 } from '@components/govuk';
 import { IFinesMacLanguagePreferencesForm } from '../interfaces/fines-mac-language-preferences-form.interface';
-import { FinesService } from '../../../services/fines-service/fines.service';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants/fines-mac-language-preferences-options';
 

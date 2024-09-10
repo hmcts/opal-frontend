@@ -6,7 +6,8 @@ import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alph
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { IFinesMacCreateAccountForm } from './interfaces/fines-mac-create-account-form.interface';
-import { FinesService, OpalFines } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines';
 import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';

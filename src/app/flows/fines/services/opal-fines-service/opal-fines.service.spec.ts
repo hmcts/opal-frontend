@@ -26,7 +26,7 @@ import {
   OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK,
 } from '../opal-fines-service/mocks';
 import { OPAL_FINES_PATHS } from './constants';
-import { OpalFines } from '@services/fines';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines';
 
 describe('OpalFines', () => {
   let service: OpalFines;

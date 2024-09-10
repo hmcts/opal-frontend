@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form.component';
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-court-autocomplete-items.mock';

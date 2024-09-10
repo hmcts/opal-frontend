@@ -46,7 +46,7 @@ import { FINES_MAC_CONTROLS_VEHICLE_MAKE as PGD_CONTROL_VEHICLE_MAKE } from '../
 import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PGD_CONTROL_VEHICLE_REGISTRATION_MARK } from '../../constants/controls/fines-mac-controls-vehicle-registration-mark';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_CONTROLS_ADDRESS_LINE_THREE as PGD_CONTROL_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-parent-guardian-details-controls-address-line-three';
 
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
 @Component({

@@ -11,7 +11,7 @@ import {
 import { AbstractFormBaseComponent } from '@components/abstract';
 import { IFinesMacPaymentTermsFieldErrors } from '../interfaces/fines-mac-payment-terms-field-errors.inteface';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
-import { FinesService } from '../../../services/fines-service/fines.service';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';

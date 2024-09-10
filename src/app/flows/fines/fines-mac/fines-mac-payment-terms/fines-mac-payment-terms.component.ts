@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { IFinesMacPaymentTermsForm } from './interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form/fines-mac-payment-terms-form.component';

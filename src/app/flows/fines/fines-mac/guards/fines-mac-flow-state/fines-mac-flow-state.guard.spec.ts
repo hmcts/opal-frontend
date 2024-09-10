@@ -1,6 +1,6 @@
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 import { finesMacFlowStateGuard } from './fines-mac-flow-state.guard';
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../fines-mac-account-details/mocks/fines-mac-account-details-state.mock';
 import { FINES_ROUTING_PATHS } from '@constants/fines';

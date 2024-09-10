@@ -1,4 +1,4 @@
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FINES_ROUTING_PATHS } from '@constants/fines';
 import { hasFlowStateGuard } from '@guards';

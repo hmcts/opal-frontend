@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FINES_MAC_STATE } from '../../fines-mac/constants/fines-mac-state';
-import { FinesService } from './fines.service';
+import { FinesService } from '@services/fines/fines-service/fines';
 
 describe('FinesService', () => {
   let service: FinesService;

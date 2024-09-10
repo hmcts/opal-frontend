@@ -28,7 +28,7 @@ import { IFinesMacPersonalDetailsDefendantTypes } from '../interfaces/fines-mac-
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
 
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 
 import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS } from '../constants/fines-mac-personal-details-address-block-field-ids';
