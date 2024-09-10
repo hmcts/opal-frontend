@@ -23,23 +23,18 @@ import {
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
 import { AbstractFormBaseComponent } from '@components/abstract';
 import { RoutingPaths } from '@enums';
-import {
-  IFinesMacCreateAccountAccountTypes,
-  IFinesMacCreateAccountControlNames,
-  IFinesMacCreateAccountFieldErrors,
-  IFinesMacCreateAccountForm,
-} from '../interfaces';
-
-import {
-  FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES,
-  FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE,
-  FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES,
-  FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS,
-} from '../constants';
+import { IFinesMacCreateAccountAccountTypes } from '../interfaces/fines-mac-create-account-account-types.interface';
+import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';
+import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';
+import { IFinesMacCreateAccountForm } from '../interfaces/fines-mac-create-account-form.interface';
+import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES } from '../constants/fines-mac-create-account-account-types';
+import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from '../constants/fines-mac-create-account-account-type-defendant-types-state';
+import { FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES } from '../constants/fines-mac-create-account-control-names';
+import { FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS } from '../constants/fines-mac-create-account-field-errors';
 import { FinesService } from '@services/fines';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',

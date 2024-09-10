@@ -5,13 +5,15 @@ import { AbstractFormParentBaseComponent } from '@components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
-import { IFinesMacCreateAccountForm } from './interfaces';
+import { IFinesMacCreateAccountForm } from './interfaces/fines-mac-create-account-form.interface';
 import { FinesService, OpalFines } from '@services/fines';
 import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { FINES_MAC_STATE, FINES_MAC_STATUS } from '../constants';
-import { FINES_MAC_CREATE_ACCOUNT_FORM, FINES_MAC_CREATE_ACCOUNT_STATE } from './constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_STATE } from '../constants/fines-mac-state';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
+import { FINES_MAC_CREATE_ACCOUNT_FORM } from './constants/fines-mac-create-account-form';
+import { FINES_MAC_CREATE_ACCOUNT_STATE } from './constants/fines-mac-create-account-state';
 import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-mac-create-account-configuration-items';
 
 @Component({

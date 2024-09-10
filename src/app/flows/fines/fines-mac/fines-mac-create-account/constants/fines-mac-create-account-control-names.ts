@@ -1,5 +1,5 @@
 import { Validators } from '@angular/forms';
-import { IFinesMacCreateAccountControlNames } from '../interfaces';
+import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';
 
 export const FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES: IFinesMacCreateAccountControlNames = {
   fine: {
