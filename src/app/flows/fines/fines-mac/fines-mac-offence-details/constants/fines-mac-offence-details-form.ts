@@ -1,4 +1,4 @@
-import { FINES_MAC_STATUS } from '../../constants';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from './fines-mac-offence-details-state';
 

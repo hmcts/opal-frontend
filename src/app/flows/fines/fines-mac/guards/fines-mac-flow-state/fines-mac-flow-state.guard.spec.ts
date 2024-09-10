@@ -8,7 +8,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
 import { runFinesMacEmptyFlowGuardWithContext } from '../helpers';
 import { getGuardWithDummyUrl } from '../../../../../guards/helpers';
 import { of } from 'rxjs';
-import { FINES_MAC_STATE } from '../../constants';
+import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../fines-mac-account-details/constants/fines-mac-account-details-state';
 
 describe('finesMacFlowStateGuard', () => {

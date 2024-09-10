@@ -1,4 +1,4 @@
-import { FINES_MAC_BUSINESS_UNIT_STATE } from '../constants';
+import { FINES_MAC_BUSINESS_UNIT_STATE } from '../constants/fines-mac-business-unit-state';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM } from '../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-form';
 import { FINES_MAC_ACCOUNT_DETAILS_FORM } from '../fines-mac-account-details/constants/fines-mac-account-details-form';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../fines-mac-account-details/constants/fines-mac-account-details-state';
