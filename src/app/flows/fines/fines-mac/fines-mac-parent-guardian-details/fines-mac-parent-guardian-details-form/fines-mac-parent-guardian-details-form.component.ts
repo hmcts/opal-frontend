@@ -16,22 +16,22 @@ import {
 } from '../../components';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { IFinesMacParentGuardianDetailsFieldErrors, IFinesMacParentGuardianDetailsForm } from '../interfaces';
-import {
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_BLOCK_FIELD_IDS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_ONE_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_THREE_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_TWO_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_IDS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
-  FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_IDS,
-} from '../constants';
+import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
+import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
+
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_BLOCK_FIELD_IDS } from '../constants/fines-mac-parent-guardian-details-address-block-field-ids';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_ONE_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-address-line-one-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_TWO_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-address-line-two-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_THREE_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-address-line-three-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_POSTCODE_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-address-postcode-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-alias-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-date-of-birth-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-name-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_IDS } from '../constants/fines-mac-parent-guardian-details-name-field-ids';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-national-insurance-number-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-vehicle-details-field-errors';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_IDS } from '../constants/fines-mac-parent-guardian-details-vehicle-details-field-ids';
 
 // FORM CONTROLS
 import { FINES_MAC_CONTROLS_ALIASES as PGD_CONTROL_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
@@ -48,7 +48,7 @@ import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PGD_CONTROL_VEHICLE_REG
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_CONTROLS_ADDRESS_LINE_THREE as PGD_CONTROL_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-parent-guardian-details-controls-address-line-three';
 
 import { FinesService } from '@services/fines';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',

@@ -1,5 +1,5 @@
-import { FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants';
-import { IFinesMacParentGuardianDetailsAddressLineOneFieldErrors } from '../interfaces';
+import { FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-one-field-errors';
+import { IFinesMacParentGuardianDetailsAddressLineOneFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-address-line-one-field-errors.interface';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_ONE_FIELD_ERRORS: IFinesMacParentGuardianDetailsAddressLineOneFieldErrors =
   {
