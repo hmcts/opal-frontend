@@ -7,10 +7,10 @@ import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
 } from '@components/govuk';
-import { IFinesMacLanguagePreferencesForm } from '../interfaces';
+import { IFinesMacLanguagePreferencesForm } from '../interfaces/fines-mac-language-preferences-form.interface';
 import { FinesService } from '../../../services/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
-import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants/fines-mac-language-preferences-options';
 
 @Component({
   selector: 'app-fines-mac-language-preferences-form',

@@ -4,10 +4,10 @@ import { FinesMacLanguagePreferencesComponent } from './fines-mac-language-prefe
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { FinesService } from '@services/fines';
-import { IFinesMacLanguagePreferencesForm } from './interfaces';
-import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from './mocks';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { IFinesMacLanguagePreferencesForm } from './interfaces/fines-mac-language-preferences-form.interface';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from './mocks/fines-mac-language-preferences-form.mock';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 
 describe('FinesMacLanguagePreferencesComponent', () => {
   let component: FinesMacLanguagePreferencesComponent;

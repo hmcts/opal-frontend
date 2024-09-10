@@ -10,7 +10,7 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM } from '../fines-mac-parent-guar
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../fines-mac-payment-terms/constants';
 import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../fines-mac-personal-details/constants';
 import { FINES_MAC_BUSINESS_UNIT_STATE } from './fines-mac-business-unit-state';
-import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants';
+import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 
 export const FINES_MAC_STATE: IFinesMacState = {
   accountDetails: FINES_MAC_ACCOUNT_DETAILS_FORM,

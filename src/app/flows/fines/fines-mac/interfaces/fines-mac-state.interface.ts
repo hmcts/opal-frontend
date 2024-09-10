@@ -9,7 +9,7 @@ import { IFinesMacPaymentTermsForm } from '../fines-mac-payment-terms/interfaces
 import { IFinesMacPersonalDetailsForm } from '../fines-mac-personal-details/interfaces';
 import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interfaces';
 import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-form.interface';
-import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces';
+import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
 
 export interface IFinesMacState {
   employerDetails: IFinesMacEmployerDetailsForm;
