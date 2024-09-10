@@ -14,19 +14,18 @@ import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interf
 import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body';
 import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body';
 
-import {
-  OPAL_FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK,
-  OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
-  OPAL_FINES_COURT_REF_DATA_MOCK,
-  OPAL_FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK,
-  OPAL_FINES_DEFENDANT_ACCOUNT_MOCK,
-  OPAL_FINES_DEFENDANT_ACCOUNT_NOTES_MOCK,
-  OPAL_FINES_DEFENDANT_ACCOUNT_NOTE_MOCK,
-  OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-  OPAL_FINES_SEARCH_COURT_BODY_MOCK,
-  OPAL_FINES_SEARCH_COURT_MOCK,
-  OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK,
-} from '../opal-fines-service/mocks';
+import { OPAL_FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK } from './mocks/opal-fines-add-defendant-account-note.mock';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_DETAILS_MOCK } from './mocks/opal-fines-defendant-account-details.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_MOCK } from './mocks/opal-fines-defendant-account.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_NOTES_MOCK } from './mocks/opal-fines-defendant-account-notes.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_NOTE_MOCK } from './mocks/opal-fines-defendant-account-note.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-local-justice-area-ref-data.mock';
+import { OPAL_FINES_SEARCH_COURT_BODY_MOCK } from './mocks/opal-fines-search-court-body.mock';
+import { OPAL_FINES_SEARCH_COURT_MOCK } from './mocks/opal-fines-search-court.mock';
+import { OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK } from './mocks/opal-fines-search-defendant-accounts.mock';
+
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines';
 
