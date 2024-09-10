@@ -15,8 +15,4 @@ export class GovukRadioComponent {
   @Input({ required: false }) legendClasses!: string;
   @Input({ required: false }) radioClasses!: string;
   @Input({ required: false }) errors!: string | null;
-
-  public hasError(): boolean {
-    return this.errors !== null && typeof this.errors !== 'undefined';
-  }
 }

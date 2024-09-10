@@ -52,8 +52,11 @@ describe('ScotgovDatePickerComponent', () => {
     expect(component.dateChange.emit).toHaveBeenCalledWith(newDate);
   });
 
-  it('should test getDisabledDates when supplied', () => {
+  it('should test concatenateDisabledDates when supplied', () => {
     component.disabledDates = ['01/01/2024', '01/02/2024'];
-    expect(component.getDisabledDates()).toEqual('01/01/2024 01/02/2024');
+
+    component.ngOnInit();
+
+    expect(component.disabledDatesConcatenated).toEqual('01/01/2024 01/02/2024');
   });
 });

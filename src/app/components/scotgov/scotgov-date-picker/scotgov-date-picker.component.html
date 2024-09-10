@@ -3,8 +3,8 @@
   class="ds_datepicker"
   [attr.data-mindate]="minDate"
   [attr.data-maxdate]="maxDate"
-  [attr.data-disableddates]="getDisabledDates()"
-  [class.govuk-form-group--error]="hasError()"
+  [attr.data-disableddates]="disabledDatesConcatenated"
+  [class.govuk-form-group--error]="!!errors"
 >
   <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
   @if (hintText) {

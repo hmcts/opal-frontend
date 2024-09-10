@@ -6,3 +6,6 @@ Then('I select the {string} checkbox', (checkbox: string) => {
 When('I unselect the {string} checkbox', (checkbox: string) => {
   cy.contains('label', checkbox).siblings('input').uncheck();
 });
+Then('I do not see the {string} checkbox', (checkbox: string) => {
+  cy.contains('label', checkbox).should('not.exist');
+});

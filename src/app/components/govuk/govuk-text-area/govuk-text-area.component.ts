@@ -35,8 +35,4 @@ export class GovukTextAreaComponent {
   get remainingCharacterCount() {
     return this.maxCharacterLimit - (this._control.value?.length ?? 0);
   }
-
-  public hasError(): boolean {
-    return this.errors !== null && typeof this.errors !== 'undefined';
-  }
 }

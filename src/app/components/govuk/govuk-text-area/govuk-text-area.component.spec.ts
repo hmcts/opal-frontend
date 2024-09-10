@@ -46,14 +46,4 @@ describe('GovukTextAreaComponent', () => {
     component.control = control;
     expect(component.remainingCharacterCount).toBe(500);
   });
-
-  it('should return true if there are errors', () => {
-    component.errors = 'Some error message';
-    expect(component.hasError()).toBe(true);
-  });
-
-  it('should return false if there are no errors', () => {
-    component.errors = null;
-    expect(component.hasError()).toBe(false);
-  });
 });

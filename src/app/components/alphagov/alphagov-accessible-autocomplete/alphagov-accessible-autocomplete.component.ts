@@ -62,10 +62,6 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
     return this._control;
   }
 
-  public hasError(): boolean {
-    return this.errors !== null && this.errors !== undefined;
-  }
-
   /**
    * Handles the confirmation of a selected name.
    *
