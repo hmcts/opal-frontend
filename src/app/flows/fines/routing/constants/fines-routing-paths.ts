@@ -1,4 +1,4 @@
-import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/routing/constants';
+import { FINES_MAC_ROUTING_PATHS } from '../../fines-mac/routing/constants/fines-mac-routing-paths';
 import { IFinesRoutingPaths } from '../interfaces';
 
 export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
