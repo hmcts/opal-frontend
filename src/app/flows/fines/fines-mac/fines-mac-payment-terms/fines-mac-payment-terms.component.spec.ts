@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacPaymentTermsComponent } from './fines-mac-payment-terms.component';
 import { FinesService } from '@services/fines';
-import { IFinesMacPaymentTermsForm } from './interfaces';
-import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from './mocks';
+import { IFinesMacPaymentTermsForm } from './interfaces/fines-mac-payment-terms-form.interface';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from './mocks/fines-mac-payment-terms-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let component: FinesMacPaymentTermsComponent;

@@ -1,6 +1,6 @@
 import { Validators } from '@angular/forms';
 import { dateOfBirthValidator, optionalValidDateValidator, numericalTextValidator } from '@validators';
-import { IFinesMacPaymentTermsDefaultDaysControlValidation } from '../interfaces/';
+import { IFinesMacPaymentTermsDefaultDaysControlValidation } from '../interfaces/fines-mac-payment-terms-default-days-control-validation.interface';
 
 export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IFinesMacPaymentTermsDefaultDaysControlValidation[] =
   [
