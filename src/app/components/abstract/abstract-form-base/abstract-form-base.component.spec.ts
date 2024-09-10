@@ -907,4 +907,57 @@ describe('AbstractFormBaseComponent', () => {
     component['removeControl'](controlName);
     expect(component.form.get(controlName)).toBeNull();
   });
+
+  it('should create a form control with the specified validators and initial value', () => {
+    const validators = [Validators.required];
+    const initialValue = 'Test';
+
+    const formControl = component['createFormControl'](validators, initialValue);
+
+    expect(formControl).toBeInstanceOf(FormControl);
+    expect(formControl.value).toBe(initialValue);
+    expect(formControl.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should create a form control with default initial value of null', () => {
+    const validators = [Validators.required];
+
+    const formControl = component['createFormControl'](validators);
+
+    expect(formControl).toBeInstanceOf(FormControl);
+    expect(formControl.value).toBeNull();
+    expect(formControl.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should create a new FormArray with validators and controls', () => {
+    const validators = [Validators.required];
+    const controls = [new FormControl('value1'), new FormControl('value2'), new FormControl('value3')];
+
+    const formArray = component['createFormArray'](validators, controls);
+
+    expect(formArray instanceof FormArray).toBe(true);
+    expect(formArray.controls.length).toBe(3);
+    expect(formArray.controls[0].value).toBe('value1');
+    expect(formArray.controls[1].value).toBe('value2');
+    expect(formArray.controls[2].value).toBe('value3');
+    expect(formArray.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should create a new FormArray with validators and no controls', () => {
+    const validators = [Validators.required];
+
+    const formArray = component['createFormArray'](validators);
+
+    expect(formArray instanceof FormArray).toBe(true);
+    expect(formArray.controls.length).toBe(0);
+    expect(formArray.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should create a new FormArray without validators and controls', () => {
+    const formArray = component['createFormArray']([]);
+
+    expect(formArray instanceof FormArray).toBe(true);
+    expect(formArray.controls.length).toBe(0);
+    expect(formArray.hasValidator(Validators.required)).toBeFalsy();
+  });
 });
