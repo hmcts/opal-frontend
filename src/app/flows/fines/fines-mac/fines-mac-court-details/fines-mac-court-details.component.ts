@@ -7,10 +7,11 @@ import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { FinesService, OpalFines } from '@services/fines';
 import { IOpalFinesCourtRefData, IOpalFinesLocalJusticeAreaRefData } from '@interfaces/fines';
-import { IFinesMacCourtDetailsForm } from './interfaces';
+import { IFinesMacCourtDetailsForm } from './interfaces/fines-mac-court-details-form.interface';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
-import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { FINES_MAC_STATUS } from '../constants';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-court-details',

@@ -1,4 +1,4 @@
-import { IFinesMacCourtDetailsFieldErrors } from '../interfaces';
+import { IFinesMacCourtDetailsFieldErrors } from '../interfaces/fines-mac-court-details-field-errors.interface';
 
 export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS: IFinesMacCourtDetailsFieldErrors = {
   sending_court: {

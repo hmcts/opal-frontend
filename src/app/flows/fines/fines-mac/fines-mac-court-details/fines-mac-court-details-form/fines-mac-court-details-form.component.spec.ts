@@ -1,13 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form.component';
 import { FinesService } from '@services/fines';
-import { IFinesMacCourtDetailsForm } from '../interfaces';
-import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import {
-  OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK,
-  OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK,
-} from '../../../services/opal-fines-service/mocks';
-import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../mocks';
+import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
+import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
+import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-court-autocomplete-items.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-local-justice-area-autocomplete-items.mock';
+import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-court-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 
 describe('FinesMacCourtDetailsFormComponent', () => {

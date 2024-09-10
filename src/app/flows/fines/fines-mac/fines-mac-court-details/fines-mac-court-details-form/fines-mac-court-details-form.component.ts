@@ -20,10 +20,11 @@ import {
 
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
-import { IFinesMacCourtDetailsForm } from '../interfaces';
+import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
 import { FinesService } from '@services/fines';
-import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants';
-import { FINES_MAC_ROUTING_NESTED_ROUTES, FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',
