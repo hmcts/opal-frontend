@@ -205,7 +205,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const paymentTermsControl = component.form.controls['payment_terms'];
     const selectedTerm = 'payInFull';
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlSpy = spyOn<any>(component, 'removeControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
 
     // Act
@@ -221,7 +223,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const paymentTermsControl = component.form.controls['payment_terms'];
     const selectedTerm = 'instalmentsOnly';
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlSpy = spyOn<any>(component, 'removeControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
 
     // Act

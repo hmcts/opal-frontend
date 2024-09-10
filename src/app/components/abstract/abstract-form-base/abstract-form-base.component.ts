@@ -342,6 +342,28 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Creates a form control with the specified validators and initial value.
+   *
+   * @param validators - An array of validator functions.
+   * @param initialValue - The initial value for the form control. Defaults to null.
+   * @returns The created form control.
+   */
+  protected createFormControl(validators: ValidatorFn[], initialValue: string | null = null): FormControl {
+    return new FormControl(initialValue, { validators: [...validators] });
+  }
+
+  /**
+   * Creates a new FormArray with the specified validators and controls.
+   *
+   * @param validators - An array of validator functions to apply to the FormArray.
+   * @param controls - An optional array of initial FormControl objects to include in the FormArray.
+   * @returns A new FormArray instance.
+   */
+  protected createFormArray(validators: ValidatorFn[], controls: FormControl[] = []): FormArray {
+    return new FormArray(controls, { validators: [...validators] });
+  }
+
+  /**
    * Removes a form array control at the specified index from the given array of form array controls.
    *
    * @param index - The index of the form array control to remove.
