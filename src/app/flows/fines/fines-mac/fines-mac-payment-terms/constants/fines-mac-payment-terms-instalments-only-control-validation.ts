@@ -1,12 +1,12 @@
 import { Validators } from '@angular/forms';
 import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces';
-import { optionalValidDateValidator } from '@validators';
+import { optionalValidDateValidator, twoDecimalPlacesValidator } from '@validators';
 
 export const FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION: IFinesMacPaymentTermsPaymentTermOptionsControlValidation[] =
   [
     {
       controlName: 'instalment',
-      validators: [Validators.required],
+      validators: [Validators.required, twoDecimalPlacesValidator()],
     },
     {
       controlName: 'frequency',

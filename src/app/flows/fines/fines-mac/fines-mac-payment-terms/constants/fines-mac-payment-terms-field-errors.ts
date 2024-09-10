@@ -1,6 +1,12 @@
 import { IFinesMacPaymentTermsFieldErrors } from '../interfaces';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErrors = {
+  payment_terms: {
+    required: {
+      message: `Select payment terms`,
+      priority: 1,
+    },
+  },
   pay_by_date: {
     required: {
       message: `Enter a pay by date`,
@@ -20,11 +26,19 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       message: `Enter lump sum`,
       priority: 1,
     },
+    invalidDecimal: {
+      message: `Enter valid lump sum amount`,
+      priority: 2,
+    },
   },
   instalment: {
     required: {
       message: `Enter instalment amount`,
       priority: 1,
+    },
+    invalidDecimal: {
+      message: `Enter valid instalment amount`,
+      priority: 2,
     },
   },
   frequency: {

@@ -17,7 +17,7 @@ import {
 } from '../interfaces';
 import { FinesService } from '../../../services/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
 import { CommonModule } from '@angular/common';
 import {
@@ -43,6 +43,7 @@ import { FinesMacDefaultDaysComponent } from '../../components';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
 import { DateService } from '@services';
+import { MojTicketPanelComponent } from '@components/moj';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -63,6 +64,7 @@ import { DateService } from '@services';
     GovukTextInputPrefixSuffixComponent,
     FinesMacDefaultDaysComponent,
     GovukErrorSummaryComponent,
+    MojTicketPanelComponent,
   ],
   templateUrl: './fines-mac-payment-terms-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,13 +93,15 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION;
   public yesterday!: string;
   public isAdult!: boolean;
+  public dateInFuture!: boolean;
+  public dateInPast!: boolean;
 
   /**
    * Sets up the payment terms form.
    */
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
-      payment_terms: new FormControl(null),
+      payment_terms: new FormControl(null, [Validators.required]),
       request_payment_card: new FormControl(null),
       has_days_in_default: new FormControl(null),
       add_enforcement_action: new FormControl(null),
@@ -155,6 +159,30 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     this.isAdult = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
   }
 
+  /**
+   * Listens for changes in the payment terms control and performs necessary actions based on the selected term.
+   * @private
+   * @returns {void}
+   */
+  private handleControl(
+    control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation,
+    action: 'add' | 'remove',
+  ): void {
+    if (action === 'remove') {
+      this.removeControl(control.controlName);
+      this.removeControlErrors(control.controlName);
+      this.resetDateChecker();
+    } else if (action === 'add') {
+      this.createControl(control.controlName, control.validators);
+      if (control.controlName === 'start_date' || control.controlName === 'pay_by_date') {
+        this.dateListener(control.controlName);
+      }
+    }
+  }
+
+  /**
+   * Listens for changes in the payment terms control and performs actions based on the selected term.
+   */
   private paymentTermsListener(): void {
     const { payment_terms: paymentTerms } = this.form.controls;
 
@@ -167,14 +195,48 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       }
 
       controls.fieldsToRemove?.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
-        this.removeControl(control.controlName);
-        this.removeControlErrors(control.controlName);
+        this.handleControl(control, 'remove');
       });
 
       controls.fieldsToAdd?.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
-        this.createControl(control.controlName, control.validators);
+        this.handleControl(control, 'add');
       });
     });
+  }
+
+  /**
+   * Checks the validity of a date and sets flags indicating if the date is in the future or in the past.
+   * @param dateValue - The date value to be checked.
+   */
+  private dateChecker(dateValue: string): void {
+    this.dateInFuture = false;
+    this.dateInPast = false;
+
+    if (this.dateService.isValidDate(dateValue)) {
+      this.dateInFuture = this.dateService.isDateInTheFuture(dateValue, 3);
+      this.dateInPast = this.dateService.isDateInThePast(dateValue);
+    }
+  }
+
+  /**
+   * Listens for changes in the specified control and performs a date check.
+   *
+   * @param controlName - The name of the control to listen for changes.
+   */
+  private dateListener(controlName: string): void {
+    const control = this.form.controls[controlName];
+
+    control.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((value) => {
+      this.dateChecker(value);
+    });
+  }
+
+  /**
+   * Resets the date checker flags to their initial state.
+   */
+  private resetDateChecker(): void {
+    this.dateInFuture = false;
+    this.dateInPast = false;
   }
 
   public override ngOnInit(): void {

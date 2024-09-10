@@ -116,9 +116,36 @@ export class DateService {
    * @returns The number of days between the start and end dates.
    */
   public calculateDaysBetweenDates(startDate: string, endDate: string): number {
-    const start = DateTime.fromFormat(startDate, 'dd/MM/yyyy');
-    const end = DateTime.fromFormat(endDate, 'dd/MM/yyyy');
+    const start = this.getFromFormat(startDate, 'dd/MM/yyyy');
+    const end = this.getFromFormat(endDate, 'dd/MM/yyyy');
     const diff = end.diff(start, 'days');
     return diff.days;
+  }
+
+  /**
+   * Checks if a given date is in the past.
+   * @param date - The date to check.
+   * @returns A boolean indicating whether the date is in the past or not.
+   */
+  public isDateInThePast(date: string): boolean {
+    return this.getFromFormat(date, 'dd/MM/yyyy') < DateTime.now();
+  }
+
+  /**
+   * Checks if a given date is in the future.
+   * @param date - The date to check.
+   * @param yearsInTheFuture - Optional. The number of years in the future to compare against. Default is undefined.
+   * @returns A boolean indicating whether the date is in the future or not.
+   */
+  public isDateInTheFuture(date: string, yearsInTheFuture?: number): boolean {
+    const now = DateTime.now();
+    const dateValue = this.getFromFormat(date, 'dd/MM/yyyy');
+
+    if (yearsInTheFuture) {
+      const futureDate = now.plus({ years: yearsInTheFuture });
+      return dateValue > futureDate;
+    }
+
+    return dateValue > now;
   }
 }

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form.component';
 import { FinesService } from '@services/fines';
 import { ActivatedRoute } from '@angular/router';
@@ -19,7 +18,13 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockDateService = jasmine.createSpyObj(DateService, ['getPreviousDate', 'calculateAge']);
+    mockDateService = jasmine.createSpyObj(DateService, [
+      'getPreviousDate',
+      'calculateAge',
+      'isValidDate',
+      'isDateInThePast',
+      'isDateInTheFuture',
+    ]);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     formSubmit = FINES_MAC_PAYMENT_TERMS_FORM_MOCK;
@@ -35,7 +40,12 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacPaymentTermsFormComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
+  });
+
+  beforeEach(() => {
+    component.form.reset();
   });
 
   it('should create', () => {
@@ -145,5 +155,80 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(component.isAdult).toBe(false);
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dob);
+  });
+
+  it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
+    // Arrange
+    const dateValue = DateTime.now().plus({ years: 4 }).toFormat('dd/MM/yyyy');
+    mockDateService.isValidDate.and.returnValue(true);
+    mockDateService.isDateInTheFuture.and.returnValue(true);
+    mockDateService.isDateInThePast.and.returnValue(false);
+
+    // Act
+    component['dateChecker'](dateValue);
+
+    // Assert
+    expect(component.dateInFuture).toBe(true);
+    expect(component.dateInPast).toBe(false);
+  });
+
+  it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the past', () => {
+    // Arrange
+    const dateValue = DateTime.now().minus({ years: 4 }).toFormat('dd/MM/yyyy');
+    mockDateService.isValidDate.and.returnValue(true);
+    mockDateService.isDateInTheFuture.and.returnValue(false);
+    mockDateService.isDateInThePast.and.returnValue(true);
+
+    // Act
+    component['dateChecker'](dateValue);
+
+    // Assert
+    expect(component.dateInFuture).toBe(false);
+    expect(component.dateInPast).toBe(true);
+  });
+
+  it('should set dateInFuture and dateInPast to false when dateValue is not a valid date', () => {
+    // Arrange
+    const dateValue = 'invalid-date';
+    mockDateService.isValidDate.and.returnValue(false);
+
+    // Act
+    component['dateChecker'](dateValue);
+
+    // Assert
+    expect(component.dateInFuture).toBe(false);
+    expect(component.dateInPast).toBe(false);
+  });
+
+  it('should update form controls based on selected payment term', () => {
+    // Arrange
+    const paymentTermsControl = component.form.controls['payment_terms'];
+    const selectedTerm = 'payInFull';
+
+    const removeControlSpy = spyOn<any>(component, 'removeControl');
+    const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
+
+    // Act
+    paymentTermsControl.setValue(selectedTerm);
+
+    // Assert
+    expect(removeControlSpy).toHaveBeenCalledTimes(7);
+    expect(removeControlErrorsSpy).toHaveBeenCalledTimes(7);
+  });
+
+  it('should update form controls based on selected payment term', () => {
+    // Arrange
+    const paymentTermsControl = component.form.controls['payment_terms'];
+    const selectedTerm = 'instalmentsOnly';
+
+    const removeControlSpy = spyOn<any>(component, 'removeControl');
+    const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
+
+    // Act
+    paymentTermsControl.setValue(selectedTerm);
+
+    // Assert
+    expect(removeControlSpy).toHaveBeenCalledTimes(5);
+    expect(removeControlErrorsSpy).toHaveBeenCalledTimes(5);
   });
 });

@@ -241,4 +241,44 @@ describe('DateServiceService', () => {
     const result = service.calculateDaysBetweenDates(startDate, endDate);
     expect(result).toEqual(0);
   });
+
+  it('should return true if the date is in the past', () => {
+    const pastDate = DateTime.now().minus({ days: 1 }).toFormat('dd/MM/yyyy');
+    expect(service.isDateInThePast(pastDate)).toBeTrue();
+  });
+
+  it('should return false if the date is today', () => {
+    const today = DateTime.now().toFormat('dd/MM/yyyy');
+    expect(service.isDateInThePast(today)).toBeTrue();
+  });
+
+  it('should return false if the date is in the future', () => {
+    const futureDate = DateTime.now().plus({ days: 1 }).toFormat('dd/MM/yyyy');
+    expect(service.isDateInThePast(futureDate)).toBeFalse();
+  });
+
+  it('should return true if the date is in the future', () => {
+    const futureDate = DateTime.now().plus({ days: 1 }).toFormat('dd/MM/yyyy');
+    expect(service.isDateInTheFuture(futureDate)).toBeTrue();
+  });
+
+  it('should return false if the date is today', () => {
+    const today = DateTime.now().toFormat('dd/MM/yyyy');
+    expect(service.isDateInTheFuture(today)).toBeFalse();
+  });
+
+  it('should return false if the date is in the past', () => {
+    const pastDate = DateTime.now().minus({ days: 1 }).toFormat('dd/MM/yyyy');
+    expect(service.isDateInTheFuture(pastDate)).toBeFalse();
+  });
+
+  it('should return true if the date is more than the specified years in the future', () => {
+    const futureDate = DateTime.now().plus({ years: 5 }).toFormat('dd/MM/yyyy');
+    expect(service.isDateInTheFuture(futureDate, 3)).toBeTrue();
+  });
+
+  it('should return false if the date is less than the specified years in the future', () => {
+    const futureDate = DateTime.now().plus({ years: 2 }).toFormat('dd/MM/yyyy');
+    expect(service.isDateInTheFuture(futureDate, 3)).toBeFalse();
+  });
 });
