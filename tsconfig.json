@@ -31,7 +31,10 @@
       "@enums": ["./src/app/enums/index.ts"],
       "@enums/fines": ["./src/app/flows/fines/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
-      "@services/fines/*": ["./src/app/flows/fines/services/*.service.ts"],
+      "@services/fines/*": [
+        "./src/app/flows/fines/services/*.service.ts",
+        "./src/app/flows/fines/services/*.interface.ts"
+      ],
       "@interfaces": ["./src/app/interfaces/index.ts"],
       "@interfaces/components/abstract": ["./src/app/components/abstract/interfaces/index.ts"],
       "@interfaces/components/govuk": ["./src/app/components/govuk/interfaces/index.ts"],

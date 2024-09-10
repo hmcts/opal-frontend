@@ -8,7 +8,11 @@ import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-f
 import { IFinesMacCreateAccountForm } from './interfaces/fines-mac-create-account-form.interface';
 import { FinesService } from '@services/fines/fines-service/fines';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines';
-import { IOpalFinesBusinessUnit, IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
+import {
+  IOpalFinesBusinessUnit,
+  IOpalFinesBusinessUnitRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data';
+
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';

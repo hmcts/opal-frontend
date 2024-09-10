@@ -7,7 +7,9 @@ import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
 import { FinesService } from '@services/fines/fines-service/fines';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines';
-import { IOpalFinesCourtRefData, IOpalFinesLocalJusticeAreaRefData } from '@interfaces/fines';
+
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data';
 import { IFinesMacCourtDetailsForm } from './interfaces/fines-mac-court-details-form.interface';
 import { IGovUkSelectOptions } from '@interfaces/components/govuk';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes';

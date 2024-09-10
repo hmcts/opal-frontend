@@ -1,4 +1,4 @@
-import { IOpalFinesBusinessUnit } from '@interfaces/fines';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data';
 
 export const FINES_MAC_BUSINESS_UNIT_STATE: IOpalFinesBusinessUnit = {
   businessUnitCode: '',

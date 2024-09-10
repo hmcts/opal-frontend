@@ -1,4 +1,4 @@
-import { IOpalFinesCourtRefData } from '@interfaces/fines';
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data';
 
 export const OPAL_FINES_COURT_REF_DATA_MOCK: IOpalFinesCourtRefData = {
   count: 4,

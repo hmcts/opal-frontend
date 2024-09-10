@@ -1,4 +1,4 @@
-import { IOpalFinesBusinessUnitRefData } from '@interfaces/fines';
+import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data';
 
 export const OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK: IOpalFinesBusinessUnitRefData = {
   count: 7,

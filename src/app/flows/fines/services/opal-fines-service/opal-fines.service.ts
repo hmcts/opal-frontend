@@ -1,21 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from './constants';
+
+import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body';
 import {
-  IOpalFinesAddDefendantAccountNoteBody,
   IOpalFinesBusinessUnit,
   IOpalFinesBusinessUnitRefData,
-  IOpalFinesCourtRefData,
-  IOpalFinesDefendantAccount,
-  IOpalFinesDefendantAccountDetails,
-  IOpalFinesDefendantAccountNote,
-  IOpalFinesGetDefendantAccountParams,
-  IOpalFinesLocalJusticeAreaRefData,
-  IOpalFinesSearchCourt,
-  IOpalFinesSearchCourtBody,
-  IOpalFinesSearchDefendantAccountBody,
-  IOpalFinesSearchDefendantAccounts,
-} from '@interfaces/fines';
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data';
+import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data';
+import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account';
+import { IOpalFinesDefendantAccountDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-details';
+import { IOpalFinesDefendantAccountNote } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-note';
+import { IOpalFinesGetDefendantAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-get-defendant-account-params';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data';
+import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court';
+import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body';
+import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body';
+import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-accounts';
+
 import { Observable, shareReplay } from 'rxjs';
 @Injectable({
   providedIn: 'root',
