@@ -1,7 +1,7 @@
 import { optionalValidDateValidator, dateOfBirthValidator } from '@validators';
-import { IFlowFormControl } from '../../../../interfaces/fines-form-control.interface';
+import { IAbstractFormArrayControlValidation } from '../../../../../components/abstract/interfaces/abstract-form-array-control-validation.interface';
 
-export const FINES_MAC_CONTROLS_DOB: IFlowFormControl = {
-  fieldName: 'dob',
+export const FINES_MAC_CONTROLS_DOB: IAbstractFormArrayControlValidation = {
+  controlName: 'dob',
   validators: [optionalValidDateValidator(), dateOfBirthValidator()],
 };

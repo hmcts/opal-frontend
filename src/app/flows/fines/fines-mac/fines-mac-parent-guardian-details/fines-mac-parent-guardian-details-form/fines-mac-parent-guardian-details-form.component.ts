@@ -99,20 +99,20 @@ export class FinesMacParentGuardianDetailsFormComponent
    */
   private setupParentGuardianDetailsForm(): void {
     this.form = new FormGroup({
-      [PGD_CONTROL_ALIASES.fieldName]: this.createFormArray(PGD_CONTROL_ALIASES.validators, []),
-      [PGD_CONTROL_FORENAMES.fieldName]: this.createFormControl(PGD_CONTROL_FORENAMES.validators),
-      [PGD_CONTROL_SURNAME.fieldName]: this.createFormControl(PGD_CONTROL_SURNAME.validators),
-      [PGD_CONTROL_ADD_ALIAS.fieldName]: this.createFormControl(PGD_CONTROL_ADD_ALIAS.validators),
-      [PGD_CONTROL_DOB.fieldName]: this.createFormControl(PGD_CONTROL_DOB.validators),
-      [PGD_CONTROL_NATIONAL_INSURANCE_NUMBER.fieldName]: this.createFormControl(
+      [PGD_CONTROL_ALIASES.controlName]: this.createFormArray(PGD_CONTROL_ALIASES.validators, []),
+      [PGD_CONTROL_FORENAMES.controlName]: this.createFormControl(PGD_CONTROL_FORENAMES.validators),
+      [PGD_CONTROL_SURNAME.controlName]: this.createFormControl(PGD_CONTROL_SURNAME.validators),
+      [PGD_CONTROL_ADD_ALIAS.controlName]: this.createFormControl(PGD_CONTROL_ADD_ALIAS.validators),
+      [PGD_CONTROL_DOB.controlName]: this.createFormControl(PGD_CONTROL_DOB.validators),
+      [PGD_CONTROL_NATIONAL_INSURANCE_NUMBER.controlName]: this.createFormControl(
         PGD_CONTROL_NATIONAL_INSURANCE_NUMBER.validators,
       ),
-      [PGD_CONTROL_ADDRESS_LINE_ONE.fieldName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_ONE.validators),
-      [PGD_CONTROL_ADDRESS_LINE_TWO.fieldName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_TWO.validators),
-      [PGD_CONTROL_ADDRESS_LINE_THREE.fieldName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_THREE.validators),
-      [PGD_CONTROL_POSTCODE.fieldName]: this.createFormControl(PGD_CONTROL_POSTCODE.validators),
-      [PGD_CONTROL_VEHICLE_MAKE.fieldName]: this.createFormControl(PGD_CONTROL_VEHICLE_MAKE.validators),
-      [PGD_CONTROL_VEHICLE_REGISTRATION_MARK.fieldName]: this.createFormControl(
+      [PGD_CONTROL_ADDRESS_LINE_ONE.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_ONE.validators),
+      [PGD_CONTROL_ADDRESS_LINE_TWO.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_TWO.validators),
+      [PGD_CONTROL_ADDRESS_LINE_THREE.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_THREE.validators),
+      [PGD_CONTROL_POSTCODE.controlName]: this.createFormControl(PGD_CONTROL_POSTCODE.validators),
+      [PGD_CONTROL_VEHICLE_MAKE.controlName]: this.createFormControl(PGD_CONTROL_VEHICLE_MAKE.validators),
+      [PGD_CONTROL_VEHICLE_REGISTRATION_MARK.controlName]: this.createFormControl(
         PGD_CONTROL_VEHICLE_REGISTRATION_MARK.validators,
       ),
     });

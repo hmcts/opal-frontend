@@ -1,6 +1,6 @@
-import { IFlowFormControl } from '../../../../interfaces/fines-form-control.interface';
+import { IAbstractFormArrayControlValidation } from '../../../../../components/abstract/interfaces/abstract-form-array-control-validation.interface';
 
-export const FINES_MAC_CONTROLS_ADD_ALIAS: IFlowFormControl = {
-  fieldName: 'add_alias',
+export const FINES_MAC_CONTROLS_ADD_ALIAS: IAbstractFormArrayControlValidation = {
+  controlName: 'add_alias',
   validators: [],
 };
