@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { OPAL_FINES_PATHS } from './constants';
+import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths';
 
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body';
 import {

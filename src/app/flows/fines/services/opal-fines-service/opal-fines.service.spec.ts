@@ -27,7 +27,7 @@ import {
   OPAL_FINES_SEARCH_COURT_MOCK,
   OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK,
 } from '../opal-fines-service/mocks';
-import { OPAL_FINES_PATHS } from './constants';
+import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines';
 
 describe('OpalFines', () => {
