@@ -1,25 +1,25 @@
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces';
 
 export const FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS: IFinesMacCreateAccountFieldErrors = {
-  AccountType: {
+  account_type: {
     required: {
       message: 'Select an account type',
       priority: 1,
     },
   },
-  FineDefendantType: {
+  fine_defendant_type: {
     required: {
       message: 'Select a defendant type',
       priority: 1,
     },
   },
-  FixedPenaltyDefendantType: {
+  fixed_penalty_defendant_type: {
     required: {
       message: 'Select a defendant type',
       priority: 1,
     },
   },
-  BusinessUnit: {
+  business_unit: {
     required: {
       message: 'Enter a business unit',
       priority: 1,

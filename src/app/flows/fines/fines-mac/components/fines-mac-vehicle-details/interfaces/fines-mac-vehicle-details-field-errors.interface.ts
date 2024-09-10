@@ -1,6 +1,6 @@
 import { IAbstractFormBaseFieldError, IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 
 export interface IFinesMacVehicleDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
-  VehicleMake: IAbstractFormBaseFieldError;
-  VehicleRegistrationMark: IAbstractFormBaseFieldError;
+  vehicle_make: IAbstractFormBaseFieldError;
+  vehicle_registration_mark: IAbstractFormBaseFieldError;
 }

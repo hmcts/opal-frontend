@@ -1,11 +1,11 @@
 import { IFinesMacCompanyDetailsAliasState } from '../interfaces';
 
 export interface IFinesMacCompanyDetailsState {
-  CompanyName: string | null;
-  AddAlias: boolean | null;
-  Aliases: IFinesMacCompanyDetailsAliasState[];
-  AddressLine1: string | null;
-  AddressLine2: string | null;
-  AddressLine3: string | null;
-  Postcode: string | null;
+  company_name: string | null;
+  add_alias: boolean | null;
+  aliases: IFinesMacCompanyDetailsAliasState[];
+  address_line_1: string | null;
+  address_line_2: string | null;
+  address_line_3: string | null;
+  postcode: string | null;
 }

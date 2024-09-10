@@ -4,11 +4,11 @@ import { IFinesMacNameAliasControlValidation } from '../interfaces';
 
 export const FINES_MAC_NAME_ALIAS: IFinesMacNameAliasControlValidation[] = [
   {
-    controlName: 'AliasForenames',
+    controlName: 'alias_forenames',
     validators: [Validators.required, Validators.maxLength(20), alphabeticalTextValidator()],
   },
   {
-    controlName: 'AliasSurname',
+    controlName: 'alias_surname',
     validators: [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()],
   },
 ];

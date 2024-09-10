@@ -5,6 +5,6 @@ interface Detail {
 }
 
 export interface IFinesMacNameAliasControls {
-  firstNames: Detail;
-  lastName: Detail;
+  forenames: Detail;
+  surname: Detail;
 }

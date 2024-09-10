@@ -1,4 +1,8 @@
-Feature: PO-569 PO-678 Updates to Parent or guardian details screen
+
+Feature: PO-569 PO-652 PO_678 Updates to Parent or guardian details screen
+
+    #Cancel link steps adding in this feature to save execution time (stpes added on AC6)
+
 
     Background:
         Given I am on the OPAL Frontend
@@ -105,6 +109,11 @@ Feature: PO-569 PO-678 Updates to Parent or guardian details screen
         Then I select "Remove" button
         Then I no longer see "Alias 2" sub heading
         Then I see the "Alias 1" sub heading in aliases
+
+        #verifying cancel button which is developed on PO-652
+        When I see the "Cancel" link
+        Then I click on the "Cancel" link
+        Then I see "Account details" on the page header
 
     Scenario: AC7- positive: If the user unticks the 'Add aliases' tick box
         When I select the "Add aliases" checkbox

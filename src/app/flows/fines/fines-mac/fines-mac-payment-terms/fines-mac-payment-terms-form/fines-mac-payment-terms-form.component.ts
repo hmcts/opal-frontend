@@ -81,9 +81,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
-      paymentTerms: new FormControl(null),
-      holdEnforcementOnAccount: new FormControl(null),
-      hasDaysInDefault: new FormControl(null),
+      payment_terms: new FormControl(null),
+      hold_enforcement_on_account: new FormControl(null),
+      has_days_in_default: new FormControl(null),
     });
   }
 
@@ -111,7 +111,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * If the value of 'hasDaysInDefault' is false, it removes the unnecessary form controls.
    */
   private hasDaysInDefaultListener(): void {
-    const { hasDaysInDefault } = this.form.controls;
+    const { has_days_in_default: hasDaysInDefault } = this.form.controls;
 
     hasDaysInDefault.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       if (hasDaysInDefault.value === true) {
@@ -134,7 +134,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private checkDefendantAge(): void {
     const { formData } = this.finesService.finesMacState.personalDetails;
-    this.isAdult = !formData.DOB || this.dateService.calculateAge(formData.DOB) >= 18;
+    this.isAdult = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
   }
 
   public override ngOnInit(): void {

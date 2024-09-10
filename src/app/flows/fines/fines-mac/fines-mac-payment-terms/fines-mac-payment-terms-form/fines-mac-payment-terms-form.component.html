@@ -2,7 +2,7 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-radio
-    fieldSetId="paymentTerms"
+    fieldSetId="payment_terms"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
   >
@@ -11,9 +11,9 @@
         app-govuk-radios-item
         [labelText]="paymentTerm.value"
         [inputId]="paymentTerm.key"
-        inputName="paymentTerms"
+        inputName="payment_terms"
         [inputValue]="paymentTerm.key"
-        [control]="form.controls['paymentTerms']"
+        [control]="form.controls['payment_terms']"
       ></div>
     }
   </app-govuk-radio>
@@ -27,39 +27,39 @@
         <div
           app-govuk-checkboxes-item
           labelText="There are days in default"
-          inputId="hasDaysInDefault"
-          inputName="hasDaysInDefault"
-          [control]="form.controls['hasDaysInDefault']"
+          inputId="has_days_in_default"
+          inputName="has_days_in_default"
+          [control]="form.controls['has_days_in_default']"
         ></div>
 
-        @if (form.get('hasDaysInDefault')?.value) {
-          <div app-govuk-checkboxes-conditional conditionalId="hasDaysInDefault">
+        @if (form.get('has_days_in_default')?.value) {
+          <div app-govuk-checkboxes-conditional conditionalId="has_days_in_default">
             <div class="govuk-grid-row">
               <app-scotgov-date-picker
                 labelText="Date days in default were imposed"
                 labelClasses="govuk-label--s"
-                inputId="daysInDefaultDate"
-                inputName="daysInDefaultDate"
+                inputId="days_in_default_date"
+                inputName="days_in_default_date"
                 inputClasses="govuk-input--width-10"
                 hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
                 [maxDate]="yesterday"
-                [control]="form.controls['daysInDefaultDate']"
-                [errors]="formControlErrorMessages['daysInDefaultDate']"
-                (dateChange)="setInputValue($event, 'daysInDefaultDate')"
+                [control]="form.controls['days_in_default_date']"
+                [errors]="formControlErrorMessages['days_in_default_date']"
+                (dateChange)="setInputValue($event, 'days_in_default_date')"
               ></app-scotgov-date-picker>
               <app-govuk-text-input-prefix-suffix
                 labelText="Enter days in default"
                 labelClasses="govuk-label--s"
-                inputId="daysInDefault"
-                inputName="daysInDefault"
+                inputId="days_in_default"
+                inputName="days_in_default"
                 inputClasses="govuk-input--width-5"
                 suffixText="days"
-                [control]="form.controls['daysInDefault']"
-                [errors]="formControlErrorMessages['daysInDefault']"
+                [control]="form.controls['days_in_default']"
+                [errors]="formControlErrorMessages['days_in_default']"
               ></app-govuk-text-input-prefix-suffix>
               <div class="govuk-!-margin-top-5">
                 <app-fines-mac-default-days
-                  [date]="form.controls['daysInDefaultDate'].value"
+                  [date]="form.controls['days_in_default_date'].value"
                 ></app-fines-mac-default-days>
               </div>
             </div>
@@ -76,9 +76,9 @@
     <div
       app-govuk-checkboxes-item
       labelText="Hold enforcement on account (NOENF)"
-      inputId="holdEnforcementOnAccount"
-      inputName="holdEnforcementOnAccount"
-      [control]="form.controls['holdEnforcementOnAccount']"
+      inputId="hold_enforcement_on_account"
+      inputName="hold_enforcement_on_account"
+      [control]="form.controls['hold_enforcement_on_account']"
     ></div>
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">

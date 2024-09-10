@@ -1,7 +1,7 @@
 export interface IFinesMacCompanyDetailsAliasState {
-  AliasOrganisationName_0?: string;
-  AliasOrganisationName_1?: string;
-  AliasOrganisationName_2?: string;
-  AliasOrganisationName_3?: string;
-  AliasOrganisationName_4?: string;
+  alias_organisation_name_0?: string;
+  alias_organisation_name_1?: string;
+  alias_organisation_name_2?: string;
+  alias_organisation_name_3?: string;
+  alias_organisation_name_4?: string;
 }

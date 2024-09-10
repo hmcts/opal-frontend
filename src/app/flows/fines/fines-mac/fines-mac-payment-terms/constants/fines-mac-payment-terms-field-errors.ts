@@ -1,7 +1,7 @@
 import { IFinesMacPaymentTermsFieldErrors } from '../interfaces';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErrors = {
-  daysInDefaultDate: {
+  days_in_default_date: {
     required: {
       message: `Enter date days in default were imposed`,
       priority: 1,
@@ -19,7 +19,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 4,
     },
   },
-  daysInDefault: {
+  days_in_default: {
     required: {
       message: `Enter days in default`,
       priority: 1,
