@@ -6,14 +6,13 @@ import {
   GovukErrorSummaryComponent,
   GovukTextInputComponent,
 } from '@components/govuk';
-import {
-  FinesMacAddressBlockComponent,
-  FinesMacDateOfBirthComponent,
-  FinesMacNameAliasComponent,
-  FinesMacNationalInsuranceNumberComponent,
-  FinesMacVehicleDetailsComponent,
-  FinesMacNameComponent,
-} from '../../components';
+import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
+import { FinesMacDateOfBirthComponent } from '../../components/fines-mac-date-of-birth/fines-mac-date-of-birth.component';
+import { FinesMacNameAliasComponent } from '../../components/fines-mac-name-alias/fines-mac-name-alias.component';
+import { FinesMacNationalInsuranceNumberComponent } from '../../components/fines-mac-national-insurance-number/fines-mac-national-insurance-number.component';
+import { FinesMacVehicleDetailsComponent } from '../../components/fines-mac-vehicle-details/fines-mac-vehicle-details.component';
+import { FinesMacNameComponent } from '../../components/fines-mac-name/fines-mac-name.component';
+
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';

@@ -10,14 +10,13 @@ import {
 } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@components/abstract';
-import {
-  FinesMacAddressBlockComponent,
-  FinesMacDateOfBirthComponent,
-  FinesMacNameAliasComponent,
-  FinesMacNameComponent,
-  FinesMacNationalInsuranceNumberComponent,
-  FinesMacVehicleDetailsComponent,
-} from '../../components';
+import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
+import { FinesMacDateOfBirthComponent } from '../../components/fines-mac-date-of-birth/fines-mac-date-of-birth.component';
+import { FinesMacNameAliasComponent } from '../../components/fines-mac-name-alias/fines-mac-name-alias.component';
+import { FinesMacNameComponent } from '../../components/fines-mac-name/fines-mac-name.component';
+import { FinesMacNationalInsuranceNumberComponent } from '../../components/fines-mac-national-insurance-number/fines-mac-national-insurance-number.component';
+import { FinesMacVehicleDetailsComponent } from '../../components/fines-mac-vehicle-details/fines-mac-vehicle-details.component';
+
 import {
   GovukButtonComponent,
   GovukCancelLinkComponent,
