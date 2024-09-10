@@ -1,4 +1,4 @@
-import { IFinesMacDefendantTypes } from '../interfaces';
+import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
 
 export const FINES_MAC_DEFENDANT_TYPES: IFinesMacDefendantTypes = {
   adultOrYouthOnly: 'Adult or youth only',
