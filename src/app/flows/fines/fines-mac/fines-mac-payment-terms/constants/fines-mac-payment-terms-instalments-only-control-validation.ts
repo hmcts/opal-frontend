@@ -1,19 +1,7 @@
-import { Validators } from '@angular/forms';
 import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces';
-import { optionalValidDateValidator, twoDecimalPlacesValidator } from '@validators';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_INSTALMENT as PT_CONTROLS_INSTALMENT } from './controls/fines-mac-payment-terms-controls-instalment.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_FREQUENCY as PT_CONTROLS_FREQUENCY } from './controls/fines-mac-payment-terms-controls-frequency.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_START_DATE as PT_CONTROLS_START_DATE } from './controls/fines-mac-payment-terms-controls-start-date.constant';
 
 export const FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION: IFinesMacPaymentTermsPaymentTermOptionsControlValidation[] =
-  [
-    {
-      controlName: 'instalment',
-      validators: [Validators.required, twoDecimalPlacesValidator()],
-    },
-    {
-      controlName: 'frequency',
-      validators: [Validators.required],
-    },
-    {
-      controlName: 'start_date',
-      validators: [Validators.required, optionalValidDateValidator()],
-    },
-  ];
+  [PT_CONTROLS_INSTALMENT, PT_CONTROLS_FREQUENCY, PT_CONTROLS_START_DATE];

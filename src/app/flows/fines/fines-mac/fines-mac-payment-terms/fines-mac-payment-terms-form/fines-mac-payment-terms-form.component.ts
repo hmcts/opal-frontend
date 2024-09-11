@@ -17,7 +17,7 @@ import {
 } from '../interfaces';
 import { FinesService } from '../../../services/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
 import { CommonModule } from '@angular/common';
 import {
@@ -44,6 +44,10 @@ import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-pay
 import { takeUntil } from 'rxjs';
 import { DateService } from '@services';
 import { MojTicketPanelComponent } from '@components/moj';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as PT_CONTROL_PAYMENT_TERMS } from '../constants/controls/fines-mac-payment-terms-controls-payment-terms.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REQUEST_CARD_PAYMENT as PT_CONTROL_REQUEST_CARD_PAYMENT } from '../constants/controls/fines-mac-payment-terms-controls-request-card-payment.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_DAYS_IN_DEFAULT as PT_CONTROL_HAS_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-has-days-in-default.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION as PT_CONTROL_ADD_ENFORCEMENT_ACTION } from '../constants/controls/fines-mac-payment-terms-controls-add-enforcement-action.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -101,10 +105,12 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
-      payment_terms: new FormControl(null, [Validators.required]),
-      request_payment_card: new FormControl(null),
-      has_days_in_default: new FormControl(null),
-      add_enforcement_action: new FormControl(null),
+      [PT_CONTROL_PAYMENT_TERMS.controlName]: this.createFormControl(PT_CONTROL_PAYMENT_TERMS.validators),
+      [PT_CONTROL_REQUEST_CARD_PAYMENT.controlName]: this.createFormControl(PT_CONTROL_REQUEST_CARD_PAYMENT.validators),
+      [PT_CONTROL_HAS_DAYS_IN_DEFAULT.controlName]: this.createFormControl(PT_CONTROL_HAS_DAYS_IN_DEFAULT.validators),
+      [PT_CONTROL_ADD_ENFORCEMENT_ACTION.controlName]: this.createFormControl(
+        PT_CONTROL_ADD_ENFORCEMENT_ACTION.validators,
+      ),
     });
   }
 
