@@ -114,22 +114,6 @@ export class FinesMacParentGuardianDetailsFormComponent
       [PGD_CONTROL_VEHICLE_REGISTRATION_MARK.controlName]: this.createFormControl(
         PGD_CONTROL_VEHICLE_REGISTRATION_MARK.validators,
       ),
-      [PGD_CONTROL_ALIASES.controlName]: this.createFormArray(PGD_CONTROL_ALIASES.validators, []),
-      [PGD_CONTROL_FORENAMES.controlName]: this.createFormControl(PGD_CONTROL_FORENAMES.validators),
-      [PGD_CONTROL_SURNAME.controlName]: this.createFormControl(PGD_CONTROL_SURNAME.validators),
-      [PGD_CONTROL_ADD_ALIAS.controlName]: this.createFormControl(PGD_CONTROL_ADD_ALIAS.validators),
-      [PGD_CONTROL_DOB.controlName]: this.createFormControl(PGD_CONTROL_DOB.validators),
-      [PGD_CONTROL_NATIONAL_INSURANCE_NUMBER.controlName]: this.createFormControl(
-        PGD_CONTROL_NATIONAL_INSURANCE_NUMBER.validators,
-      ),
-      [PGD_CONTROL_ADDRESS_LINE_ONE.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_ONE.validators),
-      [PGD_CONTROL_ADDRESS_LINE_TWO.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_TWO.validators),
-      [PGD_CONTROL_ADDRESS_LINE_THREE.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_THREE.validators),
-      [PGD_CONTROL_POSTCODE.controlName]: this.createFormControl(PGD_CONTROL_POSTCODE.validators),
-      [PGD_CONTROL_VEHICLE_MAKE.controlName]: this.createFormControl(PGD_CONTROL_VEHICLE_MAKE.validators),
-      [PGD_CONTROL_VEHICLE_REGISTRATION_MARK.controlName]: this.createFormControl(
-        PGD_CONTROL_VEHICLE_REGISTRATION_MARK.validators,
-      ),
     });
   }
 
