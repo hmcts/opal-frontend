@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE } from './fines-mac/constants/fines-mac-state';
 import { GlobalStateService } from '@services';
 

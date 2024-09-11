@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacComponent } from './fines-mac.component';
 import { GlobalStateService } from '@services';
-import { FinesService } from '@services/fines/fines-service/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from './mocks/fines-mac-state.mock';
 
 describe('FinesMacComponent', () => {

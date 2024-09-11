@@ -19,7 +19,7 @@ import {
 
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
 import { IFinesMacEmployerDetailsForm } from '../interfaces/fines-mac-employer-details-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import {
   optionalMaxLengthValidator,
   optionalEmailAddressValidator,

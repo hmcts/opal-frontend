@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form.component';
-import { FinesService } from '@services/fines/fines-service/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';

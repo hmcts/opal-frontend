@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountCommentsNotesComponent } from './fines-mac-account-comments-notes.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesService } from '@services/fines/fines-service/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacAccountCommentsNotesForm } from './interfaces/fines-mac-account-comments-notes-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from './mocks/fines-mac-account-comments-notes-form.mock';

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacEmployerDetailsComponent } from './fines-mac-employer-details.component';
 import { IFinesMacEmployerDetailsForm } from './interfaces/fines-mac-employer-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
-import { FinesService } from '@services/fines/fines-service/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK } from './mocks/fines-mac-employer-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';

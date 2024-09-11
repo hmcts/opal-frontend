@@ -30,11 +30,7 @@
       "@components/abstract": ["./src/app/components/abstract/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
-      "@services/fines/*": [
-        "./src/app/flows/fines/services/*.service.ts",
-        "./src/app/flows/fines/services/*.interface.ts",
-        "./src/app/flows/fines/services/*.constant.ts"
-      ],
+      "@services/fines/*": ["./src/app/flows/fines/services/*.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],
       "@interfaces/flows/routing": ["./src/app/flows/routing/interfaces/index.ts"],
       "@interfaces/components/abstract": ["./src/app/components/abstract/interfaces/index.ts"],

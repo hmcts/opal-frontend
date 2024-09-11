@@ -1,5 +1,5 @@
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths';
 import { of } from 'rxjs';
