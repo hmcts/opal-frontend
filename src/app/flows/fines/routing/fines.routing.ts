@@ -4,9 +4,9 @@ import { userStateResolver } from '@resolvers';
 import { routing as macRouting } from '../fines-mac/routing';
 import { RoutingPaths } from '@enums';
 
-import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths';
-import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions';
+import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
 const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];
