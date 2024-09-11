@@ -1,7 +1,7 @@
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { TestBed, fakeAsync } from '@angular/core/testing';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { of } from 'rxjs';
 import { hasFlowStateGuard } from './has-flow-state.guard';
 import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants/fines-mac-routing-paths';

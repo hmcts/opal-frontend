@@ -42,11 +42,7 @@
       "@interceptors": ["./src/app/interceptors/index.ts"],
       "@resolvers": ["./src/app/resolvers/index.ts"],
       "@routing/pages": ["./src/app/pages/routing/index.ts"],
-      "@routing/fines/*": [
-        "./src/app/flows/fines/routing/*.routing.ts",
-        "./src/app/flows/fines/routing/*.interface.ts",
-        "./src/app/flows/fines/routing/*.constant.ts"
-      ],
+      "@routing/fines/*": ["./src/app/flows/fines/routing/*.ts"],
       "@routing/flows": ["./src/app/flows/routing/index.ts"],
       "@types-guards": ["./src/app/guards/types/index.ts"],
       "@validators": ["./src/app/validators/index.ts"]
