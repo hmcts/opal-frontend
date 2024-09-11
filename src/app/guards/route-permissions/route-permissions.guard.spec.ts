@@ -17,9 +17,10 @@ import { Observable, of, throwError } from 'rxjs';
 import { handleObservableResult } from '../helpers';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-import { FINES_ROUTING_PERMISSIONS, FINES_ROUTING_PATHS } from '@constants/fines';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths';
+import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions';
 import { RoutingPaths } from '@enums';
-import { IFinesRoutingPermissions } from '@interfaces/fines';
+import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions';
 
 async function runRoutePermissionGuard(
   guard: typeof routePermissionsGuard,

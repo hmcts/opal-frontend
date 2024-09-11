@@ -37,20 +37,22 @@
         "./src/app/flows/fines/services/*.constant.ts"
       ],
       "@interfaces": ["./src/app/interfaces/index.ts"],
+      "@interfaces/flows/routing": ["./src/app/flows/routing/interfaces/index.ts"],
       "@interfaces/components/abstract": ["./src/app/components/abstract/interfaces/index.ts"],
       "@interfaces/components/govuk": ["./src/app/components/govuk/interfaces/index.ts"],
       "@interfaces/components/alphagov": ["src/app/components/alphagov/interfaces/index.ts"],
-      "@interfaces/fines": ["./src/app/flows/fines/interfaces/index.ts"],
-      "@interfaces/flows/routing": ["./src/app/flows/routing/interfaces/index.ts"],
       "@mocks": ["./src/app/mocks/index.ts"],
-      "@mocks/fines": ["src/app/flows/fines/services/opal-fines-service/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
       "@constants/fines": ["./src/app/flows/fines/constants/index.ts"],
       "@interceptors": ["./src/app/interceptors/index.ts"],
       "@resolvers": ["./src/app/resolvers/index.ts"],
       "@routing/pages": ["./src/app/pages/routing/index.ts"],
-      "@routing/fines": ["./src/app/flows/fines/routing/index.ts"],
+      "@routing/fines/*": [
+        "./src/app/flows/fines/routing/*.routing.ts",
+        "./src/app/flows/fines/routing/*.interface.ts",
+        "./src/app/flows/fines/routing/*.constant.ts"
+      ],
       "@routing/flows": ["./src/app/flows/routing/index.ts"],
       "@types-guards": ["./src/app/guards/types/index.ts"],
       "@validators": ["./src/app/validators/index.ts"]

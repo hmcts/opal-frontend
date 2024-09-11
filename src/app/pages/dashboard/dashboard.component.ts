@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FINES_ROUTING_PATHS } from '@constants/fines';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths';
 import { GlobalStateService } from '@services';
 
 @Component({
