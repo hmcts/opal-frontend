@@ -23,7 +23,7 @@ export const finesRouting: Routes = [
     children: [
       {
         path: FINES_ROUTING_PATHS.children.mac.root,
-        loadComponent: () => import('../../fines/fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
+        loadComponent: () => import('../fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         children: macRouting,
         canActivate: [authGuard, routePermissionsGuard],
         canDeactivate: [canDeactivateGuard],
