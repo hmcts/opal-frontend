@@ -29,7 +29,6 @@
       "@components/alphagov": ["./src/app/components/alphagov/index.ts"],
       "@components/abstract": ["./src/app/components/abstract/index.ts"],
       "@enums": ["./src/app/enums/index.ts"],
-      "@enums/fines": ["./src/app/flows/fines/enums/index.ts"],
       "@services": ["./src/app/services/index.ts"],
       "@services/fines/*": [
         "./src/app/flows/fines/services/*.service.ts",
@@ -44,7 +43,6 @@
       "@mocks": ["./src/app/mocks/index.ts"],
       "@guards": ["./src/app/guards/index.ts"],
       "@constants": ["./src/app/constants/index.ts"],
-      "@constants/fines": ["./src/app/flows/fines/constants/index.ts"],
       "@interceptors": ["./src/app/interceptors/index.ts"],
       "@resolvers": ["./src/app/resolvers/index.ts"],
       "@routing/pages": ["./src/app/pages/routing/index.ts"],
