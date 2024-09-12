@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { SessionEndpoints } from '@enums';
+import { SessionEndpoints } from '@enums/session-endpoints';
 import { ISessionTokenExpiry, ISessionUserState } from '@interfaces';
 import { GlobalStateService } from '@services';
 

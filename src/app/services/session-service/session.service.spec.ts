@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
-import { SessionEndpoints } from '@enums';
+import { SessionEndpoints } from '@enums/session-endpoints';
 import { SESSION_TOKEN_EXPIRY_MOCK, SESSION_USER_STATE_MOCK } from '@mocks';
 import { GlobalStateService } from '@services';
 import { ISessionTokenExpiry, ISessionUserState } from '@interfaces';

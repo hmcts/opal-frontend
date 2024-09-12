@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
-import { RoutingPaths } from '@enums';
+import { RoutingPaths } from '@enums/routing-paths';
 import { PermissionsService, SessionService } from '@services';
 import { catchError, map, of } from 'rxjs';
 

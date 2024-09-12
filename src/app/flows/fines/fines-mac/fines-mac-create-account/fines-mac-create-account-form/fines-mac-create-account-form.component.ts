@@ -22,7 +22,7 @@ import {
 } from '@components/govuk';
 
 import { AbstractFormBaseComponent } from '@components/abstract';
-import { RoutingPaths } from '@enums';
+import { RoutingPaths } from '@enums/routing-paths';
 import { IFinesMacCreateAccountAccountTypes } from '../interfaces/fines-mac-create-account-account-types.interface';
 import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';

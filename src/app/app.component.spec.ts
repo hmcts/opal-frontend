@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SsoEndpoints } from '@enums';
+import { SsoEndpoints } from '@enums/sso-endpoints';
 import { DateService, GlobalStateService } from '@services';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';

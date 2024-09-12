@@ -28,7 +28,7 @@
       "@components/custom": ["./src/app/components/custom/index.ts"],
       "@components/alphagov": ["./src/app/components/alphagov/index.ts"],
       "@components/abstract": ["./src/app/components/abstract/index.ts"],
-      "@enums": ["./src/app/enums/index.ts"],
+      "@enums/*": ["./src/app/enums/*.ts"],
       "@services": ["./src/app/services/index.ts"],
       "@services/fines/*": ["./src/app/flows/fines/services/*.ts"],
       "@interfaces": ["./src/app/interfaces/index.ts"],

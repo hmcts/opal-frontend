@@ -5,7 +5,7 @@ import { SignInSsoComponent } from './sign-in-sso/sign-in-sso.component';
 import { SignInStubComponent } from './sign-in-stub/sign-in-stub.component';
 import { GlobalStateService } from '@services';
 import { ISignInStubForm } from './interfaces';
-import { SsoEndpoints } from '@enums';
+import { SsoEndpoints } from '@enums/sso-endpoints';
 
 @Component({
   selector: 'app-sign-in',

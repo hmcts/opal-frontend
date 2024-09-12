@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { LaunchDarklyService, GlobalStateService, SessionService, DateService } from '@services';
 import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
-import { SsoEndpoints } from '@enums';
+import { SsoEndpoints } from '@enums/sso-endpoints';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Component({
