@@ -1,4 +1,4 @@
-import { IFinesMacPersonalDetailsNameFieldErrors } from '../interfaces';
+import { IFinesMacPersonalDetailsNameFieldErrors } from '../interfaces/fines-mac-personal-details-name-field-errors.interface';
 
 export const FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS: IFinesMacPersonalDetailsNameFieldErrors = {
   forenames: {

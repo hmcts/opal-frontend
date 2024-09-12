@@ -1,4 +1,4 @@
-import { IChildRoutingPaths } from '@interfaces/flows/routing';
+import { IChildRoutingPaths } from '@routing/flows/interfaces/child-routing-paths.interface';
 
 export interface IFinesMacRoutingPaths extends IChildRoutingPaths {
   children: {

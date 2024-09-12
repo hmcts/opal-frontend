@@ -1,5 +1,5 @@
-import { FINES_MAC_STATUS } from '../../constants';
-import { IFinesMacPaymentTermsForm } from '../interfaces';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
+import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_PAYMENT_TERMS_STATE } from './fines-mac-payment-terms-state';
 
 export const FINES_MAC_PAYMENT_TERMS_FORM: IFinesMacPaymentTermsForm = {

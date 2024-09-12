@@ -1,4 +1,4 @@
 import { Routes } from '@angular/router';
-import { routing as finesRouting } from '../fines/routing';
+import { finesRouting } from '@routing/fines/fines.routes';
 
 export const routing: Routes = [...finesRouting];

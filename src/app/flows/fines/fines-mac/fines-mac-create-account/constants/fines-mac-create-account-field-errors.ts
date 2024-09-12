@@ -1,4 +1,4 @@
-import { IFinesMacCreateAccountFieldErrors } from '../interfaces';
+import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';
 
 export const FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS: IFinesMacCreateAccountFieldErrors = {
   account_type: {

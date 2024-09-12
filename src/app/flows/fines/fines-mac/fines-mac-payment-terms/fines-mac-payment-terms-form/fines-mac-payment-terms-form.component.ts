@@ -9,14 +9,10 @@ import {
   inject,
 } from '@angular/core';
 import { AbstractFormBaseComponent } from '@components/abstract';
-import {
-  IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation,
-  IFinesMacPaymentTermsFieldErrors,
-  IFinesMacPaymentTermsForm,
-  IFinesMacPaymentTermsPaymentTermOptionsControlValidation,
-} from '../interfaces';
-import { FinesService } from '../../../services/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { IFinesMacPaymentTermsFieldErrors } from '../interfaces/fines-mac-payment-terms-field-errors.inteface';
+import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
 import { CommonModule } from '@angular/common';
@@ -32,14 +28,10 @@ import {
   GovukRadiosItemComponent,
   GovukTextInputPrefixSuffixComponent,
 } from '@components/govuk';
-import {
-  FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION,
-  FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION,
-  FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS,
-  FINES_MAC_PAYMENT_TERMS_OPTIONS,
-} from '../constants';
+import { FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-default-days-control-validation';
+import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants/fines-mac-payment-terms-options';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
-import { FinesMacDefaultDaysComponent } from '../../components';
+import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default-days/fines-mac-default-days.component';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
 import { DateService } from '@services';
@@ -48,6 +40,10 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as PT_CONTROL_PAYMENT_TE
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REQUEST_CARD_PAYMENT as PT_CONTROL_REQUEST_CARD_PAYMENT } from '../constants/controls/fines-mac-payment-terms-controls-request-card-payment.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_DAYS_IN_DEFAULT as PT_CONTROL_HAS_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-has-days-in-default.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION as PT_CONTROL_ADD_ENFORCEMENT_ACTION } from '../constants/controls/fines-mac-payment-terms-controls-add-enforcement-action.constant';
+import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-all-payment-term-options-control-validation.interface';
+import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
+import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
+import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-payment-term-options-control-validation.interface';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',

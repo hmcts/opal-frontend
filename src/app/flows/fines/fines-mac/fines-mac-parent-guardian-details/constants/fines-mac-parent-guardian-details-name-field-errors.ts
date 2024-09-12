@@ -1,4 +1,4 @@
-import { IFinesMacParentGuardianDetailsNameFieldErrors } from '../interfaces';
+import { IFinesMacParentGuardianDetailsNameFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-name-field-errors.interface';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS: IFinesMacParentGuardianDetailsNameFieldErrors = {
   forenames: {

@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form.component';
-import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../services/opal-fines-service/mocks';
+import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { Validators } from '@angular/forms';
-import { FinesService } from '@services/fines';
-import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
+import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks/fines-mac-create-account-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { IFinesMacCreateAccountForm } from '../interfaces';
+import { IFinesMacCreateAccountForm } from '../interfaces/fines-mac-create-account-form.interface';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;

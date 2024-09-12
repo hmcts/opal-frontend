@@ -1,4 +1,4 @@
-import { IFinesMacRoutingPaths } from '../interfaces';
+import { IFinesMacRoutingPaths } from '../interfaces/fines-mac-routing-paths.interface';
 
 export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPaths = {
   root: 'manual-account-creation',

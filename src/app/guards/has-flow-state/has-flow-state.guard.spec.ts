@@ -1,14 +1,14 @@
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { TestBed, fakeAsync } from '@angular/core/testing';
-import { FINES_ROUTING_PATHS } from '@constants/fines';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { of } from 'rxjs';
 import { hasFlowStateGuard } from './has-flow-state.guard';
-import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks';
+import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks/fines-mac-account-details-state.mock';
 import { getGuardWithDummyUrl, runHasFlowStateGuardWithContext } from '../helpers';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/fines-mac-account-details/constants';
-import { FINES_MAC_STATE } from 'src/app/flows/fines/fines-mac/constants';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/fines-mac-account-details/constants/fines-mac-account-details-state';
+import { FINES_MAC_STATE } from 'src/app/flows/fines/fines-mac/constants/fines-mac-state';
 
 describe('hasFlowStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

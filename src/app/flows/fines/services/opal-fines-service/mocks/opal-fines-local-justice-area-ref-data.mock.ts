@@ -1,4 +1,4 @@
-import { IOpalFinesLocalJusticeAreaRefData } from '@interfaces/fines';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 export const OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK: IOpalFinesLocalJusticeAreaRefData = {
   count: 5,

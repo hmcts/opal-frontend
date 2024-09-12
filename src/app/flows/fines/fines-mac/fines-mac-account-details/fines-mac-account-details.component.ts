@@ -1,15 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import {
-  IFinesMacAccountDetailsAccountTypes,
-  IFinesMacAccountDetailsDefendantTypes,
-  IFinesMacAccountDetailsAccountStatus,
-} from './interfaces';
-import {
-  FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS,
-  FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES,
-  FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES,
-} from './constants';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { IFinesMacAccountDetailsAccountTypes } from './interfaces/fines-mac-account-details-account-types.interface';
+import { IFinesMacAccountDetailsDefendantTypes } from './interfaces/fines-mac-account-details-defendant-types.interface';
+import { IFinesMacAccountDetailsAccountStatus } from './interfaces/fines-mac-account-details-account-status.interface';
+import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS } from './constants/fines-mac-account-details-account-status';
+import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-account-details-account-types';
+import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac-account-details-defendant-types';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import {
   GovukBackLinkComponent,
   GovukButtonComponent,
@@ -22,12 +18,12 @@ import {
 } from '@components/govuk';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { CanDeactivateTypes } from '@types-guards';
 import { Subject, takeUntil } from 'rxjs';
-import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants';
-import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces';
-import { FINES_MAC_STATUS } from '../constants';
+import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
+import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-account-details',
