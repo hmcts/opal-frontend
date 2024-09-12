@@ -35,13 +35,13 @@ BeforeAll(() => {
   checkHealthWithRetry();
 
   if (Cypress.env('TEST_MODE') == 'OPAL') {
-    cy.request('PUT', apiUrl() + '/api/testing-support/app-mode', { mode: 'opal' });
+    cy.request('PUT', apiUrl() + '/testing-support/app-mode', { mode: 'opal' });
   }
   if (Cypress.env('TEST_MODE') == 'LEGACY') {
-    cy.request('PUT', apiUrl() + '/api/testing-support/app-mode', { mode: 'legacy' });
+    cy.request('PUT', apiUrl() + '/testing-support/app-mode', { mode: 'legacy' });
   }
 });
 
 AfterAll(() => {
-  cy.request('PUT', apiUrl() + '/api/testing-support/app-mode', { mode: 'opal' });
+  cy.request('PUT', apiUrl() + '/testing-support/app-mode', { mode: 'opal' });
 });
