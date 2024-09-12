@@ -4,7 +4,7 @@ import { Logger } from '@hmcts/nodejs-logging';
 import axios from 'axios';
 import config from 'config';
 
-const INTERNAL_JWT = `${config.get('opal-api.url')}/api/testing-support/token/user`;
+const INTERNAL_JWT = `${config.get('opal-api.url')}/testing-support/token/user`;
 const logger = Logger.getLogger('login-callback-stub');
 
 export default async (req: Request, res: Response, next: NextFunction) => {
