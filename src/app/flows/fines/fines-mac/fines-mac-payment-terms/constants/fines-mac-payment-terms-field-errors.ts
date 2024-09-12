@@ -1,4 +1,4 @@
-import { IFinesMacPaymentTermsFieldErrors } from '../interfaces';
+import { IFinesMacPaymentTermsFieldErrors } from '../interfaces/fines-mac-payment-terms-field-errors.inteface';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErrors = {
   days_in_default_date: {

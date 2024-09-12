@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsComponent } from './fines-mac-court-details.component';
-import { IFinesMacCourtDetailsForm } from './interfaces';
+import { IFinesMacCourtDetailsForm } from './interfaces/fines-mac-court-details-form.interface';
 import { of } from 'rxjs';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { FinesService, OpalFines } from '@services/fines';
-import { FINES_MAC_STATE_MOCK } from '../mocks';
-import {
-  OPAL_FINES_COURT_REF_DATA_MOCK,
-  OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
-} from '../../services/opal-fines-service/mocks';
-import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from './mocks';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from './mocks/fines-mac-court-details-form.mock';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let component: FinesMacCourtDetailsComponent;

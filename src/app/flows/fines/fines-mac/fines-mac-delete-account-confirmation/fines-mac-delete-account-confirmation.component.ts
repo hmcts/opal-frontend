@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent, GovukCancelLinkComponent } from '@components/govuk';
-import { FinesService } from '../../services/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',

@@ -2,12 +2,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountCommentsNotesComponent } from './fines-mac-account-comments-notes.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesService } from '../../services/fines-service/fines.service';
-import { IFinesMacAccountCommentsNotesForm } from './interfaces';
-import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK, FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './mocks';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { IFinesMacAccountCommentsNotesForm } from './interfaces/fines-mac-account-comments-notes-form.interface';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from './mocks/fines-mac-account-comments-notes-form.mock';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './mocks/fines-mac-account-comments-notes-state.mock';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants/fines-mac-account-comments-notes-state';
 
 describe('FinesMacAccountCommentsNotesComponent', () => {
   let component: FinesMacAccountCommentsNotesComponent;

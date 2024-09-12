@@ -1,16 +1,17 @@
 import { Routes } from '@angular/router';
 import { authGuard, canDeactivateGuard, routePermissionsGuard } from '@guards';
 import { userStateResolver } from '@resolvers';
-import { routing as macRouting } from '../fines-mac/routing';
+import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
 import { RoutingPaths } from '@enums';
 
-import { IFinesRoutingPermissions } from './interfaces';
-import { FINES_ROUTING_PATHS, FINES_ROUTING_PERMISSIONS } from './constants';
+import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
 const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];
 
-export const routing: Routes = [
+export const finesRouting: Routes = [
   {
     path: FINES_ROUTING_PATHS.root,
     redirectTo: RoutingPaths.dashboard, // Redirect to dashboard
@@ -22,7 +23,7 @@ export const routing: Routes = [
     children: [
       {
         path: FINES_ROUTING_PATHS.children.mac.root,
-        loadComponent: () => import('../../fines/fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
+        loadComponent: () => import('../fines-mac/fines-mac.component').then((c) => c.FinesMacComponent),
         children: macRouting,
         canActivate: [authGuard, routePermissionsGuard],
         canDeactivate: [canDeactivateGuard],

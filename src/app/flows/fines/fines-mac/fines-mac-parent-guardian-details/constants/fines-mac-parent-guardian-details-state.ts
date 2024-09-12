@@ -1,4 +1,4 @@
-import { IFinesMacParentGuardianDetailsState } from '../interfaces';
+import { IFinesMacParentGuardianDetailsState } from '../interfaces/fines-mac-parent-guardian-details-state.interface';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE: IFinesMacParentGuardianDetailsState = {
   forenames: null,

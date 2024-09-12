@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form.component';
-import { FinesService } from '@services/fines';
-import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import { IFinesMacPersonalDetailsFieldErrors, IFinesMacPersonalDetailsForm } from '../interfaces';
-import { FINES_MAC_PERSONAL_DETAILS_ALIAS, FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants';
-import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
+import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
+import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
+import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
+import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-personal-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@services';
 

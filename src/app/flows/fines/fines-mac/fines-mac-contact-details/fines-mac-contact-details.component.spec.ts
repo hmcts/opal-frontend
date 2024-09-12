@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacContactDetailsComponent } from './fines-mac-contact-details.component';
-import { IFinesMacContactDetailsForm } from './interfaces';
-import { FinesService } from '@services/fines';
-import { FINES_MAC_STATE_MOCK } from '../mocks';
-import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from './mocks';
+import { IFinesMacContactDetailsForm } from './interfaces/fines-mac-contact-details-form.interface';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from './mocks/fines-mac-contact-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants';
-import { FINES_MAC_CONTACT_DETAILS_STATE } from './constants';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_CONTACT_DETAILS_STATE } from './constants/fines-mac-contact-details-state';
 
 describe('FinesMacContactDetailsComponent', () => {
   let component: FinesMacContactDetailsComponent;

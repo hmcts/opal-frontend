@@ -1,6 +1,6 @@
-import { FinesService } from '@services/fines';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
-import { FINES_ROUTING_PATHS } from '@constants/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { hasFlowStateGuard } from '@guards';
 import { inject } from '@angular/core';
 

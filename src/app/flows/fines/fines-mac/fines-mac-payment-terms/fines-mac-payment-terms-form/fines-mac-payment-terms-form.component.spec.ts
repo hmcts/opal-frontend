@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form.component';
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { IFinesMacPaymentTermsForm } from '../interfaces';
-import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks';
+import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
+import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
+import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
 import { DateService } from '@services';
 import { DateTime } from 'luxon';
 

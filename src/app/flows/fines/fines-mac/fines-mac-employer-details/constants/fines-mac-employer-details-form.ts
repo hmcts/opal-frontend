@@ -1,5 +1,5 @@
-import { FINES_MAC_STATUS } from '../../constants';
-import { IFinesMacEmployerDetailsForm } from '../interfaces';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
+import { IFinesMacEmployerDetailsForm } from '../interfaces/fines-mac-employer-details-form.interface';
 import { FINES_MAC_EMPLOYER_DETAILS_STATE } from './fines-mac-employer-details-state';
 
 export const FINES_MAC_EMPLOYER_DETAILS_FORM: IFinesMacEmployerDetailsForm = {

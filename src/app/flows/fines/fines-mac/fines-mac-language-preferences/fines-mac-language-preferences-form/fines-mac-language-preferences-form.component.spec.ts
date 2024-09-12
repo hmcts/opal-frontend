@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacLanguagePreferencesFormComponent } from './fines-mac-language-preferences-form.component';
-import { FinesService } from '../../../services/fines-service/fines.service';
-import { IFinesMacLanguagePreferencesForm } from '../interfaces';
-import { FINES_MAC_STATE_MOCK } from '../../mocks';
-import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from '../mocks';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { IFinesMacLanguagePreferencesForm } from '../interfaces/fines-mac-language-preferences-form.interface';
+import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
+import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from '../mocks/fines-mac-language-preferences-form.mock';
 import { ActivatedRoute } from '@angular/router';
 
 describe('FinesMacLanguagePreferencesFormComponent', () => {

@@ -1,4 +1,4 @@
-import { IFinesMacCompanyDetailsState } from '../interfaces';
+import { IFinesMacCompanyDetailsState } from '../interfaces/fines-mac-company-details-state.interface';
 
 export const FINES_MAC_COMPANY_DETAILS_STATE_MOCK: IFinesMacCompanyDetailsState = {
   company_name: 'Acme Org Ltd.',

@@ -1,5 +1,5 @@
-import { IFinesMacCreateAccountAccountTypeDefendantTypes } from '../interfaces';
-import { FINES_MAC_CREATE_ACCOUNT_DEFENDANT_TYPES } from '../constants';
+import { IFinesMacCreateAccountAccountTypeDefendantTypes } from '../interfaces/fines-mac-create-account-account-type-defendant-types.interface';
+import { FINES_MAC_CREATE_ACCOUNT_DEFENDANT_TYPES } from '../constants/fines-mac-create-account-defendant-types';
 
 export const FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE: IFinesMacCreateAccountAccountTypeDefendantTypes =
   {

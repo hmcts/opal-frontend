@@ -1,15 +1,15 @@
 import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 import { finesMacFlowStateGuard } from './fines-mac-flow-state.guard';
-import { FinesService } from '@services/fines';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 import { TestBed, fakeAsync } from '@angular/core/testing';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../fines-mac-account-details/mocks';
-import { FINES_ROUTING_PATHS } from '@constants/fines';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
-import { runFinesMacEmptyFlowGuardWithContext } from '../helpers';
-import { getGuardWithDummyUrl } from '../../../../../guards/helpers';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../fines-mac-account-details/mocks/fines-mac-account-details-state.mock';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { runFinesMacEmptyFlowGuardWithContext } from '../helpers/run-fines-mac-empty-flow-guard-with-context';
+import { getGuardWithDummyUrl } from '../../../../../guards/helpers/get-guard-with-dummy-url';
 import { of } from 'rxjs';
-import { FINES_MAC_STATE } from '../../constants';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../fines-mac-account-details/constants';
+import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
+import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../fines-mac-account-details/constants/fines-mac-account-details-state';
 
 describe('finesMacFlowStateGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;

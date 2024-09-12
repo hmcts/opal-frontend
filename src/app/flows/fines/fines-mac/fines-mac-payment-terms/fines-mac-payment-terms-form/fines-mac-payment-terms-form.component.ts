@@ -9,9 +9,10 @@ import {
   inject,
 } from '@angular/core';
 import { AbstractFormBaseComponent } from '@components/abstract';
-import { IFinesMacPaymentTermsFieldErrors, IFinesMacPaymentTermsForm } from '../interfaces';
-import { FinesService } from '../../../services/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants';
+import { IFinesMacPaymentTermsFieldErrors } from '../interfaces/fines-mac-payment-terms-field-errors.inteface';
+import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IGovUkRadioOptions } from '@interfaces/components/govuk';
 import { CommonModule } from '@angular/common';
@@ -26,12 +27,10 @@ import {
   GovukRadiosItemComponent,
   GovukTextInputPrefixSuffixComponent,
 } from '@components/govuk';
-import {
-  FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION,
-  FINES_MAC_PAYMENT_TERMS_OPTIONS,
-} from '../constants';
+import { FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-default-days-control-validation';
+import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants/fines-mac-payment-terms-options';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
-import { FinesMacDefaultDaysComponent } from '../../components';
+import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default-days/fines-mac-default-days.component';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
 import { DateService } from '@services';
