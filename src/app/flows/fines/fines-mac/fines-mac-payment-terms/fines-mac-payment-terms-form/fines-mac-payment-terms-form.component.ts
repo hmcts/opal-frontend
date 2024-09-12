@@ -44,6 +44,8 @@ import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
 import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-payment-term-options-control-validation.interface';
+import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
+import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -81,6 +83,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
   };
 
+  private readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES;
   public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
@@ -95,6 +98,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public isAdult!: boolean;
   public dateInFuture!: boolean;
   public dateInPast!: boolean;
+  public accessDefaultDates!: boolean;
 
   /**
    * Sets up the payment terms form.
@@ -125,7 +129,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     this.paymentTermsListener();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.checkDefendantAge();
+    this.canAccessDefaultDates();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
@@ -148,17 +152,6 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
         });
       }
     });
-  }
-
-  /**
-   * Checks the age of the defendant based on their date of birth.
-   * If the defendant's date of birth is not provided or their age is 18 or above,
-   * the `isAdult` property is set to `true`, indicating that the defendant is an adult.
-   * Otherwise, the `isAdult` property is set to `false`.
-   */
-  private checkDefendantAge(): void {
-    const { formData } = this.finesService.finesMacState.personalDetails;
-    this.isAdult = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
   }
 
   /**
@@ -239,6 +232,24 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private resetDateChecker(): void {
     this.dateInFuture = false;
     this.dateInPast = false;
+  }
+
+  /**
+   * Determines whether the user can access default dates based on the defendant type.
+   */
+  private canAccessDefaultDates(): void {
+    let formData;
+    switch (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes]) {
+      case this.defendantTypes.adultOrYouthOnly:
+        formData = this.finesService.finesMacState.personalDetails.formData;
+        this.accessDefaultDates = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
+        break;
+      case this.defendantTypes.parentOrGuardianToPay:
+        this.accessDefaultDates = true;
+        break;
+      default:
+        this.accessDefaultDates = false;
+    }
   }
 
   public override ngOnInit(): void {

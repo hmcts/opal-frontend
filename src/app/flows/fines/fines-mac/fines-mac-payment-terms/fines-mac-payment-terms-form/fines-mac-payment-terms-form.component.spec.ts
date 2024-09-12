@@ -98,7 +98,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'checkDefendantAge');
+    spyOn<any>(component, 'canAccessDefaultDates');
     mockDateService.getPreviousDate.and.returnValue('30/08/2024');
 
     component['initialPaymentTermsSetup']();
@@ -110,7 +110,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component['rePopulateForm']).toHaveBeenCalledWith(
       component['finesService'].finesMacState.paymentTerms.formData,
     );
-    expect(component['checkDefendantAge']).toHaveBeenCalled();
+    expect(component['canAccessDefaultDates']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
   });
@@ -133,28 +133,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(component.form.contains('days_in_default_date')).toBe(false);
     expect(component.form.contains('days_in_default')).toBe(false);
-  });
-
-  it('should check defendant age and set isAdult to true when age is 18 or above', () => {
-    const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
-    mockDateService.calculateAge.and.returnValue(30);
-
-    component['checkDefendantAge']();
-
-    expect(component.isAdult).toBe(true);
-    expect(mockDateService.calculateAge).toHaveBeenCalledWith(dob);
-  });
-
-  it('should check defendant age and set isAdult to false when age is below 18', () => {
-    const dob = DateTime.now().minus({ years: 10 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
-    mockDateService.calculateAge.and.returnValue(10);
-
-    component['checkDefendantAge']();
-
-    expect(component.isAdult).toBe(false);
-    expect(mockDateService.calculateAge).toHaveBeenCalledWith(dob);
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
@@ -234,5 +212,45 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // Assert
     expect(removeControlSpy).toHaveBeenCalledTimes(5);
     expect(removeControlErrorsSpy).toHaveBeenCalledTimes(5);
+  });
+
+  it('should check defendant age and set accessDefaultDates to true when age is 18 or above', () => {
+    component.defendantType = 'adultOrYouthOnly';
+    const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
+    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
+    mockDateService.calculateAge.and.returnValue(30);
+
+    component['canAccessDefaultDates']();
+
+    expect(component.accessDefaultDates).toBe(true);
+    expect(mockDateService.calculateAge).toHaveBeenCalledWith(dob);
+  });
+
+  it('should check defendant age and set accessDefaultDates to false when age is below 18', () => {
+    const dob = DateTime.now().minus({ years: 10 }).toFormat('dd/MM/yyyy');
+    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
+    mockDateService.calculateAge.and.returnValue(10);
+    component.defendantType = 'adultOrYouthOnly';
+
+    component['canAccessDefaultDates']();
+
+    expect(component.accessDefaultDates).toBe(false);
+    expect(mockDateService.calculateAge).toHaveBeenCalledWith(dob);
+  });
+
+  it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
+    component.defendantType = 'parentOrGuardianToPay';
+
+    component['canAccessDefaultDates']();
+
+    expect(component.accessDefaultDates).toBe(true);
+  });
+
+  it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
+    component.defendantType = 'company';
+
+    component['canAccessDefaultDates']();
+
+    expect(component.accessDefaultDates).toBe(false);
   });
 });
