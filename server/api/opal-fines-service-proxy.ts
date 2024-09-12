@@ -3,7 +3,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 
 export default () => {
   return createProxyMiddleware({
-    target: config.get('opal-api.opal-fines-service') + '/api',
+    target: config.get('opal-api.opal-fines-service'),
     changeOrigin: true,
     logger: console,
     on: {
