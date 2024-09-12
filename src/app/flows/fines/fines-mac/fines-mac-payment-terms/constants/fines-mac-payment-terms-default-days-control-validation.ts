@@ -1,4 +1,4 @@
-import { IFinesMacPaymentTermsDefaultDaysControlValidation } from '../interfaces/';
+import { IFinesMacPaymentTermsDefaultDaysControlValidation } from '../interfaces/fines-mac-payment-terms-default-days-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROLS_DAYS_IN_DEFAULT_DATE } from './controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as PT_CONTROLS_DAYS_IN_DEFAULT } from './controls/fines-mac-payment-terms-controls-days-in-default.constant';
 
