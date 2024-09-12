@@ -1,10 +1,10 @@
 import { IOpalFinesPaths } from '@services/fines/opal-fines-service/interfaces/opal-fines-paths.interface';
 
 const baseUrl = '/opal-fines-service/';
-const defendantAccountPath = 'defendant-account/';
-const courtPath = 'court/';
-const businessUnit = 'business-unit/';
-const localJusticeArea = 'local-justice-area/';
+const defendantAccountPath = 'defendant-accounts/';
+const courtPath = 'courts/';
+const businessUnit = 'business-units/';
+const localJusticeArea = 'local-justice-areas/';
 
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   defendantAccount: `${baseUrl}${defendantAccountPath}`,
