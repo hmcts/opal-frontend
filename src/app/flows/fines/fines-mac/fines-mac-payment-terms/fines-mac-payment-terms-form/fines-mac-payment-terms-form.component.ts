@@ -46,6 +46,8 @@ import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } f
 import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-payment-term-options-control-validation.interface';
 import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
+import { FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-company-enforcement-control-validation';
+import { GovukTextAreaComponent } from '../../../../../components/govuk/govuk-text-area/govuk-text-area.component';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -67,6 +69,7 @@ import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-ty
     FinesMacDefaultDaysComponent,
     GovukErrorSummaryComponent,
     MojTicketPanelComponent,
+    GovukTextAreaComponent,
   ],
   templateUrl: './fines-mac-payment-terms-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -83,7 +86,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
   };
 
-  private readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES;
+  protected readonly defendantTypes = FINES_MAC_DEFENDANT_TYPES;
   public readonly paymentTermOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
   public readonly paymentTerms: IGovUkRadioOptions[] = Object.entries(this.paymentTermOptions).map(([key, value]) => ({
     key,
@@ -125,11 +128,12 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private initialPaymentTermsSetup(): void {
     const { formData } = this.finesService.finesMacState.paymentTerms;
     this.setupPaymentTermsForm();
+    this.createEnforcementFields();
+    this.canAccessDefaultDates();
     this.hasDaysInDefaultListener();
     this.paymentTermsListener();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.canAccessDefaultDates();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
@@ -249,6 +253,21 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
         break;
       default:
         this.accessDefaultDates = false;
+    }
+  }
+
+  /**
+   * Creates enforcement fields based on the defendant type.
+   * If the defendant type is a company, it creates enforcement fields for company enforcement control validation.
+   * Otherwise, it creates enforcement fields for add enforcement action control validation.
+   */
+  private createEnforcementFields(): void {
+    if (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes] === this.defendantTypes.company) {
+      FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION.map((control) => {
+        this.createControl(control.controlName, control.validators);
+      });
+    } else {
+      this.createControl(PT_CONTROL_ADD_ENFORCEMENT_ACTION.controlName, PT_CONTROL_ADD_ENFORCEMENT_ACTION.validators);
     }
   }
 

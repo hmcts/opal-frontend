@@ -93,4 +93,18 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 3,
     },
   },
+  reason_account_is_on_noenf: {
+    required: {
+      message: `Enter a reason`,
+      priority: 1,
+    },
+    maxlength: {
+      message: `Reason must be less than 28 characters`,
+      priority: 2,
+    },
+    alphabeticalTextPattern: {
+      message: `Reason must only contain alphabetical text`,
+      priority: 3,
+    },
+  },
 };

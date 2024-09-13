@@ -141,13 +141,39 @@
     legendText="Enforcement action"
     legendClasses="govuk-fieldset__legend--s"
   >
-    <div
-      app-govuk-checkboxes-item
-      labelText="Add enforcement action"
-      inputId="add_enforcement_action"
-      inputName="add_enforcement_action"
-      [control]="form.controls['add_enforcement_action']"
-    ></div>
+    @if (defendantType === 'company') {
+      <div
+        app-govuk-checkboxes-item
+        labelText="Hold enforcement on account (NOENF)"
+        inputId="hold_enforcement_on_account"
+        inputName="hold_enforcement_on_account"
+        [control]="form.controls['hold_enforcement_on_account']"
+      ></div>
+      <div *ngIf="form.get('hold_enforcement_on_account')?.value">
+        <div app-govuk-checkboxes-conditional conditionalId="hold_enforcement_on_account">
+          <app-govuk-text-area
+            labelText="Reason account is on NOENF"
+            labelClasses="govuk-label--s"
+            inputId="reason_account_is_on_noenf"
+            inputName="reason_account_is_on_noenf"
+            inputClasses="govuk-!-width-two-thirds"
+            [control]="form.controls['reason_account_is_on_noenf']"
+            [errors]="formControlErrorMessages['reason_account_is_on_noenf']"
+            [rows]="1"
+            [maxCharacterLimit]="28"
+            [characterCountEnabled]="true"
+          ></app-govuk-text-area>
+        </div>
+      </div>
+    } @else {
+      <div
+        app-govuk-checkboxes-item
+        labelText="Add enforcement action"
+        inputId="add_enforcement_action"
+        inputName="add_enforcement_action"
+        [control]="form.controls['add_enforcement_action']"
+      ></div>
+    }
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
