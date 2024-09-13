@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { CanDeactivateTypes } from '@types-guards';
 
 export abstract class AbstractFormParentBaseComponent {

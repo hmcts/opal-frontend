@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import {
   IAbstractFormBaseFieldError,

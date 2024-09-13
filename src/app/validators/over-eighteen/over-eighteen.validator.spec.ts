@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { overEighteenValidator } from './over-eighteen.validator';
 import { DateTime } from 'luxon';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 
 describe('overEighteenValidator', () => {
   let formGroup: FormGroup;

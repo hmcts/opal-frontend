@@ -1,7 +1,8 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { RoutingPaths } from '@enums/routing-paths';
-import { PermissionsService, SessionService } from '@services';
+import { PermissionsService } from '@services/permissions-service/permissions.service';
+import { SessionService } from '@services/session-service/session.service';
 import { catchError, map, of } from 'rxjs';
 
 export const routePermissionsGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {

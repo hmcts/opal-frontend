@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Optional, PLATFORM_ID, TransferState, inject, makeStateKey } from '@angular/core';
 import { ITransferStateServerState } from './interfaces';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 @Injectable({
   providedIn: 'root',

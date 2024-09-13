@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { PermissionsService } from './permissions.service';
-import { SESSION_USER_STATE_MOCK } from '@mocks';
+import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 
 describe('PermissionsService', () => {
   let service: PermissionsService;

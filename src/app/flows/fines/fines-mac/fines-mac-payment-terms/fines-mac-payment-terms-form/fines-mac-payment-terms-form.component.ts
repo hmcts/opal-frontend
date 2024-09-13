@@ -33,7 +33,7 @@ import { ScotgovDatePickerComponent } from '@components/scotgov';
 import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default-days/fines-mac-default-days.component';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',

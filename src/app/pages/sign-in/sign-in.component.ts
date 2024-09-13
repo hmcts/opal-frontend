@@ -3,7 +3,7 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { GovukButtonComponent } from '@components/govuk';
 import { SignInSsoComponent } from './sign-in-sso/sign-in-sso.component';
 import { SignInStubComponent } from './sign-in-stub/sign-in-stub.component';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { ISignInStubForm } from './interfaces';
 import { SsoEndpoints } from '@enums/sso-endpoints';
 

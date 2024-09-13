@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { SessionEndpoints } from '@enums/session-endpoints';
-import { ISessionTokenExpiry, ISessionUserState } from '@interfaces';
-import { GlobalStateService } from '@services';
+import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
+import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 import { Observable, shareReplay, tap } from 'rxjs';
 

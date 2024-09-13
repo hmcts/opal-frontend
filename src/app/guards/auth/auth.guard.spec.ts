@@ -1,7 +1,8 @@
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { CanActivateFn, Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 
-import { AuthService, GlobalStateService } from '@services';
+import { AuthService } from '@services/auth-service/auth.service';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 import { authGuard } from './auth.guard';
 import { of, throwError } from 'rxjs';

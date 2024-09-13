@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, UrlSegment } from '@angular/router';
 
 import { userStateResolver } from './user-state.resolver';
-import { ISessionUserState } from '@interfaces';
+import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { of } from 'rxjs';
 
-import { SESSION_USER_STATE_MOCK } from '@mocks';
-import { SessionService } from '@services';
+import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
+import { SessionService } from '@services/session-service/session.service';
 
 describe('userStateResolver', () => {
   const executeResolver: ResolveFn<ISessionUserState> = (...resolverParameters) =>

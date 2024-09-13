@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { ISessionUserState } from '@interfaces';
-import { SessionService } from '@services';
+import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
+import { SessionService } from '@services/session-service/session.service';
 import { firstValueFrom } from 'rxjs';
 
 /**

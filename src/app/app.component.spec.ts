@@ -2,12 +2,13 @@ import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SsoEndpoints } from '@enums/sso-endpoints';
-import { DateService, GlobalStateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { SESSION_TOKEN_EXPIRY_MOCK } from '@mocks';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 import { DateTime } from 'luxon';
-import { ISessionTokenExpiry } from '@interfaces';
+import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
 import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
 import { GovukFooterComponent } from '@components/govuk';
 

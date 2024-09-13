@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject
 import { FormGroup } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-date-of-birth',

@@ -11,7 +11,7 @@ import {
 import { FormGroup, FormControl } from '@angular/forms';
 import { GovukDetailsComponent, GovukTextInputComponent } from '@components/govuk';
 import { MojTicketPanelComponent } from '@components/moj';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

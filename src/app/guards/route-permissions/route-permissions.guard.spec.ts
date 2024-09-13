@@ -9,10 +9,11 @@ import {
 } from '@angular/router';
 
 import { routePermissionsGuard } from './route-permissions.guard';
-import { PermissionsService, SessionService } from '@services';
+import { PermissionsService } from '@services/permissions-service/permissions.service';
+import { SessionService } from '@services/session-service/session.service';
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SESSION_USER_STATE_MOCK } from '@mocks';
+import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { Observable, of, throwError } from 'rxjs';
 import { handleObservableResult } from '../helpers';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
