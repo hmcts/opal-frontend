@@ -103,7 +103,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `Reason must only contain alphabetical text`,
+      message: `Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
