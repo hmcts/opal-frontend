@@ -28,7 +28,6 @@
       "@components/custom": ["./src/app/components/custom/index.ts"],
       "@components/alphagov": ["./src/app/components/alphagov/index.ts"],
       "@components/abstract": ["./src/app/components/abstract/index.ts"],
-      "@enums/*": ["./src/app/enums/*.ts"],
       "@services/*": ["./src/app/services/*.ts"],
       "@services/fines/*": ["./src/app/flows/fines/services/*.ts"],
       "@interfaces/*": ["./src/app/interfaces/*.ts"],
@@ -36,15 +35,13 @@
       "@interfaces/components/govuk": ["./src/app/components/govuk/interfaces/index.ts"],
       "@interfaces/components/alphagov": ["src/app/components/alphagov/interfaces/index.ts"],
       "@guards/*": ["./src/app/guards/*.ts"],
-      "@constants": ["./src/app/constants/index.ts"],
-      "@interceptors": ["./src/app/interceptors/index.ts"],
+      "@interceptors/*": ["./src/app/interceptors/*.ts"],
       "@resolvers/*": ["./src/app/resolvers/*.ts"],
       "@routing/*": ["./src/app/routing/*.ts"],
-      "@routing/pages": ["./src/app/pages/routing/index.ts"],
+      "@routing/pages/*": ["./src/app/pages/routing/*.ts"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*.ts"],
       "@routing/flows/*": ["./src/app/flows/routing/*.ts"],
-      "@types-guards": ["./src/app/guards/types/index.ts"],
-      "@validators": ["./src/app/validators/index.ts"]
+      "@validators/*": ["./src/app/validators/*.ts"]
     },
     "allowSyntheticDefaultImports": true
   },
