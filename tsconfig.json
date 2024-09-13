@@ -38,7 +38,7 @@
       "@guards/*": ["./src/app/guards/*.ts"],
       "@constants": ["./src/app/constants/index.ts"],
       "@interceptors": ["./src/app/interceptors/index.ts"],
-      "@resolvers": ["./src/app/resolvers/index.ts"],
+      "@resolvers/*": ["./src/app/resolvers/*.ts"],
       "@routing/*": ["./src/app/routing/*.ts"],
       "@routing/pages": ["./src/app/pages/routing/index.ts"],
       "@routing/fines/*": ["./src/app/flows/fines/routing/*.ts"],

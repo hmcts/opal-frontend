@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SsoEndpoints } from '@enums/sso-endpoints';
+import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { DateService } from '@services/date-service/date.service';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { RouterModule, provideRouter } from '@angular/router';

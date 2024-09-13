@@ -4,7 +4,7 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 import { SessionService } from '@services/session-service/session.service';
 import { DateService } from '@services/date-service/date.service';
 import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
-import { SsoEndpoints } from '@enums/sso-endpoints';
+import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Component({

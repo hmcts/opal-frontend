@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
-import { authGuard, canDeactivateGuard } from '@guards';
+import { authGuard } from '@guards/auth/auth.guard';
+import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
 
 import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';

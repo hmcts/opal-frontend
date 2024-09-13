@@ -4,7 +4,7 @@ import { SignInComponent } from './sign-in.component';
 import { ISignInStubForm } from './interfaces';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { SsoEndpoints } from '@enums/sso-endpoints';
+import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
