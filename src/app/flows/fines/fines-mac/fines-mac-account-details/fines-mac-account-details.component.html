@@ -325,19 +325,19 @@
 </ng-template>
 
 <ng-template #paymentTermsLink>
-  <!-- @if (canAccessPaymentTerms()) { -->
-  <a
-    class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-    (click)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
-    (keyup.enter)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
-    tabindex="0"
-    aria-describedby="paymentTermsStatus"
-  >
+  @if (canAccessPaymentTerms()) {
+    <a
+      class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
+      (click)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
+      (keyup.enter)="handleRoute(fineMacRoutes.children.paymentTerms, false, $event)"
+      tabindex="0"
+      aria-describedby="paymentTermsStatus"
+    >
+      Payment terms
+    </a>
+  } @else {
     Payment terms
-  </a>
-  <!-- } @else {
-    Payment terms
-  } -->
+  }
 </ng-template>
 
 <ng-template #paymentTermsStatus>
