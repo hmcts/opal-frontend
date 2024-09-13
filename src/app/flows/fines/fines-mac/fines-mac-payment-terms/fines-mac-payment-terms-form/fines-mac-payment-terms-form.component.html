@@ -78,13 +78,15 @@
       }
     }
   </app-govuk-radio>
-  <div
-    app-govuk-checkboxes-item
-    labelText="Request payment card"
-    inputId="request_payment_card"
-    inputName="request_payment_card"
-    [control]="form.controls['request_payment_card']"
-  ></div>
+  @if (defendantType !== 'company') {
+    <div
+      app-govuk-checkboxes-item
+      labelText="Request payment card"
+      inputId="request_payment_card"
+      inputName="request_payment_card"
+      [control]="form.controls['request_payment_card']"
+    ></div>
+  }
   @if (accessDefaultDates) {
     <fieldset class="govuk-fieldset">
       <app-govuk-checkboxes
