@@ -1,6 +1,6 @@
 import { Validators } from '@angular/forms';
 import { IAbstractFormArrayControlValidation } from '@interfaces/components/abstract';
-import { alphabeticalTextValidator } from '@validators';
+import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 
 export const FINES_MAC_COMPANY_DETAILS_ALIAS: IAbstractFormArrayControlValidation[] = [
   {

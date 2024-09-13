@@ -16,7 +16,9 @@ import {
   GovukTextInputComponent,
 } from '@components/govuk';
 import { AbstractFormBaseComponent } from '@components/abstract';
-import { optionalMaxLengthValidator, optionalEmailAddressValidator, optionalPhoneNumberValidator } from '@validators';
+import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
+import { optionalEmailAddressValidator } from '@validators/optional-valid-email-address/optional-valid-email-address.validator';
+import { optionalPhoneNumberValidator } from '@validators/optional-valid-telephone/optional-valid-telephone.validator';
 import { IFinesMacContactDetailsFieldErrors } from '../interfaces/fines-mac-contact-details-field-errors.interface';
 import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-details-form.interface';
 

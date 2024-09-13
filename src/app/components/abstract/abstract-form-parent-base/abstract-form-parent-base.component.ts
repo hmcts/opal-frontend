@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
-import { CanDeactivateTypes } from '@types-guards';
+import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 
 export abstract class AbstractFormParentBaseComponent {
   private readonly router = inject(Router);

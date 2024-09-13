@@ -1,4 +1,5 @@
-import { optionalMaxLengthValidator, specialCharactersValidator } from '@validators';
+import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
+import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
 import { IAbstractFormArrayControlValidation } from '../../../../../../components/abstract/interfaces/abstract-form-array-control-validation.interface';
 
 export const FINES_MAC_PARENT_GUARDIAN_DETAILS_CONTROLS_ADDRESS_LINE_THREE: IAbstractFormArrayControlValidation = {

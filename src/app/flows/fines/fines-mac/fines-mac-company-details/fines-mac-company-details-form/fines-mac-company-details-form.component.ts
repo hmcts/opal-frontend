@@ -26,7 +26,9 @@ import { FINES_MAC_ADDRESS_BLOCK_FIELD_IDS } from '../../components/fines-mac-ad
 import { FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-postcode-field-errors';
 
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
+import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
+import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
+import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
 import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 

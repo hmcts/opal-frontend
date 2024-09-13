@@ -15,7 +15,7 @@ import { SessionService } from '@services/session-service/session.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { Observable, of, throwError } from 'rxjs';
-import { handleObservableResult } from '../helpers';
+import { handleObservableResult } from '@guards/helpers/handle-observable-result';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';

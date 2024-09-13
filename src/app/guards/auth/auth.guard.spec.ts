@@ -6,7 +6,8 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 
 import { authGuard } from './auth.guard';
 import { of, throwError } from 'rxjs';
-import { getGuardWithDummyUrl, runAuthGuardWithContext } from '../helpers';
+import { getGuardWithDummyUrl } from '@guards/helpers/get-guard-with-dummy-url';
+import { runAuthGuardWithContext } from '@guards/helpers/run-auth-guard-with-context';
 
 describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>

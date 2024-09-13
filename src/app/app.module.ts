@@ -10,7 +10,7 @@ import {
   withXsrfConfiguration,
 } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { httpErrorInterceptor } from '@interceptors';
+import { httpErrorInterceptor } from '@interceptors/http-error/http-error.interceptor';
 import { AppInitializerService } from '@services/app-initializer-service/app-initializer.service';
 import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
 import { GovukFooterComponent } from '@components/govuk';

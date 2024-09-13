@@ -4,7 +4,8 @@ import { CanActivateFn, Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@an
 import { signedInGuard } from './signed-in.guard';
 import { AuthService } from '@services/auth-service/auth.service';
 import { throwError, of } from 'rxjs';
-import { getGuardWithDummyUrl, runAuthGuardWithContext } from '../helpers';
+import { getGuardWithDummyUrl } from '../helpers/get-guard-with-dummy-url';
+import { runAuthGuardWithContext } from '../helpers/run-auth-guard-with-context';
 
 describe('signedInGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>

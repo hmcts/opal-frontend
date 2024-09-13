@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { RedirectCommand, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { handleObservableResult } from 'src/app/guards/helpers';
+import { handleObservableResult } from '@guards/helpers/handle-observable-result';
 
 export type GuardReturnType = boolean | UrlTree | RedirectCommand;
 
