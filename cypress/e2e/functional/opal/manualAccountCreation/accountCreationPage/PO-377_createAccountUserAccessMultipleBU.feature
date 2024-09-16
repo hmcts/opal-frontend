@@ -27,8 +27,8 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     Then I see the business unit help text is "Enter area where the account is to be created"
     Then I see the search box below the business unit help text
 
-    When I enter "London South" into the business unit search box
-    Then I see the value "London South West" in the business unit search box
+    When I enter "West London" into the business unit search box
+    Then I see the value "West London" in the business unit search box
 
   Scenario: AC3 - Defendant type - radio buttons
     Given I am on the OPAL Frontend
@@ -87,7 +87,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
 
     When I navigate to Manual Account Creation
 
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I click the "Continue" button
 
@@ -126,10 +126,10 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     And I see the error message "Enter a business unit" above the business unit field
     And I see the error message "Select a defendant type" above the "Adult or youth only" radio button
 
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I select the "<defendantType>" radio button
     And I click the "Continue" button
-    Then I see the business unit is "London South West"
+    Then I see the business unit is "West London"
     And I see the defendant type is "<defendantType>"
 
     Examples:
@@ -149,15 +149,15 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
 
   #   And I navigate to Manual Account Creation
 
-  #   When I enter "London South" into the business unit search box
+  #   When I enter "West London" into the business unit search box
   #   And I select the "Fine" radio button
   #   And I select the "<defendantType>" radio button
   #   And I click the "Continue" button
-  #   Then I see the business unit is "London South West"
+  #   Then I see the business unit is "West London"
   #   And I see the defendant type is "<defendantType>"
 
   #   When I go back in the browser
-  #   Then I see the value "London South West" in the business unit search box
+  #   Then I see the value "West London" in the business unit search box
   #   And I validate the "<defendantType>" radio button is selected
 
   #   Examples:
@@ -185,7 +185,7 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     And I am on the dashboard
 
     And I navigate to Manual Account Creation
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click Cancel, a window pops up and I click Ok
@@ -200,12 +200,12 @@ Feature: PO-377 manual account creation, user has access to multiple BU's
     And I am on the dashboard
 
     And I navigate to Manual Account Creation
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click Cancel, a window pops up and I click Cancel
 
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
-    And I see the value "London South West" in the business unit search box
+    And I see the value "West London" in the business unit search box
     And I validate the "Adult or youth only" radio button is selected
