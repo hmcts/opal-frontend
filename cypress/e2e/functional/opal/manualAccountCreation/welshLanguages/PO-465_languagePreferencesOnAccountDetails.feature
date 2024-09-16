@@ -33,14 +33,14 @@ Feature: PO-465 language preferences page for all defendant types
       | Company                                       |
 
   Scenario Outline:AC1,2,3,4 Language preferences for All defendants - negative test
-    When I sign in as "opal-test-4@HMCTS.NET"
+    When I sign in as "opal-test-10@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
     Then I see "Business unit and defendant type" on the page header
     And I select the "Fine" radio button
     When I select the "<defendantType>" radio button
-    And I enter "MBEC Wales" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I click the "Continue" button
 
     Then I see the "Defendant type" is "<defendantType>" in the account details table
