@@ -9,15 +9,14 @@ import {
   inject,
 } from '@angular/core';
 import { AbstractFormAliasBaseComponent } from '@components/abstract';
-import {
-  GovukButtonComponent,
-  GovukCancelLinkComponent,
-  GovukCheckboxesComponent,
-  GovukCheckboxesConditionalComponent,
-  GovukCheckboxesItemComponent,
-  GovukErrorSummaryComponent,
-  GovukTextInputComponent,
-} from '@components/govuk';
+
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
+import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
+import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
+import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
+import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 
 import { FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-one-field-errors';
 import { FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-two-field-errors';

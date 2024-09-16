@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GovukHeaderComponent } from '@components/govuk';
+import { GovukHeaderComponent } from '@components/govuk/govuk-header/govuk-header.component';
 import { Component } from '@angular/core';
 import { GovukHeaderNavigationItemComponent } from './govuk-header-navigation-item/govuk-header-navigation-item.component';
 import { provideRouter } from '@angular/router';

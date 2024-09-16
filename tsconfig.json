@@ -22,7 +22,7 @@
     "lib": ["ES2022", "dom"],
     "resolveJsonModule": false,
     "paths": {
-      "@components/govuk": ["./src/app/components/govuk/index.ts"],
+      "@components/govuk/*": ["./src/app/components/govuk/*.ts"],
       "@components/moj": ["./src/app/components/moj/index.ts"],
       "@components/scotgov": ["./src/app/components/scotgov/index.ts"],
       "@components/custom": ["./src/app/components/custom/index.ts"],

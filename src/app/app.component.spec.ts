@@ -10,7 +10,7 @@ import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/sessi
 import { DateTime } from 'luxon';
 import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
 import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
-import { GovukFooterComponent } from '@components/govuk';
+import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 

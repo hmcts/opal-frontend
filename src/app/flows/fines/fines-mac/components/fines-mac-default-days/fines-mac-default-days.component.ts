@@ -9,7 +9,8 @@ import {
   inject,
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { GovukDetailsComponent, GovukTextInputComponent } from '@components/govuk';
+import { GovukDetailsComponent } from '@components/govuk/govuk-details/govuk-details.component';
+import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { MojTicketPanelComponent } from '@components/moj';
 import { DateService } from '@services/date-service/date.service';
 import { Subject, takeUntil } from 'rxjs';
