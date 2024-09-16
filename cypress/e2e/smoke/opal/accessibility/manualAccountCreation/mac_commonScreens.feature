@@ -20,7 +20,7 @@ Feature: Manual account creation - Common screens - accessibility
     Given I am on the OPAL Frontend
     When I sign in as "opal-test@hmcts.net"
     And I navigate to Manual Account Creation
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
@@ -33,7 +33,7 @@ Feature: Manual account creation - Common screens - accessibility
     Given I am on the OPAL Frontend
     When I sign in as "opal-test@hmcts.net"
     And I navigate to Manual Account Creation
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button

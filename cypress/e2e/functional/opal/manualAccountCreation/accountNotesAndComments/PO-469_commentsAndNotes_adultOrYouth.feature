@@ -10,7 +10,7 @@ Feature: PO-469 Account comments and notes screen, Adult or Youth only
 
     And I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button

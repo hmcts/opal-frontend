@@ -10,7 +10,7 @@ Feature: PO-566 Basic Payment Terms screen - all defendant types
 
     And I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
 
   Scenario Outline: AC1, AC2, AC3, AC4 & AC5 - Payment terms screen adult or youth only
