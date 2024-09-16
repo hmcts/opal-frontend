@@ -54,7 +54,7 @@ Feature: PO-523  Update the Create Account screen for new account types and func
 
   Scenario: AC4b & AC4c - Error validation with BU populated
 
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I click the "Continue" button
     Then I see the error message "Select an account type" at the top of the page
     And I see the error message "Select an account type" above the "Fine" radio button
@@ -68,10 +68,10 @@ Feature: PO-523  Update the Create Account screen for new account types and func
 #This signs in with a user that has more access than 2 BUs? not really sure what this is doing - CF
 # Scenario: AC5 - Two BU user continues successfully
 
-#   When I enter "London South" into the business unit search box
+#   When I enter "West London" into the business unit search box
 #   And I select the "Fine" radio button
 #   And I select the "Adult or youth only" radio button
 #   And I click the "Continue" button
 #   Then I see "Account details" on the page header
-#   And I see the business unit is "London South West"
+#   And I see the business unit is "West London"
 #   And I see the defendant type is "Adult or youth only"

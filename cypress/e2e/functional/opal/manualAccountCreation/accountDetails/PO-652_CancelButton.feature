@@ -13,7 +13,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
         When I navigate to Manual Account Creation
 
         Then I see "Business unit and defendant type" on the page header
-        And I enter "London South" into the business unit search box
+        And I enter "West London" into the business unit search box
         And I select the "Fine" radio button
         And I select the "Adult or youth only" radio button
 
@@ -23,7 +23,7 @@ Feature: PO-652 Move 'Cancel' button to beneath the navigation buttons
 
         When I navigate to Manual Account Creation
         Then I see "Business unit and defendant type" on the page header
-        And I enter "London South" into the business unit search box
+        And I enter "West London" into the business unit search box
         And I select the "Fine" radio button
         And I select the "Adult or youth only" radio button
 

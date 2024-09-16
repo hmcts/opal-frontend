@@ -9,7 +9,7 @@ Feature: PO-436 Additional elements of the Parent or Guardian details screen
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
 
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
