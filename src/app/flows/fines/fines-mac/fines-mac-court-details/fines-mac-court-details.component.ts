@@ -32,7 +32,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
     }),
   );
   private enforcementCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
-    .getCourts(this.finesService.finesMacState.businessUnit.businessUnitId)
+    .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
     .pipe(
       map((response: IOpalFinesCourtRefData) => {
         return this.createAutoCompleteItemsCourts(response);
@@ -57,8 +57,8 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
 
     return localJusticeAreas.map((item) => {
       return {
-        value: `${item.name} (${item.ljaCode})`,
-        name: `${item.name} (${item.ljaCode})`,
+        value: `${item.name} (${item.lja_code})`,
+        name: `${item.name} (${item.lja_code})`,
       };
     });
   }
@@ -73,8 +73,8 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
 
     return courts.map((item) => {
       return {
-        value: `${item.name} (${item.courtCode})`,
-        name: `${item.name} (${item.courtCode})`,
+        value: `${item.name} (${item.court_code})`,
+        name: `${item.name} (${item.court_code})`,
       };
     });
   }

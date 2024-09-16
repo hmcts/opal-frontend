@@ -1,8 +1,8 @@
 interface IOpalFinesLocalJusticeArea {
-  localJusticeAreaId: number;
-  ljaCode: string;
+  local_justice_area_id: number;
+  lja_code: string;
   name: string;
-  addressLine1: string;
+  address_line_1: string;
   postcode: string;
 }
 

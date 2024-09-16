@@ -3,10 +3,6 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body.interface';
-import {
-  IOpalFinesBusinessUnit,
-  IOpalFinesBusinessUnitRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesGetDefendantAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-get-defendant-account-params.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
@@ -52,7 +48,7 @@ describe('OpalFines', () => {
 
   it('should send a GET request to business unit ref data API', () => {
     const permission = 'ACCOUNT_ENQUIRY';
-    const mockBusinessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
     service.getBusinessUnits(permission).subscribe((response) => {
@@ -67,7 +63,7 @@ describe('OpalFines', () => {
 
   it('should return cached response for the same ref data search', () => {
     const permission = 'ACCOUNT_ENQUIRY';
-    const mockBusinessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
 
     service.getBusinessUnits(permission).subscribe((response) => {
@@ -286,7 +282,7 @@ describe('OpalFines', () => {
   });
 
   it('should return the item value for a given configuration item name', () => {
-    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0] as IOpalFinesBusinessUnit;
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     const expectedValue = 'Item1';
 
     const result = service.getConfigurationItemValue(businessUnit, expectedValue);
@@ -295,7 +291,7 @@ describe('OpalFines', () => {
   });
 
   it('should return null if the configuration item name is not found', () => {
-    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1] as IOpalFinesBusinessUnit;
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1];
     const itemName = 'Item0';
 
     const result = service.getConfigurationItemValue(businessUnit, itemName);
