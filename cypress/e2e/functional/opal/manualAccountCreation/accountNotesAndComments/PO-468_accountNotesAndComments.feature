@@ -10,7 +10,7 @@ Feature: PO-468 Account comments and notes section onto the Account Details scre
 
         #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
         Then I see "Business unit and defendant type" on the page header
-        And I enter "London South West" into the business unit search box
+        And I enter "West London" into the business unit search box
 
 
     Scenario Outline: AC1,AC2,AC3 -positive: verifying the Account comments and notes link for 3 defendant types

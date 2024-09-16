@@ -8,7 +8,7 @@ Feature: PO-648 days in default calculator on payment terms page - adult or yout
     When I navigate to Manual Account Creation
 
     Then I see "Business unit and defendant type" on the page header
-    And I enter "London South West" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
