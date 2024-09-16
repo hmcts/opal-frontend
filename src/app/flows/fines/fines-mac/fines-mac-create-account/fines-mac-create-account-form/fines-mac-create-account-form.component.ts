@@ -19,7 +19,7 @@ import { GovukRadioComponent } from '@components/govuk/govuk-radio/govuk-radio.c
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
 
-import { AbstractFormBaseComponent } from '@components/abstract';
+import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
 import { RoutingPaths } from '@routing/enums/routing-paths';
 import { IFinesMacCreateAccountAccountTypes } from '../interfaces/fines-mac-create-account-account-types.interface';
 import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';

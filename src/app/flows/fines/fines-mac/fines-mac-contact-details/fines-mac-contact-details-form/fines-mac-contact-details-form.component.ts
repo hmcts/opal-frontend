@@ -13,7 +13,7 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-import { AbstractFormBaseComponent } from '@components/abstract';
+import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
 import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
 import { optionalEmailAddressValidator } from '@validators/optional-valid-email-address/optional-valid-email-address.validator';
 import { optionalPhoneNumberValidator } from '@validators/optional-valid-telephone/optional-valid-telephone.validator';

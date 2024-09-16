@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
+import { IAbstractFormControlErrorMessage } from '@components/abstract/interfaces/abstract-form-control-error-message.interface';
 import { IFinesMacNameFieldIds } from './interfaces';
 
 @Component({

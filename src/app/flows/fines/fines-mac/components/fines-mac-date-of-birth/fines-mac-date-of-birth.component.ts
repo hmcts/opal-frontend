@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
+import { IAbstractFormControlErrorMessage } from '@components/abstract/interfaces/abstract-form-control-error-message.interface';
 import { ScotgovDatePickerComponent } from '@components/scotgov';
 import { DateService } from '@services/date-service/date.service';
 

@@ -1,4 +1,4 @@
-import { IAbstractFormBaseForm } from '@interfaces/components/abstract';
+import { IAbstractFormBaseForm } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-form.interface';
 import { FinesMacStatus } from '../../types/fines-mac-status.type';
 import { IFinesMacPaymentTermsState } from './fines-mac-payment-terms-state.interface';
 

@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractFormAliasBaseComponent } from './abstract-form-alias-base';
 import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import {
-  IAbstractFormAliasBaseFormArrayControlValidation,
-  IAbstractFormAliasBaseFormArrayControls,
-  IAbstractFormAliasBaseFormControlErrorMessage,
-} from './interfaces';
+import { IAbstractFormAliasBaseFormArrayControlValidation } from './interfaces/abstract-form-alias-base-form-array-control-validation.interface';
+import { IAbstractFormAliasBaseFormArrayControls } from './interfaces/abstract-form-alias-base-form-array-controls.interface';
+import { IAbstractFormAliasBaseFormControlErrorMessage } from './interfaces/abstract-form-alias-base-form-control-error-message.interface';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 

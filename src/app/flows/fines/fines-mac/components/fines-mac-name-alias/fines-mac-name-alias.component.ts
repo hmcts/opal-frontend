@@ -6,10 +6,8 @@ import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/gov
 import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-import {
-  IAbstractFormAliasBaseAliasControls,
-  IAbstractFormBaseFormControlErrorMessage,
-} from '@interfaces/components/abstract';
+import { IAbstractFormAliasBaseAliasControls } from '@components/abstract/abstract-form-alias-base/interfaces/abstract-form-alias-base-alias-controls.interface';
+import { IAbstractFormBaseFormControlErrorMessage } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-form-control-error-message.interface';
 import { IFinesMacNameAliasOutput } from './interfaces';
 
 @Component({

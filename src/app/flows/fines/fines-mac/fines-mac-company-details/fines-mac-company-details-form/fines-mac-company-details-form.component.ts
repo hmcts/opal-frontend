@@ -8,7 +8,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@components/abstract';
+import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
 
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
