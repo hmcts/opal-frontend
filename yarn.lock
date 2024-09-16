@@ -4748,13 +4748,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scottish-government/design-system@npm:^2.0.0":
-  version: 2.3.0
-  resolution: "@scottish-government/design-system@npm:2.3.0"
-  checksum: 10/2894759fe6bed3ad6af6bb01e85fefe55dabca7045e960615bd33e526e84689752fd008ea72b14cc744a0e720568891d47b6e660a2b0ebc2b03dad76ba0d9eff
-  languageName: node
-  linkType: hard
-
 "@sigstore/bundle@npm:^2.3.2":
   version: 2.3.2
   resolution: "@sigstore/bundle@npm:2.3.2"
@@ -12050,7 +12043,6 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@ministryofjustice/frontend": "npm:^2.1.0"
-    "@scottish-government/design-system": "npm:^2.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^4.17.21"

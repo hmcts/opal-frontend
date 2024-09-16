@@ -2,7 +2,7 @@ declare module 'govuk-frontend' {
   export function initAll(): void;
 }
 
-declare module '@scottish-government/design-system/src/all' {
+declare module '@ministryofjustice/frontend/moj/all' {
   export function initAll(): void;
 }
 
