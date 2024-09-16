@@ -15,7 +15,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     let accessToken;
 
     if (req.session.securityToken) {
-      accessToken = req.session.securityToken.accessToken;
+      accessToken = req.session.securityToken.access_token;
     }
 
     if (!accessToken) {

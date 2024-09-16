@@ -1,382 +1,384 @@
-export const SESSION_USER_STATE_MOCK = {
-  userId: 'gl.timTest',
-  userName: 'timmyTest@HMCTS.NET',
+import { ISessionUserState } from '../interfaces';
+
+export const SESSION_USER_STATE_MOCK: ISessionUserState = {
+  user_id: 'gl.timTest',
+  user_name: 'timmyTest@HMCTS.NET',
   roles: [
     {
-      businessUserId: 'L017KG',
-      businessUnitId: 17,
+      business_user_id: 'L017KG',
+      business_unit_id: 17,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L016KG',
-      businessUnitId: 16,
+      business_user_id: 'L016KG',
+      business_unit_id: 16,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L019KG',
-      businessUnitId: 19,
+      business_user_id: 'L019KG',
+      business_unit_id: 19,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L013KG',
-      businessUnitId: 13,
+      business_user_id: 'L013KG',
+      business_unit_id: 13,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L076KG',
-      businessUnitId: 76,
+      business_user_id: 'L076KG',
+      business_unit_id: 76,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L081KG',
-      businessUnitId: 81,
+      business_user_id: 'L081KG',
+      business_unit_id: 81,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L077KG',
-      businessUnitId: 77,
+      business_user_id: 'L077KG',
+      business_unit_id: 77,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L078KG',
-      businessUnitId: 78,
+      business_user_id: 'L078KG',
+      business_unit_id: 78,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L079KG',
-      businessUnitId: 79,
+      business_user_id: 'L079KG',
+      business_unit_id: 79,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L040KG',
-      businessUnitId: 40,
+      business_user_id: 'L040KG',
+      business_unit_id: 40,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L066KG',
-      businessUnitId: 66,
+      business_user_id: 'L066KG',
+      business_unit_id: 66,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L072KG',
-      businessUnitId: 72,
+      business_user_id: 'L072KG',
+      business_unit_id: 72,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L067KG',
-      businessUnitId: 67,
+      business_user_id: 'L067KG',
+      business_unit_id: 67,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L073KG',
-      businessUnitId: 73,
+      business_user_id: 'L073KG',
+      business_unit_id: 73,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L068KG',
-      businessUnitId: 68,
+      business_user_id: 'L068KG',
+      business_unit_id: 68,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L074KG',
-      businessUnitId: 74,
+      business_user_id: 'L074KG',
+      business_unit_id: 74,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L069KG',
-      businessUnitId: 69,
+      business_user_id: 'L069KG',
+      business_unit_id: 69,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L075KG',
-      businessUnitId: 75,
+      business_user_id: 'L075KG',
+      business_unit_id: 75,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L080KG',
-      businessUnitId: 80,
+      business_user_id: 'L080KG',
+      business_unit_id: 80,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L062KG',
-      businessUnitId: 62,
+      business_user_id: 'L062KG',
+      business_unit_id: 62,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L025KG',
-      businessUnitId: 25,
+      business_user_id: 'L025KG',
+      business_unit_id: 25,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L032KG',
-      businessUnitId: 32,
+      business_user_id: 'L032KG',
+      business_unit_id: 32,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L063KG',
-      businessUnitId: 63,
+      business_user_id: 'L063KG',
+      business_unit_id: 63,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L064KG',
-      businessUnitId: 64,
+      business_user_id: 'L064KG',
+      business_unit_id: 64,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L070KG',
-      businessUnitId: 70,
+      business_user_id: 'L070KG',
+      business_unit_id: 70,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L065KG',
-      businessUnitId: 65,
+      business_user_id: 'L065KG',
+      business_unit_id: 65,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
     {
-      businessUserId: 'L071KG',
-      businessUnitId: 71,
+      business_user_id: 'L071KG',
+      business_unit_id: 71,
       permissions: [
         {
-          permissionId: 54,
-          permissionName: 'Account Enquiry',
+          permission_id: 54,
+          permission_name: 'Account Enquiry',
         },
         {
-          permissionId: 41,
-          permissionName: 'Account Enquiry - Account Notes',
+          permission_id: 41,
+          permission_name: 'Account Enquiry - Account Notes',
         },
       ],
     },
