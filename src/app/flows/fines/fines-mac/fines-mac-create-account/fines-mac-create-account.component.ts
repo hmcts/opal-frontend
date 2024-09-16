@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract';
-import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
+import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
 import { IFinesMacCreateAccountForm } from './interfaces/fines-mac-create-account-form.interface';
@@ -13,7 +13,7 @@ import {
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 
-import { IGovUkSelectOptions } from '@interfaces/components/govuk';
+import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';

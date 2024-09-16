@@ -27,7 +27,7 @@ import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-per
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
 
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { IGovUkSelectOptions } from '@interfaces/components/govuk';
+import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
 
 import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS } from '../constants/fines-mac-personal-details-address-block-field-ids';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-alias-field-errors';

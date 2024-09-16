@@ -10,14 +10,14 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@components/abstract';
-import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
+import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 
 import { IAbstractFormBaseFieldErrors } from '@interfaces/components/abstract';
-import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
+import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';

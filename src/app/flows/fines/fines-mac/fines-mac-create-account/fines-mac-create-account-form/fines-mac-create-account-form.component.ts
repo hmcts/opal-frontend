@@ -30,10 +30,10 @@ import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from '../
 import { FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES } from '../constants/fines-mac-create-account-control-names';
 import { FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS } from '../constants/fines-mac-create-account-field-errors';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
-import { IGovUkRadioOptions } from '@interfaces/components/govuk';
+import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
+import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
