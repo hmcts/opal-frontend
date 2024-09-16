@@ -9,7 +9,7 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
 
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
@@ -19,7 +19,7 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
 
   #   #Descoped by PO-426 --- When I see "Create account" as the caption on the page
   #   And I see "Account details" on the page header
-  #   And I see the business unit is "London South West"
+  #   And I see the business unit is "West London"
   #   And I see the defendant type is "Adult or youth with parent or guardian to pay"
 
   # Scenario: AC3 - Court details

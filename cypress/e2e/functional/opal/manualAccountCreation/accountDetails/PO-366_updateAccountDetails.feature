@@ -9,7 +9,7 @@ Feature: PO-366 updating the account details page to manage the account creation
 
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
 
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
@@ -22,7 +22,7 @@ Feature: PO-366 updating the account details page to manage the account creation
   Scenario: AC2-positive: verifying the account details page where account being created and defendant type text
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     And I see "Account details" on the page header
-    And I see the business unit is "London South West"
+    And I see the business unit is "West London"
     And I see the defendant type is "Adult or youth only"
 
   #Descoped

@@ -10,7 +10,7 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
 
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
