@@ -30,11 +30,11 @@ import {
 } from '@components/govuk';
 import { FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-default-days-control-validation';
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants/fines-mac-payment-terms-options';
-import { ScotgovDatePickerComponent } from '@components/scotgov';
 import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default-days/fines-mac-default-days.component';
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
 import { DateService } from '@services';
+import { MojDatePickerComponent } from '../../../../../components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as PT_CONTROL_PAYMENT_TERMS } from '../constants/controls/fines-mac-payment-terms-controls-payment-terms.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REQUEST_CARD_PAYMENT as PT_CONTROL_REQUEST_CARD_PAYMENT } from '../constants/controls/fines-mac-payment-terms-controls-request-card-payment.constant';
@@ -62,10 +62,10 @@ import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-ty
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCancelLinkComponent,
-    ScotgovDatePickerComponent,
     GovukTextInputPrefixSuffixComponent,
     FinesMacDefaultDaysComponent,
     GovukErrorSummaryComponent,
+    MojDatePickerComponent,
     MojTicketPanelComponent,
   ],
   templateUrl: './fines-mac-payment-terms-form.component.html',

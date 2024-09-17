@@ -1,15 +1,15 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I see {string} in the Date of birth field', (dob: string) => {
-  cy.get('app-scotgov-date-picker').find('input[id="dob"]').should('have.value', dob);
+  cy.get('app-moj-date-picker').find('input[id="dob"]').should('have.value', dob);
 });
 Then('I enter {string} into the Date of birth field', (dob: string) => {
-  cy.get('app-scotgov-date-picker').find('input[id="dob"]').clear().type(dob);
+  cy.get('app-moj-date-picker').find('input[id="dob"]').clear().type(dob);
 });
 
 Then('I enter a date of birth {int} years ago', (yearsAgo: number) => {
   const dob = calculateDOB(yearsAgo);
-  cy.get('app-scotgov-date-picker').find('input[id="dob"]').clear().type(dob);
+  cy.get('app-moj-date-picker').find('input[id="dob"]').clear().type(dob);
 });
 
 function calculateDOB(yearsAgo: number): string {

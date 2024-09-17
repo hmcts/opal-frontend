@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ScotgovDatePickerComponent } from './scotgov-date-picker.component';
+
+import { MojDatePickerComponent } from './moj-date-picker.component';
 import { FormControl } from '@angular/forms';
 
-describe('ScotgovDatePickerComponent', () => {
-  let component: ScotgovDatePickerComponent;
-  let fixture: ComponentFixture<ScotgovDatePickerComponent>;
+describe('MojDatePickerComponent', () => {
+  let component: MojDatePickerComponent;
+  let fixture: ComponentFixture<MojDatePickerComponent>;
   let formControl: FormControl;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ScotgovDatePickerComponent],
+      imports: [MojDatePickerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ScotgovDatePickerComponent);
+    fixture = TestBed.createComponent(MojDatePickerComponent);
     component = fixture.componentInstance;
 
     formControl = new FormControl(null);
@@ -46,6 +47,15 @@ describe('ScotgovDatePickerComponent', () => {
   it('should update selectedDate and emit dateChange event when changeDate is called', () => {
     spyOn(component.dateChange, 'emit');
     const newDate = '01/01/2024';
+
+    component['setDateValue'](newDate);
+
+    expect(component.dateChange.emit).toHaveBeenCalledWith(newDate);
+  });
+
+  it('should update selectedDate and emit dateChange event when changeDate is called - incorrect date', () => {
+    spyOn(component.dateChange, 'emit');
+    const newDate = '32/13/2024';
 
     component['setDateValue'](newDate);
 

@@ -61,7 +61,6 @@
     "@hmcts/nodejs-logging": "^4.0.4",
     "@hmcts/properties-volume": "^1.1.0",
     "@ministryofjustice/frontend": "^2.1.0",
-    "@scottish-government/design-system": "^2.0.0",
     "accessible-autocomplete": "^3.0.0",
     "applicationinsights": "3.2.1",
     "axios": "^1.6.2",

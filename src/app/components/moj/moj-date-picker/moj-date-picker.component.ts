@@ -7,19 +7,23 @@ import {
   OnInit,
   Output,
   afterNextRender,
+  inject,
 } from '@angular/core';
-import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { DateService } from '@services';
 
 @Component({
-  selector: 'app-scotgov-date-picker',
+  selector: 'app-moj-date-picker',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './scotgov-date-picker.component.html',
+  templateUrl: './moj-date-picker.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ScotgovDatePickerComponent implements OnInit {
+export class MojDatePickerComponent implements OnInit {
   private _control!: FormControl;
   public disabledDatesConcatenated!: string;
+
+  private readonly dateService = inject(DateService);
 
   @Input({ required: true }) labelText!: string;
   @Input({ required: false }) labelClasses!: string;
@@ -62,14 +66,20 @@ export class ScotgovDatePickerComponent implements OnInit {
    * @param value - The new date value to set.
    */
   protected setDateValue(value: string) {
-    this.dateChange.emit(value);
+    const parsedDate = this.dateService.getFromFormat(value, 'd/M/yyyy');
+    if (parsedDate.isValid) {
+      const formattedDate = parsedDate.toFormat('dd/MM/yyyy'); // Formats with leading zeros
+      this.dateChange.emit(formattedDate);
+    } else {
+      this.dateChange.emit(value);
+    }
   }
 
   /**
-   * Configures the date picker functionality using the scottish government library.
+   * Configures the date picker functionality using the moj library.
    */
   public configureDatePicker(): void {
-    import('@scottish-government/design-system/src/all').then((datePicker) => {
+    import('@ministryofjustice/frontend/moj/all').then((datePicker) => {
       datePicker.initAll();
     });
   }
