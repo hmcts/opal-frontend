@@ -88,19 +88,18 @@
     ></div>
   }
   @if (accessDefaultDates) {
-    <fieldset class="govuk-fieldset">
-      <app-govuk-checkboxes
-        fieldSetId="daysInDefaultCheckbox"
-        legendText="Days in default"
-        legendClasses="govuk-fieldset__legend--s"
-      >
-        <div
-          app-govuk-checkboxes-item
-          labelText="There are days in default"
-          inputId="has_days_in_default"
-          inputName="has_days_in_default"
-          [control]="form.controls['has_days_in_default']"
-        ></div>
+    <app-govuk-checkboxes
+      fieldSetId="daysInDefaultCheckbox"
+      legendText="Days in default"
+      legendClasses="govuk-fieldset__legend--s"
+    >
+      <div
+        app-govuk-checkboxes-item
+        labelText="There are days in default"
+        inputId="has_days_in_default"
+        inputName="has_days_in_default"
+        [control]="form.controls['has_days_in_default']"
+      ></div>
 
       @if (form.get('has_days_in_default')?.value) {
         <div app-govuk-checkboxes-conditional conditionalId="has_days_in_default">
