@@ -32,8 +32,6 @@ import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default
 import { FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS } from '../constants/fines-mac-payment-terms-field-errors';
 import { takeUntil } from 'rxjs';
 import { DateService } from '@services/date-service/date.service';
-import { MojDatePickerComponent } from '../../../../../components/moj/moj-date-picker/moj-date-picker.component';
-import { MojTicketPanelComponent } from '@components/moj';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as PT_CONTROL_PAYMENT_TERMS } from '../constants/controls/fines-mac-payment-terms-controls-payment-terms.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REQUEST_CARD_PAYMENT as PT_CONTROL_REQUEST_CARD_PAYMENT } from '../constants/controls/fines-mac-payment-terms-controls-request-card-payment.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_DAYS_IN_DEFAULT as PT_CONTROL_HAS_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-has-days-in-default.constant';
@@ -44,6 +42,9 @@ import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } f
 import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-payment-term-options-control-validation.interface';
 import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
+import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
+import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
+import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
