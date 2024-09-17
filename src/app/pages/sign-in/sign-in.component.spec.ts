@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignInComponent } from './sign-in.component';
 import { ISignInStubForm } from './interfaces';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { SsoEndpoints } from '@enums';
+import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;

@@ -1,15 +1,18 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SsoEndpoints } from '@enums';
-import { DateService, GlobalStateService } from '@services';
+import { SsoEndpoints } from '@routing/enums/sso-endpoints';
+import { DateService } from '@services/date-service/date.service';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { SESSION_TOKEN_EXPIRY_MOCK } from '@mocks';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 import { DateTime } from 'luxon';
-import { ISessionTokenExpiry } from '@interfaces';
-import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
-import { GovukFooterComponent } from '@components/govuk';
+import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
+import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
+import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
+import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
 import { FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-company-enforcement-control-validation';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION } from '../constants/controls/fines-mac-payment-terms-controls-add-enforcement-action.constant';

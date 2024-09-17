@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IAbstractFormBaseFormErrorSummaryMessage } from '@interfaces/components/abstract';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-form-error-summary-message.interface';
 
 @Component({
   selector: 'app-govuk-error-summary',

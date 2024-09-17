@@ -10,7 +10,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/forms';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-moj-date-picker',

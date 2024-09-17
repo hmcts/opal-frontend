@@ -1,4 +1,4 @@
-import { IAbstractFormBaseFormErrorSummaryMessage } from '../interfaces';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '../interfaces/abstract-form-base-form-error-summary-message.interface';
 
 export const ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK: IAbstractFormBaseFormErrorSummaryMessage[] = [
   {

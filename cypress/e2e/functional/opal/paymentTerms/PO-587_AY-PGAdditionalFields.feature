@@ -1,4 +1,4 @@
-Feature: PO-429 Implement additional fields for payment terms screen - Adult or youth only
+Feature: PO-587 Implement additional fields for payment terms screen - Adult or youth with parent or guardian to pay
   Background:
     Given I am on the OPAL Frontend
     Then I see "Opal" in the header
@@ -10,7 +10,7 @@ Feature: PO-429 Implement additional fields for payment terms screen - Adult or 
     And I see "Business unit and defendant type" on the page header
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
     Then I see "Account details" on the page header
 

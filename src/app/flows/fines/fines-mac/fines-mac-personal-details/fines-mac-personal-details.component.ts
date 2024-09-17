@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AbstractFormParentBaseComponent } from '@components/abstract';
+import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IFinesMacPersonalDetailsForm } from './interfaces/fines-mac-personal-details-form.interface';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form/fines-mac-personal-details-form.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';

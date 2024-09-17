@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ISessionUserState, ISessionUserStatePermission, ISessionUserStateRole } from '@interfaces';
+import {
+  ISessionUserState,
+  ISessionUserStatePermission,
+  ISessionUserStateRole,
+} from '@services/session-service/interfaces/session-user-state.interface';
 
 @Injectable({
   providedIn: 'root',

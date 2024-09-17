@@ -1,4 +1,4 @@
-import { INestedRoutes } from '@interfaces';
+import { INestedRoutes } from '@routing/interfaces/nested-routes.interface';
 
 export interface IFinesMacRoutingNestedRoutes {
   courtDetails: INestedRoutes | null;

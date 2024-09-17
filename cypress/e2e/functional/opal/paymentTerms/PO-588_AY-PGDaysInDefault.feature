@@ -78,12 +78,17 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
     And I see the error message "Default date must be in the format DD/MM/YYYY" above the "Date days in default were imposed" date field
 
     Then I enter "1/1/2024" into the "Date days in default were imposed" date field
-    When I click the "Return to account details" button
-    Then I see the error message "Default date must be in the format DD/MM/YYYY" at the top of the page
-    And I see the error message "Default date must be in the format DD/MM/YYYY" above the "Date days in default were imposed" date field
+    And I enter "12345" into the days in default input field
 
-    Then I see "123456" in the days in default input field
-    And I see "1/1/2024" in the "Date days in default were imposed" date field
+    Then I see "01/01/2024" in the "Date days in default were imposed" date field
+
+    When I click the "Return to account details" button
+
+    When I click on the "Payment terms" link
+    Then I see "Payment terms" on the page header
+
+    Then I see "12345" in the days in default input field
+    And I see "01/01/2024" in the "Date days in default were imposed" date field
 
     When I unselect the "There are days in default" checkbox
     And I select the "There are days in default" checkbox

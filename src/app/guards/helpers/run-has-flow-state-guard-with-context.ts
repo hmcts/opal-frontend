@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 import { handleObservableResult } from './handle-observable-result';
-import { GuardReturnType } from '../types';
+import { GuardReturnType } from '@guards/types/guard-return.type';
 
 export async function runHasFlowStateGuardWithContext(
   hasFlowStateGuard: () => GuardReturnType | Promise<GuardReturnType> | Observable<GuardReturnType>,

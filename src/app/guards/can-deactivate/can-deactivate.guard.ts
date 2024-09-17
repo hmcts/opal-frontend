@@ -1,5 +1,5 @@
 import { CanDeactivateFn } from '@angular/router';
-import { ICanDeactivateCanComponentDeactivate } from '@interfaces';
+import { ICanDeactivateCanComponentDeactivate } from '@guards/can-deactivate/interfaces/can-deactivate-can-component-deactivate.interface';
 
 export const canDeactivateGuard: CanDeactivateFn<ICanDeactivateCanComponentDeactivate> = (
   component: ICanDeactivateCanComponentDeactivate,

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukTabsComponent } from './govuk-tabs.component';
 import { Component } from '@angular/core';
-import { addGdsBodyClass } from '../helpers/index';
+import { addGdsBodyClass } from '../helpers/add-gds-body-class';
 
 @Component({
   template: `<app-govuk-tabs tabsId="test"

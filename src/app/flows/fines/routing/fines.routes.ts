@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
-import { authGuard, canDeactivateGuard, routePermissionsGuard } from '@guards';
-import { userStateResolver } from '@resolvers';
+import { authGuard } from '@guards/auth/auth.guard';
+import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
+import { routePermissionsGuard } from '@guards/route-permissions/route-permissions.guard';
+import { userStateResolver } from '@resolvers/user-state/user-state.resolver';
 import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
-import { RoutingPaths } from '@enums';
+import { RoutingPaths } from '@routing/enums/routing-paths';
 
 import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';

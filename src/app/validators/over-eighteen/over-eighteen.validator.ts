@@ -1,5 +1,5 @@
 import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 
 /**
  * Validates whether a date, constructed from provided form controls for day, month and year
