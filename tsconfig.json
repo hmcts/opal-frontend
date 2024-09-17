@@ -23,8 +23,7 @@
     "resolveJsonModule": false,
     "paths": {
       "@components/govuk/*": ["./src/app/components/govuk/*.ts"],
-      "@components/moj": ["./src/app/components/moj/index.ts"],
-      "@components/custom": ["./src/app/components/custom/index.ts"],
+      "@components/moj/*": ["./src/app/components/moj/*.ts"],
       "@components/alphagov/*": ["./src/app/components/alphagov/*.ts"],
       "@components/abstract/*": ["./src/app/components/abstract/*.ts"],
       "@services/*": ["./src/app/services/*.ts"],
