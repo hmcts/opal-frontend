@@ -15,29 +15,10 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
     Then I see "Business unit and defendant type" on the page header
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
 
     Then I see "Account details" on the page header
-
-  Scenario: AC1b - Component not displayed for Youth
-    And I click on the "Personal details" link
-    Then I see "Personal details" on the page header
-    When I select title "Mr" from dropdown
-    And I enter "FNAME" into the "First names" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter a date of birth 15 years ago
-    And I enter "ADDR1" into the "Address line 1" field
-    Then I click the "Return to account details" button
-
-    ##################################################################################
-    # MAY NEED REVISION WHEN OFFENCES AND IMPOSITIONS DETAILS SECTION IS IMPLEMENTED #
-    ##################################################################################
-
-    When I click on the "Payment terms" link
-    Then I see "Payment terms" on the page header
-
-    Then I do not see the "There are days in default" checkbox
 
   Scenario: AC1a,2,3,4,9,10,12 - Presentation of component and validation - Return to account details
     And I click on the "Personal details" link

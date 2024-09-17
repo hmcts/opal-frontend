@@ -6,7 +6,7 @@ Then('I enter {string} into the {string} date field', (date: string, field: stri
 });
 
 Then('I see {string} hint text above the {string} date picker', (hintText: string, field: string) => {
-  cy.contains('app-scotgov-date-picker', field).find('input').parent().prev().should('contain', hintText);
+  cy.contains('app-moj-date-picker', field).find('input').parent().parent().prev().should('contain', hintText);
 });
 
 Then('I enter a date {int} weeks into the future into the {string} date field', (weeks: number, field: string) => {

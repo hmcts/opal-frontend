@@ -85,7 +85,7 @@
     inputName="request_payment_card"
     [control]="form.controls['request_payment_card']"
   ></div>
-  @if (defendantType === 'adultOrYouthOnly' && isAdult) {
+  @if (accessDefaultDates) {
     <app-govuk-checkboxes
       fieldSetId="daysInDefaultCheckbox"
       legendText="Days in default"
