@@ -22,7 +22,7 @@
           @if (form.get('payment_terms')!.value === paymentTerm.key) {
             <div app-govuk-radios-conditional conditionalId="payment_terms">
               <div class="govuk-form-group">
-                <app-scotgov-date-picker
+                <app-moj-date-picker
                   labelText="Enter pay by date"
                   labelClasses="govuk-label--s"
                   inputId="pay_by_date"
@@ -32,7 +32,7 @@
                   [control]="form.controls['pay_by_date']"
                   [errors]="formControlErrorMessages['pay_by_date']"
                   (dateChange)="setInputValue($event, 'pay_by_date')"
-                ></app-scotgov-date-picker>
+                ></app-moj-date-picker>
                 @if (dateInPast) {
                   <ng-container
                     *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Pay by date' }"
@@ -205,7 +205,7 @@
     </app-govuk-radio>
   </div>
   <div class="govuk-form-group">
-    <app-scotgov-date-picker
+    <app-moj-date-picker
       labelText="Start date"
       labelClasses="govuk-label--s"
       inputId="start_date"
@@ -216,7 +216,7 @@
       [control]="form.controls['start_date']"
       [errors]="formControlErrorMessages['start_date']"
       (dateChange)="setInputValue($event, 'start_date')"
-    ></app-scotgov-date-picker>
+    ></app-moj-date-picker>
     @if (dateInPast) {
       <ng-container *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Start date' }"></ng-container>
     }
