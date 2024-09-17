@@ -201,7 +201,7 @@ describe('DateServiceService', () => {
   it('should return the current date and time', () => {
     const result = service.getDateNow();
     const currentDate = DateTime.now();
-    expect(result).toEqual(currentDate);
+    expect(result.hasSame(currentDate, 'minute')).toBeTrue();
   });
 
   it('should add duration to a date', () => {

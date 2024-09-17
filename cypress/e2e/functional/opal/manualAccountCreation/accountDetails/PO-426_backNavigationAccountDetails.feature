@@ -9,7 +9,7 @@ Feature:PO-426 Application and browser Back buttons on Account Details screen - 
 
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
     Then I see "Business unit and defendant type" on the page header
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
 
   Scenario Outline:AC1,2 - App back button - 'Ok' - data cleared
     And I select the "Fine" radio button
@@ -31,12 +31,12 @@ Feature:PO-426 Application and browser Back buttons on Account Details screen - 
     When I click "Back", a window pops up and I click Ok
 
     Then I see "Business unit and defendant type" on the page header
-    Then I see the value "London South West" in the business unit search box
+    Then I see the value "West London" in the business unit search box
     And I validate the "Fine" radio button is not selected
     And I validate the "Fixed Penalty" radio button is not selected
     And I validate the "Conditional Caution" radio button is not selected
 
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button
@@ -85,12 +85,12 @@ Feature:PO-426 Application and browser Back buttons on Account Details screen - 
     When I click the browser back button 3 times, a window pops up and I click Ok
 
     Then I see "Business unit and defendant type" on the page header
-    Then I see the value "London South West" in the business unit search box
+    Then I see the value "West London" in the business unit search box
     And I validate the "Fine" radio button is not selected
     And I validate the "Fixed Penalty" radio button is not selected
     And I validate the "Conditional Caution" radio button is not selected
 
-    When I enter "London South" into the business unit search box
+    When I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button

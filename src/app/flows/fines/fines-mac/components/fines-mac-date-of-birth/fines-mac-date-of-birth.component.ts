@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IAbstractFormControlErrorMessage } from '@components/abstract/interfaces/abstract-form-control-error-message.interface';
-import { ScotgovDatePickerComponent } from '@components/scotgov';
 import { DateService } from '@services/date-service/date.service';
+import { MojDatePickerComponent } from '@components/moj';
 
 @Component({
   selector: 'app-fines-mac-date-of-birth',
   standalone: true,
-  imports: [ScotgovDatePickerComponent],
+  imports: [MojDatePickerComponent],
   templateUrl: './fines-mac-date-of-birth.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
