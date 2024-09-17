@@ -8,7 +8,7 @@ Feature: PO-429 Implement additional fields for payment terms screen - Adult or 
     And I navigate to Manual Account Creation
 
     And I see "Business unit and defendant type" on the page header
-    And I enter "London South West" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth only" radio button
     And I click the "Continue" button

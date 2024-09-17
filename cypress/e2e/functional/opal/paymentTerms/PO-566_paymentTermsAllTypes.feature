@@ -44,8 +44,8 @@ Feature: PO-566 Basic Payment Terms screen - all defendant types
     And I validate the "Lump sum plus instalments" radio button is not selected
 
     #When I see "Enforcement action" below the "Payment terms" header - or line 73 generic steps once screen exists
-    And I select the "Hold enforcement on account (NOENF)" checkbox
-    And I unselect the "Hold enforcement on account (NOENF)" checkbox
+    And I select the "Add enforcement action" checkbox
+    And I unselect the "Add enforcement action" checkbox
 
     When I click on the "Cancel" link
     Then I see "Account details" on the page header
@@ -72,8 +72,8 @@ Feature: PO-566 Basic Payment Terms screen - all defendant types
     And I validate the "Lump sum plus instalments" radio button is not selected
 
     #When I see "Enforcement action" below the "Payment terms" header - or line 73 generic steps once screen exists
-    And I select the "Hold enforcement on account (NOENF)" checkbox
-    And I unselect the "Hold enforcement on account (NOENF)" checkbox
+    And I select the "Add enforcement action" checkbox
+    And I unselect the "Add enforcement action" checkbox
 
     When I click on the "Cancel" link
     Then I see "Account details" on the page header
@@ -100,8 +100,8 @@ Feature: PO-566 Basic Payment Terms screen - all defendant types
     And I validate the "Lump sum plus instalments" radio button is not selected
 
     #When I see "Enforcement action" below the "Payment terms" header - or line 73 generic steps once screen exists
-    And I select the "Hold enforcement on account (NOENF)" checkbox
-    And I unselect the "Hold enforcement on account (NOENF)" checkbox
+    And I select the "Add enforcement action" checkbox
+    And I unselect the "Add enforcement action" checkbox
 
     When I click on the "Cancel" link
     Then I see "Account details" on the page header
