@@ -9,7 +9,7 @@ Feature: PO-518 delete account confirmation screen
     When I navigate to Manual Account Creation
 
     Then I see "Business unit and defendant type" on the page header
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
 
 
@@ -34,7 +34,7 @@ Feature: PO-518 delete account confirmation screen
 
     When I click the "Yes - delete" button
     Then I see "Business unit and defendant type" on the page header
-    And I see "London South West" in the "Business unit" searchbox
+    And I see "West London" in the "Business unit" searchbox
     Examples:
       | defendantType                                 | contactDetailsHeading              |
       | Adult or youth only                           | Defendant contact details          |

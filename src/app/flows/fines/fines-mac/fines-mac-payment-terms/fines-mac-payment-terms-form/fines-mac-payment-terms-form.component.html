@@ -22,7 +22,7 @@
           @if (form.get('payment_terms')!.value === paymentTerm.key) {
             <div app-govuk-radios-conditional conditionalId="payment_terms">
               <div class="govuk-form-group">
-                <app-scotgov-date-picker
+                <app-moj-date-picker
                   labelText="Enter pay by date"
                   labelClasses="govuk-label--s"
                   inputId="pay_by_date"
@@ -32,7 +32,7 @@
                   [control]="form.controls['pay_by_date']"
                   [errors]="formControlErrorMessages['pay_by_date']"
                   (dateChange)="setInputValue($event, 'pay_by_date')"
-                ></app-scotgov-date-picker>
+                ></app-moj-date-picker>
                 @if (dateInPast) {
                   <ng-container
                     *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Pay by date' }"
@@ -102,41 +102,42 @@
           [control]="form.controls['has_days_in_default']"
         ></div>
 
-        @if (form.get('has_days_in_default')?.value) {
-          <div app-govuk-checkboxes-conditional conditionalId="has_days_in_default">
-            <div class="govuk-grid-row">
-              <app-scotgov-date-picker
-                labelText="Date days in default were imposed"
-                labelClasses="govuk-label--s"
-                inputId="days_in_default_date"
-                inputName="days_in_default_date"
-                inputClasses="govuk-input--width-10"
-                hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
-                [maxDate]="yesterday"
-                [control]="form.controls['days_in_default_date']"
-                [errors]="formControlErrorMessages['days_in_default_date']"
-                (dateChange)="setInputValue($event, 'days_in_default_date')"
-              ></app-scotgov-date-picker>
-              <app-govuk-text-input-prefix-suffix
-                labelText="Enter days in default"
-                labelClasses="govuk-label--s"
-                inputId="days_in_default"
-                inputName="days_in_default"
-                inputClasses="govuk-input--width-5"
-                suffixText="days"
-                [control]="form.controls['days_in_default']"
-                [errors]="formControlErrorMessages['days_in_default']"
-              ></app-govuk-text-input-prefix-suffix>
-              <div class="govuk-!-margin-top-5">
-                <app-fines-mac-default-days
-                  [date]="form.controls['days_in_default_date'].value"
-                ></app-fines-mac-default-days>
-              </div>
-            </div>
+      @if (form.get('has_days_in_default')?.value) {
+        <div app-govuk-checkboxes-conditional conditionalId="has_days_in_default">
+          <div class="govuk-form-group">
+            <app-moj-date-picker
+              labelText="Date days in default were imposed"
+              labelClasses="govuk-label--s"
+              inputId="days_in_default_date"
+              inputName="days_in_default_date"
+              inputClasses="govuk-input--width-10"
+              hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
+              [maxDate]="yesterday"
+              [control]="form.controls['days_in_default_date']"
+              [errors]="formControlErrorMessages['days_in_default_date']"
+              (dateChange)="setInputValue($event, 'days_in_default_date')"
+            ></app-moj-date-picker>
           </div>
-        }
-      </app-govuk-checkboxes>
-    </fieldset>
+          <div class="govuk-form-group">
+            <app-govuk-text-input-prefix-suffix
+              labelText="Enter days in default"
+              labelClasses="govuk-label--s"
+              inputId="days_in_default"
+              inputName="days_in_default"
+              inputClasses="govuk-input--width-5"
+              suffixText="days"
+              [control]="form.controls['days_in_default']"
+              [errors]="formControlErrorMessages['days_in_default']"
+            ></app-govuk-text-input-prefix-suffix>
+          </div>
+          <div class="govuk-form-group">
+            <app-fines-mac-default-days
+              [date]="form.controls['days_in_default_date'].value"
+            ></app-fines-mac-default-days>
+          </div>
+        </div>
+      }
+    </app-govuk-checkboxes>
   }
   <app-govuk-checkboxes
     fieldSetId="enforcementActions"
@@ -233,7 +234,7 @@
     </app-govuk-radio>
   </div>
   <div class="govuk-form-group">
-    <app-scotgov-date-picker
+    <app-moj-date-picker
       labelText="Start date"
       labelClasses="govuk-label--s"
       inputId="start_date"
@@ -244,7 +245,7 @@
       [control]="form.controls['start_date']"
       [errors]="formControlErrorMessages['start_date']"
       (dateChange)="setInputValue($event, 'start_date')"
-    ></app-scotgov-date-picker>
+    ></app-moj-date-picker>
     @if (dateInPast) {
       <ng-container *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Start date' }"></ng-container>
     }

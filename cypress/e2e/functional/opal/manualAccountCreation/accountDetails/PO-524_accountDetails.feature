@@ -10,7 +10,7 @@ Feature: PO-524 Account Details task list screen for all defendant types
 
         #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
         Then I see "Business unit and defendant type" on the page header
-        And I enter "London South West" into the business unit search box
+        And I enter "West London" into the business unit search box
 
     Scenario: AC1, AC2- The new Account type section will be displayed for all the defendant types
         When I select the "<accountType>" radio button
@@ -20,7 +20,7 @@ Feature: PO-524 Account Details task list screen for all defendant types
 
         #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        And I see "Business unit" is "London South West"
+        And I see "Business unit" is "West London"
         And I see "Account type" is "<accountType>"
         And I see "Defendant type" is "<defendantType>"
 
@@ -40,7 +40,7 @@ Feature: PO-524 Account Details task list screen for all defendant types
 
         #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
         Then I see "Account details" on the page header
-        And I see "Business unit" is "London South West"
+        And I see "Business unit" is "West London"
         And I see "Account type" is "Conditional Caution"
         And I see "Defendant type" is "Adult or youth only"
 
