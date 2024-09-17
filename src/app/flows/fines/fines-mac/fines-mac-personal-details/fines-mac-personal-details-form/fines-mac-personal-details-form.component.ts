@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbstractFormAliasBaseComponent } from '@components/abstract';
+import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
 import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
 import { FinesMacDateOfBirthComponent } from '../../components/fines-mac-date-of-birth/fines-mac-date-of-birth.component';
 import { FinesMacNameAliasComponent } from '../../components/fines-mac-name-alias/fines-mac-name-alias.component';
@@ -17,19 +17,17 @@ import { FinesMacNameComponent } from '../../components/fines-mac-name/fines-mac
 import { FinesMacNationalInsuranceNumberComponent } from '../../components/fines-mac-national-insurance-number/fines-mac-national-insurance-number.component';
 import { FinesMacVehicleDetailsComponent } from '../../components/fines-mac-vehicle-details/fines-mac-vehicle-details.component';
 
-import {
-  GovukButtonComponent,
-  GovukCancelLinkComponent,
-  GovukErrorSummaryComponent,
-  GovukSelectComponent,
-} from '@components/govuk';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
+import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
 
 import { IFinesMacPersonalDetailsDefendantTypes } from '../interfaces/fines-mac-personal-details-defendant-types.interface';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
 
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { IGovUkSelectOptions } from '@interfaces/components/govuk';
+import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
 
 import { FINES_MAC_PERSONAL_DETAILS_ADDRESS_BLOCK_FIELD_IDS } from '../constants/fines-mac-personal-details-address-block-field-ids';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-alias-field-errors';
@@ -64,8 +62,8 @@ import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE as PD_CONTROL_TITLE } from '.
 
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { MojTicketPanelComponent } from '@components/moj';
-import { DateService } from '@services';
+import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
+import { DateService } from '@services/date-service/date.service';
 import { takeUntil } from 'rxjs';
 
 @Component({

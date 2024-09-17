@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacDateOfBirthComponent } from './fines-mac-date-of-birth.component';
 import { FormGroup, FormControl } from '@angular/forms';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacDateOfBirthComponent', () => {
   let component: FinesMacDateOfBirthComponent;

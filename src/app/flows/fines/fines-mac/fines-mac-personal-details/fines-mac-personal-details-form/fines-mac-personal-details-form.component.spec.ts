@@ -8,7 +8,7 @@ import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-persona
 import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-personal-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { DateService } from '@services';
+import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;

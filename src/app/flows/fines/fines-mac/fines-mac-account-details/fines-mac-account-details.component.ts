@@ -6,20 +6,19 @@ import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS } from './constants/fines-mac-
 import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-account-details-account-types';
 import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac-account-details-defendant-types';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
-import {
-  GovukBackLinkComponent,
-  GovukButtonComponent,
-  GovukHeadingWithCaptionComponent,
-  GovukSummaryListComponent,
-  GovukSummaryListRowComponent,
-  GovukTagComponent,
-  GovukTaskListComponent,
-  GovukTaskListItemComponent,
-} from '@components/govuk';
+import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukHeadingWithCaptionComponent } from '@components/govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
+import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
+
+import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
+import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
+import { GovukTaskListComponent } from '@components/govuk/govuk-task-list/govuk-task-list.component';
+import { GovukTaskListItemComponent } from '@components/govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { CanDeactivateTypes } from '@types-guards';
+import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 import { Subject, takeUntil } from 'rxjs';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';

@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard, signedInGuard } from '@guards';
-import { RoutingPaths } from '@enums';
-import { userStateResolver } from '@resolvers';
+import { authGuard } from '@guards/auth/auth.guard';
+import { signedInGuard } from '@guards/signed-in/signed-in.guard';
+import { RoutingPaths } from '@routing/enums/routing-paths';
+import { userStateResolver } from '@resolvers/user-state/user-state.resolver';
 
 export const routing: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
