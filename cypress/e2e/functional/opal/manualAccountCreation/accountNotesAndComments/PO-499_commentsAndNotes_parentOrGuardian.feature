@@ -10,7 +10,7 @@ Feature: PO-499 Account comments and notes screen, Adult or Youth with Parent or
 
     And I see "Create account" as the caption on the page
     And I see "Business unit and defendant type" on the page header
-    And I enter "London South" into the business unit search box
+    And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
     And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
