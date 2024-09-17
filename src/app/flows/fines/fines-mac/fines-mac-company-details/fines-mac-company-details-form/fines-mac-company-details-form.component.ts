@@ -8,16 +8,15 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@components/abstract';
-import {
-  GovukButtonComponent,
-  GovukCancelLinkComponent,
-  GovukCheckboxesComponent,
-  GovukCheckboxesConditionalComponent,
-  GovukCheckboxesItemComponent,
-  GovukErrorSummaryComponent,
-  GovukTextInputComponent,
-} from '@components/govuk';
+import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
+
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
+import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
+import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
+import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
+import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 
 import { FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-one-field-errors';
 import { FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-two-field-errors';
@@ -26,7 +25,9 @@ import { FINES_MAC_ADDRESS_BLOCK_FIELD_IDS } from '../../components/fines-mac-ad
 import { FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-postcode-field-errors';
 
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { alphabeticalTextValidator, specialCharactersValidator, optionalMaxLengthValidator } from '@validators';
+import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
+import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
+import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
 import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 

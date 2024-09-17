@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@components/abstract';
-import {
-  GovukButtonComponent,
-  GovukCancelLinkComponent,
-  GovukErrorSummaryComponent,
-  GovukTextInputComponent,
-} from '@components/govuk';
+import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
+import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
 import { FinesMacDateOfBirthComponent } from '../../components/fines-mac-date-of-birth/fines-mac-date-of-birth.component';
 import { FinesMacNameAliasComponent } from '../../components/fines-mac-name-alias/fines-mac-name-alias.component';

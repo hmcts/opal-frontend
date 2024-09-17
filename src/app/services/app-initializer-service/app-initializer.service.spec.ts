@@ -3,8 +3,8 @@ import { AppInitializerService } from './app-initializer.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { of } from 'rxjs';
-import { ISessionTokenExpiry } from '@interfaces';
-import { SESSION_TOKEN_EXPIRY_MOCK } from '@mocks';
+import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 
 const tokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { GovukButtonComponent, GovukTextInputComponent } from '@components/govuk';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { ISignInStubForm } from '../interfaces';
 
 @Component({

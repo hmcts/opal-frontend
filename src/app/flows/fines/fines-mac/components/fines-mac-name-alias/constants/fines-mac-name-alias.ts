@@ -1,5 +1,5 @@
 import { Validators } from '@angular/forms';
-import { alphabeticalTextValidator } from '@validators';
+import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 import { IFinesMacNameAliasControlValidation } from '../interfaces';
 
 export const FINES_MAC_NAME_ALIAS: IFinesMacNameAliasControlValidation[] = [

@@ -1,4 +1,4 @@
-import { IAbstractFormBaseFormError } from '../interfaces';
+import { IAbstractFormBaseFormError } from '../interfaces/abstract-form-base-form-error.interface';
 
 export const ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK: IAbstractFormBaseFormError[] = [
   {

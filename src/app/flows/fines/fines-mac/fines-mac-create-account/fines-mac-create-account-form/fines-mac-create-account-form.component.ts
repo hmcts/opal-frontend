@@ -11,18 +11,16 @@ import {
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  GovukButtonComponent,
-  GovukCancelLinkComponent,
-  GovukErrorSummaryComponent,
-  GovukHeadingWithCaptionComponent,
-  GovukRadioComponent,
-  GovukRadiosConditionalComponent,
-  GovukRadiosItemComponent,
-} from '@components/govuk';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
+import { GovukHeadingWithCaptionComponent } from '@components/govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
+import { GovukRadioComponent } from '@components/govuk/govuk-radio/govuk-radio.component';
+import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
+import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
 
-import { AbstractFormBaseComponent } from '@components/abstract';
-import { RoutingPaths } from '@enums';
+import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
+import { RoutingPaths } from '@routing/enums/routing-paths';
 import { IFinesMacCreateAccountAccountTypes } from '../interfaces/fines-mac-create-account-account-types.interface';
 import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';
@@ -32,10 +30,10 @@ import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from '../
 import { FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES } from '../constants/fines-mac-create-account-control-names';
 import { FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS } from '../constants/fines-mac-create-account-field-errors';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { IAlphagovAccessibleAutocompleteItem } from '@interfaces/components/alphagov';
-import { IGovUkRadioOptions } from '@interfaces/components/govuk';
+import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov';
+import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',

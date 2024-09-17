@@ -1,5 +1,8 @@
 import { Injectable, signal } from '@angular/core';
-import { ITransferStateLaunchDarklyConfig, ISessionTokenExpiry, ISessionUserState } from '@interfaces';
+import { ITransferStateLaunchDarklyConfig } from '@services/transfer-state-service/interfaces/transfer-state-launch-darkly-config.interface';
+import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
+import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
+
 import { LDFlagSet } from 'launchdarkly-js-client-sdk';
 
 @Injectable({

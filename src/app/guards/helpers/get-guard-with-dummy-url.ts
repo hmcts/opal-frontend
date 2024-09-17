@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { authGuard } from '../auth/auth.guard';
 import { signedInGuard } from '../signed-in/signed-in.guard';
 import { finesMacFlowStateGuard } from '../../flows/fines/fines-mac/guards/fines-mac-flow-state/fines-mac-flow-state.guard';
-import { GuardReturnType } from '../types';
+import { GuardReturnType } from '@guards/types/guard-return.type';
 
 /**
  * Returns a function that invokes the specified guard with a dummy route and state.

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { httpErrorInterceptor } from './http-error.interceptor';
 import { throwError } from 'rxjs';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 describe('httpErrorInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) =>

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GovukAccordionComponent } from './govuk-accordion.component';
-import { addGdsBodyClass } from '../helpers/index';
+import { addGdsBodyClass } from '../helpers/add-gds-body-class';
 
 describe('GovukAccordionComponent', () => {
   let component: GovukAccordionComponent;

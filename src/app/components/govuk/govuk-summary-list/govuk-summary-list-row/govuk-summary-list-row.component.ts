@@ -8,7 +8,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { UtilsService } from '@services';
+import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-govuk-summary-list-row, [app-govuk-summary-list-row]',

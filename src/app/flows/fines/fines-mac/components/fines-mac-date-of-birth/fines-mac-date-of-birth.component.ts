@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { IAbstractFormControlErrorMessage } from '@interfaces/components/abstract';
-import { DateService } from '@services';
-import { MojDatePickerComponent } from '@components/moj';
+import { IAbstractFormControlErrorMessage } from '@components/abstract/interfaces/abstract-form-control-error-message.interface';
+import { DateService } from '@services/date-service/date.service';
+import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 
 @Component({
   selector: 'app-fines-mac-date-of-birth',

@@ -1,22 +1,19 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { Subject, Subscription, takeUntil } from 'rxjs';
-import {
-  IAbstractFormBaseFieldError,
-  IAbstractFormBaseFieldErrors,
-  IAbstractFormBaseFormError,
-  IAbstractFormBaseFormErrorSummaryMessage,
-  IAbstractFormBaseHighPriorityFormError,
-} from '../interfaces';
-import {
-  IAbstractFormBaseForm,
-  IAbstractFormBaseFormArrayControl,
-  IAbstractFormBaseFormArrayControlValidation,
-  IAbstractFormBaseFormArrayControls,
-  IAbstractFormBaseFormControlErrorMessage,
-} from './interfaces';
+
+import { IAbstractFormBaseFieldError } from './interfaces/abstract-form-base-field-error.interface';
+import { IAbstractFormBaseFieldErrors } from './interfaces/abstract-form-base-field-errors.interface';
+import { IAbstractFormBaseFormError } from './interfaces/abstract-form-base-form-error.interface';
+import { IAbstractFormBaseFormErrorSummaryMessage } from './interfaces/abstract-form-base-form-error-summary-message.interface';
+import { IAbstractFormBaseHighPriorityFormError } from './interfaces/abstract-form-base-high-priority-form-error.interface';
+import { IAbstractFormBaseForm } from './interfaces/abstract-form-base-form.interface';
+import { IAbstractFormBaseFormArrayControl } from './interfaces/abstract-form-base-form-array-control.interface';
+import { IAbstractFormBaseFormArrayControlValidation } from './interfaces/abstract-form-base-form-array-control-validation.interface';
+import { IAbstractFormBaseFormArrayControls } from './interfaces/abstract-form-base-form-array-controls.interface';
+import { IAbstractFormBaseFormControlErrorMessage } from './interfaces/abstract-form-base-form-control-error-message.interface';
 
 @Component({
   standalone: true,

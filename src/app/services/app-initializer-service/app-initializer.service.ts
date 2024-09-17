@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { TransferStateService, SessionService } from '@services';
+import { SessionService } from '@services/session-service/session.service';
+import { TransferStateService } from '@services/transfer-state-service/transfer-state.service';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
