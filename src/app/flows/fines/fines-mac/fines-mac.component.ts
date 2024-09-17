@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { GlobalStateService } from '@services';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE } from './constants/fines-mac-state';
-import { CanDeactivateTypes } from '@types-guards';
+import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 
 @Component({
   selector: 'app-fines-mac',

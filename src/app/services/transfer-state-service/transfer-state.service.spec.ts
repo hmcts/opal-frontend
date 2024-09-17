@@ -5,7 +5,7 @@ import { TransferStateService } from './transfer-state.service';
 import { TRANSFER_STATE_MOCK } from './mocks';
 import { GlobalStateService } from '../global-state-service/global-state.service';
 import { PLATFORM_ID, makeStateKey } from '@angular/core';
-import { ITransferStateServerState } from './interfaces';
+import { ITransferStateServerState } from './interfaces/transfer-state-server-state.interface';
 
 describe('TransferStateService', () => {
   let service: TransferStateService;

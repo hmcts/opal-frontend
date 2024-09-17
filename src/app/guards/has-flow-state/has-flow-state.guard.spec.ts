@@ -6,7 +6,9 @@ import { of } from 'rxjs';
 import { hasFlowStateGuard } from './has-flow-state.guard';
 import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks/fines-mac-account-details-state.mock';
-import { getGuardWithDummyUrl, runHasFlowStateGuardWithContext } from '../helpers';
+import { getGuardWithDummyUrl } from '@guards/helpers/get-guard-with-dummy-url';
+import { runHasFlowStateGuardWithContext } from '@guards/helpers/run-has-flow-state-guard-with-context';
+
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from 'src/app/flows/fines/fines-mac/fines-mac-account-details/constants/fines-mac-account-details-state';
 import { FINES_MAC_STATE } from 'src/app/flows/fines/fines-mac/constants/fines-mac-state';
 

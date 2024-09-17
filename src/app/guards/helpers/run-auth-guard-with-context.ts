@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 import { handleObservableResult } from './handle-observable-result';
-import { GuardReturnType } from '../types';
+import { GuardReturnType } from '@guards/types/guard-return.type';
 
 /**
  * Runs an authentication guard function within the injection context of TestBed.

@@ -1,8 +1,8 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { map, catchError, of } from 'rxjs';
-import { AuthService } from '@services';
-import { RoutingPaths } from '@enums';
+import { AuthService } from '@services/auth-service/auth.service';
+import { RoutingPaths } from '@routing/enums/routing-paths';
 
 /**
  * A guard that checks if the user is authenticated before allowing access to a route.

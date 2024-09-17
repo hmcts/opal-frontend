@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { GovukButtonComponent } from '@components/govuk';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 
 @Component({
   selector: 'app-sign-in-sso',

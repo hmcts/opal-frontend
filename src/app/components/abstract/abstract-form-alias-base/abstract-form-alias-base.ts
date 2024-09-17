@@ -1,7 +1,8 @@
 import { AbstractFormBaseComponent } from '../abstract-form-base/abstract-form-base.component';
 import { Subscription, takeUntil } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IAbstractFormAliasBaseAliasControls, IAbstractFormAliasBaseFormArrayControlValidation } from './interfaces';
+import { IAbstractFormAliasBaseAliasControls } from './interfaces/abstract-form-alias-base-alias-controls.interface';
+import { IAbstractFormAliasBaseFormArrayControlValidation } from './interfaces/abstract-form-alias-base-form-array-control-validation.interface';
 
 @Component({
   standalone: true,

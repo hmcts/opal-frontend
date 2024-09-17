@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { GuardReturnType } from '../types';
+import { GuardReturnType } from '@guards/types/guard-return.type';
 
 /**
  * Converts an Observable result to a Promise.

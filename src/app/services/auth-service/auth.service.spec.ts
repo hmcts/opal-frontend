@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { SsoEndpoints } from '../../enums/sso-endpoints';
+import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { GlobalStateService } from '../global-state-service/global-state.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
