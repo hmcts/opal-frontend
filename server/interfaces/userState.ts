@@ -1,18 +1,18 @@
 class UserState {
-  userId!: string;
-  userName!: string;
+  user_id!: string;
+  user_name!: string;
   roles?: Role[];
 }
 
 class Role {
-  businessUserId!: string;
-  businessUnit!: string;
+  business_user_id!: string;
+  business_unit!: string;
   permissions?: Permissions[];
 }
 
 class Permissions {
-  permissionId!: number;
-  permissionName!: string;
+  permission_id!: number;
+  permission_name!: string;
 }
 
 export default UserState;

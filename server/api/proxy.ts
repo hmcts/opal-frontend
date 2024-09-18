@@ -9,8 +9,8 @@ export default () => {
     on: {
       proxyReq: (proxyReq, req: any) => {
         if (req.session.securityToken) {
-          if (req.session.securityToken.accessToken) {
-            proxyReq.setHeader('Authorization', `Bearer ${req.session.securityToken.accessToken}`);
+          if (req.session.securityToken.access_token) {
+            proxyReq.setHeader('Authorization', `Bearer ${req.session.securityToken.access_token}`);
           }
         }
       },

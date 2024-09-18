@@ -54,7 +54,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     const { business_unit: businessUnit } = this.finesService.finesMacState.accountDetails.formData;
 
     if (count === 1 && businessUnit === null) {
-      this.finesService.finesMacState.accountDetails.formData.business_unit = refData[0].businessUnitName;
+      this.finesService.finesMacState.accountDetails.formData.business_unit = refData[0].business_unit_name;
       this.finesService.finesMacState.businessUnit = refData[0];
     }
     this.businessUnits = refData;
@@ -70,8 +70,8 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
 
     return businessUnits.map((item) => {
       return {
-        value: item.businessUnitName,
-        name: item.businessUnitName,
+        value: item.business_unit_name,
+        name: item.business_unit_name,
       };
     });
   }
@@ -82,7 +82,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   public handleAccountDetailsSubmit(form: IFinesMacCreateAccountForm): void {
     // Get the business unit and default language from the business unit if applicable
-    const businessUnit = this.businessUnits.find((unit) => unit.businessUnitName === form.formData.business_unit)!;
+    const businessUnit = this.businessUnits.find((unit) => unit.business_unit_name === form.formData.business_unit)!;
     const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
       businessUnit,
       this.configurationItems.defaultDocumentLanguagePreference,
@@ -99,7 +99,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
       accountDetails: form,
-      businessUnit: this.businessUnits.find((unit) => unit.businessUnitName === form.formData.business_unit)!,
+      businessUnit: this.businessUnits.find((unit) => unit.business_unit_name === form.formData.business_unit)!,
       languagePreferences: {
         ...this.finesService.finesMacState.languagePreferences,
         formData: {
