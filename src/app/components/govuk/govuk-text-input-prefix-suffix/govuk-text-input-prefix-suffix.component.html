@@ -15,6 +15,7 @@
       [name]="inputName"
       type="text"
       [formControl]="getControl"
+      (blur)="forceTwoDecimalPoints && onBlurFormatToTwoDecimalPlaces()"
     />
     @if (suffixText) {
       <div class="govuk-input__suffix" aria-hidden="true">{{ suffixText }}</div>

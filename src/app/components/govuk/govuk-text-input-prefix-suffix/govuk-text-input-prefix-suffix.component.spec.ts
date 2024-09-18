@@ -68,4 +68,40 @@ describe('GovukTextInputPrefixSuffixComponent', () => {
     expect(prefixElem.nativeElement.textContent.trim()).toBe(component.prefixText);
     expect(suffixElem.nativeElement.textContent.trim()).toBe(component.suffixText);
   });
+
+  it('should format value to two decimal places on blur', () => {
+    // Arrange
+    const value = '10.123';
+    component['_control'].setValue(value);
+
+    // Act
+    component.onBlurFormatToTwoDecimalPlaces();
+
+    // Assert
+    expect(component['_control'].value).toBe('10.123');
+  });
+
+  it('should not format value if it is already formatted to two decimal places on blur', () => {
+    // Arrange
+    const value = '10.1';
+    component['_control'].setValue(value);
+
+    // Act
+    component.onBlurFormatToTwoDecimalPlaces();
+
+    // Assert
+    expect(component['_control'].value).toBe('10.10');
+  });
+
+  it('should not format value if it is not a number on blur', () => {
+    // Arrange
+    const value = 'abc';
+    component['_control'].setValue(value);
+
+    // Act
+    component.onBlurFormatToTwoDecimalPlaces();
+
+    // Assert
+    expect(component['_control'].value).toBe(value);
+  });
 });
