@@ -1,21 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractFormBaseComponent } from './abstract-form-base.component';
 import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import {
-  IAbstractFormBaseFieldError,
-  IAbstractFormBaseFormArrayControlValidation,
-  IAbstractFormBaseFormArrayControls,
-  IAbstractFormBaseFormControlErrorMessage,
-  IAbstractFormBaseFormError,
-  IAbstractFormBaseFormErrorSummaryMessage,
-} from './interfaces';
-import {
-  ABSTRACT_FORM_BASE_FORM_CONTROL_ERROR_MOCK,
-  ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK,
-  ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK,
-  ABSTRACT_FORM_BASE_FORM_STATE_MOCK,
-} from './mocks';
-import { ABSTRACT_FORM_BASE_FIELD_ERRORS } from './constants';
+import { IAbstractFormBaseFieldError } from './interfaces/abstract-form-base-field-error.interface';
+import { IAbstractFormBaseFormArrayControlValidation } from './interfaces/abstract-form-base-form-array-control-validation.interface';
+import { IAbstractFormBaseFormArrayControls } from './interfaces/abstract-form-base-form-array-controls.interface';
+import { IAbstractFormBaseFormControlErrorMessage } from './interfaces/abstract-form-base-form-control-error-message.interface';
+import { IAbstractFormBaseFormError } from './interfaces/abstract-form-base-form-error.interface';
+import { IAbstractFormBaseFormErrorSummaryMessage } from './interfaces/abstract-form-base-form-error-summary-message.interface';
+import { ABSTRACT_FORM_BASE_FORM_CONTROL_ERROR_MOCK } from './mocks/abstract-form-base-form-control-error.mock';
+import { ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK } from './mocks/abstract-form-base-form-date-error-summary.mock';
+import { ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK } from './mocks/abstract-form-base-form-error-summary.mock';
+import { ABSTRACT_FORM_BASE_FORM_STATE_MOCK } from './mocks/abstract-form-base-form-state.mock';
+import { ABSTRACT_FORM_BASE_FIELD_ERRORS } from './constants/abstract-form-base-field-errors';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 

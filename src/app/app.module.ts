@@ -10,10 +10,12 @@ import {
   withXsrfConfiguration,
 } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { httpErrorInterceptor } from '@interceptors';
-import { AppInitializerService } from '@services';
-import { MojBannerComponent, MojHeaderComponent, MojHeaderNavigationItemComponent } from '@components/moj';
-import { GovukFooterComponent } from '@components/govuk';
+import { httpErrorInterceptor } from '@interceptors/http-error/http-error.interceptor';
+import { AppInitializerService } from '@services/app-initializer-service/app-initializer.service';
+import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
+import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
+import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 
 @NgModule({
   declarations: [AppComponent],

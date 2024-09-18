@@ -9,17 +9,18 @@ import {
 } from '@angular/router';
 
 import { routePermissionsGuard } from './route-permissions.guard';
-import { PermissionsService, SessionService } from '@services';
+import { PermissionsService } from '@services/permissions-service/permissions.service';
+import { SessionService } from '@services/session-service/session.service';
 
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SESSION_USER_STATE_MOCK } from '@mocks';
+import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { Observable, of, throwError } from 'rxjs';
-import { handleObservableResult } from '../helpers';
+import { handleObservableResult } from '@guards/helpers/handle-observable-result';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
-import { RoutingPaths } from '@enums';
+import { RoutingPaths } from '@routing/enums/routing-paths';
 import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
 
 async function runRoutePermissionGuard(

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MojHeaderComponent } from './moj-header.component';
 import { Component } from '@angular/core';
-import { MojHeaderNavigationItemComponent } from '@components/moj';
+import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { provideRouter } from '@angular/router';
 
 @Component({

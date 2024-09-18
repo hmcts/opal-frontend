@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
-import { SessionEndpoints } from '@enums';
-import { SESSION_TOKEN_EXPIRY_MOCK, SESSION_USER_STATE_MOCK } from '@mocks';
-import { GlobalStateService } from '@services';
-import { ISessionTokenExpiry, ISessionUserState } from '@interfaces';
+import { SessionEndpoints } from '@services/session-service/enums/session-endpoints';
+import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
+import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
+import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
+import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
