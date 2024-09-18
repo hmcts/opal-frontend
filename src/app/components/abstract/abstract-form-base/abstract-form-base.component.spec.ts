@@ -761,6 +761,16 @@ describe('AbstractFormBaseComponent', () => {
     expect(component.formControlErrorMessages).toEqual({});
   });
 
+  it('should remove control name errors', () => {
+    component.formControlErrorMessages = {
+      court: 'test message',
+    };
+
+    component['removeControlErrors']('court');
+
+    expect(component.formControlErrorMessages).toEqual({});
+  });
+
   it('should remove field errors for the specified form array control', () => {
     const index = 0;
     const formArrayControls: IAbstractFormBaseFormArrayControls[] = [

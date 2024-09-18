@@ -28,25 +28,25 @@ export class DateService {
 
   /**
    * Calculates the age based on the given date of birth.
-   *
    * @param dateOfBirth - The date of birth to calculate the age from.
-   * @returns The calculated age as a number.
+   * @param format - The format of the date of birth. Defaults to 'dd/MM/yyyy'.
+   * @returns The calculated age.
    */
-  public calculateAge(dateOfBirth: DateTime | string): number {
-    const date = typeof dateOfBirth === 'string' ? DateTime.fromFormat(dateOfBirth, 'dd/MM/yyyy') : dateOfBirth;
+  public calculateAge(dateOfBirth: DateTime | string, format: string = 'dd/MM/yyyy'): number {
+    const date = typeof dateOfBirth === 'string' ? this.getFromFormat(dateOfBirth, format) : dateOfBirth;
 
     return Math.floor(DateTime.now().diff(date, 'years').years);
   }
 
   /**
    * Checks if a given date is valid.
-   *
-   * @param dateInput - The date to be checked. It can be a DateTime object, a string in the format 'dd/MM/yyyy', or null.
+   * @param dateInput - The date to be checked. It can be a DateTime object, a string, or null.
+   * @param format - The format of the date string (default: 'dd/MM/yyyy').
    * @returns A boolean indicating whether the date is valid or not.
    */
-  public isValidDate(dateInput: DateTime | string | null): boolean {
+  public isValidDate(dateInput: DateTime | string | null, format: string = 'dd/MM/yyyy'): boolean {
     if (dateInput) {
-      const date = typeof dateInput === 'string' ? DateTime.fromFormat(dateInput, 'dd/MM/yyyy') : dateInput;
+      const date = typeof dateInput === 'string' ? this.getFromFormat(dateInput, format) : dateInput;
       return date.isValid;
     }
     return false;
@@ -89,13 +89,14 @@ export class DateService {
   }
 
   /**
-   * Adds a duration to a given date and returns the resulting date.
-   * @param date - The date to which the duration will be added. Should be in the format 'dd/MM/yyyy'.
-   * @param years - The number of years to add to the date. Default is 0.
-   * @param months - The number of months to add to the date. Default is 0.
-   * @param weeks - The number of weeks to add to the date. Default is 0.
-   * @param days - The number of days to add to the date. Default is 0.
-   * @returns The resulting date after adding the duration, in the format 'dd/MM/yyyy'.
+   * Adds a duration to a given date and returns the result in the specified format.
+   * @param date - The date to which the duration will be added.
+   * @param years - The number of years to add to the date (default: 0).
+   * @param months - The number of months to add to the date (default: 0).
+   * @param weeks - The number of weeks to add to the date (default: 0).
+   * @param days - The number of days to add to the date (default: 0).
+   * @param format - The format in which the resulting date will be returned (default: 'dd/MM/yyyy').
+   * @returns The resulting date in the specified format.
    */
   public addDurationToDate(
     date: string,
@@ -103,22 +104,53 @@ export class DateService {
     months: number = 0,
     weeks: number = 0,
     days: number = 0,
+    format: string = 'dd/MM/yyyy',
   ): string {
-    const dateObj = DateTime.fromFormat(date, 'dd/MM/yyyy');
+    const dateObj = this.getFromFormat(date, format);
     const newDate = dateObj.plus({ years, months, weeks, days });
-    return newDate.toFormat('dd/MM/yyyy');
+    return newDate.toFormat(format);
   }
 
   /**
    * Calculates the number of days between two dates.
-   * @param startDate - The start date in the format 'dd/MM/yyyy'.
-   * @param endDate - The end date in the format 'dd/MM/yyyy'.
+   * @param startDate - The start date in the specified format.
+   * @param endDate - The end date in the specified format.
+   * @param format - The format of the dates (default: 'dd/MM/yyyy').
    * @returns The number of days between the start and end dates.
    */
-  public calculateDaysBetweenDates(startDate: string, endDate: string): number {
-    const start = DateTime.fromFormat(startDate, 'dd/MM/yyyy');
-    const end = DateTime.fromFormat(endDate, 'dd/MM/yyyy');
+  public calculateDaysBetweenDates(startDate: string, endDate: string, format: string = 'dd/MM/yyyy'): number {
+    const start = this.getFromFormat(startDate, format);
+    const end = this.getFromFormat(endDate, format);
     const diff = end.diff(start, 'days');
     return diff.days;
+  }
+
+  /**
+   * Checks if a given date is in the past.
+   * @param date - The date to check.
+   * @param format - The format of the date string. Defaults to 'dd/MM/yyyy'.
+   * @returns True if the date is in the past, false otherwise.
+   */
+  public isDateInThePast(date: string, format: string = 'dd/MM/yyyy'): boolean {
+    return this.getFromFormat(date, format) < DateTime.now();
+  }
+
+  /**
+   * Checks if a given date is in the future.
+   * @param date - The date to check.
+   * @param yearsInTheFuture - Optional. The number of years in the future to compare against. If not provided, the current date is used.
+   * @param format - Optional. The format of the input date. Defaults to 'dd/MM/yyyy'.
+   * @returns True if the date is in the future, false otherwise.
+   */
+  public isDateInTheFuture(date: string, yearsInTheFuture?: number, format: string = 'dd/MM/yyyy'): boolean {
+    const now = DateTime.now();
+    const dateValue = this.getFromFormat(date, format);
+
+    if (yearsInTheFuture) {
+      const futureDate = now.plus({ years: yearsInTheFuture });
+      return dateValue > futureDate;
+    }
+
+    return dateValue > now;
   }
 }
