@@ -5,33 +5,33 @@
     fieldSetId="payment_terms"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
-    [errors]="formControlErrorMessages['payment_terms']"
+    [errors]="formControlErrorMessages[ptPaymentTermsControl.controlName]"
   >
     @for (paymentTerm of paymentTerms; track paymentTerm.key) {
       <div
         app-govuk-radios-item
         [labelText]="paymentTerm.value"
         [inputId]="paymentTerm.key"
-        inputName="payment_terms"
+        [inputName]="ptPaymentTermsControl.controlName"
         [inputValue]="paymentTerm.key"
-        [control]="form.controls['payment_terms']"
+        [control]="form.controls[ptPaymentTermsControl.controlName]"
       ></div>
 
       @switch (paymentTerm.key) {
         @case ('payInFull') {
-          @if (form.get('payment_terms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="payment_terms">
+          @if (form.get(ptPaymentTermsControl.controlName)!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional [conditionalId]="ptPaymentTermsControl.controlName">
               <div class="govuk-form-group">
                 <app-moj-date-picker
                   labelText="Enter pay by date"
                   labelClasses="govuk-label--s"
-                  inputId="pay_by_date"
-                  inputName="pay_by_date"
+                  [inputId]="ptPayByDateControl.controlName"
+                  [inputName]="ptPayByDateControl.controlName"
                   inputClasses="govuk-input--width-10"
                   hintText="For example, 31/01/2023"
-                  [control]="form.controls['pay_by_date']"
-                  [errors]="formControlErrorMessages['pay_by_date']"
-                  (dateChange)="setInputValue($event, 'pay_by_date')"
+                  [control]="form.controls[ptPayByDateControl.controlName]"
+                  [errors]="formControlErrorMessages[ptPayByDateControl.controlName]"
+                  (dateChange)="setInputValue($event, ptPayByDateControl.controlName)"
                 ></app-moj-date-picker>
                 @if (dateInPast) {
                   <ng-container
@@ -48,25 +48,25 @@
           }
         }
         @case ('instalmentsOnly') {
-          @if (form.get('payment_terms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="payment_terms">
+          @if (form.get(ptPaymentTermsControl.controlName)!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional [conditionalId]="ptPaymentTermsControl.controlName">
               <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
             </div>
           }
         }
         @case ('lumpSumPlusInstalments') {
-          @if (form.get('payment_terms')!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional conditionalId="payment_terms">
+          @if (form.get(ptPaymentTermsControl.controlName)!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional [conditionalId]="ptPaymentTermsControl.controlName">
               <div class="govuk-form-group">
                 <app-govuk-text-input-prefix-suffix
                   labelText="Lump sum"
                   labelClasses="govuk-label--s"
-                  inputId="lump_sum"
-                  inputName="lump_sum"
+                  [inputId]="ptLumpSumControl.controlName"
+                  [inputName]="ptLumpSumControl.controlName"
                   inputClasses="govuk-input--width-5"
                   prefixText="£"
-                  [control]="form.controls['lump_sum']"
-                  [errors]="formControlErrorMessages['lump_sum']"
+                  [control]="form.controls[ptLumpSumControl.controlName]"
+                  [errors]="formControlErrorMessages[ptLumpSumControl.controlName]"
                   [forceTwoDecimalPoints]="true"
                 >
                 </app-govuk-text-input-prefix-suffix>
@@ -81,9 +81,9 @@
   <div
     app-govuk-checkboxes-item
     labelText="Request payment card"
-    inputId="request_payment_card"
-    inputName="request_payment_card"
-    [control]="form.controls['request_payment_card']"
+    [inputId]="ptRequestCardPaymentControl.controlName"
+    [inputName]="ptRequestCardPaymentControl.controlName"
+    [control]="form.controls[ptRequestCardPaymentControl.controlName]"
   ></div>
   @if (accessDefaultDates) {
     <app-govuk-checkboxes
@@ -94,42 +94,42 @@
       <div
         app-govuk-checkboxes-item
         labelText="There are days in default"
-        inputId="has_days_in_default"
-        inputName="has_days_in_default"
-        [control]="form.controls['has_days_in_default']"
+        [inputId]="ptHasDaysInDefaultControl.controlName"
+        [inputName]="ptHasDaysInDefaultControl.controlName"
+        [control]="form.controls[ptHasDaysInDefaultControl.controlName]"
       ></div>
 
-      @if (form.get('has_days_in_default')?.value) {
-        <div app-govuk-checkboxes-conditional conditionalId="has_days_in_default">
+      @if (form.get(ptHasDaysInDefaultControl.controlName)?.value) {
+        <div app-govuk-checkboxes-conditional [conditionalId]="ptHasDaysInDefaultControl.controlName">
           <div class="govuk-form-group">
             <app-moj-date-picker
               labelText="Date days in default were imposed"
               labelClasses="govuk-label--s"
-              inputId="days_in_default_date"
-              inputName="days_in_default_date"
+              [inputId]="ptDaysInDefaultDateControl.controlName"
+              [inputName]="ptDaysInDefaultDateControl.controlName"
               inputClasses="govuk-input--width-10"
               hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
               [maxDate]="yesterday"
-              [control]="form.controls['days_in_default_date']"
-              [errors]="formControlErrorMessages['days_in_default_date']"
-              (dateChange)="setInputValue($event, 'days_in_default_date')"
+              [control]="form.controls[ptDaysInDefaultDateControl.controlName]"
+              [errors]="formControlErrorMessages[ptDaysInDefaultDateControl.controlName]"
+              (dateChange)="setInputValue($event, ptDaysInDefaultDateControl.controlName)"
             ></app-moj-date-picker>
           </div>
           <div class="govuk-form-group">
             <app-govuk-text-input-prefix-suffix
               labelText="Enter days in default"
               labelClasses="govuk-label--s"
-              inputId="days_in_default"
-              inputName="days_in_default"
+              [inputId]="ptDaysInDefaultControl.controlName"
+              [inputName]="ptDaysInDefaultControl.controlName"
               inputClasses="govuk-input--width-5"
               suffixText="days"
-              [control]="form.controls['days_in_default']"
-              [errors]="formControlErrorMessages['days_in_default']"
+              [control]="form.controls[ptDaysInDefaultControl.controlName]"
+              [errors]="formControlErrorMessages[ptDaysInDefaultControl.controlName]"
             ></app-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-form-group">
             <app-fines-mac-default-days
-              [date]="form.controls['days_in_default_date'].value"
+              [date]="form.controls[ptDaysInDefaultDateControl.controlName].value"
             ></app-fines-mac-default-days>
           </div>
         </div>
@@ -144,9 +144,9 @@
     <div
       app-govuk-checkboxes-item
       labelText="Add enforcement action"
-      inputId="add_enforcement_action"
-      inputName="add_enforcement_action"
-      [control]="form.controls['add_enforcement_action']"
+      [inputId]="ptAddEnforcementActionControl.controlName"
+      [inputName]="ptAddEnforcementActionControl.controlName"
+      [control]="form.controls[ptAddEnforcementActionControl.controlName]"
     ></div>
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">
@@ -175,12 +175,12 @@
     <app-govuk-text-input-prefix-suffix
       labelText="Instalment"
       labelClasses="govuk-label--s"
-      inputId="instalment"
-      inputName="instalment"
+      [inputId]="ptInstalmentControl.controlName"
+      [inputName]="ptInstalmentControl.controlName"
       inputClasses="govuk-input--width-5"
       prefixText="£"
-      [control]="form.controls['instalment']"
-      [errors]="formControlErrorMessages['instalment']"
+      [control]="form.controls[ptInstalmentControl.controlName]"
+      [errors]="formControlErrorMessages[ptInstalmentControl.controlName]"
       [forceTwoDecimalPoints]="true"
     >
     </app-govuk-text-input-prefix-suffix>
@@ -190,16 +190,16 @@
       fieldSetId="frequency"
       legendText="Frequency"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages['frequency']"
+      [errors]="formControlErrorMessages[ptFrequencyControl.controlName]"
     >
       @for (frequency of frequencyOptions; track frequency.key) {
         <div
           app-govuk-radios-item
           [labelText]="frequency.value"
           [inputId]="frequency.key"
-          inputName="frequency"
+          [inputName]="ptFrequencyControl.controlName"
           [inputValue]="frequency.key"
-          [control]="form.controls['frequency']"
+          [control]="form.controls[ptFrequencyControl.controlName]"
         ></div>
       }
     </app-govuk-radio>
@@ -208,14 +208,14 @@
     <app-moj-date-picker
       labelText="Start date"
       labelClasses="govuk-label--s"
-      inputId="start_date"
-      inputName="start_date"
+      [inputId]="ptStartDateControl.controlName"
+      [inputName]="ptStartDateControl.controlName"
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
       [maxDate]="yesterday"
-      [control]="form.controls['start_date']"
-      [errors]="formControlErrorMessages['start_date']"
-      (dateChange)="setInputValue($event, 'start_date')"
+      [control]="form.controls[ptStartDateControl.controlName]"
+      [errors]="formControlErrorMessages[ptStartDateControl.controlName]"
+      (dateChange)="setInputValue($event, ptStartDateControl.controlName)"
     ></app-moj-date-picker>
     @if (dateInPast) {
       <ng-container *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Start date' }"></ng-container>

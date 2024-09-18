@@ -25,7 +25,6 @@ import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summar
 import { GovukRadioComponent } from '@components/govuk/govuk-radio/govuk-radio.component';
 import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
 import { GovukTextInputPrefixSuffixComponent } from '@components/govuk/govuk-text-input-prefix-suffix/govuk-text-input-prefix-suffix.component';
-
 import { FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-default-days-control-validation';
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../constants/fines-mac-payment-terms-options';
 import { FinesMacDefaultDaysComponent } from '../../components/fines-mac-default-days/fines-mac-default-days.component';
@@ -36,6 +35,13 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as PT_CONTROL_PAYMENT_TE
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REQUEST_CARD_PAYMENT as PT_CONTROL_REQUEST_CARD_PAYMENT } from '../constants/controls/fines-mac-payment-terms-controls-request-card-payment.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_DAYS_IN_DEFAULT as PT_CONTROL_HAS_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-has-days-in-default.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION as PT_CONTROL_ADD_ENFORCEMENT_ACTION } from '../constants/controls/fines-mac-payment-terms-controls-add-enforcement-action.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAY_BY_DATE as PT_CONTROL_PAY_BY_DATE } from '../constants/controls/fines-mac-payment-terms-controls-pay-by-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_LUMP_SUM as PT_CONTROL_LUMP_SUM } from '../constants/controls/fines-mac-payment-terms-controls-lump-sum.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_INSTALMENT as PT_CONTROL_INSTALMENT } from '../constants/controls/fines-mac-payment-terms-controls-instalment.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_FREQUENCY as PT_CONTROL_FREQUENCY } from '../constants/controls/fines-mac-payment-terms-controls-frequency.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_START_DATE as PT_CONTROL_START_DATE } from '../constants/controls/fines-mac-payment-terms-controls-start-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as PT_CONTROL_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAYS_IN_DEFAULT_DATE } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
 import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-all-payment-term-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
@@ -99,16 +105,30 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public dateInPast!: boolean;
   public accessDefaultDates!: boolean;
 
+  public ptPaymentTermsControl = PT_CONTROL_PAYMENT_TERMS;
+  public ptPayByDateControl = PT_CONTROL_PAY_BY_DATE;
+  public ptLumpSumControl = PT_CONTROL_LUMP_SUM;
+  public ptInstalmentControl = PT_CONTROL_INSTALMENT;
+  public ptFrequencyControl = PT_CONTROL_FREQUENCY;
+  public ptStartDateControl = PT_CONTROL_START_DATE;
+  public ptRequestCardPaymentControl = PT_CONTROL_REQUEST_CARD_PAYMENT;
+  public ptHasDaysInDefaultControl = PT_CONTROL_HAS_DAYS_IN_DEFAULT;
+  public ptDaysInDefaultControl = PT_CONTROL_DAYS_IN_DEFAULT;
+  public ptDaysInDefaultDateControl = PT_CONTROL_DAYS_IN_DEFAULT_DATE;
+  public ptAddEnforcementActionControl = PT_CONTROL_ADD_ENFORCEMENT_ACTION;
+
   /**
    * Sets up the payment terms form.
    */
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
-      [PT_CONTROL_PAYMENT_TERMS.controlName]: this.createFormControl(PT_CONTROL_PAYMENT_TERMS.validators),
-      [PT_CONTROL_REQUEST_CARD_PAYMENT.controlName]: this.createFormControl(PT_CONTROL_REQUEST_CARD_PAYMENT.validators),
-      [PT_CONTROL_HAS_DAYS_IN_DEFAULT.controlName]: this.createFormControl(PT_CONTROL_HAS_DAYS_IN_DEFAULT.validators),
-      [PT_CONTROL_ADD_ENFORCEMENT_ACTION.controlName]: this.createFormControl(
-        PT_CONTROL_ADD_ENFORCEMENT_ACTION.validators,
+      [this.ptPaymentTermsControl.controlName]: this.createFormControl(this.ptPaymentTermsControl.validators),
+      [this.ptRequestCardPaymentControl.controlName]: this.createFormControl(
+        this.ptRequestCardPaymentControl.validators,
+      ),
+      [this.ptHasDaysInDefaultControl.controlName]: this.createFormControl(this.ptHasDaysInDefaultControl.validators),
+      [this.ptAddEnforcementActionControl.controlName]: this.createFormControl(
+        this.ptAddEnforcementActionControl.validators,
       ),
     });
   }
@@ -138,7 +158,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * If the value of 'hasDaysInDefault' is false, it removes the unnecessary form controls.
    */
   private hasDaysInDefaultListener(): void {
-    const { has_days_in_default: hasDaysInDefault } = this.form.controls;
+    const { [this.ptHasDaysInDefaultControl.controlName]: hasDaysInDefault } = this.form.controls;
 
     hasDaysInDefault.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       if (hasDaysInDefault.value === true) {
@@ -168,7 +188,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       this.resetDateChecker();
     } else if (action === 'add') {
       this.createControl(control.controlName, control.validators);
-      if (control.controlName === 'start_date' || control.controlName === 'pay_by_date') {
+      if (control.controlName === this.ptStartDateControl.controlName || control.controlName === this.ptPayByDateControl.controlName) {
         this.dateListener(control.controlName);
       }
     }
