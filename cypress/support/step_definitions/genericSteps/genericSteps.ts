@@ -83,3 +83,7 @@ When('I reload the page', () => {
 Then('I see {string} above the {string} field', (subHeading: string, fieldName: string) => {
   cy.contains('fieldset', fieldName).find('legend').invoke('text').should('contains', subHeading);
 });
+
+Then('I see {string} help text on the page', (helpText: string) => {
+  cy.get('.moj-ticket-panel').should('contain.text', helpText);
+});

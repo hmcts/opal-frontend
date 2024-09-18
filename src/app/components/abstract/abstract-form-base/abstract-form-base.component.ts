@@ -567,6 +567,15 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Removes the error message associated with the specified control name from the formControlErrorMessages object.
+   *
+   * @param controlName - The name of the control for which to remove the error message.
+   */
+  protected removeControlErrors(controlName: string): void {
+    delete this.formControlErrorMessages[controlName];
+  }
+
+  /**
    * Clears the search form.
    */
   public handleClearForm(): void {

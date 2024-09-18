@@ -5,6 +5,7 @@
     fieldSetId="payment_terms"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages['payment_terms']"
   >
     @for (paymentTerm of paymentTerms; track paymentTerm.key) {
       <div
@@ -15,9 +16,76 @@
         [inputValue]="paymentTerm.key"
         [control]="form.controls['payment_terms']"
       ></div>
+
+      @switch (paymentTerm.key) {
+        @case ('payInFull') {
+          @if (form.get('payment_terms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="payment_terms">
+              <div class="govuk-form-group">
+                <app-moj-date-picker
+                  labelText="Enter pay by date"
+                  labelClasses="govuk-label--s"
+                  inputId="pay_by_date"
+                  inputName="pay_by_date"
+                  inputClasses="govuk-input--width-10"
+                  hintText="For example, 31/01/2023"
+                  [control]="form.controls['pay_by_date']"
+                  [errors]="formControlErrorMessages['pay_by_date']"
+                  (dateChange)="setInputValue($event, 'pay_by_date')"
+                ></app-moj-date-picker>
+                @if (dateInPast) {
+                  <ng-container
+                    *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Pay by date' }"
+                  ></ng-container>
+                }
+                @if (dateInFuture) {
+                  <ng-container
+                    *ngTemplateOutlet="dateInFutureTemplate; context: { $implicit: 'Pay by date' }"
+                  ></ng-container>
+                }
+              </div>
+            </div>
+          }
+        }
+        @case ('instalmentsOnly') {
+          @if (form.get('payment_terms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="payment_terms">
+              <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+            </div>
+          }
+        }
+        @case ('lumpSumPlusInstalments') {
+          @if (form.get('payment_terms')!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional conditionalId="payment_terms">
+              <div class="govuk-form-group">
+                <app-govuk-text-input-prefix-suffix
+                  labelText="Lump sum"
+                  labelClasses="govuk-label--s"
+                  inputId="lump_sum"
+                  inputName="lump_sum"
+                  inputClasses="govuk-input--width-5"
+                  prefixText="£"
+                  [control]="form.controls['lump_sum']"
+                  [errors]="formControlErrorMessages['lump_sum']"
+                  [forceTwoDecimalPoints]="true"
+                >
+                </app-govuk-text-input-prefix-suffix>
+              </div>
+              <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
+            </div>
+          }
+        }
+      }
     }
   </app-govuk-radio>
-  @if (defendantType === 'adultOrYouthOnly' && isAdult) {
+  <div
+    app-govuk-checkboxes-item
+    labelText="Request payment card"
+    inputId="request_payment_card"
+    inputName="request_payment_card"
+    [control]="form.controls['request_payment_card']"
+  ></div>
+  @if (accessDefaultDates) {
     <app-govuk-checkboxes
       fieldSetId="daysInDefaultCheckbox"
       legendText="Days in default"
@@ -75,10 +143,10 @@
   >
     <div
       app-govuk-checkboxes-item
-      labelText="Hold enforcement on account (NOENF)"
-      inputId="hold_enforcement_on_account"
-      inputName="hold_enforcement_on_account"
-      [control]="form.controls['hold_enforcement_on_account']"
+      labelText="Add enforcement action"
+      inputId="add_enforcement_action"
+      inputName="add_enforcement_action"
+      [control]="form.controls['add_enforcement_action']"
     ></div>
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">
@@ -101,3 +169,71 @@
     </div>
   </div>
 </form>
+
+<ng-template #instalmentsFrequencyStartDate>
+  <div class="govuk-form-group">
+    <app-govuk-text-input-prefix-suffix
+      labelText="Instalment"
+      labelClasses="govuk-label--s"
+      inputId="instalment"
+      inputName="instalment"
+      inputClasses="govuk-input--width-5"
+      prefixText="£"
+      [control]="form.controls['instalment']"
+      [errors]="formControlErrorMessages['instalment']"
+      [forceTwoDecimalPoints]="true"
+    >
+    </app-govuk-text-input-prefix-suffix>
+  </div>
+  <div class="govuk-form-group">
+    <app-govuk-radio
+      fieldSetId="frequency"
+      legendText="Frequency"
+      legendClasses="govuk-fieldset__legend--s"
+      [errors]="formControlErrorMessages['frequency']"
+    >
+      @for (frequency of frequencyOptions; track frequency.key) {
+        <div
+          app-govuk-radios-item
+          [labelText]="frequency.value"
+          [inputId]="frequency.key"
+          inputName="frequency"
+          [inputValue]="frequency.key"
+          [control]="form.controls['frequency']"
+        ></div>
+      }
+    </app-govuk-radio>
+  </div>
+  <div class="govuk-form-group">
+    <app-moj-date-picker
+      labelText="Start date"
+      labelClasses="govuk-label--s"
+      inputId="start_date"
+      inputName="start_date"
+      inputClasses="govuk-input--width-10"
+      hintText="For example, 31/01/2023"
+      [maxDate]="yesterday"
+      [control]="form.controls['start_date']"
+      [errors]="formControlErrorMessages['start_date']"
+      (dateChange)="setInputValue($event, 'start_date')"
+    ></app-moj-date-picker>
+    @if (dateInPast) {
+      <ng-container *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Start date' }"></ng-container>
+    }
+    @if (dateInFuture) {
+      <ng-container *ngTemplateOutlet="dateInFutureTemplate; context: { $implicit: 'Start date' }"></ng-container>
+    }
+  </div>
+</ng-template>
+<ng-template #dateInPastTemplate let-fieldName>
+  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange">
+    <strong>{{ fieldName }} is in the past</strong>
+    <p>You can continue with date in the past or change</p>
+  </app-moj-ticket-panel>
+</ng-template>
+<ng-template #dateInFutureTemplate let-fieldName>
+  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange">
+    <strong>{{ fieldName }} is more than 3 years in the future</strong>
+    <p>You can continue with date in the past or change</p>
+  </app-moj-ticket-panel>
+</ng-template>
