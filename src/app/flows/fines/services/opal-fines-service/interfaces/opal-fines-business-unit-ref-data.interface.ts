@@ -1,18 +1,18 @@
 export interface IOpalFinesBusinessUnitConfigurationItems {
-  itemName: string | null;
-  itemValue: string | null;
-  itemValues: string[] | null;
+  item_name: string | null;
+  item_value: string | null;
+  item_values: string[] | null;
 }
 
 export interface IOpalFinesBusinessUnit {
-  businessUnitCode: string;
-  businessUnitType: string;
-  accountNumberPrefix: null | string;
-  opalDomain: null | string;
-  businessUnitId: number;
-  businessUnitName: string;
+  business_unit_code: string;
+  business_unit_type: string;
+  account_number_prefix: null | string;
+  opal_domain: null | string;
+  business_unit_id: number;
+  business_unit_name: string;
   configurationItems: IOpalFinesBusinessUnitConfigurationItems[];
-  welshLanguage: boolean | null;
+  welsh_language: boolean | null;
 }
 
 export interface IOpalFinesBusinessUnitRefData {
