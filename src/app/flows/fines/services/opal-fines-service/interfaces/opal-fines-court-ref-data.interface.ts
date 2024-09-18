@@ -1,10 +1,10 @@
 interface IOpalFinesCourt {
-  courtId: number;
-  courtCode: number;
+  court_id: number;
+  court_code: number;
   name: string;
-  nameCy: string | null;
-  nationalCourtCode: string | null;
-  businessUnitId: number;
+  name_cy: string | null;
+  national_court_code: string | null;
+  business_unit_id: number;
 }
 
 export interface IOpalFinesCourtRefData {

@@ -95,7 +95,7 @@ describe('FinesMacCreateAccountComponent', () => {
     component['setBusinessUnit'](response);
 
     expect(component['finesService'].finesMacState.accountDetails.formData.business_unit).toEqual(
-      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].businessUnitName,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
     );
   });
 
@@ -103,14 +103,14 @@ describe('FinesMacCreateAccountComponent', () => {
     const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
     component['finesService'].finesMacState.accountDetails.formData.business_unit =
-      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName;
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_name;
 
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
     expect(component['finesService'].finesMacState.accountDetails.formData.business_unit).toEqual(
-      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].businessUnitName,
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_name,
     );
   });
 

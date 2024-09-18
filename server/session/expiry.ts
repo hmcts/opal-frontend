@@ -4,7 +4,7 @@ import config from 'config';
 import { Jwt } from '../utils';
 
 export default (req: Request, res: Response) => {
-  const accessToken = req.session.securityToken?.accessToken;
+  const accessToken = req.session.securityToken?.access_token;
   if (accessToken) {
     const testMode = config.get<boolean>('expiry.testMode');
     const expiryConfigPath = testMode ? 'expiry.test' : 'expiry.default';
