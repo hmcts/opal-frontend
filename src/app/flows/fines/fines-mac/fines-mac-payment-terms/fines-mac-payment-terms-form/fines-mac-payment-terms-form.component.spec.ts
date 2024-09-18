@@ -7,8 +7,9 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
-import { FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-company-enforcement-control-validation';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION } from '../constants/controls/fines-mac-payment-terms-controls-add-enforcement-action.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT as PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-on-account.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -251,15 +252,16 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'company';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const createControlSpy = spyOn<any>(component, 'createControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const holdEnforcementListener = spyOn<any>(component, 'holdEnforcementOnAccountListener');
 
     component['createEnforcementFields']();
 
-    expect(createControlSpy).toHaveBeenCalledTimes(
-      FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION.length,
+    expect(createControlSpy).toHaveBeenCalledWith(
+      PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT.controlName,
+      PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT.validators,
     );
-    FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION.forEach((control) => {
-      expect(createControlSpy).toHaveBeenCalledWith(control.controlName, control.validators);
-    });
+    expect(holdEnforcementListener).toHaveBeenCalled();
   });
 
   it('should create enforcement fields for non-company defendant type', () => {
@@ -274,5 +276,27 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION.controlName,
       FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION.validators,
     );
+  });
+
+  it('should add control when hold_enforcement_on_account is true', () => {
+    component.defendantType = 'company';
+    component['createEnforcementFields']();
+    const holdEnforcementOnAccountControl = component.form.controls['hold_enforcement_on_account'];
+    holdEnforcementOnAccountControl.setValue(true);
+
+    component['holdEnforcementOnAccountListener']();
+
+    expect(component.form.contains(PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName)).toBe(true);
+  });
+
+  it('should remove control when hold_enforcement_on_account is false', () => {
+    component.defendantType = 'company';
+    component['createEnforcementFields']();
+    const holdEnforcementOnAccountControl = component.form.controls['hold_enforcement_on_account'];
+    holdEnforcementOnAccountControl.setValue(false);
+
+    component['holdEnforcementOnAccountListener']();
+
+    expect(component.form.contains(PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName)).toBe(false);
   });
 });

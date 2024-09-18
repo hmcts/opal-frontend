@@ -45,8 +45,9 @@ import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-ty
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
-import { FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-company-enforcement-control-validation';
 import { GovukTextAreaComponent } from '@components/govuk/govuk-text-area/govuk-text-area.component';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT as PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-on-account.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -110,9 +111,6 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       [PT_CONTROL_PAYMENT_TERMS.controlName]: this.createFormControl(PT_CONTROL_PAYMENT_TERMS.validators),
       [PT_CONTROL_REQUEST_CARD_PAYMENT.controlName]: this.createFormControl(PT_CONTROL_REQUEST_CARD_PAYMENT.validators),
       [PT_CONTROL_HAS_DAYS_IN_DEFAULT.controlName]: this.createFormControl(PT_CONTROL_HAS_DAYS_IN_DEFAULT.validators),
-      [PT_CONTROL_ADD_ENFORCEMENT_ACTION.controlName]: this.createFormControl(
-        PT_CONTROL_ADD_ENFORCEMENT_ACTION.validators,
-      ),
     });
   }
 
@@ -146,11 +144,11 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
     hasDaysInDefault.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       if (hasDaysInDefault.value === true) {
-        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.map((control) => {
+        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.forEach((control) => {
           this.createControl(control.controlName, control.validators);
         });
       } else {
-        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.map((control) => {
+        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.forEach((control) => {
           this.removeControl(control.controlName);
         });
       }
@@ -256,15 +254,35 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Listens to changes in the hold_enforcement_on_account form control and performs actions accordingly.
+   */
+  private holdEnforcementOnAccountListener(): void {
+    const { hold_enforcement_on_account: holdEnforcementOnAccount } = this.form.controls;
+
+    holdEnforcementOnAccount.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      if (holdEnforcementOnAccount.value === true) {
+        this.createControl(
+          PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName,
+          PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.validators,
+        );
+      } else {
+        this.removeControl(PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName);
+      }
+    });
+  }
+
+  /**
    * Creates enforcement fields based on the defendant type.
-   * If the defendant type is a company, it creates enforcement fields for company enforcement control validation.
-   * Otherwise, it creates enforcement fields for add enforcement action control validation.
+   * If the defendant type is a company, it creates the control for holding enforcement on account.
+   * Otherwise, it creates the control for adding enforcement action.
    */
   private createEnforcementFields(): void {
     if (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes] === this.defendantTypes.company) {
-      FINES_MAC_PAYMENT_TERMS_COMPANY_ENFORCEMENT_CONTROL_VALIDATION.map((control) => {
-        this.createControl(control.controlName, control.validators);
-      });
+      this.createControl(
+        PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT.controlName,
+        PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT.validators,
+      );
+      this.holdEnforcementOnAccountListener();
     } else {
       this.createControl(PT_CONTROL_ADD_ENFORCEMENT_ACTION.controlName, PT_CONTROL_ADD_ENFORCEMENT_ACTION.validators);
     }
