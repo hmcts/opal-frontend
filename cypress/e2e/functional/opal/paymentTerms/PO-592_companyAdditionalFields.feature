@@ -1,4 +1,4 @@
-Feature: PO-587 Implement additional fields for payment terms screen - Adult or youth with parent or guardian to pay
+Feature: PO-592 Implement additional fields for payment terms screen - Company
   Background:
     Given I am on the OPAL Frontend
     Then I see "Opal" in the header
@@ -10,17 +10,10 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I see "Business unit and defendant type" on the page header
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
-    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I select the "Company" radio button
     And I click the "Continue" button
     Then I see "Account details" on the page header
 
-    When I click on the "Personal details" link
-    And I see "Personal details" on the page header
-    And I select title "Mr" from dropdown
-    And I enter "FNAME" into the "First names" field
-    And I enter "LNAME" into the "Last name" field
-    And I enter "ADDR1" into the "Address line 1" field
-    And I click the "Return to account details" button
     And I click on the "Payment terms" link
     Then I see "Payment terms" on the page header
 
@@ -78,7 +71,7 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     Then I see "100.10" in the "Lump sum" payment field
     And I see "200.25" in the "Instalment" payment field
 
-  Scenario: AC7, AC8, AC9, AC10, AC11, AC12, AC13 & AC14 - Error handling
+  Scenario: AC7, AC8, AC9, AC10, AC11, AC12, AC13, AC14, AC15 & AC16 - Error handling
 
     #AC7
 
@@ -196,7 +189,7 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I enter "300.825" into the "Instalment" payment field
     And I click the "Return to account details" button
     Then I see the error message "Enter valid lump sum amount" at the top of the page
-    Then I see the error message "Enter valid instalment amount" at the top of the page
+    And I see the error message "Enter valid instalment amount" at the top of the page
     And I see the error message "Enter valid lump sum amount" above the "Lump sum" payment field
     And I see the error message "Enter valid instalment amount" above the "Instalment" payment field
 
@@ -204,15 +197,45 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I enter "30!" into the "Instalment" payment field
     And I click the "Return to account details" button
     Then I see the error message "Enter valid lump sum amount" at the top of the page
-    Then I see the error message "Enter valid instalment amount" at the top of the page
+    And I see the error message "Enter valid instalment amount" at the top of the page
     And I see the error message "Enter valid lump sum amount" above the "Lump sum" payment field
     And I see the error message "Enter valid instalment amount" above the "Instalment" payment field
 
-  Scenario: AC6 & AC15 - Validation passes, request payment card checkbox, return to account details
+    #AC15
+
+    When I select the "Pay in full" radio button
+    And I enter "16/09/2023" into the "Enter pay by date" date field
+    And I select the "Hold enforcement on account (NOENF)" checkbox
+    And I click the "Return to account details" button
+    And I see the error message "Enter a reason" at the top of the page
+    And I see the error message "Enter a reason" above the "Reason account is on NOENF" field
+    And I click the "Add account comments and notes" button
+    Then I see the error message "Enter a reason" at the top of the page
+    And I see the error message "Enter a reason" above the "Reason account is on NOENF" field
+
+    #AC16
+
+    When I click Cancel, a window pops up and I click Ok
+    And I click on the "Payment terms" link
+    And I see "Payment terms" on the page header
+    And I select the "Pay in full" radio button
+    And I enter "16/09/2023" into the "Enter pay by date" date field
+    And I select the "Hold enforcement on account (NOENF)" checkbox
+    And I enter "abc123!" into the "Reason account is on NOENF" text field
+    And I click the "Return to account details" button
+    And I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" at the top of the page
+    And I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" above the "Reason account is on NOENF" field
+    And I enter "abc123?" into the "Reason account is on NOENF" text field
+    And I click the "Add account comments and notes" button
+    Then I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" at the top of the page
+    And I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" above the "Reason account is on NOENF" field
+
+  Scenario: AC6 & AC17 - Validation passes, Hold enforcement on account (NOENF) checkbox, return to account details
 
     When I select the "Pay in full" radio button
     And I enter "13/09/2025" into the "Enter pay by date" date field
-    And I select the "Request payment card" checkbox
+    And I select the "Hold enforcement on account (NOENF)" checkbox
+    And I enter "abc123'()_., -*" into the "Reason account is on NOENF" text field
     And I click the "Return to account details" button
     Then I see the status of "Payment terms" is "Provided"
 
@@ -220,16 +243,18 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     Then I see "Payment terms" on the page header
     And I validate the "Pay in full" radio button is selected
     And I see "13/09/2025" in the "Enter pay by date" payment field
-    And I validate the "Request payment card" checkbox is checked
+    And I validate the "Hold enforcement on account (NOENF)" checkbox is checked
+    And I see "abc123'()_., -*" in the "Reason account is on NOENF" text field
 
-  Scenario: AC6 & AC16 - Validation passes, request payment card checkbox, add account comments and notes
+  Scenario: AC6 & AC18 - Validation passes, Hold enforcement on account (NOENF) checkbox, add account comments and notes
 
     When I select the "Lump sum plus instalments" radio button
     And I enter "150" into the "Lump sum" payment field
     And I enter "300" into the "Instalment" payment field
     And I select the "Monthly" radio button
     And I enter "13/09/2025" into the "Start date" date field
-    And I select the "Request payment card" checkbox
+    And I select the "Hold enforcement on account (NOENF)" checkbox
+    And the characters remaining counter should show 18 after entering 10 characters into the "Reason account is on NOENF" input field
     And I click the "Return to account details" button
     Then I see the status of "Payment terms" is "Provided"
 
@@ -239,44 +264,47 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I see "300" in the "Instalment" payment field
     And I validate the "Monthly" radio button is selected
     And I see "13/09/2025" in the "Start date" payment field
-    And I validate the "Request payment card" checkbox is checked
+    And I validate the "Hold enforcement on account (NOENF)" checkbox is checked
 
-  Scenario: AC17 & AC18 - Cancel link behaviour
+  Scenario: AC19 & AC20 - Cancel link behaviour
 
-    #AC17
+    #AC19
 
     When I click on the "Cancel" link
     Then I see "Account details" on the page header
     And I see the status of "Payment terms" is "Not provided"
 
-    #AC18a
+    #AC20a
 
     When I click on the "Payment terms" link
     And I see "Payment terms" on the page header
     And I select the "Instalments only" radio button
     And I enter "450" into the "Instalment" payment field
-    And I select the "Request payment card" checkbox
+    And I select the "Hold enforcement on account (NOENF)" checkbox
+    And I enter "Reason provided" into the "Reason account is on NOENF" text field
     And I click Cancel, a window pops up and I click Ok
     Then I see "Account details" on the page header
     And I see the status of "Payment terms" is "Not provided"
 
     When I click on the "Payment terms" link
     Then I validate the "Instalments only" radio button is not selected
-    And I validate the "Request payment card" checkbox is not checked
+    And I validate the "Hold enforcement on account (NOENF)" checkbox is not checked
 
-    #AC18b
+    #AC20b
 
     When I select the "Instalments only" radio button
     And I enter "450" into the "Instalment" payment field
     And I select the "Fortnightly" radio button
-    And I select the "Request payment card" checkbox
+    And I enter "13/09/2025" into the "Start date" date field
+    And I unselect the "Hold enforcement on account (NOENF)" checkbox
+    And I select the "Hold enforcement on account (NOENF)" checkbox
     And I click the "Return to account details" button
-    And I see the error message "Enter start date" at the top of the page
-    And I see the error message "Enter start date" above the "Start date" date field
+    And I see the error message "Enter a reason" at the top of the page
+    And I see the error message "Enter a reason" above the "Reason account is on NOENF" field
     And I click Cancel, a window pops up and I click Cancel
     Then I see "Payment terms" on the page header
     And I see "450" in the "Instalment" payment field
     And I validate the "Fortnightly" radio button is selected
-    And I validate the "Request payment card" checkbox is checked
-    And I see the error message "Enter start date" at the top of the page
-    And I see the error message "Enter start date" above the "Start date" date field
+    And I see "13/09/2025" in the "Start date" payment field
+    And I see the error message "Enter a reason" at the top of the page
+    And I see the error message "Enter a reason" above the "Reason account is on NOENF" field
