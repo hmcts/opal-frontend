@@ -1,8 +1,70 @@
 <h1 class="govuk-heading-l">Payment terms</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
+  @if (accessCollectionOrder) {
+    <app-govuk-radio
+      [fieldSetId]="ptHasCollectionOrderControl.controlName"
+      legendText="Has a collection order been made?"
+      legendClasses="govuk-fieldset__legend--s"
+      [errors]="formControlErrorMessages[ptHasCollectionOrderControl.controlName]"
+    >
+      <div
+        app-govuk-radios-item
+        labelText="Yes"
+        inputId="yes"
+        [inputName]="ptHasCollectionOrderControl.controlName"
+        inputValue="yes"
+        [control]="form.controls[ptHasCollectionOrderControl.controlName]"
+      ></div>
+      @if (form.get(ptHasCollectionOrderControl.controlName)!.value !== null) {
+        @if (form.get(ptHasCollectionOrderControl.controlName)!.value === 'yes') {
+          <div app-govuk-radios-conditional [conditionalId]="ptHasCollectionOrderControl.controlName">
+            <div class="govuk-form-group">
+              <app-moj-date-picker
+                labelText="Date of collection order"
+                labelClasses="govuk-label--s"
+                [inputId]="ptCollectionOrderDateControl.controlName"
+                [inputName]="ptCollectionOrderDateControl.controlName"
+                inputClasses="govuk-input--width-10"
+                hintText="For example, 31/01/2023"
+                [maxDate]="today"
+                [control]="form.controls[ptCollectionOrderDateControl.controlName]"
+                [errors]="formControlErrorMessages[ptCollectionOrderDateControl.controlName]"
+                (dateChange)="setInputValue($event, ptCollectionOrderDateControl.controlName)"
+              ></app-moj-date-picker>
+            </div>
+          </div>
+        }
+      }
+
+      <div
+        app-govuk-radios-item
+        labelText="No"
+        inputId="no"
+        [inputName]="ptHasCollectionOrderControl.controlName"
+        inputValue="no"
+        [control]="form.controls[ptHasCollectionOrderControl.controlName]"
+      ></div>
+      @if (form.get(ptHasCollectionOrderControl.controlName)!.value !== null) {
+        @if (form.get(ptHasCollectionOrderControl.controlName)!.value === 'no') {
+          @if (permissions[permissionsMap.collectionOrder] !== false) {
+            <div app-govuk-radios-conditional [conditionalId]="ptHasCollectionOrderControl.controlName">
+              <div class="govuk-form-group">
+                <app-govuk-checkboxes-item
+                  [inputId]="ptMakeCollectionOrderTodayControl.controlName"
+                  [inputName]="ptMakeCollectionOrderTodayControl.controlName"
+                  labelText="Make collection order today"
+                  [control]="form.controls[ptMakeCollectionOrderTodayControl.controlName]"
+                ></app-govuk-checkboxes-item>
+              </div>
+            </div>
+          }
+        }
+      }
+    </app-govuk-radio>
+  }
   <app-govuk-radio
-    fieldSetId="payment_terms"
+    [fieldSetId]="ptPaymentTermsControl.controlName"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
     [errors]="formControlErrorMessages[ptPaymentTermsControl.controlName]"

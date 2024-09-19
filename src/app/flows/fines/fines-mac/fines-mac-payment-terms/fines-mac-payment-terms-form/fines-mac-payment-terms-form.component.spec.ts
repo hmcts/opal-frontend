@@ -24,6 +24,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       'isValidDate',
       'isDateInThePast',
       'isDateInTheFuture',
+      'getDateNow',
+      'toFormat',
     ]);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
@@ -88,7 +90,13 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should call initialPaymentTermsSetup method', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupPermissions');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPaymentTermsForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'canAccessDefaultDates');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addCollectionOrderFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'hasDaysInDefaultListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,22 +105,26 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     spyOn<any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'canAccessDefaultDates');
     mockDateService.getPreviousDate.and.returnValue('30/08/2024');
+    mockDateService.toFormat.and.returnValue('31/08/2024');
 
+    component.defendantType = 'adultOrYouthOnly';
+    component.accessCollectionOrder = true;
     component['initialPaymentTermsSetup']();
 
+    expect(component['setupPermissions']).toHaveBeenCalled();
     expect(component['setupPaymentTermsForm']).toHaveBeenCalled();
+    expect(component['canAccessDefaultDates']).toHaveBeenCalled();
+    expect(component['addCollectionOrderFormControls']).toHaveBeenCalled();
     expect(component['hasDaysInDefaultListener']).toHaveBeenCalled();
     expect(component['paymentTermsListener']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(
       component['finesService'].finesMacState.paymentTerms.formData,
     );
-    expect(component['canAccessDefaultDates']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
+    expect(component.today).toBeDefined();
   });
 
   it('should add controls when has_days_in_default is true', () => {
@@ -252,5 +264,64 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['canAccessDefaultDates']();
 
     expect(component.accessDefaultDates).toBe(false);
+  });
+
+  it('should reset ptCollectionOrderDateControl and create ptCollectionOrderDateControl when hasCollectionOrder value is "yes"', () => {
+    component.defendantType = 'adultOrYouthOnly';
+    component.accessCollectionOrder = true;
+    component['addCollectionOrderFormControls']();
+    const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    spyOn<any>(component, 'createControl');
+    spyOn<any>(component, 'removeControl');
+
+    component['hasCollectionOrderListener']();
+    hasCollectionOrderControl.setValue('yes');
+
+    expect(component['createControl']).toHaveBeenCalledWith(
+      component.ptCollectionOrderDateControl.controlName,
+      component.ptCollectionOrderDateControl.validators,
+    );
+    expect(component['removeControl']).toHaveBeenCalledWith(component.ptMakeCollectionOrderTodayControl.controlName);
+  });
+
+  it('should remove ptCollectionOrderDateControl and create ptMakeCollectionOrderTodayControl and ptCollectionOrderDateControl when hasCollectionOrder value is not "yes"', () => {
+    component.defendantType = 'adultOrYouthOnly';
+    component.accessCollectionOrder = true;
+    component['addCollectionOrderFormControls']();
+    const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    spyOn<any>(component, 'createControl');
+    spyOn<any>(component, 'removeControl');
+
+    component['hasCollectionOrderListener']();
+    hasCollectionOrderControl.setValue('no');
+
+    // Assert
+    expect(component['removeControl']).toHaveBeenCalledWith(component.ptCollectionOrderDateControl.controlName);
+    expect(component['createControl']).toHaveBeenCalledWith(
+      component.ptMakeCollectionOrderTodayControl.controlName,
+      component.ptMakeCollectionOrderTodayControl.validators,
+    );
+    expect(component['createControl']).toHaveBeenCalledWith(component.ptCollectionOrderDateControl.controlName, []);
+  });
+
+  it('should set collection order date when makeCollectionOrderToday is true', () => {
+    // Arrange
+    component.defendantType = 'adultOrYouthOnly';
+    component.accessCollectionOrder = true;
+    component.today = '31/08/2024';
+    component['addCollectionOrderFormControls']();
+    component['hasCollectionOrderListener']();
+    const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    hasCollectionOrderControl.setValue('no');
+
+    const makeCollectionOrderToday = component.form.controls[component.ptMakeCollectionOrderTodayControl.controlName];
+    makeCollectionOrderToday.setValue(true);
+
+    // Act
+    component['setCollectionOrderDate']();
+    console.log(component.form.controls);
+
+    // Assert
+    expect(component.form.get(component.ptCollectionOrderDateControl.controlName)!.value).toBe(component.today);
   });
 });

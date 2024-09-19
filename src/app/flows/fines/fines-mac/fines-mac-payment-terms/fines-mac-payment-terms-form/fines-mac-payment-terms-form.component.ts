@@ -42,6 +42,9 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_FREQUENCY as PT_CONTROL_FREQUENCY } fr
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_START_DATE as PT_CONTROL_START_DATE } from '../constants/controls/fines-mac-payment-terms-controls-start-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as PT_CONTROL_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAYS_IN_DEFAULT_DATE } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as PT_CONTROL_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as PT_CONTROL_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_MAKE_COLLECTION_ORDER_TODAY as PT_CONTROL_MAKE_COLLECTION_ORDER_TODAY } from '../constants/controls/fines-mac-payment-terms-controls-make-collection-order-today.constant';
 import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-all-payment-term-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
@@ -51,6 +54,10 @@ import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-ty
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
+import { PermissionsService } from '@services/permissions-service/permissions.service';
+import { ISessionUserStateRole } from '@services/session-service/interfaces/session-user-state.interface';
+import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
+import { IFinesMacPaymentTermsPermissions } from '../interfaces/fines-mac-payment-terms-permissions.interface';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -83,6 +90,13 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
+  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStateService.userState()?.roles || [];
+
+  public readonly permissionsMap = FinesMacPaymentTermsPermissions;
+  public readonly permissions: IFinesMacPaymentTermsPermissions = {
+    [FinesMacPaymentTermsPermissions.collectionOrder]: false,
+  };
 
   override fieldErrors: IFinesMacPaymentTermsFieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
@@ -100,11 +114,16 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public readonly paymentTermsControls: IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation =
     FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION;
   public yesterday!: string;
+  public today!: string;
   public isAdult!: boolean;
   public dateInFuture!: boolean;
   public dateInPast!: boolean;
   public accessDefaultDates!: boolean;
+  public accessCollectionOrder!: boolean;
 
+  public ptHasCollectionOrderControl = PT_CONTROL_HAS_COLLECTION_ORDER;
+  public ptCollectionOrderDateControl = PT_CONTROL_COLLECTION_ORDER_DATE;
+  public ptMakeCollectionOrderTodayControl = PT_CONTROL_MAKE_COLLECTION_ORDER_TODAY;
   public ptPaymentTermsControl = PT_CONTROL_PAYMENT_TERMS;
   public ptPayByDateControl = PT_CONTROL_PAY_BY_DATE;
   public ptLumpSumControl = PT_CONTROL_LUMP_SUM;
@@ -134,22 +153,81 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Sets up the permissions for the fines-mac-payment-terms-form component.
+   * It checks if the user has permission access for the collection order based on the business unit ID and user roles.
+   */
+  private setupPermissions(): void {
+    const { business_unit_id: businessUnitId } = this.finesService.finesMacState.businessUnit;
+    if (this.userStateRoles && this.userStateRoles.length > 0) {
+      this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
+        this.permissionsMap.collectionOrder,
+        businessUnitId,
+        this.userStateRoles,
+      );
+    }
+  }
+
+  /**
    * Sets up the initial payment terms for the fines-mac-payment-terms-form component.
    * This method performs the following tasks:
+   * - Sets up permissions.
    * - Sets up the payment terms form.
-   * - Adds a listener for changes in the "days in default" field.
-   * - Sets the initial error messages.
-   * - Repopulates the form with the payment terms data from the fines service.
+   * - Checks if the user can access default dates.
+   * - Adds collection order form controls if the user has access to collection order.
+   * - Listens for changes in the number of days in default.
+   * - Listens for changes in the payment terms.
+   * - Sets initial error messages.
+   * - Repopulates the form with the provided form data.
+   * - Sets the 'yesterday' variable to the previous date.
+   * - Sets the 'today' variable to the current date.
    */
   private initialPaymentTermsSetup(): void {
     const { formData } = this.finesService.finesMacState.paymentTerms;
+    this.setupPermissions();
     this.setupPaymentTermsForm();
+    this.canAccessDefaultDates();
+    if (this.accessCollectionOrder) {
+      this.addCollectionOrderFormControls();
+    }
     this.hasDaysInDefaultListener();
     this.paymentTermsListener();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.canAccessDefaultDates();
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
+    this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
+  }
+
+  /**
+   * Adds the collection order form controls to the component.
+   * This method creates the necessary form controls and sets up the listener for changes.
+   */
+  private addCollectionOrderFormControls(): void {
+    this.createControl(this.ptHasCollectionOrderControl.controlName, this.ptHasCollectionOrderControl.validators);
+    this.hasCollectionOrderListener();
+  }
+
+  /**
+   * Listens for changes in the hasCollectionOrder control and updates the form accordingly.
+   * If the value is 'yes', it creates the ptCollectionOrderDate control and removes the ptMakeCollectionOrderToday control.
+   * If the value is not 'yes', it removes the ptCollectionOrderDate control and creates the ptMakeCollectionOrderToday control.
+   */
+  private hasCollectionOrderListener(): void {
+    const { [this.ptHasCollectionOrderControl.controlName]: hasCollectionOrder } = this.form.controls;
+
+    hasCollectionOrder.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      if (hasCollectionOrder.value === 'yes') {
+        this.form.get(this.ptCollectionOrderDateControl.controlName)?.reset();
+        this.createControl(this.ptCollectionOrderDateControl.controlName, this.ptCollectionOrderDateControl.validators);
+        this.removeControl(this.ptMakeCollectionOrderTodayControl.controlName);
+      } else {
+        this.removeControl(this.ptCollectionOrderDateControl.controlName);
+        this.createControl(
+          this.ptMakeCollectionOrderTodayControl.controlName,
+          this.ptMakeCollectionOrderTodayControl.validators,
+        );
+        this.createControl(this.ptCollectionOrderDateControl.controlName, []);
+      }
+    });
   }
 
   /**
@@ -188,7 +266,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       this.resetDateChecker();
     } else if (action === 'add') {
       this.createControl(control.controlName, control.validators);
-      if (control.controlName === this.ptStartDateControl.controlName || control.controlName === this.ptPayByDateControl.controlName) {
+      if (
+        control.controlName === this.ptStartDateControl.controlName ||
+        control.controlName === this.ptPayByDateControl.controlName
+      ) {
         this.dateListener(control.controlName);
       }
     }
@@ -262,6 +343,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       case this.defendantTypes.adultOrYouthOnly:
         formData = this.finesService.finesMacState.personalDetails.formData;
         this.accessDefaultDates = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
+        this.accessCollectionOrder = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
         break;
       case this.defendantTypes.parentOrGuardianToPay:
         this.accessDefaultDates = true;
@@ -269,6 +351,22 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       default:
         this.accessDefaultDates = false;
     }
+  }
+
+  /**
+   * Sets the collection order date based on the value of makeCollectionOrderToday.
+   * If makeCollectionOrderToday is true, the collection order date is set to today's date.
+   */
+  private setCollectionOrderDate(): void {
+    const { [this.ptMakeCollectionOrderTodayControl.controlName]: makeCollectionOrderToday } = this.form.controls;
+    if (makeCollectionOrderToday?.value === true) {
+      this.form.get(this.ptCollectionOrderDateControl.controlName)?.setValue(this.today);
+    }
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.setCollectionOrderDate();
+    super.handleFormSubmit(event);
   }
 
   public override ngOnInit(): void {

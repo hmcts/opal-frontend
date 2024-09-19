@@ -72,6 +72,17 @@ export class DateService {
   }
 
   /**
+   * Converts a DateTime value to a formatted string.
+   * 
+   * @param value - The DateTime value to format.
+   * @param format - The format string to apply to the DateTime value.
+   * @returns The formatted string representation of the DateTime value.
+   */
+  public toFormat(value: DateTime<true> | DateTime<false>, format: string): string {
+    return value.toFormat(format);
+  }
+
+  /**
    * Converts a string in ISO format to a DateTime object.
    * @param value - The string value in ISO format.
    * @returns A DateTime object representing the given value.
