@@ -218,6 +218,7 @@ Feature: PO-429 Implement additional fields for payment terms screen - Adult or 
 
     When I click on the "Payment terms" link
     Then I see "Payment terms" on the page header
+    And I validate the "Pay in full" radio button is selected
     And I see "13/09/2025" in the "Enter pay by date" payment field
     And I validate the "Request payment card" checkbox is checked
 
@@ -268,11 +269,14 @@ Feature: PO-429 Implement additional fields for payment terms screen - Adult or 
     When I select the "Instalments only" radio button
     And I enter "450" into the "Instalment" payment field
     And I select the "Fortnightly" radio button
-    And I enter "13/09/2025" into the "Start date" date field
     And I select the "Request payment card" checkbox
+    And I click the "Return to account details" button
+    And I see the error message "Enter start date" at the top of the page
+    And I see the error message "Enter start date" above the "Start date" date field
     And I click Cancel, a window pops up and I click Cancel
     Then I see "Payment terms" on the page header
     And I see "450" in the "Instalment" payment field
     And I validate the "Fortnightly" radio button is selected
-    And I see "13/09/2025" in the "Start date" payment field
     And I validate the "Request payment card" checkbox is checked
+    And I see the error message "Enter start date" at the top of the page
+    And I see the error message "Enter start date" above the "Start date" date field

@@ -7,6 +7,9 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION } from '../constants/controls/fines-mac-payment-terms-controls-add-enforcement-action.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT as PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-on-account.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -40,6 +43,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacPaymentTermsFormComponent);
     component = fixture.componentInstance;
+
+    component.defendantType = 'adultOrYouthOnly';
 
     fixture.detectChanges();
   });
@@ -90,6 +95,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPaymentTermsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'createEnforcementFields');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'canAccessDefaultDates');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'hasDaysInDefaultListener');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'paymentTermsListener');
@@ -97,20 +106,20 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     spyOn<any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'rePopulateForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'canAccessDefaultDates');
     mockDateService.getPreviousDate.and.returnValue('30/08/2024');
+    component.accessDefaultDates = true;
 
     component['initialPaymentTermsSetup']();
 
     expect(component['setupPaymentTermsForm']).toHaveBeenCalled();
+    expect(component['createEnforcementFields']).toHaveBeenCalled();
+    expect(component['canAccessDefaultDates']).toHaveBeenCalled();
     expect(component['hasDaysInDefaultListener']).toHaveBeenCalled();
     expect(component['paymentTermsListener']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(
       component['finesService'].finesMacState.paymentTerms.formData,
     );
-    expect(component['canAccessDefaultDates']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
   });
@@ -136,50 +145,40 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
-    // Arrange
     const dateValue = DateTime.now().plus({ years: 4 }).toFormat('dd/MM/yyyy');
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.isDateInTheFuture.and.returnValue(true);
     mockDateService.isDateInThePast.and.returnValue(false);
 
-    // Act
     component['dateChecker'](dateValue);
 
-    // Assert
     expect(component.dateInFuture).toBe(true);
     expect(component.dateInPast).toBe(false);
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the past', () => {
-    // Arrange
     const dateValue = DateTime.now().minus({ years: 4 }).toFormat('dd/MM/yyyy');
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.isDateInTheFuture.and.returnValue(false);
     mockDateService.isDateInThePast.and.returnValue(true);
 
-    // Act
     component['dateChecker'](dateValue);
 
-    // Assert
     expect(component.dateInFuture).toBe(false);
     expect(component.dateInPast).toBe(true);
   });
 
   it('should set dateInFuture and dateInPast to false when dateValue is not a valid date', () => {
-    // Arrange
     const dateValue = 'invalid-date';
     mockDateService.isValidDate.and.returnValue(false);
 
-    // Act
     component['dateChecker'](dateValue);
 
-    // Assert
     expect(component.dateInFuture).toBe(false);
     expect(component.dateInPast).toBe(false);
   });
 
   it('should update form controls based on selected payment term', () => {
-    // Arrange
     const paymentTermsControl = component.form.controls['payment_terms'];
     const selectedTerm = 'payInFull';
 
@@ -188,16 +187,13 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
 
-    // Act
     paymentTermsControl.setValue(selectedTerm);
 
-    // Assert
     expect(removeControlSpy).toHaveBeenCalledTimes(7);
     expect(removeControlErrorsSpy).toHaveBeenCalledTimes(7);
   });
 
   it('should update form controls based on selected payment term', () => {
-    // Arrange
     const paymentTermsControl = component.form.controls['payment_terms'];
     const selectedTerm = 'instalmentsOnly';
 
@@ -206,10 +202,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
 
-    // Act
     paymentTermsControl.setValue(selectedTerm);
 
-    // Assert
     expect(removeControlSpy).toHaveBeenCalledTimes(5);
     expect(removeControlErrorsSpy).toHaveBeenCalledTimes(5);
   });
@@ -252,5 +246,57 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['canAccessDefaultDates']();
 
     expect(component.accessDefaultDates).toBe(false);
+  });
+
+  it('should create enforcement fields for company defendant type', () => {
+    component.defendantType = 'company';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const createControlSpy = spyOn<any>(component, 'createControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const holdEnforcementListener = spyOn<any>(component, 'holdEnforcementOnAccountListener');
+
+    component['createEnforcementFields']();
+
+    expect(createControlSpy).toHaveBeenCalledWith(
+      PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT.controlName,
+      PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT.validators,
+    );
+    expect(holdEnforcementListener).toHaveBeenCalled();
+  });
+
+  it('should create enforcement fields for non-company defendant type', () => {
+    component.defendantType = 'adultOrYouthOnly';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const createControlSpy = spyOn<any>(component, 'createControl');
+
+    component['createEnforcementFields']();
+
+    expect(createControlSpy).toHaveBeenCalledTimes(1);
+    expect(createControlSpy).toHaveBeenCalledWith(
+      FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION.controlName,
+      FINES_MAC_PAYMENT_TERMS_CONTROLS_ADD_ENFORCEMENT_ACTION.validators,
+    );
+  });
+
+  it('should add control when hold_enforcement_on_account is true', () => {
+    component.defendantType = 'company';
+    component['createEnforcementFields']();
+    const holdEnforcementOnAccountControl = component.form.controls['hold_enforcement_on_account'];
+    holdEnforcementOnAccountControl.setValue(true);
+
+    component['holdEnforcementOnAccountListener']();
+
+    expect(component.form.contains(PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName)).toBe(true);
+  });
+
+  it('should remove control when hold_enforcement_on_account is false', () => {
+    component.defendantType = 'company';
+    component['createEnforcementFields']();
+    const holdEnforcementOnAccountControl = component.form.controls['hold_enforcement_on_account'];
+    holdEnforcementOnAccountControl.setValue(false);
+
+    component['holdEnforcementOnAccountListener']();
+
+    expect(component.form.contains(PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName)).toBe(false);
   });
 });
