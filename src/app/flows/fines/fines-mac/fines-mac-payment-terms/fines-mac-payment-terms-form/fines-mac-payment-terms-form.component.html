@@ -144,9 +144,9 @@
     <div
       app-govuk-checkboxes-item
       labelText="Request payment card"
-      inputId="request_payment_card"
-      inputName="request_payment_card"
-      [control]="form.controls['request_payment_card']"
+      [inputId]="ptRequestCardPaymentControl.controlName"
+      [inputName]="ptRequestCardPaymentControl.controlName"
+      [control]="form.controls[ptRequestCardPaymentControl.controlName]"
     ></div>
   }
   @if (accessDefaultDates) {
@@ -209,20 +209,20 @@
       <div
         app-govuk-checkboxes-item
         labelText="Hold enforcement on account (NOENF)"
-        inputId="hold_enforcement_on_account"
-        inputName="hold_enforcement_on_account"
-        [control]="form.controls['hold_enforcement_on_account']"
+        [inputId]="ptHoldEnforcementOnAccount.controlName"
+        [inputName]="ptHoldEnforcementOnAccount.controlName"
+        [control]="form.controls[ptHoldEnforcementOnAccount.controlName]"
       ></div>
-      <div *ngIf="form.get('hold_enforcement_on_account')?.value">
-        <div app-govuk-checkboxes-conditional conditionalId="hold_enforcement_on_account">
+      <div *ngIf="form.get(ptHoldEnforcementOnAccount.controlName)?.value">
+        <div app-govuk-checkboxes-conditional [conditionalId]="ptHoldEnforcementOnAccount.controlName">
           <app-govuk-text-area
             labelText="Reason account is on NOENF"
             labelClasses="govuk-label--s"
-            inputId="reason_account_is_on_noenf"
-            inputName="reason_account_is_on_noenf"
+            [inputId]="ptReasonAccountIsOnNoEnf.controlName"
+            [inputName]="ptReasonAccountIsOnNoEnf.controlName"
             inputClasses="govuk-!-width-two-thirds"
-            [control]="form.controls['reason_account_is_on_noenf']"
-            [errors]="formControlErrorMessages['reason_account_is_on_noenf']"
+            [control]="form.controls[ptReasonAccountIsOnNoEnf.controlName]"
+            [errors]="formControlErrorMessages[ptReasonAccountIsOnNoEnf.controlName]"
             [rows]="1"
             [maxCharacterLimit]="28"
             [characterCountEnabled]="true"
@@ -233,9 +233,9 @@
       <div
         app-govuk-checkboxes-item
         labelText="Add enforcement action"
-        inputId="add_enforcement_action"
-        inputName="add_enforcement_action"
-        [control]="form.controls['add_enforcement_action']"
+        [inputId]="ptAddEnforcementActionControl.controlName"
+        [inputName]="ptAddEnforcementActionControl.controlName"
+        [control]="form.controls[ptAddEnforcementActionControl.controlName]"
       ></div>
     }
   </app-govuk-checkboxes>

@@ -45,6 +45,8 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAY
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as PT_CONTROL_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as PT_CONTROL_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_MAKE_COLLECTION_ORDER_TODAY as PT_CONTROL_MAKE_COLLECTION_ORDER_TODAY } from '../constants/controls/fines-mac-payment-terms-controls-make-collection-order-today.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT as PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-on-account.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
 import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-all-payment-term-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
@@ -55,8 +57,6 @@ import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/g
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { GovukTextAreaComponent } from '@components/govuk/govuk-text-area/govuk-text-area.component';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT as PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-on-account.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
 import { PermissionsService } from '@services/permissions-service/permissions.service';
 import { ISessionUserStateRole } from '@services/session-service/interfaces/session-user-state.interface';
 import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
@@ -139,6 +139,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public ptDaysInDefaultControl = PT_CONTROL_DAYS_IN_DEFAULT;
   public ptDaysInDefaultDateControl = PT_CONTROL_DAYS_IN_DEFAULT_DATE;
   public ptAddEnforcementActionControl = PT_CONTROL_ADD_ENFORCEMENT_ACTION;
+  public ptHoldEnforcementOnAccount = PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT;
+  public ptReasonAccountIsOnNoEnf = PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF;
 
   /**
    * Sets up the payment terms form.
@@ -281,7 +283,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * Listens for changes in the payment terms control and performs actions based on the selected term.
    */
   private paymentTermsListener(): void {
-    const { payment_terms: paymentTerms } = this.form.controls;
+    const { [this.ptPaymentTermsControl.controlName]: paymentTerms } = this.form.controls;
 
     paymentTerms.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((selectedTerm) => {
       const controls =
@@ -360,16 +362,13 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * Listens to changes in the hold_enforcement_on_account form control and performs actions accordingly.
    */
   private holdEnforcementOnAccountListener(): void {
-    const { hold_enforcement_on_account: holdEnforcementOnAccount } = this.form.controls;
+    const { [this.ptHoldEnforcementOnAccount.controlName]: holdEnforcementOnAccount } = this.form.controls;
 
     holdEnforcementOnAccount.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       if (holdEnforcementOnAccount.value === true) {
-        this.createControl(
-          PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName,
-          PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.validators,
-        );
+        this.createControl(this.ptReasonAccountIsOnNoEnf.controlName, this.ptReasonAccountIsOnNoEnf.validators);
       } else {
-        this.removeControl(PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF.controlName);
+        this.removeControl(this.ptReasonAccountIsOnNoEnf.controlName);
       }
     });
   }
@@ -381,13 +380,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private createEnforcementFields(): void {
     if (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes] === this.defendantTypes.company) {
-      this.createControl(
-        PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT.controlName,
-        PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT.validators,
-      );
+      this.createControl(this.ptHoldEnforcementOnAccount.controlName, this.ptHoldEnforcementOnAccount.validators);
       this.holdEnforcementOnAccountListener();
     } else {
-      this.createControl(PT_CONTROL_ADD_ENFORCEMENT_ACTION.controlName, PT_CONTROL_ADD_ENFORCEMENT_ACTION.validators);
+      this.createControl(this.ptAddEnforcementActionControl.controlName, this.ptAddEnforcementActionControl.validators);
     }
   }
 
