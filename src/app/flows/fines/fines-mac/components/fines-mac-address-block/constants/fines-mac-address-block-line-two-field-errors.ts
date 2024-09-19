@@ -1,7 +1,7 @@
-import { IFinesMacAddressBlockLineTwoFieldErrors } from '../interfaces';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO } from '../../../constants/controls/fines-mac-controls-address-line-two';
 
-export const FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS: IFinesMacAddressBlockLineTwoFieldErrors = {
-  address_line_2: {
+export const FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS = {
+  [FINES_MAC_CONTROLS_ADDRESS_LINE_TWO.controlName]: {
     maxlength: {
       message: 'The address line 2 must be 30 characters or fewer',
       priority: 1,

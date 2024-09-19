@@ -57,7 +57,7 @@ import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as PD_CONTROL_ADDRESS_LINE_TWO } fr
 import { FINES_MAC_CONTROLS_POSTCODE as PD_CONTROL_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
 import { FINES_MAC_CONTROLS_VEHICLE_MAKE as PD_CONTROL_VEHICLE_MAKE } from '../../constants/controls/fines-mac-controls-vehicle-make';
 import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PD_CONTROL_VEHICLE_REGISTRATION_MARK } from '../../constants/controls/fines-mac-controls-vehicle-registration-mark';
-import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE as PD_CONTROL_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-personal-details-controls-address-line-three';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as PD_CONTROL_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
 import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE as PD_CONTROL_TITLE } from '../constants/controls/fines-mac-personal-details-controls-title';
 
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';

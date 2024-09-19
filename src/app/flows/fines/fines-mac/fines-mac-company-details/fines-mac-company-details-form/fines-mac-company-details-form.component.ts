@@ -24,10 +24,8 @@ import { FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS } from '../../component
 import { FINES_MAC_ADDRESS_BLOCK_FIELD_IDS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-field-ids';
 import { FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-postcode-field-errors';
 
-import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
-import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
-import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 
@@ -37,6 +35,14 @@ import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-
 import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-company-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+
+import { FINES_MAC_COMPANY_DETAILS_CONTROLS_COMPANY_NAME as CD_COMPANY_NAME } from '../constants/controls/fines-mac-company-details-controls-company-name';
+import { FINES_MAC_CONTROLS_ADD_ALIAS as CD_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
+import { FINES_MAC_CONTROLS_ALIASES as CD_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as CD_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as CD_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as CD_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
+import { FINES_MAC_CONTROLS_POSTCODE as CD_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -65,7 +71,15 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IFinesMacCompanyDetailsFieldErrors = {
+  public cdCompanyName = CD_COMPANY_NAME;
+  public cdAddAlias = CD_ADD_ALIAS;
+  public cdAliases = CD_ALIASES;
+  public cdAddressLineOne = CD_ADDRESS_LINE_ONE;
+  public cdAddressLineTwo = CD_ADDRESS_LINE_TWO;
+  public cdAddressLineThree = CD_ADDRESS_LINE_THREE;
+  public cdPostcode = CD_POSTCODE;
+
+  override fieldErrors = {
     ...FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
     ...FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
@@ -78,17 +92,13 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    */
   private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
-      company_name: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
-      add_alias: new FormControl(null),
-      aliases: new FormArray([]),
-      address_line_1: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        specialCharactersValidator(),
-      ]),
-      address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      address_line_3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
-      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      [this.cdCompanyName.controlName]: this.createFormControl(this.cdCompanyName.validators),
+      [this.cdAddAlias.controlName]: this.createFormControl(this.cdAddAlias.validators),
+      [this.cdAliases.controlName]: this.createFormControl(this.cdAliases.validators),
+      [this.cdAddressLineOne.controlName]: this.createFormControl(this.cdAddressLineOne.validators),
+      [this.cdAddressLineTwo.controlName]: this.createFormControl(this.cdAddressLineTwo.validators),
+      [this.cdAddressLineThree.controlName]: this.createFormControl(this.cdAddressLineThree.validators),
+      [this.cdPostcode.controlName]: this.createFormControl(this.cdPostcode.validators),
     });
   }
 

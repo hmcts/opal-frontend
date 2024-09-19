@@ -1,7 +1,7 @@
-import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
+import { FINES_MAC_COMPANY_DETAILS_CONTROLS_COMPANY_NAME as CD_COMPANY_NAME } from '../constants/controls/fines-mac-company-details-controls-company-name';
 
-export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFieldErrors = {
-  company_name: {
+export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS = {
+  [CD_COMPANY_NAME.controlName]: {
     required: {
       message: `Enter company name`,
       priority: 1,
