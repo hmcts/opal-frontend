@@ -1,4 +1,4 @@
-Feature: PO-432 days in default on payment terms page - adult or youth only
+Feature: PO-588 days in default on payment terms page - adult or youth with PG to pay
 
   #####################################
   # AC 5-8 WILL BE COVERED IN PO-648  #

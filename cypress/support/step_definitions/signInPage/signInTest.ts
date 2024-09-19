@@ -42,16 +42,16 @@ When('I sign in as {string}', (email: string) => {
         },
         ({ emailSSO, passwordSSO }) => {
           cy.wait(500);
-          cy.get('input[type="email"]').type(emailSSO);
-          cy.get('input[type="submit"]').click();
+          cy.get('input[type="email"]', { timeout: 12000 }).type(emailSSO);
+          cy.get('input[type="submit"]', { timeout: 12000 }).click();
 
-          cy.get('input[type="password"]').type(passwordSSO, { log: false });
-          cy.get('input[type="submit"]').click();
-          cy.get('#idBtn_Back').click();
+          cy.get('input[type="password"]', { timeout: 12000 }).type(passwordSSO, { log: false });
+          cy.get('input[type="submit"]', { timeout: 12000 }).click();
+          cy.get('#idBtn_Back', { timeout: 12000 }).click();
         },
       );
       cy.wait(500);
-      cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
+      cy.get('.moj-header__navigation-item > .moj-header__navigation-link', { timeout: 12000 }).contains('Sign out');
     }
   });
 });
