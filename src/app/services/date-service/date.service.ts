@@ -73,7 +73,7 @@ export class DateService {
 
   /**
    * Converts a DateTime value to a formatted string.
-   * 
+   *
    * @param value - The DateTime value to format.
    * @param format - The format string to apply to the DateTime value.
    * @returns The formatted string representation of the DateTime value.

@@ -7,10 +7,14 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-terms-form.mock';
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
+import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
+import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent>;
+  let mockGlobalStateService: GlobalStateService;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
@@ -39,6 +43,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
+
+    mockGlobalStateService = TestBed.inject(GlobalStateService);
+    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
 
     fixture = TestBed.createComponent(FinesMacPaymentTermsFormComponent);
     component = fixture.componentInstance;
@@ -148,50 +155,40 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
-    // Arrange
     const dateValue = DateTime.now().plus({ years: 4 }).toFormat('dd/MM/yyyy');
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.isDateInTheFuture.and.returnValue(true);
     mockDateService.isDateInThePast.and.returnValue(false);
 
-    // Act
     component['dateChecker'](dateValue);
 
-    // Assert
     expect(component.dateInFuture).toBe(true);
     expect(component.dateInPast).toBe(false);
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the past', () => {
-    // Arrange
     const dateValue = DateTime.now().minus({ years: 4 }).toFormat('dd/MM/yyyy');
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.isDateInTheFuture.and.returnValue(false);
     mockDateService.isDateInThePast.and.returnValue(true);
 
-    // Act
     component['dateChecker'](dateValue);
 
-    // Assert
     expect(component.dateInFuture).toBe(false);
     expect(component.dateInPast).toBe(true);
   });
 
   it('should set dateInFuture and dateInPast to false when dateValue is not a valid date', () => {
-    // Arrange
     const dateValue = 'invalid-date';
     mockDateService.isValidDate.and.returnValue(false);
 
-    // Act
     component['dateChecker'](dateValue);
 
-    // Assert
     expect(component.dateInFuture).toBe(false);
     expect(component.dateInPast).toBe(false);
   });
 
   it('should update form controls based on selected payment term', () => {
-    // Arrange
     const paymentTermsControl = component.form.controls['payment_terms'];
     const selectedTerm = 'payInFull';
 
@@ -200,16 +197,13 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
 
-    // Act
     paymentTermsControl.setValue(selectedTerm);
 
-    // Assert
     expect(removeControlSpy).toHaveBeenCalledTimes(7);
     expect(removeControlErrorsSpy).toHaveBeenCalledTimes(7);
   });
 
   it('should update form controls based on selected payment term', () => {
-    // Arrange
     const paymentTermsControl = component.form.controls['payment_terms'];
     const selectedTerm = 'instalmentsOnly';
 
@@ -218,10 +212,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const removeControlErrorsSpy = spyOn<any>(component, 'removeControlErrors');
 
-    // Act
     paymentTermsControl.setValue(selectedTerm);
 
-    // Assert
     expect(removeControlSpy).toHaveBeenCalledTimes(5);
     expect(removeControlErrorsSpy).toHaveBeenCalledTimes(5);
   });
@@ -271,7 +263,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
     const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'createControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
 
     component['hasCollectionOrderListener']();
@@ -289,13 +283,14 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
     const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'createControl');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
 
     component['hasCollectionOrderListener']();
     hasCollectionOrderControl.setValue('no');
 
-    // Assert
     expect(component['removeControl']).toHaveBeenCalledWith(component.ptCollectionOrderDateControl.controlName);
     expect(component['createControl']).toHaveBeenCalledWith(
       component.ptMakeCollectionOrderTodayControl.controlName,
@@ -305,7 +300,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set collection order date when makeCollectionOrderToday is true', () => {
-    // Arrange
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component.today = '31/08/2024';
@@ -317,11 +311,18 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const makeCollectionOrderToday = component.form.controls[component.ptMakeCollectionOrderTodayControl.controlName];
     makeCollectionOrderToday.setValue(true);
 
-    // Act
     component['setCollectionOrderDate']();
-    console.log(component.form.controls);
 
-    // Assert
     expect(component.form.get(component.ptCollectionOrderDateControl.controlName)!.value).toBe(component.today);
+  });
+
+  it('should setup permissions', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'hasPermissionAccess').and.returnValue(true);
+
+    component['setupPermissions']();
+
+    expect(component['hasPermissionAccess']).toHaveBeenCalled();
+    expect(component.permissions[FinesMacPaymentTermsPermissions.collectionOrder]).toBeTruthy();
   });
 });

@@ -240,11 +240,11 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
     hasDaysInDefault.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       if (hasDaysInDefault.value === true) {
-        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.map((control) => {
+        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.forEach((control) => {
           this.createControl(control.controlName, control.validators);
         });
       } else {
-        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.map((control) => {
+        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.forEach((control) => {
           this.removeControl(control.controlName);
         });
       }
@@ -347,6 +347,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
         break;
       case this.defendantTypes.parentOrGuardianToPay:
         this.accessDefaultDates = true;
+        this.accessCollectionOrder = true;
         break;
       default:
         this.accessDefaultDates = false;
@@ -358,8 +359,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * If makeCollectionOrderToday is true, the collection order date is set to today's date.
    */
   private setCollectionOrderDate(): void {
-    const { [this.ptMakeCollectionOrderTodayControl.controlName]: makeCollectionOrderToday } = this.form.controls;
-    if (makeCollectionOrderToday?.value === true) {
+    const makeCollectionOrderToday = this.form.get(this.ptMakeCollectionOrderTodayControl.controlName)?.value;
+    if (makeCollectionOrderToday === true) {
       this.form.get(this.ptCollectionOrderDateControl.controlName)?.setValue(this.today);
     }
   }
