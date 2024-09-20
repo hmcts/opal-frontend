@@ -1,6 +1,7 @@
+import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE } from '../../../constants/controls/fines-mac-controls-address-line-one';
 
-export const FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS = {
+export const FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   [FINES_MAC_CONTROLS_ADDRESS_LINE_ONE.controlName]: {
     required: {
       message: 'Enter address line 1, typically the building and street',

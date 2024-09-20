@@ -30,19 +30,19 @@ import { FinesMacAddressBlockComponent } from '../../components/fines-mac-addres
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
+
 import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
 import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-company-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
-import { FINES_MAC_COMPANY_DETAILS_CONTROLS_COMPANY_NAME as CD_COMPANY_NAME } from '../constants/controls/fines-mac-company-details-controls-company-name';
-import { FINES_MAC_CONTROLS_ADD_ALIAS as CD_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
-import { FINES_MAC_CONTROLS_ALIASES as CD_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as CD_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as CD_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as CD_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
-import { FINES_MAC_CONTROLS_POSTCODE as CD_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
+import { FINES_MAC_COMPANY_DETAILS_CONTROLS_COMPANY_NAME as F_M_CY_D_COMPANY_NAME } from '../constants/controls/fines-mac-company-details-controls-company-name';
+import { FINES_MAC_CONTROLS_ADD_ALIAS as F_M_CY_D_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
+import { FINES_MAC_CONTROLS_ALIASES as F_M_CY_D_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as F_M_CY_D_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as F_M_CY_D_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as F_M_CY_D_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
+import { FINES_MAC_CONTROLS_POSTCODE as F_M_CY_D_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -71,13 +71,13 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  public cdCompanyName = CD_COMPANY_NAME;
-  public cdAddAlias = CD_ADD_ALIAS;
-  public cdAliases = CD_ALIASES;
-  public cdAddressLineOne = CD_ADDRESS_LINE_ONE;
-  public cdAddressLineTwo = CD_ADDRESS_LINE_TWO;
-  public cdAddressLineThree = CD_ADDRESS_LINE_THREE;
-  public cdPostcode = CD_POSTCODE;
+  public companyDetailsCompanyName = F_M_CY_D_COMPANY_NAME;
+  public companyDetailsAddAlias = F_M_CY_D_ADD_ALIAS;
+  public companyDetailsAliases = F_M_CY_D_ALIASES;
+  public companyDetailsAddressLineOne = F_M_CY_D_ADDRESS_LINE_ONE;
+  public companyDetailsAddressLineTwo = F_M_CY_D_ADDRESS_LINE_TWO;
+  public companyDetailsAddressLineThree = F_M_CY_D_ADDRESS_LINE_THREE;
+  public companyDetailsPostcode = F_M_CY_D_POSTCODE;
 
   override fieldErrors = {
     ...FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
@@ -92,13 +92,19 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    */
   private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
-      [this.cdCompanyName.controlName]: this.createFormControl(this.cdCompanyName.validators),
-      [this.cdAddAlias.controlName]: this.createFormControl(this.cdAddAlias.validators),
-      [this.cdAliases.controlName]: this.createFormControl(this.cdAliases.validators),
-      [this.cdAddressLineOne.controlName]: this.createFormControl(this.cdAddressLineOne.validators),
-      [this.cdAddressLineTwo.controlName]: this.createFormControl(this.cdAddressLineTwo.validators),
-      [this.cdAddressLineThree.controlName]: this.createFormControl(this.cdAddressLineThree.validators),
-      [this.cdPostcode.controlName]: this.createFormControl(this.cdPostcode.validators),
+      [this.companyDetailsCompanyName.controlName]: this.createFormControl(this.companyDetailsCompanyName.validators),
+      [this.companyDetailsAddAlias.controlName]: this.createFormControl(this.companyDetailsAddAlias.validators),
+      [this.companyDetailsAliases.controlName]: this.createFormArray(this.companyDetailsAliases.validators),
+      [this.companyDetailsAddressLineOne.controlName]: this.createFormControl(
+        this.companyDetailsAddressLineOne.validators,
+      ),
+      [this.companyDetailsAddressLineTwo.controlName]: this.createFormControl(
+        this.companyDetailsAddressLineTwo.validators,
+      ),
+      [this.companyDetailsAddressLineThree.controlName]: this.createFormControl(
+        this.companyDetailsAddressLineThree.validators,
+      ),
+      [this.companyDetailsPostcode.controlName]: this.createFormControl(this.companyDetailsPostcode.validators),
     });
   }
 

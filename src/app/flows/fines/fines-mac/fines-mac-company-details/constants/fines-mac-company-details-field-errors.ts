@@ -1,6 +1,7 @@
+import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 import { FINES_MAC_COMPANY_DETAILS_CONTROLS_COMPANY_NAME as CD_COMPANY_NAME } from '../constants/controls/fines-mac-company-details-controls-company-name';
 
-export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS = {
+export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   [CD_COMPANY_NAME.controlName]: {
     required: {
       message: `Enter company name`,

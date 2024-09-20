@@ -14,9 +14,7 @@ import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/go
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
-import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
-import { optionalEmailAddressValidator } from '@validators/optional-valid-email-address/optional-valid-email-address.validator';
-import { optionalPhoneNumberValidator } from '@validators/optional-valid-telephone/optional-valid-telephone.validator';
+
 import { IFinesMacContactDetailsFieldErrors } from '../interfaces/fines-mac-contact-details-field-errors.interface';
 import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-details-form.interface';
 
@@ -24,6 +22,12 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-contact-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_EMAIL_ADDRESS_ONE as FM_C_D_EMAIL_ADDRESS_ONE } from '../constants/controls/fines-mac-contact-details-controls-email-address-one';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_EMAIL_ADDRESS_TWO as FM_C_D_EMAIL_ADDRESS_TWO } from '../constants/controls/fines-mac-contact-details-controls-email-address-2';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_MOBILE as FM_C_D_TELEPHONE_NUMBER_MOBILE } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-mobile';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_HOME as FM_C_D_TELEPHONE_NUMBER_HOME } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-home';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_BUSINESS as FM_C_D_TELEPHONE_NUMBER_BUSINESS } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-business';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
@@ -47,21 +51,34 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IFinesMacContactDetailsFieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS;
+  override fieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS;
+
+  public contactDetailsEmailAddressOne = FM_C_D_EMAIL_ADDRESS_ONE;
+  public contactDetailsEmailAddressTwo = FM_C_D_EMAIL_ADDRESS_TWO;
+  public contactDetailsTelephoneNumberMobile = FM_C_D_TELEPHONE_NUMBER_MOBILE;
+  public contactDetailsTelephoneNumberHome = FM_C_D_TELEPHONE_NUMBER_HOME;
+  public contactDetailsTelephoneNumberBusiness = FM_C_D_TELEPHONE_NUMBER_BUSINESS;
 
   /**
    * Sets up the contact details form with the necessary form controls.
    */
   private setupContactDetailsForm(): void {
     this.form = new FormGroup({
-      email_address_1: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      email_address_2: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      telephone_number_mobile: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
-      telephone_number_home: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
-      telephone_number_business: new FormControl(null, [
-        optionalMaxLengthValidator(35),
-        optionalPhoneNumberValidator(),
-      ]),
+      [this.contactDetailsEmailAddressOne.controlName]: this.createFormControl(
+        this.contactDetailsEmailAddressOne.validators,
+      ),
+      [this.contactDetailsEmailAddressTwo.controlName]: this.createFormControl(
+        this.contactDetailsEmailAddressTwo.validators,
+      ),
+      [this.contactDetailsTelephoneNumberMobile.controlName]: this.createFormControl(
+        this.contactDetailsTelephoneNumberMobile.validators,
+      ),
+      [this.contactDetailsTelephoneNumberHome.controlName]: this.createFormControl(
+        this.contactDetailsTelephoneNumberHome.validators,
+      ),
+      [this.contactDetailsTelephoneNumberBusiness.controlName]: this.createFormControl(
+        this.contactDetailsTelephoneNumberBusiness.validators,
+      ),
     });
   }
 

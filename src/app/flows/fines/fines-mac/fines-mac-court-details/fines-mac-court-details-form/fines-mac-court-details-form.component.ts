@@ -24,6 +24,10 @@ import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-cou
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
+import { FINES_MAC_COURT_DETAILS_CONTROLS_SENDING_COURT as F_M_COURT_DETAILS_SENDING_COURT } from '../constants/controls/fines-mac-court-details-controls-sending-court';
+import { FINES_MAC_COURT_DETAILS_CONTROLS_PROSECUTOR_COURT_REFERENCE as F_M_COURT_DETAILS_PROSECUTOR_COURT_REFERENCE } from '../constants/controls/fines-mac-court-details-controls-prosecutor-case-reference';
+import { FINES_MAC_COURT_DETAILS_CONTROLS_ENFORCING_COURT as F_M_COURT_DETAILS_ENFORCING_COURT } from '../constants/controls/fines-mac-court-details-controls-enforcing-court';
+
 @Component({
   selector: 'app-fines-mac-court-details-form',
   standalone: true,

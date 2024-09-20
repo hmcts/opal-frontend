@@ -3,23 +3,27 @@
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-text-input
     labelText="Company name"
-    inputId="company_name"
-    inputName="company_name"
+    [inputId]="companyDetailsCompanyName.controlName"
+    [inputName]="companyDetailsCompanyName.controlName"
     labelClasses="govuk-label--s"
-    [control]="form.controls['company_name']"
-    [errors]="formControlErrorMessages['company_name']"
+    [control]="form.controls[companyDetailsCompanyName.controlName]"
+    [errors]="formControlErrorMessages[companyDetailsCompanyName.controlName]"
   ></app-govuk-text-input>
   <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
       app-govuk-checkboxes-item
       labelText="Add company aliases"
-      inputId="add_alias"
-      inputName="add_alias"
-      [control]="form.get('add_alias')"
+      [inputId]="companyDetailsAddAlias.controlName"
+      [inputName]="companyDetailsAddAlias.controlName"
+      [control]="form.get(companyDetailsAddAlias.controlName)"
     ></div>
   </app-govuk-checkboxes>
-  @if (form.get('add_alias')?.value === true) {
-    <div app-govuk-checkboxes-conditional conditionalId="add_alias" formArrayName="aliases">
+  @if (form.get(companyDetailsAddAlias.controlName)?.value === true) {
+    <div
+      app-govuk-checkboxes-conditional
+      [conditionalId]="companyDetailsAddAlias.controlName"
+      [formArrayName]="companyDetailsAliases.controlName"
+    >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
@@ -27,7 +31,13 @@
             labelText="Company name"
             [inputId]="aliasControls[rowIndex]['alias_organisation_name'].inputId"
             [inputName]="aliasControls[rowIndex]['alias_organisation_name'].inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['alias_organisation_name'].controlName])"
+            [control]="
+              form.get([
+                companyDetailsAliases.controlName,
+                rowIndex,
+                aliasControls[rowIndex]['alias_organisation_name'].controlName,
+              ])
+            "
             [errors]="formControlErrorMessages[aliasControls[rowIndex]['alias_organisation_name'].controlName]"
           ></app-govuk-text-input>
         </fieldset>
