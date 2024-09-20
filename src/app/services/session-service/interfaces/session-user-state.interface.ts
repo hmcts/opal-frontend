@@ -12,5 +12,5 @@ export interface ISessionUserStateRole {
 export interface ISessionUserState {
   user_id: string;
   user_name: string;
-  roles: ISessionUserStateRole[];
+  business_unit_user_permissions: ISessionUserStateRole[];
 }
