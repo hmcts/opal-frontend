@@ -10,6 +10,9 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants/fines-mac-language-preferences-options';
 
+import { FINES_MAC_LANGUAGE_PREFERENCES_CONTROLS_DOCUMENT_LANGUAGE as F_M_LANGUAGE_PREFERENCES } from '../constants/controls/fines-mac-language-preferences-controls-document-language';
+import { FINES_MAC_LANGUAGE_PREFERENCES_CONTROLS_HEARING_LANGUAGE as F_M_LANGUAGE_PREFERENCES_HEARING_LANGUAGE } from '../constants/controls/fines-mac-language-preferences-controls-hearing-language';
+
 @Component({
   selector: 'app-fines-mac-language-preferences-form',
   standalone: true,
@@ -35,13 +38,20 @@ export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseCo
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
 
+  public languagePreferencesDocumentLanguage = F_M_LANGUAGE_PREFERENCES;
+  public languagePreferencesHearingLanguage = F_M_LANGUAGE_PREFERENCES_HEARING_LANGUAGE;
+
   /**
    * Sets up the language preferences form with the necessary form controls.
    */
   private setupLanguagePreferencesForm(): void {
     this.form = new FormGroup({
-      document_language: new FormControl(null),
-      hearing_language: new FormControl(null),
+      [this.languagePreferencesDocumentLanguage.controlName]: this.createFormControl(
+        this.languagePreferencesDocumentLanguage.validators,
+      ),
+      [this.languagePreferencesHearingLanguage.controlName]: this.createFormControl(
+        this.languagePreferencesHearingLanguage.validators,
+      ),
     });
   }
 
