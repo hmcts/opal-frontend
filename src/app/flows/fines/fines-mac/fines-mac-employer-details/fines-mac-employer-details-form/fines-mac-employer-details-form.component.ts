@@ -27,6 +27,17 @@ import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_TELEPHONE_NUMBER as F_M_EMPLOYER_DETAILS_EMPLOYER_TELEPHONE_NUMBER } from '../constants/controls/fines-mac-employer-details-controls-employer-telephone-number';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_EMAIL_ADDRESS as F_M_EMPLOYER_DETAILS_EMPLOYER_EMAIL_ADDRESS } from '../constants/controls/fines-mac-employer-details-controls-employer-email-address';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_ADDRESS_LINE_FIVE as F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_FIVE } from '../constants/controls/fines-mac-employer-details-controls-employer-address-line-five';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_ADDRESS_LINE_FOUR as F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_FOUR } from '../constants/controls/fines-mac-employer-details-controls-employer-address-line-four';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_ADDRESS_LINE_THREE as F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-employer-details-controls-employer-address-line-three';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_ADDRESS_LINE_TWO as F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_TWO } from '../constants/controls/fines-mac-employer-details-controls-employer-address-line-two';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_POSTCODE as F_M_EMPLOYER_DETAILS_EMPLOYER_POSTCODE } from '../constants/controls/fines-mac-employer-details-controls-employer-postcode';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_ADDRESS_LINE_ONE as F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_ONE } from '../constants/controls/fines-mac-employer-details-controls-employer-address-line-one';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_REFERENCE as F_M_EMPLOYER_DETAILS_EMPLOYER_REFERENCE } from '../constants/controls/fines-mac-employer-details-controls-employer-reference';
+import { FINES_MAC_EMPLOYER_DETAILS_CONTROLS_EMPLOYER_COMPANY_NAME as F_M_EMPLOYER_DETAILS_EMPLOYER_COMPANY_NAME } from '../constants/controls/fines-mac-employer-details-controls-employer-company-name';
+
 @Component({
   selector: 'app-fines-mac-employer-details-form',
   standalone: true,
@@ -50,30 +61,52 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS;
+  override fieldErrors = FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS;
+
+  public employerDetailsTelephoneNumber = F_M_EMPLOYER_DETAILS_EMPLOYER_TELEPHONE_NUMBER;
+  public employerDetailsEmailAddress = F_M_EMPLOYER_DETAILS_EMPLOYER_EMAIL_ADDRESS;
+  public employerDetailsAddressLineFive = F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_FIVE;
+  public employerDetailsAddressLineFour = F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_FOUR;
+  public employerDetailsAddressLineThree = F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_THREE;
+  public employerDetailsAddressLineTwo = F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_TWO;
+  public employerDetailsPostcode = F_M_EMPLOYER_DETAILS_EMPLOYER_POSTCODE;
+  public employerDetailsAddressLineOne = F_M_EMPLOYER_DETAILS_EMPLOYER_ADDRESS_LINE_ONE;
+  public employerDetailsEmployerReference = F_M_EMPLOYER_DETAILS_EMPLOYER_REFERENCE;
+  public employerDetailsEmployerCompanyName = F_M_EMPLOYER_DETAILS_EMPLOYER_COMPANY_NAME;
 
   /**
    * Sets up the employer details form with the necessary form controls.
    */
   private setupEmployerDetailsForm(): void {
     this.form = new FormGroup({
-      employer_company_name: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
-      employer_reference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
-      employer_email_address: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      employer_telephone_number: new FormControl(null, [
-        optionalMaxLengthValidator(20),
-        optionalPhoneNumberValidator(),
-      ]),
-      employer_address_line_1: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        specialCharactersValidator(),
-      ]),
-      employer_address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_address_line_3: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_address_line_4: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_address_line_5: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      [this.employerDetailsEmployerCompanyName.controlName]: this.createFormControl(
+        this.employerDetailsEmployerCompanyName.validators,
+      ),
+      [this.employerDetailsEmployerReference.controlName]: this.createFormControl(
+        this.employerDetailsEmployerReference.validators,
+      ),
+      [this.employerDetailsEmailAddress.controlName]: this.createFormControl(
+        this.employerDetailsEmailAddress.validators,
+      ),
+      [this.employerDetailsTelephoneNumber.controlName]: this.createFormControl(
+        this.employerDetailsTelephoneNumber.validators,
+      ),
+      [this.employerDetailsAddressLineOne.controlName]: this.createFormControl(
+        this.employerDetailsAddressLineOne.validators,
+      ),
+      [this.employerDetailsAddressLineTwo.controlName]: this.createFormControl(
+        this.employerDetailsAddressLineTwo.validators,
+      ),
+      [this.employerDetailsAddressLineThree.controlName]: this.createFormControl(
+        this.employerDetailsAddressLineThree.validators,
+      ),
+      [this.employerDetailsAddressLineFour.controlName]: this.createFormControl(
+        this.employerDetailsAddressLineFour.validators,
+      ),
+      [this.employerDetailsAddressLineFive.controlName]: this.createFormControl(
+        this.employerDetailsAddressLineFive.validators,
+      ),
+      [this.employerDetailsPostcode.controlName]: this.createFormControl(this.employerDetailsPostcode.validators),
     });
   }
 
