@@ -53,20 +53,22 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IAbstractFormBaseFieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
+  override fieldErrors = FINES_MAC_COURT_DETAILS_FIELD_ERRORS;
+
+  public courtDetailsSendingCourt = F_M_COURT_DETAILS_SENDING_COURT;
+  public courtDetailsProsecutorCaseReference = F_M_COURT_DETAILS_PROSECUTOR_COURT_REFERENCE;
+  public courtDetailsEnforcingCourt = F_M_COURT_DETAILS_ENFORCING_COURT;
 
   /**
    * Sets up the court details form with the necessary form controls.
    */
   private setupCourtDetailsForm(): void {
     this.form = new FormGroup({
-      sending_court: new FormControl(null, [Validators.required]),
-      prosecutor_case_reference: new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        Validators.pattern(/^[a-zA-Z0-9 ]*$/),
-      ]),
-      enforcing_court: new FormControl(null, [Validators.required]),
+      [this.courtDetailsSendingCourt.controlName]: this.createFormControl(this.courtDetailsSendingCourt.validators),
+      [this.courtDetailsProsecutorCaseReference.controlName]: this.createFormControl(
+        this.courtDetailsProsecutorCaseReference.validators,
+      ),
+      [this.courtDetailsEnforcingCourt.controlName]: this.createFormControl(this.courtDetailsEnforcingCourt.validators),
     });
   }
 
