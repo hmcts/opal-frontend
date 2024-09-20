@@ -237,6 +237,80 @@
         [inputName]="ptAddEnforcementActionControl.controlName"
         [control]="form.controls[ptAddEnforcementActionControl.controlName]"
       ></div>
+      @if (form.get(ptAddEnforcementActionControl.controlName)!.value !== null) {
+        @if (form.get(ptAddEnforcementActionControl.controlName)?.value === true) {
+          <div app-govuk-checkboxes-conditional [conditionalId]="ptAddEnforcementActionControl.controlName">
+            <app-govuk-radio
+              [fieldSetId]="ptEnforcementActions.controlName"
+              legendClasses="govuk-fieldset__legend--s"
+              [errors]="formControlErrorMessages[ptEnforcementActions.controlName]"
+            >
+              @for (enforcementAction of enforcementActions; track enforcementAction.key) {
+                <div
+                  app-govuk-radios-item
+                  [labelText]="enforcementAction.value"
+                  [inputId]="enforcementAction.key"
+                  [inputName]="ptEnforcementActions.controlName"
+                  [inputValue]="enforcementAction.key"
+                  [control]="form.controls[ptEnforcementActions.controlName]"
+                ></div>
+
+                @if (enforcementAction.key === 'defendantIsInCustody') {
+                  @if (form.get(ptEnforcementActions.controlName)!.value === enforcementAction.key) {
+                    <div app-govuk-radios-conditional [conditionalId]="ptEnforcementActions.controlName">
+                      <div class="govuk-form-group">
+                        <app-moj-date-picker
+                          labelText="Earliest release date (EDR)"
+                          labelClasses="govuk-label--s"
+                          [inputId]="ptEarliestReleaseDate.controlName"
+                          [inputName]="ptEarliestReleaseDate.controlName"
+                          inputClasses="govuk-input--width-10"
+                          [maxDate]="yesterday"
+                          [control]="form.controls[ptEarliestReleaseDate.controlName]"
+                          [errors]="formControlErrorMessages[ptEarliestReleaseDate.controlName]"
+                          (dateChange)="setInputValue($event, ptEarliestReleaseDate.controlName)"
+                        ></app-moj-date-picker>
+                      </div>
+                      <div class="govuk-form-group">
+                        <app-govuk-text-area
+                          labelText="Prison and prison number"
+                          labelClasses="govuk-label--s"
+                          hintText="Held as enforcement comment"
+                          [inputId]="ptPrisonAndPrisonNumber.controlName"
+                          [inputName]="ptPrisonAndPrisonNumber.controlName"
+                          inputClasses="govuk-!-width-two-thirds"
+                          [control]="form.controls[ptPrisonAndPrisonNumber.controlName]"
+                          [errors]="formControlErrorMessages[ptPrisonAndPrisonNumber.controlName]"
+                          [rows]="1"
+                          [maxCharacterLimit]="28"
+                          [characterCountEnabled]="true"
+                        ></app-govuk-text-area>
+                      </div>
+                    </div>
+                  }
+                } @else {
+                  @if (form.get(ptEnforcementActions.controlName)!.value === enforcementAction.key) {
+                    <div app-govuk-radios-conditional [conditionalId]="ptEnforcementActions.controlName">
+                      <app-govuk-text-area
+                        labelText="Reason account is on NOENF"
+                        labelClasses="govuk-label--s"
+                        [inputId]="ptReasonAccountIsOnNoEnf.controlName"
+                        [inputName]="ptReasonAccountIsOnNoEnf.controlName"
+                        inputClasses="govuk-!-width-two-thirds"
+                        [control]="form.controls[ptReasonAccountIsOnNoEnf.controlName]"
+                        [errors]="formControlErrorMessages[ptReasonAccountIsOnNoEnf.controlName]"
+                        [rows]="1"
+                        [maxCharacterLimit]="28"
+                        [characterCountEnabled]="true"
+                      ></app-govuk-text-area>
+                    </div>
+                  }
+                }
+              }
+            </app-govuk-radio>
+          </div>
+        }
+      }
     }
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">

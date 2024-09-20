@@ -44,12 +44,14 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAY
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as PT_CONTROL_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as PT_CONTROL_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_MAKE_COLLECTION_ORDER_TODAY as PT_CONTROL_MAKE_COLLECTION_ORDER_TODAY } from '../constants/controls/fines-mac-payment-terms-controls-make-collection-order-today.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT as PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-on-account.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT as PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-on-account.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF } from '../constants/controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DEFENDANT_IS_IN_CUSTODY as PT_CONTROL_DEFENDANT_IS_IN_CUSTODY } from '../constants/controls/fines-mac-payment-terms-controls-defendant-is-in-custody.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_EARLIEST_RELEASE_DATE as PT_CONTROL_EARLIEST_RELEASE_DATE } from '../constants/controls/fines-mac-payment-terms-controls-earliest-release-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PRISON_AND_PRISON_NUMBER as PT_CONTROL_PRISON_AND_PRISON_NUMBER } from '../constants/controls/fines-mac-payment-terms-controls-prison-and-prison-number.constant';
 import { IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-all-payment-term-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-all-payment-term-options-control-validation';
-import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-payment-term-options-control-validation.interface';
 import { FINES_MAC_DEFENDANT_TYPES } from '../../constants/fines-mac-defendant-types';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
@@ -60,6 +62,10 @@ import { PermissionsService } from '@services/permissions-service/permissions.se
 import { ISessionUserStateRole } from '@services/session-service/interfaces/session-user-state.interface';
 import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
 import { IFinesMacPaymentTermsPermissions } from '../interfaces/fines-mac-payment-terms-permissions.interface';
+import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../constants/fines-mac-payment-terms-enforcement-action-options';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ENFORCEMENT_ACTIONS as PT_CONTROL_ENFORCEMENT_ACTION } from '../constants/controls/fines-mac-payment-terms-controls-enforcement-actions.constant';
+import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-enforcement-action-options-control-validation';
+import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -94,7 +100,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStateService.userState()?.roles || [];
+  private readonly userStateRoles: ISessionUserStateRole[] =
+    this.globalStateService.userState()?.business_unit_user_permissions || [];
 
   public readonly permissionsMap = FinesMacPaymentTermsPermissions;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
@@ -114,6 +121,13 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(
     FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
+  public readonly enforcementActionsOptions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
+  public readonly enforcementActions: IGovUkRadioOptions[] = Object.entries(this.enforcementActionsOptions).map(
+    ([key, value]) => ({
+      key,
+      value,
+    }),
+  );
   public readonly paymentTermsControls: IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation =
     FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION;
   public yesterday!: string;
@@ -138,21 +152,12 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public ptDaysInDefaultControl = PT_CONTROL_DAYS_IN_DEFAULT;
   public ptDaysInDefaultDateControl = PT_CONTROL_DAYS_IN_DEFAULT_DATE;
   public ptAddEnforcementActionControl = PT_CONTROL_ADD_ENFORCEMENT_ACTION;
-  public ptHoldEnforcementOnAccount = PT_CONTROLS_HOLD_ENFORCEMENT_ON_ACCOUNT;
-  public ptReasonAccountIsOnNoEnf = PT_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF;
-
-  /**
-   * Sets up the payment terms form.
-   */
-  private setupPaymentTermsForm(): void {
-    this.form = new FormGroup({
-      [this.ptPaymentTermsControl.controlName]: this.createFormControl(this.ptPaymentTermsControl.validators),
-      [this.ptRequestCardPaymentControl.controlName]: this.createFormControl(
-        this.ptRequestCardPaymentControl.validators,
-      ),
-      [this.ptHasDaysInDefaultControl.controlName]: this.createFormControl(this.ptHasDaysInDefaultControl.validators),
-    });
-  }
+  public ptHoldEnforcementOnAccount = PT_CONTROL_HOLD_ENFORCEMENT_ON_ACCOUNT;
+  public ptReasonAccountIsOnNoEnf = PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF;
+  public ptDefendantIsInCustody = PT_CONTROL_DEFENDANT_IS_IN_CUSTODY;
+  public ptEarliestReleaseDate = PT_CONTROL_EARLIEST_RELEASE_DATE;
+  public ptPrisonAndPrisonNumber = PT_CONTROL_PRISON_AND_PRISON_NUMBER;
+  public ptEnforcementActions = PT_CONTROL_ENFORCEMENT_ACTION;
 
   /**
    * Sets up the permissions for the fines-mac-payment-terms-form component.
@@ -170,30 +175,34 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Sets up the payment terms form.
+   */
+  private setupPaymentTermsForm(): void {
+    this.form = new FormGroup({
+      [this.ptPaymentTermsControl.controlName]: this.createFormControl(this.ptPaymentTermsControl.validators),
+    });
+  }
+
+  /**
    * Sets up the initial payment terms for the fines-mac-payment-terms-form component.
-   * This method performs the following tasks:
-   * - Sets up permissions.
-   * - Sets up the payment terms form.
-   * - Checks if the user can access default dates.
-   * - Adds collection order form controls if the user has access to collection order.
-   * - Listens for changes in the number of days in default.
-   * - Listens for changes in the payment terms.
-   * - Sets initial error messages.
-   * - Repopulates the form with the provided form data.
-   * - Sets the 'yesterday' variable to the previous date.
-   * - Sets the 'today' variable to the current date.
+   * This method performs various setup tasks such as setting up permissions, setting up the payment terms form,
+   * adding form controls based on access permissions, adding enforcement fields, setting initial error messages,
+   * and populating the form with the provided form data.
+   * It also sets the `yesterday` and `today` properties with the appropriate date values.
    */
   private initialPaymentTermsSetup(): void {
     const { formData } = this.finesService.finesMacState.paymentTerms;
     this.setupPermissions();
     this.setupPaymentTermsForm();
-    this.createEnforcementFields();
-    this.canAccessDefaultDates();
+    this.paymentTermsListener();
+    this.determineAccess();
     if (this.accessCollectionOrder) {
       this.addCollectionOrderFormControls();
     }
-    this.hasDaysInDefaultListener();
-    this.paymentTermsListener();
+    if (this.accessDefaultDates) {
+      this.addDefaultDatesFormControls();
+    }
+    this.addEnforcementFields();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
@@ -205,8 +214,68 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * This method creates the necessary form controls and sets up the listener for changes.
    */
   private addCollectionOrderFormControls(): void {
-    this.createControl(this.ptHasCollectionOrderControl.controlName, this.ptHasCollectionOrderControl.validators);
+    this.addControls([this.ptHasCollectionOrderControl]);
     this.hasCollectionOrderListener();
+  }
+
+  /**
+   * Adds default dates form controls.
+   * This method creates a control for `ptHasDaysInDefaultControl` and sets up a listener for changes.
+   */
+  private addDefaultDatesFormControls(): void {
+    this.addControls([this.ptHasDaysInDefaultControl]);
+    this.hasDaysInDefaultListener();
+  }
+
+  /**
+   * Adds a request payment card control.
+   * This method creates a control with the specified control name and validators.
+   */
+  private addRequestPaymentCardControl(): void {
+    this.addControls([this.ptRequestCardPaymentControl]);
+  }
+
+  /**
+   * Creates enforcement fields based on the defendant type.
+   * If the defendant type is a company, it creates the control for holding enforcement on account.
+   * Otherwise, it creates the control for adding enforcement action.
+   */
+  private addEnforcementFields(): void {
+    if (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes] === this.defendantTypes.company) {
+      this.addControls([this.ptHoldEnforcementOnAccount]);
+      this.holdEnforcementOnAccountListener();
+    } else {
+      this.addControls([this.ptAddEnforcementActionControl]);
+      this.addEnforcementActionListener();
+    }
+  }
+
+  /**
+   * Adds a listener to the addEnforcementAction control in the form.
+   * When the value of the addEnforcementAction control changes, this method is triggered.
+   * If the value is true, it adds the ptEnforcementActions control and calls the enforcementActionsListener method.
+   * If the value is false, it removes several controls from the form.
+   */
+  private addEnforcementActionListener(): void {
+    const { [this.ptAddEnforcementActionControl.controlName]: addEnforcementAction } = this.form.controls;
+
+    addEnforcementAction.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      if (addEnforcementAction.value !== null) {
+        if (addEnforcementAction.value === true) {
+          this.addControls([this.ptEnforcementActions]);
+          this.enforcementActionsListener();
+        } else {
+          this.removeControls([
+            this.ptEnforcementActions,
+            this.ptDefendantIsInCustody,
+            this.ptHoldEnforcementOnAccount,
+            this.ptEarliestReleaseDate,
+            this.ptPrisonAndPrisonNumber,
+            this.ptReasonAccountIsOnNoEnf,
+          ]);
+        }
+      }
+    });
   }
 
   /**
@@ -218,17 +287,17 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     const { [this.ptHasCollectionOrderControl.controlName]: hasCollectionOrder } = this.form.controls;
 
     hasCollectionOrder.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      if (hasCollectionOrder.value === 'yes') {
-        this.form.get(this.ptCollectionOrderDateControl.controlName)?.reset();
-        this.createControl(this.ptCollectionOrderDateControl.controlName, this.ptCollectionOrderDateControl.validators);
-        this.removeControl(this.ptMakeCollectionOrderTodayControl.controlName);
-      } else {
-        this.removeControl(this.ptCollectionOrderDateControl.controlName);
-        this.createControl(
-          this.ptMakeCollectionOrderTodayControl.controlName,
-          this.ptMakeCollectionOrderTodayControl.validators,
-        );
-        this.createControl(this.ptCollectionOrderDateControl.controlName, []);
+      if (hasCollectionOrder.value !== null) {
+        if (hasCollectionOrder.value === 'yes') {
+          this.form.get(this.ptCollectionOrderDateControl.controlName)?.reset();
+          this.addControls([this.ptCollectionOrderDateControl]);
+          this.removeControls([this.ptMakeCollectionOrderTodayControl]);
+        } else {
+          this.removeControls([this.ptCollectionOrderDateControl]);
+          const makeCollectionOrderTodayOrderDateControl = this.ptCollectionOrderDateControl;
+          makeCollectionOrderTodayOrderDateControl.validators = [];
+          this.addControls([this.ptMakeCollectionOrderTodayControl, makeCollectionOrderTodayOrderDateControl]);
+        }
       }
     });
   }
@@ -242,40 +311,14 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     const { [this.ptHasDaysInDefaultControl.controlName]: hasDaysInDefault } = this.form.controls;
 
     hasDaysInDefault.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      if (hasDaysInDefault.value === true) {
-        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.forEach((control) => {
-          this.createControl(control.controlName, control.validators);
-        });
-      } else {
-        FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION.forEach((control) => {
-          this.removeControl(control.controlName);
-        });
+      if (hasDaysInDefault.value !== null) {
+        if (hasDaysInDefault.value === true) {
+          this.addControls(FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION);
+        } else {
+          this.removeControls(FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION);
+        }
       }
     });
-  }
-
-  /**
-   * Listens for changes in the payment terms control and performs necessary actions based on the selected term.
-   * @private
-   * @returns {void}
-   */
-  private handleControl(
-    control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation,
-    action: 'add' | 'remove',
-  ): void {
-    if (action === 'remove') {
-      this.removeControl(control.controlName);
-      this.removeControlErrors(control.controlName);
-      this.resetDateChecker();
-    } else if (action === 'add') {
-      this.createControl(control.controlName, control.validators);
-      if (
-        control.controlName === this.ptStartDateControl.controlName ||
-        control.controlName === this.ptPayByDateControl.controlName
-      ) {
-        this.dateListener(control.controlName);
-      }
-    }
   }
 
   /**
@@ -292,13 +335,55 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
         return;
       }
 
-      controls.fieldsToRemove?.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
-        this.handleControl(control, 'remove');
-      });
+      this.removeControls(controls.fieldsToRemove);
+      this.addControls(controls.fieldsToAdd);
+    });
+  }
 
-      controls.fieldsToAdd?.forEach((control: IFinesMacPaymentTermsPaymentTermOptionsControlValidation) => {
-        this.handleControl(control, 'add');
-      });
+  /**
+   * Listens for changes in the specified control and performs a date check.
+   *
+   * @param controlName - The name of the control to listen for changes.
+   */
+  private dateListener(controlName: string): void {
+    const control = this.form.controls[controlName];
+
+    control.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((value) => {
+      this.dateChecker(value);
+    });
+  }
+
+  /**
+   * Listens for changes in the enforcement actions form control and performs necessary actions.
+   */
+  private enforcementActionsListener(): void {
+    const enforcementActions = this.form.get(this.ptEnforcementActions.controlName);
+
+    enforcementActions!.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      const actionOptions =
+        FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION[
+          enforcementActions!.value === 'defendantIsInCustody' ? 'defendantIsInCustody' : 'holdEnforcementOnAccount'
+        ];
+
+      this.addControls(actionOptions.fieldsToAdd);
+      this.removeControls(actionOptions.fieldsToRemove);
+    });
+  }
+
+  /**
+   * Listens to changes in the hold_enforcement_on_account form control and performs actions accordingly.
+   */
+  private holdEnforcementOnAccountListener(): void {
+    const { [this.ptHoldEnforcementOnAccount.controlName]: holdEnforcementOnAccount } = this.form.controls;
+
+    holdEnforcementOnAccount.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      if (holdEnforcementOnAccount.value !== null) {
+        if (holdEnforcementOnAccount.value === true) {
+          this.addControls([this.ptReasonAccountIsOnNoEnf]);
+        } else {
+          this.removeControls([this.ptReasonAccountIsOnNoEnf]);
+        }
+      }
     });
   }
 
@@ -317,19 +402,6 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Listens for changes in the specified control and performs a date check.
-   *
-   * @param controlName - The name of the control to listen for changes.
-   */
-  private dateListener(controlName: string): void {
-    const control = this.form.controls[controlName];
-
-    control.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((value) => {
-      this.dateChecker(value);
-    });
-  }
-
-  /**
    * Resets the date checker flags to their initial state.
    */
   private resetDateChecker(): void {
@@ -340,50 +412,58 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   /**
    * Determines whether the user can access default dates based on the defendant type.
    */
-  private canAccessDefaultDates(): void {
+  private determineAccess(): void {
     let formData;
     switch (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes]) {
       case this.defendantTypes.adultOrYouthOnly:
         formData = this.finesService.finesMacState.personalDetails.formData;
         this.accessDefaultDates = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
         this.accessCollectionOrder = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
+        this.addRequestPaymentCardControl();
         break;
       case this.defendantTypes.parentOrGuardianToPay:
         this.accessDefaultDates = true;
         this.accessCollectionOrder = true;
+        this.addRequestPaymentCardControl();
         break;
       default:
         this.accessDefaultDates = false;
+        this.accessCollectionOrder = false;
     }
   }
 
   /**
-   * Listens to changes in the hold_enforcement_on_account form control and performs actions accordingly.
+   * Adds the specified controls to the form.
+   *
+   * @param controlsToAdd - An array of controls to add to the form.
    */
-  private holdEnforcementOnAccountListener(): void {
-    const { [this.ptHoldEnforcementOnAccount.controlName]: holdEnforcementOnAccount } = this.form.controls;
-
-    holdEnforcementOnAccount.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      if (holdEnforcementOnAccount.value === true) {
-        this.createControl(this.ptReasonAccountIsOnNoEnf.controlName, this.ptReasonAccountIsOnNoEnf.validators);
-      } else {
-        this.removeControl(this.ptReasonAccountIsOnNoEnf.controlName);
+  private addControls(controlsToAdd: IAbstractFormArrayControlValidation[]): void {
+    controlsToAdd.forEach((control) => {
+      this.createControl(control.controlName, control.validators);
+      if (
+        control.controlName === this.ptStartDateControl.controlName ||
+        control.controlName === this.ptPayByDateControl.controlName
+      ) {
+        this.dateListener(control.controlName);
       }
     });
   }
 
   /**
-   * Creates enforcement fields based on the defendant type.
-   * If the defendant type is a company, it creates the control for holding enforcement on account.
-   * Otherwise, it creates the control for adding enforcement action.
+   * Removes the specified controls from the form.
+   *
+   * @param controlsToRemove - An array of `IAbstractFormArrayControlValidation` objects representing the controls to remove.
    */
-  private createEnforcementFields(): void {
-    if (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes] === this.defendantTypes.company) {
-      this.createControl(this.ptHoldEnforcementOnAccount.controlName, this.ptHoldEnforcementOnAccount.validators);
-      this.holdEnforcementOnAccountListener();
-    } else {
-      this.createControl(this.ptAddEnforcementActionControl.controlName, this.ptAddEnforcementActionControl.validators);
-    }
+  private removeControls(controlsToRemove: IAbstractFormArrayControlValidation[]): void {
+    controlsToRemove.forEach((control) => {
+      this.removeControl(control.controlName);
+      if (
+        control.controlName === this.ptStartDateControl.controlName ||
+        control.controlName === this.ptPayByDateControl.controlName
+      ) {
+        this.resetDateChecker();
+      }
+    });
   }
 
   /**
@@ -391,9 +471,11 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * If makeCollectionOrderToday is true, the collection order date is set to today's date.
    */
   private setCollectionOrderDate(): void {
-    const makeCollectionOrderToday = this.form.get(this.ptMakeCollectionOrderTodayControl.controlName)?.value;
-    if (makeCollectionOrderToday === true) {
-      this.form.get(this.ptCollectionOrderDateControl.controlName)?.setValue(this.today);
+    const makeCollectionOrderTodayControl = this.form.get(this.ptMakeCollectionOrderTodayControl.controlName);
+    const collectionOrderDateControl = this.form.get(this.ptCollectionOrderDateControl.controlName);
+
+    if (makeCollectionOrderTodayControl?.value === true) {
+      collectionOrderDateControl?.setValue(this.today);
     }
   }
 

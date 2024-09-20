@@ -8,6 +8,10 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as PT_CONTROL_DAYS_IN_
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAYS_IN_DEFAULT_DATE } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as PT_CONTROL_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as PT_CONTROL_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF } from './controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ENFORCEMENT_ACTIONS as PT_CONTROL_ENFORCEMENT_ACTIONS } from './controls/fines-mac-payment-terms-controls-enforcement-actions.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_EARLIEST_RELEASE_DATE as PT_CONTROL_EARLIEST_RELEASE_DATE } from './controls/fines-mac-payment-terms-controls-earliest-release-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PRISON_AND_PRISON_NUMBER as PT_CONTROL_PRISON_AND_PRISON_NUMBER } from './controls/fines-mac-payment-terms-controls-prison-and-prison-number.constant';
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
@@ -131,7 +135,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 3,
     },
   },
-  reason_account_is_on_noenf: {
+  [PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF.controlName]: {
     required: {
       message: `Enter a reason`,
       priority: 1,
@@ -142,6 +146,36 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
     },
     alphabeticalTextPattern: {
       message: `Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
+      priority: 3,
+    },
+  },
+  [PT_CONTROL_ENFORCEMENT_ACTIONS.controlName]: {
+    required: {
+      message: `Select reason for enforcement action`,
+      priority: 1,
+    },
+  },
+  [PT_CONTROL_EARLIEST_RELEASE_DATE.controlName]: {
+    invalidDateFormat: {
+      message: `Date must be in the format DD/MM/YYYY`,
+      priority: 2,
+    },
+    invalidDate: {
+      message: `Enter a valid calendar date`,
+      priority: 3,
+    },
+    invalidPastDate: {
+      message: `Date must be in the future`,
+      priority: 4,
+    },
+  },
+  [PT_CONTROL_PRISON_AND_PRISON_NUMBER.controlName]: {
+    maxlength: {
+      message: `Prison and prison number must be less than 28 characters`,
+      priority: 2,
+    },
+    alphabeticalTextPattern: {
+      message: `Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
       priority: 3,
     },
   },
