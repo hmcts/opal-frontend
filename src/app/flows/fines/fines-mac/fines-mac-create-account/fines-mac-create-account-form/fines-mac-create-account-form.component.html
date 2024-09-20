@@ -3,18 +3,18 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   @if (autoCompleteItems.length === 1) {
-    <p>The account will be created in {{ form.get('business_unit')?.value }}</p>
+    <p>The account will be created in {{ form.get(createAccountBusinessUnit.controlName)?.value }}</p>
   } @else {
     <app-alphagov-accessible-autocomplete
-      [control]="form.controls['business_unit']"
+      [control]="form.controls[createAccountBusinessUnit.controlName]"
       labelText="Business unit"
       labelClasses="govuk-fieldset__legend--m"
-      inputId="business_unit"
-      inputName="business_unit"
+      [inputId]="createAccountBusinessUnit.controlName"
+      [inputName]="createAccountBusinessUnit.controlName"
       label="Search for a user"
       hintText="Enter area where the account is to be created"
       [autoCompleteItems]="autoCompleteItems"
-      [errors]="formControlErrorMessages['business_unit']"
+      [errors]="formControlErrorMessages[createAccountBusinessUnit.controlName]"
     ></app-alphagov-accessible-autocomplete>
   }
 
@@ -22,7 +22,7 @@
     fieldSetId="account_type"
     legendText="Account type"
     legendClasses="govuk-fieldset__legend--m"
-    [errors]="formControlErrorMessages['account_type']"
+    [errors]="formControlErrorMessages[createAccountAccountType.controlName]"
   >
     @for (accountType of accountTypes; track accountType.key) {
       <div
@@ -31,13 +31,13 @@
         [inputId]="accountType.key"
         inputName="account_type"
         [inputValue]="accountType.key"
-        [control]="form.get('account_type')"
+        [control]="form.get(createAccountAccountType.controlName)"
         [inputValueHint]="accountType.key === 'conditionalCaution' ? 'Adult or youth only' : ''"
       ></div>
 
       @switch (accountType.key) {
         @case ('fine') {
-          @if (form.get('account_type')?.value === 'fine') {
+          @if (form.get(createAccountAccountType.controlName)?.value === 'fine') {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;
@@ -47,7 +47,7 @@
           }
         }
         @case ('fixedPenalty') {
-          @if (form.get('account_type')?.value === 'fixedPenalty') {
+          @if (form.get(createAccountAccountType.controlName)?.value === 'fixedPenalty') {
             <ng-container
               *ngTemplateOutlet="
                 defendantTypesRadioOptions;

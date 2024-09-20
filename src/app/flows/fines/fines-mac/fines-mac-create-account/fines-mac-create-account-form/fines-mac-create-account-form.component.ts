@@ -35,6 +35,10 @@ import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/gov
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 
+import { FINES_MAC_CREATE_ACCOUNT_CONTROLS_BUSINESS_UNIT as F_M_CREATE_ACCOUNT_BUSINESS_UNIT } from '../constants/controls/fines-mac-create-account-controls-business-unit';
+import { FINES_MAC_CREATE_ACCOUNT_CONTROLS_ACCOUNT_TYPE as F_M_CREATE_ACCOUNT_ACCOUNT_TYPE } from '../constants/controls/fines-mac-create-account-controls-account-type';
+import { FINES_MAC_CREATE_ACCOUNT_CONTROLS_DEFENDANT_TYPE as F_M_CREATE_ACCOUNT_DEFENDANT_TYPE } from '../constants/controls/fines-mac-create-account-controls-defendant-type';
+
 @Component({
   selector: 'app-fines-mac-create-account-form',
   standalone: true,
@@ -64,6 +68,10 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly routingPath = RoutingPaths;
 
+  public createAccountBusinessUnit = F_M_CREATE_ACCOUNT_BUSINESS_UNIT;
+  public createAccountAccountType = F_M_CREATE_ACCOUNT_ACCOUNT_TYPE;
+  public createAccountDefendantType = F_M_CREATE_ACCOUNT_DEFENDANT_TYPE;
+
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
       key,
@@ -82,16 +90,16 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   private readonly accountTypeDefendantTypeControlNames: IFinesMacCreateAccountControlNames =
     FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES;
 
-  override fieldErrors: IFinesMacCreateAccountFieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS;
+  override fieldErrors = FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS;
 
   /**
    * Sets up the account details form with the necessary form controls.
    */
   private setupCreateAccountForm(): void {
     this.form = new FormGroup({
-      business_unit: new FormControl(null, [Validators.required]),
-      account_type: new FormControl(null, [Validators.required]),
-      defendant_type: new FormControl(null),
+      [this.createAccountBusinessUnit.controlName]: this.createFormControl(this.createAccountBusinessUnit.validators),
+      [this.createAccountAccountType.controlName]: this.createFormControl(this.createAccountAccountType.validators),
+      [this.createAccountDefendantType.controlName]: this.createFormControl(this.createAccountDefendantType.validators),
     });
   }
 
