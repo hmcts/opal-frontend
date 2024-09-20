@@ -9,7 +9,6 @@ import {
   inject,
 } from '@angular/core';
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
-import { IFinesMacPaymentTermsFieldErrors } from '../interfaces/fines-mac-payment-terms-field-errors.interface';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
@@ -102,7 +101,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     [FinesMacPaymentTermsPermissions.collectionOrder]: false,
   };
 
-  override fieldErrors: IFinesMacPaymentTermsFieldErrors = {
+  override fieldErrors = {
     ...FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS,
   };
 

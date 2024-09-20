@@ -1,4 +1,3 @@
-import { IFinesMacPaymentTermsFieldErrors } from '../interfaces/fines-mac-payment-terms-field-errors.interface';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as PT_CONTROL_PAYMENT_TERMS } from '../constants/controls/fines-mac-payment-terms-controls-payment-terms.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAY_BY_DATE as PT_CONTROL_PAY_BY_DATE } from '../constants/controls/fines-mac-payment-terms-controls-pay-by-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_LUMP_SUM as PT_CONTROL_LUMP_SUM } from '../constants/controls/fines-mac-payment-terms-controls-lump-sum.constant';
@@ -9,8 +8,9 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as PT_CONTROL_DAYS_IN_
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAYS_IN_DEFAULT_DATE } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as PT_CONTROL_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as PT_CONTROL_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
+import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
-export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErrors = {
+export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   [PT_CONTROL_HAS_COLLECTION_ORDER.controlName]: {
     required: {
       message: `Select whether there was a collection order`,
