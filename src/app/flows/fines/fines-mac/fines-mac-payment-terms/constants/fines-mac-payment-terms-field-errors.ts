@@ -8,6 +8,7 @@ import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as PT_CONTROL_DAYS_IN_
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAYS_IN_DEFAULT_DATE } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as PT_CONTROL_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
 import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as PT_CONTROL_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF } from './controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
@@ -131,7 +132,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 3,
     },
   },
-  reason_account_is_on_noenf: {
+  [PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF.controlName]: {
     required: {
       message: `Enter a reason`,
       priority: 1,

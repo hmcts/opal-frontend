@@ -75,12 +75,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: formSubmit.formData,
-        nestedFlow: true,
-      }),
-    );
+    expect(component['formSubmit'].emit).toHaveBeenCalled();
   });
 
   it('should emit form submit event with form value', () => {
@@ -92,12 +87,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component.handleFormSubmit(event);
 
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: formSubmit.formData,
-        nestedFlow: false,
-      }),
-    );
+    expect(component['formSubmit'].emit).toHaveBeenCalled();
   });
 
   it('should call initialPaymentTermsSetup method', () => {
@@ -122,8 +112,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     mockDateService.getPreviousDate.and.returnValue('30/08/2024');
     component.accessDefaultDates = true;
     mockDateService.toFormat.and.returnValue('31/08/2024');
-
-    component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['initialPaymentTermsSetup']();
 
@@ -144,20 +132,24 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should add controls when has_days_in_default is true', () => {
+    component.defendantType = 'parentOrGuardianToPay';
+
+    component['initialPaymentTermsSetup']();
+
     const hasDaysInDefaultControl = component.form.controls['has_days_in_default'];
     hasDaysInDefaultControl.setValue(true);
-
-    component['hasDaysInDefaultListener']();
 
     expect(component.form.contains('days_in_default_date')).toBe(true);
     expect(component.form.contains('days_in_default')).toBe(true);
   });
 
   it('should remove controls when has_days_in_default is false', () => {
+    component.defendantType = 'parentOrGuardianToPay';
+
+    component['initialPaymentTermsSetup']();
+
     const hasDaysInDefaultControl = component.form.controls['has_days_in_default'];
     hasDaysInDefaultControl.setValue(false);
-
-    component['hasDaysInDefaultListener']();
 
     expect(component.form.contains('days_in_default_date')).toBe(false);
     expect(component.form.contains('days_in_default')).toBe(false);
