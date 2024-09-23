@@ -111,8 +111,8 @@ withPipeline(type, product, component) {
             def directories = []
 
             // Add additional labels as needed
-            if (labels.contains('test_authorisation')) {
-                directories.add('authorisation')
+            if (labels.contains('test_enq')) {
+                directories.add('accountEnquiry')
             }
             if (labels.contains('test_remo')) {
                 directories.add('reciprocalMaintenance')
