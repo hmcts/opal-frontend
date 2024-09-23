@@ -19,6 +19,8 @@ import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines
 import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-accounts.interface';
 
 import { Observable, shareReplay } from 'rxjs';
+import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +30,8 @@ export class OpalFines {
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
+  private offencesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
+  private resultsCache$!: Observable<IOpalFinesResultsRefData>;
 
   /**
    * Searches for courts based on the provided search criteria.
@@ -155,5 +159,36 @@ export class OpalFines {
    */
   public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
     return businessUnit.configurationItems.find((item) => item.item_name === itemName)?.item_value ?? null;
+  }
+
+  /**
+   * Retrieves the offences reference data for a specific business unit.
+   * If the data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * @param businessUnit The ID of the business unit.
+   * @returns An Observable that emits the offences reference data.
+   */
+  public getOffences(businessUnit: number): Observable<IOpalFinesOffencesRefData> {
+    if (!this.offencesCache$[businessUnit]) {
+      this.offencesCache$[businessUnit] = this.http
+        .get<IOpalFinesOffencesRefData>(OPAL_FINES_PATHS.offencesRefData, { params: { businessUnit } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.offencesCache$[businessUnit];
+  }
+
+  /**
+   * Retrieves the Opal fines results reference data based on the provided result codes.
+   * @param resultCodes - An array of result codes to filter the results.
+   * @returns An Observable that emits the Opal fines results reference data.
+   */
+  public getResults(result_ids: string[]): Observable<IOpalFinesResultsRefData> {
+    if (!this.resultsCache$) {
+      this.resultsCache$ = this.http
+        .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, { params: { result_ids } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.resultsCache$;
   }
 }

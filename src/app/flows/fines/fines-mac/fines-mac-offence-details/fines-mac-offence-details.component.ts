@@ -1,33 +1,137 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FinesService } from '@services/fines/fines-service/fines.service';
+import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
+import { IFinesMacOffenceDetailsForm } from './interfaces/fines-mac-offence-details-form.interface';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
+import { FinesMacOffenceDetailsFormComponent } from './fines-mac-offence-details-form/fines-mac-offence-details-form.component';
+import { Observable, forkJoin, map } from 'rxjs';
+import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import {
+  IOpalFinesOffences,
+  IOpalFinesOffencesRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { FinesMacOffenceDetailsAddAnOffenceComponent } from './fines-mac-offence-details-add-an-offence/fines-mac-offence-details-add-an-offence.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from './constants/fines-mac-offence-details-result-codes';
 
 @Component({
   selector: 'app-fines-mac-offence-details',
   standalone: true,
-  imports: [GovukButtonComponent, GovukCancelLinkComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    GovukButtonComponent,
+    GovukCancelLinkComponent,
+    FinesMacOffenceDetailsFormComponent,
+    FinesMacOffenceDetailsAddAnOffenceComponent,
+  ],
   templateUrl: './fines-mac-offence-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsComponent {
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseComponent {
+  private opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
 
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  public offenceCodes!: IOpalFinesOffences[];
+  public offenceCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+    .getOffences(0)
+    .pipe(
+      map((response: IOpalFinesOffencesRefData) => {
+        this.offenceCodes = response.refData;
+        return this.createAutoCompleteItemsOffences(response);
+      }),
+    );
+  private resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
+  public resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+    .getResults(this.resultCodeArray)
+    .pipe(
+      map((response: IOpalFinesResultsRefData) => {
+        return this.createAutoCompleteItemsResults(response);
+      }),
+    );
+
+  protected groupOffenceCodeAndResultData$ = forkJoin({
+    offenceCodeData: this.offenceCodeData$,
+    resultCodeData: this.resultCodeData$,
+  });
 
   /**
-   * Navigates to the specified route.
-   *
-   * @param route - The route to navigate to.
+   * Creates an array of autocomplete items based on the response from the server.
+   * @param response - The response object containing the business unit reference data.
+   * @returns An array of autocomplete items.
    */
-  public handleRoute(route: string, event?: Event): void {
-    if (event) {
-      event.preventDefault();
+  private createAutoCompleteItemsOffences(response: IOpalFinesOffencesRefData): IAlphagovAccessibleAutocompleteItem[] {
+    const offences = response.refData;
+
+    return offences.map((item) => {
+      return {
+        value: item.get_cjs_code,
+        name: item.get_cjs_code,
+      };
+    });
+  }
+
+  /**
+   * Creates an array of autocomplete items based on the provided response data.
+   * @param response - The response data containing the reference data.
+   * @returns An array of autocomplete items.
+   */
+  private createAutoCompleteItemsResults(response: IOpalFinesResultsRefData): IAlphagovAccessibleAutocompleteItem[] {
+    const results = response.refData;
+
+    results.sort((a, b) => {
+      return a.imposition_allocation_order - b.imposition_allocation_order;
+    });
+
+    return results.map((item) => {
+      return {
+        value: item.result_id,
+        name: item.result_title + ` (${item.result_id})`,
+      };
+    });
+  }
+
+  /**
+   * Handles the submission of the offence details form.
+   * Updates the finesMacState with the new offence details and sets unsavedChanges and stateChanges flags.
+   * Navigates to the appropriate route based on whether it's a nested flow or not.
+   *
+   * @param form - The offence details form data.
+   */
+  public handleOffenceDetailsSubmit(form: IFinesMacOffenceDetailsForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
+
+    // Update the state with the form data
+    this.finesService.finesMacState = {
+      ...this.finesService.finesMacState,
+      offenceDetails: form,
+      unsavedChanges: false,
+      stateChanges: true,
+    };
+
+    if (form.nestedFlow) {
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes);
+    } else {
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
     }
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  }
+
+  /**
+   * Handles unsaved changes coming from the child component
+   *
+   * @param unsavedChanges boolean value from child component
+   */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 }

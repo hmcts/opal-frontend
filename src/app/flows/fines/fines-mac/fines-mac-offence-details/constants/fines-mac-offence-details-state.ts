@@ -2,4 +2,5 @@ import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-de
 
 export const FINES_MAC_OFFENCE_DETAILS_STATE: IFinesMacOffenceDetailsState = {
   offenceDetails: null,
+  offences: [],
 };

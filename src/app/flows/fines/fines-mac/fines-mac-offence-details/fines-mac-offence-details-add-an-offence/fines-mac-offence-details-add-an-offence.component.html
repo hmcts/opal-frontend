@@ -1,0 +1,181 @@
+<h1 class="govuk-heading-l">Add an offence</h1>
+<app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
+    <app-moj-date-picker
+      labelText="Date of sentence"
+      labelClasses="govuk-label--s"
+      [inputId]="offenceDetailsDateOfSentence.controlName"
+      [inputName]="offenceDetailsDateOfSentence.controlName"
+      inputClasses="govuk-input--width-10"
+      hintText="For example, 31/01/2023"
+      [control]="form.controls[offenceDetailsDateOfSentence.controlName]"
+      [errors]="formControlErrorMessages[offenceDetailsDateOfSentence.controlName]"
+      (dateChange)="setInputValue($event, offenceDetailsDateOfSentence.controlName)"
+    ></app-moj-date-picker>
+    <app-alphagov-accessible-autocomplete
+      [control]="form.controls[offenceDetailsOffenceCode.controlName]"
+      labelText="Offence code"
+      labelClasses="govuk-fieldset__legend--s"
+      [inputId]="offenceDetailsOffenceCode.controlName"
+      [inputName]="offenceDetailsOffenceCode.controlName"
+      inputClasses="govuk-input--width-10"
+      hintText="For example, HY35014. If you don't know the offence code, you can search the offence list"
+      [autoCompleteItems]="offenceCodeItems"
+      [errors]="formControlErrorMessages[offenceDetailsOffenceCode.controlName]"
+    ></app-alphagov-accessible-autocomplete>
+    @if (this.selectedOffenceConfirmation) {
+      <app-moj-ticket-panel
+        [sectionClasses]="
+          selectedOffenceSuccessful ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'
+        "
+      >
+        <strong>Offence found</strong>
+        <p>{{ selectedOffenceTitle }}</p>
+      </app-moj-ticket-panel>
+    }
+  </fieldset>
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
+    @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+      <app-moj-ticket-panel>
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-one-half">
+            <app-alphagov-accessible-autocomplete
+              [control]="
+                form.get([
+                  'impositions',
+                  rowIndex,
+                  aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName,
+                ])
+              "
+              labelText="Result code"
+              labelClasses="govuk-fieldset__legend--s"
+              [inputId]="aliasControls[rowIndex][offenceDetailsResultCode.controlName].inputId"
+              [inputName]="aliasControls[rowIndex][offenceDetailsResultCode.controlName].inputName"
+              [autoCompleteItems]="resultCodeItems"
+              [errors]="
+                formControlErrorMessages[aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName]
+              "
+              [showAllValues]="true"
+            >
+            </app-alphagov-accessible-autocomplete>
+          </div>
+          <div class="govuk-grid-column-one-quarter">
+            <app-govuk-text-input-prefix-suffix
+              labelText="Amount imposed"
+              labelClasses="govuk-fieldset__legend--s"
+              [inputId]="aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].inputId"
+              [inputName]="aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].inputName"
+              inputClasses="govuk-input--width-10"
+              prefixText="£"
+              [forceTwoDecimalPoints]="true"
+              [control]="
+                form.get([
+                  'impositions',
+                  rowIndex,
+                  aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].controlName,
+                ])
+              "
+              [errors]="
+                formControlErrorMessages[aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].controlName]
+              "
+            ></app-govuk-text-input-prefix-suffix>
+          </div>
+          <div class="govuk-grid-column-one-quarter">
+            <app-govuk-text-input-prefix-suffix
+              labelText="Amount paid"
+              labelClasses="govuk-fieldset__legend--s"
+              [inputId]="aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].inputId"
+              [inputName]="aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].inputName"
+              inputClasses="govuk-input--width-10"
+              prefixText="£"
+              [forceTwoDecimalPoints]="true"
+              [control]="
+                form.get([
+                  'impositions',
+                  rowIndex,
+                  aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].controlName,
+                ])
+              "
+              [errors]="
+                formControlErrorMessages[aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].controlName]
+              "
+            ></app-govuk-text-input-prefix-suffix>
+          </div>
+        </div>
+        @if (
+          form.get(['impositions', rowIndex, aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName])
+            ?.value === 'FCOMP' ||
+          form.get(['impositions', rowIndex, aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName])
+            ?.value === 'FCOST'
+        ) {
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+              <app-govuk-radio
+                [fieldSetId]="offenceDetailsCreditor.controlName"
+                legendText="Add creditor"
+                legendClasses="govuk-fieldset__legend--s"
+                [errors]="formControlErrorMessages[offenceDetailsCreditor.controlName]"
+              >
+                @for (creditorOption of creditorOptions; track creditorOption.key) {
+                  <div
+                    app-govuk-radios-item
+                    [labelText]="creditorOption.value"
+                    [inputId]="creditorOption.key"
+                    [inputName]="offenceDetailsCreditor.controlName"
+                    [inputValue]="creditorOption.key"
+                    [control]="form.controls[offenceDetailsCreditor.controlName]"
+                  ></div>
+                }
+              </app-govuk-radio>
+            </div>
+          </div>
+        }
+        @if (aliasControls.length > 1) {
+          <div class="govuk-!-margin-top-3">
+            <a
+              class="govuk-link govuk-link--no-visited-state"
+              (click)="removeAlias(aliasControls.length - 1, 'impositions')"
+              (keyup.enter)="removeAlias(aliasControls.length - 1, 'impositions')"
+              tabindex="0"
+            >
+              Remove imposition
+            </a>
+          </div>
+        }
+      </app-moj-ticket-panel>
+    }
+    <app-govuk-button
+      buttonId="addImposition"
+      buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+      type="button"
+      (buttonClickEvent)="addAlias(aliasControls.length, offenceDetailsImpositions.controlName)"
+      >Add another imposition</app-govuk-button
+    >
+  </fieldset>
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <app-govuk-button buttonId="submitForm" type="submit"> Review offence </app-govuk-button>
+      @if (defendantType && finesMacNestedRoutes[defendantType].addAnotherOffence) {
+        <app-govuk-button
+          buttonId="submitForm"
+          type="submit"
+          buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
+        >
+          {{ finesMacNestedRoutes[defendantType].addAnotherOffence?.buttonText }}
+        </app-govuk-button>
+      }
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <app-govuk-cancel-link
+        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
+      ></app-govuk-cancel-link>
+    </div>
+  </div>
+</form>
