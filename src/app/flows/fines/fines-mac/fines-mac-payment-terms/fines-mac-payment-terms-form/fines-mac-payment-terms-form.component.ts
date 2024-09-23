@@ -94,7 +94,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStateService.userState()?.roles || [];
+  private readonly userStateRoles: ISessionUserStateRole[] =
+    this.globalStateService.userState()?.business_unit_user_permissions || [];
 
   public readonly permissionsMap = FinesMacPaymentTermsPermissions;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
