@@ -1,4 +1,5 @@
 #!groovy
+/* groovylint-disable */
 import uk.gov.hmcts.contino.GithubAPI
 
 @Library('Infrastructure')
@@ -33,6 +34,14 @@ def getProjectName() {
     return projectPrefix + 'PR-' + prNumber
   }
   return projectPrefix + 'master'
+}
+def getProjectLabels() {
+  def githubApi = new GithubAPI(this)
+  def testLabels = []
+  for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'test_')) {
+    testLabels.add(label)
+  }
+  return testLabels
 }
 
 properties([
@@ -92,6 +101,28 @@ withPipeline(type, product, component) {
         ls -l1a cypress/parallel/weights/
         ls -l1a cypress/parallel/weights/pipeline/
         '''
+    }
+    afterSuccess('checkout') {
+      script {
+            def labels = getTestLabels()
+            sh"echo 'Test Labels: ${labels}'"
+            def testSpecs = []
+            if (labels.contains('test_mac')) {
+                testSpecs.add('cypress/e2e/functional/opal/manualAccountCreation/*.feature')
+            }
+            if (labels.contains('test_remo')) {
+                testSpecs.add('cypress/e2e/functional/opal/reciprocalMaintenance/*.feature')
+            }
+            if (labels.contains('test_enq')) {
+                testSpecs.add('cypress/e2e/functional/opal/accountEnquiry/*.feature')
+            }
+            if (testSpecs.isEmpty()) {
+                // No specific test labels, run all tests
+                testSpecs.add('cypress/e2e/functional/opal/**/*.feature')
+            }
+            env.TEST_SPECS = testSpecs.join(',')
+            sh"echo 'Test Specs: ${env.TEST_SPECS}'"
+        }
     }
 
   afterSuccess('functionalTest:dev') {
