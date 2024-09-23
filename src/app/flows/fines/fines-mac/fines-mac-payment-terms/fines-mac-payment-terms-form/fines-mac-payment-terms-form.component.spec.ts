@@ -110,8 +110,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     mockDateService.getPreviousDate.and.returnValue('30/08/2024');
     component.accessDefaultDates = true;
     mockDateService.toFormat.and.returnValue('31/08/2024');
-
-    component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component.accessDefaultDates = true;
     component['initialPaymentTermsSetup']();
