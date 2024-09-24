@@ -685,6 +685,23 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Handles the form submission event, when an array is used.
+   *
+   * @param event - The form submission event.
+   * @returns void
+   */
+  public handleFormArraySubmit(event: SubmitEvent): void {
+    this.handleErrorMessages();
+
+    if (this.form.valid) {
+      this.formSubmitted = true;
+      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
+      this.formSubmit.emit({ formData: [this.form.value], nestedFlow: nestedFlow });
+    }
+  }
+
   public ngOnInit(): void {
     this.setupListener();
   }

@@ -17,5 +17,7 @@ export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPaths = {
     deleteAccountConfirmation: 'delete-account-confirmation',
     languagePreferences: 'language-preferences',
     review: 'review',
+    searchOffences: 'search-offences',
+    addOffence: 'add-offence',
   },
 };

@@ -1,6 +1,6 @@
 <h1 class="govuk-heading-l">Add an offence</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)">
+<form (submit)="handleFormArraySubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
     <app-moj-date-picker
@@ -10,21 +10,31 @@
       [inputName]="offenceDetailsDateOfSentence.controlName"
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
+      [maxDate]="today"
       [control]="form.controls[offenceDetailsDateOfSentence.controlName]"
       [errors]="formControlErrorMessages[offenceDetailsDateOfSentence.controlName]"
       (dateChange)="setInputValue($event, offenceDetailsDateOfSentence.controlName)"
     ></app-moj-date-picker>
-    <app-alphagov-accessible-autocomplete
-      [control]="form.controls[offenceDetailsOffenceCode.controlName]"
+    <app-govuk-text-input
       labelText="Offence code"
       labelClasses="govuk-fieldset__legend--s"
       [inputId]="offenceDetailsOffenceCode.controlName"
       [inputName]="offenceDetailsOffenceCode.controlName"
       inputClasses="govuk-input--width-10"
-      hintText="For example, HY35014. If you don't know the offence code, you can search the offence list"
-      [autoCompleteItems]="offenceCodeItems"
+      [hintHtml]="true"
       [errors]="formControlErrorMessages[offenceDetailsOffenceCode.controlName]"
-    ></app-alphagov-accessible-autocomplete>
+      [control]="form.controls[offenceDetailsOffenceCode.controlName]"
+    >
+      For example, HY35014. If you don't know the offence code, you can
+      <a
+        class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
+        (click)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
+        tabindex="0"
+      >
+        search the offence list
+      </a></app-govuk-text-input
+    >
     @if (this.selectedOffenceConfirmation) {
       <app-moj-ticket-panel
         [sectionClasses]="
@@ -41,7 +51,7 @@
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
     @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
       <app-moj-ticket-panel>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row govuk-form-group">
           <div class="govuk-grid-column-one-half">
             <app-alphagov-accessible-autocomplete
               [control]="
@@ -107,27 +117,36 @@
           </div>
         </div>
         @if (
-          form.get(['impositions', rowIndex, aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName])
-            ?.value === 'FCOMP' ||
-          form.get(['impositions', rowIndex, aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName])
-            ?.value === 'FCOST'
+          form.get([
+            'impositions',
+            rowIndex,
+            aliasControls[rowIndex][offenceDetailsNeedsCreditor.controlName].controlName,
+          ])!.value === true
         ) {
-          <div class="govuk-grid-row">
+          <div class="govuk-grid-row govuk-form-group">
             <div class="govuk-grid-column-full">
               <app-govuk-radio
-                [fieldSetId]="offenceDetailsCreditor.controlName"
+                [fieldSetId]="aliasControls[rowIndex][offenceDetailsCreditor.controlName].inputId"
                 legendText="Add creditor"
                 legendClasses="govuk-fieldset__legend--s"
-                [errors]="formControlErrorMessages[offenceDetailsCreditor.controlName]"
+                [errors]="
+                  formControlErrorMessages[aliasControls[rowIndex][offenceDetailsCreditor.controlName].controlName]
+                "
               >
                 @for (creditorOption of creditorOptions; track creditorOption.key) {
                   <div
                     app-govuk-radios-item
                     [labelText]="creditorOption.value"
-                    [inputId]="creditorOption.key"
-                    [inputName]="offenceDetailsCreditor.controlName"
-                    [inputValue]="creditorOption.key"
-                    [control]="form.controls[offenceDetailsCreditor.controlName]"
+                    [inputId]="creditorOption.key + '_' + rowIndex"
+                    [inputName]="aliasControls[rowIndex][offenceDetailsCreditor.controlName].controlName"
+                    [inputValue]="creditorOption.key + '_' + rowIndex"
+                    [control]="
+                      form.get([
+                        'impositions',
+                        rowIndex,
+                        aliasControls[rowIndex][offenceDetailsCreditor.controlName].controlName,
+                      ])
+                    "
                   ></div>
                 }
               </app-govuk-radio>
@@ -179,3 +198,14 @@
     </div>
   </div>
 </form>
+
+<ng-template #hintLink>
+  <a
+    class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
+    (click)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
+    (keyup.enter)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
+    tabindex="0"
+  >
+    search the offence list
+  </a>
+</ng-template>

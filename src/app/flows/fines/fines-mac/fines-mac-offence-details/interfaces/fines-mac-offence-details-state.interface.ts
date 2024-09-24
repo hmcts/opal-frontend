@@ -1,6 +1,7 @@
-import { IFinesMacOffenceDetailsOffenceState } from './fines-mac-offence-details-offence-state.interface';
+import { IFinesMacOffenceDetailsImpositionsState } from './fines-mac-offence-details-impositions-state.interface';
 
 export interface IFinesMacOffenceDetailsState {
-  offenceDetails: string | null;
-  offences: IFinesMacOffenceDetailsOffenceState[] | [];
+  date_of_offence: string | null;
+  offence_code: string | null;
+  impositions: IFinesMacOffenceDetailsImpositionsState[] | [];
 }

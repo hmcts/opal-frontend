@@ -6,14 +6,10 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IFinesMacOffenceDetailsForm } from './interfaces/fines-mac-offence-details-form.interface';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
-import { FinesMacOffenceDetailsFormComponent } from './fines-mac-offence-details-form/fines-mac-offence-details-form.component';
 import { Observable, forkJoin, map } from 'rxjs';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import {
-  IOpalFinesOffences,
-  IOpalFinesOffencesRefData,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { FinesMacOffenceDetailsAddAnOffenceComponent } from './fines-mac-offence-details-add-an-offence/fines-mac-offence-details-add-an-offence.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -28,7 +24,6 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from './constants/fines-mac-o
     RouterModule,
     GovukButtonComponent,
     GovukCancelLinkComponent,
-    FinesMacOffenceDetailsFormComponent,
     FinesMacOffenceDetailsAddAnOffenceComponent,
   ],
   templateUrl: './fines-mac-offence-details.component.html',
@@ -38,46 +33,20 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
   private opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
-
-  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
-  public offenceCodes!: IOpalFinesOffences[];
-  public offenceCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
-    .getOffences(0)
-    .pipe(
-      map((response: IOpalFinesOffencesRefData) => {
-        this.offenceCodes = response.refData;
-        return this.createAutoCompleteItemsOffences(response);
-      }),
-    );
+  private offenceCodes$: Observable<IOpalFinesOffencesRefData> = this.opalFinesService.getOffences(0);
   private resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  public resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  private resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getResults(this.resultCodeArray)
     .pipe(
       map((response: IOpalFinesResultsRefData) => {
         return this.createAutoCompleteItemsResults(response);
       }),
     );
-
   protected groupOffenceCodeAndResultData$ = forkJoin({
-    offenceCodeData: this.offenceCodeData$,
+    offenceCodeData: this.offenceCodes$,
     resultCodeData: this.resultCodeData$,
   });
-
-  /**
-   * Creates an array of autocomplete items based on the response from the server.
-   * @param response - The response object containing the business unit reference data.
-   * @returns An array of autocomplete items.
-   */
-  private createAutoCompleteItemsOffences(response: IOpalFinesOffencesRefData): IAlphagovAccessibleAutocompleteItem[] {
-    const offences = response.refData;
-
-    return offences.map((item) => {
-      return {
-        value: item.get_cjs_code,
-        name: item.get_cjs_code,
-      };
-    });
-  }
+  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
 
   /**
    * Creates an array of autocomplete items based on the provided response data.
@@ -113,13 +82,17 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
     // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      offenceDetails: form,
+      offenceDetails: {
+        formData: [...form.formData],
+        nestedFlow: form.nestedFlow,
+        status: form.status,
+      },
       unsavedChanges: false,
       stateChanges: true,
     };
 
     if (form.nestedFlow) {
-      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes);
+      this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.offenceDetails);
     } else {
       this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
     }

@@ -18,6 +18,7 @@ export class GovukTextInputComponent {
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
   @Input({ required: false }) hintText!: string;
+  @Input({ required: false }) hintHtml!: boolean;
   @Input({ required: false }) inputMode: string = 'text';
   @Input({ required: false }) errors: string | null = null;
   @Input({ required: true }) set control(abstractControl: AbstractControl | null) {

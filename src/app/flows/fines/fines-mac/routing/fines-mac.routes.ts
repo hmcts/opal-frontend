@@ -72,6 +72,7 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsComponent,
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.companyDetails,
@@ -123,6 +124,15 @@ export const routing: Routes = [
       import('../fines-mac-language-preferences/fines-mac-language-preferences.component').then(
         (c) => c.FinesMacLanguagePreferencesComponent,
       ),
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
+  },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.searchOffences,
+    loadComponent: () =>
+      import(
+        '../fines-mac-offence-details/fines-mac-offence-details-search-offences/fines-mac-offence-details-search-offences.component'
+      ).then((c) => c.FinesMacOffenceDetailsSearchOffencesComponent),
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
   },
