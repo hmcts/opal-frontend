@@ -2,9 +2,6 @@ export interface IFinesMacPaymentTermsState {
   has_collection_order?: boolean | null;
   collection_order_date?: string | null;
   make_collection_order_today?: boolean | null;
-  has_collection_order?: boolean | null;
-  collection_order_date?: string | null;
-  make_collection_order_today?: boolean | null;
   payment_terms: string | null;
   pay_by_date?: string | null;
   lump_sum?: number | null;
