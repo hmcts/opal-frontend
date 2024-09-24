@@ -264,3 +264,6 @@ Feature: PO-280 Employer details page for defendant accounts for Adult or Youth 
 
     When I click on the "Cancel" link
     Then I see "Account details" on the page header
+
+    Scenario: verifying all the fields with max characters
+    

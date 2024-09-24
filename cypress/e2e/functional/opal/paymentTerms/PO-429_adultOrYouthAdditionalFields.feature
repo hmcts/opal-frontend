@@ -209,7 +209,10 @@ Feature: PO-429 Implement additional fields for payment terms screen - Adult or 
     And I see the error message "Enter valid instalment amount" above the "Instalment" payment field
 
   Scenario: AC6 & AC15 - Validation passes, request payment card checkbox, return to account details
-
+    # the next 3 steps are introduced in PO-471, this field is mandatory
+    And I select the "Yes" radio button under the "Has a collection order been made?" section
+    And I see "For example, 31/01/2023" hint text above the "Date of collection order" date picker
+    And I enter "20/05/2024" into the "Date of collection order" date field
     When I select the "Pay in full" radio button
     And I enter "13/09/2025" into the "Enter pay by date" date field
     And I select the "Request payment card" checkbox
@@ -223,7 +226,10 @@ Feature: PO-429 Implement additional fields for payment terms screen - Adult or 
     And I validate the "Request payment card" checkbox is checked
 
   Scenario: AC6 & AC16 - Validation passes, request payment card checkbox, add account comments and notes
-
+    # the next 3 steps are introduced in PO-471, this field is mandatory
+    And I select the "Yes" radio button under the "Has a collection order been made?" section
+    And I see "For example, 31/01/2023" hint text above the "Date of collection order" date picker
+    And I enter "20/05/2024" into the "Date of collection order" date field
     When I select the "Lump sum plus instalments" radio button
     And I enter "150" into the "Lump sum" payment field
     And I enter "300" into the "Instalment" payment field

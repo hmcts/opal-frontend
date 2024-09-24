@@ -86,7 +86,6 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
         And I click on the "Payment terms" link
 
         And I select the "Yes" radio button under the "Has a collection order been made?" section
-        And I see "For example, 31/01/2023" hint text above the "Date of collection order" date picker
         And I enter "20.05.2024" into the "Date of collection order" date field
         And I click the "Return to account details" button
 
@@ -98,7 +97,6 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
         And I click on the "Payment terms" link
 
         And I select the "Yes" radio button under the "Has a collection order been made?" section
-        And I see "For example, 31/01/2023" hint text above the "Date of collection order" date picker
         And I enter "30/02/2022" into the "Date of collection order" date field
         And I click the "Return to account details" button
 
@@ -110,7 +108,6 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
         And I click on the "Payment terms" link
 
         And I select the "Yes" radio button under the "Has a collection order been made?" section
-        And I see "For example, 31/01/2023" hint text above the "Date of collection order" date picker
         And I enter "01/02/2026" into the "Date of collection order" date field
         And I click the "Return to account details" button
 
@@ -122,7 +119,6 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
         And I click on the "Payment terms" link
 
         And I select the "Yes" radio button under the "Has a collection order been made?" section
-        And I see "For example, 31/01/2023" hint text above the "Date of collection order" date picker
         And I enter "01/02/1988" into the "Date of collection order" date field
         And I click the "Return to account details" button
 
