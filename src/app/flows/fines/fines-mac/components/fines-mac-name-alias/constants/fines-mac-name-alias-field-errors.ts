@@ -1,6 +1,6 @@
-import { IFinesMacNameAliasFieldErrors } from '../interfaces';
+import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
-export const FINES_MAC_NAME_ALIAS_FIELD_ERRORS: IFinesMacNameAliasFieldErrors = {
+export const FINES_MAC_NAME_ALIAS_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   alias_forenames_0: {
     required: {
       message: `Enter first name(s) for alias 1`,

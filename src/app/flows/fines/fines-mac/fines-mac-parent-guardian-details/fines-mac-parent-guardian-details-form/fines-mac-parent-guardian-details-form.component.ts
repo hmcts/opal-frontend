@@ -13,7 +13,6 @@ import { FinesMacNameComponent } from '../../components/fines-mac-name/fines-mac
 
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ADDRESS_BLOCK_FIELD_IDS } from '../constants/fines-mac-parent-guardian-details-address-block-field-ids';
@@ -31,21 +30,22 @@ import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS } from '
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_IDS } from '../constants/fines-mac-parent-guardian-details-vehicle-details-field-ids';
 
 // FORM CONTROLS
-import { FINES_MAC_CONTROLS_ALIASES as PGD_CONTROL_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
-import { FINES_MAC_CONTROLS_FORENAMES as PGD_CONTROL_FORENAMES } from '../../constants/controls/fines-mac-controls-forenames';
-import { FINES_MAC_CONTROLS_SURNAME as PGD_CONTROL_SURNAME } from '../../constants/controls/fines-mac-controls-surname';
-import { FINES_MAC_CONTROLS_ADD_ALIAS as PGD_CONTROL_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
-import { FINES_MAC_CONTROLS_DOB as PGD_CONTROL_DOB } from '../../constants/controls/fines-mac-controls-dob';
-import { FINES_MAC_CONTROLS_NATIONAL_INSURANCE_NUMBER as PGD_CONTROL_NATIONAL_INSURANCE_NUMBER } from '../../constants/controls/fines-mac-controls-national-insurance-number';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as PGD_CONTROL_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as PGD_CONTROL_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
-import { FINES_MAC_CONTROLS_POSTCODE as PGD_CONTROL_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
-import { FINES_MAC_CONTROLS_VEHICLE_MAKE as PGD_CONTROL_VEHICLE_MAKE } from '../../constants/controls/fines-mac-controls-vehicle-make';
-import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PGD_CONTROL_VEHICLE_REGISTRATION_MARK } from '../../constants/controls/fines-mac-controls-vehicle-registration-mark';
-import { FINES_MAC_PARENT_GUARDIAN_DETAILS_CONTROLS_ADDRESS_LINE_THREE as PGD_CONTROL_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-parent-guardian-details-controls-address-line-three';
+import { FINES_MAC_CONTROLS_ALIASES as F_M_PARENT_GUARDIAN_DETAILS_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
+import { FINES_MAC_CONTROLS_FORENAMES as F_M_PARENT_GUARDIAN_DETAILS_FORENAMES } from '../../constants/controls/fines-mac-controls-forenames';
+import { FINES_MAC_CONTROLS_SURNAME as F_M_PARENT_GUARDIAN_DETAILS_SURNAME } from '../../constants/controls/fines-mac-controls-surname';
+import { FINES_MAC_CONTROLS_ADD_ALIAS as F_M_PARENT_GUARDIAN_DETAILS_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
+import { FINES_MAC_CONTROLS_DOB as F_M_PARENT_GUARDIAN_DETAILS_DOB } from '../../constants/controls/fines-mac-controls-dob';
+import { FINES_MAC_CONTROLS_NATIONAL_INSURANCE_NUMBER as F_M_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER } from '../../constants/controls/fines-mac-controls-national-insurance-number';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as F_M_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as F_M_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
+import { FINES_MAC_CONTROLS_POSTCODE as F_M_PARENT_GUARDIAN_DETAILS_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
+import { FINES_MAC_CONTROLS_VEHICLE_MAKE as F_M_PARENT_GUARDIAN_DETAILS_VEHICLE_MAKE } from '../../constants/controls/fines-mac-controls-vehicle-make';
+import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as F_M_PARENT_GUARDIAN_DETAILS_VEHICLE_REGISTRATION_MARK } from '../../constants/controls/fines-mac-controls-vehicle-registration-mark';
+import { FINES_MAC_PARENT_GUARDIAN_DETAILS_CONTROLS_ADDRESS_LINE_THREE as F_M_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-parent-guardian-details-controls-address-line-three';
 
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
@@ -79,7 +79,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   protected readonly customVehicleDetailsFieldIds = FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_IDS;
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
-  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = {
+  override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_PARENT_GUARDIAN_DETAILS_NAME_FIELD_ERRORS,
     ...FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS_FIELD_ERRORS,
     ...FINES_MAC_PARENT_GUARDIAN_DETAILS_DATE_OF_BIRTH_FIELD_ERRORS,
@@ -91,26 +91,58 @@ export class FinesMacParentGuardianDetailsFormComponent
     ...FINES_MAC_PARENT_GUARDIAN_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS,
   };
 
+  public parentGuardianDetailsAliases = F_M_PARENT_GUARDIAN_DETAILS_ALIASES;
+  public parentGuardianDetailsForenames = F_M_PARENT_GUARDIAN_DETAILS_FORENAMES;
+  public parentGuardianDetailsSurname = F_M_PARENT_GUARDIAN_DETAILS_SURNAME;
+  public parentGuardianDetailsAddAlias = F_M_PARENT_GUARDIAN_DETAILS_ADD_ALIAS;
+  public parentGuardianDetailsDob = F_M_PARENT_GUARDIAN_DETAILS_DOB;
+  public parentGuardianDetailsNationalInsuranceNumber = F_M_PARENT_GUARDIAN_DETAILS_NATIONAL_INSURANCE_NUMBER;
+  public parentGuardianDetailsAddressLineOne = F_M_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_ONE;
+  public parentGuardianDetailsAddressLineTwo = F_M_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_TWO;
+  public parentGuardianDetailsAddressLineThree = F_M_PARENT_GUARDIAN_DETAILS_ADDRESS_LINE_THREE;
+  public parentGuardianDetailsPostcode = F_M_PARENT_GUARDIAN_DETAILS_POSTCODE;
+  public parentGuardianDetailsVehicleMake = F_M_PARENT_GUARDIAN_DETAILS_VEHICLE_MAKE;
+  public parentGuardianDetailsVehicleRegistrationMark = F_M_PARENT_GUARDIAN_DETAILS_VEHICLE_REGISTRATION_MARK;
+
   /**
    * Sets up the parent/guardian details form with the necessary form controls.
    */
   private setupParentGuardianDetailsForm(): void {
     this.form = new FormGroup({
-      [PGD_CONTROL_ALIASES.controlName]: this.createFormArray(PGD_CONTROL_ALIASES.validators, []),
-      [PGD_CONTROL_FORENAMES.controlName]: this.createFormControl(PGD_CONTROL_FORENAMES.validators),
-      [PGD_CONTROL_SURNAME.controlName]: this.createFormControl(PGD_CONTROL_SURNAME.validators),
-      [PGD_CONTROL_ADD_ALIAS.controlName]: this.createFormControl(PGD_CONTROL_ADD_ALIAS.validators),
-      [PGD_CONTROL_DOB.controlName]: this.createFormControl(PGD_CONTROL_DOB.validators),
-      [PGD_CONTROL_NATIONAL_INSURANCE_NUMBER.controlName]: this.createFormControl(
-        PGD_CONTROL_NATIONAL_INSURANCE_NUMBER.validators,
+      [this.parentGuardianDetailsAliases.controlName]: this.createFormArray(
+        this.parentGuardianDetailsAliases.validators,
+        [],
       ),
-      [PGD_CONTROL_ADDRESS_LINE_ONE.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_ONE.validators),
-      [PGD_CONTROL_ADDRESS_LINE_TWO.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_TWO.validators),
-      [PGD_CONTROL_ADDRESS_LINE_THREE.controlName]: this.createFormControl(PGD_CONTROL_ADDRESS_LINE_THREE.validators),
-      [PGD_CONTROL_POSTCODE.controlName]: this.createFormControl(PGD_CONTROL_POSTCODE.validators),
-      [PGD_CONTROL_VEHICLE_MAKE.controlName]: this.createFormControl(PGD_CONTROL_VEHICLE_MAKE.validators),
-      [PGD_CONTROL_VEHICLE_REGISTRATION_MARK.controlName]: this.createFormControl(
-        PGD_CONTROL_VEHICLE_REGISTRATION_MARK.validators,
+      [this.parentGuardianDetailsForenames.controlName]: this.createFormControl(
+        this.parentGuardianDetailsForenames.validators,
+      ),
+      [this.parentGuardianDetailsSurname.controlName]: this.createFormControl(
+        this.parentGuardianDetailsSurname.validators,
+      ),
+      [this.parentGuardianDetailsAddAlias.controlName]: this.createFormControl(
+        this.parentGuardianDetailsAddAlias.validators,
+      ),
+      [this.parentGuardianDetailsDob.controlName]: this.createFormControl(this.parentGuardianDetailsDob.validators),
+      [this.parentGuardianDetailsNationalInsuranceNumber.controlName]: this.createFormControl(
+        this.parentGuardianDetailsNationalInsuranceNumber.validators,
+      ),
+      [this.parentGuardianDetailsAddressLineOne.controlName]: this.createFormControl(
+        this.parentGuardianDetailsAddressLineOne.validators,
+      ),
+      [this.parentGuardianDetailsAddressLineTwo.controlName]: this.createFormControl(
+        this.parentGuardianDetailsAddressLineTwo.validators,
+      ),
+      [this.parentGuardianDetailsAddressLineThree.controlName]: this.createFormControl(
+        this.parentGuardianDetailsAddressLineThree.validators,
+      ),
+      [this.parentGuardianDetailsPostcode.controlName]: this.createFormControl(
+        this.parentGuardianDetailsPostcode.validators,
+      ),
+      [this.parentGuardianDetailsVehicleMake.controlName]: this.createFormControl(
+        this.parentGuardianDetailsVehicleMake.validators,
+      ),
+      [this.parentGuardianDetailsVehicleRegistrationMark.controlName]: this.createFormControl(
+        this.parentGuardianDetailsVehicleRegistrationMark.validators,
       ),
     });
   }
