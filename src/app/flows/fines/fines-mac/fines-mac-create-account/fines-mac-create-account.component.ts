@@ -34,7 +34,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   private businessUnits!: IOpalFinesBusinessUnit[];
   private configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
   public data$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
-    .getBusinessUnits('MANUAL_ACCOUNT_CREATION')
+    .getBusinessUnits('CREATE_MANAGE_DRAFT_ACCOUNTS')
     .pipe(
       tap((response: IOpalFinesBusinessUnitRefData) => this.setBusinessUnit(response)),
       map((response: IOpalFinesBusinessUnitRefData) => {
