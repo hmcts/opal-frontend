@@ -52,18 +52,17 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
         And I see "For example, 31/01/2023" hint text above the "Enter pay by date" date picker
         And I enter "12/09/2023" into the "Enter pay by date" date field
 
-    Scenario Outline: AC4 -negative: If the user has not selected a value for the 'Has a collection order been made?' field and clicks either the 'Return to account details' or 'Add account comments and notes' buttons
+    Scenario: AC4 -negative: If the user has not selected a value for the 'Has a collection order been made?' field and clicks either the 'Return to account details' or 'Add account comments and notes' buttons
         And I click the "Return to account details" button
         Then I see the status of "Personal details" is "Provided"
         And I click on the "Payment terms" link
         Then I see "Payment terms" on the page header
-        When I click the "<returnButton>" button
+        When I click the "Return to account details" button
         Then I see the error message "Select whether there was a collection order" at the top of the page
 
-        Examples:
-            | returnButton                   |
-            | Return to account details      |
-            | Add account comments and notes |
+        When I click the "Add account comments and notes" button
+        Then I see the error message "Select whether there was a collection order" at the top of the page
+
 
     Scenario Outline: AC5 -negative: If the user has not selected a value for the 'Has a collection order been made?' field and clicks either the 'Return to account details' or 'Add account comments and notes' buttons
         And I click the "Return to account details" button
@@ -72,13 +71,12 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
 
         And I select the "Yes" radio button under the "Has a collection order been made?" section
         Then I see "Payment terms" on the page header
-        When I click the "<returnButton>" button
+        When I click the "Return to account details" button
         Then I see the error message "Enter date collection order made" at the top of the page
 
-        Examples:
-            | returnButton                   |
-            | Return to account details      |
-            | Add account comments and notes |
+        When I click the "Add account comments and notes" button
+        Then I see the error message "Enter date collection order made" at the top of the page
+
 
     Scenario: AC6a -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
         And I click the "Return to account details" button
