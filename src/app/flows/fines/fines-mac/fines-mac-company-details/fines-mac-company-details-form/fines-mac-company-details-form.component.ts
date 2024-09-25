@@ -36,13 +36,13 @@ import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-c
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
-import { FINES_MAC_COMPANY_DETAILS_CONTROLS_COMPANY_NAME as F_M_CY_D_COMPANY_NAME } from '../constants/controls/fines-mac-company-details-controls-company-name';
-import { FINES_MAC_CONTROLS_ADD_ALIAS as F_M_CY_D_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
-import { FINES_MAC_CONTROLS_ALIASES as F_M_CY_D_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as F_M_CY_D_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as F_M_CY_D_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as F_M_CY_D_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
-import { FINES_MAC_CONTROLS_POSTCODE as F_M_CY_D_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
+import { FINES_MAC_COMPANY_DETAILS_CONTROLS_COMPANY_NAME as F_M_COMPANY_DETAILS_COMPANY_NAME } from '../constants/controls/fines-mac-company-details-controls-company-name';
+import { FINES_MAC_CONTROLS_ADD_ALIAS as F_M_COMPANY_DETAILS_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
+import { FINES_MAC_CONTROLS_ALIASES as F_M_COMPANY_DETAILS_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as F_M_COMPANY_DETAILS_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as F_M_COMPANY_DETAILS_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as F_M_COMPANY_DETAILS_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
+import { FINES_MAC_CONTROLS_POSTCODE as F_M_COMPANY_DETAILS_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
@@ -71,13 +71,13 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  public companyDetailsCompanyName = F_M_CY_D_COMPANY_NAME;
-  public companyDetailsAddAlias = F_M_CY_D_ADD_ALIAS;
-  public companyDetailsAliases = F_M_CY_D_ALIASES;
-  public companyDetailsAddressLineOne = F_M_CY_D_ADDRESS_LINE_ONE;
-  public companyDetailsAddressLineTwo = F_M_CY_D_ADDRESS_LINE_TWO;
-  public companyDetailsAddressLineThree = F_M_CY_D_ADDRESS_LINE_THREE;
-  public companyDetailsPostcode = F_M_CY_D_POSTCODE;
+  public companyDetailsCompanyName = F_M_COMPANY_DETAILS_COMPANY_NAME;
+  public companyDetailsAddAlias = F_M_COMPANY_DETAILS_ADD_ALIAS;
+  public companyDetailsAliases = F_M_COMPANY_DETAILS_ALIASES;
+  public companyDetailsAddressLineOne = F_M_COMPANY_DETAILS_ADDRESS_LINE_ONE;
+  public companyDetailsAddressLineTwo = F_M_COMPANY_DETAILS_ADDRESS_LINE_TWO;
+  public companyDetailsAddressLineThree = F_M_COMPANY_DETAILS_ADDRESS_LINE_THREE;
+  public companyDetailsPostcode = F_M_COMPANY_DETAILS_POSTCODE;
 
   override fieldErrors = {
     ...FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
@@ -126,10 +126,13 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
     const { formData } = this.finesService.finesMacState.companyDetails;
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
+    this.setupAliasFormControls(
+      [...Array(formData[this.companyDetailsAliases.controlName].length).keys()],
+      this.companyDetailsAliases.controlName,
+    );
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.setUpAliasCheckboxListener('add_alias', 'aliases');
+    this.setUpAliasCheckboxListener('add_alias', this.companyDetailsAliases.controlName);
   }
 
   public override ngOnInit(): void {

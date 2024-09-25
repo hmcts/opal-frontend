@@ -6,6 +6,7 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
 import { FINES_MAC_COMPANY_DETAILS_FORM_MOCK } from '../mocks/fines-mac-company-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { FINES_MAC_CONTROLS_ALIASES as F_M_COMPANY_DETAILS_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
 
 describe('FinesMacCompanyDetailsFormComponent', () => {
   let component: FinesMacCompanyDetailsFormComponent;
@@ -85,7 +86,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component.form).toBeTruthy();
     expect(component.form.get('company_name')).toBeTruthy();
     expect(component.form.get('add_alias')).toBeTruthy();
-    expect(component.form.get('aliases')).toBeTruthy();
+    expect(component.form.get(F_M_COMPANY_DETAILS_ALIASES.controlName)).toBeTruthy();
     expect(component.form.get('address_line_1')).toBeTruthy();
     expect(component.form.get('address_line_2')).toBeTruthy();
     expect(component.form.get('address_line_3')).toBeTruthy();
@@ -117,11 +118,18 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component['setupCompanyDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.companyDetails.formData.aliases.length).keys()],
-      'aliases',
+      [
+        ...Array(
+          mockFinesService.finesMacState.companyDetails.formData[F_M_COMPANY_DETAILS_ALIASES.controlName].length,
+        ).keys(),
+      ],
+      F_M_COMPANY_DETAILS_ALIASES.controlName,
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.companyDetails.formData);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('add_alias', 'aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith(
+      'add_alias',
+      F_M_COMPANY_DETAILS_ALIASES.controlName,
+    );
   });
 });
