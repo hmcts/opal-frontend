@@ -3273,12 +3273,12 @@ __metadata:
   linkType: hard
 
 "@hmcts/info-provider@npm:^1.1.0":
-  version: 1.2.1
-  resolution: "@hmcts/info-provider@npm:1.2.1"
+  version: 1.2.2
+  resolution: "@hmcts/info-provider@npm:1.2.2"
   dependencies:
     express: "npm:^4.19.2"
     js-yaml: "npm:^4.1.0"
-  checksum: 10/ec2f55f05691f4501846a584c8fe55a614f5213692e5e350e09537a75a4876dd78d684cb229ea0304bdb8298eeacbd0a89e1c6701491e4771a95b71fd42c980a
+  checksum: 10/2d9dc7bb58ff4c078307c3267ce5ac6ca7b174b97667bcb3a841cbca64d35fe39ec821b1a11f4e4d7bd42d802af112df979528d5ec17aa49810ce15c8a0a797e
   languageName: node
   linkType: hard
 
