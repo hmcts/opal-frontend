@@ -46,25 +46,26 @@ import { FINES_MAC_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER_FIELD_ERRORS } fro
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-vehicle-details-field-errors';
 
 // FORM CONTROLS
-import { FINES_MAC_CONTROLS_ALIASES as PD_CONTROL_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
-import { FINES_MAC_CONTROLS_FORENAMES as PD_CONTROL_FORENAMES } from '../../constants/controls/fines-mac-controls-forenames';
-import { FINES_MAC_CONTROLS_SURNAME as PD_CONTROL_SURNAME } from '../../constants/controls/fines-mac-controls-surname';
-import { FINES_MAC_CONTROLS_ADD_ALIAS as PD_CONTROL_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
-import { FINES_MAC_CONTROLS_DOB as PD_CONTROL_DOB } from '../../constants/controls/fines-mac-controls-dob';
-import { FINES_MAC_CONTROLS_NATIONAL_INSURANCE_NUMBER as PD_CONTROL_NATIONAL_INSURANCE_NUMBER } from '../../constants/controls/fines-mac-controls-national-insurance-number';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as PD_CONTROL_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as PD_CONTROL_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
-import { FINES_MAC_CONTROLS_POSTCODE as PD_CONTROL_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
-import { FINES_MAC_CONTROLS_VEHICLE_MAKE as PD_CONTROL_VEHICLE_MAKE } from '../../constants/controls/fines-mac-controls-vehicle-make';
-import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PD_CONTROL_VEHICLE_REGISTRATION_MARK } from '../../constants/controls/fines-mac-controls-vehicle-registration-mark';
-import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as PD_CONTROL_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
-import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE as PD_CONTROL_TITLE } from '../constants/controls/fines-mac-personal-details-controls-title';
+import { FINES_MAC_CONTROLS_ALIASES as F_M_PERSONAL_DETAILS_ALIASES } from '../../constants/controls/fines-mac-controls-aliases';
+import { FINES_MAC_CONTROLS_FORENAMES as F_M_PERSONAL_DETAILS_FORENAMES } from '../../constants/controls/fines-mac-controls-forenames';
+import { FINES_MAC_CONTROLS_SURNAME as F_M_PERSONAL_DETAILS_SURNAME } from '../../constants/controls/fines-mac-controls-surname';
+import { FINES_MAC_CONTROLS_ADD_ALIAS as F_M_PERSONAL_DETAILS_ADD_ALIAS } from '../../constants/controls/fines-mac-controls-add-alias';
+import { FINES_MAC_CONTROLS_DOB as F_M_PERSONAL_DETAILS_DOB } from '../../constants/controls/fines-mac-controls-dob';
+import { FINES_MAC_CONTROLS_NATIONAL_INSURANCE_NUMBER as F_M_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER } from '../../constants/controls/fines-mac-controls-national-insurance-number';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_ONE as F_M_PERSONAL_DETAILS_ADDRESS_LINE_ONE } from '../../constants/controls/fines-mac-controls-address-line-one';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_TWO as F_M_PERSONAL_DETAILS_ADDRESS_LINE_TWO } from '../../constants/controls/fines-mac-controls-address-line-two';
+import { FINES_MAC_CONTROLS_POSTCODE as F_M_PERSONAL_DETAILS_POSTCODE } from '../../constants/controls/fines-mac-controls-postcode';
+import { FINES_MAC_CONTROLS_VEHICLE_MAKE as F_M_PERSONAL_DETAILS_VEHICLE_MAKE } from '../../constants/controls/fines-mac-controls-vehicle-make';
+import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as F_M_PERSONAL_DETAILS_VEHICLE_REGISTRATION_MARK } from '../../constants/controls/fines-mac-controls-vehicle-registration-mark';
+import { FINES_MAC_CONTROLS_ADDRESS_LINE_THREE as F_M_PERSONAL_DETAILS_ADDRESS_LINE_THREE } from '../../constants/controls/fines-mac-controls-address-line-three';
+import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE as F_M_PERSONAL_DETAILS_TITLE } from '../constants/controls/fines-mac-personal-details-controls-title';
 
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { DateService } from '@services/date-service/date.service';
 import { takeUntil } from 'rxjs';
+import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -99,7 +100,21 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
+  public personalDetailsAliases = F_M_PERSONAL_DETAILS_ALIASES;
+  public personalDetailsForenames = F_M_PERSONAL_DETAILS_FORENAMES;
+  public personalDetailsSurname = F_M_PERSONAL_DETAILS_SURNAME;
+  public personalDetailsAddAlias = F_M_PERSONAL_DETAILS_ADD_ALIAS;
+  public personalDetailsDob = F_M_PERSONAL_DETAILS_DOB;
+  public personalDetailsNationalInsuranceNumber = F_M_PERSONAL_DETAILS_NATIONAL_INSURANCE_NUMBER;
+  public personalDetailsAddressLineOne = F_M_PERSONAL_DETAILS_ADDRESS_LINE_ONE;
+  public personalDetailsAddressLineTwo = F_M_PERSONAL_DETAILS_ADDRESS_LINE_TWO;
+  public personalDetailsAddressLineThree = F_M_PERSONAL_DETAILS_ADDRESS_LINE_THREE;
+  public personalDetailsPostcode = F_M_PERSONAL_DETAILS_POSTCODE;
+  public personalDetailsVehicleMake = F_M_PERSONAL_DETAILS_VEHICLE_MAKE;
+  public personalDetailsVehicleRegistrationMark = F_M_PERSONAL_DETAILS_VEHICLE_REGISTRATION_MARK;
+  public personalDetailsTitle = F_M_PERSONAL_DETAILS_TITLE;
+
+  override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
     ...FINES_MAC_PERSONAL_DETAILS_NAME_FIELD_ERRORS,
     ...FINES_MAC_PERSONAL_DETAILS_ALIAS_FIELD_ERRORS,
@@ -122,23 +137,29 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    */
   private setupPersonalDetailsForm(): void {
     this.form = new FormGroup({
-      [PD_CONTROL_ALIASES.controlName]: this.createFormArray(PD_CONTROL_ALIASES.validators, []),
-      [PD_CONTROL_FORENAMES.controlName]: this.createFormControl(PD_CONTROL_FORENAMES.validators),
-      [PD_CONTROL_SURNAME.controlName]: this.createFormControl(PD_CONTROL_SURNAME.validators),
-      [PD_CONTROL_ADD_ALIAS.controlName]: this.createFormControl(PD_CONTROL_ADD_ALIAS.validators),
-      [PD_CONTROL_DOB.controlName]: this.createFormControl(PD_CONTROL_DOB.validators),
-      [PD_CONTROL_NATIONAL_INSURANCE_NUMBER.controlName]: this.createFormControl(
-        PD_CONTROL_NATIONAL_INSURANCE_NUMBER.validators,
+      [this.personalDetailsAliases.controlName]: this.createFormArray(this.personalDetailsAliases.validators, []),
+      [this.personalDetailsForenames.controlName]: this.createFormControl(this.personalDetailsForenames.validators),
+      [this.personalDetailsSurname.controlName]: this.createFormControl(this.personalDetailsSurname.validators),
+      [this.personalDetailsAddAlias.controlName]: this.createFormControl(this.personalDetailsAddAlias.validators),
+      [this.personalDetailsDob.controlName]: this.createFormControl(this.personalDetailsDob.validators),
+      [this.personalDetailsNationalInsuranceNumber.controlName]: this.createFormControl(
+        this.personalDetailsNationalInsuranceNumber.validators,
       ),
-      [PD_CONTROL_ADDRESS_LINE_ONE.controlName]: this.createFormControl(PD_CONTROL_ADDRESS_LINE_ONE.validators),
-      [PD_CONTROL_ADDRESS_LINE_TWO.controlName]: this.createFormControl(PD_CONTROL_ADDRESS_LINE_TWO.validators),
-      [PD_CONTROL_ADDRESS_LINE_THREE.controlName]: this.createFormControl(PD_CONTROL_ADDRESS_LINE_THREE.validators),
-      [PD_CONTROL_POSTCODE.controlName]: this.createFormControl(PD_CONTROL_POSTCODE.validators),
-      [PD_CONTROL_VEHICLE_MAKE.controlName]: this.createFormControl(PD_CONTROL_VEHICLE_MAKE.validators),
-      [PD_CONTROL_VEHICLE_REGISTRATION_MARK.controlName]: this.createFormControl(
-        PD_CONTROL_VEHICLE_REGISTRATION_MARK.validators,
+      [this.personalDetailsAddressLineOne.controlName]: this.createFormControl(
+        this.personalDetailsAddressLineOne.validators,
       ),
-      [PD_CONTROL_TITLE.controlName]: this.createFormControl(PD_CONTROL_TITLE.validators),
+      [this.personalDetailsAddressLineTwo.controlName]: this.createFormControl(
+        this.personalDetailsAddressLineTwo.validators,
+      ),
+      [this.personalDetailsAddressLineThree.controlName]: this.createFormControl(
+        this.personalDetailsAddressLineThree.validators,
+      ),
+      [this.personalDetailsPostcode.controlName]: this.createFormControl(this.personalDetailsPostcode.validators),
+      [this.personalDetailsVehicleMake.controlName]: this.createFormControl(this.personalDetailsVehicleMake.validators),
+      [this.personalDetailsVehicleRegistrationMark.controlName]: this.createFormControl(
+        this.personalDetailsVehicleRegistrationMark.validators,
+      ),
+      [this.personalDetailsTitle.controlName]: this.createFormControl(this.personalDetailsTitle.validators),
     });
   }
 
