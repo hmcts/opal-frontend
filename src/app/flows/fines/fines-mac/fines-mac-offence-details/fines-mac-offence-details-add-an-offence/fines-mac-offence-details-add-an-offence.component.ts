@@ -13,14 +13,14 @@ import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-det
 import { FormArray, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /* CONTROLS */
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_DATE_OF_SENTENCE as F_M_O_D_C_DATE_OF_SENTENCE } from '../constants/controls/fines-mac-offence-details-date-of-sentence.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_OFFENCE_CODE as F_M_O_D_C_OFFENCE_CODE } from '../constants/controls/fines-mac-offence-details-offence-code.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_IMPOSITIONS as F_M_O_D_C_IMPOSITIONS } from '../constants/controls/fines-mac-offence-details-impositions.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_RESULT_CODE as F_M_O_D_C_RESULT_CODE } from '../constants/controls/fines-mac-offence-details-result-code.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_IMPOSED as F_M_O_D_C_AMOUNT_IMPOSED } from '../constants/controls/fines-mac-offence-details-amount-imposed.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_PAID as F_M_O_D_C_AMOUNT_PAID } from '../constants/controls/fines-mac-offence-details-amount-paid.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_NEEDS_CREDITOR as F_M_O_D_C_NEEDS_CREDITOR } from '../constants/controls/fines-mac-offence-details-needs-creditor.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_CREDITOR as F_M_O_D_C_CREDITOR } from '../constants/controls/fines-mac-offence-details-creditor.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_DATE_OF_SENTENCE as F_M_OFFENCE_DETAILS_DATE_OF_SENTENCE } from '../constants/controls/fines-mac-offence-details-date-of-sentence.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_OFFENCE_CODE as F_M_OFFENCE_DETAILS_OFFENCE_CODE } from '../constants/controls/fines-mac-offence-details-offence-code.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_IMPOSITIONS as F_M_OFFENCE_DETAILS_IMPOSITIONS } from '../constants/controls/fines-mac-offence-details-impositions.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_RESULT_CODE as F_M_OFFENCE_DETAILS_RESULT_CODE } from '../constants/controls/fines-mac-offence-details-result-code.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_IMPOSED as F_M_OFFENCE_DETAILS_AMOUNT_IMPOSED } from '../constants/controls/fines-mac-offence-details-amount-imposed.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_PAID as F_M_OFFENCE_DETAILS_AMOUNT_PAID } from '../constants/controls/fines-mac-offence-details-amount-paid.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_NEEDS_CREDITOR as F_M_OFFENCE_DETAILS_NEEDS_CREDITOR } from '../constants/controls/fines-mac-offence-details-needs-creditor.constant';
+import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_CREDITOR as F_M_OFFENCE_DETAILS_CREDITOR } from '../constants/controls/fines-mac-offence-details-creditor.constant';
 
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
@@ -93,14 +93,14 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
 
-  public offenceDetailsDateOfSentence = F_M_O_D_C_DATE_OF_SENTENCE;
-  public offenceDetailsOffenceCode = F_M_O_D_C_OFFENCE_CODE;
-  public offenceDetailsImpositions = F_M_O_D_C_IMPOSITIONS;
-  public offenceDetailsResultCode = F_M_O_D_C_RESULT_CODE;
-  public offenceDetailsAmountImposed = F_M_O_D_C_AMOUNT_IMPOSED;
-  public offenceDetailsAmountPaid = F_M_O_D_C_AMOUNT_PAID;
-  public offenceDetailsNeedsCreditor = F_M_O_D_C_NEEDS_CREDITOR;
-  public offenceDetailsCreditor = F_M_O_D_C_CREDITOR;
+  public offenceDetailsDateOfSentence = F_M_OFFENCE_DETAILS_DATE_OF_SENTENCE;
+  public offenceDetailsOffenceCode = F_M_OFFENCE_DETAILS_OFFENCE_CODE;
+  public offenceDetailsImpositions = F_M_OFFENCE_DETAILS_IMPOSITIONS;
+  public offenceDetailsResultCode = F_M_OFFENCE_DETAILS_RESULT_CODE;
+  public offenceDetailsAmountImposed = F_M_OFFENCE_DETAILS_AMOUNT_IMPOSED;
+  public offenceDetailsAmountPaid = F_M_OFFENCE_DETAILS_AMOUNT_PAID;
+  public offenceDetailsNeedsCreditor = F_M_OFFENCE_DETAILS_NEEDS_CREDITOR;
+  public offenceDetailsCreditor = F_M_OFFENCE_DETAILS_CREDITOR;
 
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
