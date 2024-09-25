@@ -122,7 +122,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    */
   private setupPersonalDetailsForm(): void {
     this.form = new FormGroup({
-      [PD_CONTROL_ALIASES.controlName]: this.createFormArray(PD_CONTROL_ALIASES.validators, []),
+      [PD_CONTROL_ALIASES.controlName]: this.createFormAlias(PD_CONTROL_ALIASES.validators, []),
       [PD_CONTROL_FORENAMES.controlName]: this.createFormControl(PD_CONTROL_FORENAMES.validators),
       [PD_CONTROL_SURNAME.controlName]: this.createFormControl(PD_CONTROL_SURNAME.validators),
       [PD_CONTROL_ADD_ALIAS.controlName]: this.createFormControl(PD_CONTROL_ADD_ALIAS.validators),

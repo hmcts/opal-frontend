@@ -8,7 +8,6 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FormArray, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -46,6 +45,7 @@ import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../constants/fi
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../constants/fines-mac-offence-details-impositions-field-errors';
 import { validValueValidator } from '@validators/valid-value/valid-value.validator';
 import { CommonModule } from '@angular/common';
+import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -69,7 +69,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceComponent
-  extends AbstractFormAliasBaseComponent
+  extends AbstractFormArrayBaseComponent
   implements OnInit, OnDestroy
 {
   @Input() public defendantType!: string;
@@ -117,7 +117,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.addValidValueValidator();
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
-    this.setupAliasFormControls(
+    this.setupFormArrayFormControls(
       [...Array(formData[0].impositions.length).keys()],
       this.offenceDetailsImpositions.controlName,
     );
@@ -125,7 +125,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.setInitialErrorMessages();
     this.rePopulateForm(formData[0]);
     if (formData[0].impositions.length === 0) {
-      this.addAlias(0, this.offenceDetailsImpositions.controlName);
+      this.addControlsToFormArray(0, this.offenceDetailsImpositions.controlName);
     }
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
@@ -148,8 +148,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   private setupImpositionsConfiguration(): void {
-    this.aliasFields = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS.map((item) => item.controlName);
-    this.aliasControlsValidation = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS;
+    this.formArrayFields = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS.map((item) => item.controlName);
+    this.formArrayControlsValidation = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS;
   }
 
   private resultCodeListener(index: number): void {
@@ -176,8 +176,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     );
   }
 
-  public override addAlias(index: number, formArrayName: string): void {
-    super.addAlias(index, formArrayName);
+  public override addControlsToFormArray(index: number, formArrayName: string): void {
+    super.addControlsToFormArray(index, formArrayName);
     this.resultCodeListener(index);
     this.fieldErrors = {
       ...this.fieldErrors,

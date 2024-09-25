@@ -96,7 +96,7 @@ export class FinesMacParentGuardianDetailsFormComponent
    */
   private setupParentGuardianDetailsForm(): void {
     this.form = new FormGroup({
-      [PGD_CONTROL_ALIASES.controlName]: this.createFormArray(PGD_CONTROL_ALIASES.validators, []),
+      [PGD_CONTROL_ALIASES.controlName]: this.createFormAlias(PGD_CONTROL_ALIASES.validators, []),
       [PGD_CONTROL_FORENAMES.controlName]: this.createFormControl(PGD_CONTROL_FORENAMES.validators),
       [PGD_CONTROL_SURNAME.controlName]: this.createFormControl(PGD_CONTROL_SURNAME.validators),
       [PGD_CONTROL_ADD_ALIAS.controlName]: this.createFormControl(PGD_CONTROL_ADD_ALIAS.validators),

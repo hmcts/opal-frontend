@@ -49,26 +49,20 @@
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Impositions</legend>
-    @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
+    @for (formArrayControl of formArrayControls; let rowIndex = $index; track rowIndex) {
       <app-moj-ticket-panel>
         <div class="govuk-grid-row govuk-form-group">
           <div class="govuk-grid-column-one-half">
             <app-alphagov-accessible-autocomplete
               [control]="
-                form.get([
-                  'impositions',
-                  rowIndex,
-                  aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName,
-                ])
+                form.get(['impositions', rowIndex, formArrayControl[offenceDetailsResultCode.controlName].controlName])
               "
               labelText="Result code"
               labelClasses="govuk-fieldset__legend--s"
-              [inputId]="aliasControls[rowIndex][offenceDetailsResultCode.controlName].inputId"
-              [inputName]="aliasControls[rowIndex][offenceDetailsResultCode.controlName].inputName"
+              [inputId]="formArrayControl[offenceDetailsResultCode.controlName].inputId"
+              [inputName]="formArrayControl[offenceDetailsResultCode.controlName].inputName"
               [autoCompleteItems]="resultCodeItems"
-              [errors]="
-                formControlErrorMessages[aliasControls[rowIndex][offenceDetailsResultCode.controlName].controlName]
-              "
+              [errors]="formControlErrorMessages[formArrayControl[offenceDetailsResultCode.controlName].controlName]"
               [showAllValues]="true"
             >
             </app-alphagov-accessible-autocomplete>
@@ -77,8 +71,8 @@
             <app-govuk-text-input-prefix-suffix
               labelText="Amount imposed"
               labelClasses="govuk-fieldset__legend--s"
-              [inputId]="aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].inputId"
-              [inputName]="aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].inputName"
+              [inputId]="formArrayControl[offenceDetailsAmountImposed.controlName].inputId"
+              [inputName]="formArrayControl[offenceDetailsAmountImposed.controlName].inputName"
               inputClasses="govuk-input--width-10"
               prefixText="£"
               [forceTwoDecimalPoints]="true"
@@ -86,65 +80,52 @@
                 form.get([
                   'impositions',
                   rowIndex,
-                  aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].controlName,
+                  formArrayControl[offenceDetailsAmountImposed.controlName].controlName,
                 ])
               "
-              [errors]="
-                formControlErrorMessages[aliasControls[rowIndex][offenceDetailsAmountImposed.controlName].controlName]
-              "
+              [errors]="formControlErrorMessages[formArrayControl[offenceDetailsAmountImposed.controlName].controlName]"
             ></app-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-grid-column-one-quarter">
             <app-govuk-text-input-prefix-suffix
               labelText="Amount paid"
               labelClasses="govuk-fieldset__legend--s"
-              [inputId]="aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].inputId"
-              [inputName]="aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].inputName"
+              [inputId]="formArrayControl[offenceDetailsAmountPaid.controlName].inputId"
+              [inputName]="formArrayControl[offenceDetailsAmountPaid.controlName].inputName"
               inputClasses="govuk-input--width-10"
               prefixText="£"
               [forceTwoDecimalPoints]="true"
               [control]="
-                form.get([
-                  'impositions',
-                  rowIndex,
-                  aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].controlName,
-                ])
+                form.get(['impositions', rowIndex, formArrayControl[offenceDetailsAmountPaid.controlName].controlName])
               "
-              [errors]="
-                formControlErrorMessages[aliasControls[rowIndex][offenceDetailsAmountPaid.controlName].controlName]
-              "
+              [errors]="formControlErrorMessages[formArrayControl[offenceDetailsAmountPaid.controlName].controlName]"
             ></app-govuk-text-input-prefix-suffix>
           </div>
         </div>
         @if (
-          form.get([
-            'impositions',
-            rowIndex,
-            aliasControls[rowIndex][offenceDetailsNeedsCreditor.controlName].controlName,
-          ])!.value === true
+          form.get(['impositions', rowIndex, formArrayControl[offenceDetailsNeedsCreditor.controlName].controlName])!
+            .value === true
         ) {
           <div class="govuk-grid-row govuk-form-group">
             <div class="govuk-grid-column-full">
               <app-govuk-radio
-                [fieldSetId]="aliasControls[rowIndex][offenceDetailsCreditor.controlName].inputId"
+                [fieldSetId]="formArrayControl[offenceDetailsCreditor.controlName].inputId"
                 legendText="Add creditor"
                 legendClasses="govuk-fieldset__legend--s"
-                [errors]="
-                  formControlErrorMessages[aliasControls[rowIndex][offenceDetailsCreditor.controlName].controlName]
-                "
+                [errors]="formControlErrorMessages[formArrayControl[offenceDetailsCreditor.controlName].controlName]"
               >
                 @for (creditorOption of creditorOptions; track creditorOption.key) {
                   <div
                     app-govuk-radios-item
                     [labelText]="creditorOption.value"
                     [inputId]="creditorOption.key + '_' + rowIndex"
-                    [inputName]="aliasControls[rowIndex][offenceDetailsCreditor.controlName].controlName"
+                    [inputName]="formArrayControl[offenceDetailsCreditor.controlName].controlName"
                     [inputValue]="creditorOption.key + '_' + rowIndex"
                     [control]="
                       form.get([
                         'impositions',
                         rowIndex,
-                        aliasControls[rowIndex][offenceDetailsCreditor.controlName].controlName,
+                        formArrayControl[offenceDetailsCreditor.controlName].controlName,
                       ])
                     "
                   ></div>
@@ -153,12 +134,12 @@
             </div>
           </div>
         }
-        @if (aliasControls.length > 1) {
+        @if (formArrayControls.length > 1) {
           <div class="govuk-!-margin-top-3">
             <a
               class="govuk-link govuk-link--no-visited-state"
-              (click)="removeAlias(aliasControls.length - 1, 'impositions')"
-              (keyup.enter)="removeAlias(aliasControls.length - 1, 'impositions')"
+              (click)="removeControlsFromFormArray(formArrayControls.length - 1, 'impositions')"
+              (keyup.enter)="removeControlsFromFormArray(formArrayControls.length - 1, 'impositions')"
               tabindex="0"
             >
               Remove imposition
@@ -171,7 +152,7 @@
       buttonId="addImposition"
       buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
       type="button"
-      (buttonClickEvent)="addAlias(aliasControls.length, offenceDetailsImpositions.controlName)"
+      (buttonClickEvent)="addControlsToFormArray(formArrayControls.length, offenceDetailsImpositions.controlName)"
       >Add another imposition</app-govuk-button
     >
   </fieldset>
