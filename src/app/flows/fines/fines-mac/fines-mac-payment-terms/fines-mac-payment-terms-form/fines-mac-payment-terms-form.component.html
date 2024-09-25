@@ -3,34 +3,34 @@
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   @if (accessCollectionOrder) {
     <app-govuk-radio
-      [fieldSetId]="ptHasCollectionOrderControl.controlName"
+      [fieldSetId]="paymentTermsHasCollectionOrder.controlName"
       legendText="Has a collection order been made?"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages[ptHasCollectionOrderControl.controlName]"
+      [errors]="formControlErrorMessages[paymentTermsHasCollectionOrder.controlName]"
     >
       <div
         app-govuk-radios-item
         labelText="Yes"
         inputId="yes"
-        [inputName]="ptHasCollectionOrderControl.controlName"
+        [inputName]="paymentTermsHasCollectionOrder.controlName"
         inputValue="yes"
-        [control]="form.controls[ptHasCollectionOrderControl.controlName]"
+        [control]="form.controls[paymentTermsHasCollectionOrder.controlName]"
       ></div>
-      @if (form.get(ptHasCollectionOrderControl.controlName)!.value !== null) {
-        @if (form.get(ptHasCollectionOrderControl.controlName)!.value === 'yes') {
-          <div app-govuk-radios-conditional [conditionalId]="ptHasCollectionOrderControl.controlName">
+      @if (form.get(paymentTermsHasCollectionOrder.controlName)!.value !== null) {
+        @if (form.get(paymentTermsHasCollectionOrder.controlName)!.value === 'yes') {
+          <div app-govuk-radios-conditional [conditionalId]="paymentTermsHasCollectionOrder.controlName">
             <div class="govuk-form-group">
               <app-moj-date-picker
                 labelText="Date of collection order"
                 labelClasses="govuk-label--s"
-                [inputId]="ptCollectionOrderDateControl.controlName"
-                [inputName]="ptCollectionOrderDateControl.controlName"
+                [inputId]="paymentTermsCollectionOrderDate.controlName"
+                [inputName]="paymentTermsCollectionOrderDate.controlName"
                 inputClasses="govuk-input--width-10"
                 hintText="For example, 31/01/2023"
                 [maxDate]="today"
-                [control]="form.controls[ptCollectionOrderDateControl.controlName]"
-                [errors]="formControlErrorMessages[ptCollectionOrderDateControl.controlName]"
-                (dateChange)="setInputValue($event, ptCollectionOrderDateControl.controlName)"
+                [control]="form.controls[paymentTermsCollectionOrderDate.controlName]"
+                [errors]="formControlErrorMessages[paymentTermsCollectionOrderDate.controlName]"
+                (dateChange)="setInputValue($event, paymentTermsCollectionOrderDate.controlName)"
               ></app-moj-date-picker>
             </div>
           </div>
@@ -41,20 +41,20 @@
         app-govuk-radios-item
         labelText="No"
         inputId="no"
-        [inputName]="ptHasCollectionOrderControl.controlName"
+        [inputName]="paymentTermsHasCollectionOrder.controlName"
         inputValue="no"
-        [control]="form.controls[ptHasCollectionOrderControl.controlName]"
+        [control]="form.controls[paymentTermsHasCollectionOrder.controlName]"
       ></div>
-      @if (form.get(ptHasCollectionOrderControl.controlName)!.value !== null) {
-        @if (form.get(ptHasCollectionOrderControl.controlName)!.value === 'no') {
+      @if (form.get(paymentTermsHasCollectionOrder.controlName)!.value !== null) {
+        @if (form.get(paymentTermsHasCollectionOrder.controlName)!.value === 'no') {
           @if (permissions[permissionsMap.collectionOrder] !== false) {
-            <div app-govuk-radios-conditional [conditionalId]="ptHasCollectionOrderControl.controlName">
+            <div app-govuk-radios-conditional [conditionalId]="paymentTermsHasCollectionOrder.controlName">
               <div class="govuk-form-group">
                 <app-govuk-checkboxes-item
-                  [inputId]="ptMakeCollectionOrderTodayControl.controlName"
-                  [inputName]="ptMakeCollectionOrderTodayControl.controlName"
+                  [inputId]="paymentTermsMakeCollectionOrderToday.controlName"
+                  [inputName]="paymentTermsMakeCollectionOrderToday.controlName"
                   labelText="Make collection order today"
-                  [control]="form.controls[ptMakeCollectionOrderTodayControl.controlName]"
+                  [control]="form.controls[paymentTermsMakeCollectionOrderToday.controlName]"
                 ></app-govuk-checkboxes-item>
               </div>
             </div>
@@ -64,36 +64,36 @@
     </app-govuk-radio>
   }
   <app-govuk-radio
-    [fieldSetId]="ptPaymentTermsControl.controlName"
+    [fieldSetId]="paymentTermsPaymentTerms.controlName"
     legendText="Select payment terms"
     legendClasses="govuk-fieldset__legend--s"
-    [errors]="formControlErrorMessages[ptPaymentTermsControl.controlName]"
+    [errors]="formControlErrorMessages[paymentTermsPaymentTerms.controlName]"
   >
     @for (paymentTerm of paymentTerms; track paymentTerm.key) {
       <div
         app-govuk-radios-item
         [labelText]="paymentTerm.value"
         [inputId]="paymentTerm.key"
-        [inputName]="ptPaymentTermsControl.controlName"
+        [inputName]="paymentTermsPaymentTerms.controlName"
         [inputValue]="paymentTerm.key"
-        [control]="form.controls[ptPaymentTermsControl.controlName]"
+        [control]="form.controls[paymentTermsPaymentTerms.controlName]"
       ></div>
 
       @switch (paymentTerm.key) {
         @case ('payInFull') {
-          @if (form.get(ptPaymentTermsControl.controlName)!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional [conditionalId]="ptPaymentTermsControl.controlName">
+          @if (form.get(paymentTermsPaymentTerms.controlName)!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional [conditionalId]="paymentTermsPaymentTerms.controlName">
               <div class="govuk-form-group">
                 <app-moj-date-picker
                   labelText="Enter pay by date"
                   labelClasses="govuk-label--s"
-                  [inputId]="ptPayByDateControl.controlName"
-                  [inputName]="ptPayByDateControl.controlName"
+                  [inputId]="paymentTermsPayByDate.controlName"
+                  [inputName]="paymentTermsPayByDate.controlName"
                   inputClasses="govuk-input--width-10"
                   hintText="For example, 31/01/2023"
-                  [control]="form.controls[ptPayByDateControl.controlName]"
-                  [errors]="formControlErrorMessages[ptPayByDateControl.controlName]"
-                  (dateChange)="setInputValue($event, ptPayByDateControl.controlName)"
+                  [control]="form.controls[paymentTermsPayByDate.controlName]"
+                  [errors]="formControlErrorMessages[paymentTermsPayByDate.controlName]"
+                  (dateChange)="setInputValue($event, paymentTermsPayByDate.controlName)"
                 ></app-moj-date-picker>
                 @if (dateInPast) {
                   <ng-container
@@ -110,25 +110,25 @@
           }
         }
         @case ('instalmentsOnly') {
-          @if (form.get(ptPaymentTermsControl.controlName)!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional [conditionalId]="ptPaymentTermsControl.controlName">
+          @if (form.get(paymentTermsPaymentTerms.controlName)!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional [conditionalId]="paymentTermsPaymentTerms.controlName">
               <ng-container *ngTemplateOutlet="instalmentsFrequencyStartDate"></ng-container>
             </div>
           }
         }
         @case ('lumpSumPlusInstalments') {
-          @if (form.get(ptPaymentTermsControl.controlName)!.value === paymentTerm.key) {
-            <div app-govuk-radios-conditional [conditionalId]="ptPaymentTermsControl.controlName">
+          @if (form.get(paymentTermsPaymentTerms.controlName)!.value === paymentTerm.key) {
+            <div app-govuk-radios-conditional [conditionalId]="paymentTermsPaymentTerms.controlName">
               <div class="govuk-form-group">
                 <app-govuk-text-input-prefix-suffix
                   labelText="Lump sum"
                   labelClasses="govuk-label--s"
-                  [inputId]="ptLumpSumControl.controlName"
-                  [inputName]="ptLumpSumControl.controlName"
+                  [inputId]="paymentTermsLumpSum.controlName"
+                  [inputName]="paymentTermsLumpSum.controlName"
                   inputClasses="govuk-input--width-5"
                   prefixText="£"
-                  [control]="form.controls[ptLumpSumControl.controlName]"
-                  [errors]="formControlErrorMessages[ptLumpSumControl.controlName]"
+                  [control]="form.controls[paymentTermsLumpSum.controlName]"
+                  [errors]="formControlErrorMessages[paymentTermsLumpSum.controlName]"
                   [forceTwoDecimalPoints]="true"
                 >
                 </app-govuk-text-input-prefix-suffix>
@@ -144,9 +144,9 @@
     <div
       app-govuk-checkboxes-item
       labelText="Request payment card"
-      [inputId]="ptRequestCardPaymentControl.controlName"
-      [inputName]="ptRequestCardPaymentControl.controlName"
-      [control]="form.controls[ptRequestCardPaymentControl.controlName]"
+      [inputId]="paymentTermsRequestCardPayment.controlName"
+      [inputName]="paymentTermsRequestCardPayment.controlName"
+      [control]="form.controls[paymentTermsRequestCardPayment.controlName]"
     ></div>
   }
   @if (accessDefaultDates) {
@@ -158,42 +158,42 @@
       <div
         app-govuk-checkboxes-item
         labelText="There are days in default"
-        [inputId]="ptHasDaysInDefaultControl.controlName"
-        [inputName]="ptHasDaysInDefaultControl.controlName"
-        [control]="form.controls[ptHasDaysInDefaultControl.controlName]"
+        [inputId]="paymentTermsHasDaysInDefault.controlName"
+        [inputName]="paymentTermsHasDaysInDefault.controlName"
+        [control]="form.controls[paymentTermsHasDaysInDefault.controlName]"
       ></div>
 
-      @if (form.get(ptHasDaysInDefaultControl.controlName)?.value) {
-        <div app-govuk-checkboxes-conditional [conditionalId]="ptHasDaysInDefaultControl.controlName">
+      @if (form.get(paymentTermsHasDaysInDefault.controlName)?.value) {
+        <div app-govuk-checkboxes-conditional [conditionalId]="paymentTermsHasDaysInDefault.controlName">
           <div class="govuk-form-group">
             <app-moj-date-picker
               labelText="Date days in default were imposed"
               labelClasses="govuk-label--s"
-              [inputId]="ptDaysInDefaultDateControl.controlName"
-              [inputName]="ptDaysInDefaultDateControl.controlName"
+              [inputId]="paymentTermsDaysInDefaultDate.controlName"
+              [inputName]="paymentTermsDaysInDefaultDate.controlName"
               inputClasses="govuk-input--width-10"
               hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
               [maxDate]="yesterday"
-              [control]="form.controls[ptDaysInDefaultDateControl.controlName]"
-              [errors]="formControlErrorMessages[ptDaysInDefaultDateControl.controlName]"
-              (dateChange)="setInputValue($event, ptDaysInDefaultDateControl.controlName)"
+              [control]="form.controls[paymentTermsDaysInDefaultDate.controlName]"
+              [errors]="formControlErrorMessages[paymentTermsDaysInDefaultDate.controlName]"
+              (dateChange)="setInputValue($event, paymentTermsDaysInDefaultDate.controlName)"
             ></app-moj-date-picker>
           </div>
           <div class="govuk-form-group">
             <app-govuk-text-input-prefix-suffix
               labelText="Enter days in default"
               labelClasses="govuk-label--s"
-              [inputId]="ptDaysInDefaultControl.controlName"
-              [inputName]="ptDaysInDefaultControl.controlName"
+              [inputId]="paymentTermsDaysInDefault.controlName"
+              [inputName]="paymentTermsDaysInDefault.controlName"
               inputClasses="govuk-input--width-5"
               suffixText="days"
-              [control]="form.controls[ptDaysInDefaultControl.controlName]"
-              [errors]="formControlErrorMessages[ptDaysInDefaultControl.controlName]"
+              [control]="form.controls[paymentTermsDaysInDefault.controlName]"
+              [errors]="formControlErrorMessages[paymentTermsDaysInDefault.controlName]"
             ></app-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-form-group">
             <app-fines-mac-default-days
-              [date]="form.controls[ptDaysInDefaultDateControl.controlName].value"
+              [date]="form.controls[paymentTermsDaysInDefaultDate.controlName].value"
             ></app-fines-mac-default-days>
           </div>
         </div>
@@ -209,20 +209,20 @@
       <div
         app-govuk-checkboxes-item
         labelText="Hold enforcement on account (NOENF)"
-        [inputId]="ptHoldEnforcementOnAccount.controlName"
-        [inputName]="ptHoldEnforcementOnAccount.controlName"
-        [control]="form.controls[ptHoldEnforcementOnAccount.controlName]"
+        [inputId]="paymentTermsHoldEnforcementOnAccount.controlName"
+        [inputName]="paymentTermsHoldEnforcementOnAccount.controlName"
+        [control]="form.controls[paymentTermsHoldEnforcementOnAccount.controlName]"
       ></div>
-      <div *ngIf="form.get(ptHoldEnforcementOnAccount.controlName)?.value">
-        <div app-govuk-checkboxes-conditional [conditionalId]="ptHoldEnforcementOnAccount.controlName">
+      <div *ngIf="form.get(paymentTermsHoldEnforcementOnAccount.controlName)?.value">
+        <div app-govuk-checkboxes-conditional [conditionalId]="paymentTermsHoldEnforcementOnAccount.controlName">
           <app-govuk-text-area
             labelText="Reason account is on NOENF"
             labelClasses="govuk-label--s"
-            [inputId]="ptReasonAccountIsOnNoEnf.controlName"
-            [inputName]="ptReasonAccountIsOnNoEnf.controlName"
+            [inputId]="paymentTermsReasonAccountIsOnNoEnf.controlName"
+            [inputName]="paymentTermsReasonAccountIsOnNoEnf.controlName"
             inputClasses="govuk-!-width-two-thirds"
-            [control]="form.controls[ptReasonAccountIsOnNoEnf.controlName]"
-            [errors]="formControlErrorMessages[ptReasonAccountIsOnNoEnf.controlName]"
+            [control]="form.controls[paymentTermsReasonAccountIsOnNoEnf.controlName]"
+            [errors]="formControlErrorMessages[paymentTermsReasonAccountIsOnNoEnf.controlName]"
             [rows]="1"
             [maxCharacterLimit]="28"
             [characterCountEnabled]="true"
@@ -233,42 +233,42 @@
       <div
         app-govuk-checkboxes-item
         labelText="Add enforcement action"
-        [inputId]="ptAddEnforcementActionControl.controlName"
-        [inputName]="ptAddEnforcementActionControl.controlName"
-        [control]="form.controls[ptAddEnforcementActionControl.controlName]"
+        [inputId]="paymentTermsAddEnforcementAction.controlName"
+        [inputName]="paymentTermsAddEnforcementAction.controlName"
+        [control]="form.controls[paymentTermsAddEnforcementAction.controlName]"
       ></div>
-      @if (form.get(ptAddEnforcementActionControl.controlName)!.value !== null) {
-        @if (form.get(ptAddEnforcementActionControl.controlName)?.value === true) {
-          <div app-govuk-checkboxes-conditional [conditionalId]="ptAddEnforcementActionControl.controlName">
+      @if (form.get(paymentTermsAddEnforcementAction.controlName)!.value !== null) {
+        @if (form.get(paymentTermsAddEnforcementAction.controlName)?.value === true) {
+          <div app-govuk-checkboxes-conditional [conditionalId]="paymentTermsAddEnforcementAction.controlName">
             <app-govuk-radio
-              [fieldSetId]="ptEnforcementActions.controlName"
+              [fieldSetId]="paymentTermsEnforcementActions.controlName"
               legendClasses="govuk-fieldset__legend--s"
-              [errors]="formControlErrorMessages[ptEnforcementActions.controlName]"
+              [errors]="formControlErrorMessages[paymentTermsEnforcementActions.controlName]"
             >
               @for (enforcementAction of enforcementActions; track enforcementAction.key) {
                 <div
                   app-govuk-radios-item
                   [labelText]="enforcementAction.value"
                   [inputId]="enforcementAction.key"
-                  [inputName]="ptEnforcementActions.controlName"
+                  [inputName]="paymentTermsEnforcementActions.controlName"
                   [inputValue]="enforcementAction.key"
-                  [control]="form.controls[ptEnforcementActions.controlName]"
+                  [control]="form.controls[paymentTermsEnforcementActions.controlName]"
                 ></div>
 
                 @if (enforcementAction.key === 'defendantIsInCustody') {
-                  @if (form.get(ptEnforcementActions.controlName)!.value === enforcementAction.key) {
-                    <div app-govuk-radios-conditional [conditionalId]="ptEnforcementActions.controlName">
+                  @if (form.get(paymentTermsEnforcementActions.controlName)!.value === enforcementAction.key) {
+                    <div app-govuk-radios-conditional [conditionalId]="paymentTermsEnforcementActions.controlName">
                       <div class="govuk-form-group">
                         <app-moj-date-picker
                           labelText="Earliest release date (EDR)"
                           labelClasses="govuk-label--s"
-                          [inputId]="ptEarliestReleaseDate.controlName"
-                          [inputName]="ptEarliestReleaseDate.controlName"
+                          [inputId]="paymentTermsEarliestReleaseDate.controlName"
+                          [inputName]="paymentTermsEarliestReleaseDate.controlName"
                           inputClasses="govuk-input--width-10"
                           [maxDate]="yesterday"
-                          [control]="form.controls[ptEarliestReleaseDate.controlName]"
-                          [errors]="formControlErrorMessages[ptEarliestReleaseDate.controlName]"
-                          (dateChange)="setInputValue($event, ptEarliestReleaseDate.controlName)"
+                          [control]="form.controls[paymentTermsEarliestReleaseDate.controlName]"
+                          [errors]="formControlErrorMessages[paymentTermsEarliestReleaseDate.controlName]"
+                          (dateChange)="setInputValue($event, paymentTermsEarliestReleaseDate.controlName)"
                         ></app-moj-date-picker>
                       </div>
                       <div class="govuk-form-group">
@@ -276,11 +276,11 @@
                           labelText="Prison and prison number"
                           labelClasses="govuk-label--s"
                           hintText="Held as enforcement comment"
-                          [inputId]="ptPrisonAndPrisonNumber.controlName"
-                          [inputName]="ptPrisonAndPrisonNumber.controlName"
+                          [inputId]="paymentTermsPrisonAndPrisonNumber.controlName"
+                          [inputName]="paymentTermsPrisonAndPrisonNumber.controlName"
                           inputClasses="govuk-!-width-two-thirds"
-                          [control]="form.controls[ptPrisonAndPrisonNumber.controlName]"
-                          [errors]="formControlErrorMessages[ptPrisonAndPrisonNumber.controlName]"
+                          [control]="form.controls[paymentTermsPrisonAndPrisonNumber.controlName]"
+                          [errors]="formControlErrorMessages[paymentTermsPrisonAndPrisonNumber.controlName]"
                           [rows]="1"
                           [maxCharacterLimit]="28"
                           [characterCountEnabled]="true"
@@ -289,16 +289,16 @@
                     </div>
                   }
                 } @else {
-                  @if (form.get(ptEnforcementActions.controlName)!.value === enforcementAction.key) {
-                    <div app-govuk-radios-conditional [conditionalId]="ptEnforcementActions.controlName">
+                  @if (form.get(paymentTermsEnforcementActions.controlName)!.value === enforcementAction.key) {
+                    <div app-govuk-radios-conditional [conditionalId]="paymentTermsEnforcementActions.controlName">
                       <app-govuk-text-area
                         labelText="Reason account is on NOENF"
                         labelClasses="govuk-label--s"
-                        [inputId]="ptReasonAccountIsOnNoEnf.controlName"
-                        [inputName]="ptReasonAccountIsOnNoEnf.controlName"
+                        [inputId]="paymentTermsReasonAccountIsOnNoEnf.controlName"
+                        [inputName]="paymentTermsReasonAccountIsOnNoEnf.controlName"
                         inputClasses="govuk-!-width-two-thirds"
-                        [control]="form.controls[ptReasonAccountIsOnNoEnf.controlName]"
-                        [errors]="formControlErrorMessages[ptReasonAccountIsOnNoEnf.controlName]"
+                        [control]="form.controls[paymentTermsReasonAccountIsOnNoEnf.controlName]"
+                        [errors]="formControlErrorMessages[paymentTermsReasonAccountIsOnNoEnf.controlName]"
                         [rows]="1"
                         [maxCharacterLimit]="28"
                         [characterCountEnabled]="true"
@@ -339,12 +339,12 @@
     <app-govuk-text-input-prefix-suffix
       labelText="Instalment"
       labelClasses="govuk-label--s"
-      [inputId]="ptInstalmentControl.controlName"
-      [inputName]="ptInstalmentControl.controlName"
+      [inputId]="paymentTermsInstalment.controlName"
+      [inputName]="paymentTermsInstalment.controlName"
       inputClasses="govuk-input--width-5"
       prefixText="£"
-      [control]="form.controls[ptInstalmentControl.controlName]"
-      [errors]="formControlErrorMessages[ptInstalmentControl.controlName]"
+      [control]="form.controls[paymentTermsInstalment.controlName]"
+      [errors]="formControlErrorMessages[paymentTermsInstalment.controlName]"
       [forceTwoDecimalPoints]="true"
     >
     </app-govuk-text-input-prefix-suffix>
@@ -354,16 +354,16 @@
       fieldSetId="frequency"
       legendText="Frequency"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages[ptFrequencyControl.controlName]"
+      [errors]="formControlErrorMessages[paymentTermsFrequency.controlName]"
     >
       @for (frequency of frequencyOptions; track frequency.key) {
         <div
           app-govuk-radios-item
           [labelText]="frequency.value"
           [inputId]="frequency.key"
-          [inputName]="ptFrequencyControl.controlName"
+          [inputName]="paymentTermsFrequency.controlName"
           [inputValue]="frequency.key"
-          [control]="form.controls[ptFrequencyControl.controlName]"
+          [control]="form.controls[paymentTermsFrequency.controlName]"
         ></div>
       }
     </app-govuk-radio>
@@ -372,14 +372,14 @@
     <app-moj-date-picker
       labelText="Start date"
       labelClasses="govuk-label--s"
-      [inputId]="ptStartDateControl.controlName"
-      [inputName]="ptStartDateControl.controlName"
+      [inputId]="paymentTermsStartDate.controlName"
+      [inputName]="paymentTermsStartDate.controlName"
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
       [maxDate]="yesterday"
-      [control]="form.controls[ptStartDateControl.controlName]"
-      [errors]="formControlErrorMessages[ptStartDateControl.controlName]"
-      (dateChange)="setInputValue($event, ptStartDateControl.controlName)"
+      [control]="form.controls[paymentTermsStartDate.controlName]"
+      [errors]="formControlErrorMessages[paymentTermsStartDate.controlName]"
+      (dateChange)="setInputValue($event, paymentTermsStartDate.controlName)"
     ></app-moj-date-picker>
     @if (dateInPast) {
       <ng-container *ngTemplateOutlet="dateInPastTemplate; context: { $implicit: 'Start date' }"></ng-container>

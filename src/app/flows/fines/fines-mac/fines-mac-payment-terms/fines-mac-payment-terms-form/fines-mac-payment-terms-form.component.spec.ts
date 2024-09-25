@@ -265,7 +265,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['addEnforcementFields']();
 
-    expect(addControlsSpy).toHaveBeenCalledWith([component.ptHoldEnforcementOnAccount]);
+    expect(addControlsSpy).toHaveBeenCalledWith([component.paymentTermsHoldEnforcementOnAccount]);
     expect(holdEnforcementListener).toHaveBeenCalled();
   });
 
@@ -278,7 +278,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['addEnforcementFields']();
 
-    expect(addControlsSpy).toHaveBeenCalledWith([component.ptAddEnforcementActionControl]);
+    expect(addControlsSpy).toHaveBeenCalledWith([component.paymentTermsAddEnforcementAction]);
     expect(addEnforcementActionSpy).toHaveBeenCalled();
   });
 
@@ -290,7 +290,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['holdEnforcementOnAccountListener']();
 
-    expect(component.form.contains(component.ptReasonAccountIsOnNoEnf.controlName)).toBe(true);
+    expect(component.form.contains(component.paymentTermsReasonAccountIsOnNoEnf.controlName)).toBe(true);
   });
 
   it('should remove control when hold_enforcement_on_account is false', () => {
@@ -301,14 +301,14 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['holdEnforcementOnAccountListener']();
 
-    expect(component.form.contains(component.ptReasonAccountIsOnNoEnf.controlName)).toBe(false);
+    expect(component.form.contains(component.paymentTermsReasonAccountIsOnNoEnf.controlName)).toBe(false);
   });
 
   it('should reset ptCollectionOrderDateControl and create ptCollectionOrderDateControl when hasCollectionOrder value is "yes"', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
-    const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    const hasCollectionOrderControl = component.form.controls[component.paymentTermsHasCollectionOrder.controlName];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'createControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -318,17 +318,17 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     hasCollectionOrderControl.setValue('yes');
 
     expect(component['createControl']).toHaveBeenCalledWith(
-      component.ptCollectionOrderDateControl.controlName,
-      component.ptCollectionOrderDateControl.validators,
+      component.paymentTermsCollectionOrderDate.controlName,
+      component.paymentTermsCollectionOrderDate.validators,
     );
-    expect(component['removeControl']).toHaveBeenCalledWith(component.ptMakeCollectionOrderTodayControl.controlName);
+    expect(component['removeControl']).toHaveBeenCalledWith(component.paymentTermsMakeCollectionOrderToday.controlName);
   });
 
   it('should remove ptCollectionOrderDateControl and create ptMakeCollectionOrderTodayControl and ptCollectionOrderDateControl when hasCollectionOrder value is not "yes"', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
-    const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    const hasCollectionOrderControl = component.form.controls[component.paymentTermsHasCollectionOrder.controlName];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'createControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -337,12 +337,12 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['hasCollectionOrderListener']();
     hasCollectionOrderControl.setValue('no');
 
-    expect(component['removeControl']).toHaveBeenCalledWith(component.ptCollectionOrderDateControl.controlName);
+    expect(component['removeControl']).toHaveBeenCalledWith(component.paymentTermsCollectionOrderDate.controlName);
     expect(component['createControl']).toHaveBeenCalledWith(
-      component.ptMakeCollectionOrderTodayControl.controlName,
-      component.ptMakeCollectionOrderTodayControl.validators,
+      component.paymentTermsMakeCollectionOrderToday.controlName,
+      component.paymentTermsMakeCollectionOrderToday.validators,
     );
-    expect(component['createControl']).toHaveBeenCalledWith(component.ptCollectionOrderDateControl.controlName, []);
+    expect(component['createControl']).toHaveBeenCalledWith(component.paymentTermsCollectionOrderDate.controlName, []);
   });
 
   it('should set collection order date when makeCollectionOrderToday is true', () => {
@@ -351,15 +351,16 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.today = '31/08/2024';
     component['addCollectionOrderFormControls']();
     component['hasCollectionOrderListener']();
-    const hasCollectionOrderControl = component.form.controls[component.ptHasCollectionOrderControl.controlName];
+    const hasCollectionOrderControl = component.form.controls[component.paymentTermsHasCollectionOrder.controlName];
     hasCollectionOrderControl.setValue('no');
 
-    const makeCollectionOrderToday = component.form.controls[component.ptMakeCollectionOrderTodayControl.controlName];
+    const makeCollectionOrderToday =
+      component.form.controls[component.paymentTermsMakeCollectionOrderToday.controlName];
     makeCollectionOrderToday.setValue(true);
 
     component['setCollectionOrderDate']();
 
-    expect(component.form.get(component.ptCollectionOrderDateControl.controlName)!.value).toBe(component.today);
+    expect(component.form.get(component.paymentTermsCollectionOrderDate.controlName)!.value).toBe(component.today);
   });
 
   it('should setup permissions', () => {
@@ -375,10 +376,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should update form controls based on selected enforcement action', () => {
     component.defendantType = 'adultOrYouthOnly';
     component['addEnforcementFields']();
-    const addEnforcementActionControl = component.form.controls[component.ptAddEnforcementActionControl.controlName];
+    const addEnforcementActionControl = component.form.controls[component.paymentTermsAddEnforcementAction.controlName];
     component['addEnforcementActionListener']();
     addEnforcementActionControl.setValue(true);
-    const enforcementActionsControl = component.form.controls[component.ptEnforcementActions.controlName];
+    const enforcementActionsControl = component.form.controls[component.paymentTermsEnforcementActions.controlName];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
@@ -395,10 +396,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should update form controls based on selected enforcement action', () => {
     component.defendantType = 'adultOrYouthOnly';
     component['addEnforcementFields']();
-    const addEnforcementActionControl = component.form.controls[component.ptAddEnforcementActionControl.controlName];
+    const addEnforcementActionControl = component.form.controls[component.paymentTermsAddEnforcementAction.controlName];
     component['addEnforcementActionListener']();
     addEnforcementActionControl.setValue(true);
-    const enforcementActionsControl = component.form.controls[component.ptEnforcementActions.controlName];
+    const enforcementActionsControl = component.form.controls[component.paymentTermsEnforcementActions.controlName];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
