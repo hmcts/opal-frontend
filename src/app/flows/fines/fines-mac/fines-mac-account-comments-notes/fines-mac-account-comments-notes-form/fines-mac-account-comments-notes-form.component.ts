@@ -18,8 +18,8 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
-import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_CONTROLS_COMMENTS as ACN_CONTROL_COMMENTS } from '../constants/controls/fines-mac-account-comments-notes-controls-comments';
-import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_CONTROLS_NOTES as ACN_CONTROL_NOTES } from '../constants/controls/fines-mac-account-comments-notes-controls-notes';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_CONTROLS_COMMENTS as F_M_ACCOUNT_COMMENTS_NOTES_COMMENTS } from '../constants/controls/fines-mac-account-comments-notes-controls-comments';
+import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_CONTROLS_NOTES as F_M_ACCOUNT_COMMENTS_NOTES_NOTES } from '../constants/controls/fines-mac-account-comments-notes-controls-notes';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
@@ -36,16 +36,18 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  public acnControlComments = ACN_CONTROL_COMMENTS;
-  public acnControlNotes = ACN_CONTROL_NOTES;
+  public accountCommentNotesComments = F_M_ACCOUNT_COMMENTS_NOTES_COMMENTS;
+  public accountCommentNotesNotes = F_M_ACCOUNT_COMMENTS_NOTES_NOTES;
 
   /**
    * Sets up the account comments and notes form with the necessary form controls.
    */
   private setupAccountCommentsNotesForm(): void {
     this.form = new FormGroup({
-      [this.acnControlComments.controlName]: this.createFormControl(this.acnControlComments.validators),
-      [this.acnControlNotes.controlName]: this.createFormControl(this.acnControlNotes.validators),
+      [this.accountCommentNotesComments.controlName]: this.createFormControl(
+        this.accountCommentNotesComments.validators,
+      ),
+      [this.accountCommentNotesNotes.controlName]: this.createFormControl(this.accountCommentNotesNotes.validators),
     });
   }
 
