@@ -23,11 +23,11 @@ import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-c
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
-import { FINES_MAC_CONTACT_DETAILS_CONTROLS_EMAIL_ADDRESS_ONE as FM_C_D_EMAIL_ADDRESS_ONE } from '../constants/controls/fines-mac-contact-details-controls-email-address-one';
-import { FINES_MAC_CONTACT_DETAILS_CONTROLS_EMAIL_ADDRESS_TWO as FM_C_D_EMAIL_ADDRESS_TWO } from '../constants/controls/fines-mac-contact-details-controls-email-address-2';
-import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_MOBILE as FM_C_D_TELEPHONE_NUMBER_MOBILE } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-mobile';
-import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_HOME as FM_C_D_TELEPHONE_NUMBER_HOME } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-home';
-import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_BUSINESS as FM_C_D_TELEPHONE_NUMBER_BUSINESS } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-business';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_EMAIL_ADDRESS_ONE as FM_CONTACT_DETAILS_EMAIL_ADDRESS_ONE } from '../constants/controls/fines-mac-contact-details-controls-email-address-one';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_EMAIL_ADDRESS_TWO as FM_CONTACT_DETAILS_EMAIL_ADDRESS_TWO } from '../constants/controls/fines-mac-contact-details-controls-email-address-2';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_MOBILE as FM_CONTACT_DETAILS_TELEPHONE_NUMBER_MOBILE } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-mobile';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_HOME as FM_CONTACT_DETAILS_TELEPHONE_NUMBER_HOME } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-home';
+import { FINES_MAC_CONTACT_DETAILS_CONTROLS_TELEPHONE_NUMBER_BUSINESS as FM_CONTACT_DETAILS_TELEPHONE_NUMBER_BUSINESS } from '../constants/controls/fines-mac-contact-details-controls-telephone-number-business';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
@@ -53,11 +53,11 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
 
   override fieldErrors = FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS;
 
-  public contactDetailsEmailAddressOne = FM_C_D_EMAIL_ADDRESS_ONE;
-  public contactDetailsEmailAddressTwo = FM_C_D_EMAIL_ADDRESS_TWO;
-  public contactDetailsTelephoneNumberMobile = FM_C_D_TELEPHONE_NUMBER_MOBILE;
-  public contactDetailsTelephoneNumberHome = FM_C_D_TELEPHONE_NUMBER_HOME;
-  public contactDetailsTelephoneNumberBusiness = FM_C_D_TELEPHONE_NUMBER_BUSINESS;
+  public contactDetailsEmailAddressOne = FM_CONTACT_DETAILS_EMAIL_ADDRESS_ONE;
+  public contactDetailsEmailAddressTwo = FM_CONTACT_DETAILS_EMAIL_ADDRESS_TWO;
+  public contactDetailsTelephoneNumberMobile = FM_CONTACT_DETAILS_TELEPHONE_NUMBER_MOBILE;
+  public contactDetailsTelephoneNumberHome = FM_CONTACT_DETAILS_TELEPHONE_NUMBER_HOME;
+  public contactDetailsTelephoneNumberBusiness = FM_CONTACT_DETAILS_TELEPHONE_NUMBER_BUSINESS;
 
   /**
    * Sets up the contact details form with the necessary form controls.
