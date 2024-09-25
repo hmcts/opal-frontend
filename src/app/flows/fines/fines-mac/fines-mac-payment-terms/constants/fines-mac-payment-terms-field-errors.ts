@@ -1,27 +1,27 @@
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as PT_CONTROL_PAYMENT_TERMS } from '../constants/controls/fines-mac-payment-terms-controls-payment-terms.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAY_BY_DATE as PT_CONTROL_PAY_BY_DATE } from '../constants/controls/fines-mac-payment-terms-controls-pay-by-date.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_LUMP_SUM as PT_CONTROL_LUMP_SUM } from '../constants/controls/fines-mac-payment-terms-controls-lump-sum.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_INSTALMENT as PT_CONTROL_INSTALMENT } from '../constants/controls/fines-mac-payment-terms-controls-instalment.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_FREQUENCY as PT_CONTROL_FREQUENCY } from '../constants/controls/fines-mac-payment-terms-controls-frequency.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_START_DATE as PT_CONTROL_START_DATE } from '../constants/controls/fines-mac-payment-terms-controls-start-date.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as PT_CONTROL_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as PT_CONTROL_DAYS_IN_DEFAULT_DATE } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as PT_CONTROL_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as PT_CONTROL_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF } from './controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ENFORCEMENT_ACTIONS as PT_CONTROL_ENFORCEMENT_ACTIONS } from './controls/fines-mac-payment-terms-controls-enforcement-actions.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_EARLIEST_RELEASE_DATE as PT_CONTROL_EARLIEST_RELEASE_DATE } from './controls/fines-mac-payment-terms-controls-earliest-release-date.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PRISON_AND_PRISON_NUMBER as PT_CONTROL_PRISON_AND_PRISON_NUMBER } from './controls/fines-mac-payment-terms-controls-prison-and-prison-number.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAYMENT_TERMS as F_M_PAYMENT_TERMS_PAYMENT_TERMS } from '../constants/controls/fines-mac-payment-terms-controls-payment-terms.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAY_BY_DATE as F_M_PAYMENT_TERMS_PAY_BY_DATE } from '../constants/controls/fines-mac-payment-terms-controls-pay-by-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_LUMP_SUM as F_M_PAYMENT_TERMS_LUMP_SUM } from '../constants/controls/fines-mac-payment-terms-controls-lump-sum.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_INSTALMENT as F_M_PAYMENT_TERMS_INSTALMENT } from '../constants/controls/fines-mac-payment-terms-controls-instalment.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_FREQUENCY as F_M_PAYMENT_TERMS_FREQUENCY } from '../constants/controls/fines-mac-payment-terms-controls-frequency.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_START_DATE as F_M_PAYMENT_TERMS_START_DATE } from '../constants/controls/fines-mac-payment-terms-controls-start-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT_DATE } from '../constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_COLLECTION_ORDER as F_M_PAYMENT_TERMS_HAS_COLLECTION_ORDER } from '../constants/controls/fines-mac-payment-terms-controls-has-collection-order.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_COLLECTION_ORDER_DATE as F_M_PAYMENT_TERMS_COLLECTION_ORDER_DATE } from '../constants/controls/fines-mac-payment-terms-controls-collection-order-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF as F_M_PAYMENT_TERMS_REASON_ACCOUNT_IS_ON_NOENF } from './controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_ENFORCEMENT_ACTIONS as F_M_PAYMENT_TERMS_ENFORCEMENT_ACTIONS } from './controls/fines-mac-payment-terms-controls-enforcement-actions.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_EARLIEST_RELEASE_DATE as F_M_PAYMENT_TERMS_EARLIEST_RELEASE_DATE } from './controls/fines-mac-payment-terms-controls-earliest-release-date.constant';
+import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PRISON_AND_PRISON_NUMBER as F_M_PAYMENT_TERMS_PRISON_AND_PRISON_NUMBER } from './controls/fines-mac-payment-terms-controls-prison-and-prison-number.constant';
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
-  [PT_CONTROL_HAS_COLLECTION_ORDER.controlName]: {
+  [F_M_PAYMENT_TERMS_HAS_COLLECTION_ORDER.controlName]: {
     required: {
       message: `Select whether there was a collection order`,
       priority: 1,
     },
   },
-  [PT_CONTROL_COLLECTION_ORDER_DATE.controlName]: {
+  [F_M_PAYMENT_TERMS_COLLECTION_ORDER_DATE.controlName]: {
     required: {
       message: `Enter date collection order made`,
       priority: 1,
@@ -43,13 +43,13 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 5,
     },
   },
-  [PT_CONTROL_PAYMENT_TERMS.controlName]: {
+  [F_M_PAYMENT_TERMS_PAYMENT_TERMS.controlName]: {
     required: {
       message: `Select payment terms`,
       priority: 1,
     },
   },
-  [PT_CONTROL_PAY_BY_DATE.controlName]: {
+  [F_M_PAYMENT_TERMS_PAY_BY_DATE.controlName]: {
     required: {
       message: `Enter a pay by date`,
       priority: 1,
@@ -63,7 +63,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 3,
     },
   },
-  [PT_CONTROL_LUMP_SUM.controlName]: {
+  [F_M_PAYMENT_TERMS_LUMP_SUM.controlName]: {
     required: {
       message: `Enter lump sum`,
       priority: 1,
@@ -73,7 +73,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 2,
     },
   },
-  [PT_CONTROL_INSTALMENT.controlName]: {
+  [F_M_PAYMENT_TERMS_INSTALMENT.controlName]: {
     required: {
       message: `Enter instalment amount`,
       priority: 1,
@@ -83,13 +83,13 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 2,
     },
   },
-  [PT_CONTROL_FREQUENCY.controlName]: {
+  [F_M_PAYMENT_TERMS_FREQUENCY.controlName]: {
     required: {
       message: `Select frequency of payment`,
       priority: 1,
     },
   },
-  [PT_CONTROL_START_DATE.controlName]: {
+  [F_M_PAYMENT_TERMS_START_DATE.controlName]: {
     required: {
       message: `Enter start date`,
       priority: 1,
@@ -103,7 +103,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 3,
     },
   },
-  [PT_CONTROL_DAYS_IN_DEFAULT_DATE.controlName]: {
+  [F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT_DATE.controlName]: {
     required: {
       message: `Enter date days in default were imposed`,
       priority: 1,
@@ -121,7 +121,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 4,
     },
   },
-  [PT_CONTROL_DAYS_IN_DEFAULT.controlName]: {
+  [F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT.controlName]: {
     required: {
       message: `Enter days in default`,
       priority: 1,
@@ -135,7 +135,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 3,
     },
   },
-  [PT_CONTROL_REASON_ACCOUNT_IS_ON_NOENF.controlName]: {
+  [F_M_PAYMENT_TERMS_REASON_ACCOUNT_IS_ON_NOENF.controlName]: {
     required: {
       message: `Enter a reason`,
       priority: 1,
@@ -149,13 +149,13 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 3,
     },
   },
-  [PT_CONTROL_ENFORCEMENT_ACTIONS.controlName]: {
+  [F_M_PAYMENT_TERMS_ENFORCEMENT_ACTIONS.controlName]: {
     required: {
       message: `Select reason for enforcement action`,
       priority: 1,
     },
   },
-  [PT_CONTROL_EARLIEST_RELEASE_DATE.controlName]: {
+  [F_M_PAYMENT_TERMS_EARLIEST_RELEASE_DATE.controlName]: {
     invalidDateFormat: {
       message: `Date must be in the format DD/MM/YYYY`,
       priority: 2,
@@ -169,7 +169,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IAbstractFormBaseFieldErrors 
       priority: 4,
     },
   },
-  [PT_CONTROL_PRISON_AND_PRISON_NUMBER.controlName]: {
+  [F_M_PAYMENT_TERMS_PRISON_AND_PRISON_NUMBER.controlName]: {
     maxlength: {
       message: `Prison and prison number must be less than 28 characters`,
       priority: 2,
