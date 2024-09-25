@@ -53,17 +53,17 @@ export abstract class AbstractFormAliasBaseComponent extends AbstractFormBaseCom
     fieldNames: string[],
     controlValidation: IAbstractFormArrayControlValidation[],
   ): { [key: string]: IAbstractFormBaseFormArrayControl } {
-    const formArray = this.form.get(formArrayName) as FormArray;
-    const formArrayFormGroup = new FormGroup({});
+    const formAliases = this.form.get(formArrayName) as FormArray;
+    const formAliasesFormGroup = new FormGroup({});
 
     // Create the form controls...
     const controls = this.createAliasControls(fieldNames, index);
 
     // Add the controls to the form group...
-    this.addControlsToFormGroup(formArrayFormGroup, controlValidation, index);
+    this.addControlsToFormGroup(formAliasesFormGroup, controlValidation, index);
 
     // Add the form group to the form array...
-    formArray.push(formArrayFormGroup);
+    formAliases.push(formAliasesFormGroup);
 
     // Return the form controls...
     return controls;

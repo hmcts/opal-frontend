@@ -67,33 +67,6 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
   }
 
   /**
-   * Removes all form array controls and clears error messages for the specified form array.
-   * 
-   * @param formArrayControls - An array of form array controls to remove.
-   * @param formArrayName - The name of the form array.
-   * @param fieldNames - An array of field names associated with the form array controls.
-   * @returns An empty array of form array controls.
-   */
-  private removeAllFormArrayControls(
-    formArrayControls: IAbstractFormArrayControls[],
-    formArrayName: string,
-    fieldNames: string[],
-  ): [] {
-    const control = this.form.get(formArrayName) as FormArray;
-
-    // Clear the error messages...
-    [...formArrayControls].forEach((_element, index) => {
-      this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
-    });
-
-    // Reset the form array controls...
-    control.clear();
-
-    // Return en empty array of form array controls...
-    return [];
-  }
-
-  /**
    * Creates a new instance of FormArray with the specified validators and controls.
    * 
    * @param validators - An array of validator functions to be applied to the form array.
