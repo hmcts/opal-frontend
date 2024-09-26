@@ -21,11 +21,11 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
 
     When I select the "Pay in full" radio button
     And I see "For example, 31/01/2023" hint text above the "Enter pay by date" date picker
-    And I enter "12/09/2023" into the "Enter pay by date" date field
+    And I enter a date 52 weeks into the past into the "Enter pay by date" date field
     Then I see "Pay by date is in the past" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
-    When I enter "12/09/2029" into the "Enter pay by date" date field
+    When I enter a date 200 weeks into the future into the "Enter pay by date" date field
     Then I see "Pay by date is more than 3 years in the future" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
@@ -35,11 +35,11 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     And I validate the "Fortnightly" radio button is not selected
     And I validate the "Monthly" radio button is not selected
     And I see "For example, 31/01/2023" hint text above the "Start date" date picker
-    And I enter "12/09/2023" into the "Start date" date field
+    And I enter a date 52 weeks into the past into the "Start date" date field
     Then I see "Start date is in the past" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
-    When I enter "12/09/2029" into the "Start date" date field
+    When I enter a date 200 weeks into the future into the "Start date" date field
     Then I see "Start date is more than 3 years in the future" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
@@ -50,11 +50,11 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     And I validate the "Fortnightly" radio button is not selected
     And I validate the "Monthly" radio button is not selected
     And I see "For example, 31/01/2023" hint text above the "Start date" date picker
-    And I enter "12/09/2023" into the "Start date" date field
+    And I enter a date 52 weeks into the past into the "Start date" date field
     Then I see "Start date is in the past" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
-    When I enter "12/09/2029" into the "Start date" date field
+    When I enter a date 200 weeks into the future into the "Start date" date field
     Then I see "Start date is more than 3 years in the future" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
@@ -204,7 +204,7 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     #AC15
 
     When I select the "Pay in full" radio button
-    And I enter "16/09/2023" into the "Enter pay by date" date field
+    And I enter a date 52 weeks into the past into the "Enter pay by date" date field
     And I select the "Hold enforcement on account (NOENF)" checkbox
     And I click the "Return to account details" button
     And I see the error message "Enter a reason" at the top of the page
@@ -219,7 +219,7 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     And I click on the "Payment terms" link
     And I see "Payment terms" on the page header
     And I select the "Pay in full" radio button
-    And I enter "16/09/2023" into the "Enter pay by date" date field
+    And I enter a date 52 weeks into the past into the "Enter pay by date" date field
     And I select the "Hold enforcement on account (NOENF)" checkbox
     And I enter "abc123!" into the "Reason account is on NOENF" text field
     And I click the "Return to account details" button
@@ -233,7 +233,7 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
   Scenario: AC6 & AC17 - Validation passes, Hold enforcement on account (NOENF) checkbox, return to account details
 
     When I select the "Pay in full" radio button
-    And I enter "13/09/2025" into the "Enter pay by date" date field
+    And I enter a date 52 weeks into the future into the "Enter pay by date" date field
     And I select the "Hold enforcement on account (NOENF)" checkbox
     And I enter "abc123'()_., -*" into the "Reason account is on NOENF" text field
     And I click the "Return to account details" button
@@ -242,7 +242,7 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     When I click on the "Payment terms" link
     Then I see "Payment terms" on the page header
     And I validate the "Pay in full" radio button is selected
-    And I see "13/09/2025" in the "Enter pay by date" payment field
+    And I see a date 52 weeks into the future in the "Enter pay by date" date field
     And I validate the "Hold enforcement on account (NOENF)" checkbox is checked
     And I see "abc123'()_., -*" in the "Reason account is on NOENF" text field
 
@@ -252,7 +252,7 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     And I enter "150" into the "Lump sum" payment field
     And I enter "300" into the "Instalment" payment field
     And I select the "Monthly" radio button
-    And I enter "13/09/2025" into the "Start date" date field
+    And I enter a date 52 weeks into the future into the "Start date" date field
     And I select the "Hold enforcement on account (NOENF)" checkbox
     And the characters remaining counter should show 18 after entering 10 characters into the "Reason account is on NOENF" input field
     And I click the "Return to account details" button
@@ -263,7 +263,7 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     And I see "150" in the "Lump sum" payment field
     And I see "300" in the "Instalment" payment field
     And I validate the "Monthly" radio button is selected
-    And I see "13/09/2025" in the "Start date" payment field
+    And I see a date 52 weeks into the future in the "Start date" date field
     And I validate the "Hold enforcement on account (NOENF)" checkbox is checked
 
   Scenario: AC19 & AC20 - Cancel link behaviour
