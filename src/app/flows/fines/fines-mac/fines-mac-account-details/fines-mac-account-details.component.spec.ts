@@ -92,8 +92,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     const documentLanguage = 'CY';
     const hearingLanguage = 'EN';
     component['finesService'].finesMacState.languagePreferences.formData = {
-      document_language: documentLanguage,
-      hearing_language: hearingLanguage,
+      fm_language_preferences_document_language: documentLanguage,
+      fm_language_preferences_hearing_language: hearingLanguage,
     };
 
     component['setLanguage']();
@@ -110,8 +110,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     const documentLanguage = 'german';
     const hearingLanguage = 'french';
     component['finesService'].finesMacState.languagePreferences.formData = {
-      document_language: documentLanguage,
-      hearing_language: hearingLanguage,
+      fm_language_preferences_document_language: documentLanguage,
+      fm_language_preferences_hearing_language: hearingLanguage,
     };
 
     component['setLanguage']();

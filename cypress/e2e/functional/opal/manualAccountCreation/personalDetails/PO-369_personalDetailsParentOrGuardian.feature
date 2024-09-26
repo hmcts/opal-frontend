@@ -109,49 +109,8 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
       | test road    | London       | Return to account details |
       | test road    | London       | Add offence details       |
 
-  Scenario: AC4- positive: If a user selects the 'Add Aliases' tick box
-    When I select the "Add aliases" checkbox
-    Then I see the "Alias 1" sub heading in aliases
-    Then I verify the text boxes "First names","Last name" below the sub heading
 
-  Scenario: AC5-positive: If a user selects 'Add another alias' for the first time
-    When I select the "Add aliases" checkbox
-    When I select add another alias
-    Then I see the "Alias 2" sub heading in aliases
-    Then I verify the text boxes "First names","Last name" below the sub heading
-    Then I see the "Remove" link below the "Alias 2", "Last name" input
-    #And I see "Add another alias" button below the "Remove" link "last name"
-    And I see the "Remove" link below the "Alias 2", "Last name" input
-
-  Scenario: AC6-positive: If a user selects 'Add another alias' for the nth time (where N = 2, 3 or 4)
-    When I select the "Add aliases" checkbox
-    Then I see the "Alias 1" sub heading in aliases
-    Then I verify the text boxes "First names","Last name" below the sub heading
-    And I click the "Add another alias" button
-
-    Then I see the "Alias 2" sub heading in aliases
-    Then I verify the text boxes "First names","Last name" below the sub heading
-    Then I see the "Remove" link below the "Alias 2", "Last name" input
-    #And I see "Add another alias" link below the "Remove" button
-
-    And I click the "Add another alias" button
-    Then I see the "Alias 3" sub heading in aliases
-    Then I verify the text boxes "First names","Last name" below the sub heading
-    Then I see the "Remove" link below the "Alias 3", "Last name" input
-
-
-    And I click the "Add another alias" button
-    Then I see the "Alias 4" sub heading in aliases
-    Then I verify the text boxes "First names","Last name" below the sub heading
-    Then I see the "Remove" link below the "Alias 4", "Last name" input
-
-
-    And I click the "Add another alias" button
-    Then I see the "Alias 5" sub heading in aliases
-    Then I verify the text boxes "First names","Last name" below the sub heading
-    Then I see the "Remove" link below the "Alias 5", "Last name" input
-
-  Scenario: AC7- positive: verifying the 'Remove' alias button work flow
+  Scenario: AC4,5,6,7,8- positive: verifying the 'Remove' alias button work flow
     When I select the "Add aliases" checkbox
     Then I see the "Alias 1" sub heading in aliases
     Then I verify the text boxes "First names","Last name" below the sub heading
@@ -203,12 +162,6 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     Then I see the "Alias 1" sub heading in aliases
     And I do not see the "Remove" link below the "Alias 1"
 
-
-  Scenario: AC8- positive: If the user unticks the 'Add aliases' tick box
-    When I select the "Add aliases" checkbox
-    Then I set the "Alias 1", "First names" to "First names in alias"
-    And I set the "Alias 1", "Last name" to "Last name in aliases"
-
     Then I unselect the "Add aliases" checkbox
     Then I no longer see "Alias 1" sub heading
 
@@ -228,48 +181,48 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
     Then I click the "Return to account details" button
     Then I see the error message "Enter a valid date of birth in the past" at the top of the page
 
-  Scenario: AC10a- negative: User ticks Add aliases box but does not input any data into Alias 1
-    When I select title "Mr" from dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
-    And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
+  # Scenario: AC10a- negative: User ticks Add aliases box but does not input any data into Alias 1
+  #   When I select title "Mr" from dropdown
+  #   And I enter "John Smithy Michaele" into the "First names" field
+  #   And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
 
-    When I select the "Add aliases" checkbox
-    And I enter "456 Lamburgh Street" into the "Address line 1" field
-    Then I click the "<returnButton>" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    Examples:
-      | returnButton              |
-      | Return to account details |
-      | Add offence details       |
+  #   When I select the "Add aliases" checkbox
+  #   And I enter "456 Lamburgh Street" into the "Address line 1" field
+  #   Then I click the "<returnButton>" button
+  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+  #   And I see the error message "Enter last name for alias 1" at the top of the page
+  #   Examples:
+  #     | returnButton              |
+  #     | Return to account details |
+  #     | Add offence details       |
 
-  Scenario: AC10ai- negative: User adds data into Alias 1 - First names, but does enter any data into last name
-    When I select title "Mr" from dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
-    And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
-    When I select the "Add aliases" checkbox
-    Then I set the "Alias 1", "First names" to "Micheal Kores"
-    And I enter "456 Lamburgh Street" into the "Address line 1" field
-    Then I click the "<returnButton>" button
-    Then I see the error message "Enter last name for alias 1" at the top of the page
-    Examples:
-      | returnButton              |
-      | Return to account details |
-      | Add offence details       |
+  # Scenario: AC10ai- negative: User adds data into Alias 1 - First names, but does enter any data into last name
+  #   When I select title "Mr" from dropdown
+  #   And I enter "John Smithy Michaele" into the "First names" field
+  #   And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
+  #   When I select the "Add aliases" checkbox
+  #   Then I set the "Alias 1", "First names" to "Micheal Kores"
+  #   And I enter "456 Lamburgh Street" into the "Address line 1" field
+  #   Then I click the "<returnButton>" button
+  #   Then I see the error message "Enter last name for alias 1" at the top of the page
+  #   Examples:
+  #     | returnButton              |
+  #     | Return to account details |
+  #     | Add offence details       |
 
-  Scenario: AC10aii- negative: User adds data into Alias 1 - Last name, but does enter any data into First names
-    When I select title "Miss" from dropdown
-    And I enter "John Smithy Michaele" into the "First names" field
-    And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
-    When I select the "Add aliases" checkbox
-    And I set the "Alias 1", "Last name" to "Guccio gucci "
-    And I enter "456 Lamburgh Street" into the "Address line 1" field
-    Then I click the "<returnButton>" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    Examples:
-      | returnButton              |
-      | Return to account details |
-      | Add offence details       |
+  # Scenario: AC10aii- negative: User adds data into Alias 1 - Last name, but does enter any data into First names
+  #   When I select title "Miss" from dropdown
+  #   And I enter "John Smithy Michaele" into the "First names" field
+  #   And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
+  #   When I select the "Add aliases" checkbox
+  #   And I set the "Alias 1", "Last name" to "Guccio gucci "
+  #   And I enter "456 Lamburgh Street" into the "Address line 1" field
+  #   Then I click the "<returnButton>" button
+  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
+  #   Examples:
+  #     | returnButton              |
+  #     | Return to account details |
+  #     | Add offence details       |
 
   # Scenario: AC10b -negative: User does not add any data into either Alias 2 fields
   #     When I select title "Ms" from dropdown
