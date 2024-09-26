@@ -51,10 +51,11 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   private setBusinessUnit(response: IOpalFinesBusinessUnitRefData): void {
     const { count, refData } = response;
-    const { business_unit: businessUnit } = this.finesService.finesMacState.accountDetails.formData;
+    const { fm_create_account_business_unit: businessUnit } = this.finesService.finesMacState.accountDetails.formData;
 
     if (count === 1 && businessUnit === null) {
-      this.finesService.finesMacState.accountDetails.formData.business_unit = refData[0].business_unit_name;
+      this.finesService.finesMacState.accountDetails.formData.fm_create_account_business_unit =
+        refData[0].business_unit_name;
       this.finesService.finesMacState.businessUnit = refData[0];
     }
     this.businessUnits = refData;
@@ -82,7 +83,9 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   public handleAccountDetailsSubmit(form: IFinesMacCreateAccountForm): void {
     // Get the business unit and default language from the business unit if applicable
-    const businessUnit = this.businessUnits.find((unit) => unit.business_unit_name === form.formData.business_unit)!;
+    const businessUnit = this.businessUnits.find(
+      (unit) => unit.business_unit_name === form.formData.fm_create_account_business_unit,
+    )!;
     const defaultDocumentLanguage = this.opalFinesService.getConfigurationItemValue(
       businessUnit,
       this.configurationItems.defaultDocumentLanguagePreference,
@@ -99,7 +102,9 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
       accountDetails: form,
-      businessUnit: this.businessUnits.find((unit) => unit.business_unit_name === form.formData.business_unit)!,
+      businessUnit: this.businessUnits.find(
+        (unit) => unit.business_unit_name === form.formData.fm_create_account_business_unit,
+      )!,
       languagePreferences: {
         ...this.finesService.finesMacState.languagePreferences,
         formData: {
@@ -126,14 +131,14 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
   }
 
   public ngOnInit(): void {
-    const { business_unit: businessUnit } = this.finesService.finesMacState.accountDetails.formData;
+    const { fm_create_account_business_unit: businessUnit } = this.finesService.finesMacState.accountDetails.formData;
     this.finesService.finesMacState = {
       ...FINES_MAC_STATE,
       accountDetails: {
         ...FINES_MAC_CREATE_ACCOUNT_FORM,
         formData: {
           ...FINES_MAC_CREATE_ACCOUNT_STATE,
-          business_unit: businessUnit,
+          fm_create_account_business_unit: businessUnit,
         },
       },
     };
