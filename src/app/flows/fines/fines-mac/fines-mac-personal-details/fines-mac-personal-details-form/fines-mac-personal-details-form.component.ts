@@ -60,11 +60,6 @@ import { FINES_MAC_CONTROLS_VEHICLE_REGISTRATION_MARK as PD_CONTROL_VEHICLE_REGI
 import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_ADDRESS_LINE_THREE as PD_CONTROL_ADDRESS_LINE_THREE } from '../constants/controls/fines-mac-personal-details-controls-address-line-three';
 import { FINES_MAC_PERSONAL_DETAILS_CONTROLS_TITLE as PD_CONTROL_TITLE } from '../constants/controls/fines-mac-personal-details-controls-title';
 
-// PAYMENT TERMS FORM CONTROLS
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_HAS_DAYS_IN_DEFAULT as F_M_PAYMENT_TERMS_HAS_DAYS_IN_DEFAULT } from '../../fines-mac-payment-terms/constants/controls/fines-mac-payment-terms-controls-has-days-in-default.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT as F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT } from '../../fines-mac-payment-terms/constants/controls/fines-mac-payment-terms-controls-days-in-default.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_DAYS_IN_DEFAULT_DATE as F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT_DATE } from '../../fines-mac-payment-terms/constants/controls/fines-mac-payment-terms-controls-days-in-default-date.constant';
-
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
@@ -197,9 +192,9 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
 
       // Reset payment terms default date data
-      paymentTermsFormData[F_M_PAYMENT_TERMS_HAS_DAYS_IN_DEFAULT.controlName] = false;
-      paymentTermsFormData[F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT.controlName] = null;
-      paymentTermsFormData[F_M_PAYMENT_TERMS_DAYS_IN_DEFAULT_DATE.controlName] = null;
+      paymentTermsFormData['fm_payment_terms_has_days_in_default'] = false;
+      paymentTermsFormData['fm_payment_terms_days_in_default'] = null;
+      paymentTermsFormData['fm_payment_terms_days_in_default_date'] = null;
     }
   }
 

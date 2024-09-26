@@ -1,22 +1,45 @@
+import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
+import { pastDateValidator } from '@validators/past-date/past-date.validator';
 import { IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-enforcment-actions-options-control-validation.interface';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_EARLIEST_RELEASE_DATE } from './controls/fines-mac-payment-terms-controls-earliest-release-date.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF } from './controls/fines-mac-payment-terms-controls-hold-enforcement-reason.constant';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PRISON_AND_PRISON_NUMBER } from './controls/fines-mac-payment-terms-controls-prison-and-prison-number.constant';
+import { Validators } from '@angular/forms';
+import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 
 export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION: IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation =
   {
     defendantIsInCustody: {
       fieldsToAdd: [
-        FINES_MAC_PAYMENT_TERMS_CONTROLS_EARLIEST_RELEASE_DATE,
-        FINES_MAC_PAYMENT_TERMS_CONTROLS_PRISON_AND_PRISON_NUMBER,
+        {
+          controlName: 'fm_payment_terms_earliest_release_date',
+          validators: [optionalValidDateValidator(), pastDateValidator()],
+        },
+        {
+          controlName: 'fm_payment_terms_prison_and_prison_number',
+          validators: [Validators.maxLength(28), alphabeticalTextValidator()],
+        },
       ],
-      fieldsToRemove: [FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF],
+      fieldsToRemove: [
+        {
+          controlName: 'fm_payment_terms_reason_account_is_on_noenf',
+          validators: [Validators.required, Validators.maxLength(28), alphabeticalTextValidator()],
+        },
+      ],
     },
     holdEnforcementOnAccount: {
-      fieldsToAdd: [FINES_MAC_PAYMENT_TERMS_CONTROLS_REASON_ACCOUNT_IS_ON_NOENF],
+      fieldsToAdd: [
+        {
+          controlName: 'fm_payment_terms_reason_account_is_on_noenf',
+          validators: [Validators.required, Validators.maxLength(28), alphabeticalTextValidator()],
+        },
+      ],
       fieldsToRemove: [
-        FINES_MAC_PAYMENT_TERMS_CONTROLS_EARLIEST_RELEASE_DATE,
-        FINES_MAC_PAYMENT_TERMS_CONTROLS_PRISON_AND_PRISON_NUMBER,
+        {
+          controlName: 'fm_payment_terms_earliest_release_date',
+          validators: [optionalValidDateValidator(), pastDateValidator()],
+        },
+        {
+          controlName: 'fm_payment_terms_prison_and_prison_number',
+          validators: [Validators.maxLength(28), alphabeticalTextValidator()],
+        },
       ],
     },
   };
