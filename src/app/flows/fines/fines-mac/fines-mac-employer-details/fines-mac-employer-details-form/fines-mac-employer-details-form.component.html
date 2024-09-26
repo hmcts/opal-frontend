@@ -3,85 +3,85 @@
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-text-input
     labelText="Employer name"
-    inputId="employer_company_name"
-    inputName="employer_company_name"
+    inputId="fm_employer_details_employer_company_name"
+    inputName="fm_employer_details_employer_company_name"
     labelClasses="govuk-label--s"
-    [control]="form.controls['employer_company_name']"
-    [errors]="formControlErrorMessages['employer_company_name']"
+    [control]="form.controls['fm_employer_details_employer_company_name']"
+    [errors]="formControlErrorMessages['fm_employer_details_employer_company_name']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Employee reference"
-    inputId="employer_reference"
-    inputName="employer_reference"
+    inputId="fm_employer_details_employer_reference"
+    inputName="fm_employer_details_employer_reference"
     inputClasses="govuk-input--width-10"
     labelClasses="govuk-label--s"
     hintText="If employee reference not known, add National Insurance number"
-    [control]="form.controls['employer_reference']"
-    [errors]="formControlErrorMessages['employer_reference']"
+    [control]="form.controls['fm_employer_details_employer_reference']"
+    [errors]="formControlErrorMessages['fm_employer_details_employer_reference']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Employer email address"
-    inputId="employer_email_address"
-    inputName="employer_email_address"
+    inputId="fm_employer_details_employer_email_address"
+    inputName="fm_employer_details_employer_email_address"
     labelClasses="govuk-label--s"
-    [control]="form.controls['employer_email_address']"
-    [errors]="formControlErrorMessages['employer_email_address']"
+    [control]="form.controls['fm_employer_details_employer_email_address']"
+    [errors]="formControlErrorMessages['fm_employer_details_employer_email_address']"
   ></app-govuk-text-input>
   <app-govuk-text-input
     labelText="Employer telephone"
-    inputId="employer_telephone_number"
-    inputName="employer_telephone_number"
+    inputId="fm_employer_details_employer_telephone_number"
+    inputName="fm_employer_details_employer_telephone_number"
     inputClasses="govuk-input--width-20"
     labelClasses="govuk-label--s"
-    [control]="form.controls['employer_telephone_number']"
-    [errors]="formControlErrorMessages['employer_telephone_number']"
+    [control]="form.controls['fm_employer_details_employer_telephone_number']"
+    [errors]="formControlErrorMessages['fm_employer_details_employer_telephone_number']"
   ></app-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
     <app-govuk-text-input
       labelText="Address line 1"
-      inputId="employer_address_line_1"
-      inputName="employer_address_line_1"
-      [control]="form.controls['employer_address_line_1']"
-      [errors]="formControlErrorMessages['employer_address_line_1']"
-      [errors]="formControlErrorMessages['employer_address_line_1']"
+      inputId="fm_employer_details_employer_address_line_1"
+      inputName="fm_employer_details_employer_address_line_1"
+      [control]="form.controls['fm_employer_details_employer_address_line_1']"
+      [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_1']"
+      [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_1']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 2"
-      inputId="employer_address_line_2"
-      inputName="employer_address_line_2"
-      [control]="form.controls['employer_address_line_2']"
-      [errors]="formControlErrorMessages['employer_address_line_2']"
+      inputId="fm_employer_details_employer_address_line_2"
+      inputName="fm_employer_details_employer_address_line_2"
+      [control]="form.controls['fm_employer_details_employer_address_line_2']"
+      [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_2']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 3"
-      inputId="employer_address_line_3"
-      inputName="employer_address_line_3"
-      [control]="form.controls['employer_address_line_3']"
-      [errors]="formControlErrorMessages['employer_address_line_3']"
+      inputId="fm_employer_details_employer_address_line_3"
+      inputName="fm_employer_details_employer_address_line_3"
+      [control]="form.controls['fm_employer_details_employer_address_line_3']"
+      [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_3']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 4"
-      inputId="employer_address_line_4"
-      inputName="employer_address_line_4"
-      [control]="form.controls['employer_address_line_4']"
-      [errors]="formControlErrorMessages['employer_address_line_4']"
+      inputId="fm_employer_details_employer_address_line_4"
+      inputName="fm_employer_details_employer_address_line_4"
+      [control]="form.controls['fm_employer_details_employer_address_line_4']"
+      [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_4']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Address line 5"
-      inputId="employer_address_line_5"
-      inputName="employer_address_line_5"
-      [control]="form.controls['employer_address_line_5']"
-      [errors]="formControlErrorMessages['employer_address_line_5']"
+      inputId="fm_employer_details_employer_address_line_5"
+      inputName="fm_employer_details_employer_address_line_5"
+      [control]="form.controls['fm_employer_details_employer_address_line_5']"
+      [errors]="formControlErrorMessages['fm_employer_details_employer_address_line_5']"
     ></app-govuk-text-input>
     <app-govuk-text-input
       labelText="Postcode"
-      inputId="employer_postcode"
-      inputName="employer_postcode"
+      inputId="fm_employer_details_employer_postcode"
+      inputName="fm_employer_details_employer_postcode"
       inputClasses="govuk-input--width-10"
-      [control]="form.controls['employer_postcode']"
-      [errors]="formControlErrorMessages['employer_postcode']"
+      [control]="form.controls['fm_employer_details_employer_postcode']"
+      [errors]="formControlErrorMessages['fm_employer_details_employer_postcode']"
     ></app-govuk-text-input>
   </fieldset>
   <div class="govuk-grid-row">

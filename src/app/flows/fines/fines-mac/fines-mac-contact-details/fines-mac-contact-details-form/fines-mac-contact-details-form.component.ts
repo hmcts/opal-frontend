@@ -54,11 +54,23 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
    */
   private setupContactDetailsForm(): void {
     this.form = new FormGroup({
-      email_address_1: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      email_address_2: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      telephone_number_mobile: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
-      telephone_number_home: new FormControl(null, [optionalMaxLengthValidator(35), optionalPhoneNumberValidator()]),
-      telephone_number_business: new FormControl(null, [
+      fm_contact_details_email_address_1: new FormControl(null, [
+        optionalMaxLengthValidator(76),
+        optionalEmailAddressValidator(),
+      ]),
+      fm_contact_details_email_address_2: new FormControl(null, [
+        optionalMaxLengthValidator(76),
+        optionalEmailAddressValidator(),
+      ]),
+      fm_contact_details_telephone_number_mobile: new FormControl(null, [
+        optionalMaxLengthValidator(35),
+        optionalPhoneNumberValidator(),
+      ]),
+      fm_contact_details_telephone_number_home: new FormControl(null, [
+        optionalMaxLengthValidator(35),
+        optionalPhoneNumberValidator(),
+      ]),
+      fm_contact_details_telephone_number_business: new FormControl(null, [
         optionalMaxLengthValidator(35),
         optionalPhoneNumberValidator(),
       ]),

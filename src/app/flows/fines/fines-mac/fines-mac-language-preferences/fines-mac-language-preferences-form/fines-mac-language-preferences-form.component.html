@@ -4,28 +4,36 @@
   defendant.
 </p>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
-  <app-govuk-radio fieldSetId="document_language" legendText="Documents" legendClasses="govuk-fieldset__legend--s">
+  <app-govuk-radio
+    fieldSetId="fm_language_preferences_document_language"
+    legendText="Documents"
+    legendClasses="govuk-fieldset__legend--s"
+  >
     @for (languageOption of languageOptions; track languageOption.key) {
       <div
         app-govuk-radios-item
         [labelText]="languageOption.value"
         [inputId]="languageOption.key + 'DocumentRadioOption'"
-        inputName="document_language"
+        inputName="fm_language_preferences_document_language"
         [inputValue]="languageOption.key"
-        [control]="form.get('document_language')"
+        [control]="form.get('fm_language_preferences_document_language')"
       ></div>
     }
   </app-govuk-radio>
 
-  <app-govuk-radio fieldSetId="hearing_language" legendText="Court hearings" legendClasses="govuk-fieldset__legend--s">
+  <app-govuk-radio
+    fieldSetId="fm_language_preferences_hearing_language"
+    legendText="Court hearings"
+    legendClasses="govuk-fieldset__legend--s"
+  >
     @for (languageOption of languageOptions; track languageOption.key) {
       <div
         app-govuk-radios-item
         [labelText]="languageOption.value"
         [inputId]="languageOption.key + 'CourtHearingRadioOption'"
-        inputName="hearing_language"
+        inputName="fm_language_preferences_hearing_language"
         [inputValue]="languageOption.key"
-        [control]="form.get('hearing_language')"
+        [control]="form.get('fm_language_preferences_hearing_language')"
       ></div>
     }
   </app-govuk-radio>

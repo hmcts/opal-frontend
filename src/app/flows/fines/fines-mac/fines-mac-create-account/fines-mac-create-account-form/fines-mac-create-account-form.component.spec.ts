@@ -46,7 +46,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component.ngOnInit();
-    component.form.controls['account_type'].setValue('fine');
+    component.form.controls['fm_create_account_account_type'].setValue('fine');
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -56,7 +56,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     spyOn<any>(component, 'handleAccountTypeChange');
 
     component['setupAccountTypeListener']();
-    component.form.get('account_type')!.setValue('fine');
+    component.form.get('fm_create_account_account_type')!.setValue('fine');
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
   });
@@ -92,9 +92,9 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should handle account type change - fine', () => {
     const accountType = 'fine';
-    const fieldName = 'fine_defendant_type';
+    const fieldName = 'fm_create_account_fine_defendant_type';
     const validators = [Validators.required];
-    const fieldsToRemove = ['fixed_penalty_defendant_type'];
+    const fieldsToRemove = ['fm_create_account_fixed_penalty_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,9 +111,9 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should handle account type change - fixed penalty', () => {
     const accountType = 'fixedPenalty';
-    const fieldName = 'fixed_penalty_defendant_type';
+    const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
     const validators = [Validators.required];
-    const fieldsToRemove = ['fine_defendant_type'];
+    const fieldsToRemove = ['fm_create_account_fine_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -130,7 +130,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should handle account type change - conditional caution', () => {
     const accountType = 'conditionalCaution';
-    const fieldsToRemove = ['fine_defendant_type', 'fixed_penalty_defendant_type'];
+    const fieldsToRemove = ['fm_create_account_fine_defendant_type', 'fm_create_account_fixed_penalty_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControl');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -147,39 +147,39 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should set defendant type based on account type - fixed penalty', () => {
     const accountType = 'fixedPenalty';
-    const fieldName = 'fixed_penalty_defendant_type';
+    const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
     const fieldValue = 'adultOrYouthOnly';
 
-    component.form.get('account_type')?.setValue(accountType);
+    component.form.get('fm_create_account_account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendant_type')?.value).toEqual(fieldValue);
+    expect(component.form.get('fm_create_account_defendant_type')?.value).toEqual(fieldValue);
   });
 
   it('should set defendant type based on account type - fine', () => {
     const accountType = 'fine';
-    const fieldName = 'fine_defendant_type';
+    const fieldName = 'fm_create_account_fine_defendant_type';
     const fieldValue = 'adultOrYouthOnly';
 
-    component.form.get('account_type')?.setValue(accountType);
+    component.form.get('fm_create_account_account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendant_type')?.value).toEqual(fieldValue);
+    expect(component.form.get('fm_create_account_defendant_type')?.value).toEqual(fieldValue);
   });
 
   it('should set defendant type to default for conditional caution account type', () => {
     const accountType = 'conditionalCaution';
     const defaultDefendantType = component.conditionalCautionPenaltyDefendantTypes[0].key;
 
-    component.form.get('account_type')?.setValue(accountType);
+    component.form.get('fm_create_account_account_type')?.setValue(accountType);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendant_type')?.value).toEqual(defaultDefendantType);
+    expect(component.form.get('fm_create_account_defendant_type')?.value).toEqual(defaultDefendantType);
   });
 
   it('should not do anything as the account, fieldName, and fieldValue are not real', () => {
@@ -187,12 +187,12 @@ describe('FinesMacCreateAccountFormComponent', () => {
     const fieldName = 'test';
     const fieldValue = 'test';
 
-    component.form.get('account_type')?.setValue(accountType);
+    component.form.get('fm_create_account_account_type')?.setValue(accountType);
     component.form.get(fieldName)?.setValue(fieldValue);
 
     component['setDefendantType']();
 
-    expect(component.form.get('defendant_type')?.value).not.toBeDefined();
+    expect(component.form.get('fm_create_account_defendant_type')?.value).not.toBeDefined();
   });
 
   it('should call initialCreateAccountSetup method', () => {
