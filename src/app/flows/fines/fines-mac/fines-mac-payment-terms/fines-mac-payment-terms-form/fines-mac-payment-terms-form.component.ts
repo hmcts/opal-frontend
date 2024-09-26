@@ -46,8 +46,8 @@ import { IFinesMacPaymentTermsPermissions } from '../interfaces/fines-mac-paymen
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../constants/fines-mac-payment-terms-enforcement-action-options';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-enforcement-action-options-control-validation';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-control-validation';
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
+import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
