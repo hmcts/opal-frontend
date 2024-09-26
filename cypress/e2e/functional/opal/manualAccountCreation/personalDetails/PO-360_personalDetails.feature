@@ -250,206 +250,19 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
       | 01/01/2500  | Enter a valid date of birth in the past      |
       | 01/92       | Enter date of birth in the format DD/MM/YYYY |
 
-  # Scenario: AC10a- negative: User ticks Add aliases box but does not input any data into Alias 1
-  #   When I select title "Mr" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith Michael       |
-  #     | lastName   | Astridge Lamsden Langley |
-
-  #   When I select the "Add aliases" checkbox
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-
-  # Scenario: AC10ai- negative: User adds data into Alias 1 - First names, but does enter any data into last name
-  #   When I select title "Mr" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith Michael       |
-  #     | lastName   | Astridge Lamsden Langley |
-  #   When I select the "Add aliases" checkbox
-  #   Then I set the "Alias 1", "First names" to "Micheal Kores"
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter last name for alias 1" at the top of the page
-
-  # Scenario: AC10aii- negative: User adds data into Alias 1 - Last name, but does enter any data into First names
-  #   When I select title "Miss" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith       |
-  #     | lastName   | Astridge Lamsden |
-  #   When I select the "Add aliases" checkbox
-  #   And I set the "Alias 1", "Last name" to "Guccio gucci "
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-
-  # Scenario: AC10b -negative: User does not add any data into either Alias 2 fields
-  #   When I select title "Ms" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith       |
-  #     | lastName   | Astridge Lamsden |
-
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-
-  # Scenario: AC10bi- negative: User adds data into Alias 2 - First names, but does enter any data into last name
-  #   When I select title "Miss" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith       |
-  #     | lastName   | Astridge Lamsden |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   Then I set the "Alias 2", "First names" to "Gucci Gucci "
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-
-  # Scenario: AC10bii- negative: User adds data into Alias 2 - Last name, but does enter any data into First names
-  #   When I select title "Mr" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith |
-  #     | lastName   | Astridge   |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I set the "Alias 2", "Last name" to "Holland and Barrates"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-
-
-  # Scenario: AC10c -negative: User does not add any data into either Alias 3 fields
-  #   When I select title "Mr" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith |
-  #     | lastName   | Astridge   |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 3" at the top of the page
-  #   And I see the error message "Enter last name for alias 3" at the top of the page
-
-  # Scenario: AC10ci- negative: User adds data into Alias 3 - First names, but does enter any data into last name
-  #   When I select title "Ms" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith       |
-  #     | lastName   | Astridge Lamsden |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   And I set the "Alias 3", "First names" to "Holland and Barrates"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-  #   Then I see the error message "Enter last name for alias 3" at the top of the page
-
-
-  # Scenario: AC10cii- negative: User adds data into Alias 3 - Last name, but does enter any data into First names
-  #   When I select title "Miss" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith       |
-  #     | lastName   | Astridge Lamsden |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   And I set the "Alias 3", "Last name" to "Holland and Barrates"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 3" at the top of the page
-
-  # Scenario: AC10d -negative: User does not add any data into either Alias 4 fields
-  #   When I select title "Mrs" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith |
-  #     | lastName   | Astridge   |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 3" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 4" at the top of the page
-  #   And I see the error message "Enter last name for alias 4" at the top of the page
-
-  # Scenario: AC10di- negative: User adds data into Alias 4 - First names, but does enter any data into last name
-  #   When I select title "Mrs" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith |
-  #     | lastName   | Astridge   |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   Then I set the "Alias 4", "First names" to "Holland and Barrates"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 3" at the top of the page
-  #   And I see the error message "Enter last name for alias 3" at the top of the page
-  #   Then I see the error message "Enter last name for alias 4" at the top of the page
-
-  # Scenario: AC10dii- negative: User adds data into Alias 4 - Last name, but does enter any data into First names
-  #   When I select title "Mrs" from dropdown
-  #   When I enter data into first names and last name in personal details screen
-  #     | firstNames | John Smith |
-  #     | lastName   | Astridge   |
-  #   And I enter address line 1 "456 Lamburgh Street"
-  #   When I select the "Add aliases" checkbox
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   And I click the "Add another alias" button
-  #   Then I set the "Alias 4", "Last name" to "Holland and Barrates"
-  #   Then I click the "Return to account details" button
-  #   Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-  #   And I see the error message "Enter last name for alias 1" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-  #   And I see the error message "Enter last name for alias 2" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 3" at the top of the page
-  #   And I see the error message "Enter last name for alias 3" at the top of the page
-  #   Then I see the error message "Enter first name(s) for alias 4" at the top of the page
-
-
-  Scenario: AC10e -negative: User does not add any data into either Alias 5 fields
-    When I select "Mrs" from the "Title" dropdown
+  Scenario: AC10a- negative: User ticks Add aliases box but does not input any data into Alias 1
+    When I select title "Mr" from dropdown
     And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
+
     When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
+
+
     Then I click the "Return to account details" button
     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
     And I see the error message "Enter last name for alias 1" at the top of the page
@@ -462,49 +275,54 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     Then I see the error message "Enter first name(s) for alias 5" at the top of the page
     And I see the error message "Enter last name for alias 5" at the top of the page
 
-  Scenario: AC10ei- negative: User adds data into Alias 5 - First names, but does enter any data into last name
-    When I select "Mrs" from the "Title" dropdown
+  Scenario: AC10ai, 10aii, 10aiii, 10aiv, 10av- negative: User adds data into Alias 1,2,3,4,5 - First names, but does enter any data into last name
+    When I select title "Mr" from dropdown
     And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
+
     When I select the "Add aliases" checkbox
+    Then I set the "Alias 1", "First names" to "Micheal Kores"
     And I click the "Add another alias" button
+    Then I set the "Alias 2", "First names" to "Gucci Gucci "
     And I click the "Add another alias" button
+    And I set the "Alias 3", "First names" to "FNAME"
     And I click the "Add another alias" button
+    And I set the "Alias 4", "First names" to "FNAME"
     And I click the "Add another alias" button
-    Then I set the "Alias 5", "First names" to "Holland and Barrates"
+    And I set the "Alias 5", "First names" to "FNAME"
+
     Then I click the "Return to account details" button
-    Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 2" at the top of the page
+    Then I see the error message "Enter last name for alias 1" at the top of the page
     And I see the error message "Enter last name for alias 2" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 3" at the top of the page
     And I see the error message "Enter last name for alias 3" at the top of the page
-    Then I see the error message "Enter first name(s) for alias 4" at the top of the page
     And I see the error message "Enter last name for alias 4" at the top of the page
     And I see the error message "Enter last name for alias 5" at the top of the page
 
-  Scenario: AC10eii- negative: User adds data into Alias 5 - Last name, but does enter any data into First names
-    When I select "Mrs" from the "Title" dropdown
+  Scenario: AC10aii- negative: User adds data into Alias 1 - Last name, but does enter any data into First names
+    When I select title "Miss" from dropdown
     And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
+
     When I select the "Add aliases" checkbox
+    And I set the "Alias 1", "Last name" to "Guccio gucci "
     And I click the "Add another alias" button
+    And I set the "Alias 2", "Last name" to "Last Name"
     And I click the "Add another alias" button
+    And I set the "Alias 3", "Last name" to "Last Name"
     And I click the "Add another alias" button
+    And I set the "Alias 4", "Last name" to "Last Name"
     And I click the "Add another alias" button
-    Then I set the "Alias 5", "Last name" to "Holland and Barrates"
+    And I set the "Alias 5", "Last name" to "Last Name"
+
     Then I click the "Return to account details" button
     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
-    And I see the error message "Enter last name for alias 1" at the top of the page
     Then I see the error message "Enter first name(s) for alias 2" at the top of the page
-    And I see the error message "Enter last name for alias 2" at the top of the page
     Then I see the error message "Enter first name(s) for alias 3" at the top of the page
-    And I see the error message "Enter last name for alias 3" at the top of the page
     Then I see the error message "Enter first name(s) for alias 4" at the top of the page
-    And I see the error message "Enter last name for alias 4" at the top of the page
-    And I see the error message "Enter first name(s) for alias 5" at the top of the page
+    Then I see the error message "Enter first name(s) for alias 5" at the top of the page
+
 
   Scenario Outline: AC11- Negative: Scenarios for National Insurance number field validation
     When I select "Mrs" from the "Title" dropdown
