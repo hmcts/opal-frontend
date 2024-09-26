@@ -1,5 +1,10 @@
-import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-payment-term-options-control-validation.interface';
-import { FINES_MAC_PAYMENT_TERMS_CONTROLS_PAY_BY_DATE as PT_CONTROLS_PAY_BY_DATE } from './controls/fines-mac-payment-terms-controls-pay-by-date.constant';
+import { Validators } from '@angular/forms';
+import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
+import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
 
-export const FINES_MAC_PAYMENT_TERMS_PAY_IN_FULL_CONTROL_VALIDATION: IFinesMacPaymentTermsPaymentTermOptionsControlValidation[] =
-  [PT_CONTROLS_PAY_BY_DATE];
+export const FINES_MAC_PAYMENT_TERMS_PAY_IN_FULL_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
+  {
+    controlName: 'fm_payment_terms_pay_by_date',
+    validators: [Validators.required, optionalValidDateValidator()],
+  },
+];
