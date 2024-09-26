@@ -1,9 +1,7 @@
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_OFFENCE_CODE as F_M_O_D_C_OFFENCE_CODE } from './controls/fines-mac-offence-details-offence-code.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_DATE_OF_SENTENCE as F_M_O_D_C_DATE_OF_SENTENCE } from './controls/fines-mac-offence-details-date-of-sentence.constant';
 
 export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
-  [F_M_O_D_C_DATE_OF_SENTENCE.controlName]: {
+  fm_offence_details_date_of_offence: {
     required: {
       message: 'Enter sentence date',
       priority: 1,
@@ -21,7 +19,7 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       priority: 4,
     },
   },
-  [F_M_O_D_C_OFFENCE_CODE.controlName]: {
+  fm_offence_details_offence_code: {
     required: {
       message: 'Enter an offence code',
       priority: 1,

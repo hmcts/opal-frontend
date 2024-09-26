@@ -68,7 +68,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
 
   /**
    * Creates a new instance of FormArray with the specified validators and controls.
-   * 
+   *
    * @param validators - An array of validator functions to be applied to the form array.
    * @param controls - An optional array of form controls to initialize the form array with.
    * @returns A new instance of FormArray.
@@ -79,7 +79,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
 
   /**
    * Sets up the form array form controls based on the provided parameters.
-   * 
+   *
    * @param formArrayCountArray - An array of numbers representing the count of form array controls.
    * @param formArrayName - The name of the form array.
    */
@@ -141,7 +141,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
 
   /**
    * Adds controls to the form array at the specified index.
-   * 
+   *
    * @param index - The index at which the controls should be added.
    * @param formArrayName - The name of the form array.
    */
@@ -153,7 +153,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
 
   /**
    * Removes a form array control at the specified index from the given array of form array controls.
-   * 
+   *
    * @param index - The index of the form array control to be removed.
    * @param formArrayControls - The array of form array controls.
    * @returns The updated array of form array controls after removing the specified control.
@@ -168,7 +168,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
 
   /**
    * Removes a form array control at the specified index and updates the form array controls and errors.
-   * 
+   *
    * @param index - The index of the form array control to remove.
    * @param formArrayName - The name of the form array.
    * @param formArrayControls - The list of form array controls.

@@ -1,10 +1,10 @@
 export interface IFinesMacOffenceDetailsResultCodes {
-  Compensation: string;
-  VictimSurcharge: string;
-  Costs: string;
-  CrownProsecutionCosts: string;
-  FineOnly: string;
-  CriminalCourtsCharge: string;
-  VehicleExciseDuty: string;
-  ForfeitedRecognizance: string;
+  compensation: string;
+  victimSurcharge: string;
+  costs: string;
+  crownProsecutionCosts: string;
+  fineOnly: string;
+  criminalCourtsCharge: string;
+  vehicleExciseDuty: string;
+  forfeitedRecognizance: string;
 }

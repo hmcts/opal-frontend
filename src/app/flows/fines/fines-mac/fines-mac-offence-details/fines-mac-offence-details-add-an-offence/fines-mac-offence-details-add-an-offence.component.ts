@@ -9,18 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
-import { FormArray, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-/* CONTROLS */
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_DATE_OF_SENTENCE as F_M_OFFENCE_DETAILS_DATE_OF_SENTENCE } from '../constants/controls/fines-mac-offence-details-date-of-sentence.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_OFFENCE_CODE as F_M_OFFENCE_DETAILS_OFFENCE_CODE } from '../constants/controls/fines-mac-offence-details-offence-code.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_IMPOSITIONS as F_M_OFFENCE_DETAILS_IMPOSITIONS } from '../constants/controls/fines-mac-offence-details-impositions.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_RESULT_CODE as F_M_OFFENCE_DETAILS_RESULT_CODE } from '../constants/controls/fines-mac-offence-details-result-code.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_IMPOSED as F_M_OFFENCE_DETAILS_AMOUNT_IMPOSED } from '../constants/controls/fines-mac-offence-details-amount-imposed.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_PAID as F_M_OFFENCE_DETAILS_AMOUNT_PAID } from '../constants/controls/fines-mac-offence-details-amount-paid.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_NEEDS_CREDITOR as F_M_OFFENCE_DETAILS_NEEDS_CREDITOR } from '../constants/controls/fines-mac-offence-details-needs-creditor.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_CREDITOR as F_M_OFFENCE_DETAILS_CREDITOR } from '../constants/controls/fines-mac-offence-details-creditor.constant';
-
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
@@ -46,6 +35,8 @@ import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../constants
 import { validValueValidator } from '@validators/valid-value/valid-value.validator';
 import { CommonModule } from '@angular/common';
 import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
+import { futureDateValidator } from '@validators/future-date/future-date.validator';
+import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -93,45 +84,40 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
 
-  public offenceDetailsDateOfSentence = F_M_OFFENCE_DETAILS_DATE_OF_SENTENCE;
-  public offenceDetailsOffenceCode = F_M_OFFENCE_DETAILS_OFFENCE_CODE;
-  public offenceDetailsImpositions = F_M_OFFENCE_DETAILS_IMPOSITIONS;
-  public offenceDetailsResultCode = F_M_OFFENCE_DETAILS_RESULT_CODE;
-  public offenceDetailsAmountImposed = F_M_OFFENCE_DETAILS_AMOUNT_IMPOSED;
-  public offenceDetailsAmountPaid = F_M_OFFENCE_DETAILS_AMOUNT_PAID;
-  public offenceDetailsNeedsCreditor = F_M_OFFENCE_DETAILS_NEEDS_CREDITOR;
-  public offenceDetailsCreditor = F_M_OFFENCE_DETAILS_CREDITOR;
-
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
-      [this.offenceDetailsDateOfSentence.controlName]: this.createFormControl(
-        this.offenceDetailsDateOfSentence.validators,
-      ),
-      [this.offenceDetailsOffenceCode.controlName]: this.createFormControl(this.offenceDetailsOffenceCode.validators),
-      [this.offenceDetailsImpositions.controlName]: this.createFormArray(this.offenceDetailsImpositions.validators, []),
+      fm_offence_details_date_of_offence: new FormControl(null, [
+        Validators.required,
+        optionalValidDateValidator(),
+        futureDateValidator(),
+      ]),
+      fm_offence_details_offence_code: new FormControl(null, [
+        Validators.required,
+        validValueValidator(this.offences.refData.map((offence) => offence.get_cjs_code)),
+      ]),
+      fm_offence_details_impositions: new FormArray([]),
     });
   }
 
   private initialAddAnOffenceDetailsSetup(): void {
     const { formData } = this.finesService.finesMacState.offenceDetails;
-    this.addValidValueValidator();
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
     this.setupFormArrayFormControls(
-      [...Array(formData[0].impositions.length).keys()],
-      this.offenceDetailsImpositions.controlName,
+      [...Array(formData[0].fm_offence_details_impositions.length).keys()],
+      'fm_offence_details_impositions',
     );
     this.offenceCodeListener();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData[0]);
-    if (formData[0].impositions.length === 0) {
-      this.addControlsToFormArray(0, this.offenceDetailsImpositions.controlName);
+    if (formData[0].fm_offence_details_impositions.length === 0) {
+      this.addControlsToFormArray(0, 'fm_offence_details_impositions');
     }
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 
   private offenceCodeListener(): void {
-    this.form.controls[this.offenceDetailsOffenceCode.controlName].valueChanges.subscribe((cjs_code: string) => {
+    this.form.controls['fm_offence_details_offence_code'].valueChanges.subscribe((cjs_code: string) => {
       this.selectedOffenceConfirmation = false;
       this.selectedOffenceSuccessful = false;
       this.selectedOffenceTitle = 'Enter a valid offence code';
@@ -153,26 +139,20 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   private resultCodeListener(index: number): void {
-    const impositionsFormArray = this.form.get([this.offenceDetailsImpositions.controlName]) as FormArray;
+    const impositionsFormArray = this.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    impositionsFormGroup.controls[`${this.offenceDetailsResultCode.controlName}_${index}`].valueChanges.subscribe(
+    impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`].valueChanges.subscribe(
       (result_code: string) => {
         if (
           result_code &&
-          (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.Compensation ||
-            result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.Costs)
+          (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
+            result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs)
         ) {
-          impositionsFormGroup.controls[`${this.offenceDetailsNeedsCreditor.controlName}_${index}`].setValue(true);
+          impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`].setValue(true);
         } else {
-          impositionsFormGroup.controls[`${this.offenceDetailsNeedsCreditor.controlName}_${index}`].setValue(false);
+          impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`].setValue(false);
         }
       },
-    );
-  }
-
-  private addValidValueValidator(): void {
-    this.offenceDetailsOffenceCode.validators.push(
-      validValueValidator(this.offences.refData.map((offence) => offence.get_cjs_code)),
     );
   }
 

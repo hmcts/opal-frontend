@@ -1,14 +1,10 @@
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_RESULT_CODE as F_M_O_D_C_RESULT_CODE } from './controls/fines-mac-offence-details-result-code.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_IMPOSED as F_M_O_D_C_AMOUNT_IMPOSED } from './controls/fines-mac-offence-details-amount-imposed.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_PAID as F_M_O_D_C_AMOUNT_PAID } from './controls/fines-mac-offence-details-amount-paid.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_CREDITOR as F_M_O_D_C_CREDITOR } from './controls/fines-mac-offence-details-creditor.constant';
 
 export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number): IAbstractFormBaseFieldErrors => {
   const indexSuffix = `_${index}`;
 
   return {
-    [`${F_M_O_D_C_RESULT_CODE.controlName}${indexSuffix}`]: {
+    [`fm_offence_details_result_code${indexSuffix}`]: {
       required: {
         message: 'Enter an imposition code',
         priority: 1,
@@ -18,7 +14,7 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         priority: 2,
       },
     },
-    [`${F_M_O_D_C_AMOUNT_IMPOSED.controlName}${indexSuffix}`]: {
+    [`fm_offence_details_amount_imposed${indexSuffix}`]: {
       required: {
         message: 'Enter an amount',
         priority: 1,
@@ -32,7 +28,7 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         priority: 3,
       },
     },
-    [`${F_M_O_D_C_AMOUNT_PAID.controlName}${indexSuffix}`]: {
+    [`fm_offence_details_amount_paid${indexSuffix}`]: {
       required: {
         message: 'Enter an amount',
         priority: 1,
@@ -46,6 +42,6 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         priority: 3,
       },
     },
-    [`${F_M_O_D_C_CREDITOR.controlName}${indexSuffix}`]: {},
+    [`fm_offence_details_creditor${indexSuffix}`]: {},
   };
 };

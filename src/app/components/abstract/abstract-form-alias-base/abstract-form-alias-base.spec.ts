@@ -19,7 +19,7 @@ class TestAbstractFormAliasBaseComponent extends AbstractFormAliasBaseComponent 
   }
 }
 
-fdescribe('AbstractFormAliasBaseComponent', () => {
+describe('AbstractFormAliasBaseComponent', () => {
   let component: TestAbstractFormAliasBaseComponent;
   let fixture: ComponentFixture<TestAbstractFormAliasBaseComponent>;
 

@@ -34,7 +34,7 @@ class TestAbstractFormBaseComponent extends AbstractFormBaseComponent {
   }
 }
 
-fdescribe('AbstractFormBaseComponent', () => {
+describe('AbstractFormBaseComponent', () => {
   let component: TestAbstractFormBaseComponent;
   let fixture: ComponentFixture<TestAbstractFormBaseComponent>;
 

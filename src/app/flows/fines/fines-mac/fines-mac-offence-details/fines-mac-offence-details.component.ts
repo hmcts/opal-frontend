@@ -32,7 +32,7 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from './constants/fines-mac-o
 export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseComponent {
   private opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private offenceCodes$: Observable<IOpalFinesOffencesRefData> = this.opalFinesService.getOffences(0);
   private resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
@@ -57,7 +57,7 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
     const results = response.refData;
 
     results.sort((a, b) => {
-      return a.imposition_allocation_order - b.imposition_allocation_order;
+      return a.imposition_allocation_order! - b.imposition_allocation_order!;
     });
 
     return results.map((item) => {

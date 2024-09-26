@@ -1,14 +1,26 @@
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_RESULT_CODE } from './controls/fines-mac-offence-details-result-code.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_IMPOSED } from './controls/fines-mac-offence-details-amount-imposed.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_PAID } from './controls/fines-mac-offence-details-amount-paid.constant';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_NEEDS_CREDITOR } from './controls/fines-mac-offence-details-needs-creditor.constant';
-import { FINES_MAC_OFFENCE_DETAILS_CONTROLS_CREDITOR } from './controls/fines-mac-offence-details-creditor.constant';
+import { Validators } from '@angular/forms';
+import { amountValidator } from '@validators/amount/amount.validator';
 
 export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlValidation[] = [
-  FINES_MAC_OFFENCE_DETAILS_CONTROLS_RESULT_CODE,
-  FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_IMPOSED,
-  FINES_MAC_OFFENCE_DETAILS_CONTROLS_AMOUNT_PAID,
-  FINES_MAC_OFFENCE_DETAILS_CONTROLS_NEEDS_CREDITOR,
-  FINES_MAC_OFFENCE_DETAILS_CONTROLS_CREDITOR,
+  {
+    controlName: 'fm_offence_details_result_code',
+    validators: [Validators.required],
+  },
+  {
+    controlName: 'fm_offence_details_amount_imposed',
+    validators: [Validators.required, amountValidator(18, 2)],
+  },
+  {
+    controlName: 'fm_offence_details_amount_paid',
+    validators: [Validators.required, amountValidator(18, 2)],
+  },
+  {
+    controlName: 'fm_offence_details_needs_creditor',
+    validators: [],
+  },
+  {
+    controlName: 'fm_offence_details_creditor',
+    validators: [],
+  },
 ];
