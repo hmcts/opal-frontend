@@ -192,9 +192,9 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
 
       // Reset payment terms default date data
-      paymentTermsFormData.has_days_in_default = false;
-      paymentTermsFormData.days_in_default_date = null;
-      paymentTermsFormData.days_in_default = null;
+      paymentTermsFormData['fm_payment_terms_has_days_in_default'] = false;
+      paymentTermsFormData['fm_payment_terms_days_in_default'] = null;
+      paymentTermsFormData['fm_payment_terms_days_in_default_date'] = null;
     }
   }
 

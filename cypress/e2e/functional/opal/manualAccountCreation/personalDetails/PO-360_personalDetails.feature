@@ -405,11 +405,14 @@ Feature: PO-360 personal details screen for adult or youth only defendant type
     And I enter "John Smithy Michael" into the "First names" field
     And I enter "Astridge Lamsden Langley Treen" into the "Last name" field
     And I enter "456 Lamburgh Street" into the "Address line 1" field
+
     When I select the "Add aliases" checkbox
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
     And I click the "Add another alias" button
+
+
     Then I click the "Return to account details" button
     Then I see the error message "Enter first name(s) for alias 1" at the top of the page
     And I see the error message "Enter last name for alias 1" at the top of the page

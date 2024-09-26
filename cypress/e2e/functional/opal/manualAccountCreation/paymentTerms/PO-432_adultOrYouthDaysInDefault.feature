@@ -100,6 +100,7 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
     And I enter "12345" into the days in default input field
 
     Then I see "01/01/2024" in the "Date days in default were imposed" date field
+    And I select the "No" radio button under the "Has a collection order been made?" section
 
     When I click the "Return to account details" button
 
@@ -156,6 +157,7 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
 
     When I enter "30" into the days in default input field
     And I enter a date 1 weeks into the past into the "Date days in default were imposed" date field
+    When I select the "No" radio button under the "Has a collection order been made?" section
     When I click the "Add account comments and notes" button
     Then I see "Account comments and notes" on the page header
     And I click the "Return to account details" button
