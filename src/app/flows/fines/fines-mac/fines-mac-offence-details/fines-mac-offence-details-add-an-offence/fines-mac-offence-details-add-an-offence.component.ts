@@ -169,9 +169,4 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.initialAddAnOffenceDetailsSetup();
     super.ngOnInit();
   }
-
-  public override handleFormSubmit(event: SubmitEvent): void {
-    super.handleFormSubmit(event);
-    console.log(this.formControlErrorMessages);
-  }
 }

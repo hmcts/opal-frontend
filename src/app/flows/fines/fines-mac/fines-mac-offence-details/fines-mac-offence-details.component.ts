@@ -30,12 +30,12 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from './constants/fines-mac-o
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseComponent {
-  private opalFinesService = inject(OpalFines);
+  private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
-  private offenceCodes$: Observable<IOpalFinesOffencesRefData> = this.opalFinesService.getOffences(0);
-  private resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  private resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  private readonly offenceCodes$: Observable<IOpalFinesOffencesRefData> = this.opalFinesService.getOffences(0);
+  private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
+  private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getResults(this.resultCodeArray)
     .pipe(
       map((response: IOpalFinesResultsRefData) => {
