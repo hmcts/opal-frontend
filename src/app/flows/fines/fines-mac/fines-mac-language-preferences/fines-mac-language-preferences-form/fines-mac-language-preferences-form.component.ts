@@ -40,8 +40,8 @@ export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseCo
    */
   private setupLanguagePreferencesForm(): void {
     this.form = new FormGroup({
-      document_language: new FormControl(null),
-      hearing_language: new FormControl(null),
+      fm_language_preferences_document_language: new FormControl(null),
+      fm_language_preferences_hearing_language: new FormControl(null),
     });
   }
 

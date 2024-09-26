@@ -1,4 +1,4 @@
 export interface IFinesMacAccountCommentsNotesState {
-  comments: string | null;
-  notes: string | null;
+  fm_account_comments_notes_comments: string | null;
+  fm_account_comments_notes_notes: string | null;
 }

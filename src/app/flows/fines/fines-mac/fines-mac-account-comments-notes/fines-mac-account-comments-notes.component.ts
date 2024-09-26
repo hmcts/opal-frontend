@@ -16,7 +16,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 })
 export class FinesMacAccountCommentsNotesComponent extends AbstractFormParentBaseComponent {
   protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.formData.defendant_type!;
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
 
   /**
    * Handles the submission of the account comments and notes form.

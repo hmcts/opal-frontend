@@ -54,7 +54,7 @@ describe('FinesMacCreateAccountComponent', () => {
     fixture = TestBed.createComponent(FinesMacCreateAccountComponent);
     component = fixture.componentInstance;
 
-    component['finesService'].finesMacState.accountDetails.formData.business_unit = null;
+    component['finesService'].finesMacState.accountDetails.formData.fm_create_account_business_unit = null;
 
     fixture.detectChanges();
   });
@@ -94,7 +94,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     component['setBusinessUnit'](response);
 
-    expect(component['finesService'].finesMacState.accountDetails.formData.business_unit).toEqual(
+    expect(component['finesService'].finesMacState.accountDetails.formData.fm_create_account_business_unit).toEqual(
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
     );
   });
@@ -102,14 +102,14 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
     const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
-    component['finesService'].finesMacState.accountDetails.formData.business_unit =
+    component['finesService'].finesMacState.accountDetails.formData.fm_create_account_business_unit =
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_name;
 
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
-    expect(component['finesService'].finesMacState.accountDetails.formData.business_unit).toEqual(
+    expect(component['finesService'].finesMacState.accountDetails.formData.fm_create_account_business_unit).toEqual(
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_name,
     );
   });
@@ -117,11 +117,11 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should not set the business unit for account details when there are multiple business units available', () => {
     const response = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
 
-    component['finesService'].finesMacState.accountDetails.formData.business_unit = null;
+    component['finesService'].finesMacState.accountDetails.formData.fm_create_account_business_unit = null;
 
     component['setBusinessUnit'](response);
 
-    expect(component['finesService'].finesMacState.accountDetails.formData.business_unit).toBeNull();
+    expect(component['finesService'].finesMacState.accountDetails.formData.fm_create_account_business_unit).toBeNull();
   });
 
   it('should create an array of autocomplete items from the response', () => {
