@@ -22,6 +22,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     And I enter "ADDR1" into the "Address line 1" field
 
   Scenario Outline: AC-1a, AC-2 positive: the 'Has a collection order been made?' field should be presented only if the defendant is an Adult
+
     And I enter "<dateOfBirth>" into the Date of birth field
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
@@ -40,6 +41,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
       | 20/03/2000  |
 
   Scenario Outline: AC-1a, AC-3 positive: the 'Has a collection order been made?' field should be presented only, if the defendant is an Adult
+
     And I enter "20/03/2000" into the Date of birth field
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
@@ -53,6 +55,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     And I enter "12/09/2023" into the "Enter pay by date" date field
 
   Scenario: AC4 -negative: If the user has not selected a value for the 'Has a collection order been made?' field and clicks either the 'Return to account details' or 'Add account comments and notes' buttons
+
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
     And I click on the "Payment terms" link
@@ -63,8 +66,8 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     When I click the "Add account comments and notes" button
     Then I see the error message "Select whether there was a collection order" at the top of the page
 
-
   Scenario Outline: AC5 -negative: If the user has not selected a value for the 'Has a collection order been made?' field and clicks either the 'Return to account details' or 'Add account comments and notes' buttons
+
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
     And I click on the "Payment terms" link
@@ -77,8 +80,8 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     When I click the "Add account comments and notes" button
     Then I see the error message "Enter date collection order made" at the top of the page
 
-
   Scenario: AC6a -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
+
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
     And I click on the "Payment terms" link
@@ -90,6 +93,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     Then I see the error message "Date must be in the format DD/MM/YYYY" at the top of the page
 
   Scenario: AC6b -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
+
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
     And I click on the "Payment terms" link
@@ -101,6 +105,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     Then I see the error message "Enter a valid calendar date" at the top of the page
 
   Scenario: AC6c -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
+
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
     And I click on the "Payment terms" link
@@ -112,6 +117,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     Then I see the error message "Date cannot be in the future" at the top of the page
 
   Scenario: AC6d -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
+
     And I click the "Return to account details" button
     Then I see the status of "Personal details" is "Provided"
     And I click on the "Payment terms" link
