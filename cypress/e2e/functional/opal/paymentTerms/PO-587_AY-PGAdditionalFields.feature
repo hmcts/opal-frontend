@@ -28,11 +28,11 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
 
     When I select the "Pay in full" radio button
     And I see "For example, 31/01/2023" hint text above the "Enter pay by date" date picker
-    And I enter "12/09/2023" into the "Enter pay by date" date field
+    And I enter a date 52 weeks into the past into the "Enter pay by date" date field
     Then I see "Pay by date is in the past" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
-    When I enter "12/09/2029" into the "Enter pay by date" date field
+    When I enter a date 200 weeks into the future into the "Enter pay by date" date field
     Then I see "Pay by date is more than 3 years in the future" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
@@ -42,11 +42,11 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I validate the "Fortnightly" radio button is not selected
     And I validate the "Monthly" radio button is not selected
     And I see "For example, 31/01/2023" hint text above the "Start date" date picker
-    And I enter "12/09/2023" into the "Start date" date field
+    And I enter a date 52 weeks into the past into the "Start date" date field
     Then I see "Start date is in the past" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
-    When I enter "12/09/2029" into the "Start date" date field
+    When I enter a date 200 weeks into the future into the "Start date" date field
     Then I see "Start date is more than 3 years in the future" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
@@ -57,11 +57,11 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I validate the "Fortnightly" radio button is not selected
     And I validate the "Monthly" radio button is not selected
     And I see "For example, 31/01/2023" hint text above the "Start date" date picker
-    And I enter "12/09/2023" into the "Start date" date field
+    And I enter a date 52 weeks into the past into the "Start date" date field
     Then I see "Start date is in the past" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
-    When I enter "12/09/2029" into the "Start date" date field
+    When I enter a date 200 weeks into the future into the "Start date" date field
     Then I see "Start date is more than 3 years in the future" help text on the page
     And I see "You can continue with date in the past or change" help text on the page
 
@@ -204,18 +204,15 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I enter "30!" into the "Instalment" payment field
     And I click the "Return to account details" button
     Then I see the error message "Enter valid lump sum amount" at the top of the page
-    Then I see the error message "Enter valid instalment amount" at the top of the page
+    And I see the error message "Enter valid instalment amount" at the top of the page
     And I see the error message "Enter valid lump sum amount" above the "Lump sum" payment field
     And I see the error message "Enter valid instalment amount" above the "Instalment" payment field
 
   Scenario: AC6 & AC15 - Validation passes, request payment card checkbox, return to account details
 
-    # the next 2 steps are introduced in PO-471, this field is mandatory
-    And I select the "Yes" radio button under the "Has a collection order been made?" section
-    And I enter "20/05/2024" into the "Date of collection order" date field
-
-    When I select the "Pay in full" radio button
-    And I enter "13/09/2025" into the "Enter pay by date" date field
+    When I select the "No" radio button under the "Has a collection order been made?" section
+    And I select the "Pay in full" radio button
+    And I enter a date 52 weeks into the future into the "Enter pay by date" date field
     And I select the "Request payment card" checkbox
     And I click the "Return to account details" button
     Then I see the status of "Payment terms" is "Provided"
@@ -223,20 +220,17 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     When I click on the "Payment terms" link
     Then I see "Payment terms" on the page header
     And I validate the "Pay in full" radio button is selected
-    And I see "13/09/2025" in the "Enter pay by date" payment field
+    And I see a date 52 weeks into the future in the "Enter pay by date" date field
     And I validate the "Request payment card" checkbox is checked
 
   Scenario: AC6 & AC16 - Validation passes, request payment card checkbox, add account comments and notes
 
-    # the next 2 steps are introduced in PO-471, this field is mandatory
-    And I select the "Yes" radio button under the "Has a collection order been made?" section
-    And I enter "20/05/2024" into the "Date of collection order" date field
-
-    When I select the "Lump sum plus instalments" radio button
+    When I select the "No" radio button under the "Has a collection order been made?" section
+    And I select the "Lump sum plus instalments" radio button
     And I enter "150" into the "Lump sum" payment field
     And I enter "300" into the "Instalment" payment field
     And I select the "Monthly" radio button
-    And I enter "13/09/2025" into the "Start date" date field
+    And I enter a date 52 weeks into the future into the "Start date" date field
     And I select the "Request payment card" checkbox
     And I click the "Return to account details" button
     Then I see the status of "Payment terms" is "Provided"
@@ -246,7 +240,7 @@ Feature: PO-587 Implement additional fields for payment terms screen - Adult or 
     And I see "150" in the "Lump sum" payment field
     And I see "300" in the "Instalment" payment field
     And I validate the "Monthly" radio button is selected
-    And I see "13/09/2025" in the "Start date" payment field
+    And I see a date 52 weeks into the future in the "Start date" date field
     And I validate the "Request payment card" checkbox is checked
 
   Scenario: AC17 & AC18 - Cancel link behaviour

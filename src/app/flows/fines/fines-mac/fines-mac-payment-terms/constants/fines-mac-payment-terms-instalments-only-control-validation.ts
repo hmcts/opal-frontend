@@ -1,5 +1,5 @@
-import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { Validators } from '@angular/forms';
+import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
 import { twoDecimalPlacesValidator } from '@validators/two-decimal-places/two-decimal-places.validator';
 
