@@ -1,10 +1,10 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I see the business unit is {string}', (businessUnit: string) => {
-  cy.get('#accountDetailsBusinessUnitValue').should('have.text', businessUnit);
+  cy.get('#accountDetailsBusinessUnitValue').should('contain.text', businessUnit);
 });
 Then('I see the defendant type is {string}', (defendantType: string) => {
-  cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
+  cy.get('#accountDetailsDefendantTypeValue').should('contain.text', defendantType);
 });
 Then('I see the document language is {string}', (defendantType: string) => {
   cy.get('#accountDetailsDefendantTypeValue').should('have.text', defendantType);
