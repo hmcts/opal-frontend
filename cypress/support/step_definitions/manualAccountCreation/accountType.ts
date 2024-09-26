@@ -31,7 +31,10 @@ Then('I see the {string} radio button below the defendant type help text', (radi
 });
 
 Then('I see the error message {string} above the business unit field', (errorMessage: string) => {
-  cy.get('#business_unit-autocomplete-container').prev().should('contain', errorMessage);
+  cy.get('app-alphagov-accessible-autocomplete[labeltext="Business unit"]')
+    .parent()
+    .prev()
+    .should('contain', errorMessage);
 });
 
 Then('I see {string} below the defendant type subheading', (helpText: string) => {
