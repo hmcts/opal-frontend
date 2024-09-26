@@ -77,7 +77,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { defendant_type: defendantType } = this.finesService.finesMacState.accountDetails.formData;
+    const { fm_create_account_defendant_type: defendantType } = this.finesService.finesMacState.accountDetails.formData;
     this.defendantType = this.defendantTypes[defendantType as keyof IFinesMacAccountDetailsDefendantTypes] || '';
   }
 
@@ -88,7 +88,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { account_type: accountType } = this.finesService.finesMacState.accountDetails.formData;
+    const { fm_create_account_account_type: accountType } = this.finesService.finesMacState.accountDetails.formData;
     this.accountType = this.accountTypes[accountType as keyof IFinesMacAccountDetailsAccountTypes] || '';
   }
 
@@ -97,8 +97,10 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * stored in the finesMacState.
    */
   private setLanguage(): void {
-    const { document_language: documentLanguage, hearing_language: hearingLanguage } =
-      this.finesService.finesMacState.languagePreferences.formData;
+    const {
+      fm_language_preferences_document_language: documentLanguage,
+      fm_language_preferences_hearing_language: hearingLanguage,
+    } = this.finesService.finesMacState.languagePreferences.formData;
     if (documentLanguage && hearingLanguage) {
       this.documentLanguage = this.languageOptions[documentLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
       this.courtHearingLanguage =

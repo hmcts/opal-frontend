@@ -17,7 +17,7 @@ Then('I see the heading under the fixed penalty radio button is {string}', (busi
 });
 
 Then('I see {string} above the {string} heading', (businessUnitText: string, headingName: string) => {
-  cy.get('#account_type')
+  cy.get('#fm_create_account_account_type')
     .should('contain.text', headingName)
     .parent()
     .parent()
@@ -31,7 +31,10 @@ Then('I see the {string} radio button below the defendant type help text', (radi
 });
 
 Then('I see the error message {string} above the business unit field', (errorMessage: string) => {
-  cy.get('#business_unit-autocomplete-container').prev().should('contain', errorMessage);
+  cy.get('app-alphagov-accessible-autocomplete[labeltext="Business unit"]')
+    .parent()
+    .prev()
+    .should('contain', errorMessage);
 });
 
 Then('I see {string} below the defendant type subheading', (helpText: string) => {

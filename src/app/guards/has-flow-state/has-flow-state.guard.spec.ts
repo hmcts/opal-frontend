@@ -24,7 +24,9 @@ describe('hasFlowStateGuard', () => {
   beforeEach(() => {
     finesMacEmptyFlowGuard = hasFlowStateGuard(
       () => mockFinesService.finesMacState.accountDetails,
-      (accountDetails) => !!accountDetails.formData.account_type && !!accountDetails.formData.defendant_type,
+      (accountDetails) =>
+        !!accountDetails.formData.fm_create_account_account_type &&
+        !!accountDetails.formData.fm_create_account_defendant_type,
       () => expectedUrl,
     );
 

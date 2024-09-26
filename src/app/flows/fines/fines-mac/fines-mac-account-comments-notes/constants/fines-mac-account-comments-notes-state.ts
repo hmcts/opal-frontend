@@ -1,6 +1,6 @@
 import { IFinesMacAccountCommentsNotesState } from '../interfaces/fines-mac-account-comments-notes-state.interface';
 
 export const FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE: IFinesMacAccountCommentsNotesState = {
-  comments: null,
-  notes: null,
+  fm_account_comments_notes_comments: null,
+  fm_account_comments_notes_notes: null,
 };

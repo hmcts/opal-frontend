@@ -57,23 +57,38 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
    */
   private setupEmployerDetailsForm(): void {
     this.form = new FormGroup({
-      employer_company_name: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
-      employer_reference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
-      employer_email_address: new FormControl(null, [optionalMaxLengthValidator(76), optionalEmailAddressValidator()]),
-      employer_telephone_number: new FormControl(null, [
+      fm_employer_details_employer_company_name: new FormControl(null, [Validators.required, Validators.maxLength(35)]),
+      fm_employer_details_employer_reference: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
+      fm_employer_details_employer_email_address: new FormControl(null, [
+        optionalMaxLengthValidator(76),
+        optionalEmailAddressValidator(),
+      ]),
+      fm_employer_details_employer_telephone_number: new FormControl(null, [
         optionalMaxLengthValidator(20),
         optionalPhoneNumberValidator(),
       ]),
-      employer_address_line_1: new FormControl(null, [
+      fm_employer_details_employer_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      employer_address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_address_line_3: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_address_line_4: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_address_line_5: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      employer_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_employer_details_employer_address_line_2: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+        specialCharactersValidator(),
+      ]),
+      fm_employer_details_employer_address_line_3: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+        specialCharactersValidator(),
+      ]),
+      fm_employer_details_employer_address_line_4: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+        specialCharactersValidator(),
+      ]),
+      fm_employer_details_employer_address_line_5: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+        specialCharactersValidator(),
+      ]),
+      fm_employer_details_employer_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 
