@@ -10,7 +10,7 @@ Feature: Manual account creation - Common screens - accessibility
 
   Scenario: Manual account creation - Accessibility - User multiple BUs
     Given I am on the OPAL Frontend
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I navigate to Manual Account Creation
     And I see "Business unit and defendant type" on the page header
     Then I check accessibility
@@ -18,7 +18,7 @@ Feature: Manual account creation - Common screens - accessibility
 
   Scenario: Manual account creation - Accessibility - Create Account screen
     Given I am on the OPAL Frontend
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
@@ -31,7 +31,7 @@ Feature: Manual account creation - Common screens - accessibility
 
   Scenario Outline: Manual account creation - Accessibility - Common screens
     Given I am on the OPAL Frontend
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I navigate to Manual Account Creation
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
@@ -52,7 +52,7 @@ Feature: Manual account creation - Common screens - accessibility
 
   Scenario: Manual account creation - Accessibility - Welsh language screens
     Given I am on the OPAL Frontend
-    When I sign in as "opal-test-8@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test-8@HMCTS.NET"
     And I navigate to Manual Account Creation
     And I select the "Fine" radio button
     And I select the "Adult or youth" radio button

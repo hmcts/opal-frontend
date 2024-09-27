@@ -1,10 +1,7 @@
 Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth only)
 
   Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
 

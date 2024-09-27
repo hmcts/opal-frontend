@@ -1,9 +1,6 @@
 Feature: PO-592 Implement additional fields for payment terms screen - Company
   Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
 

@@ -3,10 +3,7 @@ Feature: PO-365 PO-652 Creating a fines account for a Company where defendant ty
   #Cancel link steps adding in this feature to save execution time (stpes added on AC6)
 
   Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
