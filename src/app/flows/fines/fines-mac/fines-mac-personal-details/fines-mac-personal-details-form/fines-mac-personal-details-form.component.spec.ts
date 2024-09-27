@@ -122,9 +122,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.age).toEqual(34);
     expect(component.ageLabel).toEqual('Adult');
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
-    expect(paymentTermsFormData.has_days_in_default).toBeFalsy();
-    expect(paymentTermsFormData.days_in_default).toBeNull();
-    expect(paymentTermsFormData.days_in_default_date).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
+    expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_days_in_default_date']).toBeNull();
   });
 
   it('should call dateOfBirthListener on DOB value changes Youth', () => {
@@ -138,9 +138,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.age).toEqual(10);
     expect(component.ageLabel).toEqual('Youth');
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
-    expect(paymentTermsFormData.has_days_in_default).toBeFalsy();
-    expect(paymentTermsFormData.days_in_default).toBeNull();
-    expect(paymentTermsFormData.days_in_default_date).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
+    expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_days_in_default_date']).toBeNull();
   });
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
@@ -154,9 +154,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.age).toEqual(34);
     expect(component.ageLabel).toEqual('Adult');
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
-    expect(paymentTermsFormData.has_days_in_default).toBeFalsy();
-    expect(paymentTermsFormData.days_in_default).toBeNull();
-    expect(paymentTermsFormData.days_in_default_date).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
+    expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_days_in_default_date']).toBeNull();
   });
 
   it('should call the necessary setup methods', () => {

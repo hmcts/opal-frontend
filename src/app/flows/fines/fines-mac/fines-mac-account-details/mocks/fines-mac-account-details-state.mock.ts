@@ -1,7 +1,7 @@
 import { IFinesMacAccountDetailsState } from '../interfaces/fines-mac-account-details-state.interface';
 
 export const FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK: IFinesMacAccountDetailsState = {
-  account_type: 'conditionalCaution',
-  business_unit: 'Cambridgeshire',
-  defendant_type: 'adultOrYouthOnly',
+  fm_create_account_account_type: 'conditionalCaution',
+  fm_create_account_business_unit: 'Cambridgeshire',
+  fm_create_account_defendant_type: 'adultOrYouthOnly',
 };

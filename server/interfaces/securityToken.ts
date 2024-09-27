@@ -1,8 +1,8 @@
 import UserState from './userState';
 
 class SecurityToken {
-  userState?: UserState | undefined;
-  accessToken!: string;
+  user_state?: UserState | undefined;
+  access_token!: string;
 }
 
 export default SecurityToken;

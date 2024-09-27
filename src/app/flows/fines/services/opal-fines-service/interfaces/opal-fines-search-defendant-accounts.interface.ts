@@ -1,16 +1,16 @@
 export interface IOpalFinesSearchDefendantAccount {
-  accountNo: string;
+  account_no: string;
   name: string;
-  dateOfBirth: string;
-  addressLine1: string;
+  date_of_birth: string;
+  address_line_1: string;
   balance: number;
   court: string;
-  defendantAccountId: number;
+  defendant_account_id: number;
 }
 export interface IOpalFinesSearchDefendantAccounts {
   count: number;
-  totalCount: number;
+  total_count: number;
   cursor: number;
-  pageSize: number;
-  searchResults: IOpalFinesSearchDefendantAccount[];
+  page_size: number;
+  search_results: IOpalFinesSearchDefendantAccount[];
 }

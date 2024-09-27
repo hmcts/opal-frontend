@@ -1,4 +1,4 @@
-Feature: PO-432 days in default on payment terms page - adult or youth only
+Feature: PO-588 days in default on payment terms page - adult or youth with PG to pay
 
   #####################################
   # AC 5-8 WILL BE COVERED IN PO-648  #
@@ -54,6 +54,11 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
 
     And I see the error message "Enter date days in default were imposed" above the "Date days in default were imposed" date field
     And I see the error message "Enter days in default" above the days in default input field
+    Then I see the error message "Select whether there was a collection order" at the top of the page
+
+    # the next 2 steps are introduced in PO-471, this field is mandatory
+    And I select the "Yes" radio button under the "Has a collection order been made?" section
+    And I enter "20/05/2024" into the "Date of collection order" date field
 
     Then I enter a date 1 weeks into the future into the "Date days in default were imposed" date field
     And I enter "ab12" into the days in default input field
@@ -123,6 +128,10 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
 
     When I click on the "Payment terms" link
     Then I see "Payment terms" on the page header
+
+    # the next 2 steps are introduced in PO-471, this field is mandatory
+    And I select the "Yes" radio button under the "Has a collection order been made?" section
+    And I enter "20/05/2024" into the "Date of collection order" date field
 
     Then I select the "Pay in full" radio button
     And I enter a date 1 weeks into the future into the "Enter pay by date" date field

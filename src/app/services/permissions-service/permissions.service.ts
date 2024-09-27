@@ -17,11 +17,11 @@ export class PermissionsService {
    * @returns An array of unique permission IDs.
    */
   public getUniquePermissions(userState: ISessionUserState | null): number[] {
-    const roles = userState?.roles;
+    const roles = userState ? userState['business_unit_user_permissions'] : null;
 
     if (!this.storedUniquePermissionIds.length && roles) {
       const permissionIds = roles.flatMap((role) => {
-        return role.permissions.map(({ permissionId }) => permissionId);
+        return role.permissions.map(({ permission_id: permissionId }) => permissionId);
       });
 
       this.storedUniquePermissionIds = [...new Set(permissionIds)];
@@ -33,11 +33,11 @@ export class PermissionsService {
   public hasPermissionAccess(permissionId: number, businessUnitId: number, roles: ISessionUserStateRole[]): boolean {
     if (roles?.length) {
       // First we need to find the matching role
-      const role = roles?.find((role) => role.businessUnitId === businessUnitId);
+      const role = roles?.find((role) => role.business_unit_id === businessUnitId);
 
       // Then we need to find the matching permission
       const hasPermission = !!role?.permissions.find(
-        (permission: ISessionUserStatePermission) => permission.permissionId === permissionId,
+        (permission: ISessionUserStatePermission) => permission.permission_id === permissionId,
       );
 
       return hasPermission;

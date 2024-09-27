@@ -121,7 +121,7 @@ export class OpalFines {
   public getBusinessUnits(permission: string) {
     // Business units are cached to prevent multiple requests for the same data.
     // We can have multiple permission types so we need to cache them separately.
-    // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, MANUAL_ACCOUNT_CREATION
+    // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
     if (!this.businessUnitsCache$[permission]) {
       this.businessUnitsCache$[permission] = this.http
         .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
@@ -154,6 +154,6 @@ export class OpalFines {
    * @returns The value of the configuration item, or null if the item is not found.
    */
   public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
-    return businessUnit.configurationItems.find((item) => item.itemName === itemName)?.itemValue ?? null;
+    return businessUnit.configurationItems.find((item) => item.item_name === itemName)?.item_value ?? null;
   }
 }

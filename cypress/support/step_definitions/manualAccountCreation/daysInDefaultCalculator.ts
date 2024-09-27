@@ -15,13 +15,16 @@ Then('I see the Help calculate days in default section is expanded', () => {
 });
 
 Then('I see the error message {string} above the days in default input field', (errorMessage: string) => {
-  cy.get('input[id="days_in_default"]').parent().prev('.govuk-error-message').should('contain', errorMessage);
+  cy.get('input[id="fm_payment_terms_days_in_default"]')
+    .parent()
+    .prev('.govuk-error-message')
+    .should('contain', errorMessage);
 });
 When('I enter {string} into the days in default input field', (daysInDefault: string) => {
-  cy.get('input[id="days_in_default"]').clear().type(daysInDefault);
+  cy.get('input[id="fm_payment_terms_days_in_default"]').clear().type(daysInDefault);
 });
 Then('I see {string} in the days in default input field', (daysInDefault: string) => {
-  cy.get('input[id="days_in_default"]').should('have.value', daysInDefault);
+  cy.get('input[id="fm_payment_terms_days_in_default"]').should('have.value', daysInDefault);
 });
 Then('I enter {string} into the {string} input in the calculator', (value: string, inputField: string) => {
   cy.get('app-fines-mac-default-days').find(`input[id="${inputField}"]`).clear().type(value);

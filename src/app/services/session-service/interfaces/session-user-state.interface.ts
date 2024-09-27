@@ -1,16 +1,16 @@
 export interface ISessionUserStatePermission {
-  permissionId: number;
-  permissionName: string;
+  permission_id: number;
+  permission_name: string;
 }
 
 export interface ISessionUserStateRole {
-  businessUserId: string;
-  businessUnitId: number;
+  business_user_id: string;
+  business_unit_id: number;
   permissions: ISessionUserStatePermission[];
 }
 
 export interface ISessionUserState {
-  userId: string;
-  userName: string;
-  roles: ISessionUserStateRole[];
+  user_id: string;
+  user_name: string;
+  business_unit_user_permissions: ISessionUserStateRole[];
 }
