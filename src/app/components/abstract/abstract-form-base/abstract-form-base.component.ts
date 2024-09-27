@@ -2,8 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@ang
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
-import { Subject, Subscription, takeUntil } from 'rxjs';
-
+import { Subject, takeUntil } from 'rxjs';
 import { IAbstractFormBaseFieldError } from './interfaces/abstract-form-base-field-error.interface';
 import { IAbstractFormBaseFieldErrors } from './interfaces/abstract-form-base-field-errors.interface';
 import { IAbstractFormBaseFormError } from './interfaces/abstract-form-base-form-error.interface';
@@ -31,8 +30,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   public formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
   protected fieldErrors!: IAbstractFormBaseFieldErrors;
   protected formSubmitted = false;
-  private formSub!: Subscription;
-  private ngUnsubscribe = new Subject<void>();
+  private readonly ngUnsubscribe = new Subject<void>();
   public formErrors!: IAbstractFormBaseFormError[];
 
   constructor() {}
@@ -314,7 +312,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    * Setup listener for the form value changes and to emit hasUnsavedChanges
    */
   private setupListener(): void {
-    this.formSub = this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+    this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     });
   }
@@ -507,23 +505,6 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
       const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
       this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
-    }
-  }
-
-  /**
-   * Handles the form submission event, when an array is used.
-   *
-   * @param event - The form submission event.
-   * @returns void
-   */
-  public handleFormArraySubmit(event: SubmitEvent): void {
-    this.handleErrorMessages();
-
-    if (this.form.valid) {
-      this.formSubmitted = true;
-      const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
-      this.unsavedChanges.emit(this.hasUnsavedChanges());
-      this.formSubmit.emit({ formData: [this.form.value], nestedFlow: nestedFlow });
     }
   }
 

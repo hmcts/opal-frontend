@@ -5,7 +5,6 @@ import { FINES_MAC_COMPANY_DETAILS_FORM } from '../fines-mac-company-details/con
 import { FINES_MAC_CONTACT_DETAILS_FORM } from '../fines-mac-contact-details/constants/fines-mac-contact-details-form';
 import { FINES_MAC_COURT_DETAILS_FORM } from '../fines-mac-court-details/constants/fines-mac-court-details-form';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM } from '../fines-mac-employer-details/constants/fines-mac-employer-details-form';
-import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../fines-mac-offence-details/constants/fines-mac-offence-details-form';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM } from '../fines-mac-parent-guardian-details/constants/fines-mac-parent-guardian-details-form';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../fines-mac-personal-details/constants/fines-mac-personal-details-form';
@@ -21,7 +20,7 @@ export const FINES_MAC_STATE: IFinesMacState = {
   companyDetails: FINES_MAC_COMPANY_DETAILS_FORM,
   courtDetails: FINES_MAC_COURT_DETAILS_FORM,
   accountCommentsNotes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM,
-  offenceDetails: FINES_MAC_OFFENCE_DETAILS_FORM,
+  offenceDetails: [],
   paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,

@@ -20,7 +20,7 @@ export interface IFinesMacState {
   companyDetails: IFinesMacCompanyDetailsForm;
   courtDetails: IFinesMacCourtDetailsForm;
   accountCommentsNotes: IFinesMacAccountCommentsNotesForm;
-  offenceDetails: IFinesMacOffenceDetailsForm;
+  offenceDetails: IFinesMacOffenceDetailsForm[];
   paymentTerms: IFinesMacPaymentTermsForm;
   languagePreferences: IFinesMacLanguagePreferencesForm;
   businessUnit: IOpalFinesBusinessUnit;

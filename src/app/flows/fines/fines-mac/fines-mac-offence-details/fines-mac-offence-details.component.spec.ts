@@ -12,13 +12,14 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OPAL_FINES_OFFENCES_REF_DATA } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let opalFinesService: Partial<OpalFines>;
-  let formSubmit: IFinesMacOffenceDetailsForm;
+  let formSubmit: IFinesMacOffenceDetailsForm[];
 
   beforeEach(async () => {
     opalFinesService = {
@@ -59,9 +60,9 @@ describe('FinesMacOffenceDetailsComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.nestedFlow = false;
+    formSubmit[0].nestedFlow = false;
 
-    component.handleOffenceDetailsSubmit(formSubmit);
+    component.handleOffenceDetailsSubmit(formSubmit[0]);
 
     expect(mockFinesService.finesMacState.offenceDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
@@ -72,9 +73,9 @@ describe('FinesMacOffenceDetailsComponent', () => {
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.nestedFlow = true;
+    formSubmit[0].nestedFlow = true;
 
-    component.handleOffenceDetailsSubmit(formSubmit);
+    component.handleOffenceDetailsSubmit(formSubmit[0]);
 
     expect(mockFinesService.finesMacState.offenceDetails).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.offenceDetails], {
@@ -90,5 +91,29 @@ describe('FinesMacOffenceDetailsComponent', () => {
     component.handleUnsavedChanges(false);
     expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
+  });
+
+  it('should update offence details index when form exists in the state', () => {
+    const form = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+
+    const existingForm = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+
+    mockFinesService.finesMacState.offenceDetails = [existingForm];
+
+    component['updateOffenceDetailsIndex'](form);
+
+    expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
+    expect(mockFinesService.finesMacState.offenceDetails[0]).toEqual(form);
+  });
+
+  it('should add offence details form to the state when form does not exist', () => {
+    const form = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+
+    mockFinesService.finesMacState.offenceDetails = [];
+
+    component['updateOffenceDetailsIndex'](form);
+
+    expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
+    expect(mockFinesService.finesMacState.offenceDetails[0]).toEqual(form);
   });
 });

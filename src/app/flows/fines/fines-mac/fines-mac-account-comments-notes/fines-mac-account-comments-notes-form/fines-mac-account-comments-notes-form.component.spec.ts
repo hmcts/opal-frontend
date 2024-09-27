@@ -78,7 +78,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.offenceDetails.status = FINES_MAC_STATUS.PROVIDED;
+    mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.PROVIDED;
 
     // Act
@@ -93,7 +93,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.offenceDetails.status = FINES_MAC_STATUS.PROVIDED;
+    mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.NOT_PROVIDED;
 
     // Act

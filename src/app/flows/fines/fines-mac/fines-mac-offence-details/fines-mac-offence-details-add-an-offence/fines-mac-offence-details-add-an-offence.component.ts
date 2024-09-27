@@ -38,6 +38,7 @@ import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-fo
 import { futureDateValidator } from '@validators/future-date/future-date.validator';
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
 import { UtilsService } from '@services/utils/utils.service';
+import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -67,6 +68,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   @Input() public defendantType!: string;
   @Input({ required: true }) public offences!: IOpalFinesOffencesRefData;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public formData!: IFinesMacOffenceDetailsState;
+  @Input({ required: true }) public formDataIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
@@ -91,6 +94,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    */
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
+      fm_offence_details_index: new FormControl(this.formDataIndex),
       fm_offence_details_date_of_offence: new FormControl(null, [
         Validators.required,
         optionalValidDateValidator(),
@@ -112,17 +116,16 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * adds controls to the form array if necessary, and sets the current date.
    */
   private initialAddAnOffenceDetailsSetup(): void {
-    const { formData } = this.finesService.finesMacState.offenceDetails;
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
     this.setupFormArrayFormControls(
-      [...Array(formData[0].fm_offence_details_impositions.length).keys()],
+      [...Array(this.formData.fm_offence_details_impositions.length).keys()],
       'fm_offence_details_impositions',
     );
     this.offenceCodeListener();
     this.setInitialErrorMessages();
-    this.rePopulateForm(formData[0]);
-    if (formData[0].fm_offence_details_impositions.length === 0) {
+    this.rePopulateForm(this.formData);
+    if (this.formData.fm_offence_details_impositions.length === 0) {
       this.addControlsToFormArray(0, 'fm_offence_details_impositions');
     }
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from './constants/fines-mac-offence-details-result-codes';
+import { IFinesMacOffenceDetailsState } from './interfaces/fines-mac-offence-details-state.interface';
+import { FINES_MAC_OFFENCE_DETAILS_STATE } from './constants/fines-mac-offence-details-state';
 
 @Component({
   selector: 'app-fines-mac-offence-details',
@@ -29,7 +31,7 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from './constants/fines-mac-o
   templateUrl: './fines-mac-offence-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseComponent {
+export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
@@ -47,6 +49,8 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
     resultCodeData: this.resultCodeData$,
   });
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  public formData!: IFinesMacOffenceDetailsState;
+  public formDataIndex!: number;
 
   /**
    * Creates an array of autocomplete items based on the provided response data.
@@ -69,9 +73,26 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
   }
 
   /**
+   * Updates the offence details in the finesMacState based on the provided form data.
+   * If an offence detail with the same fm_offence_details_index already exists, it will be updated.
+   * Otherwise, the new offence detail will be added to the finesMacState.
+   *
+   * @param form - The form data containing the offence details to be updated or added.
+   */
+  private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
+    const index = this.finesService.finesMacState.offenceDetails.findIndex(
+      (item) => item.formData.fm_offence_details_index === form.formData.fm_offence_details_index,
+    );
+
+    if (index !== -1) {
+      this.finesService.finesMacState.offenceDetails[index] = form;
+    } else {
+      this.finesService.finesMacState.offenceDetails.push(form);
+    }
+  }
+
+  /**
    * Handles the submission of the offence details form.
-   * Updates the finesMacState with the new offence details and sets unsavedChanges and stateChanges flags.
-   * Navigates to the appropriate route based on whether it's a nested flow or not.
    *
    * @param form - The offence details form data.
    */
@@ -82,14 +103,12 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
     // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      offenceDetails: {
-        formData: [...form.formData],
-        nestedFlow: form.nestedFlow,
-        status: form.status,
-      },
+      offenceDetails: [...this.finesService.finesMacState.offenceDetails],
       unsavedChanges: false,
       stateChanges: true,
     };
+
+    this.updateOffenceDetailsIndex(form);
 
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.offenceDetails);
@@ -106,5 +125,16 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.finesService.finesMacState.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  /**
+   * Initializes the component.
+   */
+  public ngOnInit(): void {
+    this.formData =
+      this.finesService.finesMacState.offenceDetails.length > 0
+        ? this.finesService.finesMacState.offenceDetails[0].formData
+        : FINES_MAC_OFFENCE_DETAILS_STATE;
+    this.formDataIndex = 0;
   }
 }
