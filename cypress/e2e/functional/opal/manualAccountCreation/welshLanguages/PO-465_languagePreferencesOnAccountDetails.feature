@@ -1,10 +1,8 @@
 Feature: PO-465 language preferences page for all defendant types
-  Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
+
 
   Scenario Outline:AC1,2,3,4 Language preferences for All defendants - happy path
-    When I sign in as "opal-test-6@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test-6@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
@@ -33,7 +31,7 @@ Feature: PO-465 language preferences page for all defendant types
       | Company                                       |
 
   Scenario Outline:AC1,2,3,4 Language preferences for All defendants - negative test
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 

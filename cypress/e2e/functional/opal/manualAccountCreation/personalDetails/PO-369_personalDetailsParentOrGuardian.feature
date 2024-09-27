@@ -2,10 +2,7 @@ Feature:PO-369  Personal details screen for adult or youth for parent or guardia
   #needs optimising for performance
 
   Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
