@@ -9,7 +9,8 @@ def product = 'opal'
 def component = 'frontend'
 
 def secrets = [
-  'opal-${env}': [
+  'opal-${env
+  }': [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
     secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
   ],
@@ -66,7 +67,7 @@ withPipeline(type, product, component) {
         script {
       def projectName = getProjectName()
       try {
-        copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
+        copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline /*'
             } catch (Exception e) {
         echo "Error copying artifacts: ${e}"
       }
@@ -125,14 +126,14 @@ withPipeline(type, product, component) {
             if (directories.isEmpty() || projectName == 'HMCTS/opal-frontend/master') {
                 // No specific test labels, include all directories
                 env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
-            } else {
-                // Build the glob pattern using curly braces
+      } else {
+        // Build the glob pattern using curly braces
                 def dirList = directories.join(',')
-                env.TEST_SPECS = "cypress/e2e/functional/opal/{${dirList}}/**/*.feature"
-            }
+                env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
+      }
             sh"echo 'Test Specs: ${env.TEST_SPECS}'"
-        }
     }
+  }
 
   afterSuccess('functionalTest:dev') {
     script {
@@ -169,7 +170,7 @@ withPipeline(type, product, component) {
         reportDir            : "functional-output/prod/cucumber/",
         reportFiles          : "functional-report.html",
         reportName           : "Cucumber Functional Test Report"
-      ]
+    ]
 
       publishHTML target: [
         allowMissing         : true,
@@ -178,7 +179,7 @@ withPipeline(type, product, component) {
         reportDir            : "functional-output/prod/",
         reportFiles          : "test-result.xml",
         reportName           : "XML Functional Test Report"
-      ]
+    ]
 
       publishHTML target: [
         allowMissing         : true,
@@ -187,7 +188,7 @@ withPipeline(type, product, component) {
         reportDir            : "smoke-output/prod/cucumber/",
         reportFiles          : "smoke-report.html",
         reportName           : "Cucumber Smoke Test Report"
-      ]
+    ]
 
       publishHTML target: [
         allowMissing         : true,
@@ -196,7 +197,7 @@ withPipeline(type, product, component) {
         reportDir            : "smoke-output/prod/",
         reportFiles          : "test-result.xml",
         reportName           : "XML Smoke Test Report"
-      ]
+    ]
   }
 
       afterAlways('functionalTest:dev') {
@@ -208,7 +209,7 @@ withPipeline(type, product, component) {
         reportDir            : "functional-output/prod/cucumber/",
         reportFiles          : "functional-report.html",
         reportName           : "Cucumber Functional Test Report"
-      ]
+    ]
 
       publishHTML target: [
         allowMissing         : true,
@@ -217,7 +218,7 @@ withPipeline(type, product, component) {
         reportDir            : "functional-output/prod/",
         reportFiles          : "test-result.xml",
         reportName           : "XML Functional Test Report"
-      ]
+    ]
 
       publishHTML target: [
         allowMissing         : true,
@@ -226,7 +227,7 @@ withPipeline(type, product, component) {
         reportDir            : "smoke-output/prod/cucumber/",
         reportFiles          : "smoke-report.html",
         reportName           : "Cucumber Smoke Test Report"
-      ]
+    ]
 
       publishHTML target: [
         allowMissing         : true,
@@ -235,6 +236,6 @@ withPipeline(type, product, component) {
         reportDir            : "smoke-output/prod/",
         reportFiles          : "test-result.xml",
         reportName           : "XML Smoke Test Report"
-      ]
+    ]
   }
 }
