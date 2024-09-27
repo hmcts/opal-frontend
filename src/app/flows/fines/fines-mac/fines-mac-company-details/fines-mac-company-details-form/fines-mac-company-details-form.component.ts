@@ -28,7 +28,7 @@ import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFor
 import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
 import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
-import { FinesMacAddressBlockComponent } from '../../components/fines-mac-address-block/fines-mac-address-block.component';
+
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 
 import { FinesService } from '@services/fines/fines-service/fines.service';
@@ -51,7 +51,6 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
     GovukCheckboxesItemComponent,
     GovukCheckboxesConditionalComponent,
     GovukCancelLinkComponent,
-    FinesMacAddressBlockComponent,
   ],
   templateUrl: './fines-mac-company-details-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,30 +64,34 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
-  override fieldErrors: IFinesMacCompanyDetailsFieldErrors = {
-    ...FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS,
-    ...FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS,
-  };
+  override fieldErrors: IFinesMacCompanyDetailsFieldErrors = FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS;
 
   /**
    * Sets up the company details form with the necessary form controls.
    */
   private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
-      company_name: new FormControl(null, [Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]),
-      add_alias: new FormControl(null),
-      aliases: new FormArray([]),
-      address_line_1: new FormControl(null, [
+      fm_company_details_company_name: new FormControl(null, [
+        Validators.required,
+        Validators.maxLength(50),
+        alphabeticalTextValidator(),
+      ]),
+      fm_company_details_add_alias: new FormControl(null),
+      fm_company_details_aliases: new FormArray([]),
+      fm_company_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
         specialCharactersValidator(),
       ]),
-      address_line_2: new FormControl(null, [optionalMaxLengthValidator(30), specialCharactersValidator()]),
-      address_line_3: new FormControl(null, [optionalMaxLengthValidator(16), specialCharactersValidator()]),
-      postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_company_details_address_line_2: new FormControl(null, [
+        optionalMaxLengthValidator(30),
+        specialCharactersValidator(),
+      ]),
+      fm_company_details_address_line_3: new FormControl(null, [
+        optionalMaxLengthValidator(16),
+        specialCharactersValidator(),
+      ]),
+      fm_company_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 
@@ -110,10 +113,13 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
     const { formData } = this.finesService.finesMacState.companyDetails;
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
-    this.setupAliasFormControls([...Array(formData.aliases.length).keys()], 'aliases');
+    this.setupAliasFormControls(
+      [...Array(formData['fm_company_details_aliases'].length).keys()],
+      'fm_company_details_aliases',
+    );
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
-    this.setUpAliasCheckboxListener('add_alias', 'aliases');
+    this.setUpAliasCheckboxListener('fm_company_details_add_alias', 'fm_company_details_aliases');
   }
 
   public override ngOnInit(): void {
