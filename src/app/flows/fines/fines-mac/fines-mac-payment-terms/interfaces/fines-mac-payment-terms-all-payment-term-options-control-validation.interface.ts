@@ -1,8 +1,8 @@
-import { IFinesMacPaymentTermsPaymentTermOptionsControlValidation } from './fines-mac-payment-terms-payment-term-options-control-validation.interface';
+import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 
 interface IFinesMacPaymentTermsPaymentTermFieldsAddRemove {
-  fieldsToAdd: IFinesMacPaymentTermsPaymentTermOptionsControlValidation[];
-  fieldsToRemove: IFinesMacPaymentTermsPaymentTermOptionsControlValidation[];
+  fieldsToAdd: IAbstractFormArrayControlValidation[];
+  fieldsToRemove: IAbstractFormArrayControlValidation[];
 }
 
 export interface IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation {
