@@ -9,8 +9,7 @@ def product = 'opal'
 def component = 'frontend'
 
 def secrets = [
-  'opal-${env
-  }': [
+  'opal-${env}': [
     secret('OpalTestUserEmail', 'OPAL_TEST_USER_EMAIL'),
     secret('OpalTestUserPassword', 'OPAL_TEST_USER_PASSWORD')
   ],
