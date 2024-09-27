@@ -159,10 +159,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
 
 
   Scenario: AC1.b - Address Line 1 - Asterisk not permitted validation
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -179,10 +176,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     And I see the error message "The address line 1 must not contain special characters" above the "Address line 1" field
 
   Scenario: AC1.b - Address Line 2 - Asterisk not permitted validation
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -267,10 +261,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
   #   And I see the error message "Enter address line 1, typically the building and street" above the "Address line 1" field
 
   Scenario: AC3 - Date of birth - future date validation
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -287,10 +278,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     And I see the error message "Enter a valid date of birth in the past" above the Date of birth field
 
   Scenario: AC3 - Date of birth - invalid date validation
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -326,10 +314,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
   # #   And I see the error message "Enter a valid date of birth" above the Date of birth field
 
   Scenario: AC4 - NI number - invalid format validation
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -346,10 +331,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     And I see the error message "Enter a National Insurance number in the format AANNNNNNA" above the "National Insurance number" field
 
   Scenario: AC4 - NI number - invalid final character validation
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -366,10 +348,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     And I see the error message "Enter a National Insurance number in the format AANNNNNNA" above the "National Insurance number" field
 
   Scenario: AC5 - All fields - correcting validation allows user to progress
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -459,10 +438,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
   #   And I see "TE12 3ST" in the "Postcode" field
 
   Scenario: AC7 - No data entered - Cancel button returns to account details
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -478,10 +454,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     Then I see "Account details" on the page header
 
   Scenario: AC8a - Route guards 'Ok' - fields cleared and user returned to account details
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -502,10 +475,7 @@ Feature: PO-364 Parent or guardian to pay page, navigation and validation
     And I see "" in the "Address line 1" field
 
   Scenario: AC8b - Route guards 'Cancel' - user stays on page
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation

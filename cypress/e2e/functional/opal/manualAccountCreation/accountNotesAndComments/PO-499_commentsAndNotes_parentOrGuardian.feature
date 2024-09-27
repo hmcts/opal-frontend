@@ -4,7 +4,7 @@ Feature: PO-499 Account comments and notes screen, Adult or Youth with Parent or
     Given I am on the OPAL Frontend
     When I see "Opal" in the header
 
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
 

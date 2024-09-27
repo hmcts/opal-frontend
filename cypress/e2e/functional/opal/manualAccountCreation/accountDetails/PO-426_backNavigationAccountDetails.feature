@@ -1,9 +1,6 @@
 Feature:PO-426 Application and browser Back buttons on Account Details screen - clear all data entered during the MAC process
   Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 

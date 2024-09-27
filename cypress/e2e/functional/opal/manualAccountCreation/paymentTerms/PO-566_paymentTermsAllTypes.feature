@@ -1,10 +1,7 @@
 Feature: PO-566 Basic Payment Terms screen - all defendant types
 
   Background:
-    Given I am on the OPAL Frontend
-    When I see "Opal" in the header
-
-    And I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
 

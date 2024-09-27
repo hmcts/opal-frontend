@@ -3,7 +3,7 @@ Feature: PO-719 Route Guard Redirects
 
   Scenario: Route Guard Redirects - reloading page
     Given I am on the OPAL Frontend
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I navigate to Manual Account Creation
     Then I see "Business unit and defendant type" on the page header
     And I enter "West London" into the business unit search box
@@ -17,7 +17,7 @@ Feature: PO-719 Route Guard Redirects
 
   Scenario: Route Guard Redirects - navigating to URL
     Given I am on the OPAL Frontend
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I navigate to Manual Account Creation
     Then I see "Business unit and defendant type" on the page header
     And I enter "West London" into the business unit search box
