@@ -37,6 +37,7 @@ import { CommonModule } from '@angular/common';
 import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
 import { futureDateValidator } from '@validators/future-date/future-date.validator';
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
+import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -70,6 +71,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
+  protected readonly utilsService = inject(UtilsService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
@@ -84,6 +86,9 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
 
+  /**
+   * Sets up the form for adding an offence.
+   */
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
       fm_offence_details_date_of_offence: new FormControl(null, [
@@ -99,6 +104,13 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     });
   }
 
+  /**
+   * Sets up the initial configuration for adding an offence details.
+   * This method initializes the form, sets up the impositions configuration,
+   * sets up the form array form controls, listens for changes in the offence code,
+   * sets initial error messages, repopulates the form with existing data,
+   * adds controls to the form array if necessary, and sets the current date.
+   */
   private initialAddAnOffenceDetailsSetup(): void {
     const { formData } = this.finesService.finesMacState.offenceDetails;
     this.setupAddAnOffenceForm();
@@ -116,46 +128,63 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 
+  /**
+   * Listens for changes in the 'fm_offence_details_offence_code' form control and performs actions based on the entered code.
+   */
   private offenceCodeListener(): void {
     this.form.controls['fm_offence_details_offence_code'].valueChanges.subscribe((cjs_code: string) => {
+      // Ensure the entered code is in uppercase
+      cjs_code = this.utilsService.upperCaseAllLetters(cjs_code || '');
+      this.form.controls['fm_offence_details_offence_code'].setValue(cjs_code, { emitEvent: false });
+
       this.selectedOffenceConfirmation = false;
       this.selectedOffenceSuccessful = false;
       this.selectedOffenceTitle = 'Enter a valid offence code';
 
-      if (cjs_code && cjs_code.length >= 7 && cjs_code.length <= 8) {
-        this.selectedOffenceConfirmation = true;
+      if (cjs_code?.length >= 7 && cjs_code?.length <= 8) {
         const offence = this.offences.refData.find((offence) => offence.get_cjs_code === cjs_code);
-        if (offence) {
-          this.selectedOffenceTitle = offence.offence_title;
-          this.selectedOffenceSuccessful = true;
-        }
+        this.selectedOffenceConfirmation = !this.selectedOffenceConfirmation;
+        this.selectedOffenceTitle = offence?.offence_title ?? this.selectedOffenceTitle;
+        this.selectedOffenceSuccessful = !!offence;
       }
     });
   }
 
+  /**
+   * Sets up the impositions configuration for the fines-mac-offence-details-add-an-offence component.
+   * This method initializes the formArrayFields and formArrayControlsValidation properties
+   * based on the FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS array.
+   */
   private setupImpositionsConfiguration(): void {
     this.formArrayFields = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS.map((item) => item.controlName);
     this.formArrayControlsValidation = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS;
   }
 
+  /**
+   * Listens for changes in the result code control and updates the needs creditor control accordingly.
+   * @param index - The index of the impositions form group.
+   */
   private resultCodeListener(index: number): void {
     const impositionsFormArray = this.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`].valueChanges.subscribe(
-      (result_code: string) => {
-        if (
-          result_code &&
-          (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
-            result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs)
-        ) {
-          impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`].setValue(true);
-        } else {
-          impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`].setValue(false);
-        }
-      },
-    );
+    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
+    const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
+
+    resultCodeControl.valueChanges.subscribe((result_code: string) => {
+      const needsCreditor =
+        result_code &&
+        (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
+          result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
+      needsCreditorControl.setValue(needsCreditor);
+    });
   }
 
+  /**
+   * Adds controls to the form array at the specified index.
+   *
+   * @param index - The index at which to add the controls.
+   * @param formArrayName - The name of the form array.
+   */
   public override addControlsToFormArray(index: number, formArrayName: string): void {
     super.addControlsToFormArray(index, formArrayName);
     this.resultCodeListener(index);

@@ -41,7 +41,8 @@
           selectedOffenceSuccessful ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'
         "
       >
-        <strong>Offence found</strong>
+        @let offenceFound = selectedOffenceSuccessful ? 'Offence found' : 'Offence not found';
+        <strong>{{ offenceFound }}</strong>
         <p>{{ selectedOffenceTitle }}</p>
       </app-moj-ticket-panel>
     }
