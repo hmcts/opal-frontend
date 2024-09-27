@@ -215,7 +215,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should check defendant age and set accessDefaultDates to true when age is 18 or above', () => {
     component.defendantType = 'adultOrYouthOnly';
     const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_dob = dob;
     mockDateService.calculateAge.and.returnValue(30);
 
     component['determineAccess']();
@@ -227,7 +227,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should check defendant age and set accessDefaultDates to false when age is below 18', () => {
     const dob = DateTime.now().minus({ years: 10 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.dob = dob;
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_dob = dob;
     mockDateService.calculateAge.and.returnValue(10);
     component.defendantType = 'adultOrYouthOnly';
 

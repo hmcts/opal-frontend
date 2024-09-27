@@ -352,8 +352,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     switch (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes]) {
       case this.defendantTypes.adultOrYouthOnly:
         formData = this.finesService.finesMacState.personalDetails.formData;
-        this.accessDefaultDates = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
-        this.accessCollectionOrder = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
+        this.accessDefaultDates =
+          !formData.fm_personal_details_dob || this.dateService.calculateAge(formData.fm_personal_details_dob) >= 18;
+        this.accessCollectionOrder =
+          !formData.fm_personal_details_dob || this.dateService.calculateAge(formData.fm_personal_details_dob) >= 18;
         this.addRequestPaymentCardControl();
         break;
       case this.defendantTypes.parentOrGuardianToPay:

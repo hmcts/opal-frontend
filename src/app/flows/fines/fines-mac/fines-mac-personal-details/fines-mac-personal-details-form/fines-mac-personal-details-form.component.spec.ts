@@ -2,13 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
-import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
-import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-personal-details-field-errors';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-personal-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@services/date-service/date.service';
+import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;
@@ -89,19 +88,17 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should set up the personal details form', () => {
     component['setupPersonalDetailsForm']();
     expect(component.form).toBeTruthy();
-    expect(component.form.get('title')).toBeTruthy();
-    expect(component.form.get('forenames')).toBeTruthy();
-    expect(component.form.get('surname')).toBeTruthy();
-    expect(component.form.get('add_alias')).toBeTruthy();
-    expect(component.form.get('aliases')).toBeTruthy();
-    expect(component.form.get('dob')).toBeTruthy();
-    expect(component.form.get('national_insurance_number')).toBeTruthy();
-    expect(component.form.get('address_line_1')).toBeTruthy();
-    expect(component.form.get('address_line_2')).toBeTruthy();
-    expect(component.form.get('address_line_3')).toBeTruthy();
-    expect(component.form.get('postcode')).toBeTruthy();
-    expect(component.form.get('vehicle_make')).toBeTruthy();
-    expect(component.form.get('vehicle_registration_mark')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_title')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_forenames')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_surname')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_add_alias')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_aliases')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_dob')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_national_insurance_number')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_address_line_1')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_address_line_2')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_address_line_3')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_postcode')).toBeTruthy();
   });
 
   it('should set up the alias configuration for the personal details form', () => {
@@ -115,7 +112,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(34);
 
-    component.form.controls['dob'].setValue(dateOfBirth);
+    component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
 
     expect(mockDateService.isValidDate).toHaveBeenCalledWith(dateOfBirth);
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
@@ -132,7 +129,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(10);
 
-    component.form.controls['dob'].setValue(dateOfBirth);
+    component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
 
     expect(mockDateService.calculateAge).toHaveBeenCalledWith(dateOfBirth);
     expect(component.age).toEqual(10);
@@ -145,7 +142,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
     const dateOfBirth = '01/01/1990';
-    component.form.controls['dob'].setValue(dateOfBirth);
+    component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(34);
 
@@ -167,7 +164,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAliasFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addVehicleDetailsFieldErrors');
+    spyOn<any>(component, 'addVehicleDetailsControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -183,13 +180,16 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.personalDetails.formData.aliases.length).keys()],
-      'aliases',
+      [...Array(mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_aliases.length).keys()],
+      'fm_personal_details_aliases',
     );
-    expect(component['addVehicleDetailsFieldErrors']).toHaveBeenCalled();
+    expect(component['addVehicleDetailsControls']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails.formData);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('add_alias', 'aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith(
+      'fm_personal_details_add_alias',
+      'fm_personal_details_aliases',
+    );
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
@@ -203,7 +203,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAliasFormControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addVehicleDetailsFieldErrors');
+    spyOn<any>(component, 'addVehicleDetailsControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setInitialErrorMessages');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,43 +220,26 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component['setupPersonalDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.personalDetails.formData.aliases.length).keys()],
-      'aliases',
+      [...Array(mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_aliases.length).keys()],
+      'fm_personal_details_aliases',
     );
-    expect(component['addVehicleDetailsFieldErrors']).not.toHaveBeenCalled();
+    expect(component['addVehicleDetailsControls']).not.toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.personalDetails.formData);
-    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith('add_alias', 'aliases');
+    expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith(
+      'fm_personal_details_add_alias',
+      'fm_personal_details_aliases',
+    );
     expect(component['dateOfBirthListener']).toHaveBeenCalled();
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
   });
 
-  it('should add vehicle details field errors', () => {
-    const expectedFieldErrors: IFinesMacPersonalDetailsFieldErrors = {
-      title: {
-        required: {
-          message: 'Select a title',
-          priority: 1,
-        },
-      },
-      vehicle_make: {
-        maxlength: {
-          message: `The make of car must be 30 characters or fewer`,
-          priority: 1,
-        },
-      },
-      vehicle_registration_mark: {
-        maxlength: {
-          message: `The registration number must be 11 characters or fewer`,
-          priority: 1,
-        },
-      },
-    };
+  it('should add vehicle details controls', () => {
+    component['addVehicleDetailsControls']();
 
-    component.fieldErrors = FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS;
-    component['addVehicleDetailsFieldErrors']();
-
-    expect(component.fieldErrors).toEqual(expectedFieldErrors);
+    FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
+      expect(component.form.get(control.controlName)).toBeTruthy();
+    });
   });
 });
