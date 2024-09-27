@@ -18,11 +18,7 @@ import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 
-import { FINES_MAC_ADDRESS_BLOCK_LINE_ONE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-one-field-errors';
-import { FINES_MAC_ADDRESS_BLOCK_LINE_TWO_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-two-field-errors';
-import { FINES_MAC_ADDRESS_BLOCK_LINE_THREE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-line-three-field-errors';
 import { FINES_MAC_ADDRESS_BLOCK_FIELD_IDS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-field-ids';
-import { FINES_MAC_ADDRESS_BLOCK_POSTCODE_FIELD_ERRORS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-postcode-field-errors';
 
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
