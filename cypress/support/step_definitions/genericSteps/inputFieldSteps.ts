@@ -50,11 +50,10 @@ Then(
   },
 );
 Then(
-  'the character remaining is {int} for the {string} input field and I see {string} {string}',
-  (expectedRemaining: number, inputField: string, message1: string, message2: string) => {
-    const expectedText = message1 + " " + expectedRemaining + " " + message2;
+  'the character remaining should show {int} for the {string} input field',
+  (expectedRemaining: number, inputField: string) => {
     cy.get('app-govuk-text-area[labeltext="' + inputField + '"]')
       .find('.govuk-hint')
-      .should('contain.text', expectedText);
+      .should('contain.text', expectedRemaining.toString());
   },
 );

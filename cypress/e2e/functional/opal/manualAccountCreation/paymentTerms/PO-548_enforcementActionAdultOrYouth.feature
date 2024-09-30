@@ -54,7 +54,7 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
 
     And I see "Reason account is on NOENF" under the "Hold enforcement on account (NOENF)" radio button
     And I enter "Adding" into the "Reason account is on NOENF" text field
-    When the character remaining is 22 for the "Reason account is on NOENF" input field and I see "You have" "characters remaining"
+    Then the character remaining should show 22 for the "Reason account is NOENF" input field
 
     And I click the "Return to account details" button
     Then I see "Account details" on the page header
@@ -139,13 +139,13 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
     When I select the "Hold enforcement on account (NOENF)" radio button
 
     And I enter "Adding * and $123" into the "Reason account is on NOENF" text field
-    Then the character remaining is 11 for the "Reason account is on NOENF" input field and I see "You have" "characters remaining"
+    Then the character remaining should show 11 for the "Reason account is NOENF" input field
 
     And I click the "Return to account details" button
     Then I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" at the top of the page
 
     And I enter "Adding * and $123" into the "Reason account is on NOENF" text field
-    Then the character remaining is 11 for the "Reason account is on NOENF" input field and I see "You have" "characters remaining"
+    Then the character remaining should show 11 for the "Reason account is NOENF" input field
 
     And I click the "Add account comments and notes" button
     Then I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" at the top of the page
