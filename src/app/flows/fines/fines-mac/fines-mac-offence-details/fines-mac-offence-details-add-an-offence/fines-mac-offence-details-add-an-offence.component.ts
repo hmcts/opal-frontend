@@ -146,9 +146,10 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
       if (cjs_code?.length >= 7 && cjs_code?.length <= 8) {
         const offence = this.offences.refData.find((offence) => offence.get_cjs_code === cjs_code);
+        if (!offence) return;
         this.selectedOffenceConfirmation = !this.selectedOffenceConfirmation;
-        this.selectedOffenceTitle = offence?.offence_title ?? this.selectedOffenceTitle;
-        this.selectedOffenceSuccessful = !!offence;
+        this.selectedOffenceTitle = offence.offence_title;
+        this.selectedOffenceSuccessful = true;
       }
     });
   }

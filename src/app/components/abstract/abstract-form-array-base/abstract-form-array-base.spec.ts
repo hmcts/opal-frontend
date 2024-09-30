@@ -129,4 +129,69 @@ describe('AbstractFormArrayBaseComponent', () => {
     expect(formArray instanceof FormArray).toBeTruthy();
     expect(formArray.controls.length).toBe(1);
   });
+
+  it('should remove specific error messages from formControlErrorMessages for the given form array control', () => {
+    const index = 0;
+
+    // Mock form array controls and field names
+    component.formArrayControls = [
+      {
+        field1: { inputId: 'field1_0', inputName: 'field1_0', controlName: 'field1_0' },
+        field2: { inputId: 'field2_0', inputName: 'field2_0', controlName: 'field2_0' },
+      },
+    ];
+    const fieldNames = ['field1', 'field2'];
+
+    // Mock formControlErrorMessages with some initial values
+    component['formControlErrorMessages'] = {
+      field1_0: 'Some error message for field1',
+      field2_0: 'Some error message for field2',
+    };
+
+    // Call the method to remove the error messages
+    component['removeFormArrayControlsErrors'](index, component.formArrayControls, fieldNames);
+
+    // Check that the errors for the specified fields are removed
+    expect(component['formControlErrorMessages']['field1_0']).toBeUndefined();
+    expect(component['formControlErrorMessages']['field2_0']).toBeUndefined();
+  });
+
+  it('should return null when control has no errors', () => {
+    const controlPath = ['field1'];
+
+    // Create a FormControl without errors
+    const mockControl = new FormControl();
+    mockControl.setErrors(null);
+
+    // Spy on the form.get method to return the mockControl
+    spyOn(component.form, 'get').and.returnValue(mockControl);
+
+    // Call the function
+    const result = component['getFieldErrorDetails'](controlPath);
+
+    // Assert that null is returned
+    expect(result).toBeNull();
+  });
+
+  it('should retrieve field errors when they exist', () => {
+    const controlPath = ['field1'];
+
+    // Create a FormControl with errors
+    const mockControl = new FormControl();
+    mockControl.setErrors({ required: true });
+
+    // Mock the fieldErrors with the required structure
+    component['fieldErrors'] = {
+      field1: { required: { priority: 1, message: 'Field is required' } },
+    };
+
+    spyOn(component.form, 'get').and.returnValue(mockControl);
+
+    // Call the function
+    const result = component['getFieldErrorDetails'](controlPath);
+
+    // Assert that field errors are returned
+    expect(result).toBeTruthy();
+    expect(result).toEqual({ priority: 1, message: 'Field is required', type: 'required' });
+  });
 });

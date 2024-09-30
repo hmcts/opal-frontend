@@ -10,9 +10,10 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { OPAL_FINES_OFFENCES_REF_DATA } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
-import { OPAL_FINES_RESULTS_REF_DATA } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_STATE } from './constants/fines-mac-offence-details-state';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
@@ -23,8 +24,8 @@ describe('FinesMacOffenceDetailsComponent', () => {
 
   beforeEach(async () => {
     opalFinesService = {
-      getOffences: jasmine.createSpy('getOffences').and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA)),
-      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA)),
+      getOffences: jasmine.createSpy('getOffences').and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
     };
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
@@ -115,5 +116,13 @@ describe('FinesMacOffenceDetailsComponent', () => {
 
     expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
     expect(mockFinesService.finesMacState.offenceDetails[0]).toEqual(form);
+  });
+
+  it('should use FINES_MAC_OFFENCE_DETAILS_STATE when offenceDetails is empty', () => {
+    mockFinesService.finesMacState.offenceDetails = [];
+
+    component.ngOnInit();
+
+    expect(component.formData).toEqual(FINES_MAC_OFFENCE_DETAILS_STATE);
   });
 });

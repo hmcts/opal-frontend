@@ -1,6 +1,6 @@
 import { IOpalFinesOffencesRefData } from '../interfaces/opal-fines-offences-ref-data.interface';
 
-export const OPAL_FINES_OFFENCES_REF_DATA: IOpalFinesOffencesRefData = {
+export const OPAL_FINES_OFFENCES_REF_DATA_MOCK: IOpalFinesOffencesRefData = {
   count: 16,
   refData: [
     {

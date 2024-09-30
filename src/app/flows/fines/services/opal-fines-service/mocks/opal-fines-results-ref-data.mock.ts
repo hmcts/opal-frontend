@@ -1,6 +1,6 @@
 import { IOpalFinesResultsRefData } from '../interfaces/opal-fines-results-ref-data.interface';
 
-export const OPAL_FINES_RESULTS_REF_DATA: IOpalFinesResultsRefData = {
+export const OPAL_FINES_RESULTS_REF_DATA_MOCK: IOpalFinesResultsRefData = {
   count: 8,
   refData: [
     {

@@ -24,6 +24,10 @@ import { OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK } from './mocks/opal-fines-se
 
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from './mocks/opal-fines-offences-ref-data.mock';
+import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from './mocks/opal-fines-results-ref-data.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -297,5 +301,75 @@ describe('OpalFines', () => {
     const result = service.getConfigurationItemValue(businessUnit, itemName);
 
     expect(result).toBeNull();
+  });
+
+  it('should send a GET request to offences ref data API', () => {
+    const businessUnit = 1;
+    const mockOffences: IOpalFinesOffencesRefData = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?businessUnit=${businessUnit}`;
+
+    service.getOffences(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockOffences);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockOffences);
+  });
+
+  it('should return cached response for the same ref data search', () => {
+    const businessUnit = 1;
+    const mockOffences: IOpalFinesOffencesRefData = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?businessUnit=${businessUnit}`;
+
+    service.getOffences(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockOffences);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockOffences);
+
+    service.getOffences(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockOffences);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to results ref data API', () => {
+    const resultIds = ['1', '2', '3'];
+    const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${resultIds[0]}&result_ids=${resultIds[1]}&result_ids=${resultIds[2]}`;
+
+    service.getResults(resultIds).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+  });
+
+  it('should return cached response for the same result ids', () => {
+    const resultIds = ['1', '2', '3'];
+    const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${resultIds[0]}&result_ids=${resultIds[1]}&result_ids=${resultIds[2]}`;
+
+    service.getResults(resultIds).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+
+    service.getResults(resultIds).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(expectedUrl);
   });
 });

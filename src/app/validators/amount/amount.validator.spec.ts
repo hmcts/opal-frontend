@@ -64,4 +64,11 @@ describe('amountValidator', () => {
 
     expect(validator(control)).toEqual({ invalidAmount: true }); // Should be invalid
   });
+
+  it('should invalidate a value that is not a number', () => {
+    const control = new FormControl('invalid-number');
+    const validator = amountValidator(18, 2);
+
+    expect(validator(control)).toEqual({ invalidAmountValue: true }); // Should be invalid because the value is not a number
+  });
 });

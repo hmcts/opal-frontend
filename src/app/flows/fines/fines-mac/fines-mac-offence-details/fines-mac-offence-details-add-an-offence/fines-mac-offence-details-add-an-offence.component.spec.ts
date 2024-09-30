@@ -3,7 +3,7 @@ import { FinesMacOffenceDetailsAddAnOffenceComponent } from './fines-mac-offence
 import { ActivatedRoute } from '@angular/router';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
-import { OPAL_FINES_OFFENCES_REF_DATA } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-autocomplete-items.mock';
 import { UtilsService } from '@services/utils/utils.service';
 import { DateService } from '@services/date-service/date.service';
@@ -39,7 +39,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceComponent);
     component = fixture.componentInstance;
 
-    component.offences = OPAL_FINES_OFFENCES_REF_DATA;
+    component.offences = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
     component.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
     component.formData = FINES_MAC_OFFENCE_DETAILS_STATE;
     component.formDataIndex = 0;
@@ -91,8 +91,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should update the value of fm_offence_details_offence_code to uppercase', () => {
-    component.offences = OPAL_FINES_OFFENCES_REF_DATA;
+    component.offences = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
     const cjs_code = component.offences.refData[0].get_cjs_code;
+    mockUtilsService.upperCaseAllLetters.and.returnValue(cjs_code);
 
     component['offenceCodeListener']();
     component.form.controls['fm_offence_details_offence_code'].setValue(cjs_code.toLowerCase());
@@ -101,7 +102,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true and selectedOffenceSuccessful to true when a valid offence code is entered', () => {
-    component.offences = OPAL_FINES_OFFENCES_REF_DATA;
+    component.offences = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
+    mockUtilsService.upperCaseAllLetters.and.returnValue(component.offences.refData[0].get_cjs_code);
 
     component['offenceCodeListener']();
     component.form.controls['fm_offence_details_offence_code'].setValue(component.offences.refData[0].get_cjs_code);
@@ -112,10 +114,22 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false and selectedOffenceSuccessful to false when an invalid offence code is entered', () => {
-    component.offences = OPAL_FINES_OFFENCES_REF_DATA;
+    component.offences = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
 
     component['offenceCodeListener']();
     component.form.controls['fm_offence_details_offence_code'].setValue('TEST');
+
+    expect(component.selectedOffenceConfirmation).toBe(false);
+    expect(component.selectedOffenceSuccessful).toBe(false);
+    expect(component.selectedOffenceTitle).toBe('Enter a valid offence code');
+  });
+
+  it('should set selectedOffenceConfirmation to false and selectedOffenceSuccessful to false when an invalid offence code is entered', () => {
+    component.offences = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
+    mockUtilsService.upperCaseAllLetters.and.returnValue('AK654321');
+
+    component['offenceCodeListener']();
+    component.form.controls['fm_offence_details_offence_code'].setValue('AK654321');
 
     expect(component.selectedOffenceConfirmation).toBe(false);
     expect(component.selectedOffenceSuccessful).toBe(false);
