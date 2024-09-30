@@ -109,24 +109,27 @@ Then('I see {string} button', (buttonName: string) => {
   cy.contains('button', buttonName).should('exist', buttonName);
 });
 When('I select add another alias', () => {
-  cy.get('#add_alias-conditional > app-govuk-button > button').click();
+  cy.get('#fm_personal_details_add_alias-conditional > app-govuk-button > button').click();
 });
 
 Then('I see the {string} sub heading in aliases', (aliasText: string) => {
-  cy.contains('#add_alias-conditional > fieldset > legend', aliasText).invoke('text');
+  cy.contains('#fm_personal_details_add_alias-conditional > fieldset > legend', aliasText).invoke('text');
 });
 Then('I see {string} link below the {string} field', (removeLink: string, lastName: string) => {
-  cy.get('#add_alias-conditional > fieldset >app-govuk-text-input > div >h1 ')
-    .find('#add_alias-conditional>div > a')
+  cy.get('#fm_personal_details_add_alias-conditional> fieldset >app-govuk-text-input > div >h1 ')
+    .find('#fm_personal_details_add_alias-conditional>div > a')
     .invoke('text')
     .should('contains', removeLink);
 });
 
 Then('I no longer see {string} sub heading', (aliasText: string) => {
-  cy.contains('#add_alias-conditional > fieldset > legend', aliasText).should('not.exist', aliasText);
+  cy.contains('#fm_personal_details_add_alias-conditional > fieldset > legend', aliasText).should(
+    'not.exist',
+    aliasText,
+  );
 });
 Then('I verify the {string} text box below the {string} sub heading', (firstName: string, aliasText: string) => {
-  cy.contains('#add_alias-conditional > fieldset > legend', aliasText)
+  cy.contains('#fm_personal_details_add_alias-conditional > fieldset > legend', aliasText)
     .next()
     .contains('h1', firstName)
     .invoke('text')
@@ -135,7 +138,7 @@ Then('I verify the {string} text box below the {string} sub heading', (firstName
 Then(
   'I verify the {string} text box below the {string} sub heading and first names',
   (lastName: string, aliasText: string) => {
-    cy.contains('#add_alias-conditional > fieldset > legend', aliasText)
+    cy.contains('#fm_personal_details_add_alias-conditional > fieldset > legend', aliasText)
       .next()
       .next()
       .contains('h1', lastName)
@@ -144,7 +147,7 @@ Then(
   },
 );
 Then('I verify the {string} button below the {string}', (removeLink: string, aliasText: string) => {
-  cy.contains('#add_alias-conditional > fieldset > legend', aliasText)
+  cy.contains('#fm_personal_details_add_alias-conditional > fieldset > legend', aliasText)
     .invoke('text')
     .next()
     .contains('h1', 'First names')
@@ -155,7 +158,7 @@ Then('I verify the {string} button below the {string}', (removeLink: string, ali
     .invoke('text')
     .then((lastName) => lastName.replace(' ', '').trim())
     .prev()
-    .contains('#add_alias-conditional > div > a', removeLink)
+    .contains('#fm_personal_details_add_alias-conditional > div > a', removeLink)
     .invoke('text')
     .should('have.text', removeLink);
 });
