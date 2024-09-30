@@ -73,7 +73,7 @@
     "express": "^4.15.2",
     "express-session": "^1.17.3",
     "govuk-frontend": "^5.0.0",
-    "helmet": "^7.0.0",
+    "helmet": "^8.0.0",
     "http-proxy-middleware": "^3.0.0",
     "launchdarkly-js-client-sdk": "^3.1.4",
     "luxon": "^3.4.3",
