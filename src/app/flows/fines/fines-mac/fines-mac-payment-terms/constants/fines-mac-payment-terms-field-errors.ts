@@ -135,4 +135,34 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 3,
     },
   },
+  fm_payment_terms_enforcement_action: {
+    required: {
+      message: `Select reason for enforcement action`,
+      priority: 1,
+    },
+  },
+  fm_payment_terms_earliest_release_date: {
+    invalidDateFormat: {
+      message: `Date must be in the format DD/MM/YYYY`,
+      priority: 2,
+    },
+    invalidDate: {
+      message: `Enter a valid calendar date`,
+      priority: 3,
+    },
+    invalidPastDate: {
+      message: `Date must be in the future`,
+      priority: 4,
+    },
+  },
+  fm_payment_terms_prison_and_prison_number: {
+    maxlength: {
+      message: `Prison and prison number must be less than 28 characters`,
+      priority: 2,
+    },
+    alphabeticalTextPattern: {
+      message: `Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes`,
+      priority: 3,
+    },
+  },
 };

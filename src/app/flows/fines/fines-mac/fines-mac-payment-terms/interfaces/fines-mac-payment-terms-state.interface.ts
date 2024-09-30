@@ -13,6 +13,9 @@ export interface IFinesMacPaymentTermsState {
   fm_payment_terms_days_in_default_date?: string | null;
   fm_payment_terms_days_in_default?: number | null;
   fm_payment_terms_add_enforcement_action?: boolean | null;
+  fm_payment_terms_enforcement_action?: string | null;
+  fm_payment_terms_earliest_release_date?: string | null;
+  fm_payment_terms_prison_and_prison_number?: string | null;
   fm_payment_terms_hold_enforcement_on_account?: boolean | null;
   fm_payment_terms_reason_account_is_on_noenf?: string | null;
 }
