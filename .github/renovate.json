@@ -7,9 +7,5 @@
       "allowedVersions": "<=10",
       "description": "https://canary.discord.com/channels/226791405589233664/1019534554073157642 and https://github.com/webpack-contrib/copy-webpack-plugin/issues/643 doesn't work even though issue closed"
     }
-  ],
-  "schedule": [
-      "after 7am and before 9am every weekday",
-      "after 5pm and before 8pm every weekday"
   ]
 }
