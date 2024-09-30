@@ -3,10 +3,7 @@ Feature: PO-346 business unit and defendant type Users associated to one and onl
   #this feature file is messy and needs sorting out removing overlap with other tests
 
   Background:
-    Given I am on the OPAL Frontend
-    When I see "Opal" in the header
-
-    And I sign in as "opal-test-3@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test-3@HMCTS.NET"
     And I am on the dashboard
     When I navigate to Manual Account Creation
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page
