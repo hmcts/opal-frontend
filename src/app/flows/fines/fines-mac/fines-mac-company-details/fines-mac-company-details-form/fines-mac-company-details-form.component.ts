@@ -18,8 +18,6 @@ import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 
-import { FINES_MAC_ADDRESS_BLOCK_FIELD_IDS } from '../../components/fines-mac-address-block/constants/fines-mac-address-block-field-ids';
-
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
@@ -56,7 +54,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
-  public readonly customAddressFieldIds = FINES_MAC_ADDRESS_BLOCK_FIELD_IDS;
+
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
