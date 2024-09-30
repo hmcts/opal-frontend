@@ -2,10 +2,7 @@ Feature: PO-433 Add contact details button on Personal details screen for Adult 
 
   Background:
 
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 

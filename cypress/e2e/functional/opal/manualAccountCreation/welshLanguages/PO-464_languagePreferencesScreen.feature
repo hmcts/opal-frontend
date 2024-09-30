@@ -1,12 +1,10 @@
 Feature: PO-464 Language Preferences Screen
-  Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
+
 
 
 
   Scenario Outline: AC1,2aii,3 - South Wales BU - 'English Only' default
-    When I sign in as "opal-test-8@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test-8@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
@@ -47,7 +45,7 @@ Feature: PO-464 Language Preferences Screen
 
 
   Scenario Outline: AC1,2aii,3 - Wales BU - 'Welsh and English' default
-    When I sign in as "opal-test-7@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test-6@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
@@ -62,7 +60,7 @@ Feature: PO-464 Language Preferences Screen
       | Adult or youth only |
 
   Scenario Outline: AC4 - Cancel clicked on the language preferences screen
-    When I sign in as "opal-test-8@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test-8@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 

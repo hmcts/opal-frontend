@@ -1,9 +1,7 @@
 Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth with Parent or Guardian to pay
 
   Background:
-    Given I am on the OPAL Frontend
-    And I see "Opal" in the header
-    And I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
     #Descoped by PO-426 --- Then I see "Create account" as the caption on the page

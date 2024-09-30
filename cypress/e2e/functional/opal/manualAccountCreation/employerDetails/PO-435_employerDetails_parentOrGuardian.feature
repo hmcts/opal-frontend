@@ -1,10 +1,7 @@
 Feature: PO-435 Employer details - Adult or Youth with parent or guardian to pay - 'Add personal details' button
 
   Background:
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
 
