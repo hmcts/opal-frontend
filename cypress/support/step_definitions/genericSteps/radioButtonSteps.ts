@@ -52,3 +52,6 @@ When('I select the {string} radio button under the {string} section', (radioButt
     .contains('label', radioButton)
     .click();
 });
+When('I see {string} under the {string} radio button',(inputField:string,radioButton:string) => {
+  cy.contains('.govuk-radios',radioButton).find('label').contains('label',inputField).should('contain.text',inputField)
+})

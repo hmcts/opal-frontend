@@ -54,7 +54,7 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
 
     And I see "Reason account is on NOENF" under the "Hold enforcement on account (NOENF)" radio button
     And I enter "Adding" into the "Reason account is on NOENF" text field
-    When the characters remaining counter should show 22 after entering 6 characters into the "Reason account is on NOENF" input field
+    When the character remaining is 22 for the "Reason account is on NOENF" input field and I see "You have" "characters remaining"
 
     And I click the "Return to account details" button
     Then I see "Account details" on the page header
@@ -67,7 +67,7 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
 
     Then I see the error message "Select reason for enforcement action" at the top of the page
 
-  Scenario Outline: AC5 -If a user selected 'Defendant is in custody (PRIS)' but has entered a date in the 'Earliest release date (EDR)' field that does not adhere to validation like 31/02/2023 or 9.3.23)
+  Scenario Outline: AC5a -If a user selected 'Defendant is in custody (PRIS)' but has entered a date in the 'Earliest release date (EDR)' field that does not adhere to validation like 31/02/2023 or 9.3.23)
     When I select the "Add enforcement action" checkbox
     Then I select the "Defendant is in custody (PRIS)" radio button
 
@@ -85,7 +85,7 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
       | 31/02/2023 |
 
 
-  Scenario: AC5 -If a user selected 'Defendant is in custody (PRIS)' but has entered a date in the 'Earliest release date (EDR)' field that does not adhere to validation like 31/02/2023 or 9.3.23)
+  Scenario: AC5b -If a user selected 'Defendant is in custody (PRIS)' but has entered a date in the 'Earliest release date (EDR)' field that does not adhere to validation like 31/02/2023 or 9.3.23)
     When I select the "Add enforcement action" checkbox
     Then I select the "Defendant is in custody (PRIS)" radio button
 
@@ -139,13 +139,13 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
     When I select the "Hold enforcement on account (NOENF)" radio button
 
     And I enter "Adding * and $123" into the "Reason account is on NOENF" text field
-    Then the characters remaining counter should show 11 after entering 17 characters into the "Reason account is on NOENF" input field
+    Then the character remaining is 11 for the "Reason account is on NOENF" input field and I see "You have" "characters remaining"
 
     And I click the "Return to account details" button
     Then I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" at the top of the page
 
     And I enter "Adding * and $123" into the "Reason account is on NOENF" text field
-    Then the characters remaining counter should show 11 after entering 17 characters into the "Reason account is on NOENF" input field
+    Then the character remaining is 11 for the "Reason account is on NOENF" input field and I see "You have" "characters remaining"
 
     And I click the "Add account comments and notes" button
     Then I see the error message "Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes" at the top of the page
