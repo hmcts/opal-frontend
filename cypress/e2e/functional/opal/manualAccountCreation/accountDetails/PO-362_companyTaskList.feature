@@ -15,10 +15,7 @@ Feature: PO-362 Company task list screen
 
 
   Scenario: AC1 Task list is created with correct heading
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@HMCTS.NET"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -34,10 +31,7 @@ Feature: PO-362 Company task list screen
   #Descoped by PO-426 --- And I see "Create account" above "Account details"
 
   Scenario: AC2 Business unit and Defendant type are displayed correctly
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -51,10 +45,7 @@ Feature: PO-362 Company task list screen
     And I see the defendant type is "Company"
 
   Scenario: AC3 company task list court details section
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -69,10 +60,7 @@ Feature: PO-362 Company task list screen
   #Then "Court details" is clicked, nothing happens
 
   Scenario: AC4.a company task list defendant details section
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -89,10 +77,7 @@ Feature: PO-362 Company task list screen
   ##Then I see "Company details" on the page header
 
   Scenario: AC4.b company task list defendant details section
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -109,10 +94,7 @@ Feature: PO-362 Company task list screen
     Then I see "Defendant contact details" on the page header
 
   Scenario: AC5.a company task list Offence and Imposition details section
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -127,10 +109,7 @@ Feature: PO-362 Company task list screen
   # Then "Offence details" is clicked, nothing happens
 
   Scenario: AC5.b company task list Offence and imposition details section
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation
@@ -146,10 +125,7 @@ Feature: PO-362 Company task list screen
   # Then "Payment terms" is clicked, nothing happens
 
   Scenario: AC6a.b company task list Review and Publish section
-    Given I am on the OPAL Frontend
-    Then I see "Opal" in the header
-
-    When I sign in as "opal-test@hmcts.net"
+    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     Then I am on the dashboard
 
     When I navigate to Manual Account Creation

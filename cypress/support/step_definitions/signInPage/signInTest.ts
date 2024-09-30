@@ -17,43 +17,66 @@ Then('There is a button to go back to the dashboard', () => {
   cy.get('#go-back').should('contain.text', 'Back to dashboard');
 });
 
-When('I sign in as {string}', (email: string) => {
+When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
   const emailSSO = email;
   const passwordSSO = Cypress.env('CYPRESS_TEST_PASSWORD') || '';
 
-  cy.location('href').then((href: string) => {
-    cy.log(href);
-    if (href.includes('pr-') || href.includes('localhost')) {
-      cy.wait(50);
-      cy.get('input[type="text"]').type(emailSSO);
-      cy.get('#submitForm').click();
+  // Using the cy.session to cache the session for the specific user (identified by emailSSO)
+  // the intention of this is to reduce the number of requests when SSO is enabled.
+  // Further to this the change will also mean the pipelines should run the test quicker,
+  // especially when SSO is enabled.
+  cy.session(
+    emailSSO,
+    () => {
+      cy.visit('/sign-in');
+      cy.location('href').then((href: string) => {
+        cy.log(href);
 
-      cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
-    } else {
-      cy.get('#signInButton').contains('Sign in').click();
+        // Handle localhost or PR environment
+        if (href.includes('pr-') || href.includes('localhost')) {
+          cy.wait(50);
+          cy.get('input[type="text"]').type(emailSSO);
+          cy.get('#submitForm').click();
 
-      cy.origin(
-        'https://login.microsoftonline.com',
-        {
-          args: {
-            emailSSO,
-            passwordSSO,
-          },
-        },
-        ({ emailSSO, passwordSSO }) => {
+          cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
+        } else {
+          // Handle Microsoft SSO login
+          cy.get('#signInButton').contains('Sign in').click();
+
+          cy.origin(
+            'https://login.microsoftonline.com',
+            {
+              args: {
+                emailSSO,
+                passwordSSO,
+              },
+            },
+            ({ emailSSO, passwordSSO }) => {
+              cy.wait(500);
+              cy.get('input[type="email"]', { timeout: 12000 }).type(emailSSO);
+              cy.get('input[type="submit"]', { timeout: 12000 }).click();
+
+              cy.get('input[type="password"]', { timeout: 12000 }).type(passwordSSO, { log: false });
+              cy.get('input[type="submit"]', { timeout: 12000 }).click();
+              cy.get('#idBtn_Back', { timeout: 12000 }).click();
+            },
+          );
           cy.wait(500);
-          cy.get('input[type="email"]', { timeout: 12000 }).type(emailSSO);
-          cy.get('input[type="submit"]', { timeout: 12000 }).click();
-
-          cy.get('input[type="password"]', { timeout: 12000 }).type(passwordSSO, { log: false });
-          cy.get('input[type="submit"]', { timeout: 12000 }).click();
-          cy.get('#idBtn_Back', { timeout: 12000 }).click();
-        },
-      );
-      cy.wait(500);
-      cy.get('.moj-header__navigation-item > .moj-header__navigation-link', { timeout: 12000 }).contains('Sign out');
-    }
-  });
+          cy.get('.moj-header__navigation-item > .moj-header__navigation-link', { timeout: 12000 }).contains(
+            'Sign out',
+          );
+        }
+      });
+    },
+    {
+      validate() {
+        // Ensure that the user is already logged in by checking for the sign-out link
+        cy.visit('/sign-in');
+        cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
+      },
+    },
+  );
+  cy.visit('/sign-in');
 });
 Then('I am on the dashboard', () => {
   cy.get('#main-content > div > app-dashboard > div > h1').should('contain', 'Dashboard');
