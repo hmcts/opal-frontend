@@ -1,6 +1,6 @@
 import config from 'config';
-import { Application } from 'express';
 import { doubleCsrf } from 'csrf-csrf';
+import { Application, Request } from 'express';
 
 export class CSRFToken {
   public enableFor(app: Application): void {
@@ -24,7 +24,7 @@ export class CSRFToken {
       }
     });
 
-    app.use((req, res, next) => {
+    app.use((req: Request, res, next) => {
       if (req.csrfToken) {
         req.csrfToken(true);
       }
