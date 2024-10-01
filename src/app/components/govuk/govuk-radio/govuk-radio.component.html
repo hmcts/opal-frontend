@@ -1,11 +1,13 @@
 <div class="govuk-form-group" [class.govuk-form-group--error]="!!errors">
   <fieldset class="govuk-fieldset" [id]="fieldSetId" [attr.aria-describedby]="fieldSetId ? fieldSetId + 'Hint' : ''">
-    <legend
-      class="govuk-fieldset__legend {{ legendClasses }}"
-      [attr.describedby]="legendHint ? fieldSetId + 'Hint' : ''"
-    >
-      {{ legendText }}
-    </legend>
+    @if (legendText) {
+      <legend
+        class="govuk-fieldset__legend {{ legendClasses }}"
+        [attr.describedby]="legendHint ? fieldSetId + 'Hint' : ''"
+      >
+        {{ legendText }}
+      </legend>
+    }
     @if (legendHint) {
       <div [id]="fieldSetId ? fieldSetId + 'Hint' : ''" class="govuk-hint">
         {{ legendHint }}
