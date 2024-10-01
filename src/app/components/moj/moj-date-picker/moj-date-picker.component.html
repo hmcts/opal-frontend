@@ -4,7 +4,7 @@
   [attr.data-min-date]="minDate"
   [attr.data-max-date]="maxDate"
   [attr.data-excluded-dates]="disabledDatesConcatenated"
-  data-excluded-days="saturday sunday"
+  [attr.data-excluded-days]="disabledDays"
 >
   <div class="govuk-form-group" [class.govuk-form-group--error]="!!errors">
     <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
