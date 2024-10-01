@@ -86,7 +86,7 @@ export class FinesMacParentGuardianDetailsFormComponent
       fm_parent_guardian_details_national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
       fm_parent_guardian_details_address_line_1: new FormControl(null, [
         Validators.required,
-        Validators.maxLength(30),
+        Validators.maxLength(25),
         specialCharactersValidator(),
       ]),
       fm_parent_guardian_details_address_line_2: new FormControl(null, [
