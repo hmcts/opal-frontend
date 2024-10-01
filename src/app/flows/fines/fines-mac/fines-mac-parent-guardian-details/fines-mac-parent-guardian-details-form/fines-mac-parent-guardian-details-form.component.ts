@@ -90,7 +90,7 @@ export class FinesMacParentGuardianDetailsFormComponent
         specialCharactersValidator(),
       ]),
       fm_parent_guardian_details_address_line_2: new FormControl(null, [
-        optionalMaxLengthValidator(30),
+        optionalMaxLengthValidator(25),
         specialCharactersValidator(),
       ]),
       fm_parent_guardian_details_address_line_3: new FormControl(null, [

@@ -195,7 +195,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 1,
     },
     maxlength: {
-      message: 'The address line 1 must be 30 characters or fewer',
+      message: 'The address line 1 must be 25 characters or fewer',
       priority: 2,
     },
     specialCharactersPattern: {
@@ -205,7 +205,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
   },
   fm_parent_guardian_details_address_line_2: {
     maxlength: {
-      message: 'The address line 2 must be 30 characters or fewer',
+      message: 'The address line 2 must be 25 characters or fewer',
       priority: 1,
     },
     specialCharactersPattern: {
