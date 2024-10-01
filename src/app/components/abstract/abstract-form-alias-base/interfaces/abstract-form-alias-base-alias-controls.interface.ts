@@ -1,5 +1,5 @@
-import { IAbstractFormAliasBaseFormArrayControl } from './abstract-form-alias-base-form-array-control.interface';
+import { IAbstractFormArrayControl } from '@components/abstract/interfaces/abstract-form-array-control.interface';
 
 export interface IAbstractFormAliasBaseAliasControls {
-  [key: string]: IAbstractFormAliasBaseFormArrayControl;
+  [key: string]: IAbstractFormArrayControl;
 }

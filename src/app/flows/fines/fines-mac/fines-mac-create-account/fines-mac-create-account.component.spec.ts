@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { IFinesMacCreateAccountForm } from './interfaces/fines-mac-create-account-form.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
@@ -14,13 +13,14 @@ import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphag
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from './mocks/fines-mac-create-account-form.mock';
+import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountComponent>;
   let finesService: jasmine.SpyObj<FinesService>;
   let opalFinesService: Partial<OpalFines>;
-  let formSubmit: IFinesMacCreateAccountForm;
+  let formSubmit: IFinesMacAccountDetailsForm;
 
   beforeEach(async () => {
     opalFinesService = {
