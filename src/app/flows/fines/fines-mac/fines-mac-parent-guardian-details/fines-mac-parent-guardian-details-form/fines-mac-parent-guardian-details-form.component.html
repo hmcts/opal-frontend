@@ -40,31 +40,31 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="First names"
-            [inputId]="aliasControl['fm_personal_details_alias_forenames'].inputId"
-            [inputName]="aliasControl['fm_personal_details_alias_forenames'].inputName"
+            [inputId]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputId"
+            [inputName]="aliasControl['fm_parent_guardian_details_alias_forenames'].inputName"
             inputClasses="govuk-input--width-20"
             [control]="
               form.get([
                 'fm_parent_guardian_details_aliases',
                 rowIndex,
-                aliasControl['fm_personal_details_alias_forenames'].controlName,
+                aliasControl['fm_parent_guardian_details_alias_forenames'].controlName,
               ])
             "
-            [errors]="formControlErrorMessages[aliasControl['fm_personal_details_alias_forenames'].controlName]"
+            [errors]="formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_forenames'].controlName]"
           ></app-govuk-text-input>
           <app-govuk-text-input
             labelText="Last name"
-            [inputId]="aliasControl['fm_personal_details_alias_surname'].inputId"
-            [inputName]="aliasControl['fm_personal_details_alias_surname'].inputName"
+            [inputId]="aliasControl['fm_parent_guardian_details_alias_surname'].inputId"
+            [inputName]="aliasControl['fm_parent_guardian_details_alias_surname'].inputName"
             inputClasses="govuk-input--width-20"
             [control]="
               form.get([
                 'fm_parent_guardian_details_aliases',
                 rowIndex,
-                aliasControl['fm_personal_details_alias_surname'].controlName,
+                aliasControl['fm_parent_guardian_details_alias_surname'].controlName,
               ])
             "
-            [errors]="formControlErrorMessages[aliasControl['fm_personal_details_alias_surname'].controlName]"
+            [errors]="formControlErrorMessages[aliasControl['fm_parent_guardian_details_alias_surname'].controlName]"
           ></app-govuk-text-input>
         </fieldset>
       }
@@ -91,36 +91,34 @@
         >
       }
     </div>
-
-    <app-moj-date-picker
-      labelText="Date of birth"
-      labelClasses="govuk-label--s"
-      inputId="fm_parent_guardian_details_dob"
-      inputName="fm_parent_guardian_details_dob"
-      inputClasses="govuk-input--width-10"
-      hintText="For example, 31/01/2023"
-      [control]="form.controls['fm_parent_guardian_details_dob']"
-      [maxDate]="yesterday"
-      (dateChange)="setInputValue($event, 'fm_parent_guardian_details_dob')"
-      [errors]="formControlErrorMessages['fm_parent_guardian_details_dob']"
-    ></app-moj-date-picker>
-    @if (age && ageLabel) {
-      <app-moj-ticket-panel componentClasses="govuk-!-width-one-third" sectionClasses="moj-ticket-panel__content--blue">
-        <strong>Age: {{ age }}</strong>
-        <p>{{ ageLabel }}</p>
-      </app-moj-ticket-panel>
-    }
-    <app-govuk-text-input
-      labelText="National Insurance number"
-      inputId="fm_parent_guardian_details_national_insurance_number"
-      inputName="fm_parent_guardian_details_national_insurance_number"
-      inputClasses="govuk-input--width-10"
-      labelClasses="govuk-label--s"
-      [control]="form.controls['fm_parent_guardian_details_national_insurance_number']"
-      [errors]="formControlErrorMessages['fm_parent_guardian_details_national_insurance_number']"
-    ></app-govuk-text-input>
   }
-
+  <app-moj-date-picker
+    labelText="Date of birth"
+    labelClasses="govuk-label--s"
+    inputId="fm_parent_guardian_details_dob"
+    inputName="fm_parent_guardian_details_dob"
+    inputClasses="govuk-input--width-10"
+    hintText="For example, 31/01/2023"
+    [control]="form.controls['fm_parent_guardian_details_dob']"
+    [maxDate]="yesterday"
+    (dateChange)="setInputValue($event, 'fm_parent_guardian_details_dob')"
+    [errors]="formControlErrorMessages['fm_parent_guardian_details_dob']"
+  ></app-moj-date-picker>
+  @if (age && ageLabel) {
+    <app-moj-ticket-panel componentClasses="govuk-!-width-one-third" sectionClasses="moj-ticket-panel__content--blue">
+      <strong>Age: {{ age }}</strong>
+      <p>{{ ageLabel }}</p>
+    </app-moj-ticket-panel>
+  }
+  <app-govuk-text-input
+    labelText="National Insurance number"
+    inputId="fm_parent_guardian_details_national_insurance_number"
+    inputName="fm_parent_guardian_details_national_insurance_number"
+    inputClasses="govuk-input--width-10"
+    labelClasses="govuk-label--s"
+    [control]="form.controls['fm_parent_guardian_details_national_insurance_number']"
+    [errors]="formControlErrorMessages['fm_parent_guardian_details_national_insurance_number']"
+  ></app-govuk-text-input>
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
