@@ -45,6 +45,7 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
     Then I select the "Defendant is in custody (PRIS)" radio button
     And I see "Earliest release date (EDR)" under the "Defendant is in custody (PRIS)" radio button
     And I see "Prison and prison number" under the "Defendant is in custody (PRIS)" radio button
+    And I enter "05/11/2024" into the "Earliest release date (EDR)" date field
 
     And I see "Held as enforcement comment" text under the "Prison and prison number" field
     And I enter "Adding" into the "Prison and prison number" text field
@@ -120,7 +121,7 @@ Feature: PO-548 Enforcement action fields to Payment Terms (Adult or youth only)
 
     Examples:
       | date       |
-      | 20/04/1900 |
+      | 20/04/2024 |
 
 
   Scenario: AC7- negative: If a user selected 'Hold enforcement on account (NOENF)' and does not enter a value for 'Reason account is on NOENF' and clicks either the 'Return to account details' or 'Add account comments and notes' buttons
