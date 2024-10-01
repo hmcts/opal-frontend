@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 export class GovukRadioComponent {
   @Input({ required: true }) fieldSetId!: string;
 
-  @Input({ required: true }) legendText!: string;
+  @Input({ required: false }) legendText!: string;
   @Input({ required: false }) legendHint!: string;
   @Input({ required: false }) legendClasses!: string;
   @Input({ required: false }) radioClasses!: string;

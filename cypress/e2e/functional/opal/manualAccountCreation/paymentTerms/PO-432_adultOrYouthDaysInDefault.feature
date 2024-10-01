@@ -70,6 +70,7 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
 
     And I see the error message "Enter date days in default were imposed" above the "Date days in default were imposed" date field
     And I see the error message "Enter days in default" above the days in default input field
+    Then I see the error message "Select whether there was a collection order" at the top of the page
 
     Then I enter a date 1 weeks into the future into the "Date days in default were imposed" date field
     And I enter "ab12" into the days in default input field
@@ -98,6 +99,10 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
 
     Then I see "01/01/2024" in the "Date days in default were imposed" date field
     And I select the "No" radio button under the "Has a collection order been made?" section
+
+    #the below steps fully covered in PO-471
+    And I select the "Yes" radio button under the "Has a collection order been made?" section
+    And I enter "20/05/2024" into the "Date of collection order" date field
 
     When I click the "Return to account details" button
 
@@ -157,6 +162,8 @@ Feature: PO-432 days in default on payment terms page - adult or youth only
     When I select the "No" radio button under the "Has a collection order been made?" section
     When I click the "Add account comments and notes" button
     Then I see "Account comments and notes" on the page header
+    
+
     And I click the "Return to account details" button
     Then I see "Account details" on the page header
     And I see the status of "Payment terms" is "Provided"

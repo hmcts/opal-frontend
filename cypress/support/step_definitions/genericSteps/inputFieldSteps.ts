@@ -49,3 +49,11 @@ Then(
     cy.get('.govuk-hint').should('contain.text', expectedRemaining.toString());
   },
 );
+Then(
+  'the character remaining should show {int} for the {string} input field',
+  (expectedRemaining: number, inputField: string) => {
+    cy.get('app-govuk-text-area[labeltext="' + inputField + '"]')
+      .find('.govuk-hint')
+      .should('contain.text', expectedRemaining.toString());
+  },
+);

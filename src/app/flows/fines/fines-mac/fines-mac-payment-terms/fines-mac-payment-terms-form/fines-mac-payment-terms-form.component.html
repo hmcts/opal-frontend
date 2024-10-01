@@ -237,6 +237,80 @@
         inputName="fm_payment_terms_add_enforcement_action"
         [control]="form.controls['fm_payment_terms_add_enforcement_action']"
       ></div>
+      @if (form.get('fm_payment_terms_add_enforcement_action')!.value !== null) {
+        @if (form.get('fm_payment_terms_add_enforcement_action')?.value === true) {
+          <div app-govuk-checkboxes-conditional conditionalId="fm_payment_terms_add_enforcement_action">
+            <app-govuk-radio
+              fieldSetId="fm_payment_terms_enforcement_action"
+              legendClasses="govuk-fieldset__legend--s"
+              [errors]="formControlErrorMessages['fm_payment_terms_enforcement_action']"
+            >
+              @for (enforcementAction of enforcementActions; track enforcementAction.key) {
+                <div
+                  app-govuk-radios-item
+                  [labelText]="enforcementAction.value"
+                  [inputId]="enforcementAction.key"
+                  [inputName]="'fm_payment_terms_enforcement_action'"
+                  [inputValue]="enforcementAction.key"
+                  [control]="form.controls['fm_payment_terms_enforcement_action']"
+                ></div>
+
+                @if (enforcementAction.key === 'defendantIsInCustody') {
+                  @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
+                    <div app-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
+                      <div class="govuk-form-group">
+                        <app-moj-date-picker
+                          labelText="Earliest release date (EDR)"
+                          labelClasses="govuk-label--s"
+                          inputId="fm_payment_terms_earliest_release_date"
+                          inputName="fm_payment_terms_earliest_release_date"
+                          inputClasses="govuk-input--width-10"
+                          [maxDate]="yesterday"
+                          [control]="form.controls['fm_payment_terms_earliest_release_date']"
+                          [errors]="formControlErrorMessages['fm_payment_terms_earliest_release_date']"
+                          (dateChange)="setInputValue($event, 'fm_payment_terms_earliest_release_date')"
+                        ></app-moj-date-picker>
+                      </div>
+                      <div class="govuk-form-group">
+                        <app-govuk-text-area
+                          labelText="Prison and prison number"
+                          labelClasses="govuk-label--s"
+                          hintText="Held as enforcement comment"
+                          inputId="fm_payment_terms_prison_and_prison_number"
+                          inputName="fm_payment_terms_prison_and_prison_number"
+                          inputClasses="govuk-!-width-two-thirds"
+                          [control]="form.controls['fm_payment_terms_prison_and_prison_number']"
+                          [errors]="formControlErrorMessages['fm_payment_terms_prison_and_prison_number']"
+                          [rows]="1"
+                          [maxCharacterLimit]="28"
+                          [characterCountEnabled]="true"
+                        ></app-govuk-text-area>
+                      </div>
+                    </div>
+                  }
+                } @else {
+                  @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
+                    <div app-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
+                      <app-govuk-text-area
+                        labelText="Reason account is on NOENF"
+                        labelClasses="govuk-label--s"
+                        inputId="fm_payment_terms_reason_account_is_on_noenf"
+                        inputName="fm_payment_terms_reason_account_is_on_noenf"
+                        inputClasses="govuk-!-width-two-thirds"
+                        [control]="form.controls['fm_payment_terms_reason_account_is_on_noenf']"
+                        [errors]="formControlErrorMessages['fm_payment_terms_reason_account_is_on_noenf']"
+                        [rows]="1"
+                        [maxCharacterLimit]="28"
+                        [characterCountEnabled]="true"
+                      ></app-govuk-text-area>
+                    </div>
+                  }
+                }
+              }
+            </app-govuk-radio>
+          </div>
+        }
+      }
     }
   </app-govuk-checkboxes>
   <div class="govuk-grid-row">
