@@ -275,12 +275,15 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'adultOrYouthOnly';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addEnforcementActionSpy = spyOn<any>(component, 'addEnforcementActionListener');
 
     component['addEnforcementFields']();
 
     expect(addControlsSpy).toHaveBeenCalledWith([
       { controlName: 'fm_payment_terms_add_enforcement_action', validators: [] },
     ]);
+    expect(addEnforcementActionSpy).toHaveBeenCalled();
   });
 
   it('should add control when hold enforcement on account is true', () => {
@@ -364,6 +367,46 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(component['hasPermissionAccess']).toHaveBeenCalled();
     expect(component.permissions[FinesMacPaymentTermsPermissions.collectionOrder]).toBeTruthy();
+  });
+
+  it('should update form controls based on selected enforcement action', () => {
+    component.defendantType = 'adultOrYouthOnly';
+    component['addEnforcementFields']();
+    const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
+    component['addEnforcementActionListener']();
+    addEnforcementActionControl.setValue(true);
+    const enforcementActionsControl = component.form.controls['fm_payment_terms_enforcement_action'];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addControlsSpy = spyOn<any>(component, 'addControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeControlsSpy = spyOn<any>(component, 'removeControls');
+
+    component['enforcementActionsListener']();
+    enforcementActionsControl.setValue('defendantIsInCustody');
+
+    expect(addControlsSpy).toHaveBeenCalledTimes(4);
+    expect(removeControlsSpy).toHaveBeenCalledTimes(4);
+  });
+
+  it('should update form controls based on selected enforcement action', () => {
+    component.defendantType = 'adultOrYouthOnly';
+    component['addEnforcementFields']();
+    const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
+    component['addEnforcementActionListener']();
+    addEnforcementActionControl.setValue(true);
+    const enforcementActionsControl = component.form.controls['fm_payment_terms_enforcement_action'];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const addControlsSpy = spyOn<any>(component, 'addControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const removeControlsSpy = spyOn<any>(component, 'removeControls');
+
+    component['enforcementActionsListener']();
+    enforcementActionsControl.setValue('holdEnforcementOnAccount');
+
+    expect(addControlsSpy).toHaveBeenCalledTimes(4);
+    expect(removeControlsSpy).toHaveBeenCalledTimes(4);
   });
 
   it('should add controls', () => {

@@ -34,6 +34,7 @@ export class MojDatePickerComponent implements OnInit {
   @Input({ required: false }) minDate!: string;
   @Input({ required: false }) maxDate!: string;
   @Input({ required: false }) disabledDates!: string[];
+  @Input({ required: false }) disabledDays!: string;
   @Input({ required: false }) errors: string | null = null;
   @Output() dateChange = new EventEmitter<string>();
 

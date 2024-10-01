@@ -87,3 +87,10 @@ Then('I see {string} above the {string} field', (subHeading: string, fieldName: 
 Then('I see {string} help text on the page', (helpText: string) => {
   cy.get('.moj-ticket-panel').should('contain.text', helpText);
 });
+When('I see {string} text under the {string} field', (text: string, inputField: string) => {
+  cy.get('app-govuk-text-area[labeltext="' + inputField + '"]')
+    .find('textarea')
+    .prev()
+    .invoke('text')
+    .should('contains', text);
+});

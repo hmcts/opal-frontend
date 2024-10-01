@@ -43,10 +43,11 @@ import { PermissionsService } from '@services/permissions-service/permissions.se
 import { ISessionUserStateRole } from '@services/session-service/interfaces/session-user-state.interface';
 import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
 import { IFinesMacPaymentTermsPermissions } from '../interfaces/fines-mac-payment-terms-permissions.interface';
+import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../constants/fines-mac-payment-terms-enforcement-action-options';
+import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-enforcement-action-options-control-validation';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
-import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
-import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
+import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -102,6 +103,13 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public readonly frequencyOptions: IGovUkRadioOptions[] = Object.entries(
     FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
+  public readonly enforcementActionsOptions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
+  public readonly enforcementActions: IGovUkRadioOptions[] = Object.entries(this.enforcementActionsOptions).map(
+    ([key, value]) => ({
+      key,
+      value,
+    }),
+  );
   public readonly paymentTermsControls: IFinesMacPaymentTermsAllPaymentTermOptionsControlValidation =
     FINES_MAC_PAYMENT_TERMS_ALL_PAYMENT_TERM_OPTIONS_CONTROL_VALIDATION;
   public readonly collectionOrderControls: IFinesMacPaymentTermsCollectionOrderOptionsControlValidation =
@@ -113,15 +121,6 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   public dateInPast!: boolean;
   public accessDefaultDates!: boolean;
   public accessCollectionOrder!: boolean;
-
-  /**
-   * Sets up the payment terms form.
-   */
-  private setupPaymentTermsForm(): void {
-    this.form = new FormGroup({
-      fm_payment_terms_payment_terms: new FormControl<string | null>(null, [Validators.required]),
-    });
-  }
 
   /**
    * Sets up the permissions for the fines-mac-payment-terms-form component.
@@ -136,6 +135,15 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
         this.userStateRoles,
       );
     }
+  }
+
+  /**
+   * Sets up the payment terms form.
+   */
+  private setupPaymentTermsForm(): void {
+    this.form = new FormGroup({
+      fm_payment_terms_payment_terms: new FormControl<string | null>(null, [Validators.required]),
+    });
   }
 
   /**
@@ -165,8 +173,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Adds the collection order form controls to the component.
-   * This method creates the necessary form controls and sets up the listener for changes.
+   * Adds the collection order form controls to the component's form group.
+   * This method adds a control for the 'fm_payment_terms_has_collection_order' field
+   * and sets the required validator for it.
+   * It also registers the listener for changes in the 'fm_payment_terms_has_collection_order' field.
    */
   private addCollectionOrderFormControls(): void {
     this.addControls([
@@ -227,7 +237,47 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
           validators: [],
         },
       ]);
+      this.addEnforcementActionListener();
     }
+  }
+
+  /**
+   * Adds a listener to the `fm_payment_terms_add_enforcement_action` control value changes.
+   * If the value is `true`, it adds the necessary controls and invokes the `enforcementActionsListener`.
+   * If the value is `false`, it removes the unnecessary controls.
+   */
+  private addEnforcementActionListener(): void {
+    const { fm_payment_terms_add_enforcement_action: addEnforcementAction } = this.form.controls;
+
+    addEnforcementAction.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      if (addEnforcementAction.value !== null) {
+        if (addEnforcementAction.value === true) {
+          this.addControls([
+            {
+              controlName: 'fm_payment_terms_enforcement_action',
+              validators: [Validators.required],
+            },
+          ]);
+          this.enforcementActionsListener();
+        } else {
+          this.removeControls([
+            {
+              controlName: 'fm_payment_terms_enforcement_action',
+              validators: [Validators.required],
+            },
+            { controlName: 'fm_payment_terms_defendant_is_in_custody', validators: [] },
+            {
+              controlName: 'fm_payment_terms_hold_enforcement_on_account',
+              validators: [],
+            },
+            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.defendantIsInCustody
+              .fieldsToRemove,
+            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.holdEnforcementOnAccount
+              .fieldsToRemove,
+          ]);
+        }
+      }
+    });
   }
 
   /**
@@ -302,6 +352,23 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
+   * Listens for changes in the enforcement actions form control and performs corresponding actions.
+   */
+  private enforcementActionsListener(): void {
+    const enforcementActions = this.form.get('fm_payment_terms_enforcement_action');
+
+    enforcementActions!.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      const actionOptions =
+        FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION[
+          enforcementActions!.value === 'defendantIsInCustody' ? 'defendantIsInCustody' : 'holdEnforcementOnAccount'
+        ];
+
+      this.addControls(actionOptions.fieldsToAdd);
+      this.removeControls(actionOptions.fieldsToRemove);
+    });
+  }
+
+  /**
    * Listens for changes in the holdEnforcementOnAccount form control and performs actions accordingly.
    */
   private holdEnforcementOnAccountListener(): void {
@@ -309,14 +376,14 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
     holdEnforcementOnAccount.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       if (holdEnforcementOnAccount.value !== null) {
-        const reasonAccountIsOnNoenf = {
-          controlName: 'fm_payment_terms_reason_account_is_on_noenf',
-          validators: [Validators.required, Validators.maxLength(28), alphabeticalTextValidator()],
-        };
         if (holdEnforcementOnAccount.value === true) {
-          this.addControls([reasonAccountIsOnNoenf]);
+          this.addControls(
+            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.holdEnforcementOnAccount.fieldsToAdd,
+          );
         } else {
-          this.removeControls([reasonAccountIsOnNoenf]);
+          this.removeControls(
+            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.defendantIsInCustody.fieldsToRemove,
+          );
         }
       }
     });

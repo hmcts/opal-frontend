@@ -12,5 +12,8 @@ export interface IFinesMacPaymentTermsFieldErrors extends IAbstractFormBaseField
   fm_payment_terms_start_date: IAbstractFormBaseFieldError;
   fm_payment_terms_days_in_default_date: IAbstractFormBaseFieldError;
   fm_payment_terms_days_in_default: IAbstractFormBaseFieldError;
+  fm_payment_terms_enforcement_action: IAbstractFormBaseFieldError;
+  fm_payment_terms_earliest_release_date: IAbstractFormBaseFieldError;
+  fm_payment_terms_prison_and_prison_number: IAbstractFormBaseFieldError;
   fm_payment_terms_reason_account_is_on_noenf: IAbstractFormBaseFieldError;
 }
