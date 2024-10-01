@@ -1,11 +1,11 @@
 import { IFinesMacCompanyDetailsState } from '../interfaces/fines-mac-company-details-state.interface';
 
 export const FINES_MAC_COMPANY_DETAILS_STATE: IFinesMacCompanyDetailsState = {
-  company_name: null,
-  add_alias: null,
-  aliases: [],
-  address_line_1: null,
-  address_line_2: null,
-  address_line_3: null,
-  postcode: null,
+  fm_company_details_company_name: null,
+  fm_company_details_add_alias: null,
+  fm_company_details_aliases: [],
+  fm_company_details_address_line_1: null,
+  fm_company_details_address_line_2: null,
+  fm_company_details_address_line_3: null,
+  fm_company_details_postcode: null,
 };

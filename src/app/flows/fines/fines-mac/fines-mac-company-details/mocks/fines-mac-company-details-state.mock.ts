@@ -1,11 +1,11 @@
 import { IFinesMacCompanyDetailsState } from '../interfaces/fines-mac-company-details-state.interface';
 
 export const FINES_MAC_COMPANY_DETAILS_STATE_MOCK: IFinesMacCompanyDetailsState = {
-  company_name: 'Acme Org Ltd.',
-  add_alias: true,
-  aliases: [{ alias_organisation_name_0: 'Boring Co.' }],
-  address_line_1: '123 Street',
-  address_line_2: 'City',
-  address_line_3: 'County',
-  postcode: 'AB12 3CD',
+  fm_company_details_company_name: 'Acme Org Ltd.',
+  fm_company_details_add_alias: true,
+  fm_company_details_aliases: [{ fm_company_details_alias_organisation_name_0: 'Boring Co.' }],
+  fm_company_details_address_line_1: '123 Street',
+  fm_company_details_address_line_2: 'City',
+  fm_company_details_address_line_3: 'County',
+  fm_company_details_postcode: 'AB12 3CD',
 };
