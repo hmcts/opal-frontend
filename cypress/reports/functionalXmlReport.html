@@ -1,319 +1,333 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Functional XML report</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-        }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+      }
 
-        h1 {
-            color: #333;
-            font-size: 26px;
-            margin-bottom: 20px;
-        }
+      h1 {
+        color: #333;
+        font-size: 26px;
+        margin-bottom: 20px;
+      }
 
-        a {
-            display: inline-block;
-            color: #0066cc;
-            text-decoration: none;
-            font-size: 16px;
-            margin-bottom: 20px;
-            padding: 12px 18px;
-            background-color: #f4f4f9;
-            border: 2px solid #0066cc;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+      a {
+        display: inline-block;
+        color: #0066cc;
+        text-decoration: none;
+        font-size: 16px;
+        margin-bottom: 20px;
+        padding: 12px 18px;
+        background-color: #f4f4f9;
+        border: 2px solid #0066cc;
+        border-radius: 8px;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
 
-        a:hover {
-            background-color: #0066cc;
-            color: white;
-        }
+      a:hover {
+        background-color: #0066cc;
+        color: white;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+      }
 
-        thead {
-            background-color: #007bff;
-            color: white;
-        }
+      thead {
+        background-color: #007bff;
+        color: white;
+      }
 
-        th, td {
-            padding: 14px 20px;
-            text-align: left;
-        }
+      th,
+      td {
+        padding: 14px 20px;
+        text-align: left;
+      }
 
-        th {
-            cursor: pointer;
-            font-weight: bold;
-            background-color: #007bff;
-            color: white;
-            transition: background-color 0.3s ease;
-            position: relative;
-        }
+      th {
+        cursor: pointer;
+        font-weight: bold;
+        background-color: #007bff;
+        color: white;
+        transition: background-color 0.3s ease;
+        position: relative;
+      }
 
-        th:after {
-            content: '';
-            position: absolute;
-            right: 15px;
-            font-size: 12px;
-        }
+      th:after {
+        content: '';
+        position: absolute;
+        right: 15px;
+        font-size: 12px;
+      }
 
-        th.asc:after {
-            content: '▲';
-        }
+      th.asc:after {
+        content: '▲';
+      }
 
-        th.desc:after {
-            content: '▼';
-        }
+      th.desc:after {
+        content: '▼';
+      }
 
-        th:hover {
-            background-color: #0056b3;
-        }
+      th:hover {
+        background-color: #0056b3;
+      }
 
-        tr {
-            border-bottom: 1px solid #ddd;
-        }
+      tr {
+        border-bottom: 1px solid #ddd;
+      }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
 
-        tr:last-child {
-            border-bottom: none;
-        }
+      tr:last-child {
+        border-bottom: none;
+      }
 
-        td {
-            font-size: 14px;
-            color: #333;
-        }
+      td {
+        font-size: 14px;
+        color: #333;
+      }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+      tr:hover {
+        background-color: #f1f1f1;
+      }
 
-        /* Summary Table Styling */
-        .summary-table {
-            margin-bottom: 20px;
-            background-color: #fefefe;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            border-collapse: collapse;
-        }
+      /* Summary Table Styling */
+      .summary-table {
+        margin-bottom: 20px;
+        background-color: #fefefe;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        border-collapse: collapse;
+      }
 
-        .summary-table th, .summary-table td {
-            padding: 14px 20px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
+      .summary-table th,
+      .summary-table td {
+        padding: 14px 20px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
 
-        .summary-table th {
-            font-weight: 600;
-        }
+      .summary-table th {
+        font-weight: 600;
+      }
 
-        .summary-table td {
-            font-size: 16px;
-            font-weight: bold;
-        }
+      .summary-table td {
+        font-size: 16px;
+        font-weight: bold;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Link to open XML file -->
     <h1>View Functional XML File</h1>
     <a href="../../functional-output/prod/test-result.xml" target="_blank">Open XML File</a>
 
     <!-- Summary Table -->
     <table class="summary-table">
-        <thead>
-            <tr>
-                <th>Total Tests</th>
-                <th>Total Failures</th>
-                <th>Percentage Passed</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td id="totalTests">0</td>
-                <td id="totalFailures">0</td>
-                <td id="percentagePassed">0</td>
-            </tr>
-        </tbody>
+      <thead>
+        <tr>
+          <th>Total Tests</th>
+          <th>Total Failures</th>
+          <th>Percentage Passed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="totalTests">0</td>
+          <td id="totalFailures">0</td>
+          <td id="percentagePassed">0</td>
+        </tr>
+      </tbody>
     </table>
 
     <!-- Main Table to display and sort XML data -->
     <h1>Functional Tests</h1>
-    <pre id="xmlContent" style="display:none;"></pre> <!-- Optional, hides the raw XML -->
+    <pre id="xmlContent" style="display: none"></pre>
+    <!-- Optional, hides the raw XML -->
 
     <table id="data-table">
-        <thead>
-            <tr>
-                <th onclick="sortTable(0)">Name</th>
-                <th onclick="sortTable(1)">Tests</th>
-                <th onclick="sortTable(2)">Failures</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Name</th>
+          <th onclick="sortTable(1)">Tests</th>
+          <th onclick="sortTable(2)">Failures</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
     </table>
 
     <script>
-        // Path to your XML file (correct path)
-        const xmlFilePath = '../../functional-output/prod/test-result.xml';
+      // Path to your XML file (correct path)
+      const xmlFilePath = '../../functional-output/prod/test-result.xml';
 
-        // Fetch the XML file and display its content in a table
-        fetch(xmlFilePath)
-            .then(response => response.text())
-            .then(xmlString => {
-                // Display XML content (optional, hidden in this example)
-                document.getElementById('xmlContent').textContent = xmlString;
+      // Fetch the XML file and display its content in a table
+      fetch(xmlFilePath)
+        .then((response) => response.text())
+        .then((xmlString) => {
+          // Display XML content (optional, hidden in this example)
+          document.getElementById('xmlContent').textContent = xmlString;
 
-                // Parse the XML string
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+          // Parse the XML string
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
 
-                // Get all <item> elements
-                const items = xmlDoc.getElementsByTagName('testsuite');
-                const tableBody = document.getElementById('tableBody');
+          // Get all <item> elements
+          const items = xmlDoc.getElementsByTagName('testsuite');
+          const tableBody = document.getElementById('tableBody');
 
-                let totalTests = 0;
-                let totalFailures = 0;
+          let totalTests = 0;
+          let totalFailures = 0;
 
-                // Populate the table with data from XML
-                for (let i = 0; i < items.length; i++) {
-                    const name = items[i].getAttribute('name');
-                    const tests = parseInt(items[i].getAttribute('tests'));
-                    const failures = parseInt(items[i].getAttribute('failures'));
+          // Populate the table with data from XML
+          for (let i = 0; i < items.length; i++) {
+            const name = items[i].getAttribute('name');
+            const tests = parseInt(items[i].getAttribute('tests'));
+            const failures = parseInt(items[i].getAttribute('failures'));
 
-                    // Update totals
-                    totalTests += tests;
-                    totalFailures += failures;
+            // Update totals
+            totalTests += tests;
+            totalFailures += failures;
 
-                    // Create a new row
-                    const row = document.createElement('tr');
+            // Create a new row
+            const row = document.createElement('tr');
 
-                    // Create cells and append them to the row
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = name;
-                    row.appendChild(nameCell);
+            // Create cells and append them to the row
+            const nameCell = document.createElement('td');
+            nameCell.textContent = name;
+            row.appendChild(nameCell);
 
-                    const testsCell = document.createElement('td');
-                    testsCell.textContent = tests;
-                    row.appendChild(testsCell);
+            const testsCell = document.createElement('td');
+            testsCell.textContent = tests;
+            row.appendChild(testsCell);
 
-                    const failuresCell = document.createElement('td');
-                    failuresCell.textContent = failures;
-                    row.appendChild(failuresCell);
+            const failuresCell = document.createElement('td');
+            failuresCell.textContent = failures;
+            row.appendChild(failuresCell);
 
-                    // Append the row to the table body
-                    tableBody.appendChild(row);
-                }
+            // Append the row to the table body
+            tableBody.appendChild(row);
+          }
 
-                // Update the summary table with total values
-                document.getElementById('totalTests').textContent = totalTests;
-                document.getElementById('totalFailures').textContent = totalFailures;
-                document.getElementById('percentagePassed').textContent = `${((totalTests - totalFailures) / totalTests * 100).toFixed(2)}%`;
-            })
-            .catch(error => {
-                console.error('Error fetching the XML file:', error);
-                document.getElementById('xmlContent').textContent = 'Error loading XML content';
-            });
+          // Update the summary table with total values
+          document.getElementById('totalTests').textContent = totalTests;
+          document.getElementById('totalFailures').textContent = totalFailures;
+          document.getElementById('percentagePassed').textContent =
+            `${(((totalTests - totalFailures) / totalTests) * 100).toFixed(2)}%`;
+        })
+        .catch((error) => {
+          console.error('Error fetching the XML file:', error);
+          document.getElementById('xmlContent').textContent = 'Error loading XML content';
+        });
 
-        // Sort table function
-        let currentSortColumn = -1;
-        let currentSortDirection = '';
+      // Sort table function
+      let currentSortColumn = -1;
+      let currentSortDirection = '';
 
-        function sortTable(columnIndex) {
-            const table = document.getElementById("data-table");
-            let rows, switching, i, x, y, shouldSwitch, dir, switchCount = 0;
-            switching = true;
+      function sortTable(columnIndex) {
+        const table = document.getElementById('data-table');
+        let rows,
+          switching,
+          i,
+          x,
+          y,
+          shouldSwitch,
+          dir,
+          switchCount = 0;
+        switching = true;
 
-            // Reset sorting direction if a new column is clicked
-            if (currentSortColumn !== columnIndex) {
-                dir = "asc"; // Set the sorting direction to ascending for new column
-            } else {
-                // Toggle the direction if the same column is clicked
-                dir = currentSortDirection === "asc" ? "desc" : "asc";
-            }
-
-            currentSortColumn = columnIndex;
-            currentSortDirection = dir;
-
-            // Clear previous arrow indicators
-            const thElements = table.getElementsByTagName("th");
-            for (let th of thElements) {
-                th.classList.remove('asc', 'desc');
-            }
-
-            // Add the appropriate arrow to the current column
-            thElements[columnIndex].classList.add(dir);
-
-            // Run a loop until no switching is needed
-            while (switching) {
-                switching = false;
-                rows = table.rows;
-
-                // Loop through all table rows (except the first, which contains headers)
-                for (i = 1; i < (rows.length - 1); i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("TD")[columnIndex];
-                    y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
-
-                    // Check if the two rows should switch places based on the direction
-                    if (dir === "asc") {
-                        if (columnIndex === 1 || columnIndex === 2) {  // For numeric columns (Tests and Failures)
-                            if (parseFloat(x.textContent) > parseFloat(y.textContent)) {
-                                shouldSwitch = true;
-                                break;
-                            }
-                        } else {  // For text column (Name)
-                            if (x.textContent.toLowerCase() > y.textContent.toLowerCase()) {
-                                shouldSwitch = true;
-                                break;
-                            }
-                        }
-                    } else if (dir === "desc") {
-                        if (columnIndex === 1 || columnIndex === 2) {  // For numeric columns (Tests and Failures)
-                            if (parseFloat(x.textContent) < parseFloat(y.textContent)) {
-                                shouldSwitch = true;
-                                break;
-                            }
-                        } else {  // For text column (Name)
-                            if (x.textContent.toLowerCase() < y.textContent.toLowerCase()) {
-                                shouldSwitch = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchCount++;
-                } else {
-                    if (switchCount === 0 && dir === "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
+        // Reset sorting direction if a new column is clicked
+        if (currentSortColumn !== columnIndex) {
+          dir = 'asc'; // Set the sorting direction to ascending for new column
+        } else {
+          // Toggle the direction if the same column is clicked
+          dir = currentSortDirection === 'asc' ? 'desc' : 'asc';
         }
-    </script>
 
-</body>
+        currentSortColumn = columnIndex;
+        currentSortDirection = dir;
+
+        // Clear previous arrow indicators
+        const thElements = table.getElementsByTagName('th');
+        for (let th of thElements) {
+          th.classList.remove('asc', 'desc');
+        }
+
+        // Add the appropriate arrow to the current column
+        thElements[columnIndex].classList.add(dir);
+
+        // Run a loop until no switching is needed
+        while (switching) {
+          switching = false;
+          rows = table.rows;
+
+          // Loop through all table rows (except the first, which contains headers)
+          for (i = 1; i < rows.length - 1; i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName('TD')[columnIndex];
+            y = rows[i + 1].getElementsByTagName('TD')[columnIndex];
+
+            // Check if the two rows should switch places based on the direction
+            if (dir === 'asc') {
+              if (columnIndex === 1 || columnIndex === 2) {
+                // For numeric columns (Tests and Failures)
+                if (parseFloat(x.textContent) > parseFloat(y.textContent)) {
+                  shouldSwitch = true;
+                  break;
+                }
+              } else {
+                // For text column (Name)
+                if (x.textContent.toLowerCase() > y.textContent.toLowerCase()) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+            } else if (dir === 'desc') {
+              if (columnIndex === 1 || columnIndex === 2) {
+                // For numeric columns (Tests and Failures)
+                if (parseFloat(x.textContent) < parseFloat(y.textContent)) {
+                  shouldSwitch = true;
+                  break;
+                }
+              } else {
+                // For text column (Name)
+                if (x.textContent.toLowerCase() < y.textContent.toLowerCase()) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchCount++;
+          } else {
+            if (switchCount === 0 && dir === 'asc') {
+              dir = 'desc';
+              switching = true;
+            }
+          }
+        }
+      }
+    </script>
+  </body>
 </html>
