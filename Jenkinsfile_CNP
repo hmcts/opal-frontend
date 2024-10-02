@@ -165,7 +165,7 @@ withPipeline(type, product, component) {
     }
   }
 
-      afterAlways('functionalTest:stg', 'functionalTest:dev') {
+      afterAlways(['functionalTest:stg', 'functionalTest:dev']) {
 
       publishHTML target: [
         allowMissing         : true,
