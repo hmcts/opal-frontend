@@ -68,7 +68,7 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
     return results.map((item) => {
       return {
         value: item.result_id,
-        name: item.result_title + ` (${item.result_id})`,
+        name: this.opalFinesService.getResultPrettyName(item),
       };
     });
   }

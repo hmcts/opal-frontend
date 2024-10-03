@@ -1,4 +1,4 @@
-interface IOpalFinesCourt {
+export interface IOpalFinesCourt {
   court_id: number;
   court_code: number;
   name: string;
