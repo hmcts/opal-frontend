@@ -136,4 +136,13 @@ export const routing: Routes = [
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
   },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.addOffence,
+    loadComponent: () =>
+      import(
+        '../fines-mac-offence-details/fines-mac-offence-details-add-an-offence/fines-mac-offence-details-add-an-offence.component'
+      ).then((c) => c.FinesMacOffenceDetailsAddAnOffenceComponent),
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard],
+  },
 ];

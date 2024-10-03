@@ -1,0 +1,74 @@
+<h1 class="govuk-heading-l">Offences and impositions</h1>
+
+@if (finesService.finesMacState.offenceDetails.length === 0) {
+  <div class="govuk-form-group">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <p>There are no offences.</p>
+      </div>
+    </div>
+  </div>
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+  <div class="govuk-form-group">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <app-govuk-button
+          buttonId="addAnOffence"
+          buttonClasses="govuk-button--secondary"
+          (buttonClickEvent)="routerNavigate(fineMacRoutingPaths.children.addOffence)"
+          >Add an offence</app-govuk-button
+        >
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <app-govuk-button
+          buttonId="returnToTaskList"
+          (buttonClickEvent)="routerNavigate(fineMacRoutingPaths.children.accountDetails)"
+          >Return to create account</app-govuk-button
+        >
+      </div>
+    </div>
+  </div>
+}
+
+<!-- <app-govuk-table>
+  <ng-container header>
+    <th scope="col" class="govuk-table__header">Imposition</th>
+    <th scope="col" class="govuk-table__header">Creditor</th>
+    <th scope="col" class="govuk-table__header">Amount imposed</th>
+    <th scope="col" class="govuk-table__header">Amount paid</th>
+    <th scope="col" class="govuk-table__header">Balance remaining</th>
+  </ng-container>
+
+  <ng-container body>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__cell">Victim surcharge (FVS)</th>
+      <td class="govuk-table__cell">HM Courts and Tribunals Service (HMCTS)</td>
+      <td class="govuk-table__cell">£30.00</td>
+      <td class="govuk-table__cell">£0.00</td>
+      <td class="govuk-table__cell">£30.00</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__cell">Costs (FCOST)</th>
+      <td class="govuk-table__cell">Driver and Vehicle Licensing Authority (DVLA)</td>
+      <td class="govuk-table__cell">£100.00</td>
+      <td class="govuk-table__cell">£0.00</td>
+      <td class="govuk-table__cell">£100.00</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__cell">Fine (FO)</th>
+      <td class="govuk-table__cell">HM Courts and Tribunals Service (HMCTS)</td>
+      <td class="govuk-table__cell">£220.00</td>
+      <td class="govuk-table__cell">£0.00</td>
+      <td class="govuk-table__cell">£200.00</td>
+    </tr>
+    <tr class="govuk-table__row govuk-table__row--total">
+      <th scope="row" class="govuk-table__cell">Totals</th>
+      <td class="govuk-table__cell"></td>
+      <td class="govuk-table__cell">£360.00</td>
+      <td class="govuk-table__cell">£0.00</td>
+      <td class="govuk-table__cell">£360.00</td>
+    </tr>
+  </ng-container>
+</app-govuk-table> -->

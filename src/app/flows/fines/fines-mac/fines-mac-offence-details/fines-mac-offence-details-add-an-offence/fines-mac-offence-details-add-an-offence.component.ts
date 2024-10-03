@@ -39,6 +39,9 @@ import { futureDateValidator } from '@validators/future-date/future-date.validat
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
 import { UtilsService } from '@services/utils/utils.service';
 import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
+import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { Observable, map } from 'rxjs';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -66,17 +69,25 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   implements OnInit, OnDestroy
 {
   @Input() public defendantType!: string;
-  @Input({ required: true }) public offences!: IOpalFinesOffencesRefData;
-  @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public formData!: IFinesMacOffenceDetailsState;
   @Input({ required: true }) public formDataIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 
+  private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
   protected readonly utilsService = inject(UtilsService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+
+  public offences!: IOpalFinesOffencesRefData;
+  public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
+  private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
+  private readonly resultCodeData$: Observable<void> = this.opalFinesService.getResults(this.resultCodeArray).pipe(
+    map((response: IOpalFinesResultsRefData) => {
+      this.resultCodeItems = this.createAutoCompleteItemsResults(response);
+    }),
+  );
 
   public selectedOffenceConfirmation!: boolean;
   public selectedOffenceSuccessful!: boolean;
@@ -88,6 +99,26 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
+
+  /**
+   * Creates an array of autocomplete items based on the provided response data.
+   * @param response - The response data containing the reference data.
+   * @returns An array of autocomplete items.
+   */
+  private createAutoCompleteItemsResults(response: IOpalFinesResultsRefData): IAlphagovAccessibleAutocompleteItem[] {
+    const results = response.refData;
+
+    results.sort((a, b) => {
+      return a.imposition_allocation_order! - b.imposition_allocation_order!;
+    });
+
+    return results.map((item) => {
+      return {
+        value: item.result_id,
+        name: item.result_title + ` (${item.result_id})`,
+      };
+    });
+  }
 
   /**
    * Sets up the form for adding an offence.
@@ -116,6 +147,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * adds controls to the form array if necessary, and sets the current date.
    */
   private initialAddAnOffenceDetailsSetup(): void {
+    this.getData();
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
     this.setupFormArrayFormControls(
@@ -181,6 +213,18 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
           result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
       needsCreditorControl.setValue(needsCreditor);
     });
+  }
+
+  private getData(): void {
+    this.opalFinesService.getOffences(0).subscribe((offencesData: IOpalFinesOffencesRefData) => {
+      this.offences = offencesData;
+    });
+
+    this.opalFinesService.getResults(this.resultCodeArray).pipe(
+      map((response: IOpalFinesResultsRefData) => {
+        this.resultCodeItems = this.createAutoCompleteItemsResults(response);
+      }),
+    );
   }
 
   /**

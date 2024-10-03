@@ -17,6 +17,7 @@ import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/int
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from './constants/fines-mac-offence-details-result-codes';
 import { IFinesMacOffenceDetailsState } from './interfaces/fines-mac-offence-details-state.interface';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from './constants/fines-mac-offence-details-state';
+import { FinesMacOffenceDetailsReviewComponent } from './fines-mac-offence-details-review/fines-mac-offence-details-review.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details',
@@ -27,6 +28,7 @@ import { FINES_MAC_OFFENCE_DETAILS_STATE } from './constants/fines-mac-offence-d
     GovukButtonComponent,
     GovukCancelLinkComponent,
     FinesMacOffenceDetailsAddAnOffenceComponent,
+    FinesMacOffenceDetailsReviewComponent,
   ],
   templateUrl: './fines-mac-offence-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
