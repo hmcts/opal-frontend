@@ -3,7 +3,7 @@ import { ISessionUserState } from '../interfaces/session-user-state.interface';
 export const SESSION_USER_STATE_MOCK: ISessionUserState = {
   user_id: 'gl.timTest',
   user_name: 'timmyTest@HMCTS.NET',
-  business_unit_user_permissions: [
+  business_unit_user: [
     {
       business_user_id: 'L017KG',
       business_unit_id: 17,

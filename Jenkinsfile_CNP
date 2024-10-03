@@ -144,6 +144,8 @@ withPipeline(type, product, component) {
       sh"echo 'Archiving weight files in ${sourceJobName}'"
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
     }
   }
 
@@ -157,11 +159,13 @@ withPipeline(type, product, component) {
       sh"echo 'Archiving weight files in ${sourceJobName}'"
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/smoke-parallel-weights.json', allowEmptyArchive: true
       archiveArtifacts artifacts: 'cypress/parallel/weights/pipeline/functional-parallel-weights.json', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/reports/smokeXmlReport.html', allowEmptyArchive: true
+      archiveArtifacts artifacts: 'cypress/reports/functionalXmlReport.html', allowEmptyArchive: true
+
     }
   }
 
       afterAlways('functionalTest:stg') {
-
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
@@ -170,16 +174,6 @@ withPipeline(type, product, component) {
         reportFiles          : "functional-report.html",
         reportName           : "Cucumber Functional Test Report"
     ]
-
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "functional-output/prod/",
-        reportFiles          : "test-result.xml",
-        reportName           : "XML Functional Test Report"
-    ]
-
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
@@ -187,20 +181,9 @@ withPipeline(type, product, component) {
         reportDir            : "smoke-output/prod/cucumber/",
         reportFiles          : "smoke-report.html",
         reportName           : "Cucumber Smoke Test Report"
-    ]
-
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "smoke-output/prod/",
-        reportFiles          : "test-result.xml",
-        reportName           : "XML Smoke Test Report"
     ]
   }
-
-      afterAlways('functionalTest:dev') {
-
+  afterAlways('functionalTest:dev') {
       publishHTML target: [
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
@@ -214,27 +197,9 @@ withPipeline(type, product, component) {
         allowMissing         : true,
         alwaysLinkToLastBuild: true,
         keepAll              : true,
-        reportDir            : "functional-output/prod/",
-        reportFiles          : "test-result.xml",
-        reportName           : "XML Functional Test Report"
-    ]
-
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
         reportDir            : "smoke-output/prod/cucumber/",
         reportFiles          : "smoke-report.html",
         reportName           : "Cucumber Smoke Test Report"
-    ]
-
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "smoke-output/prod/",
-        reportFiles          : "test-result.xml",
-        reportName           : "XML Smoke Test Report"
     ]
   }
 }

@@ -1,6 +1,6 @@
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../fines-mac-account-details/constants/fines-mac-account-details-state';
-import { IFinesMacCreateAccountState } from '../interfaces/fines-mac-create-account-state.interface';
+import { IFinesMacAccountDetailsState } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
 
-export const FINES_MAC_CREATE_ACCOUNT_STATE: IFinesMacCreateAccountState = {
+export const FINES_MAC_CREATE_ACCOUNT_STATE: IFinesMacAccountDetailsState = {
   ...FINES_MAC_ACCOUNT_DETAILS_STATE,
 };

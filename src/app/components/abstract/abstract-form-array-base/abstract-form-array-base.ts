@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractFormBaseComponent } from '../abstract-form-base/abstract-form-base.component';
 import { IAbstractFormArrayControls } from '../interfaces/abstract-form-array-controls.interface';
 import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
-import { IAbstractFormBaseFormArrayControl } from '../abstract-form-base/interfaces/abstract-form-base-form-array-control.interface';
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { IAbstractFormArrayControl } from '../interfaces/abstract-form-array-control.interface';
 
 @Component({
   standalone: true,
@@ -49,7 +49,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
     formArrayName: string,
     fieldNames: string[],
     controlValidation: IAbstractFormArrayControlValidation[],
-  ): { [key: string]: IAbstractFormBaseFormArrayControl } {
+  ): { [key: string]: IAbstractFormArrayControl } {
     const formArray = this.form.get(formArrayName) as FormArray;
     const formArrayFormGroup = new FormGroup({});
 
@@ -101,10 +101,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
    * @param index - The index of the form array.
    * @returns An object with form array controls.
    */
-  protected createFormArrayControls(
-    fields: string[],
-    index: number,
-  ): { [key: string]: IAbstractFormBaseFormArrayControl } {
+  protected createFormArrayControls(fields: string[], index: number): { [key: string]: IAbstractFormArrayControl } {
     return fields.reduce(
       (controls, field) => ({
         ...controls,

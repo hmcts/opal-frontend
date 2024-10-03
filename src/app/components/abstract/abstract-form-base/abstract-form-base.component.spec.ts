@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractFormBaseComponent } from './abstract-form-base.component';
 import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { IAbstractFormBaseFieldError } from './interfaces/abstract-form-base-field-error.interface';
-import { IAbstractFormBaseFormArrayControlValidation } from './interfaces/abstract-form-base-form-array-control-validation.interface';
 import { IAbstractFormBaseFormError } from './interfaces/abstract-form-base-form-error.interface';
 import { IAbstractFormBaseFormErrorSummaryMessage } from './interfaces/abstract-form-base-form-error-summary-message.interface';
 import { ABSTRACT_FORM_BASE_FORM_CONTROL_ERROR_MOCK } from './mocks/abstract-form-base-form-control-error.mock';
@@ -12,6 +11,7 @@ import { ABSTRACT_FORM_BASE_FORM_STATE_MOCK } from './mocks/abstract-form-base-f
 import { ABSTRACT_FORM_BASE_FIELD_ERRORS } from './constants/abstract-form-base-field-errors';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
 
 class TestAbstractFormBaseComponent extends AbstractFormBaseComponent {
   constructor() {
@@ -547,7 +547,7 @@ describe('AbstractFormBaseComponent', () => {
 
   it('should add controls to a form group', () => {
     const formGroup = new FormGroup({});
-    const controls: IAbstractFormBaseFormArrayControlValidation[] = [
+    const controls: IAbstractFormArrayControlValidation[] = [
       { controlName: 'firstName', validators: [] },
       { controlName: 'lastName', validators: [] },
     ];
