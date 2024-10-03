@@ -207,6 +207,8 @@
     <strong>{{ offenceFound }}</strong>
     @if (found) {
       <p>{{ offenceTitle }}</p>
+    } @else {
+      <p>Enter a valid offence code</p>
     }
   </app-moj-ticket-panel>
 </ng-template>
