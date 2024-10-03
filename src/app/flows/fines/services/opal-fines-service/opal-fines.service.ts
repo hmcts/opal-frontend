@@ -181,6 +181,8 @@ export class OpalFines {
    * @returns An Observable that emits the offence data.
    */
   public getOffenceByCjsCode(cjsCode: string): Observable<IOpalFinesOffencesRefData> {
-    return this.http.get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`);
+    return this.http
+      .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
+      .pipe(shareReplay(1));
   }
 }
