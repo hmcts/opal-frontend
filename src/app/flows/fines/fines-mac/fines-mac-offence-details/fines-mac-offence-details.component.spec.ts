@@ -10,7 +10,6 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from './constants/fines-mac-offence-details-state';
@@ -19,12 +18,11 @@ describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
-  let opalFinesService: Partial<OpalFines>;
+  let mockOpalFinesService: Partial<OpalFines>;
   let formSubmit: IFinesMacOffenceDetailsForm[];
 
   beforeEach(async () => {
-    opalFinesService = {
-      getOffences: jasmine.createSpy('getOffences').and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+    mockOpalFinesService = {
       getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
     };
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
@@ -35,8 +33,8 @@ describe('FinesMacOffenceDetailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsComponent],
       providers: [
+        { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesService, useValue: mockFinesService },
-        { provide: OpalFines, useValue: opalFinesService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),

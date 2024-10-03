@@ -35,16 +35,19 @@
         search the offence list
       </a></app-govuk-text-input
     >
-    @if (this.selectedOffenceConfirmation) {
-      <app-moj-ticket-panel
-        [sectionClasses]="
-          selectedOffenceSuccessful ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'
-        "
-      >
-        @let offenceFound = selectedOffenceSuccessful ? 'Offence found' : 'Offence not found';
-        <strong>{{ offenceFound }}</strong>
-        <p>{{ selectedOffenceTitle }}</p>
-      </app-moj-ticket-panel>
+    @if (selectedOffenceConfirmation) {
+      @if (offenceCode$ | async; as offenceCode) {
+        @if (offenceCode.count === 1) {
+          <ng-container
+            *ngTemplateOutlet="
+              offenceCodeHint;
+              context: { found: true, offenceTitle: offenceCode.refData[0].offence_title }
+            "
+          ></ng-container>
+        } @else {
+          <ng-container *ngTemplateOutlet="offenceCodeHint; context: { found: false }"></ng-container>
+        }
+      }
     }
   </fieldset>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
@@ -148,16 +151,7 @@
         }
         @if (formArrayControls.length > 1) {
           <div class="govuk-!-margin-top-3">
-            <a
-              class="govuk-link govuk-link--no-visited-state"
-              (click)="removeControlsFromFormArray(formArrayControls.length - 1, 'fm_offence_details_impositions')"
-              (keyup.enter)="
-                removeControlsFromFormArray(formArrayControls.length - 1, 'fm_offence_details_impositions')
-              "
-              tabindex="0"
-            >
-              Remove imposition
-            </a>
+            <a class="govuk-link govuk-link--no-visited-state" tabindex="0"> Remove imposition </a>
           </div>
         }
       </app-moj-ticket-panel>
@@ -203,4 +197,16 @@
   >
     search the offence list
   </a>
+</ng-template>
+
+<ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
+  <app-moj-ticket-panel
+    [sectionClasses]="found ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'"
+  >
+    @let offenceFound = found ? 'Offence found' : 'Offence not found';
+    <strong>{{ offenceFound }}</strong>
+    @if (found) {
+      <p>{{ offenceTitle }}</p>
+    }
+  </app-moj-ticket-panel>
 </ng-template>

@@ -209,6 +209,17 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
     );
   }
 
+  /**
+   * Removes a form array control from the specified form array.
+   *
+   * @param formArrayControl - The form array control to remove.
+   * @param formArrayName - The name of the form array.
+   */
+  public removeFormArrayControlFromArray(formArrayControl: IAbstractFormArrayControls, formArrayName: string): void {
+    const formArrayControlIndex = this.formArrayControls.findIndex((control) => control === formArrayControl);
+    this.removeFormArrayControls(formArrayControlIndex, formArrayName, this.formArrayControls, this.formArrayFields);
+  }
+
   public override ngOnInit(): void {
     super.ngOnInit();
   }

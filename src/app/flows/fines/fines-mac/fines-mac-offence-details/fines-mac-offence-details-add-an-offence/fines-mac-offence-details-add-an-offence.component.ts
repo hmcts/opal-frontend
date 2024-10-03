@@ -15,7 +15,6 @@ import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../constants/fines-mac-offence-details-impositions';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
@@ -32,13 +31,15 @@ import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govu
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../constants/fines-mac-offence-details-offences-field-errors';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../constants/fines-mac-offence-details-impositions-field-errors';
-import { validValueValidator } from '@validators/valid-value/valid-value.validator';
 import { CommonModule } from '@angular/common';
 import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
 import { futureDateValidator } from '@validators/future-date/future-date.validator';
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
 import { UtilsService } from '@services/utils/utils.service';
 import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { EMPTY, Observable, debounceTime, distinctUntilChanged, tap } from 'rxjs';
+import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -66,12 +67,12 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   implements OnInit, OnDestroy
 {
   @Input() public defendantType!: string;
-  @Input({ required: true }) public offences!: IOpalFinesOffencesRefData;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public formData!: IFinesMacOffenceDetailsState;
   @Input({ required: true }) public formDataIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 
+  private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
   protected readonly utilsService = inject(UtilsService);
@@ -82,6 +83,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   public selectedOffenceSuccessful!: boolean;
   public selectedOffenceTitle!: string;
   public today!: string;
+
+  public offenceCode$: Observable<IOpalFinesOffencesRefData> = EMPTY;
 
   public creditorOptions = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS;
 
@@ -100,10 +103,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
         optionalValidDateValidator(),
         futureDateValidator(),
       ]),
-      fm_offence_details_offence_code: new FormControl(null, [
-        Validators.required,
-        validValueValidator(this.offences.refData.map((offence) => offence.get_cjs_code)),
-      ]),
+      fm_offence_details_offence_code: new FormControl(null, [Validators.required]),
       fm_offence_details_impositions: new FormArray([]),
     });
   }
@@ -132,26 +132,33 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   /**
-   * Listens for changes in the 'fm_offence_details_offence_code' form control and performs actions based on the entered code.
+   * Listens for changes in the offence code control and performs actions based on the input.
+   * If the input meets the specified length criteria, it retrieves the offence details using the provided code.
+   * @private
+   * @returns {void}
    */
   private offenceCodeListener(): void {
-    this.form.controls['fm_offence_details_offence_code'].valueChanges.subscribe((cjs_code: string) => {
-      // Ensure the entered code is in uppercase
-      cjs_code = this.utilsService.upperCaseAllLetters(cjs_code || '');
-      this.form.controls['fm_offence_details_offence_code'].setValue(cjs_code, { emitEvent: false });
+    this.selectedOffenceConfirmation = false;
 
-      this.selectedOffenceConfirmation = false;
-      this.selectedOffenceSuccessful = false;
-      this.selectedOffenceTitle = 'Enter a valid offence code';
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
 
-      if (cjs_code?.length >= 7 && cjs_code?.length <= 8) {
-        const offence = this.offences.refData.find((offence) => offence.get_cjs_code === cjs_code);
-        if (!offence) return;
-        this.selectedOffenceConfirmation = !this.selectedOffenceConfirmation;
-        this.selectedOffenceTitle = offence.offence_title;
-        this.selectedOffenceSuccessful = true;
-      }
-    });
+    offenceCodeControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        tap((cjs_code: string) => {
+          cjs_code = this.utilsService.upperCaseAllLetters(cjs_code || '');
+          offenceCodeControl.setValue(cjs_code, { emitEvent: false });
+        }),
+        debounceTime(250),
+      )
+      .subscribe((cjs_code: string) => {
+        if (cjs_code?.length >= 7 && cjs_code?.length <= 8) {
+          this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjs_code);
+          this.selectedOffenceConfirmation = true;
+        } else {
+          this.selectedOffenceConfirmation = false;
+        }
+      });
   }
 
   /**

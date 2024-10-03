@@ -1,11 +1,10 @@
-@if (groupOffenceCodeAndResultData$ | async; as groupOffenceCodeAndResultData) {
+@if (resultCodeData$ | async; as resultCodeData) {
   <div class="govuk-grid-column-full">
     <app-fines-mac-offence-details-add-an-offence
       [defendantType]="defendantType"
       [formData]="formData"
       [formDataIndex]="formDataIndex"
-      [offences]="groupOffenceCodeAndResultData.offenceCodeData"
-      [resultCodeItems]="groupOffenceCodeAndResultData.resultCodeData"
+      [resultCodeItems]="resultCodeData"
       (formSubmit)="handleOffenceDetailsSubmit($event)"
       (unsavedChanges)="handleUnsavedChanges($event)"
     >

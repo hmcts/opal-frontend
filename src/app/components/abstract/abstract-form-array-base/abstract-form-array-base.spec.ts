@@ -2,6 +2,7 @@ import { FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@ang
 import { AbstractFormArrayBaseComponent } from './abstract-form-array-base';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { IAbstractFormArrayControls } from '../interfaces/abstract-form-array-controls.interface';
 
 class TestAbstractFormArrayBaseComponent extends AbstractFormArrayBaseComponent {
   constructor() {
@@ -193,5 +194,22 @@ describe('AbstractFormArrayBaseComponent', () => {
     // Assert that field errors are returned
     expect(result).toBeTruthy();
     expect(result).toEqual({ priority: 1, message: 'Field is required', type: 'required' });
+  });
+
+  it('should remove a form array control from the form array', () => {
+    const formArrayControl: IAbstractFormArrayControls = {
+      field1: { inputId: 'field1_0', inputName: 'field1_0', controlName: 'field1_0' },
+      field2: { inputId: 'field2_0', inputName: 'field2_0', controlName: 'field2_0' },
+    };
+    const formArrayName = 'impositions';
+
+    // Mock the formArrayControls and formArrayFields
+    component.formArrayControls = [formArrayControl];
+
+    // Call the method to remove the form array control
+    component.removeFormArrayControlFromArray(formArrayControl, formArrayName);
+
+    // Check that the form array control is removed
+    expect(component.formArrayControls.length).toBe(0);
   });
 });

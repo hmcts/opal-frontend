@@ -30,7 +30,6 @@ export class OpalFines {
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
-  private offencesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
 
   /**
@@ -162,22 +161,6 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the offences reference data for a specific business unit.
-   * If the data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
-   * @param businessUnit The ID of the business unit.
-   * @returns An Observable that emits the offences reference data.
-   */
-  public getOffences(businessUnit: number): Observable<IOpalFinesOffencesRefData> {
-    if (!this.offencesCache$[businessUnit]) {
-      this.offencesCache$[businessUnit] = this.http
-        .get<IOpalFinesOffencesRefData>(OPAL_FINES_PATHS.offencesRefData, { params: { businessUnit } })
-        .pipe(shareReplay(1));
-    }
-
-    return this.offencesCache$[businessUnit];
-  }
-
-  /**
    * Retrieves the Opal fines results reference data based on the provided result codes.
    * @param resultCodes - An array of result codes to filter the results.
    * @returns An Observable that emits the Opal fines results reference data.
@@ -190,5 +173,14 @@ export class OpalFines {
     }
 
     return this.resultsCache$;
+  }
+
+  /**
+   * Retrieves the offence data for a given CJS code.
+   * @param cjsCode - The CJS code for the offence.
+   * @returns An Observable that emits the offence data.
+   */
+  public getOffenceByCjsCode(cjsCode: string): Observable<IOpalFinesOffencesRefData> {
+    return this.http.get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`);
   }
 }

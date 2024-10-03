@@ -6,10 +6,9 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IFinesMacOffenceDetailsForm } from './interfaces/fines-mac-offence-details-form.interface';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { FinesMacOffenceDetailsAddAnOffenceComponent } from './fines-mac-offence-details-add-an-offence/fines-mac-offence-details-add-an-offence.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -35,19 +34,14 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
-  private readonly offenceCodes$: Observable<IOpalFinesOffencesRefData> = this.opalFinesService.getOffences(0);
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  public readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getResults(this.resultCodeArray)
     .pipe(
       map((response: IOpalFinesResultsRefData) => {
         return this.createAutoCompleteItemsResults(response);
       }),
     );
-  protected groupOffenceCodeAndResultData$ = forkJoin({
-    offenceCodeData: this.offenceCodes$,
-    resultCodeData: this.resultCodeData$,
-  });
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   public formData!: IFinesMacOffenceDetailsState;
   public formDataIndex!: number;

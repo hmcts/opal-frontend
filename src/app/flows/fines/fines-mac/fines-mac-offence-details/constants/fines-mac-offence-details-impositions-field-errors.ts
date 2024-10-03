@@ -29,10 +29,6 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
       },
     },
     [`fm_offence_details_amount_paid${indexSuffix}`]: {
-      required: {
-        message: 'Enter an amount',
-        priority: 1,
-      },
       invalidAmountValue: {
         message: 'Enter an amount using numbers only',
         priority: 2,

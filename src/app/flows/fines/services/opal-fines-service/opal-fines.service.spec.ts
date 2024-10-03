@@ -303,42 +303,6 @@ describe('OpalFines', () => {
     expect(result).toBeNull();
   });
 
-  it('should send a GET request to offences ref data API', () => {
-    const businessUnit = 1;
-    const mockOffences: IOpalFinesOffencesRefData = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?businessUnit=${businessUnit}`;
-
-    service.getOffences(businessUnit).subscribe((response) => {
-      expect(response).toEqual(mockOffences);
-    });
-
-    const req = httpMock.expectOne(expectedUrl);
-    expect(req.request.method).toBe('GET');
-
-    req.flush(mockOffences);
-  });
-
-  it('should return cached response for the same ref data search', () => {
-    const businessUnit = 1;
-    const mockOffences: IOpalFinesOffencesRefData = OPAL_FINES_OFFENCES_REF_DATA_MOCK;
-    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?businessUnit=${businessUnit}`;
-
-    service.getOffences(businessUnit).subscribe((response) => {
-      expect(response).toEqual(mockOffences);
-    });
-
-    const req = httpMock.expectOne(expectedUrl);
-    expect(req.request.method).toBe('GET');
-
-    req.flush(mockOffences);
-
-    service.getOffences(businessUnit).subscribe((response) => {
-      expect(response).toEqual(mockOffences);
-    });
-
-    httpMock.expectNone(expectedUrl);
-  });
-
   it('should send a GET request to results ref data API', () => {
     const resultIds = ['1', '2', '3'];
     const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
@@ -371,5 +335,22 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should send a GET request to offences ref data API', () => {
+    const refData = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
+    const expectedResponse: IOpalFinesOffencesRefData = {
+      count: 1,
+      refData: [refData],
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+
+    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
   });
 });
