@@ -13,6 +13,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from './constants/fines-mac-offence-details-state';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
@@ -24,6 +25,7 @@ describe('FinesMacOffenceDetailsComponent', () => {
   beforeEach(async () => {
     mockOpalFinesService = {
       getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
+      getResultPrettyName: jasmine.createSpy('getResultPrettyName').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
     };
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
