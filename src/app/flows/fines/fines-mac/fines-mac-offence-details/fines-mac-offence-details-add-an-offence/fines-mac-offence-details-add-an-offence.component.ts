@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -38,7 +39,7 @@ import { optionalValidDateValidator } from '@validators/optional-valid-date/opti
 import { UtilsService } from '@services/utils/utils.service';
 import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { EMPTY, Observable, debounceTime, distinctUntilChanged, take, tap } from 'rxjs';
+import { EMPTY, Observable, debounceTime, distinctUntilChanged, tap } from 'rxjs';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Component({
@@ -72,6 +73,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   @Input({ required: true }) public formDataIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 
+  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
@@ -139,12 +141,15 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
 
     if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
-      this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode);
+      this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
+        tap((offence) => {
+          offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
+        }),
+      );
+
       this.selectedOffenceConfirmation = true;
 
-      this.offenceCode$.pipe(take(1)).subscribe((offence) => {
-        offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true });
-      });
+      this.changeDetector.detectChanges();
     } else {
       this.selectedOffenceConfirmation = false;
     }
