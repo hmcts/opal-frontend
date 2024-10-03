@@ -17,7 +17,7 @@ export class PermissionsService {
    * @returns An array of unique permission IDs.
    */
   public getUniquePermissions(userState: ISessionUserState | null): number[] {
-    const roles = userState ? userState['business_unit_user_permissions'] : null;
+    const roles = userState ? userState['business_unit_user'] : null;
 
     if (!this.storedUniquePermissionIds.length && roles) {
       const permissionIds = roles.flatMap((role) => {
