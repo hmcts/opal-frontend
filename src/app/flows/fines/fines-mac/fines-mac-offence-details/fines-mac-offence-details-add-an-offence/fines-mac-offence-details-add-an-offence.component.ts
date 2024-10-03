@@ -38,7 +38,7 @@ import { optionalValidDateValidator } from '@validators/optional-valid-date/opti
 import { UtilsService } from '@services/utils/utils.service';
 import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { EMPTY, Observable, debounceTime, distinctUntilChanged, tap } from 'rxjs';
+import { EMPTY, Observable, debounceTime, distinctUntilChanged, take, tap } from 'rxjs';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Component({
@@ -122,13 +122,32 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
       [...Array(this.formData.fm_offence_details_impositions.length).keys()],
       'fm_offence_details_impositions',
     );
-    this.offenceCodeListener();
     this.setInitialErrorMessages();
     this.rePopulateForm(this.formData);
+    this.offenceCodeListener();
     if (this.formData.fm_offence_details_impositions.length === 0) {
       this.addControlsToFormArray(0, 'fm_offence_details_impositions');
     }
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
+  }
+
+  /**
+   * Populates the offence hint based on the provided CJS code.
+   * @param cjsCode - The CJS code used to retrieve the offence details.
+   */
+  private populateOffenceHint(cjsCode: string): void {
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
+
+    if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
+      this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode);
+      this.selectedOffenceConfirmation = true;
+
+      this.offenceCode$.pipe(take(1)).subscribe((offence) => {
+        offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true });
+      });
+    } else {
+      this.selectedOffenceConfirmation = false;
+    }
   }
 
   /**
@@ -142,22 +161,23 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
     const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
 
+    // Populate the offence hint if the offence code is already set
+    if (offenceCodeControl.value) {
+      this.populateOffenceHint(offenceCodeControl.value);
+    }
+
+    // Listen for changes in the offence code control
     offenceCodeControl.valueChanges
       .pipe(
         distinctUntilChanged(),
         tap((cjs_code: string) => {
-          cjs_code = this.utilsService.upperCaseAllLetters(cjs_code || '');
+          cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
           offenceCodeControl.setValue(cjs_code, { emitEvent: false });
         }),
         debounceTime(250),
       )
       .subscribe((cjs_code: string) => {
-        if (cjs_code?.length >= 7 && cjs_code?.length <= 8) {
-          this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjs_code);
-          this.selectedOffenceConfirmation = true;
-        } else {
-          this.selectedOffenceConfirmation = false;
-        }
+        this.populateOffenceHint(cjs_code);
       });
   }
 

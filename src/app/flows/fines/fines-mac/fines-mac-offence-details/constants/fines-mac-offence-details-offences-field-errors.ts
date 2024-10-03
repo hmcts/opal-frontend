@@ -24,5 +24,9 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       message: 'Enter an offence code',
       priority: 1,
     },
+    invalidOffenceCode: {
+      message: 'Offence not found',
+      priority: 2,
+    },
   },
 };

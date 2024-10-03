@@ -55,7 +55,14 @@ export class FinesMacOffenceDetailsComponent extends AbstractFormParentBaseCompo
     const results = response.refData;
 
     results.sort((a, b) => {
-      return a.imposition_allocation_order! - b.imposition_allocation_order!;
+      const orderDiff = a.imposition_allocation_order! - b.imposition_allocation_order!;
+
+      if (orderDiff !== 0) {
+        return orderDiff;
+      }
+
+      // If imposition_allocation_order is the same, compare by result_title
+      return a.result_title.localeCompare(b.result_title);
     });
 
     return results.map((item) => {

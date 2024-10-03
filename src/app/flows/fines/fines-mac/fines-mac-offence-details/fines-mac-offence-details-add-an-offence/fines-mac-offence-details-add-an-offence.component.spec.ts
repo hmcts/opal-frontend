@@ -18,18 +18,15 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
+  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(async () => {
-    mockOpalFinesService = {
-      getOffenceByCjsCode: jasmine
-        .createSpy('getOffenceByCjsCode')
-        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
-    };
+    mockOpalFinesService = jasmine.createSpyObj('OpalFines', ['getOffenceByCjsCode']);
+    mockOpalFinesService.getOffenceByCjsCode.and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK));
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockDateService = jasmine.createSpyObj(DateService, ['getDateNow', 'toFormat']);
@@ -137,6 +134,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjs_code length is between 7 and 8', fakeAsync(() => {
     const mockCjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'populateOffenceHint');
 
     component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
@@ -145,13 +144,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     tick(250);
 
     // Check if service was called after debounce
-    expect(component.selectedOffenceConfirmation).toBe(true);
-    expect(mockOpalFinesService.getOffenceByCjsCode).toHaveBeenCalledWith(mockCjsCode);
+    expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);
   }));
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', fakeAsync(() => {
     const mockCjsCode = 'abc123450';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'populateOffenceHint');
 
     component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
@@ -159,8 +159,38 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     // Simulate the passage of 250ms to account for debounceTime
     tick(250);
 
-    // Check if the selectedOffenceConfirmation is set to false
-    expect(component.selectedOffenceConfirmation).toBe(false);
-    expect(mockOpalFinesService.getOffenceByCjsCode).not.toHaveBeenCalled();
+    // Check if service was called after debounce
+    expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);
   }));
+
+  it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjsCode length is between 7 and 8', () => {
+    const cjsCode = 'abc1234';
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+
+    component['populateOffenceHint'](cjsCode);
+
+    expect(component.selectedOffenceConfirmation).toBe(true);
+    expect(mockOpalFinesService.getOffenceByCjsCode).toHaveBeenCalledWith(cjsCode);
+    expect(offenceCodeControl.errors).toEqual(null);
+  });
+
+  it('should set errors on offence code control', () => {
+    const cjsCode = 'abc1234';
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    mockOpalFinesService.getOffenceByCjsCode.and.returnValue(of({ count: 0, refData: [] }));
+
+    component['populateOffenceHint'](cjsCode);
+
+    expect(component.selectedOffenceConfirmation).toBe(true);
+    expect(mockOpalFinesService.getOffenceByCjsCode).toHaveBeenCalledWith(cjsCode);
+    expect(offenceCodeControl.errors).toEqual({ invalidOffenceCode: true });
+  });
+
+  it('should set selectedOffenceConfirmation to false when cjsCode length is not between 7 and 8', () => {
+    const cjsCode = 'abc123458';
+
+    component['populateOffenceHint'](cjsCode);
+
+    expect(component.selectedOffenceConfirmation).toBe(false);
+  });
 });

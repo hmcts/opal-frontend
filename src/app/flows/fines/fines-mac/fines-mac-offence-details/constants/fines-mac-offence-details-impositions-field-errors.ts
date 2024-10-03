@@ -9,10 +9,6 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         message: 'Enter an imposition code',
         priority: 1,
       },
-      valueNotInArray: {
-        message: 'Offence not found',
-        priority: 2,
-      },
     },
     [`fm_offence_details_amount_imposed${indexSuffix}`]: {
       required: {
