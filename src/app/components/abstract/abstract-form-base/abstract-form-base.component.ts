@@ -9,8 +9,8 @@ import { IAbstractFormBaseFormError } from './interfaces/abstract-form-base-form
 import { IAbstractFormBaseFormErrorSummaryMessage } from './interfaces/abstract-form-base-form-error-summary-message.interface';
 import { IAbstractFormBaseHighPriorityFormError } from './interfaces/abstract-form-base-high-priority-form-error.interface';
 import { IAbstractFormBaseForm } from './interfaces/abstract-form-base-form.interface';
-import { IAbstractFormBaseFormArrayControlValidation } from './interfaces/abstract-form-base-form-array-control-validation.interface';
-import { IAbstractFormBaseFormControlErrorMessage } from './interfaces/abstract-form-base-form-control-error-message.interface';
+import { IAbstractFormControlErrorMessage } from '../interfaces/abstract-form-control-error-message.interface';
+import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
 
 @Component({
   standalone: true,
@@ -26,7 +26,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   public readonly globalStateService = inject(GlobalStateService);
 
   public form!: FormGroup;
-  public formControlErrorMessages!: IAbstractFormBaseFormControlErrorMessage;
+  public formControlErrorMessages!: IAbstractFormControlErrorMessage;
   public formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
   protected fieldErrors!: IAbstractFormBaseFieldErrors;
   protected formSubmitted = false;
@@ -326,7 +326,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   protected addControlsToFormGroup(
     formGroup: FormGroup,
-    controls: IAbstractFormBaseFormArrayControlValidation[],
+    controls: IAbstractFormArrayControlValidation[],
     index: number,
   ): void {
     controls.forEach(({ controlName, validators }) => {
@@ -410,7 +410,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   protected setInitialErrorMessages(): void {
     const formControls = this.form.controls;
-    const initialFormControlErrorMessages: IAbstractFormBaseFormControlErrorMessage = {};
+    const initialFormControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
     Object.keys(formControls).map((controlName) => {
       initialFormControlErrorMessages[controlName] = null;

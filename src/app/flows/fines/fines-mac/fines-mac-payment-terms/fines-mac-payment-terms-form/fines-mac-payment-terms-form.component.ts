@@ -83,7 +83,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
   private readonly userStateRoles: ISessionUserStateRole[] =
-    this.globalStateService.userState()?.business_unit_user_permissions || [];
+    this.globalStateService.userState()?.business_unit_user || [];
 
   public readonly permissionsMap = FinesMacPaymentTermsPermissions;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
@@ -419,8 +419,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     switch (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes]) {
       case this.defendantTypes.adultOrYouthOnly:
         formData = this.finesService.finesMacState.personalDetails.formData;
-        this.accessDefaultDates = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
-        this.accessCollectionOrder = !formData.dob || this.dateService.calculateAge(formData.dob) >= 18;
+        this.accessDefaultDates =
+          !formData.fm_personal_details_dob || this.dateService.calculateAge(formData.fm_personal_details_dob) >= 18;
+        this.accessCollectionOrder =
+          !formData.fm_personal_details_dob || this.dateService.calculateAge(formData.fm_personal_details_dob) >= 18;
         this.addRequestPaymentCardControl();
         break;
       case this.defendantTypes.parentOrGuardianToPay:

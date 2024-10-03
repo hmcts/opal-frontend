@@ -195,12 +195,12 @@ describe('LaunchDarklyService', () => {
     const mockFlags: LDFlagChangeset = LAUNCH_DARKLY_CHANGE_FLAGS_MOCK;
     const expectedUpdatedFlags = LAUNCH_DARKLY_FLAGS_MOCK;
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    spyOn(service['ldClient'], 'on').and.callFake((event: string, callback: Function) => {
+    spyOn(service['ldClient'], 'on').and.callFake((event: string, callback: (flags: LDFlagChangeset) => void) => {
       if (event === 'change') {
         callback(mockFlags);
       }
     });
+
     spyOn(service['globalStateService'].featureFlags, 'set');
 
     service.initializeLaunchDarklyChangeListener();

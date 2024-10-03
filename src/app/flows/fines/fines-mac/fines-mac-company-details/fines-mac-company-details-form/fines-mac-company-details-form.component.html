@@ -3,32 +3,46 @@
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-text-input
     labelText="Company name"
-    inputId="company_name"
-    inputName="company_name"
+    inputId="fm_company_details_company_name"
+    inputName="fm_company_details_company_name"
     labelClasses="govuk-label--s"
-    [control]="form.controls['company_name']"
-    [errors]="formControlErrorMessages['company_name']"
+    [control]="form.controls['fm_company_details_company_name']"
+    [errors]="formControlErrorMessages['fm_company_details_company_name']"
   ></app-govuk-text-input>
   <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
       app-govuk-checkboxes-item
       labelText="Add company aliases"
-      inputId="add_alias"
-      inputName="add_alias"
-      [control]="form.get('add_alias')"
+      inputId="fm_company_details_add_alias"
+      inputName="fm_company_details_add_alias"
+      [control]="form.get('fm_company_details_add_alias')"
     ></div>
   </app-govuk-checkboxes>
-  @if (form.get('add_alias')?.value === true) {
-    <div app-govuk-checkboxes-conditional conditionalId="add_alias" formArrayName="aliases">
+  @if (form.get('fm_company_details_add_alias')?.value === true) {
+    <div
+      app-govuk-checkboxes-conditional
+      conditionalId="fm_company_details_add_alias"
+      formArrayName="fm_company_details_aliases"
+    >
       @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="Company name"
-            [inputId]="aliasControls[rowIndex]['alias_organisation_name'].inputId"
-            [inputName]="aliasControls[rowIndex]['alias_organisation_name'].inputName"
-            [control]="form.get(['aliases', rowIndex, aliasControls[rowIndex]['alias_organisation_name'].controlName])"
-            [errors]="formControlErrorMessages[aliasControls[rowIndex]['alias_organisation_name'].controlName]"
+            [inputId]="aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].inputId"
+            [inputName]="aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].inputName"
+            [control]="
+              form.get([
+                'fm_company_details_aliases',
+                rowIndex,
+                aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].controlName,
+              ])
+            "
+            [errors]="
+              formControlErrorMessages[
+                aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].controlName
+              ]
+            "
           ></app-govuk-text-input>
         </fieldset>
       }
@@ -37,8 +51,8 @@
         <div class="govuk-!-margin-bottom-3">
           <a
             class="govuk-link govuk-link--no-visited-state"
-            (click)="removeAlias(aliasControls.length - 1, 'aliases')"
-            (keyup.enter)="removeAlias(aliasControls.length - 1, 'aliases')"
+            (click)="removeAlias(aliasControls.length - 1, 'fm_company_details_aliases')"
+            (keyup.enter)="removeAlias(aliasControls.length - 1, 'fm_company_details_aliases')"
             tabindex="0"
           >
             Remove
@@ -50,20 +64,47 @@
           buttonId="addAlias"
           buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
           type="button"
-          (buttonClickEvent)="addAlias(aliasControls.length, 'aliases')"
+          (buttonClickEvent)="addAlias(aliasControls.length, 'fm_company_details_aliases')"
           >Add another alias</app-govuk-button
         >
       }
     </div>
   }
-  <app-fines-mac-address-block
-    [divider]="true"
-    legendText="Address"
-    [form]="form"
-    [formControlErrorMessages]="formControlErrorMessages"
-    [addressFieldIds]="customAddressFieldIds"
-    componentName="companyDetails"
-  ></app-fines-mac-address-block>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Address</legend>
+    <app-govuk-text-input
+      labelText="Address line 1"
+      inputId="fm_company_details_address_line_1"
+      inputName="fm_company_details_address_line_1"
+      [control]="form.controls['fm_company_details_address_line_1']"
+      [errors]="formControlErrorMessages['fm_company_details_address_line_1']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Address line 2"
+      inputId="fm_company_details_address_line_2"
+      inputName="fm_company_details_address_line_2"
+      [control]="form.controls['fm_company_details_address_line_2']"
+      [errors]="formControlErrorMessages['fm_company_details_address_line_2']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Address line 3"
+      inputId="fm_company_details_address_line_3"
+      inputName="fm_company_details_address_line_3"
+      inputClasses="govuk-input--width-20"
+      [control]="form.controls['fm_company_details_address_line_3']"
+      [errors]="formControlErrorMessages['fm_company_details_address_line_3']"
+    ></app-govuk-text-input>
+    <app-govuk-text-input
+      labelText="Postcode"
+      inputId="fm_company_details_postcode"
+      inputName="fm_company_details_postcode"
+      inputClasses="govuk-input--width-10"
+      [control]="form.controls['fm_company_details_postcode']"
+      [errors]="formControlErrorMessages['fm_company_details_postcode']"
+    ></app-govuk-text-input>
+  </fieldset>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit"> Return to account details </app-govuk-button>

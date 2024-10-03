@@ -1,17 +1,17 @@
 import { IFinesMacPersonalDetailsAliasState } from '../interfaces/fines-mac-personal-details-alias-state.interface';
 
 export interface IFinesMacPersonalDetailsState {
-  title: string | null;
-  forenames: string | null;
-  surname: string | null;
-  add_alias: boolean | null;
-  aliases: IFinesMacPersonalDetailsAliasState[];
-  dob: string | null;
-  national_insurance_number: string | null;
-  address_line_1: string | null;
-  address_line_2: string | null;
-  address_line_3: string | null;
-  postcode: string | null;
-  vehicle_make: string | null;
-  vehicle_registration_mark: string | null;
+  fm_personal_details_title: string | null;
+  fm_personal_details_forenames: string | null;
+  fm_personal_details_surname: string | null;
+  fm_personal_details_add_alias: boolean | null;
+  fm_personal_details_aliases: IFinesMacPersonalDetailsAliasState[];
+  fm_personal_details_dob: string | null;
+  fm_personal_details_national_insurance_number: string | null;
+  fm_personal_details_address_line_1: string | null;
+  fm_personal_details_address_line_2: string | null;
+  fm_personal_details_address_line_3: string | null;
+  fm_personal_details_postcode: string | null;
+  fm_personal_details_vehicle_make: string | null;
+  fm_personal_details_vehicle_registration_mark: string | null;
 }

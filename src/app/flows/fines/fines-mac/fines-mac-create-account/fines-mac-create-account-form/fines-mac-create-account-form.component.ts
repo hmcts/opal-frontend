@@ -21,10 +21,8 @@ import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-ra
 
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
 import { RoutingPaths } from '@routing/enums/routing-paths';
-import { IFinesMacCreateAccountAccountTypes } from '../interfaces/fines-mac-create-account-account-types.interface';
 import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';
-import { IFinesMacCreateAccountForm } from '../interfaces/fines-mac-create-account-form.interface';
 import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES } from '../constants/fines-mac-create-account-account-types';
 import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from '../constants/fines-mac-create-account-account-type-defendant-types-state';
 import { FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES } from '../constants/fines-mac-create-account-control-names';
@@ -34,6 +32,8 @@ import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphag
 import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
+import { IFinesMacAccountTypes } from '../../interfaces/fines-mac-account-types.interface';
+import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
@@ -55,7 +55,7 @@ import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/al
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacCreateAccountForm>();
+  @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
   protected readonly finesService = inject(FinesService);
@@ -112,7 +112,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private handleAccountTypeChange(accountType: string): void {
     const { fieldName, validators, fieldsToRemove } =
-      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacCreateAccountAccountTypes] ?? {};
+      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? {};
 
     fieldsToRemove?.forEach((field) => {
       this.removeControl(field);
@@ -128,11 +128,10 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private setDefendantType(): void {
     const accountType = this.form.get('fm_create_account_account_type')?.value;
-    const { fieldName } =
-      this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacCreateAccountAccountTypes] ?? '';
+    const { fieldName } = this.accountTypeDefendantTypeControlNames[accountType as keyof IFinesMacAccountTypes] ?? '';
     const fieldValue = this.form.get(fieldName)?.value;
 
-    const defendantTypeMap: IFinesMacCreateAccountAccountTypes = {
+    const defendantTypeMap: IFinesMacAccountTypes = {
       fine: fieldValue,
       fixedPenalty: fieldValue,
       conditionalCaution: this.conditionalCautionPenaltyDefendantTypes[0].key,
@@ -140,7 +139,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
 
     this.form
       .get('fm_create_account_defendant_type')
-      ?.setValue(defendantTypeMap[accountType as keyof IFinesMacCreateAccountAccountTypes]);
+      ?.setValue(defendantTypeMap[accountType as keyof IFinesMacAccountTypes]);
   }
 
   /**

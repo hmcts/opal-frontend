@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { IFinesMacAccountDetailsAccountTypes } from './interfaces/fines-mac-account-details-account-types.interface';
-import { IFinesMacAccountDetailsDefendantTypes } from './interfaces/fines-mac-account-details-defendant-types.interface';
 import { IFinesMacAccountDetailsAccountStatus } from './interfaces/fines-mac-account-details-account-status.interface';
 import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS } from './constants/fines-mac-account-details-account-status';
 import { FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES } from './constants/fines-mac-account-details-account-types';
@@ -23,6 +21,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
+import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
+import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -78,7 +78,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
     const { fm_create_account_defendant_type: defendantType } = this.finesService.finesMacState.accountDetails.formData;
-    this.defendantType = this.defendantTypes[defendantType as keyof IFinesMacAccountDetailsDefendantTypes] || '';
+    this.defendantType = this.defendantTypes[defendantType as keyof IFinesMacDefendantTypes] || '';
   }
 
   /**
@@ -89,7 +89,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
     const { fm_create_account_account_type: accountType } = this.finesService.finesMacState.accountDetails.formData;
-    this.accountType = this.accountTypes[accountType as keyof IFinesMacAccountDetailsAccountTypes] || '';
+    this.accountType = this.accountTypes[accountType as keyof IFinesMacAccountTypes] || '';
   }
 
   /**

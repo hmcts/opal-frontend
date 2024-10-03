@@ -5,7 +5,6 @@ import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-f
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
-import { IFinesMacCreateAccountForm } from './interfaces/fines-mac-create-account-form.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import {
@@ -20,6 +19,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { FINES_MAC_CREATE_ACCOUNT_FORM } from './constants/fines-mac-create-account-form';
 import { FINES_MAC_CREATE_ACCOUNT_STATE } from './constants/fines-mac-create-account-state';
 import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-mac-create-account-configuration-items';
+import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 
 @Component({
   selector: 'app-fines-mac-create-account',
@@ -81,7 +81,7 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    * Handles the form submission for account details.
    * @param formData - The form data containing the search parameters.
    */
-  public handleAccountDetailsSubmit(form: IFinesMacCreateAccountForm): void {
+  public handleAccountDetailsSubmit(form: IFinesMacAccountDetailsForm): void {
     // Get the business unit and default language from the business unit if applicable
     const businessUnit = this.businessUnits.find(
       (unit) => unit.business_unit_name === form.formData.fm_create_account_business_unit,

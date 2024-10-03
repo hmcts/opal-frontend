@@ -21,20 +21,12 @@ describe('PermissionsService', () => {
   });
 
   it('should return permission access', () => {
-    const hasPermissionAccess = service.hasPermissionAccess(
-      54,
-      17,
-      SESSION_USER_STATE_MOCK['business_unit_user_permissions'],
-    );
+    const hasPermissionAccess = service.hasPermissionAccess(54, 17, SESSION_USER_STATE_MOCK['business_unit_user']);
     expect(hasPermissionAccess).toBeTrue();
   });
 
   it('should not return permission access', () => {
-    const hasPermissionAccess = service.hasPermissionAccess(
-      54,
-      99,
-      SESSION_USER_STATE_MOCK['business_unit_user_permissions'],
-    );
+    const hasPermissionAccess = service.hasPermissionAccess(54, 99, SESSION_USER_STATE_MOCK['business_unit_user']);
     expect(hasPermissionAccess).toBeFalse();
   });
 
