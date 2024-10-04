@@ -28,15 +28,15 @@
       For example, HY35014. If you don't know the offence code, you can
       <a
         class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-        (click)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
+        (click)="goToSearchOffences()"
+        (keyup.enter)="goToSearchOffences()"
         tabindex="0"
       >
         search the offence list
       </a></app-govuk-text-input
     >
-    @if (selectedOffenceConfirmation) {
-      @if (offenceCode$ | async; as offenceCode) {
+    @if (offenceCode$ | async; as offenceCode) {
+      @if (selectedOffenceConfirmation) {
         @if (offenceCode.count === 1) {
           <ng-container
             *ngTemplateOutlet="
@@ -135,7 +135,7 @@
                     [labelText]="creditorOption.value"
                     [inputId]="creditorOption.key + '_' + rowIndex"
                     [inputName]="formArrayControl['fm_offence_details_creditor'].controlName"
-                    [inputValue]="creditorOption.key + '_' + rowIndex"
+                    [inputValue]="creditorOption.key"
                     [control]="
                       form.get([
                         'fm_offence_details_impositions',
@@ -151,7 +151,14 @@
         }
         @if (formArrayControls.length > 1) {
           <div class="govuk-!-margin-top-3">
-            <a class="govuk-link govuk-link--no-visited-state" tabindex="0"> Remove imposition </a>
+            <a
+              class="govuk-link govuk-link--no-visited-state"
+              tabindex="0"
+              (click)="removeImpositionConfirmation(rowIndex)"
+              (keyup.enter)="removeImpositionConfirmation(rowIndex)"
+            >
+              Remove imposition
+            </a>
           </div>
         }
       </app-moj-ticket-panel>
@@ -182,22 +189,11 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-cancel-link
-        (linkClickEvent)="handleRoute(fineMacRoutingPaths.children.accountDetails)"
+        (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails)"
       ></app-govuk-cancel-link>
     </div>
   </div>
 </form>
-
-<ng-template #hintLink>
-  <a
-    class="govuk-link govuk-task-list_link govuk-link--no-visited-state"
-    (click)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
-    (keyup.enter)="handleRoute(fineMacRoutingPaths.children.searchOffences, false, $event)"
-    tabindex="0"
-  >
-    search the offence list
-  </a>
-</ng-template>
 
 <ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
   <app-moj-ticket-panel

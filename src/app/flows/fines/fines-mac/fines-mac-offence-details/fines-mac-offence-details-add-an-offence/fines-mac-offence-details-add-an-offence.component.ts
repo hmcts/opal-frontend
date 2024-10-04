@@ -23,7 +23,6 @@ import { GovukTextInputPrefixSuffixComponent } from '@components/govuk/govuk-tex
 import { GovukRadioComponent } from '@components/govuk/govuk-radio/govuk-radio.component';
 import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
 import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../constants/fines-mac-offence-details-creditor-options';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
@@ -41,6 +40,8 @@ import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-de
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { EMPTY, Observable, debounceTime, distinctUntilChanged, tap } from 'rxjs';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -78,7 +79,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
   protected readonly utilsService = inject(UtilsService);
-  protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
+  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
   public selectedOffenceConfirmation!: boolean;
@@ -118,18 +120,37 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * adds controls to the form array if necessary, and sets the current date.
    */
   private initialAddAnOffenceDetailsSetup(): void {
+    const { offenceDetailsDraft } = this.finesService.finesMacState;
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
-    this.setupFormArrayFormControls(
-      [...Array(this.formData.fm_offence_details_impositions.length).keys()],
-      'fm_offence_details_impositions',
-    );
-    this.setInitialErrorMessages();
-    this.rePopulateForm(this.formData);
-    this.offenceCodeListener();
-    if (this.formData.fm_offence_details_impositions.length === 0) {
-      this.addControlsToFormArray(0, 'fm_offence_details_impositions');
+
+    if (offenceDetailsDraft.length > 0) {
+      this.setupFormArrayFormControls(
+        [...Array(offenceDetailsDraft[0].formData.fm_offence_details_impositions.length).keys()],
+        'fm_offence_details_impositions',
+      );
+    } else {
+      this.setupFormArrayFormControls(
+        [...Array(this.formData.fm_offence_details_impositions.length).keys()],
+        'fm_offence_details_impositions',
+      );
     }
+
+    this.setInitialErrorMessages();
+    if (offenceDetailsDraft.length > 0) {
+      this.rePopulateForm(this.finesService.finesMacState.offenceDetailsDraft[0].formData);
+    } else {
+      this.rePopulateForm(this.formData);
+    }
+
+    this.offenceCodeListener();
+
+    if (offenceDetailsDraft.length === 0) {
+      if (this.formData.fm_offence_details_impositions.length === 0) {
+        this.addControlsToFormArray(0, 'fm_offence_details_impositions');
+      }
+    }
+
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 
@@ -213,6 +234,38 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
           result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
       needsCreditorControl.setValue(needsCreditor);
     });
+  }
+
+  public goToSearchOffences(): void {
+    const index = this.finesService.finesMacState.offenceDetailsDraft.findIndex(
+      (item) => item.formData.fm_offence_details_index === this.form.get('fm_offence_details_index')!.value,
+    );
+
+    if (index !== -1) {
+      this.finesService.finesMacState.offenceDetailsDraft[index].formData = this.form.value;
+    } else {
+      this.finesService.finesMacState.offenceDetailsDraft.push({ formData: this.form.value, nestedFlow: false });
+    }
+    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
+  }
+
+  public removeImpositionConfirmation(rowIndex: number): void {
+    const formArray = this.form.controls['fm_offence_details_impositions'] as FormArray;
+    this.finesService.finesMacState.removeImposition = {
+      rowIndex,
+      formArray: formArray,
+      formArrayControls: this.formArrayControls,
+    };
+    const index = this.finesService.finesMacState.offenceDetailsDraft.findIndex(
+      (item) => item.formData.fm_offence_details_index === this.form.get('fm_offence_details_index')!.value,
+    );
+
+    if (index !== -1) {
+      this.finesService.finesMacState.offenceDetailsDraft[index].formData = this.form.value;
+    } else {
+      this.finesService.finesMacState.offenceDetailsDraft.push({ formData: this.form.value, nestedFlow: false });
+    }
+    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeImposition);
   }
 
   /**

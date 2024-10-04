@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-cancel-link',
@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukCancelLinkComponent {
+  @Input({ required: false }) cancelLinkText = 'Cancel';
   @Output() linkClickEvent = new EventEmitter<boolean>();
 
   /**

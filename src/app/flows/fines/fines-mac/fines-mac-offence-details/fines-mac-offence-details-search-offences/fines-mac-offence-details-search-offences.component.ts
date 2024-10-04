@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',
@@ -18,7 +18,7 @@ export class FinesMacOffenceDetailsSearchOffencesComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
 
-  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
   /**
    * If the user navigates externally from the site or closes the tab
@@ -33,8 +33,8 @@ export class FinesMacOffenceDetailsSearchOffencesComponent {
 
   /**
    * Navigates to the specified route.
-   *
    * @param route - The route to navigate to.
+   * @param event - The optional event object.
    */
   public handleRoute(route: string, event?: Event): void {
     if (event) {

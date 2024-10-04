@@ -4,6 +4,7 @@ import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard'
 
 import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
+import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 
 export const routing: Routes = [
   {
@@ -65,15 +66,7 @@ export const routing: Routes = [
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
-  {
-    path: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
-    loadComponent: () =>
-      import('../fines-mac-offence-details/fines-mac-offence-details.component').then(
-        (c) => c.FinesMacOffenceDetailsComponent,
-      ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
-    canDeactivate: [canDeactivateGuard],
-  },
+
   {
     path: FINES_MAC_ROUTING_PATHS.children.companyDetails,
     loadComponent: () =>
@@ -128,12 +121,9 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
   },
   {
-    path: FINES_MAC_ROUTING_PATHS.children.searchOffences,
-    loadComponent: () =>
-      import(
-        '../fines-mac-offence-details/fines-mac-offence-details-search-offences/fines-mac-offence-details-search-offences.component'
-      ).then((c) => c.FinesMacOffenceDetailsSearchOffencesComponent),
-    canActivate: [authGuard],
+    path: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
+    canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
+    children: offenceDetailsRouting,
   },
 ];

@@ -1,0 +1,12 @@
+<table class="govuk-table {{ tableClasses }}">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <ng-content select="[header]"></ng-content>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <ng-content select="[body]"></ng-content>
+    </tr>
+  </tbody>
+</table>

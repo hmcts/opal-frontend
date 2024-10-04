@@ -26,4 +26,6 @@ export const FINES_MAC_STATE: IFinesMacState = {
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
   unsavedChanges: false,
   stateChanges: false,
+  removeImposition: null,
+  offenceDetailsDraft: [],
 };
