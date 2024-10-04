@@ -113,16 +113,17 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
 
     Then I see the error message "Date cannot be in the future" at the top of the page
 
-  Scenario: AC6d -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
+#This scenario has descopeed as new requirement raised on PO-808
+  # Scenario: AC6d -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
 
-    And I click the "Return to account details" button
-    Then I see the status of "Personal details" is "Provided"
-    And I click on the "Payment terms" link
+  #   And I click the "Return to account details" button
+  #   Then I see the status of "Personal details" is "Provided"
+  #   And I click on the "Payment terms" link
 
-    And I select the "Yes" radio button under the "Has a collection order been made?" section
-    And I enter "01/02/1988" into the "Date of collection order" date field
-    And I click the "Return to account details" button
+  #   And I select the "Yes" radio button under the "Has a collection order been made?" section
+  #   And I enter "01/02/1988" into the "Date of collection order" date field
+  #   And I click the "Return to account details" button
 
-    Then I see the error message "Date cannot be 2003 or earlier" at the top of the page
+  #   Then I see the error message "Date cannot be 2003 or earlier" at the top of the page
 
 
