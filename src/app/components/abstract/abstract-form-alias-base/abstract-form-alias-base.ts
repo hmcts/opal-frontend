@@ -2,7 +2,7 @@ import { AbstractFormBaseComponent } from '../abstract-form-base/abstract-form-b
 import { Subscription, takeUntil } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IAbstractFormAliasBaseAliasControls } from './interfaces/abstract-form-alias-base-alias-controls.interface';
-import { IAbstractFormAliasBaseFormArrayControlValidation } from './interfaces/abstract-form-alias-base-form-array-control-validation.interface';
+import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
 
 @Component({
   standalone: true,
@@ -11,7 +11,7 @@ import { IAbstractFormAliasBaseFormArrayControlValidation } from './interfaces/a
 export abstract class AbstractFormAliasBaseComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private addAliasListener!: Subscription | undefined;
   public aliasControls: IAbstractFormAliasBaseAliasControls[] = [];
-  public aliasControlsValidation: IAbstractFormAliasBaseFormArrayControlValidation[] = [];
+  public aliasControlsValidation: IAbstractFormArrayControlValidation[] = [];
   public aliasFields: string[] = [];
 
   /**

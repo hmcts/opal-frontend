@@ -10,10 +10,10 @@ import { IAbstractFormBaseFormError } from './interfaces/abstract-form-base-form
 import { IAbstractFormBaseFormErrorSummaryMessage } from './interfaces/abstract-form-base-form-error-summary-message.interface';
 import { IAbstractFormBaseHighPriorityFormError } from './interfaces/abstract-form-base-high-priority-form-error.interface';
 import { IAbstractFormBaseForm } from './interfaces/abstract-form-base-form.interface';
-import { IAbstractFormBaseFormArrayControl } from './interfaces/abstract-form-base-form-array-control.interface';
-import { IAbstractFormBaseFormArrayControlValidation } from './interfaces/abstract-form-base-form-array-control-validation.interface';
-import { IAbstractFormBaseFormArrayControls } from './interfaces/abstract-form-base-form-array-controls.interface';
-import { IAbstractFormBaseFormControlErrorMessage } from './interfaces/abstract-form-base-form-control-error-message.interface';
+import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
+import { IAbstractFormArrayControl } from '../interfaces/abstract-form-array-control.interface';
+import { IAbstractFormArrayControls } from '../interfaces/abstract-form-array-controls.interface';
+import { IAbstractFormControlErrorMessage } from '../interfaces/abstract-form-control-error-message.interface';
 
 @Component({
   standalone: true,
@@ -29,7 +29,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   public readonly globalStateService = inject(GlobalStateService);
 
   public form!: FormGroup;
-  public formControlErrorMessages!: IAbstractFormBaseFormControlErrorMessage;
+  public formControlErrorMessages!: IAbstractFormControlErrorMessage;
   public formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
   protected fieldErrors!: IAbstractFormBaseFieldErrors;
   protected formSubmitted = false;
@@ -330,7 +330,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   private addControlsToFormGroup(
     formGroup: FormGroup,
-    controls: IAbstractFormBaseFormArrayControlValidation[],
+    controls: IAbstractFormArrayControlValidation[],
     index: number,
   ): void {
     controls.forEach(({ controlName, validators }) => {
@@ -369,8 +369,8 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   protected removeFormArrayControl(
     index: number,
-    formArrayControls: IAbstractFormBaseFormArrayControls[],
-  ): IAbstractFormBaseFormArrayControls[] {
+    formArrayControls: IAbstractFormArrayControls[],
+  ): IAbstractFormArrayControls[] {
     formArrayControls.splice(index, 1);
     return formArrayControls;
   }
@@ -440,7 +440,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   protected setInitialErrorMessages(): void {
     const formControls = this.form.controls;
-    const initialFormControlErrorMessages: IAbstractFormBaseFormControlErrorMessage = {};
+    const initialFormControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
     Object.keys(formControls).map((controlName) => {
       initialFormControlErrorMessages[controlName] = null;
@@ -465,7 +465,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    * @param index - The index value.
    * @returns An object containing form controls configuration.
    */
-  protected createControls(fields: string[], index: number): { [key: string]: IAbstractFormBaseFormArrayControl } {
+  protected createControls(fields: string[], index: number): { [key: string]: IAbstractFormArrayControl } {
     return fields.reduce(
       (controls, field) => ({
         ...controls,
@@ -492,8 +492,8 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
     formControlCount: number[],
     formArrayName: string,
     fieldNames: string[],
-    controlValidation: IAbstractFormBaseFormArrayControlValidation[],
-  ): IAbstractFormBaseFormArrayControls[] {
+    controlValidation: IAbstractFormArrayControlValidation[],
+  ): IAbstractFormArrayControls[] {
     // Directly map each index to a control
     return formControlCount.map((_element, index) =>
       this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation),
@@ -509,7 +509,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    * @returns An empty array of form array controls.
    */
   protected removeAllFormArrayControls(
-    formArrayControls: IAbstractFormBaseFormArrayControls[],
+    formArrayControls: IAbstractFormArrayControls[],
     formArrayName: string,
     fieldNames: string[],
   ): [] {
@@ -535,7 +535,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   protected removeFormArrayControlsErrors(
     index: number,
-    formArrayControls: IAbstractFormBaseFormArrayControls[],
+    formArrayControls: IAbstractFormArrayControls[],
     fieldNames: string[],
   ): void {
     const formArrayControl = formArrayControls[index];
@@ -622,8 +622,8 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
     index: number,
     formArrayName: string,
     fieldNames: string[],
-    controlValidation: IAbstractFormBaseFormArrayControlValidation[],
-  ): { [key: string]: IAbstractFormBaseFormArrayControl } {
+    controlValidation: IAbstractFormArrayControlValidation[],
+  ): { [key: string]: IAbstractFormArrayControl } {
     const formArray = this.form.get(formArrayName) as FormArray;
     const formArrayFormGroup = new FormGroup({});
 
@@ -652,9 +652,9 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   public removeFormArrayControls(
     index: number,
     formArrayName: string,
-    formArrayControls: IAbstractFormBaseFormArrayControls[],
+    formArrayControls: IAbstractFormArrayControls[],
     fieldNames: string[],
-  ): IAbstractFormBaseFormArrayControls[] {
+  ): IAbstractFormArrayControls[] {
     // Get the form array...
     const control = this.form.get(formArrayName) as FormArray;
 

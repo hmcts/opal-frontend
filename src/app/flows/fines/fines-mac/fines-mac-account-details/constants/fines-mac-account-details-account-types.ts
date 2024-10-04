@@ -1,6 +1,6 @@
 import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
-import { IFinesMacAccountDetailsAccountTypes } from '../interfaces/fines-mac-account-details-account-types.interface';
+import { IFinesMacAccountTypes } from '../../interfaces/fines-mac-account-types.interface';
 
-export const FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES: IFinesMacAccountDetailsAccountTypes = {
+export const FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES: IFinesMacAccountTypes = {
   ...FINES_MAC_ACCOUNT_TYPES,
 };
