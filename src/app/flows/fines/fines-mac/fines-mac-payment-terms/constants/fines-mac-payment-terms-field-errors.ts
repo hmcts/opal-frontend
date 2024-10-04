@@ -24,10 +24,6 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       message: `Date cannot be in the future`,
       priority: 4,
     },
-    invalidYear: {
-      message: `Date cannot be 2003 or earlier`,
-      priority: 5,
-    },
   },
   fm_payment_terms_payment_terms: {
     required: {
