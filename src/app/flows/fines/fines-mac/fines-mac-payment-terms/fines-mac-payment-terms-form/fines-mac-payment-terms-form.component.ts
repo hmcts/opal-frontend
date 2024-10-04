@@ -174,14 +174,14 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
   /**
    * Adds the collection order form controls to the component's form group.
-   * This method adds a control for the 'fm_payment_terms_has_collection_order' field
+   * This method adds a control for the 'fm_payment_terms_collection_order_made' field
    * and sets the required validator for it.
-   * It also registers the listener for changes in the 'fm_payment_terms_has_collection_order' field.
+   * It also registers the listener for changes in the 'fm_payment_terms_collection_order_made' field.
    */
   private addCollectionOrderFormControls(): void {
     this.addControls([
       {
-        controlName: 'fm_payment_terms_has_collection_order',
+        controlName: 'fm_payment_terms_collection_order_made',
         validators: [Validators.required],
       },
     ]);
@@ -281,11 +281,11 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Listens for changes in the 'fm_payment_terms_has_collection_order' control and performs actions accordingly.
+   * Listens for changes in the 'fm_payment_terms_collection_order_made' control and performs actions accordingly.
    * This method is responsible for removing and adding controls based on the selected option.
    */
   private hasCollectionOrderListener(): void {
-    const { fm_payment_terms_has_collection_order: hasCollectionOrder } = this.form.controls;
+    const { fm_payment_terms_collection_order_made: hasCollectionOrder } = this.form.controls;
 
     hasCollectionOrder.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((selectedOption) => {
       const controls =

@@ -17,7 +17,7 @@ export const FINES_MAC_PAYMENT_TERMS_STATE: IFinesMacPaymentTermsState = {
   fm_payment_terms_earliest_release_date: null,
   fm_payment_terms_prison_and_prison_number: null,
   fm_payment_terms_enforcement_action: null,
-  fm_payment_terms_has_collection_order: null,
+  fm_payment_terms_collection_order_made: null,
   fm_payment_terms_collection_order_date: null,
   fm_payment_terms_make_collection_order_today: null,
 };

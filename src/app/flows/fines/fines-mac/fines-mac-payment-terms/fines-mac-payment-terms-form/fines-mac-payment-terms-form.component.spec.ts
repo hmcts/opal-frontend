@@ -312,7 +312,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_has_collection_order'];
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -329,7 +329,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_has_collection_order'];
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -348,7 +348,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.today = '31/08/2024';
     component['addCollectionOrderFormControls']();
     component['hasCollectionOrderListener']();
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_has_collection_order'];
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     hasCollectionOrderControl.setValue('no');
 
     const makeCollectionOrderToday = component.form.controls['fm_payment_terms_make_collection_order_today'];

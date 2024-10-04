@@ -1,5 +1,5 @@
 export interface IFinesMacPaymentTermsState {
-  fm_payment_terms_has_collection_order?: boolean | null;
+  fm_payment_terms_collection_order_made?: boolean | null;
   fm_payment_terms_collection_order_date?: string | null;
   fm_payment_terms_make_collection_order_today?: boolean | null;
   fm_payment_terms_payment_terms: string | null;

@@ -1,7 +1,7 @@
 import { IFinesMacPaymentTermsFieldErrors } from '../interfaces/fines-mac-payment-terms-field-errors.interface';
 
 export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErrors = {
-  fm_payment_terms_has_collection_order: {
+  fm_payment_terms_collection_order_made: {
     required: {
       message: `Select whether there was a collection order`,
       priority: 1,

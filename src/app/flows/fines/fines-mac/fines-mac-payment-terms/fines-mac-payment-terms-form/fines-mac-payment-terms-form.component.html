@@ -3,22 +3,22 @@
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   @if (accessCollectionOrder) {
     <app-govuk-radio
-      fieldSetId="fm_payment_terms_has_collection_order"
+      fieldSetId="fm_payment_terms_collection_order_made"
       legendText="Has a collection order been made?"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages['fm_payment_terms_has_collection_order']"
+      [errors]="formControlErrorMessages['fm_payment_terms_collection_order_made']"
     >
       <div
         app-govuk-radios-item
         labelText="Yes"
         inputId="yes"
-        inputName="fm_payment_terms_has_collection_order"
+        inputName="fm_payment_terms_collection_order_made"
         inputValue="yes"
-        [control]="form.controls['fm_payment_terms_has_collection_order']"
+        [control]="form.controls['fm_payment_terms_collection_order_made']"
       ></div>
-      @if (form.get('fm_payment_terms_has_collection_order')!.value !== null) {
-        @if (form.get('fm_payment_terms_has_collection_order')!.value === 'yes') {
-          <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_has_collection_order'">
+      @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
+        @if (form.get('fm_payment_terms_collection_order_made')!.value === 'yes') {
+          <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
             <div class="govuk-form-group">
               <app-moj-date-picker
                 labelText="Date of collection order"
@@ -41,14 +41,14 @@
         app-govuk-radios-item
         labelText="No"
         inputId="no"
-        inputName="fm_payment_terms_has_collection_order"
+        inputName="fm_payment_terms_collection_order_made"
         inputValue="no"
-        [control]="form.controls['fm_payment_terms_has_collection_order']"
+        [control]="form.controls['fm_payment_terms_collection_order_made']"
       ></div>
-      @if (form.get('fm_payment_terms_has_collection_order')!.value !== null) {
-        @if (form.get('fm_payment_terms_has_collection_order')!.value === 'no') {
+      @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
+        @if (form.get('fm_payment_terms_collection_order_made')!.value === 'no') {
           @if (permissions[permissionsMap.collectionOrder] !== false) {
-            <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_has_collection_order'">
+            <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
               <div class="govuk-form-group">
                 <app-govuk-checkboxes-item
                   inputId="fm_payment_terms_make_collection_order_today"
