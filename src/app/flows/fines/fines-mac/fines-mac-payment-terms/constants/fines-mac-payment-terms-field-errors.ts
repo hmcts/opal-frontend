@@ -89,7 +89,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 3,
     },
   },
-  fm_payment_terms_days_in_default_date: {
+  fm_payment_terms_suspended_committal_date: {
     required: {
       message: `Enter date days in default were imposed`,
       priority: 1,

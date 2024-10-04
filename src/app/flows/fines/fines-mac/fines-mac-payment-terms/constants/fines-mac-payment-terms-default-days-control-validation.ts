@@ -6,7 +6,7 @@ import { optionalValidDateValidator } from '@validators/optional-valid-date/opti
 
 export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {
-    controlName: 'fm_payment_terms_days_in_default_date',
+    controlName: 'fm_payment_terms_suspended_committal_date',
     validators: [Validators.required, dateOfBirthValidator(), optionalValidDateValidator()],
   },
   {

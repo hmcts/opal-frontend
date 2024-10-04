@@ -169,14 +169,14 @@
             <app-moj-date-picker
               labelText="Date days in default were imposed"
               labelClasses="govuk-label--s"
-              inputId="fm_payment_terms_days_in_default_date"
-              inputName="fm_payment_terms_days_in_default_date"
+              inputId="fm_payment_terms_suspended_committal_date"
+              inputName="fm_payment_terms_suspended_committal_date"
               inputClasses="govuk-input--width-10"
               hintText="This should be whichever date is most recent - the sentencing date or the date of the suspended committal order."
               [maxDate]="yesterday"
-              [control]="form.controls['fm_payment_terms_days_in_default_date']"
-              [errors]="formControlErrorMessages['fm_payment_terms_days_in_default_date']"
-              (dateChange)="setInputValue($event, 'fm_payment_terms_days_in_default_date')"
+              [control]="form.controls['fm_payment_terms_suspended_committal_date']"
+              [errors]="formControlErrorMessages['fm_payment_terms_suspended_committal_date']"
+              (dateChange)="setInputValue($event, 'fm_payment_terms_suspended_committal_date')"
             ></app-moj-date-picker>
           </div>
           <div class="govuk-form-group">
@@ -193,7 +193,7 @@
           </div>
           <div class="govuk-form-group">
             <app-fines-mac-default-days
-              [date]="form.controls['fm_payment_terms_days_in_default_date'].value"
+              [date]="form.controls['fm_payment_terms_suspended_committal_date'].value"
             ></app-fines-mac-default-days>
           </div>
         </div>

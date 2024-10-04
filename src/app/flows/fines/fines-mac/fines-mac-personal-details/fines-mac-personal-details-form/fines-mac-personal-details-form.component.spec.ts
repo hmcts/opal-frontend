@@ -121,7 +121,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
     expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
     expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
-    expect(paymentTermsFormData['fm_payment_terms_days_in_default_date']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_suspended_committal_date']).toBeNull();
   });
 
   it('should call dateOfBirthListener on DOB value changes Youth', () => {
@@ -137,7 +137,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
     expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
     expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
-    expect(paymentTermsFormData['fm_payment_terms_days_in_default_date']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_suspended_committal_date']).toBeNull();
   });
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
@@ -153,7 +153,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
     expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
     expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
-    expect(paymentTermsFormData['fm_payment_terms_days_in_default_date']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_suspended_committal_date']).toBeNull();
   });
 
   it('should call the necessary setup methods', () => {

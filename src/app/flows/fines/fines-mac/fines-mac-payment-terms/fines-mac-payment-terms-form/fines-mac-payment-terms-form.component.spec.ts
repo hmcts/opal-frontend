@@ -138,7 +138,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(true);
 
-    expect(component.form.contains('fm_payment_terms_days_in_default_date')).toBe(true);
+    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
     expect(component.form.contains('fm_payment_terms_days_in_default')).toBe(true);
   });
 
@@ -150,7 +150,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(false);
 
-    expect(component.form.contains('fm_payment_terms_days_in_default_date')).toBe(false);
+    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
     expect(component.form.contains('fm_payment_terms_days_in_default')).toBe(false);
   });
 

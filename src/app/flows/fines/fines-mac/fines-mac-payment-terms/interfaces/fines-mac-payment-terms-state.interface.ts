@@ -10,7 +10,7 @@ export interface IFinesMacPaymentTermsState {
   fm_payment_terms_start_date?: string | null;
   fm_payment_terms_request_payment_card?: boolean | null;
   fm_payment_terms_has_days_in_default?: boolean | null;
-  fm_payment_terms_days_in_default_date?: string | null;
+  fm_payment_terms_suspended_committal_date?: string | null;
   fm_payment_terms_days_in_default?: number | null;
   fm_payment_terms_add_enforcement_action?: boolean | null;
   fm_payment_terms_enforcement_action?: string | null;
