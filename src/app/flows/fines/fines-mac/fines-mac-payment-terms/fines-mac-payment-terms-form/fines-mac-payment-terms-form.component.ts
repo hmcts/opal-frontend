@@ -210,7 +210,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private addRequestPaymentCardControl(): void {
     this.addControls([
       {
-        controlName: 'fm_payment_terms_request_payment_card',
+        controlName: 'fm_payment_terms_payment_card_request',
         validators: [],
       },
     ]);

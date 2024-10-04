@@ -7,7 +7,7 @@ export const FINES_MAC_PAYMENT_TERMS_STATE: IFinesMacPaymentTermsState = {
   fm_payment_terms_instalment: null,
   fm_payment_terms_frequency: null,
   fm_payment_terms_start_date: null,
-  fm_payment_terms_request_payment_card: null,
+  fm_payment_terms_payment_card_request: null,
   fm_payment_terms_has_days_in_default: null,
   fm_payment_terms_suspended_committal_date: null,
   fm_payment_terms_days_in_default: null,
