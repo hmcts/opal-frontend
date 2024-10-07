@@ -57,3 +57,23 @@ Then(
       .should('contain.text', expectedRemaining.toString());
   },
 );
+
+Then(
+  'I enter {string} into the {string} field for imposition {int}',
+  (value: string, labelText: string, index: number) => {
+    cy.contains('fieldset>legend', 'Impositions')
+      .get('app-moj-ticket-panel')
+      .eq(index - 1)
+      .contains('label', labelText)
+      .nextUntil('input')
+      .type(value);
+  },
+);
+
+Then('I see {string} link for imposition {int}', (labelText: string, index: number) => {
+  cy.contains('fieldset>legend', 'Impositions')
+    .get('app-moj-ticket-panel')
+    .eq(index - 1)
+    .contains(labelText);
+  //.nextUntil('input');
+});
