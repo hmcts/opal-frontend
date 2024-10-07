@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
@@ -8,9 +7,10 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
 import { Observable, first, map } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { FormArray } from '@angular/forms';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract-form-array-removal-base/abstract-form-array-removal-base';
+import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -19,9 +19,10 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
   templateUrl: './fines-mac-offence-details-remove-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsRemoveImpositionComponent implements OnInit, OnDestroy {
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+export class FinesMacOffenceDetailsRemoveImpositionComponent
+  extends AbstractFormArrayRemovalComponent
+  implements OnInit
+{
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
@@ -33,16 +34,12 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent implements OnInit, 
 
   public imposition: string = 'Not provided';
   public creditor: string = 'Not provided';
-  public amountImposedString!: string;
+  public amountImposedString = '£0.00';
   public amountPaidString = '£0.00';
-  public balanceString!: string;
-
-  private getControlValue(formArray: FormArray, controlName: string, rowIndex: number): any {
-    return formArray.controls[rowIndex].get(controlName)?.value || 'Not provided';
-  }
+  public balanceString = '£0.00';
 
   private updateMonetaryString(value: number): string {
-    return this.utilsService.convertToMonetaryString(value.toString());
+    return this.utilsService.convertToMonetaryString(value);
   }
 
   private getImpositionToBeRemoved(): void {
@@ -50,109 +47,87 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent implements OnInit, 
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
     const formArrayControl = formArrayControls[rowIndex];
 
-    const resultCode = this.getControlValue(
+    const resultCode = this.getFormArrayControlValue<string | null>(
       formArray,
       formArrayControl[`fm_offence_details_result_code`].controlName,
       rowIndex,
+      null,
     );
-    if (!resultCode) return;
 
-    this.resultCodeData$
-      .pipe(
-        map((response) => response.refData.filter((item) => item.result_id === resultCode)),
-        first(),
-      )
-      .subscribe((items) => {
-        if (items.length > 0) {
-          this.imposition = this.opalFinesService.getResultPrettyName(items[0]);
-        }
-      });
-
-    this.creditor = this.getControlValue(
+    this.creditor = this.getFormArrayControlValue<string>(
       formArray,
       formArrayControl[`fm_offence_details_creditor`].controlName,
       rowIndex,
+      'Not provided',
     );
-    const amountImposed = +this.getControlValue(
+
+    const amountImposed = this.getFormArrayControlValue<number>(
       formArray,
       formArrayControl[`fm_offence_details_amount_imposed`].controlName,
       rowIndex,
+      0,
     );
-    const amountPaid = this.getControlValue(
+
+    const amountPaid = this.getFormArrayControlValue<number>(
       formArray,
       formArrayControl[`fm_offence_details_amount_paid`].controlName,
       rowIndex,
+      0,
     );
 
-    this.amountImposedString = this.updateMonetaryString(amountImposed);
+    const balance = amountImposed - amountPaid;
 
-    // Check if amountPaid is a valid number before processing
-    if (amountPaid !== null && amountPaid !== undefined && !isNaN(amountPaid)) {
-      this.amountPaidString = this.updateMonetaryString(+amountPaid);
+    if (amountImposed > 0) {
+      this.amountImposedString = this.updateMonetaryString(amountImposed);
+    }
 
-      // Calculate balance only if both amountImposed and amountPaid are valid
-      if (amountImposed) {
-        const balance = amountImposed - +amountPaid;
-        this.balanceString = this.updateMonetaryString(balance);
-      }
+    if (amountPaid > 0) {
+      this.amountPaidString = this.updateMonetaryString(amountPaid);
+    }
+
+    if (balance > 0) {
+      this.balanceString = this.updateMonetaryString(balance);
+    }
+
+    if (!resultCode) {
+      this.imposition = 'Not provided';
     } else {
-      this.balanceString = this.updateMonetaryString(amountImposed); // If no amountPaid, balance is just amountImposed
+      this.resultCodeData$
+        .pipe(
+          map((response) => response.refData.filter((item) => item.result_id === resultCode)),
+          first(),
+        )
+        .subscribe((items) => {
+          if (items.length > 0) {
+            this.imposition = this.opalFinesService.getResultPrettyName(items[0]);
+          }
+        });
     }
   }
 
+  /**
+   * Confirms the removal of an imposition from the offence details.
+   * Removes the control from the form array, updates the form data,
+   * and handles the route navigation.
+   */
   public confirmRemoval(): void {
-    const { rowIndex, formArrayControls } =
+    const { rowIndex, formArray } =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
-    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+    const { formData } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
 
-    this.removeAndReindexImpositions(offenceDetailsDraft[0].formData, rowIndex);
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!.formArrayControls =
-      formArrayControls.slice(rowIndex, 1);
+    this.removeControlAndRenumber(
+      formArray,
+      rowIndex,
+      FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.fieldNames,
+      FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
+    );
+
+    formData.fm_offence_details_impositions = formArray.value;
+
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);
-  }
-
-  public removeAndReindexImpositions(formData: any, removeIndex: number): void {
-    const impositions = formData.fm_offence_details_impositions;
-
-    // Remove the item from the array at the given index
-    impositions.splice(removeIndex, 1);
-
-    // Reindex the remaining impositions
-    this.reindexImpositions(impositions, removeIndex);
-  }
-
-  private reindexImpositions(impositions: any[], startIndex: number): void {
-    for (let index = startIndex; index < impositions.length; index++) {
-      const imposition = impositions[index]; // Get the current imposition
-
-      // Update field names for the current index
-      this.updateImpositionKeys(imposition, index);
-    }
-  }
-
-  private updateImpositionKeys(imposition: any, index: number): void {
-    ['amount_imposed', 'amount_paid', 'creditor', 'needs_creditor', 'result_code'].forEach((field) => {
-      const currentKey = `fm_offence_details_${field}_${index + 1}`;
-      const newKey = `fm_offence_details_${field}_${index}`;
-
-      // If the current key exists, rename it to the new key
-      if (imposition[currentKey] !== undefined) {
-        imposition[newKey] = imposition[currentKey];
-        delete imposition[currentKey]; // Clean up the old key
-      }
-    });
-  }
-
-  public handleRoute(route: string, event?: Event): void {
-    if (event) event.preventDefault();
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 
   public ngOnInit(): void {
     this.getImpositionToBeRemoved();
-  }
-
-  public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = null;
   }
 }

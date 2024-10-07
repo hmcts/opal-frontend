@@ -5,6 +5,7 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceD
   fm_offence_details_result_code: 'SUCCESS',
   fm_offence_details_amount_imposed: 1000,
   fm_offence_details_amount_paid: 500,
+  fm_offence_details_balance_remaining: 500,
   fm_offence_details_needsCreditor: true,
   fm_offence_details_creditor: 'Creditor XYZ',
 };

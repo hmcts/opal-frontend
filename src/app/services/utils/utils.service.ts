@@ -23,15 +23,11 @@ export class UtilsService {
   }
 
   /**
-   * Converts a string to a monetary string format.
-   * If the input is not a valid number, it returns 'Invalid input'.
-   * Otherwise, it returns the input string prefixed with the pound sign (£).
-   *
-   * @param str - The string to convert.
-   * @returns The monetary string representation of the input.
+   * Converts a number to a monetary string representation.
+   * @param amount - The number to convert.
+   * @returns The monetary string representation of the number.
    */
-  public convertToMonetaryString(str: string): string {
-    const num = Number(str);
-    return isNaN(num) ? 'Invalid input' : `£${num.toFixed(2)}`;
+  public convertToMonetaryString(amount: number): string {
+    return `£${amount.toFixed(2)}`;
   }
 }
