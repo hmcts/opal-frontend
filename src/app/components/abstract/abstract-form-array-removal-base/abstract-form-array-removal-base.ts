@@ -29,6 +29,10 @@ export abstract class AbstractFormArrayRemovalComponent {
   ): T {
     const value = formArray.controls[rowIndex]?.get(controlName)?.value;
 
+    if (typeof value === 'string' && !isNaN(Number(value))) {
+      return Number(value) as T;
+    }
+
     return value !== undefined && value !== null ? (value as T) : defaultValue;
   }
 

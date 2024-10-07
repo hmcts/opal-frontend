@@ -39,6 +39,10 @@ describe('AbstractFormArrayRemovalBase', () => {
     const value = component['getFormArrayControlValue'](formArray, 'field', 0, 'default');
     expect(value).toBe('test');
 
+    const formArray1 = new FormArray([new FormGroup({ field: new FormControl('0') })]);
+    const valueNumber = component['getFormArrayControlValue'](formArray1, 'field', 0, 0);
+    expect(valueNumber).toBe(0);
+
     const missingValue = component['getFormArrayControlValue'](formArray, 'missingField', 0, 'default');
     expect(missingValue).toBe('default');
   });
