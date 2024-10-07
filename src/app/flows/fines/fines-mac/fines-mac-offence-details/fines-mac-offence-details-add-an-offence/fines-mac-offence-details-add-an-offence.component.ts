@@ -15,7 +15,6 @@ import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summar
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../constants/fines-mac-offence-details-impositions';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
@@ -42,6 +41,7 @@ import { EMPTY, Observable, debounceTime, distinctUntilChanged, tap } from 'rxjs
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -76,9 +76,9 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
   protected readonly utilsService = inject(UtilsService);
+  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
@@ -120,7 +120,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * adds controls to the form array if necessary, and sets the current date.
    */
   private initialAddAnOffenceDetailsSetup(): void {
-    const { offenceDetailsDraft } = this.finesService.finesMacState;
+    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
 
@@ -138,7 +138,9 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
     this.setInitialErrorMessages();
     if (offenceDetailsDraft.length > 0) {
-      this.rePopulateForm(this.finesService.finesMacState.offenceDetailsDraft[0].formData);
+      this.rePopulateForm(
+        this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].formData,
+      );
     } else {
       this.rePopulateForm(this.formData);
     }
@@ -237,33 +239,41 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   public goToSearchOffences(): void {
-    const index = this.finesService.finesMacState.offenceDetailsDraft.findIndex(
+    const index = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.findIndex(
       (item) => item.formData.fm_offence_details_index === this.form.get('fm_offence_details_index')!.value,
     );
 
     if (index !== -1) {
-      this.finesService.finesMacState.offenceDetailsDraft[index].formData = this.form.value;
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[index].formData =
+        this.form.value;
     } else {
-      this.finesService.finesMacState.offenceDetailsDraft.push({ formData: this.form.value, nestedFlow: false });
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.push({
+        formData: this.form.value,
+        nestedFlow: false,
+      });
     }
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
   }
 
   public removeImpositionConfirmation(rowIndex: number): void {
     const formArray = this.form.controls['fm_offence_details_impositions'] as FormArray;
-    this.finesService.finesMacState.removeImposition = {
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = {
       rowIndex,
       formArray: formArray,
       formArrayControls: this.formArrayControls,
     };
-    const index = this.finesService.finesMacState.offenceDetailsDraft.findIndex(
+    const index = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.findIndex(
       (item) => item.formData.fm_offence_details_index === this.form.get('fm_offence_details_index')!.value,
     );
 
     if (index !== -1) {
-      this.finesService.finesMacState.offenceDetailsDraft[index].formData = this.form.value;
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[index].formData =
+        this.form.value;
     } else {
-      this.finesService.finesMacState.offenceDetailsDraft.push({ formData: this.form.value, nestedFlow: false });
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.push({
+        formData: this.form.value,
+        nestedFlow: false,
+      });
     }
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeImposition);
   }

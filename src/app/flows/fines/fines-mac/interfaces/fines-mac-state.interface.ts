@@ -10,8 +10,6 @@ import { IFinesMacPersonalDetailsForm } from '../fines-mac-personal-details/inte
 import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-form.interface';
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
-import { FormArray } from '@angular/forms';
-import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
 
 export interface IFinesMacState {
   employerDetails: IFinesMacEmployerDetailsForm;
@@ -28,11 +26,4 @@ export interface IFinesMacState {
   businessUnit: IOpalFinesBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;
-
-  removeImposition: {
-    rowIndex: number;
-    formArray: FormArray;
-    formArrayControls: IAbstractFormArrayControls[];
-  } | null;
-  offenceDetailsDraft: IFinesMacOffenceDetailsForm[];
 }

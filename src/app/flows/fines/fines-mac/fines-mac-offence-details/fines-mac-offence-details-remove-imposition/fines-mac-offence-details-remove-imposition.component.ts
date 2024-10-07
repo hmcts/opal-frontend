@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -11,6 +10,7 @@ import { Observable, first, map } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { FormArray } from '@angular/forms';
 import { UtilsService } from '@services/utils/utils.service';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -28,7 +28,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent implements OnInit, 
   public readonly resultCodeData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService.getResults(
     this.resultCodeArray,
   );
-  protected readonly finesService = inject(FinesService);
+  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
   public imposition: string = 'Not provided';
@@ -46,7 +46,8 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent implements OnInit, 
   }
 
   private getImpositionToBeRemoved(): void {
-    const { rowIndex, formArray, formArrayControls } = this.finesService.finesMacState.removeImposition!;
+    const { rowIndex, formArray, formArrayControls } =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
     const formArrayControl = formArrayControls[rowIndex];
 
     const resultCode = this.getControlValue(
@@ -100,11 +101,13 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent implements OnInit, 
   }
 
   public confirmRemoval(): void {
-    const { rowIndex, formArrayControls } = this.finesService.finesMacState.removeImposition!;
-    const { offenceDetailsDraft } = this.finesService.finesMacState;
+    const { rowIndex, formArrayControls } =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
+    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
 
     this.removeAndReindexImpositions(offenceDetailsDraft[0].formData, rowIndex);
-    this.finesService.finesMacState.removeImposition!.formArrayControls = formArrayControls.slice(rowIndex, 1);
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!.formArrayControls =
+      formArrayControls.slice(rowIndex, 1);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);
   }
 
@@ -150,6 +153,6 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent implements OnInit, 
   }
 
   public ngOnDestroy(): void {
-    this.finesService.finesMacState.removeImposition = null;
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = null;
   }
 }
