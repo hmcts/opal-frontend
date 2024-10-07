@@ -23,6 +23,7 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
+import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -47,6 +48,7 @@ import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types
 export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly payloadService = inject(FinesMacPayloadService);
   protected readonly finesService = inject(FinesService);
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
@@ -128,6 +130,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
     this.setAccountType();
     this.setLanguage();
     this.routerListener();
+    console.log(this.payloadService.buildPayload(this.finesService.finesMacState));
   }
 
   /**
