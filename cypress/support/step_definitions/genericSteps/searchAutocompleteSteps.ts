@@ -10,6 +10,7 @@ When('I enter {string} into the {string} search box', (searchText: string, searc
     .children('div')
     .children('div')
     .find('input')
+    .clear()
     .type(searchText);
   cy.contains('app-alphagov-accessible-autocomplete', searchBox).should('not.contain', 'No results found');
   cy.contains('app-alphagov-accessible-autocomplete', searchBox)

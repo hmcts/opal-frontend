@@ -14,3 +14,6 @@ When('{string} is clicked, nothing happens', (linkText: string) => {
     cy.url().should('eq', initialUrl);
   });
 });
+When('the link with text {string} should not be present', (linkText: string) => {
+  cy.contains('a', linkText).should('not.exist');
+});
