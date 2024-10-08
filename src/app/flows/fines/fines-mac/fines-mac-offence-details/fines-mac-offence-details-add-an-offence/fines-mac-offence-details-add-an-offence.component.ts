@@ -1,312 +1,147 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  inject,
-} from '@angular/core';
-import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
-import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
-import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
-import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
-import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../constants/fines-mac-offence-details-impositions';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
-import { GovukTextInputPrefixSuffixComponent } from '@components/govuk/govuk-text-input-prefix-suffix/govuk-text-input-prefix-suffix.component';
-import { GovukRadioComponent } from '@components/govuk/govuk-radio/govuk-radio.component';
-import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
-import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../constants/fines-mac-offence-details-creditor-options';
-import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
-import { DateService } from '@services/date-service/date.service';
-import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
-import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../constants/fines-mac-offence-details-offences-field-errors';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../constants/fines-mac-offence-details-impositions-field-errors';
 import { CommonModule } from '@angular/common';
-import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
-import { futureDateValidator } from '@validators/future-date/future-date.validator';
-import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
-import { UtilsService } from '@services/utils/utils.service';
-import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
+import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { EMPTY, Observable, debounceTime, distinctUntilChanged, tap } from 'rxjs';
-import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
+import { Observable, map } from 'rxjs';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
+import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../constants/fines-mac-offence-details-state';
+import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
+import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
+import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    GovukErrorSummaryComponent,
-    MojDatePickerComponent,
-    AlphagovAccessibleAutocompleteComponent,
-    MojTicketPanelComponent,
+    RouterModule,
     GovukButtonComponent,
-    GovukTextInputPrefixSuffixComponent,
-    GovukRadioComponent,
-    GovukRadiosItemComponent,
     GovukCancelLinkComponent,
-    GovukTextInputComponent,
+    FinesMacOffenceDetailsAddAnOffenceFormComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsAddAnOffenceComponent
-  extends AbstractFormArrayBaseComponent
-  implements OnInit, OnDestroy
-{
-  @Input() public defendantType!: string;
-  @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Input({ required: true }) public formData!: IFinesMacOffenceDetailsState;
-  @Input({ required: true }) public formDataIndex!: number;
-  @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
-
-  private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
+export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly dateService = inject(DateService);
-  protected readonly utilsService = inject(UtilsService);
-  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
-  protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-  protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-
-  public selectedOffenceConfirmation!: boolean;
-  public selectedOffenceSuccessful!: boolean;
-  public selectedOffenceTitle!: string;
-  public today!: string;
-
-  public offenceCode$: Observable<IOpalFinesOffencesRefData> = EMPTY;
-
-  public creditorOptions = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS;
-
-  override fieldErrors: IAbstractFormBaseFieldErrors = {
-    ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
-  };
+  protected readonly finesService = inject(FinesService);
+  public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
+  private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
+  public readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+    .getResults(this.resultCodeArray)
+    .pipe(
+      map((response: IOpalFinesResultsRefData) => {
+        return this.createAutoCompleteItemsResults(response);
+      }),
+    );
+  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+  public formData!: IFinesMacOffenceDetailsState;
+  public formDataIndex!: number;
 
   /**
-   * Sets up the form for adding an offence.
+   * Creates an array of autocomplete items based on the provided response data.
+   * @param response - The response data containing the reference data.
+   * @returns An array of autocomplete items.
    */
-  private setupAddAnOffenceForm(): void {
-    this.form = new FormGroup({
-      fm_offence_details_index: new FormControl(this.formDataIndex),
-      fm_offence_details_date_of_offence: new FormControl(null, [
-        Validators.required,
-        optionalValidDateValidator(),
-        futureDateValidator(),
-      ]),
-      fm_offence_details_offence_code: new FormControl(null, [Validators.required]),
-      fm_offence_details_impositions: new FormArray([]),
+  private createAutoCompleteItemsResults(response: IOpalFinesResultsRefData): IAlphagovAccessibleAutocompleteItem[] {
+    const results = response.refData;
+
+    results.sort((a, b) => {
+      const orderDiff = a.imposition_allocation_order! - b.imposition_allocation_order!;
+
+      if (orderDiff !== 0) {
+        return orderDiff;
+      }
+
+      // If imposition_allocation_order is the same, compare by result_title
+      return a.result_title.localeCompare(b.result_title);
+    });
+
+    return results.map((item) => {
+      return {
+        value: item.result_id,
+        name: this.opalFinesService.getResultPrettyName(item),
+      };
     });
   }
 
   /**
-   * Sets up the initial configuration for adding an offence details.
-   * This method initializes the form, sets up the impositions configuration,
-   * sets up the form array form controls, sets initial error messages,
-   * repopulates the form with data, listens for changes in the offence code,
-   * and adds controls to the form array if there are no offence details draft
-   * and no impositions.
-   */
-  private initialAddAnOffenceDetailsSetup(): void {
-    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
-    const hasOffenceDetailsDraft = offenceDetailsDraft.length > 0;
-    const impositionsKey = 'fm_offence_details_impositions';
-    const formData = hasOffenceDetailsDraft ? offenceDetailsDraft[0].formData : this.formData;
-    const impositionsLength = formData[impositionsKey].length;
-
-    this.setupAddAnOffenceForm();
-    this.setupImpositionsConfiguration();
-    this.setupFormArrayFormControls([...Array(impositionsLength).keys()], impositionsKey);
-    this.setInitialErrorMessages();
-    this.rePopulateForm(formData);
-    this.offenceCodeListener();
-
-    if (!hasOffenceDetailsDraft && impositionsLength === 0) {
-      this.addControlsToFormArray(0, impositionsKey);
-    } else {
-      formData[impositionsKey].forEach((_, index) => this.setupResultCodeListener(index, impositionsKey));
-    }
-
-    this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
-  }
-
-  /**
-   * Populates the offence hint based on the provided CJS code.
-   * @param cjsCode - The CJS code used to retrieve the offence details.
-   */
-  private populateOffenceHint(cjsCode: string): void {
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
-
-    if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
-      this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
-        tap((offence) => {
-          offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
-        }),
-      );
-
-      this.selectedOffenceConfirmation = true;
-
-      this.changeDetector.detectChanges();
-    } else {
-      this.selectedOffenceConfirmation = false;
-    }
-  }
-
-  /**
-   * Listens for changes in the offence code control and performs actions based on the input.
-   * If the input meets the specified length criteria, it retrieves the offence details using the provided code.
-   * @private
-   * @returns {void}
-   */
-  private offenceCodeListener(): void {
-    this.selectedOffenceConfirmation = false;
-
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
-
-    // Populate the offence hint if the offence code is already set
-    if (offenceCodeControl.value) {
-      this.populateOffenceHint(offenceCodeControl.value);
-    }
-
-    // Listen for changes in the offence code control
-    offenceCodeControl.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        tap((cjs_code: string) => {
-          cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
-          offenceCodeControl.setValue(cjs_code, { emitEvent: false });
-        }),
-        debounceTime(250),
-      )
-      .subscribe((cjs_code: string) => {
-        this.populateOffenceHint(cjs_code);
-      });
-  }
-
-  /**
-   * Sets up the impositions configuration for the fines-mac-offence-details-add-an-offence component.
-   * This method initializes the formArrayFields and formArrayControlsValidation properties
-   * based on the FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS array.
-   */
-  private setupImpositionsConfiguration(): void {
-    this.formArrayFields = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS.map((item) => item.controlName);
-    this.formArrayControlsValidation = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS;
-  }
-
-  /**
-   * Sets up a result code listener for the specified index and form array name.
-   * This method invokes the `resultCodeListener` and updates the `fieldErrors` object
-   * with the field errors specific to the given index.
+   * Updates the offence details in the finesMacState based on the provided form data.
+   * If an offence detail with the same fm_offence_details_index already exists, it will be updated.
+   * Otherwise, the new offence detail will be added to the finesMacState.
    *
-   * @param index - The index of the result code listener.
-   * @param formArrayName - The name of the form array.
+   * @param form - The form data containing the offence details to be updated or added.
    */
-  private setupResultCodeListener(index: number, formArrayName: string): void {
-    this.resultCodeListener(index);
-    this.fieldErrors = {
-      ...this.fieldErrors,
-      ...FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS(index),
-    };
-  }
-
-  /**
-   * Listens for changes in the result code control and updates the needs creditor control accordingly.
-   * @param index - The index of the impositions form group.
-   */
-  private resultCodeListener(index: number): void {
-    const impositionsFormArray = this.form.get('fm_offence_details_impositions') as FormArray;
-    const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
-    const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
-
-    resultCodeControl.valueChanges.subscribe((result_code: string) => {
-      const needsCreditor =
-        result_code &&
-        (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
-          result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
-      needsCreditorControl.setValue(needsCreditor);
-    });
-  }
-
-  /**
-   * Updates the offence details draft with the provided form data.
-   * If an offence details entry with the same index already exists in the draft, it updates the existing entry.
-   * Otherwise, it adds a new entry to the draft.
-   * 
-   * @param formData - The form data to update the offence details draft with.
-   * @returns void
-   */
-  private updateOffenceDetailsDraft(formData: any): void {
-    const offenceDetailsDraft = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft;
-    const offenceDetailsIndex = this.form.get('fm_offence_details_index')!.value;
-
-    const index = offenceDetailsDraft.findIndex(
-      (item) => item.formData.fm_offence_details_index === offenceDetailsIndex,
+  private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
+    const index = this.finesService.finesMacState.offenceDetails.findIndex(
+      (item) => item.formData.fm_offence_details_index === form.formData.fm_offence_details_index,
     );
 
     if (index !== -1) {
-      offenceDetailsDraft[index].formData = formData;
+      this.finesService.finesMacState.offenceDetails[index] = form;
     } else {
-      offenceDetailsDraft.push({
-        formData: formData,
-        nestedFlow: false,
-      });
+      this.finesService.finesMacState.offenceDetails.push(form);
     }
   }
 
   /**
-   * Navigates to the search offences page and updates the offence details draft.
+   * Handles the submission of the offence details form.
+   *
+   * @param form - The offence details form data.
    */
-  public goToSearchOffences(): void {
-    this.updateOffenceDetailsDraft(this.form.value);
-    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
-  }
+  public handleOffenceDetailsSubmit(form: IFinesMacOffenceDetailsForm): void {
+    // Update the status as form is mandatory
+    form.status = FINES_MAC_STATUS.PROVIDED;
 
-  /**
-   * Removes the imposition at the specified rowIndex from the form.
-   * 
-   * @param rowIndex - The index of the imposition to be removed.
-   * @returns void
-   */
-  public removeImpositionConfirmation(rowIndex: number): void {
-    const formArray = this.form.controls['fm_offence_details_impositions'] as FormArray;
-
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = {
-      rowIndex,
-      formArray: formArray,
-      formArrayControls: this.formArrayControls,
+    // Update the state with the form data
+    this.finesService.finesMacState = {
+      ...this.finesService.finesMacState,
+      offenceDetails: [...this.finesService.finesMacState.offenceDetails],
+      unsavedChanges: false,
+      stateChanges: true,
     };
 
-    this.updateOffenceDetailsDraft(this.form.value);
-    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeImposition);
+    this.updateOffenceDetailsIndex(form);
+
+    if (form.nestedFlow) {
+      this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
+    } else {
+      this.routerNavigate(
+        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
+        true,
+      );
+    }
   }
 
   /**
-   * Adds controls to the form array at the specified index.
+   * Handles unsaved changes coming from the child component
    *
-   * @param index - The index at which to add the controls.
-   * @param formArrayName - The name of the form array.
+   * @param unsavedChanges boolean value from child component
    */
-  public override addControlsToFormArray(index: number, formArrayName: string): void {
-    super.addControlsToFormArray(index, formArrayName);
-    this.setupResultCodeListener(index, formArrayName);
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.stateUnsavedChanges = unsavedChanges;
   }
 
-  public override ngOnInit(): void {
-    this.initialAddAnOffenceDetailsSetup();
-    super.ngOnInit();
+  /**
+   * Initializes the component.
+   */
+  public ngOnInit(): void {
+    this.formData =
+      this.finesService.finesMacState.offenceDetails.length > 0
+        ? this.finesService.finesMacState.offenceDetails[0].formData
+        : FINES_MAC_OFFENCE_DETAILS_STATE;
+    this.formDataIndex = 0;
   }
 }

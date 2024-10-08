@@ -19,7 +19,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let mockOpalFinesService: Partial<OpalFines>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -29,6 +28,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
     mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
 
@@ -41,15 +41,17 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('offence-details'),
+          },
+        },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsRemoveImpositionComponent);
     component = fixture.componentInstance;
-
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-
     fixture.detectChanges();
   });
 

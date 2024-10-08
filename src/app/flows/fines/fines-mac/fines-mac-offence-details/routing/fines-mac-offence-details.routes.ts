@@ -10,7 +10,9 @@ export const routing: Routes = [
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence,
     loadComponent: () =>
-      import('../fines-mac-offence-details.component').then((c) => c.FinesMacOffenceDetailsComponent),
+      import('../fines-mac-offence-details-add-an-offence/fines-mac-offence-details-add-an-offence.component').then(
+        (c) => c.FinesMacOffenceDetailsAddAnOffenceComponent,
+      ),
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences,
