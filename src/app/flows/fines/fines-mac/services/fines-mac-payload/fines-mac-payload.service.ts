@@ -8,6 +8,8 @@ import { IFinesMacEmployerDetailsState } from '../../fines-mac-employer-details/
 
 import { IFinesMacPersonalDetailsAliasState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { IFinesMacLanguagePreferencesState } from '../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
+import { IFinesMacCompanyDetailsState } from '../../fines-mac-company-details/interfaces/fines-mac-company-details-state.interface';
+import { IFinesMacCompanyDetailsAliasState } from '../../fines-mac-company-details/interfaces/fines-mac-company-details-alias-state.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -65,6 +67,7 @@ export class FinesMacPayloadService {
       title: personalDetailsState['fm_personal_details_title'],
       surname: personalDetailsState['fm_personal_details_surname'],
       forenames: personalDetailsState['fm_personal_details_forenames'],
+      organisation_name: null,
       dob: personalDetailsState['fm_personal_details_dob'],
       address_line_1: personalDetailsState['fm_personal_details_address_line_1'],
       address_line_2: personalDetailsState['fm_personal_details_address_line_2'],
@@ -98,6 +101,82 @@ export class FinesMacPayloadService {
     };
   }
 
+  private buildCompanyDefendantDebtorDetailsAliases(aliases: IFinesMacCompanyDetailsAliasState[]) {
+    return aliases.map((alias, index) => {
+      console.log(alias);
+      const companyNameKey =
+        `fm_company_details_alias_organisation_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
+      return {
+        alias_forenames: null,
+        alias_surname: null,
+        alias_company_name: alias[companyNameKey],
+      };
+    });
+  }
+
+  private buildCompanyDefendantDebtorDetails(
+    companyDetailsState: IFinesMacCompanyDetailsState,
+    languagePreferencesState: IFinesMacLanguagePreferencesState,
+  ) {
+    return {
+      vehicle_make: null,
+      vehicle_registration_mark: null,
+      document_language: languagePreferencesState['fm_language_preferences_document_language'],
+      hearing_language: languagePreferencesState['fm_language_preferences_hearing_language'],
+      employee_reference: null,
+      employer_company_name: null,
+      employer_address_line_1: null,
+      employer_address_line_2: null,
+      employer_address_line_3: null,
+      employer_address_line_4: null,
+      employer_address_line_5: null,
+      employer_post_code: null,
+      employer_telephone_number: null,
+      employer_email_address: null,
+      aliases: this.buildCompanyDefendantDebtorDetailsAliases(companyDetailsState['fm_company_details_aliases']),
+    };
+  }
+
+  private buildCompanyDefendant(
+    companyDetailsState: IFinesMacCompanyDetailsState,
+    contactDetailsState: IFinesMacContactDetailsState,
+    languagePreferencesState: IFinesMacLanguagePreferencesState,
+  ) {
+    return {
+      company_flag: true,
+      title: null,
+      surname: null,
+      forenames: null,
+      organisation_name: companyDetailsState['fm_company_details_organisation_name'],
+      dob: null,
+      address_line_1: companyDetailsState['fm_company_details_address_line_1'],
+      address_line_2: companyDetailsState['fm_company_details_address_line_2'],
+      address_line_3: companyDetailsState['fm_company_details_address_line_3'],
+      address_line_4: null,
+      address_line_5: null,
+      post_code: companyDetailsState['fm_company_details_postcode'],
+      telephone_number_home: contactDetailsState['fm_contact_details_telephone_number_home'],
+      telephone_number_business: contactDetailsState['fm_contact_details_telephone_number_business'],
+      telephone_number_mobile: contactDetailsState['fm_contact_details_telephone_number_mobile'],
+      email_address_1: contactDetailsState['fm_contact_details_email_address_1'],
+      email_address_2: contactDetailsState['fm_contact_details_email_address_2'],
+      national_insurance_number: null,
+      driving_licence_number: null,
+      pnc_id: null,
+      nationality_1: null,
+      nationality_2: null,
+      ethnicity_self_defined: null,
+      ethnicity_observed: null,
+      cro_number: null,
+      occupation: null,
+      gender: null,
+      custody_status: null,
+      prison_number: null,
+      interpreter_lang: null,
+      debtor_detail: this.buildCompanyDefendantDebtorDetails(companyDetailsState, languagePreferencesState),
+    };
+  }
+
   private initialSetup(accountDetailsState: IFinesMacAccountDetailsState): void {
     const {
       fm_create_account_defendant_type: defendantType,
@@ -109,7 +188,7 @@ export class FinesMacPayloadService {
     this.accountType = accountType;
     this.businessUnit = businessUnit;
 
-    this.isCompany = accountType === 'company';
+    this.isCompany = defendantType === 'company';
   }
 
   public buildPayload(finesMacState: IFinesMacState): any {
@@ -121,6 +200,7 @@ export class FinesMacPayloadService {
       personalDetails,
       contactDetails,
       languagePreferences,
+      companyDetails,
     } = finesMacState;
     const courtDetailsState = courtDetails.formData;
     const accountDetailsState = accountDetails.formData;
@@ -129,6 +209,7 @@ export class FinesMacPayloadService {
     const employerDetailsState = employerDetails.formData;
     const contactDetailsState = contactDetails.formData;
     const languagePreferencesState = languagePreferences.formData;
+    const companyDetailsState = companyDetails.formData;
 
     // Setup frequently used values.
     this.initialSetup(accountDetailsState);
@@ -153,7 +234,7 @@ export class FinesMacPayloadService {
             employerDetailsState,
             languagePreferencesState,
           )
-        : null,
+        : this.buildCompanyDefendant(companyDetailsState, contactDetailsState, languagePreferencesState),
     };
   }
 }
