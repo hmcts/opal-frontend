@@ -68,6 +68,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should get imposition to be removed', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!.rowIndex = 0;
     component['getImpositionToBeRemoved']();
 
     expect(component.imposition).toEqual(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);

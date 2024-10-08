@@ -115,42 +115,29 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   /**
    * Sets up the initial configuration for adding an offence details.
    * This method initializes the form, sets up the impositions configuration,
-   * sets up the form array form controls, listens for changes in the offence code,
-   * sets initial error messages, repopulates the form with existing data,
-   * adds controls to the form array if necessary, and sets the current date.
+   * sets up the form array form controls, sets initial error messages,
+   * repopulates the form with data, listens for changes in the offence code,
+   * and adds controls to the form array if there are no offence details draft
+   * and no impositions.
    */
   private initialAddAnOffenceDetailsSetup(): void {
     const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+    const hasOffenceDetailsDraft = offenceDetailsDraft.length > 0;
+    const impositionsKey = 'fm_offence_details_impositions';
+    const formData = hasOffenceDetailsDraft ? offenceDetailsDraft[0].formData : this.formData;
+    const impositionsLength = formData[impositionsKey].length;
+
     this.setupAddAnOffenceForm();
     this.setupImpositionsConfiguration();
-
-    if (offenceDetailsDraft.length > 0) {
-      this.setupFormArrayFormControls(
-        [...Array(offenceDetailsDraft[0].formData.fm_offence_details_impositions.length).keys()],
-        'fm_offence_details_impositions',
-      );
-    } else {
-      this.setupFormArrayFormControls(
-        [...Array(this.formData.fm_offence_details_impositions.length).keys()],
-        'fm_offence_details_impositions',
-      );
-    }
-
+    this.setupFormArrayFormControls([...Array(impositionsLength).keys()], impositionsKey);
     this.setInitialErrorMessages();
-    if (offenceDetailsDraft.length > 0) {
-      this.rePopulateForm(
-        this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].formData,
-      );
-    } else {
-      this.rePopulateForm(this.formData);
-    }
-
+    this.rePopulateForm(formData);
     this.offenceCodeListener();
 
-    if (offenceDetailsDraft.length === 0) {
-      if (this.formData.fm_offence_details_impositions.length === 0) {
-        this.addControlsToFormArray(0, 'fm_offence_details_impositions');
-      }
+    if (!hasOffenceDetailsDraft && impositionsLength === 0) {
+      this.addControlsToFormArray(0, impositionsKey);
+    } else {
+      formData[impositionsKey].forEach((_, index) => this.setupResultCodeListener(index, impositionsKey));
     }
 
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
@@ -220,6 +207,22 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   /**
+   * Sets up a result code listener for the specified index and form array name.
+   * This method invokes the `resultCodeListener` and updates the `fieldErrors` object
+   * with the field errors specific to the given index.
+   *
+   * @param index - The index of the result code listener.
+   * @param formArrayName - The name of the form array.
+   */
+  private setupResultCodeListener(index: number, formArrayName: string): void {
+    this.resultCodeListener(index);
+    this.fieldErrors = {
+      ...this.fieldErrors,
+      ...FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS(index),
+    };
+  }
+
+  /**
    * Listens for changes in the result code control and updates the needs creditor control accordingly.
    * @param index - The index of the impositions form group.
    */
@@ -238,43 +241,56 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     });
   }
 
-  public goToSearchOffences(): void {
-    const index = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.findIndex(
-      (item) => item.formData.fm_offence_details_index === this.form.get('fm_offence_details_index')!.value,
+  /**
+   * Updates the offence details draft with the provided form data.
+   * If an offence details entry with the same index already exists in the draft, it updates the existing entry.
+   * Otherwise, it adds a new entry to the draft.
+   * 
+   * @param formData - The form data to update the offence details draft with.
+   * @returns void
+   */
+  private updateOffenceDetailsDraft(formData: any): void {
+    const offenceDetailsDraft = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft;
+    const offenceDetailsIndex = this.form.get('fm_offence_details_index')!.value;
+
+    const index = offenceDetailsDraft.findIndex(
+      (item) => item.formData.fm_offence_details_index === offenceDetailsIndex,
     );
 
     if (index !== -1) {
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[index].formData =
-        this.form.value;
+      offenceDetailsDraft[index].formData = formData;
     } else {
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.push({
-        formData: this.form.value,
+      offenceDetailsDraft.push({
+        formData: formData,
         nestedFlow: false,
       });
     }
+  }
+
+  /**
+   * Navigates to the search offences page and updates the offence details draft.
+   */
+  public goToSearchOffences(): void {
+    this.updateOffenceDetailsDraft(this.form.value);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
   }
 
+  /**
+   * Removes the imposition at the specified rowIndex from the form.
+   * 
+   * @param rowIndex - The index of the imposition to be removed.
+   * @returns void
+   */
   public removeImpositionConfirmation(rowIndex: number): void {
     const formArray = this.form.controls['fm_offence_details_impositions'] as FormArray;
+
     this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = {
       rowIndex,
       formArray: formArray,
       formArrayControls: this.formArrayControls,
     };
-    const index = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.findIndex(
-      (item) => item.formData.fm_offence_details_index === this.form.get('fm_offence_details_index')!.value,
-    );
 
-    if (index !== -1) {
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[index].formData =
-        this.form.value;
-    } else {
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.push({
-        formData: this.form.value,
-        nestedFlow: false,
-      });
-    }
+    this.updateOffenceDetailsDraft(this.form.value);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeImposition);
   }
 
@@ -286,11 +302,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    */
   public override addControlsToFormArray(index: number, formArrayName: string): void {
     super.addControlsToFormArray(index, formArrayName);
-    this.resultCodeListener(index);
-    this.fieldErrors = {
-      ...this.fieldErrors,
-      ...FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS(index),
-    };
+    this.setupResultCodeListener(index, formArrayName);
   }
 
   public override ngOnInit(): void {
