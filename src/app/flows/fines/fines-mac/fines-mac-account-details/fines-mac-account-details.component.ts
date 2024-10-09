@@ -53,7 +53,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
-  private ngUnsubscribe: Subject<void> = new Subject<void>();
+  private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
 
   protected readonly defendantTypes = FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES;
   private readonly accountTypes = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES;

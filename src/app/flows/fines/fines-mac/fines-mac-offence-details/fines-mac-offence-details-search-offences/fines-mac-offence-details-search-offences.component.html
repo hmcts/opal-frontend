@@ -1,0 +1,14 @@
+<div class="govuk-grid-column-two-thirds">
+  <app-govuk-back-link (clickEvent)="handleRoute(finesMacRoutes.children.offenceDetails)"></app-govuk-back-link>
+  <h1 class="govuk-heading-l">Search offences</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button
+        buttonId="confirmDeletion"
+        (buttonClickEvent)="handleRoute(finesMacRoutes.children.offenceDetails)"
+      >
+        Search
+      </app-govuk-button>
+    </div>
+  </div>
+</div>

@@ -42,7 +42,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
   private ngUnsubscribe = new Subject<void>();
   public autoCompleteId!: string;
 
-  @Input({ required: true }) set control(abstractControl: AbstractControl) {
+  @Input({ required: true }) set control(abstractControl: AbstractControl | null) {
     // Form controls are passed in as abstract controls, we need to re-cast it.
     this._control = abstractControl as FormControl;
   }

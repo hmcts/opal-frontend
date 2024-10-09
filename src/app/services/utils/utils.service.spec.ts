@@ -18,4 +18,10 @@ describe('UtilsService', () => {
     const result = service.upperCaseFirstLetter(str);
     expect(result).toEqual('Hello');
   });
+
+  it('should convert the entire string to uppercase', () => {
+    const str = 'hello';
+    const result = service.upperCaseAllLetters(str);
+    expect(result).toEqual('HELLO');
+  });
 });

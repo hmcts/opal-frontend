@@ -18,3 +18,9 @@ Then(
     cy.contains('.govuk-radios', radioButton).prev().should('contain', errorMessage);
   },
 );
+
+Then('I see the error message {string} above the result code field', (errorMessage: string) => {
+  cy.get('app-alphagov-accessible-autocomplete[labeltext="Result code"]')
+    .find('.govuk-error-message')
+    .should('contain', errorMessage);
+});

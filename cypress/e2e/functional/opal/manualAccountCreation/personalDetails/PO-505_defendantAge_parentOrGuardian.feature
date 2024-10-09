@@ -48,7 +48,7 @@ Feature: PO-505 Updates to Personal Details showing age of def & label name chan
     And I see "Youth" in the date of birth panel
     And I see age 17 in the date of birth panel
     And I click the "Add offence details" button
-    And I see "Offence details" on the page header
+    And I see "Add an offence" on the page header
     And I click on the "Cancel" link
     Then I see the status of "Personal details" is "Provided"
 
@@ -88,7 +88,7 @@ Feature: PO-505 Updates to Personal Details showing age of def & label name chan
     And I see "Adult" in the date of birth panel
     And I see age 18 in the date of birth panel
     And I click the "Add offence details" button
-    And I see "Offence details" on the page header
+    And I see "Add an offence" on the page header
     And I click on the "Cancel" link
     Then I see the status of "Personal details" is "Provided"
 
