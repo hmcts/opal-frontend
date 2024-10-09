@@ -42,7 +42,7 @@ Feature: Manual account creation - Common screens - accessibility
       | screen                     | pageHeading                                   |
       | Court details              | Court details                                 |
       | Contact details            | Parent or guardian contact details            |
-      | Offence details            | Offence details                               |
+      | Offence details            | Add an offence                                |
       | Account comments and notes | Account comments and notes                    |
       | Delete account             | Are you sure you want to delete this account? |
 
