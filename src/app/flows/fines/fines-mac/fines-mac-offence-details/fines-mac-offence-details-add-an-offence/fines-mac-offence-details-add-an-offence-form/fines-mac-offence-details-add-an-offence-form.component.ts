@@ -43,6 +43,7 @@ import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govu
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -71,7 +72,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 {
   @Input() public defendantType!: string;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Input({ required: true }) public formData!: IFinesMacOffenceDetailsState;
   @Input({ required: true }) public formDataIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 
@@ -79,6 +79,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly opalFinesService = inject(OpalFines);
   protected readonly dateService = inject(DateService);
   protected readonly utilsService = inject(UtilsService);
+  protected readonly finesMacService = inject(FinesService);
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
@@ -124,7 +125,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
     const hasOffenceDetailsDraft = offenceDetailsDraft.length > 0;
     const impositionsKey = 'fm_offence_details_impositions';
-    const formData = hasOffenceDetailsDraft ? offenceDetailsDraft[0].formData : this.formData;
+    const formData = hasOffenceDetailsDraft
+      ? offenceDetailsDraft[0].formData
+      : this.finesMacService.finesMacState.offenceDetails[0].formData;
     const impositionsLength = formData[impositionsKey].length;
 
     this.setupAddAnOffenceForm();

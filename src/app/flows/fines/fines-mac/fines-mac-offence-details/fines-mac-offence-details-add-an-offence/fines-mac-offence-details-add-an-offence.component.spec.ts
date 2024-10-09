@@ -3,7 +3,6 @@ import { FinesMacOffenceDetailsAddAnOffenceComponent } from './fines-mac-offence
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
-import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../constants/fines-mac-offence-details-state';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -125,6 +124,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.formData).toEqual(FINES_MAC_OFFENCE_DETAILS_STATE);
+    expect(mockFinesService.finesMacState.offenceDetails).toEqual(FINES_MAC_OFFENCE_DETAILS_FORM);
   });
 });

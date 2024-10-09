@@ -12,12 +12,11 @@ import { Observable, map } from 'rxjs';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
-import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../constants/fines-mac-offence-details-state';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
-import { IFinesMacOffenceDetailsState } from '../interfaces/fines-mac-offence-details-state.interface';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -46,7 +45,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     );
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-  public formData!: IFinesMacOffenceDetailsState;
   public formDataIndex!: number;
 
   /**
@@ -96,6 +94,20 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
   }
 
   /**
+   * Retrieves the form data for adding an offence.
+   * If the offence details are empty, it sets the formDataIndex to 0 and assigns the default form data.
+   * Otherwise, it sets the formDataIndex to the length of offenceDetails + 1.
+   */
+  private retrieveFormData(): void {
+    if (this.finesService.finesMacState.offenceDetails.length === 0) {
+      this.formDataIndex = 0;
+      this.finesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
+    } else {
+      this.formDataIndex = this.finesService.finesMacState.offenceDetails.length + 1;
+    }
+  }
+
+  /**
    * Handles the submission of the offence details form.
    *
    * @param form - The offence details form data.
@@ -138,10 +150,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
    * Initializes the component.
    */
   public ngOnInit(): void {
-    this.formData =
-      this.finesService.finesMacState.offenceDetails.length > 0
-        ? this.finesService.finesMacState.offenceDetails[0].formData
-        : FINES_MAC_OFFENCE_DETAILS_STATE;
-    this.formDataIndex = 0;
+    this.retrieveFormData();
   }
 }
