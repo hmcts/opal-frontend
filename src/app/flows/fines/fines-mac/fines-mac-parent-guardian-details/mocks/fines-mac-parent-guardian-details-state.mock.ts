@@ -15,7 +15,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK: IFinesMacParentGuardi
   fm_parent_guardian_details_address_line_1: 'Test address line 1',
   fm_parent_guardian_details_address_line_2: 'Test address line 2',
   fm_parent_guardian_details_address_line_3: 'Test line 3',
-  fm_parent_guardian_details_postcode: 'TE10 1ST',
+  fm_parent_guardian_details_post_code: 'TE10 1ST',
   fm_parent_guardian_details_vehicle_make: 'Ford',
   fm_parent_guardian_details_vehicle_registration_mark: 'AB123CDE',
 };

@@ -98,7 +98,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.form.get('fm_personal_details_address_line_1')).toBeTruthy();
     expect(component.form.get('fm_personal_details_address_line_2')).toBeTruthy();
     expect(component.form.get('fm_personal_details_address_line_3')).toBeTruthy();
-    expect(component.form.get('fm_personal_details_postcode')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_post_code')).toBeTruthy();
   });
 
   it('should set up the alias configuration for the personal details form', () => {

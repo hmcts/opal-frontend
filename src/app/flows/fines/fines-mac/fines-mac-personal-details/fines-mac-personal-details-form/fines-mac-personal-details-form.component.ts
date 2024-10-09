@@ -112,7 +112,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
         optionalMaxLengthValidator(16),
         specialCharactersValidator(),
       ]),
-      fm_personal_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 

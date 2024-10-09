@@ -229,7 +229,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       priority: 2,
     },
   },
-  fm_personal_details_postcode: {
+  fm_personal_details_post_code: {
     maxlength: {
       message: `The postcode must be 8 characters or fewer`,
       priority: 1,
