@@ -75,5 +75,4 @@ Then('I see {string} link for imposition {int}', (labelText: string, index: numb
     .get('app-moj-ticket-panel')
     .eq(index - 1)
     .contains(labelText);
-  //.nextUntil('input');
 });
