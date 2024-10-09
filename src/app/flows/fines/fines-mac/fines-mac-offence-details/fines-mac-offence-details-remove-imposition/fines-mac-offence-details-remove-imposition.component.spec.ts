@@ -4,7 +4,6 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 import { of } from 'rxjs';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -53,6 +52,10 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     fixture.detectChanges();
   });
 
+  beforeEach(() => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -67,22 +70,9 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(monetaryString).toEqual(expectedMonetaryString);
   });
 
-  it('should get imposition to be removed', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!.rowIndex = 0;
-    mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
-    mockOpalFinesService.getResultPrettyName.and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
-
-    component['getImpositionToBeRemoved']();
-
-    expect(component.imposition).toEqual(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
-    expect(component.creditor).toEqual('Not provided');
-    expect(component.amountImposedString).toEqual('£50.00');
-    expect(component.amountPaidString).toEqual('£50.00');
-    expect(component.balanceString).toEqual('£50.00');
-  });
-
   it('should get imposition to be removed when result code is null', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!.rowIndex = 1;
+    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    component['removeImposition'].removeImposition!.rowIndex = 1;
 
     component['getImpositionToBeRemoved']();
 

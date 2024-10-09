@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
@@ -12,6 +12,7 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
 import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract-form-array-removal-base/abstract-form-array-removal-base';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -22,7 +23,7 @@ import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constant
 })
 export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
@@ -32,6 +33,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   );
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
+  protected removeImposition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
 
   public imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
   public creditor = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
@@ -57,8 +59,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    * the resultCodeData and sets the imposition value based on the resultCode.
    */
   private getImpositionToBeRemoved(): void {
-    const { rowIndex, formArray, formArrayControls } =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
+    const { rowIndex, formArray, formArrayControls } = this.removeImposition.removeImposition!;
     const formArrayControl = formArrayControls[rowIndex];
 
     const resultCode = this.getFormArrayControlValue(
@@ -149,5 +150,9 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
 
   public ngOnInit(): void {
     this.getImpositionToBeRemoved();
+  }
+
+  public ngOnDestroy(): void {
+    this.removeImposition = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
   }
 }

@@ -20,14 +20,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockOpalFinesService: Partial<OpalFines>;
+  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let formSubmit: IFinesMacOffenceDetailsForm[];
 
   beforeEach(async () => {
-    mockOpalFinesService = {
-      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
-      getResultPrettyName: jasmine.createSpy('getResultPrettyName').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
-    };
+    mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getResults', 'getResultPrettyName']);
+    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+    mockOpalFinesService.getResultPrettyName.and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
+
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
@@ -119,10 +119,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(mockFinesService.finesMacState.offenceDetails[0]).toEqual(form);
   });
 
-  it('should use FINES_MAC_OFFENCE_DETAILS_STATE when offenceDetails is empty', () => {
+  it('should add new object when offenceDetails is empty', () => {
     mockFinesService.finesMacState.offenceDetails = [];
 
-    component.ngOnInit();
+    component['retrieveFormData']();
 
     expect(mockFinesService.finesMacState.offenceDetails).toEqual(FINES_MAC_OFFENCE_DETAILS_FORM);
   });
