@@ -20,6 +20,7 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
+import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -176,8 +177,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
 
-    // Simulate the passage of 250ms to account for debounceTime
-    tick(250);
+    // Simulate the passage of time to account for debounceTime
+    tick(FinesMacOffenceDetailsDebounceTime.debounceTime);
 
     // Check if service was called after debounce
     expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);
@@ -193,8 +194,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
 
-    // Simulate the passage of 250ms to account for debounceTime
-    tick(250);
+    // Simulate the passage of time to account for debounceTime
+    tick(FinesMacOffenceDetailsDebounceTime.debounceTime);
 
     // Check if service was called after debounce
     expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);

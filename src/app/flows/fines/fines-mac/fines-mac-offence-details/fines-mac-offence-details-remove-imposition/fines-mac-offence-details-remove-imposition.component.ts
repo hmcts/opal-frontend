@@ -11,6 +11,7 @@ import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract-form-array-removal-base/abstract-form-array-removal-base';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names';
+import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -32,61 +33,80 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
-  public imposition: string = 'Not provided';
-  public creditor: string = 'Not provided';
-  public amountImposedString = '£0.00';
-  public amountPaidString = '£0.00';
-  public balanceString = '£0.00';
+  public imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
+  public creditor = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
+  public amountImposedString = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
+  public amountPaidString = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
+  public balanceString = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
 
+  /**
+   * Converts a number value to a monetary string representation.
+   *
+   * @param value - The number value to be converted.
+   * @returns The monetary string representation of the given value.
+   */
   private updateMonetaryString(value: number): string {
     return this.utilsService.convertToMonetaryString(value);
   }
 
+  /**
+   * Retrieves the imposition to be removed.
+   * This method retrieves the necessary information from the formArray and formArrayControls
+   * to determine the imposition that needs to be removed. It calculates the balance and updates
+   * the corresponding string values for amountImposed, amountPaid, and balance. It also retrieves
+   * the resultCodeData and sets the imposition value based on the resultCode.
+   */
   private getImpositionToBeRemoved(): void {
     const { rowIndex, formArray, formArrayControls } =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
     const formArrayControl = formArrayControls[rowIndex];
 
-    const resultCode = this.getFormArrayControlValue<string | null>(
+    const resultCode = this.getFormArrayControlValue(
       formArray,
       formArrayControl[`fm_offence_details_result_code`].controlName,
       rowIndex,
-      null,
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.nullDefault,
     );
 
-    this.creditor = this.getFormArrayControlValue<string>(
+    this.creditor = this.getFormArrayControlValue(
       formArray,
       formArrayControl[`fm_offence_details_creditor`].controlName,
       rowIndex,
-      'Not provided',
-    );
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault,
+    ) as string;
 
-    const amountImposed = this.getFormArrayControlValue<number>(
+    const amountImposed = this.getFormArrayControlValue(
       formArray,
       formArrayControl[`fm_offence_details_amount_imposed`].controlName,
       rowIndex,
-      0,
-    );
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault,
+    ) as number;
 
-    const amountPaid = this.getFormArrayControlValue<number>(
+    const amountPaid = this.getFormArrayControlValue(
       formArray,
       formArrayControl[`fm_offence_details_amount_paid`].controlName,
       rowIndex,
       0,
-    );
+    ) as number;
 
     const balance = amountImposed - amountPaid;
 
     if (amountImposed > 0) {
       this.amountImposedString = this.updateMonetaryString(amountImposed);
+    } else {
+      this.amountImposedString = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
     }
 
     if (amountPaid > 0) {
       this.amountPaidString = this.updateMonetaryString(amountPaid);
+    } else {
+      this.amountPaidString = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
     }
 
     if (balance > 0) {
       this.balanceString = this.updateMonetaryString(balance);
+    } else {
+      this.balanceString = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
     }
 
     if (!resultCode) {

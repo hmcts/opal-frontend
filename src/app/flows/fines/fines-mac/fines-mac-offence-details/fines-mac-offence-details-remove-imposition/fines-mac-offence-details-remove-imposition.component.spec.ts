@@ -16,21 +16,19 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveImpositionComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
+  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
 
   beforeEach(async () => {
-    mockOpalFinesService = {
-      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
-      getResultPrettyName: jasmine.createSpy('getResultPrettyName').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
-    };
+    mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getResults', 'getResultPrettyName']);
+    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
+
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
-    mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsRemoveImpositionComponent],
@@ -71,10 +69,14 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
   it('should get imposition to be removed', () => {
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!.rowIndex = 0;
+    mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
+    mockOpalFinesService.getResultPrettyName.and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
+
     component['getImpositionToBeRemoved']();
 
     expect(component.imposition).toEqual(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
     expect(component.creditor).toEqual('Not provided');
+    expect(component.amountImposedString).toEqual('£50.00');
     expect(component.amountPaidString).toEqual('£50.00');
     expect(component.balanceString).toEqual('£50.00');
   });
@@ -86,9 +88,9 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     expect(component.imposition).toEqual('Not provided');
     expect(component.creditor).toEqual('Not provided');
-    expect(component.amountImposedString).toEqual('£50.00');
-    expect(component.amountPaidString).toEqual('£50.00');
-    expect(component.balanceString).toEqual('£50.00');
+    expect(component.amountImposedString).toEqual('£0.00');
+    expect(component.amountPaidString).toEqual('£0.00');
+    expect(component.balanceString).toEqual('£0.00');
   });
 
   it('should confirm removal and update form data', () => {

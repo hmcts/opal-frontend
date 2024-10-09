@@ -44,6 +44,7 @@ import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -192,7 +193,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
           cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
           offenceCodeControl.setValue(cjs_code, { emitEvent: false });
         }),
-        debounceTime(250),
+        debounceTime(FinesMacOffenceDetailsDebounceTime.debounceTime),
       )
       .subscribe((cjs_code: string) => {
         this.populateOffenceHint(cjs_code);

@@ -1,6 +1,7 @@
 import { FormArray, FormGroup } from '@angular/forms';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IAbstractFormArrayRemovalBaseControlValue } from './interfaces/abstract-form-array-removal-base-control-value.interface';
 
 @Component({
   standalone: true,
@@ -10,30 +11,19 @@ export abstract class AbstractFormArrayRemovalComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  /**
-   * Retrieves the value of a specific control within a FormArray at the given rowIndex.
-   * If the control or value is not found, it returns the defaultValue.
-   *
-   * @template T - The type of the control value.
-   * @param {FormArray} formArray - The FormArray containing the control.
-   * @param {string} controlName - The name of the control.
-   * @param {number} rowIndex - The index of the control within the FormArray.
-   * @param {T} defaultValue - The default value to return if the control or value is not found.
-   * @returns {T} - The value of the control or the defaultValue if not found.
-   */
-  protected getFormArrayControlValue<T extends string | number | null>(
+  protected getFormArrayControlValue(
     formArray: FormArray,
     controlName: string,
     rowIndex: number,
-    defaultValue: T,
-  ): T {
+    defaultValue: IAbstractFormArrayRemovalBaseControlValue[keyof IAbstractFormArrayRemovalBaseControlValue],
+  ): IAbstractFormArrayRemovalBaseControlValue[keyof IAbstractFormArrayRemovalBaseControlValue] {
     const value = formArray.controls[rowIndex]?.get(controlName)?.value;
 
     if (typeof value === 'string' && !isNaN(Number(value))) {
-      return Number(value) as T;
+      return Number(value);
     }
 
-    return value !== undefined && value !== null ? (value as T) : defaultValue;
+    return value ?? defaultValue;
   }
 
   /**
