@@ -5,7 +5,9 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_STATE: IFinesMacOffenceDetail
     fm_offence_details_result_code: null,
     fm_offence_details_amount_imposed: null,
     fm_offence_details_amount_paid: null,
+    fm_offence_details_balance_remaining: null,
     fm_offence_details_creditor: null,
     fm_offence_details_needs_creditor: null,
+    fm_offence_details_major_creditor: null,
   },
 ];

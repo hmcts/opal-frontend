@@ -8,7 +8,7 @@ import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/go
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { Observable, map } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
@@ -17,6 +17,7 @@ import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-off
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form';
+import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -43,6 +44,18 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
         return this.createAutoCompleteItemsResults(response);
       }),
     );
+  public readonly majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+    .getMajorCreditors(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .pipe(
+      map((response: IOpalFinesMajorCreditorRefData) => {
+        return this.createAutoCompleteItemsMajorCreditors(response);
+      }),
+    );
+
+  protected groupResultCodeAndMajorCreditorData$ = forkJoin({
+    resultCodeData: this.resultCodeData$,
+    majorCreditorData: this.majorCreditorData$,
+  });
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   public formDataIndex!: number;
@@ -70,6 +83,19 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
       return {
         value: item.result_id,
         name: this.opalFinesService.getResultPrettyName(item),
+      };
+    });
+  }
+
+  private createAutoCompleteItemsMajorCreditors(
+    response: IOpalFinesMajorCreditorRefData,
+  ): IAlphagovAccessibleAutocompleteItem[] {
+    const results = response.refData;
+
+    return results.map((item) => {
+      return {
+        value: item.major_creditor_id,
+        name: this.opalFinesService.getMajorCreditorPrettyName(item),
       };
     });
   }

@@ -45,6 +45,7 @@ import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ti
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
+import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -63,6 +64,7 @@ import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offenc
     GovukRadiosItemComponent,
     GovukCancelLinkComponent,
     GovukTextInputComponent,
+    GovukRadiosConditionalComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,6 +75,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 {
   @Input() public defendantType!: string;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public majorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public formDataIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 

@@ -23,4 +23,8 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlVal
     controlName: 'fm_offence_details_creditor',
     validators: [],
   },
+  {
+    controlName: 'fm_offence_details_major_creditor',
+    validators: [],
+  },
 ];
