@@ -29,6 +29,10 @@ export const FINES_MAC_ROUTING_NESTED_ROUTES: Record<string, IFinesMacRoutingNes
       nextRoute: FINES_MAC_ROUTING_PATHS.children.review,
       buttonText: FINES_MAC_NESTED_BUTTONS.reviewSubmit,
     },
+    addAnotherOffence: {
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.addAnotherOffence,
+    },
     companyDetails: null,
     parentOrGuardianDetails: null,
   },
@@ -61,6 +65,10 @@ export const FINES_MAC_ROUTING_NESTED_ROUTES: Record<string, IFinesMacRoutingNes
       nextRoute: FINES_MAC_ROUTING_PATHS.children.review,
       buttonText: FINES_MAC_NESTED_BUTTONS.reviewSubmit,
     },
+    addAnotherOffence: {
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.addAnotherOffence,
+    },
     companyDetails: null,
   },
   company: {
@@ -83,6 +91,10 @@ export const FINES_MAC_ROUTING_NESTED_ROUTES: Record<string, IFinesMacRoutingNes
     accountCommentsNotes: {
       nextRoute: FINES_MAC_ROUTING_PATHS.children.review,
       buttonText: FINES_MAC_NESTED_BUTTONS.reviewSubmit,
+    },
+    addAnotherOffence: {
+      nextRoute: FINES_MAC_ROUTING_PATHS.children.offenceDetails,
+      buttonText: FINES_MAC_NESTED_BUTTONS.addAnotherOffence,
     },
     personalDetails: null,
     parentOrGuardianDetails: null,

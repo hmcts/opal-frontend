@@ -62,8 +62,11 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   protected checkMandatorySections(): boolean {
     const { courtDetails, personalDetails, employerDetails, offenceDetails, paymentTerms } =
       this.finesService.finesMacState;
-    const details = [courtDetails, personalDetails, employerDetails, offenceDetails, paymentTerms];
-    return details.every((detail) => detail.status === FINES_MAC_STATUS.PROVIDED);
+    const details = [courtDetails, personalDetails, employerDetails, paymentTerms];
+    const offences = offenceDetails.map((offence) => offence.status === FINES_MAC_STATUS.PROVIDED);
+    return (
+      details.every((detail) => detail.status === FINES_MAC_STATUS.PROVIDED) && offences.every((offence) => offence)
+    );
   }
 
   public override ngOnInit(): void {

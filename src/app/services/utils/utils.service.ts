@@ -12,4 +12,13 @@ export class UtilsService {
   public upperCaseFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+
+  /**
+   * Converts the entire string to uppercase.
+   * @param str - The input string.
+   * @returns The input string in uppercase.
+   */
+  public upperCaseAllLetters(str: string): string {
+    return str.toUpperCase();
+  }
 }

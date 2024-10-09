@@ -304,8 +304,17 @@
       </a>
     </ng-container>
     <ng-container status>
+      @let status =
+        finesService.finesMacState.offenceDetails.length === 0
+          ? 'Not provided'
+          : finesService.finesMacState.offenceDetails[0].status;
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.offenceDetails.status }"
+        *ngTemplateOutlet="
+          statusTag;
+          context: {
+            $implicit: status,
+          }
+        "
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>

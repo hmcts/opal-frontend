@@ -19,6 +19,8 @@ import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines
 import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-accounts.interface';
 
 import { Observable, shareReplay } from 'rxjs';
+import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +30,7 @@ export class OpalFines {
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
+  private resultsCache$!: Observable<IOpalFinesResultsRefData>;
 
   /**
    * Searches for courts based on the provided search criteria.
@@ -155,5 +158,31 @@ export class OpalFines {
    */
   public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
     return businessUnit.configurationItems.find((item) => item.item_name === itemName)?.item_value ?? null;
+  }
+
+  /**
+   * Retrieves the Opal fines results reference data based on the provided result codes.
+   * @param resultCodes - An array of result codes to filter the results.
+   * @returns An Observable that emits the Opal fines results reference data.
+   */
+  public getResults(result_ids: string[]): Observable<IOpalFinesResultsRefData> {
+    if (!this.resultsCache$) {
+      this.resultsCache$ = this.http
+        .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, { params: { result_ids } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.resultsCache$;
+  }
+
+  /**
+   * Retrieves the offence data for a given CJS code.
+   * @param cjsCode - The CJS code for the offence.
+   * @returns An Observable that emits the offence data.
+   */
+  public getOffenceByCjsCode(cjsCode: string): Observable<IOpalFinesOffencesRefData> {
+    return this.http
+      .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
+      .pipe(shareReplay(1));
   }
 }

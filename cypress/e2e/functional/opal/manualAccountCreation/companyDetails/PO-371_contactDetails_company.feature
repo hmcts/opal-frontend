@@ -51,9 +51,9 @@ Feature: PO-371 Contact Details for company
     And I enter "<workTelephone>" into the "Work telephone number" field
 
     When I click the "Add offence details" button
-    Then I see "Offence details" on the page header
+    Then I see "Add an offence" on the page header
 
-    When I click the "Return to account details" button
+    When I click on the "Cancel" link
     Then I see "Account details" on the page header
     And I see the status of "Contact details" is "Provided"
 
@@ -78,9 +78,9 @@ Feature: PO-371 Contact Details for company
     And I see "" in the "Work telephone number" field
 
     When I click the "Add offence details" button
-    Then I see "Offence details" on the page header
+    Then I see "Add an offence" on the page header
 
-    When I click the "Return to account details" button
+    When I click on the "Cancel" link
     Then I see "Account details" on the page header
     And I see the status of "Contact details" is "Not provided"
 
@@ -165,9 +165,9 @@ Feature: PO-371 Contact Details for company
     And I enter "<correctWorkTelephone>" into the "Work telephone number" field
 
     When I click the "Add offence details" button
-    Then I see "Offence details" on the page header
+    Then I see "Add an offence" on the page header
 
-    When I click the "Return to account details" button
+    When I click on the "Cancel" link
     Then I see "Account details" on the page header
     And I see the status of "Contact details" is "Provided"
 

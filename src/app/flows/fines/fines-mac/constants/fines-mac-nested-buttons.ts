@@ -10,4 +10,5 @@ export const FINES_MAC_NESTED_BUTTONS = {
   accountDetails: 'Add account details',
   createAccount: 'Create account',
   reviewSubmit: 'Review and submit account details',
+  addAnotherOffence: 'Add another offence',
 };

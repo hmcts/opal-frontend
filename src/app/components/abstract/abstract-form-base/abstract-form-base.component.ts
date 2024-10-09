@@ -2,18 +2,15 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@ang
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
-import { Subject, Subscription, takeUntil } from 'rxjs';
-
+import { Subject, takeUntil } from 'rxjs';
 import { IAbstractFormBaseFieldError } from './interfaces/abstract-form-base-field-error.interface';
 import { IAbstractFormBaseFieldErrors } from './interfaces/abstract-form-base-field-errors.interface';
 import { IAbstractFormBaseFormError } from './interfaces/abstract-form-base-form-error.interface';
 import { IAbstractFormBaseFormErrorSummaryMessage } from './interfaces/abstract-form-base-form-error-summary-message.interface';
 import { IAbstractFormBaseHighPriorityFormError } from './interfaces/abstract-form-base-high-priority-form-error.interface';
 import { IAbstractFormBaseForm } from './interfaces/abstract-form-base-form.interface';
-import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
-import { IAbstractFormArrayControl } from '../interfaces/abstract-form-array-control.interface';
-import { IAbstractFormArrayControls } from '../interfaces/abstract-form-array-controls.interface';
 import { IAbstractFormControlErrorMessage } from '../interfaces/abstract-form-control-error-message.interface';
+import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
 
 @Component({
   standalone: true,
@@ -33,8 +30,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   public formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
   protected fieldErrors!: IAbstractFormBaseFieldErrors;
   protected formSubmitted = false;
-  private formSub!: Subscription;
-  private ngUnsubscribe = new Subject<void>();
+  private readonly ngUnsubscribe = new Subject<void>();
   public formErrors!: IAbstractFormBaseFormError[];
 
   constructor() {}
@@ -316,7 +312,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    * Setup listener for the form value changes and to emit hasUnsavedChanges
    */
   private setupListener(): void {
-    this.formSub = this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+    this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.unsavedChanges.emit(this.hasUnsavedChanges());
     });
   }
@@ -328,7 +324,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    * @param controls - An array of form array control validations.
    * @param index - The index of the form array control.
    */
-  private addControlsToFormGroup(
+  protected addControlsToFormGroup(
     formGroup: FormGroup,
     controls: IAbstractFormArrayControlValidation[],
     index: number,
@@ -347,32 +343,6 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    */
   protected createFormControl(validators: ValidatorFn[], initialValue: string | null = null): FormControl {
     return new FormControl(initialValue, { validators: [...validators] });
-  }
-
-  /**
-   * Creates a new FormArray with the specified validators and controls.
-   *
-   * @param validators - An array of validator functions to apply to the FormArray.
-   * @param controls - An optional array of initial FormControl objects to include in the FormArray.
-   * @returns A new FormArray instance.
-   */
-  protected createFormArray(validators: ValidatorFn[], controls: FormControl[] = []): FormArray {
-    return new FormArray(controls, { validators: [...validators] });
-  }
-
-  /**
-   * Removes a form array control at the specified index from the given array of form array controls.
-   *
-   * @param index - The index of the form array control to remove.
-   * @param formArrayControls - The array of form array controls.
-   * @returns The updated array of form array controls after removing the control.
-   */
-  protected removeFormArrayControl(
-    index: number,
-    formArrayControls: IAbstractFormArrayControls[],
-  ): IAbstractFormArrayControls[] {
-    formArrayControls.splice(index, 1);
-    return formArrayControls;
   }
 
   /**
@@ -460,94 +430,6 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Creates form controls based on the given fields and index.
-   * @param fields - An array of field names.
-   * @param index - The index value.
-   * @returns An object containing form controls configuration.
-   */
-  protected createControls(fields: string[], index: number): { [key: string]: IAbstractFormArrayControl } {
-    return fields.reduce(
-      (controls, field) => ({
-        ...controls,
-        [field]: {
-          inputId: `${field}_${index}`,
-          inputName: `${field}_${index}`,
-          controlName: `${field}_${index}`,
-        },
-      }),
-      {},
-    );
-  }
-
-  /**
-   * Builds an array of form array controls based on the provided parameters.
-   *
-   * @param formControlCount - An array of numbers representing the number of form controls to create for each index.
-   * @param formArrayName - The name of the form array.
-   * @param fieldNames - An array of field names for the form controls.
-   * @param controlValidation - An array of control validation objects for the form controls.
-   * @returns An array of form array controls.
-   */
-  protected buildFormArrayControls(
-    formControlCount: number[],
-    formArrayName: string,
-    fieldNames: string[],
-    controlValidation: IAbstractFormArrayControlValidation[],
-  ): IAbstractFormArrayControls[] {
-    // Directly map each index to a control
-    return formControlCount.map((_element, index) =>
-      this.addFormArrayControls(index, formArrayName, fieldNames, controlValidation),
-    );
-  }
-
-  /**
-   * Removes all form array controls and clears error messages for the specified form array.
-   *
-   * @param formArrayControls - The array of form array controls to be removed.
-   * @param formArrayName - The name of the form array.
-   * @param fieldNames - The names of the fields associated with the form array controls.
-   * @returns An empty array of form array controls.
-   */
-  protected removeAllFormArrayControls(
-    formArrayControls: IAbstractFormArrayControls[],
-    formArrayName: string,
-    fieldNames: string[],
-  ): [] {
-    const control = this.form.get(formArrayName) as FormArray;
-
-    // Clear the error messages...
-    [...formArrayControls].forEach((_element, index) => {
-      this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
-    });
-
-    // Reset the form array controls...
-    control.clear();
-
-    // Return en empty array of form array controls...
-    return [];
-  }
-
-  /**
-   * Removes the form array controls errors for the specified index and field names.
-   * @param index - The index of the form array control.
-   * @param formArrayControls - The array of form array controls.
-   * @param fieldNames - The names of the fields to remove errors from.
-   */
-  protected removeFormArrayControlsErrors(
-    index: number,
-    formArrayControls: IAbstractFormArrayControls[],
-    fieldNames: string[],
-  ): void {
-    const formArrayControl = formArrayControls[index];
-
-    if (formArrayControl) {
-      fieldNames.forEach((field) => {
-        delete this.formControlErrorMessages?.[formArrayControl[field].controlName];
-      });
-    }
-  }
-
-  /**
    * Adds a new form control to the form group.
    *
    * @param controlName - The name of the control to add.
@@ -607,65 +489,6 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
-  }
-
-  /**
-   * Adds form array controls to a form array and returns the form controls.
-   *
-   * @param index - The index at which to add the form array controls.
-   * @param formArrayName - The name of the form array.
-   * @param fieldNames - An array of field names for the form controls.
-   * @param controlValidation - An array of control validation configurations.
-   * @returns An object containing the form controls added to the form array.
-   */
-  public addFormArrayControls(
-    index: number,
-    formArrayName: string,
-    fieldNames: string[],
-    controlValidation: IAbstractFormArrayControlValidation[],
-  ): { [key: string]: IAbstractFormArrayControl } {
-    const formArray = this.form.get(formArrayName) as FormArray;
-    const formArrayFormGroup = new FormGroup({});
-
-    // Create the form controls...
-    const controls = this.createControls(fieldNames, index);
-
-    // Add the controls to the form group...
-    this.addControlsToFormGroup(formArrayFormGroup, controlValidation, index);
-
-    // Add the form group to the form array...
-    formArray.push(formArrayFormGroup);
-
-    // Return the form controls...
-    return controls;
-  }
-
-  /**
-   * Removes a form array control at the specified index and updates the list of form array controls.
-   *
-   * @param index - The index of the form array control to remove.
-   * @param formArrayName - The name of the form array.
-   * @param formArrayControls - The list of form array controls.
-   * @param fieldNames - The names of the fields in the form array control.
-   * @returns The updated list of form array controls.
-   */
-  public removeFormArrayControls(
-    index: number,
-    formArrayName: string,
-    formArrayControls: IAbstractFormArrayControls[],
-    fieldNames: string[],
-  ): IAbstractFormArrayControls[] {
-    // Get the form array...
-    const control = this.form.get(formArrayName) as FormArray;
-
-    // Remove the form array control based on index
-    control.removeAt(index);
-
-    // Then remove the form array controls errors...
-    this.removeFormArrayControlsErrors(index, formArrayControls, fieldNames);
-
-    // Return the new list of form array controls...
-    return this.removeFormArrayControl(index, formArrayControls);
   }
 
   /**
