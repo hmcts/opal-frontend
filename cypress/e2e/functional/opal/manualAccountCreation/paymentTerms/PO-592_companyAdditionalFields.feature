@@ -292,7 +292,7 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     When I select the "Instalments only" radio button
     And I enter "450" into the "Instalment" payment field
     And I select the "Fortnightly" radio button
-    And I enter "13/09/2025" into the "Start date" date field
+    And I enter a date 52 weeks into the future into the "Start date" date field
     And I unselect the "Hold enforcement on account (NOENF)" checkbox
     And I select the "Hold enforcement on account (NOENF)" checkbox
     And I click the "Return to account details" button
@@ -302,6 +302,6 @@ Feature: PO-592 Implement additional fields for payment terms screen - Company
     Then I see "Payment terms" on the page header
     And I see "450" in the "Instalment" payment field
     And I validate the "Fortnightly" radio button is selected
-    And I see "13/09/2025" in the "Start date" payment field
+    And I see a date 52 weeks into the future in the "Start date" date field
     And I see the error message "Enter a reason" at the top of the page
     And I see the error message "Enter a reason" above the "Reason account is on NOENF" field
