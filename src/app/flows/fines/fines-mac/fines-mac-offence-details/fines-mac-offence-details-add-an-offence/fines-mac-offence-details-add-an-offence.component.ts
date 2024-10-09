@@ -107,6 +107,19 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     }
   }
 
+  private checkPaymentTermsAfterSubmit(): void {
+    const { paymentTerms, offenceDetails } = this.finesService.finesMacState;
+
+    if (paymentTerms.formData.fm_payment_terms_has_collection_order) {
+      if (
+        paymentTerms.formData.fm_payment_terms_collection_order_date! <
+        offenceDetails[0].formData.fm_offence_details_date_of_offence!
+      ) {
+        paymentTerms.status = FINES_MAC_STATUS.INCOMPLETE;
+      }
+    }
+  }
+
   /**
    * Handles the submission of the offence details form.
    *
@@ -125,6 +138,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     };
 
     this.updateOffenceDetailsIndex(form);
+    this.checkPaymentTermsAfterSubmit();
 
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);

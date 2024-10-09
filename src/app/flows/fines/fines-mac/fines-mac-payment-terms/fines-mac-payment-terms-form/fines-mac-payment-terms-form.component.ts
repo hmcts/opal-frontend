@@ -48,6 +48,8 @@ import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION }
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
+import { dateAfterSuppliedValidator } from '@validators/date-after-date/date-after-date.validator';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -170,6 +172,19 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     this.rePopulateForm(formData);
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
+
+    if (this.finesService.finesMacState.paymentTerms.status === FINES_MAC_STATUS.INCOMPLETE) {
+      this.form.controls['fm_payment_terms_collection_order_date'].addValidators(
+        dateAfterSuppliedValidator(
+          this.finesService.finesMacState.offenceDetails[0].formData.fm_offence_details_date_of_offence,
+        ),
+      );
+      this.form.controls['fm_payment_terms_collection_order_date'].setErrors({
+        dateAfterSupplied: true,
+      });
+      this.form.updateValueAndValidity();
+      this.handleErrorMessages();
+    }
   }
 
   /**

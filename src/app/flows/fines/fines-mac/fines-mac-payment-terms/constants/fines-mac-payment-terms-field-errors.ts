@@ -24,6 +24,10 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       message: `Date cannot be in the future`,
       priority: 4,
     },
+    dateAfterSupplied: {
+      message: `Date of collection order cannot be before earliest sentence date`,
+      priority: 5,
+    },
   },
   fm_payment_terms_payment_terms: {
     required: {
