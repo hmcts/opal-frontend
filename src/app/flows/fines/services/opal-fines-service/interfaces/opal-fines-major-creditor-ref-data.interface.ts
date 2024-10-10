@@ -3,7 +3,7 @@ export interface IOpalFinesMajorCreditor {
   major_creditor_code: string;
   major_creditor_id: number;
   name: string;
-  postcode: string;
+  postcode: string | null;
 }
 
 export interface IOpalFinesMajorCreditorRefData {

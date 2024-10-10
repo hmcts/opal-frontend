@@ -4,7 +4,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FinesMacOffenceDetailsService } from './services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from './constants/fines-mac-offence-details-draft-state';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from './constants/fines-mac-offence-details-draft-state.constant';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;

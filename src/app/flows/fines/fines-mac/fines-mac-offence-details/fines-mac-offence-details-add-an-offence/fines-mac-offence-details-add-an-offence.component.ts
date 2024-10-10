@@ -3,48 +3,40 @@ import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/cor
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { Observable, forkJoin, map } from 'rxjs';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form';
+import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    GovukButtonComponent,
-    GovukCancelLinkComponent,
-    FinesMacOffenceDetailsAddAnOffenceFormComponent,
-  ],
+  imports: [CommonModule, RouterModule, FinesMacOffenceDetailsAddAnOffenceFormComponent],
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
-  private readonly opalFinesService = inject(OpalFines);
+  private opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  public readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  private resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getResults(this.resultCodeArray)
     .pipe(
       map((response: IOpalFinesResultsRefData) => {
         return this.createAutoCompleteItemsResults(response);
       }),
     );
-  public readonly majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  private majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getMajorCreditors(this.finesService.finesMacState.businessUnit.business_unit_id)
     .pipe(
       map((response: IOpalFinesMajorCreditorRefData) => {

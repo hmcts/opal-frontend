@@ -36,6 +36,17 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         priority: 3,
       },
     },
-    [`fm_offence_details_creditor${indexSuffix}`]: {},
+    [`fm_offence_details_creditor${indexSuffix}`]: {
+      required: {
+        message: 'Select whether major or minor creditor',
+        priority: 1,
+      },
+    },
+    [`fm_offence_details_major_creditor${indexSuffix}`]: {
+      required: {
+        message: 'Enter a major creditor name or code',
+        priority: 1,
+      },
+    },
   };
 };

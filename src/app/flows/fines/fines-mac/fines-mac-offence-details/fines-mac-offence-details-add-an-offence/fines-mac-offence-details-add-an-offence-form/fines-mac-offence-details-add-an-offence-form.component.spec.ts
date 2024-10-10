@@ -7,16 +7,16 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { UtilsService } from '@services/utils/utils.service';
 import { of } from 'rxjs';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac-offence-details-draft-state';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac-offence-details-draft-state.constant';
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-autocomplete-items.mock';
-import { FormArray, FormGroup } from '@angular/forms';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-mac-offence-details-draft-state.mock';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
@@ -25,15 +25,18 @@ import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offenc
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormComponent>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockOpalFinesService: Partial<OpalFines>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getOffenceByCjsCode']);
-    mockOpalFinesService.getOffenceByCjsCode.and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK));
+    mockOpalFinesService = {
+      getOffenceByCjsCode: jasmine
+        .createSpy('getOffenceByCjsCode')
+        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
+    };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
@@ -108,11 +111,42 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should set needsCreditorControl value to false when result_code is not compensation or costs', () => {
     const index = 0;
     const result_code = 'other_result_code';
-    const impositionsFormArray = fixture.componentInstance.form.get('fm_offence_details_impositions') as FormArray;
-    const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
-    const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
+    const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const resultCodeControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_result_code',
+      index,
+    );
+    const needsCreditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_needs_creditor',
+      index,
+    );
 
+    component['resultCodeListener'](index);
+    resultCodeControl.setValue(result_code);
+
+    expect(needsCreditorControl.value).toBe(false);
+  });
+
+  it('should set needsCreditorControl value to false when result_code is not compensation or costs prior to listener', () => {
+    const index = 0;
+    const result_code = 'other_result_code';
+    const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const resultCodeControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_result_code',
+      index,
+    );
+    const needsCreditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_needs_creditor',
+      index,
+    );
+
+    needsCreditorControl.setValue(false);
+
+    component['resultCodeListener'](index);
     resultCodeControl.setValue(result_code);
 
     expect(needsCreditorControl.value).toBe(false);
@@ -134,7 +168,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].formData.fm_offence_details_offence_code =
       'TEST1234';
 
-    mockOpalFinesService.getOffenceByCjsCode.and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK));
     component['initialAddAnOffenceDetailsSetup']();
 
     component.selectedOffenceConfirmation = false;
@@ -213,9 +246,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set errors on offence code control', () => {
+    (mockOpalFinesService.getOffenceByCjsCode as jasmine.Spy).and.returnValue(of({ count: 0, refData: [] }));
+
     const cjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
-    mockOpalFinesService.getOffenceByCjsCode.and.returnValue(of({ count: 0, refData: [] }));
 
     component['populateOffenceHint'](cjsCode);
 
@@ -252,7 +286,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = offenceDetailsDraft;
     mockDateService.toFormat.and.returnValue('01/01/2022');
-    mockOpalFinesService.getOffenceByCjsCode.and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK));
 
     component['initialAddAnOffenceDetailsSetup']();
 
@@ -360,5 +393,108 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.goToAccountDetails();
 
     expect(handleRouteSpy).toHaveBeenCalledWith(expectedRoute, true);
+  });
+
+  it('should test majorCreditorValidation and add validator when add is true', () => {
+    const index = 0;
+    const formGroup = new FormGroup({
+      fm_offence_details_major_creditor: new FormGroup({
+        fm_offence_details_major_creditor_0: new FormControl(''),
+      }),
+    });
+    const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
+      formGroup,
+      'fm_offence_details_major_creditor',
+      0,
+    );
+
+    spyOn(component, 'addFormArrayFormGroupControlValidators');
+    spyOn(component, 'removeFormArrayFormGroupControlValidators');
+
+    component['majorCreditorValidation'](index, true, formGroup);
+
+    expect(component.addFormArrayFormGroupControlValidators).toHaveBeenCalledWith(formArrayFormGroupControl, [
+      Validators.required,
+    ]);
+    expect(component.removeFormArrayFormGroupControlValidators).not.toHaveBeenCalled();
+  });
+
+  it('should test majorCreditorValidation and remove validator when add is false', () => {
+    const index = 0;
+    const formGroup = new FormGroup({
+      fm_offence_details_major_creditor: new FormGroup({
+        fm_offence_details_major_creditor_0: new FormControl('', [Validators.required]),
+      }),
+    });
+    const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
+      formGroup,
+      'fm_offence_details_major_creditor',
+      0,
+    );
+
+    spyOn(component, 'addFormArrayFormGroupControlValidators');
+    spyOn(component, 'removeFormArrayFormGroupControlValidators');
+
+    component['majorCreditorValidation'](index, false, formGroup);
+
+    expect(component.addFormArrayFormGroupControlValidators).not.toHaveBeenCalled();
+    expect(component.removeFormArrayFormGroupControlValidators).toHaveBeenCalledWith(formArrayFormGroupControl);
+  });
+
+  it('should perform major creditor validation when creditor value is major', () => {
+    const index = 0;
+    const creditorValue = 'major';
+    const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const creditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      index,
+    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'majorCreditorValidation');
+
+    component['creditorListener'](index);
+
+    creditorControl.setValue(creditorValue);
+
+    expect(component['majorCreditorValidation']).toHaveBeenCalledWith(index, true, impositionsFormGroup);
+  });
+
+  it('should perform major creditor validation when creditor value is minor', () => {
+    const index = 0;
+    const creditorValue = 'minor';
+    const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const creditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      index,
+    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'majorCreditorValidation');
+
+    component['creditorListener'](index);
+
+    creditorControl.setValue(creditorValue);
+
+    expect(component['majorCreditorValidation']).toHaveBeenCalledWith(index, false, impositionsFormGroup);
+  });
+
+  it('should trigger majorCreditorValidation when the control is already populated when loading the listener', () => {
+    const index = 0;
+    const creditorValue = 'major';
+    const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const creditorControl = component.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      index,
+    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'majorCreditorValidation');
+
+    creditorControl.setValue(creditorValue);
+
+    component['creditorListener'](index);
+
+    expect(component['majorCreditorValidation']).toHaveBeenCalledWith(index, true, impositionsFormGroup);
   });
 });

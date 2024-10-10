@@ -16,22 +16,21 @@ import { DateService } from '@services/date-service/date.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap } from 'rxjs';
+import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap, takeUntil, map } from 'rxjs';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options';
-import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-offences-field-errors';
+import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options.constant';
+import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-offences-field-errors.constant';
 import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacOffenceDetailsState } from '../../interfaces/fines-mac-offence-details-state.interface';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { futureDateValidator } from '@validators/future-date/future-date.validator';
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../constants/fines-mac-offence-details-impositions';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-impositions-field-errors';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes';
-import { CommonModule } from '@angular/common';
+import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../constants/fines-mac-offence-details-impositions.constant';
+import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-impositions-field-errors.constant';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
@@ -46,6 +45,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -162,6 +162,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         tap((offence) => {
           offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
         }),
+        map((response) => response),
       );
 
       this.selectedOffenceConfirmation = true;
@@ -197,6 +198,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
           offenceCodeControl.setValue(cjs_code, { emitEvent: false });
         }),
         debounceTime(FinesMacOffenceDetailsDebounceTime.debounceTime),
+        takeUntil(this['ngUnsubscribe']),
       )
       .subscribe((cjs_code: string) => {
         this.populateOffenceHint(cjs_code);
@@ -234,10 +236,21 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param index - The index of the impositions form group.
    */
   private resultCodeListener(index: number): void {
-    const impositionsFormArray = this.form.get('fm_offence_details_impositions') as FormArray;
-    const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
-    const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
+    const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const resultCodeControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_result_code',
+      index,
+    );
+    const needsCreditorControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_needs_creditor',
+      index,
+    );
+
+    if (needsCreditorControl.value) {
+      this.creditorListener(index);
+    }
 
     resultCodeControl.valueChanges.subscribe((result_code: string) => {
       const needsCreditor =
@@ -245,7 +258,55 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
           result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
       needsCreditorControl.setValue(needsCreditor);
+      if (needsCreditor) {
+        this.creditorListener(index);
+        this.addFormArrayFormGroupControlValidators(needsCreditorControl, [Validators.required]);
+      } else {
+        this.removeFormArrayFormGroupControlValidators(needsCreditorControl);
+      }
     });
+  }
+
+  /**
+   * Listens for changes in the creditor control and performs validation based on the selected value.
+   *
+   * @param index - The index of the form array group.
+   */
+  private creditorListener(index: number): void {
+    const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const creditorControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      index,
+    );
+
+    if (creditorControl.value === 'major' || creditorControl.value === 'minor') {
+      this.majorCreditorValidation(index, creditorControl.value === 'major', impositionsFormGroup);
+    }
+
+    creditorControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((creditor: string) => {
+      this.majorCreditorValidation(index, creditor === 'major', impositionsFormGroup);
+    });
+  }
+
+  /**
+   * Validates the major creditor control in the form group.
+   * @param index - The index of the form group.
+   * @param add - Indicates whether to add or remove validators.
+   * @param formGroup - The form group containing the major creditor control.
+   */
+  private majorCreditorValidation(index: number, add: boolean, formGroup: FormGroup): void {
+    const majorCreditorControl = this.getFormArrayFormGroupControl(
+      formGroup,
+      'fm_offence_details_major_creditor',
+      index,
+    );
+
+    if (add) {
+      this.addFormArrayFormGroupControlValidators(majorCreditorControl, [Validators.required]);
+    } else {
+      this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
+    }
   }
 
   /**

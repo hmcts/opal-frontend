@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-offence-details-routing-paths.constant';
 
 export const routing: Routes = [
   {

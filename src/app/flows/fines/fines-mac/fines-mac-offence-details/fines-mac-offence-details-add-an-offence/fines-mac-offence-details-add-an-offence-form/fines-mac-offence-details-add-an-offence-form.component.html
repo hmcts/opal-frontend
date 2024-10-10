@@ -151,7 +151,7 @@
                           'fm_offence_details_impositions',
                           rowIndex,
                           formArrayControl['fm_offence_details_creditor'].controlName,
-                        ])?.value === creditorOption.key
+                        ])?.value === 'major'
                       ) {
                         <app-alphagov-accessible-autocomplete
                           [control]="
@@ -179,7 +179,7 @@
                           'fm_offence_details_impositions',
                           rowIndex,
                           formArrayControl['fm_offence_details_creditor'].controlName,
-                        ])?.value === creditorOption.key
+                        ])?.value === 'minor'
                       ) {
                         <a class="govuk-link govuk-link--no-visited-state" tabindex="0"> Add minor creditor details </a>
                       }

@@ -2,22 +2,23 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { Observable, first, map } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract-form-array-removal-base/abstract-form-array-removal-base';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names';
+import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names.constant';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state.constant';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
   standalone: true,
-  imports: [GovukButtonComponent, GovukCancelLinkComponent, GovukTableComponent],
+  imports: [CommonModule, GovukButtonComponent, GovukCancelLinkComponent, GovukTableComponent],
   templateUrl: './fines-mac-offence-details-remove-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -28,9 +29,9 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  public readonly resultCodeData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService.getResults(
-    this.resultCodeArray,
-  );
+  public readonly resultCodeData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
+    .getResults(this.resultCodeArray)
+    .pipe(map((response: IOpalFinesResultsRefData) => response));
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   protected removeImposition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;

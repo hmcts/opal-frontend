@@ -7,8 +7,9 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceD
     fm_offence_details_amount_imposed: 200,
     fm_offence_details_amount_paid: 50,
     fm_offence_details_balance_remaining: 150,
-    fm_offence_details_needs_creditor: false,
-    fm_offence_details_creditor: null,
+    fm_offence_details_needs_creditor: true,
+    fm_offence_details_creditor: 'major',
+    fm_offence_details_major_creditor: 'ALDI',
   },
   {
     fm_offence_details_result_code: null,
@@ -17,6 +18,7 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceD
     fm_offence_details_balance_remaining: 0,
     fm_offence_details_needs_creditor: false,
     fm_offence_details_creditor: null,
+    fm_offence_details_major_creditor: null,
   },
 ];
 
