@@ -1,4 +1,5 @@
 import { IFinesMacDefendantPayloadParentGuardian } from '../interfaces/fines-mac-defendant-payload.interface';
+import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD } from './fines-mac-defendant-debtor-details-payload.constant';
 
 export const FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD: IFinesMacDefendantPayloadParentGuardian = {
   company_flag: null,
@@ -18,5 +19,5 @@ export const FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD: IFinesMacDefendantPayl
   telephone_number_mobile: null,
   email_address_1: null,
   email_address_2: null,
-  debtor_detail: null,
+  debtor_detail: FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
 };
