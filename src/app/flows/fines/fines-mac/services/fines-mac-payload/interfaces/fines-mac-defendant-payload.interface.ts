@@ -1,0 +1,79 @@
+export interface IFinesMacDefendantPayloadDebtorDetailAlias {
+  alias_forenames: string | null;
+  alias_surname: string | null;
+  alias_company_name: string | null;
+}
+
+export interface IFinesMacDefendantPayloadDebtorDetail {
+  vehicle_make: string | null;
+  vehicle_registration_mark: string | null;
+  document_language: string | null;
+  hearing_language: string | null;
+  employee_reference: string | null;
+  employer_company_name: string | null;
+  employer_address_line_1: string | null;
+  employer_address_line_2: string | null;
+  employer_address_line_3: string | null;
+  employer_address_line_4: string | null;
+  employer_address_line_5: string | null;
+  employer_post_code: string | null;
+  employer_telephone_number: string | null;
+  employer_email_address: string | null;
+  aliases: IFinesMacDefendantPayloadDebtorDetailAlias[] | null;
+}
+
+export interface IFinesMacDefendantPayloadParentGuardian {
+  company_flag: boolean | null;
+  company_name: string | null;
+  surname: string | null;
+  forenames: string | null;
+  dob: string | null;
+  national_insurance_number: string | null;
+  address_line_1: string | null;
+  address_line_2: string | null;
+  address_line_3: string | null;
+  address_line_4: string | null;
+  address_line_5: string | null;
+  post_code: string | null;
+  telephone_number_home: string | null;
+  telephone_number_business: string | null;
+  telephone_number_mobile: string | null;
+  email_address_1: string | null;
+  email_address_2: string | null;
+  debtor_detail: IFinesMacDefendantPayloadDebtorDetail | null;
+}
+
+export interface IFinesMacDefendantPayload {
+  company_flag: boolean | null;
+  title: string | null;
+  surname: string | null;
+  forenames: string | null;
+  organisation_name: string | null;
+  dob: string | null;
+  address_line_1: string | null;
+  address_line_2: string | null;
+  address_line_3: string | null;
+  address_line_4: string | null;
+  address_line_5: string | null;
+  post_code: string | null;
+  telephone_number_home: string | null;
+  telephone_number_business: string | null;
+  telephone_number_mobile: string | null;
+  email_address_1: string | null;
+  email_address_2: string | null;
+  national_insurance_number: string | null;
+  driving_licence_number: string | null;
+  pnc_id: string | null;
+  nationality_1: string | null;
+  nationality_2: string | null;
+  ethnicity_self_defined: string | null;
+  ethnicity_observed: string | null;
+  cro_number: string | null;
+  occupation: string | null;
+  gender: string | null;
+  custody_status: string | null;
+  prison_number: string | null;
+  interpreter_lang: string | null;
+  debtor_detail: IFinesMacDefendantPayloadDebtorDetail | null;
+  parent_guardian: IFinesMacDefendantPayloadParentGuardian | null;
+}
