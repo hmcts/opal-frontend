@@ -509,7 +509,9 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.setupListener();
+    if (this.form) {
+      this.setupListener();
+    }
   }
 
   public ngOnDestroy(): void {

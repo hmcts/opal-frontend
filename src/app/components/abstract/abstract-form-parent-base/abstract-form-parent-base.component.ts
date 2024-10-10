@@ -30,8 +30,16 @@ export abstract class AbstractFormParentBaseComponent {
    *
    * @param route - The route to navigate to.
    */
-  protected routerNavigate(route: string): void {
-    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  protected routerNavigate(route: string, nonRelative: boolean = false, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (nonRelative) {
+      this.router.navigate([route]);
+    } else {
+      this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+    }
   }
 
   /**

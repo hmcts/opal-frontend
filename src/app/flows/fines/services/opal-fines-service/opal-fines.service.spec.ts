@@ -3,9 +3,15 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body.interface';
-import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import {
+  IOpalFinesCourt,
+  IOpalFinesCourtRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesGetDefendantAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-get-defendant-account-params.interface';
-import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import {
+  IOpalFinesLocalJusticeArea,
+  IOpalFinesLocalJusticeAreaRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court.interface';
 import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body.interface';
 import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body.interface';
@@ -26,7 +32,7 @@ import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/o
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from './mocks/opal-fines-offences-ref-data.mock';
-import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from './mocks/opal-fines-results-ref-data.mock';
 
 describe('OpalFines', () => {
@@ -162,6 +168,14 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should return the court name and code in a pretty format', () => {
+    const court: IOpalFinesCourt = OPAL_FINES_COURT_REF_DATA_MOCK.refData[0];
+
+    const result = service.getCourtPrettyName(court);
+
+    expect(result).toEqual(`${court.name} (${court.court_code})`);
+  });
+
   it('should GET the defendant account', () => {
     const params: IOpalFinesGetDefendantAccountParams = {
       businessUnitId: 1,
@@ -285,6 +299,14 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should return the local justice area name and code in a pretty format', () => {
+    const localJusticeArea: IOpalFinesLocalJusticeArea = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData[0];
+
+    const result = service.getLocalJusticeAreaPrettyName(localJusticeArea);
+
+    expect(result).toEqual(`${localJusticeArea.name} (${localJusticeArea.lja_code})`);
+  });
+
   it('should return the item value for a given configuration item name', () => {
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     const expectedValue = 'Item1';
@@ -335,6 +357,14 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(expectedUrl);
+  });
+
+  it('should return the result name and code in a pretty format', () => {
+    const result: IOpalFinesResults = OPAL_FINES_RESULTS_REF_DATA_MOCK.refData[0];
+
+    const prettyName = service.getResultPrettyName(result);
+
+    expect(prettyName).toEqual(`${result.result_title} (${result.result_id})`);
   });
 
   it('should send a GET request to offences ref data API', () => {

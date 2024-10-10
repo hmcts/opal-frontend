@@ -101,7 +101,7 @@ Then('I see {string} text on the page', (text: string) => {
 });
 
 Then('I do not see {string} text on the page', (text: string) => {
-  cy.get('legend').should('not.contain.text', text);
+  cy.contains(text).should('not.exist', text);
 });
 
 When('I see {string} text under the {string} field', (text: string, inputField: string) => {

@@ -57,8 +57,8 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
 
     return localJusticeAreas.map((item) => {
       return {
-        value: `${item.name} (${item.lja_code})`,
-        name: `${item.name} (${item.lja_code})`,
+        value: item.local_justice_area_id,
+        name: this.opalFinesService.getLocalJusticeAreaPrettyName(item),
       };
     });
   }
@@ -73,8 +73,8 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
 
     return courts.map((item) => {
       return {
-        value: `${item.name} (${item.court_code})`,
-        name: `${item.name} (${item.court_code})`,
+        value: item.court_id,
+        name: this.opalFinesService.getCourtPrettyName(item),
       };
     });
   }
