@@ -26,6 +26,9 @@ import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD } from './constants/fi
 import { IFinesMacIndividualDefendant } from './interfaces/fines-mac-individual-defendant.interface';
 import { IFinesMacIndividualDefendantDebtorDetails } from './interfaces/fines-mac-individual-defendant-debtor-details.interface';
 import { IFinesMacIndividualDefendantDebtorDetailsAlias } from './interfaces/fines-mac-individual-defendant-debtor-details-alias.interface';
+import { IFinesMacCompanyDefendant } from './interfaces/fines-mac-company-defendant.interface';
+import { IFinesMacCompanyDefendantDebtorDetails } from './interfaces/fines-mac-company-defendant-debtor-details.interface';
+import { IFinesMacCompanyDefendantDebtorDetailsAlias } from './interfaces/fines-mac-company-defendant-debtor-details-alias.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -129,52 +132,75 @@ export class FinesMacPayloadService {
     };
   }
 
-  // private buildCompanyDefendantDebtorDetailsAliases(
-  //   aliases: IFinesMacCompanyDetailsAliasState[],
-  // ): IFinesMacDefendantPayloadDebtorDetailAlias[] {
-  //   return aliases.map((alias, index) => {
-  //     const companyNameKey =
-  //       `fm_company_details_alias_organisation_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
-  //     return {
-  //       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
-  //       alias_company_name: alias[companyNameKey] || null,
-  //     };
-  //   });
-  // }
+  private buildCompanyDefendantDebtorDetailsAliases(
+    aliases: IFinesMacCompanyDetailsAliasState[],
+  ): IFinesMacCompanyDefendantDebtorDetailsAlias[] {
+    return aliases.map((alias, index) => {
+      const companyNameKey =
+        `fm_company_details_alias_organisation_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
+      return {
+        alias_company_name: alias[companyNameKey] || null,
+      };
+    });
+  }
 
-  // private buildCompanyDefendantDebtorDetails(
-  //   companyDetailsState: IFinesMacCompanyDetailsState,
-  //   languagePreferencesState: IFinesMacLanguagePreferencesState,
-  // ) {
-  //   return {
-  //     ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
-  //     document_language: languagePreferencesState['fm_language_preferences_document_language'],
-  //     hearing_language: languagePreferencesState['fm_language_preferences_hearing_language'],
-  //     aliases: this.buildCompanyDefendantDebtorDetailsAliases(companyDetailsState['fm_company_details_aliases']),
-  //   };
-  // }
+  private buildCompanyDefendantDebtorDetails(
+    companyDetailsState: IFinesMacCompanyDetailsState,
+    languagePreferencesState: IFinesMacLanguagePreferencesState,
+  ): IFinesMacCompanyDefendantDebtorDetails {
+    return {
+      document_language: languagePreferencesState['fm_language_preferences_document_language'],
+      hearing_language: languagePreferencesState['fm_language_preferences_hearing_language'],
+      aliases: this.buildCompanyDefendantDebtorDetailsAliases(companyDetailsState['fm_company_details_aliases']),
+    };
+  }
 
-  // private buildCompanyDefendant(
-  //   companyDetailsState: IFinesMacCompanyDetailsState,
-  //   contactDetailsState: IFinesMacContactDetailsState,
-  //   languagePreferencesState: IFinesMacLanguagePreferencesState,
-  // ): IFinesMacDefendantPayload {
-  //   return {
-  //     ...FINES_MAC_DEFENDANT_PAYLOAD,
-  //     company_flag: true,
-  //     organisation_name: companyDetailsState['fm_company_details_organisation_name'],
-  //     address_line_1: companyDetailsState['fm_company_details_address_line_1'],
-  //     address_line_2: companyDetailsState['fm_company_details_address_line_2'],
-  //     address_line_3: companyDetailsState['fm_company_details_address_line_3'],
-  //     post_code: companyDetailsState['fm_company_details_postcode'],
-  //     telephone_number_home: contactDetailsState['fm_contact_details_telephone_number_home'],
-  //     telephone_number_business: contactDetailsState['fm_contact_details_telephone_number_business'],
-  //     telephone_number_mobile: contactDetailsState['fm_contact_details_telephone_number_mobile'],
-  //     email_address_1: contactDetailsState['fm_contact_details_email_address_1'],
-  //     email_address_2: contactDetailsState['fm_contact_details_email_address_2'],
-  //     debtor_detail: this.buildCompanyDefendantDebtorDetails(companyDetailsState, languagePreferencesState),
-  //   };
-  // }
+  private buildCompanyDefendant(
+    companyDetailsState: IFinesMacCompanyDetailsState,
+    contactDetailsState: IFinesMacContactDetailsState,
+    languagePreferencesState: IFinesMacLanguagePreferencesState,
+  ): IFinesMacCompanyDefendant {
+    return {
+      company_flag: true,
+      organisation_name: companyDetailsState['fm_company_details_organisation_name'],
+      address_line_1: companyDetailsState['fm_company_details_address_line_1'],
+      address_line_2: companyDetailsState['fm_company_details_address_line_2'],
+      address_line_3: companyDetailsState['fm_company_details_address_line_3'],
+      post_code: companyDetailsState['fm_company_details_postcode'],
+      telephone_number_home: contactDetailsState['fm_contact_details_telephone_number_home'],
+      telephone_number_business: contactDetailsState['fm_contact_details_telephone_number_business'],
+      telephone_number_mobile: contactDetailsState['fm_contact_details_telephone_number_mobile'],
+      email_address_1: contactDetailsState['fm_contact_details_email_address_1'],
+      email_address_2: contactDetailsState['fm_contact_details_email_address_2'],
+      debtor_detail: this.buildCompanyDefendantDebtorDetails(companyDetailsState, languagePreferencesState),
+    };
+  }
+
+  private applyCompanyDefendantBasePayload(defendant: IFinesMacCompanyDefendant): IFinesMacDefendantPayload {
+    // We want to apply the base payload files to the defendant object so that all the fields are present
+
+    // Apply the base payload to the aliases so that all the fields are present
+    const aliases: IFinesMacDefendantPayloadDebtorDetailAlias[] =
+      defendant.debtor_detail.aliases?.map((alias) => ({
+        ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
+        ...alias,
+      })) || [];
+
+    // Apply the base payload to the debtor detail so that all the fields are present
+    // and the aliases are included
+    const debtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
+      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
+      ...defendant.debtor_detail,
+      aliases: aliases,
+    };
+
+    // Apply the base payload to the defendant so that all the fields are present
+    return {
+      ...FINES_MAC_DEFENDANT_PAYLOAD,
+      ...defendant,
+      debtor_detail: debtorDetail,
+    };
+  }
 
   // private buildParentGuardianDebtorDetailsAliases(
   //   aliases: IFinesMacParentGuardianDetailsAliasState[],
@@ -322,24 +348,26 @@ export class FinesMacPayloadService {
     this.initialSetup(accountDetailsState);
 
     // if (this.defendantType === 'parentOrGuardianToPay') {
-    //   defendant = this.buildParentGuardianDefendant(
-    //     personalDetailsState,
-    //     contactDetailsState,
-    //     employerDetailsState,
-    //     parentGuardianDetailsState,
-    //     languagePreferencesState,
-    //   );
+    // defendant = this.buildParentGuardianDefendant(
+    //   personalDetailsState,
+    //   contactDetailsState,
+    //   employerDetailsState,
+    //   parentGuardianDetailsState,
+    //   languagePreferencesState,
+    // );
     // } else if (this.defendantType === 'company') {
-    //   defendant = this.buildCompanyDefendant(companyDetailsState, contactDetailsState, languagePreferencesState);
-    // } else {
-    defendant = this.applyIndividualDefendantBasePayload(
-      this.buildIndividualDefendant(
-        personalDetailsState,
-        contactDetailsState,
-        employerDetailsState,
-        languagePreferencesState,
-      ),
+    defendant = this.applyCompanyDefendantBasePayload(
+      this.buildCompanyDefendant(companyDetailsState, contactDetailsState, languagePreferencesState),
     );
+    // } else {
+    //   defendant = this.applyIndividualDefendantBasePayload(
+    //     this.buildIndividualDefendant(
+    //       personalDetailsState,
+    //       contactDetailsState,
+    //       employerDetailsState,
+    //       languagePreferencesState,
+    //     ),
+    //   );
     // }
 
     return {
