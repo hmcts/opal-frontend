@@ -31,7 +31,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     And I enter "20/05/2024" into the "Date of collection order" date field
     When I select the "Pay in full" radio button
     And I see "For example, 31/01/2023" hint text above the "Enter pay by date" date picker
-    And I enter "12/09/2023" into the "Enter pay by date" date field
+    And I enter a date 52 weeks into the past into the "Enter pay by date" date field
 
     Examples:
       | dateOfBirth |
@@ -49,7 +49,7 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     And I select the "Make collection order today" checkbox
     When I select the "Pay in full" radio button
     And I see "For example, 31/01/2023" hint text above the "Enter pay by date" date picker
-    And I enter "12/09/2023" into the "Enter pay by date" date field
+    And I enter a date 52 weeks into the past into the "Enter pay by date" date field
 
   Scenario: AC4 -negative: If the user has not selected a value for the 'Has a collection order been made?' field and clicks either the 'Return to account details' or 'Add account comments and notes' buttons
 
@@ -108,22 +108,22 @@ Feature: PO-471 Collection Order fields to Payment Terms screen (Adult or youth 
     And I click on the "Payment terms" link
 
     And I select the "Yes" radio button under the "Has a collection order been made?" section
-    And I enter "01/02/2026" into the "Date of collection order" date field
+    And I enter a date 104 weeks into the future into the "Date of collection order" date field
     And I click the "Return to account details" button
 
     Then I see the error message "Date cannot be in the future" at the top of the page
 
 #This scenario has descopeed as new requirement raised on PO-808
-  # Scenario: AC6d -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
+# Scenario: AC6d -negative: If the user has selected "Yes" for 'Has a collection order been made?' and enters a date that doesn't adhere to validation
 
-  #   And I click the "Return to account details" button
-  #   Then I see the status of "Personal details" is "Provided"
-  #   And I click on the "Payment terms" link
+#   And I click the "Return to account details" button
+#   Then I see the status of "Personal details" is "Provided"
+#   And I click on the "Payment terms" link
 
-  #   And I select the "Yes" radio button under the "Has a collection order been made?" section
-  #   And I enter "01/02/1988" into the "Date of collection order" date field
-  #   And I click the "Return to account details" button
+#   And I select the "Yes" radio button under the "Has a collection order been made?" section
+#   And I enter "01/02/1988" into the "Date of collection order" date field
+#   And I click the "Return to account details" button
 
-  #   Then I see the error message "Date cannot be 2003 or earlier" at the top of the page
+#   Then I see the error message "Date cannot be 2003 or earlier" at the top of the page
 
 
