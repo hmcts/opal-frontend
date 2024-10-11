@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
@@ -26,7 +26,7 @@ import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abst
 })
 export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
-  implements OnInit, OnDestroy
+  implements OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
@@ -37,7 +37,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     .pipe(tap((response) => (this.resultCode = response)));
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-  protected removeImposition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+  protected draftOffenceDetailsState = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
 
   public imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
   public creditor = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
@@ -62,7 +62,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    * @param formArray - The form array containing the controls.
    * @param formArrayControls - The array of form array controls.
    */
-  private getImpositionToBeRemoved(
+  public getImpositionToBeRemoved(
     rowIndex: number,
     formArray: FormArray,
     formArrayControls: IAbstractFormArrayControls[],
@@ -133,7 +133,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    * @param formArray - The form array containing the offence details.
    */
   public confirmRemoval(rowIndex: number, formArray: FormArray): void {
-    const { formData } = this.removeImposition.offenceDetailsDraft[0];
+    const { formData } = this.draftOffenceDetailsState.offenceDetailsDraft[0];
 
     this.removeControlAndRenumber(
       formArray,
@@ -147,17 +147,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);
   }
 
-  public ngOnInit(): void {
-    if (this.removeImposition.removeImposition) {
-      this.getImpositionToBeRemoved(
-        this.removeImposition.removeImposition.rowIndex,
-        this.removeImposition.removeImposition.formArray,
-        this.removeImposition.removeImposition.formArrayControls,
-      );
-    }
-  }
-
   public ngOnDestroy(): void {
-    this.removeImposition = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    this.draftOffenceDetailsState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
   }
 }

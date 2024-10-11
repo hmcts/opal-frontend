@@ -51,19 +51,19 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsRemoveImpositionComponent);
     component = fixture.componentInstance;
 
-    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     component.resultCode = OPAL_FINES_RESULTS_REF_DATA_MOCK;
 
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     expect(component).toBeTruthy();
   });
 
   it('should have state and populate resultCodeData$', () => {
-    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     expect(component['resultCodeData$']).not.toBeUndefined();
   });
 
@@ -78,7 +78,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should get imposition to be removed', () => {
-    const { rowIndex, formArray, formArrayControls } = component['removeImposition'].removeImposition!;
+    const { rowIndex, formArray, formArrayControls } = component['draftOffenceDetailsState'].removeImposition!;
     fixture.detectChanges();
     mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
 
@@ -103,7 +103,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
     spyOn(component, 'handleRoute');
-    const { rowIndex, formArray } = component['removeImposition'].removeImposition!;
+    const { rowIndex, formArray } = component['draftOffenceDetailsState'].removeImposition!;
     fixture.detectChanges();
 
     component.confirmRemoval(rowIndex, formArray);

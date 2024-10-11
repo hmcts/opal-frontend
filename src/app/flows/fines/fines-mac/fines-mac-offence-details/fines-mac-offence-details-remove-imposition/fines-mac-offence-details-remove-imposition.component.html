@@ -1,5 +1,12 @@
 @if (resultCodeData$ | async) {
-  @if (removeImposition.removeImposition) {
+  @if (draftOffenceDetailsState.removeImposition) {
+    {{
+      getImpositionToBeRemoved(
+        draftOffenceDetailsState.removeImposition.rowIndex,
+        draftOffenceDetailsState.removeImposition.formArray,
+        draftOffenceDetailsState.removeImposition.formArrayControls
+      )
+    }}
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Are you sure you want to remove this imposition?</h1>
       <app-govuk-table>
@@ -33,7 +40,10 @@
             buttonId="confirmDeletion"
             buttonClasses="govuk-button--warning"
             (buttonClickEvent)="
-              confirmRemoval(removeImposition.removeImposition.rowIndex, removeImposition.removeImposition.formArray)
+              confirmRemoval(
+                draftOffenceDetailsState.removeImposition.rowIndex,
+                draftOffenceDetailsState.removeImposition.formArray
+              )
             "
           >
             Yes - remove imposition

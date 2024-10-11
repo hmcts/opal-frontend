@@ -25,18 +25,18 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
-  private opalFinesService = inject(OpalFines);
+  private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  private resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getResults(this.resultCodeArray)
     .pipe(
       map((response: IOpalFinesResultsRefData) => {
         return this.createAutoCompleteItemsResults(response);
       }),
     );
-  private majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  private readonly majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getMajorCreditors(this.finesService.finesMacState.businessUnit.business_unit_id)
     .pipe(
       map((response: IOpalFinesMajorCreditorRefData) => {
@@ -121,7 +121,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
       this.formDataIndex = 0;
       this.finesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
     } else {
-      this.formDataIndex = this.finesService.finesMacState.offenceDetails.length + 1;
+      this.formDataIndex = this.finesService.finesMacState.offenceDetails.length - 1;
     }
   }
 
@@ -137,7 +137,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      offenceDetails: [...this.finesService.finesMacState.offenceDetails],
       unsavedChanges: false,
       stateChanges: true,
     };
