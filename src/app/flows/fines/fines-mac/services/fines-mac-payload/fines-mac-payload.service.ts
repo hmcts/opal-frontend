@@ -42,6 +42,83 @@ export class FinesMacPayloadService {
   private defendantType!: string | null;
   private accountType!: string | null;
 
+  /**
+   * Applies base payloads to an individual or company defendant to ensure all fields are present.
+   *
+   * This method takes a defendant object, which can be either an individual or a company,
+   * and applies base payloads to its properties. This ensures that all required fields are
+   * present in the defendant object.
+   *
+   * @param defendant - The defendant object, which can be either an individual or a company.
+   * @returns The defendant payload with all required fields populated.
+   */
+  private applyBasePayloadsToIndividualOrCompanyDefendant(
+    defendant: IFinesMacIndividualDefendant | IFinesMacCompanyDefendant,
+  ): IFinesMacDefendantPayload {
+    // We want to apply the base payload files to the defendant object so that all the fields are present
+
+    // Apply the base payload to the aliases so that all the fields are present
+    const aliases: IFinesMacDefendantPayloadDebtorDetailAlias[] =
+      defendant.debtor_detail.aliases?.map((alias) => ({
+        ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
+        ...alias,
+      })) || [];
+
+    // Apply the base payload to the debtor detail so that all the fields are present
+    // and the aliases are included
+    const debtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
+      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
+      ...defendant.debtor_detail,
+      aliases: aliases,
+    };
+
+    // Apply the base payload to the defendant so that all the fields are present
+    return {
+      ...FINES_MAC_DEFENDANT_PAYLOAD,
+      ...defendant,
+      debtor_detail: debtorDetail,
+    };
+  }
+
+  /**
+   * Applies base payloads to the parent guardian defendant object to ensure all fields are present.
+   *
+   * This function takes a `IFinesMacParentGuardianDefendant` object and merges it with predefined
+   * base payloads to ensure that all necessary fields are populated. It specifically handles the
+   * `debtor_detail` and `aliases` fields within the `parent_guardian` property.
+   *
+   * @param defendant - The parent guardian defendant object to which the base payloads will be applied.
+   * @returns A new `IFinesMacDefendantPayload` object with the base payloads applied.
+   */
+  private applyBasePayloadsToParentGuardianDefendant(
+    defendant: IFinesMacParentGuardianDefendant,
+  ): IFinesMacDefendantPayload {
+    // We want to apply the base payload files to the defendant object so that all the fields are present
+
+    const parentGuardianDebtorAliases: IFinesMacDefendantPayloadDebtorDetailAlias[] =
+      defendant.parent_guardian.debtor_detail.aliases?.map((alias) => ({
+        ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
+        ...alias,
+      })) || [];
+
+    const parentGuardianDebtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
+      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
+      ...defendant.parent_guardian.debtor_detail,
+      aliases: parentGuardianDebtorAliases,
+    };
+
+    // Apply the base payload to the defendant so that all the fields are present
+    return {
+      ...FINES_MAC_DEFENDANT_PAYLOAD,
+      ...defendant,
+      parent_guardian: {
+        ...FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD,
+        ...defendant.parent_guardian,
+        debtor_detail: parentGuardianDebtorDetail,
+      },
+    };
+  }
+
   private buildIndividualDefendantDebtorDetailsAliases(
     aliases: IFinesMacPersonalDetailsAliasState[],
   ): IFinesMacIndividualDefendantDebtorDetailsAlias[] {
@@ -109,32 +186,6 @@ export class FinesMacPayloadService {
     };
   }
 
-  private applyIndividualDefendantBasePayload(defendant: IFinesMacIndividualDefendant): IFinesMacDefendantPayload {
-    // We want to apply the base payload files to the defendant object so that all the fields are present
-
-    // Apply the base payload to the aliases so that all the fields are present
-    const aliases: IFinesMacDefendantPayloadDebtorDetailAlias[] =
-      defendant.debtor_detail.aliases?.map((alias) => ({
-        ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
-        ...alias,
-      })) || [];
-
-    // Apply the base payload to the debtor detail so that all the fields are present
-    // and the aliases are included
-    const debtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
-      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
-      ...defendant.debtor_detail,
-      aliases: aliases,
-    };
-
-    // Apply the base payload to the defendant so that all the fields are present
-    return {
-      ...FINES_MAC_DEFENDANT_PAYLOAD,
-      ...defendant,
-      debtor_detail: debtorDetail,
-    };
-  }
-
   private buildCompanyDefendantDebtorDetailsAliases(
     aliases: IFinesMacCompanyDetailsAliasState[],
   ): IFinesMacCompanyDefendantDebtorDetailsAlias[] {
@@ -176,32 +227,6 @@ export class FinesMacPayloadService {
       email_address_1: contactDetailsState['fm_contact_details_email_address_1'],
       email_address_2: contactDetailsState['fm_contact_details_email_address_2'],
       debtor_detail: this.buildCompanyDefendantDebtorDetails(companyDetailsState, languagePreferencesState),
-    };
-  }
-
-  private applyCompanyDefendantBasePayload(defendant: IFinesMacCompanyDefendant): IFinesMacDefendantPayload {
-    // We want to apply the base payload files to the defendant object so that all the fields are present
-
-    // Apply the base payload to the aliases so that all the fields are present
-    const aliases: IFinesMacDefendantPayloadDebtorDetailAlias[] =
-      defendant.debtor_detail.aliases?.map((alias) => ({
-        ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
-        ...alias,
-      })) || [];
-
-    // Apply the base payload to the debtor detail so that all the fields are present
-    // and the aliases are included
-    const debtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
-      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
-      ...defendant.debtor_detail,
-      aliases: aliases,
-    };
-
-    // Apply the base payload to the defendant so that all the fields are present
-    return {
-      ...FINES_MAC_DEFENDANT_PAYLOAD,
-      ...defendant,
-      debtor_detail: debtorDetail,
     };
   }
 
@@ -302,33 +327,6 @@ export class FinesMacPayloadService {
     };
   }
 
-  private applyParentGuardianBasePayload(defendant: IFinesMacParentGuardianDefendant): IFinesMacDefendantPayload {
-    // We want to apply the base payload files to the defendant object so that all the fields are present
-
-    const parentGuardianDebtorAliases =
-      defendant.parent_guardian.debtor_detail.aliases?.map((alias) => ({
-        ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
-        ...alias,
-      })) || [];
-
-    const parentGuardianDebtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
-      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
-      ...defendant.parent_guardian.debtor_detail,
-      aliases: parentGuardianDebtorAliases,
-    };
-
-    // Apply the base payload to the defendant so that all the fields are present
-    return {
-      ...FINES_MAC_DEFENDANT_PAYLOAD,
-      ...defendant,
-      parent_guardian: {
-        ...FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD,
-        ...defendant.parent_guardian,
-        debtor_detail: parentGuardianDebtorDetail,
-      },
-    };
-  }
-
   private initialSetup(accountDetailsState: IFinesMacAccountDetailsState): void {
     const {
       fm_create_account_defendant_type: defendantType,
@@ -368,7 +366,7 @@ export class FinesMacPayloadService {
     this.initialSetup(accountDetailsState);
 
     if (this.defendantType === 'parentOrGuardianToPay') {
-      defendant = this.applyParentGuardianBasePayload(
+      defendant = this.applyBasePayloadsToParentGuardianDefendant(
         this.buildParentGuardianDefendant(
           personalDetailsState,
           contactDetailsState,
@@ -378,11 +376,11 @@ export class FinesMacPayloadService {
         ),
       );
     } else if (this.defendantType === 'company') {
-      defendant = this.applyCompanyDefendantBasePayload(
+      defendant = this.applyBasePayloadsToIndividualOrCompanyDefendant(
         this.buildCompanyDefendant(companyDetailsState, contactDetailsState, languagePreferencesState),
       );
     } else {
-      defendant = this.applyIndividualDefendantBasePayload(
+      defendant = this.applyBasePayloadsToIndividualOrCompanyDefendant(
         this.buildIndividualDefendant(
           personalDetailsState,
           contactDetailsState,
