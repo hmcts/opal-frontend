@@ -11,22 +11,23 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names.constant';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveImpositionComponent>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockOpalFinesService: Partial<OpalFines>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getResults', 'getResultPrettyName']);
-    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
-
+    mockOpalFinesService = {
+      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
+      getResultPrettyName: jasmine.createSpy('getResults').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
+    };
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
     await TestBed.configureTestingModule({
@@ -49,15 +50,21 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsRemoveImpositionComponent);
     component = fixture.componentInstance;
+
+    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    component.resultCode = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+
     fixture.detectChanges();
   });
 
-  beforeEach(() => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+  it('should create', () => {
+    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    expect(component).toBeTruthy();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should have state and populate resultCodeData$', () => {
+    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    expect(component['resultCodeData$']).not.toBeUndefined();
   });
 
   it('should update monetary string correctly', () => {
@@ -70,11 +77,20 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(monetaryString).toEqual(expectedMonetaryString);
   });
 
-  it('should get imposition to be removed when result code is null', () => {
-    component['removeImposition'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    component['removeImposition'].removeImposition!.rowIndex = 1;
+  it('should get imposition to be removed', () => {
+    const { rowIndex, formArray, formArrayControls } = component['removeImposition'].removeImposition!;
+    fixture.detectChanges();
+    mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
 
-    component['getImpositionToBeRemoved']();
+    component['getImpositionToBeRemoved'](rowIndex, formArray, formArrayControls);
+
+    expect(component.imposition).toEqual(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
+    expect(component.creditor).toEqual('major');
+    expect(component.amountImposedString).toEqual('£50.00');
+    expect(component.amountPaidString).toEqual('£50.00');
+    expect(component.balanceString).toEqual('£50.00');
+
+    component['getImpositionToBeRemoved'](1, formArray, formArrayControls);
 
     expect(component.imposition).toEqual('Not provided');
     expect(component.creditor).toEqual('Not provided');
@@ -87,10 +103,10 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
     spyOn(component, 'handleRoute');
-    const { rowIndex, formArray } =
-      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
+    const { rowIndex, formArray } = component['removeImposition'].removeImposition!;
+    fixture.detectChanges();
 
-    component.confirmRemoval();
+    component.confirmRemoval(rowIndex, formArray);
 
     expect(component['removeControlAndRenumber']).toHaveBeenCalledWith(
       formArray,

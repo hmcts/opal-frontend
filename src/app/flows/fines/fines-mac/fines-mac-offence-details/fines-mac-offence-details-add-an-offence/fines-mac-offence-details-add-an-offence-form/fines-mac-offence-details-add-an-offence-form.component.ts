@@ -252,19 +252,21 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       this.creditorListener(index);
     }
 
-    resultCodeControl.valueChanges.subscribe((result_code: string) => {
-      const needsCreditor =
-        result_code &&
-        (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
-          result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
-      needsCreditorControl.setValue(needsCreditor);
-      if (needsCreditor) {
-        this.creditorListener(index);
-        this.addFormArrayFormGroupControlValidators(needsCreditorControl, [Validators.required]);
-      } else {
-        this.removeFormArrayFormGroupControlValidators(needsCreditorControl);
-      }
-    });
+    resultCodeControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
+      .subscribe((result_code: string) => {
+        const needsCreditor =
+          result_code &&
+          (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
+            result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
+        needsCreditorControl.setValue(needsCreditor);
+        if (needsCreditor) {
+          this.creditorListener(index);
+          this.addFormArrayFormGroupControlValidators(needsCreditorControl, [Validators.required]);
+        } else {
+          this.removeFormArrayFormGroupControlValidators(needsCreditorControl);
+        }
+      });
   }
 
   /**
@@ -284,9 +286,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       this.majorCreditorValidation(index, creditorControl.value === 'major', impositionsFormGroup);
     }
 
-    creditorControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((creditor: string) => {
-      this.majorCreditorValidation(index, creditor === 'major', impositionsFormGroup);
-    });
+    creditorControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
+      .subscribe((creditor: string) => {
+        this.majorCreditorValidation(index, creditor === 'major', impositionsFormGroup);
+      });
   }
 
   /**

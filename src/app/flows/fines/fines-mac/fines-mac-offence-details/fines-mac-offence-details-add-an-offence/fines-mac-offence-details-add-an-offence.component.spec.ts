@@ -17,6 +17,7 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;
@@ -38,6 +39,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
       getMajorCreditorPrettyName: jasmine
         .createSpy('getMajorCreditorPrettyName')
         .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getOffenceByCjsCode: jasmine
+        .createSpy('getOffenceByCjsCode')
+        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
     formSubmit = FINES_MAC_OFFENCE_DETAILS_FORM;

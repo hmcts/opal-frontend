@@ -24,7 +24,6 @@ describe('FinesMacOffenceDetailsComponent', () => {
     mockFinesService = TestBed.inject(FinesService);
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     mockFinesMacOffenceDetailsService = TestBed.inject(FinesMacOffenceDetailsService);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
     mockGlobalStateService = TestBed.inject(GlobalStateService);
 
     fixture.detectChanges();

@@ -5,7 +5,7 @@ import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.c
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
-import { Observable, first, map } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
@@ -14,6 +14,8 @@ import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/f
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state.constant';
 import { CommonModule } from '@angular/common';
+import { FormArray } from '@angular/forms';
+import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -29,9 +31,10 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  public readonly resultCodeData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
+  public resultCode!: IOpalFinesResultsRefData;
+  public resultCodeData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
     .getResults(this.resultCodeArray)
-    .pipe(map((response: IOpalFinesResultsRefData) => response));
+    .pipe(tap((response) => (this.resultCode = response)));
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   protected removeImposition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
@@ -53,14 +56,17 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   }
 
   /**
-   * Retrieves the imposition to be removed.
-   * This method retrieves the necessary information from the formArray and formArrayControls
-   * to determine the imposition that needs to be removed. It calculates the balance and updates
-   * the corresponding string values for amountImposed, amountPaid, and balance. It also retrieves
-   * the resultCodeData and sets the imposition value based on the resultCode.
+   * Retrieves the imposition to be removed based on the provided parameters.
+   *
+   * @param rowIndex - The index of the row in the form array.
+   * @param formArray - The form array containing the controls.
+   * @param formArrayControls - The array of form array controls.
    */
-  private getImpositionToBeRemoved(): void {
-    const { rowIndex, formArray, formArrayControls } = this.removeImposition.removeImposition!;
+  private getImpositionToBeRemoved(
+    rowIndex: number,
+    formArray: FormArray,
+    formArrayControls: IAbstractFormArrayControls[],
+  ): void {
     const formArrayControl = formArrayControls[rowIndex];
 
     const resultCode = this.getFormArrayControlValue(
@@ -114,28 +120,20 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     if (!resultCode) {
       this.imposition = 'Not provided';
     } else {
-      this.resultCodeData$
-        .pipe(
-          map((response) => response.refData.filter((item) => item.result_id === resultCode)),
-          first(),
-        )
-        .subscribe((items) => {
-          if (items.length > 0) {
-            this.imposition = this.opalFinesService.getResultPrettyName(items[0]);
-          }
-        });
+      const items = this.resultCode.refData.filter((item) => item.result_id === resultCode);
+      this.imposition = this.opalFinesService.getResultPrettyName(items[0]);
     }
   }
 
   /**
-   * Confirms the removal of an imposition from the offence details.
-   * Removes the control from the form array, updates the form data,
-   * and handles the route navigation.
+   * Removes an offence detail at the specified index from the form array and updates the form data.
+   * Navigates to the add offence page after removal.
+   *
+   * @param rowIndex - The index of the offence detail to be removed.
+   * @param formArray - The form array containing the offence details.
    */
-  public confirmRemoval(): void {
-    const { rowIndex, formArray } =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!;
-    const { formData } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+  public confirmRemoval(rowIndex: number, formArray: FormArray): void {
+    const { formData } = this.removeImposition.offenceDetailsDraft[0];
 
     this.removeControlAndRenumber(
       formArray,
@@ -150,7 +148,13 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   }
 
   public ngOnInit(): void {
-    this.getImpositionToBeRemoved();
+    if (this.removeImposition.removeImposition) {
+      this.getImpositionToBeRemoved(
+        this.removeImposition.removeImposition.rowIndex,
+        this.removeImposition.removeImposition.formArray,
+        this.removeImposition.removeImposition.formArrayControls,
+      );
+    }
   }
 
   public ngOnDestroy(): void {
