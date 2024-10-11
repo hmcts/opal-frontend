@@ -21,4 +21,13 @@ export class UtilsService {
   public upperCaseAllLetters(str: string): string {
     return str.toUpperCase();
   }
+
+  /**
+   * Converts a number to a monetary string representation.
+   * @param amount - The number to convert.
+   * @returns The monetary string representation of the number.
+   */
+  public convertToMonetaryString(amount: number): string {
+    return `£${amount.toFixed(2)}`;
+  }
 }

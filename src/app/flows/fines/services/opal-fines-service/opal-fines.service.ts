@@ -7,12 +7,18 @@ import {
   IOpalFinesBusinessUnit,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import {
+  IOpalFinesCourt,
+  IOpalFinesCourtRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-details.interface';
 import { IOpalFinesDefendantAccountNote } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-note.interface';
 import { IOpalFinesGetDefendantAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-get-defendant-account-params.interface';
-import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import {
+  IOpalFinesLocalJusticeArea,
+  IOpalFinesLocalJusticeAreaRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court.interface';
 import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body.interface';
 import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body.interface';
@@ -20,7 +26,7 @@ import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-se
 
 import { Observable, shareReplay } from 'rxjs';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
-import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -64,6 +70,15 @@ export class OpalFines {
     }
 
     return this.courtRefDataCache$[businessUnit];
+  }
+
+  /**
+   * Returns the pretty name of a court.
+   * @param court - The court object.
+   * @returns The pretty name of the court.
+   */
+  public getCourtPrettyName(court: IOpalFinesCourt) {
+    return `${court.name} (${court.court_code})`;
   }
 
   /**
@@ -151,6 +166,15 @@ export class OpalFines {
   }
 
   /**
+   * Returns the pretty name of a local justice area.
+   * @param localJusticeArea - The local justice area object.
+   * @returns The pretty name of the local justice area.
+   */
+  public getLocalJusticeAreaPrettyName(localJusticeArea: IOpalFinesLocalJusticeArea) {
+    return `${localJusticeArea.name} (${localJusticeArea.lja_code})`;
+  }
+
+  /**
    * Retrieves the value of a configuration item for a specific business unit.
    * @param businessUnit - The business unit for which to retrieve the configuration item value.
    * @param itemName - The name of the configuration item.
@@ -161,8 +185,8 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the Opal fines results reference data based on the provided result codes.
-   * @param resultCodes - An array of result codes to filter the results.
+   * Retrieves the Opal fines results based on the provided result IDs.
+   * @param result_ids - An array of result IDs.
    * @returns An Observable that emits the Opal fines results reference data.
    */
   public getResults(result_ids: string[]): Observable<IOpalFinesResultsRefData> {
@@ -173,6 +197,15 @@ export class OpalFines {
     }
 
     return this.resultsCache$;
+  }
+
+  /**
+   * Returns the pretty name of the result.
+   * @param result - The IOpalFinesResults object.
+   * @returns The pretty name of the result.
+   */
+  public getResultPrettyName(result: IOpalFinesResults): string {
+    return `${result.result_title} (${result.result_id})`;
   }
 
   /**
