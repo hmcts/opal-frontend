@@ -2,15 +2,15 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   <app-alphagov-accessible-autocomplete
-    [control]="form.controls['fm_court_details_sending_court']"
+    [control]="form.controls['fm_court_details_originator_id']"
     labelText="Sending area or Local Justice Area (LJA)"
     labelClasses="govuk-fieldset__legend--s"
-    inputId="fm_court_details_sending_court"
-    inputName="fm_court_details_sending_court"
+    inputId="fm_court_details_originator_id"
+    inputName="fm_court_details_originator_id"
     label=""
     hintText="Search using the code or name of the area that sent the transfer"
     [autoCompleteItems]="sendingCourtAutoCompleteItems"
-    [errors]="formControlErrorMessages['fm_court_details_sending_court']"
+    [errors]="formControlErrorMessages['fm_court_details_originator_id']"
   ></app-alphagov-accessible-autocomplete>
   <app-govuk-text-input
     labelText="Prosecutor Case Reference (PCR)"

@@ -59,7 +59,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
    */
   private setupCourtDetailsForm(): void {
     this.form = new FormGroup({
-      fm_court_details_sending_court: new FormControl(null, [Validators.required]),
+      fm_court_details_originator_id: new FormControl(null, [Validators.required]),
       fm_court_details_prosecutor_case_reference: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -85,14 +85,14 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   /**
    * Sets the originator name based on the value of the sending court details.
    *
-   * This method retrieves the value of the 'fm_court_details_sending_court' form control.
+   * This method retrieves the value of the 'fm_court_details_originator_id' form control.
    * If the value is present, it sets the 'fm_court_details_originator_name' form control
    * with the originator name derived from the sending court details.
    *
    * @private
    */
   private setOriginatorName(): void {
-    const courtDetailsSendingCourt = this.form.get('fm_court_details_sending_court');
+    const courtDetailsSendingCourt = this.form.get('fm_court_details_originator_id');
 
     if (courtDetailsSendingCourt?.value) {
       this.form

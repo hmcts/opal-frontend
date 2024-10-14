@@ -91,7 +91,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
 
   it('should set originator name based on sending court details', () => {
     component['setupCourtDetailsForm']();
-    component.form.get('fm_court_details_sending_court')?.setValue('3865');
+    component.form.get('fm_court_details_originator_id')?.setValue('3865');
     component['setOriginatorName']();
     expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
   });
