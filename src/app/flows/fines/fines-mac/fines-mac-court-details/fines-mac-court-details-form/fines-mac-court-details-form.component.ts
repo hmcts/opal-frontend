@@ -23,6 +23,8 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
+import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',
@@ -41,6 +43,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 })
 export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Input() public defendantType!: string;
+  @Input({ required: true }) public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   @Input({ required: true }) public sendingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
@@ -63,6 +66,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
         Validators.pattern(/^[a-zA-Z0-9 ]*$/),
       ]),
       fm_court_details_enforcing_court: new FormControl(null, [Validators.required]),
+      fm_court_details_originator_name: new FormControl(),
     });
   }
 
@@ -76,6 +80,36 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
     this.setupCourtDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
+  }
+
+  /**
+   * Retrieves the name of the originator based on the provided originator ID.
+   *
+   * @param originatorId - The ID of the originator as a string or null.
+   * @returns The name of the originator if found, otherwise an empty string.
+   */
+  private getOriginatorName(originatorId: string | null): string {
+    const originatorIdNumber = Number(originatorId); // Convert string to number
+    const court = this.localJusticeAreas.refData.find((court) => court.local_justice_area_id === originatorIdNumber);
+    return court ? court.name : '';
+  }
+
+  /**
+   * Sets the collection order date based on the value of `fm_payment_terms_make_collection_order_today` control.
+   */
+  private setOriginatorName(): void {
+    const courtDetailsSendingCourt = this.form.get('fm_court_details_sending_court');
+
+    if (courtDetailsSendingCourt?.value) {
+      this.form
+        .get('fm_court_details_originator_name')
+        ?.setValue(this.getOriginatorName(courtDetailsSendingCourt.value));
+    }
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.setOriginatorName();
+    super.handleFormSubmit(event);
   }
 
   public override ngOnInit(): void {
