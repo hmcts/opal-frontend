@@ -130,7 +130,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
     this.setAccountType();
     this.setLanguage();
     this.routerListener();
-    console.log(this.payloadService.buildPayload(this.finesService.finesMacState));
   }
 
   /**

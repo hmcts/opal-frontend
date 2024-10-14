@@ -78,4 +78,21 @@ describe('FinesMacCourtDetailsFormComponent', () => {
       }),
     );
   });
+
+  it('should get originator name based on originator ID', () => {
+    const originatorName = component['getOriginatorName']('3865');
+    expect(originatorName).toBe('Asylum & Immigration Tribunal');
+  });
+
+  it('should return empty string if originator ID is not found', () => {
+    const originatorName = component['getOriginatorName']('999');
+    expect(originatorName).toBe('');
+  });
+
+  it('should set originator name based on sending court details', () => {
+    component['setupCourtDetailsForm']();
+    component.form.get('fm_court_details_sending_court')?.setValue('3865');
+    component['setOriginatorName']();
+    expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
+  });
 });

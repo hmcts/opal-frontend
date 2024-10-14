@@ -71,18 +71,6 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Performs the initial setup for the court details form.
-   * This method sets up the court details form, initializes error messages,
-   * and repopulates the form with the initial court details data.
-   */
-  private initialCourtDetailsSetup(): void {
-    const { formData } = this.finesService.finesMacState.courtDetails;
-    this.setupCourtDetailsForm();
-    this.setInitialErrorMessages();
-    this.rePopulateForm(formData);
-  }
-
-  /**
    * Retrieves the name of the originator based on the provided originator ID.
    *
    * @param originatorId - The ID of the originator as a string or null.
@@ -95,7 +83,13 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Sets the collection order date based on the value of `fm_payment_terms_make_collection_order_today` control.
+   * Sets the originator name based on the value of the sending court details.
+   *
+   * This method retrieves the value of the 'fm_court_details_sending_court' form control.
+   * If the value is present, it sets the 'fm_court_details_originator_name' form control
+   * with the originator name derived from the sending court details.
+   *
+   * @private
    */
   private setOriginatorName(): void {
     const courtDetailsSendingCourt = this.form.get('fm_court_details_sending_court');
@@ -105,6 +99,18 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
         .get('fm_court_details_originator_name')
         ?.setValue(this.getOriginatorName(courtDetailsSendingCourt.value));
     }
+  }
+
+  /**
+   * Performs the initial setup for the court details form.
+   * This method sets up the court details form, initializes error messages,
+   * and repopulates the form with the initial court details data.
+   */
+  private initialCourtDetailsSetup(): void {
+    const { formData } = this.finesService.finesMacState.courtDetails;
+    this.setupCourtDetailsForm();
+    this.setInitialErrorMessages();
+    this.rePopulateForm(formData);
   }
 
   public override handleFormSubmit(event: SubmitEvent): void {
