@@ -45,10 +45,25 @@ describe('AbstractFormParentBaseComponent', () => {
     expect(component.canDeactivate()).toBe(true);
   });
 
-  it('should navigate to account-details page on handleBack', () => {
+  it('should test routerNavigate', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     component['routerNavigate']('test');
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
+  });
+
+  it('should test routerNavigate with no activated route', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component['routerNavigate']('test', true);
+    expect(routerSpy).toHaveBeenCalledWith(['test']);
+  });
+
+  it('should test routerNavigate with event', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const event = jasmine.createSpyObj('event', ['preventDefault']);
+
+    component['routerNavigate']('test', false, event);
+    expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
+    expect(event.preventDefault).toHaveBeenCalled();
   });
 
   it('should return true if any form value is truthy', () => {

@@ -92,7 +92,6 @@ Feature: PO-681 Create the 'Add an offence' screen - Adult or youth with parent 
     And I enter "500" into the "Amount imposed" field for imposition 3
     And I enter "250" into the "Amount paid" field for imposition 3
 
-    When "Remove imposition" is clicked, nothing happens
     And I see "Remove imposition" link for imposition 1
     And I see "Remove imposition" link for imposition 2
     And I see "Remove imposition" link for imposition 3
