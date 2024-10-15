@@ -247,6 +247,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       'fm_offence_details_needs_creditor',
       index,
     );
+    const creditorControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      index,
+    );
 
     if (needsCreditorControl.value) {
       this.creditorListener(index);
@@ -261,10 +266,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
             result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
         needsCreditorControl.setValue(needsCreditor);
         if (needsCreditor) {
+          this.addFormArrayFormGroupControlValidators(creditorControl, [Validators.required]);
           this.creditorListener(index);
-          this.addFormArrayFormGroupControlValidators(needsCreditorControl, [Validators.required]);
         } else {
-          this.removeFormArrayFormGroupControlValidators(needsCreditorControl);
+          this.removeFormArrayFormGroupControlValidators(creditorControl);
         }
       });
   }
