@@ -1,48 +1,56 @@
-@if (resultCodeData$ | async; as resultCode) {
-  <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-l">Offences and impositions</h1>
-    @if (offencesImpositions.length === 0) {
-      <ng-container *ngTemplateOutlet="emptyOffences"></ng-container>
-    } @else {
-      <ng-container *ngTemplateOutlet="populatedOffences"></ng-container>
-    }
-  </div>
+<!-- <div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Offences and impositions</h1>
+  @if (offencesImpositions.length === 0) {
+    <ng-container *ngTemplateOutlet="emptyOffences"></ng-container>
+  } @else {
+    <ng-container *ngTemplateOutlet="emptyOffences"></ng-container>
+    <ng-container *ngTemplateOutlet="populatedOffences"></ng-container>
+  }
+</div>
 
-  <ng-template #emptyOffences>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <p>There are no offences.</p>
-      </div>
+<ng-template #emptyOffences>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p>There are no offences.</p>
     </div>
-    <hr />
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <app-govuk-button
-          buttonId="addAnOffence"
-          buttonClasses="govuk-button--secondary"
-          (buttonClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
-        >
-          Add an offence
-        </app-govuk-button>
-      </div>
+  </div>
+  <hr />
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button
+        buttonId="addAnOffence"
+        buttonClasses="govuk-button--secondary"
+        (buttonClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
+      >
+        Add an offence
+      </app-govuk-button>
     </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <app-govuk-button
-          buttonId="returnToCreateAccount"
-          (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
-        >
-          Return to account details
-        </app-govuk-button>
-      </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button
+        buttonId="returnToCreateAccount"
+        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
+      >
+        Return to account details
+      </app-govuk-button>
     </div>
-  </ng-template>
-  <ng-template #populatedOffences>
+  </div>
+</ng-template>
+<ng-template #populatedOffences> -->
+@if (referenceData$ | async; as referenceData) {
+  <app-fines-mac-offence-details-review-summary
+    [impositionRefData]="referenceData.impositionRefData"
+    [majorCreditorRefData]="referenceData.majorCreditorRefData"
+    [offencesImpositions]="offencesImpositions"
+  ></app-fines-mac-offence-details-review-summary>
+}
+<!-- </ng-template> -->
+<!-- <ng-template #populatedOffences>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         @for (offence of offencesImpositions; track offence.formData.fm_offence_details_index) {
           @if (offence.formData.fm_offence_details_date_of_offence) {
-            <!-- Summary List for Date of Sentence -->
             <app-govuk-summary-list summaryListId="dateOfSentence">
               <div
                 app-govuk-summary-list-row
@@ -64,7 +72,6 @@
           }
 
           @if (offence.formData.fm_offence_details_offence_code) {
-            <!-- Offence Info with Actions -->
             <div class="govuk-!-margin-bottom-4 govuk-!-padding-bottom-2 offence-info border-bottom">
               <app-govuk-heading-with-caption
                 [captionText]="offence.formData.fm_offence_details_offence_code"
@@ -78,7 +85,6 @@
             </div>
           }
 
-          <!-- Impositions Table -->
           <app-govuk-table [results]="true">
             <ng-container header>
               <th scope="col" class="govuk-table__header">Imposition</th>
@@ -146,7 +152,6 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
       </div>
 
-      <!-- Add Another Offence Button -->
       <div class="govuk-grid-column-two-thirds">
         <app-govuk-button
           buttonId="addAnOffence"
@@ -157,7 +162,6 @@
         </app-govuk-button>
       </div>
 
-      <!-- Totals Summary List -->
       <div class="govuk-grid-column-full">
         <div class="border-bottom">
           <h1 class="govuk-heading-m">Totals</h1>
@@ -186,7 +190,6 @@
         </app-govuk-summary-list>
       </div>
 
-      <!-- Action Buttons -->
       <div class="govuk-grid-column-full">
         <app-govuk-button
           buttonId="returnToCreateAccount"
@@ -204,7 +207,6 @@
       </div>
     </div>
 
-    <!-- Cancel Link -->
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <app-govuk-cancel-link
@@ -212,5 +214,4 @@
         ></app-govuk-cancel-link>
       </div>
     </div>
-  </ng-template>
-}
+  </ng-template> -->

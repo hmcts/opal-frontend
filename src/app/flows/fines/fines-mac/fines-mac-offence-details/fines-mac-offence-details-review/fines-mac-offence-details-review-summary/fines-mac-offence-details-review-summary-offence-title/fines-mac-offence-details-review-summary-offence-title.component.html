@@ -1,0 +1,11 @@
+<div class="govuk-!-margin-bottom-4 govuk-!-padding-bottom-2 offence-info border-bottom">
+    <app-govuk-heading-with-caption
+      [captionText]="offenceCode"
+      captionClasses="govuk-caption-m"
+      [headingText]="offenceRefData.refData[0].offence_title"
+      headingClasses="govuk-heading-m govuk-!-margin-bottom-0"
+    ></app-govuk-heading-with-caption>
+    <app-govuk-summary-list-row-actions
+      [actions]="['Hide', 'Change', 'Remove']"
+    ></app-govuk-summary-list-row-actions>
+  </div>

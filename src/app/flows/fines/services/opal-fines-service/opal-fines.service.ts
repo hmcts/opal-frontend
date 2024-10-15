@@ -236,6 +236,26 @@ export class OpalFines {
   }
 
   /**
+   * Retrieves the offence data for a given array of CJS codes.
+   * @param cjsCodes - The array of CJS codes for the offences.
+   * @returns An Observable that emits the offence data.
+   */
+  public getOffencesByCjsCodes(cjsCodes: string[]): Observable<IOpalFinesOffencesRefData> {
+    // Construct query string with multiple 'q' parameters
+    const queryParams = cjsCodes.map((cjsCode) => `${cjsCode}`).join('&');
+
+    // Check if the offence data for the CJS code set is already cached
+    if (!this.offenceCodesCache$[queryParams]) {
+      this.offenceCodesCache$[queryParams] = this.http
+        .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${queryParams}`)
+        .pipe(shareReplay(1)); // Cache the request
+    }
+
+    // Return the cached observable or the new request
+    return this.offenceCodesCache$[queryParams];
+  }
+
+  /**
    * Retrieves the major creditors for a given business unit.
    * If the major creditors for the specified business unit have already been fetched,
    * it returns the cached result. Otherwise, it makes an HTTP request to fetch the data
