@@ -45,7 +45,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 3,
     },
   },
-  fm_payment_terms_lump_sum: {
+  fm_payment_terms_lump_sum_amount: {
     required: {
       message: `Enter lump sum`,
       priority: 1,
@@ -55,7 +55,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
   },
-  fm_payment_terms_instalment: {
+  fm_payment_terms_instalment_amount: {
     required: {
       message: `Enter instalment amount`,
       priority: 1,
@@ -65,7 +65,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
   },
-  fm_payment_terms_frequency: {
+  fm_payment_instalment_period: {
     required: {
       message: `Select frequency of payment`,
       priority: 1,
@@ -103,7 +103,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 4,
     },
   },
-  fm_payment_terms_days_in_default: {
+  fm_payment_terms_default_days_in_jail: {
     required: {
       message: `Enter days in default`,
       priority: 1,

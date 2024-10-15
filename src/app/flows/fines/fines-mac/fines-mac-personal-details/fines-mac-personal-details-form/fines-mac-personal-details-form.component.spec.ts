@@ -120,7 +120,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.ageLabel).toEqual('Adult');
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
     expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
-    expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_default_days_in_jail']).toBeNull();
     expect(paymentTermsFormData['fm_payment_terms_suspended_committal_date']).toBeNull();
   });
 
@@ -136,7 +136,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.ageLabel).toEqual('Youth');
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
     expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
-    expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_default_days_in_jail']).toBeNull();
     expect(paymentTermsFormData['fm_payment_terms_suspended_committal_date']).toBeNull();
   });
 
@@ -152,7 +152,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.ageLabel).toEqual('Adult');
     const { formData: paymentTermsFormData } = mockFinesService.finesMacState.paymentTerms;
     expect(paymentTermsFormData['fm_payment_terms_has_days_in_default']).toBeFalsy();
-    expect(paymentTermsFormData['fm_payment_terms_days_in_default']).toBeNull();
+    expect(paymentTermsFormData['fm_payment_terms_default_days_in_jail']).toBeNull();
     expect(paymentTermsFormData['fm_payment_terms_suspended_committal_date']).toBeNull();
   });
 

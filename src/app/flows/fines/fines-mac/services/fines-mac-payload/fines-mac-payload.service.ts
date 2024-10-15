@@ -32,6 +32,8 @@ import { IFinesMacCompanyDefendantDebtorDetailsAlias } from './interfaces/fines-
 import { IFinesMacParentGuardianDefendant } from './interfaces/fines-mac-parent-guardian-defendant.interface';
 import { IFinesMacParentGuardianDefendantParentGuardian } from './interfaces/fines-mac-parent-guardian-defendant-parent-guardian.interface';
 import { FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD } from './constants/fines-mac-defendant-parent-guardian-payload.constant';
+import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
+import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 
 @Injectable({
   providedIn: 'root',
@@ -327,6 +329,40 @@ export class FinesMacPayloadService {
     };
   }
 
+  private getInstallmentPeriod(installmentPeriod: string | null | undefined): string | null {
+    switch (installmentPeriod) {
+      case 'Weekly':
+        return 'W';
+      case 'Fortnightly':
+        return 'F';
+      case 'Monthly':
+        return 'M';
+      default:
+        return null;
+    }
+  }
+
+  private buildPaymentTerms(paymentTermsState: IFinesMacPaymentTermsState) {
+    // If the payment terms are 'Pay in full', the payment terms type code is 'B' else it is 'I'
+    const paymentTermsTypeCode =
+      paymentTermsState['fm_payment_terms_payment_terms'] === FINES_MAC_PAYMENT_TERMS_OPTIONS.payInFull ? 'B' : 'I';
+
+    // The effective date is the 'fm_payment_terms_pay_by_date' if the payment terms type code is 'B'
+    const effectiveDate =
+      paymentTermsTypeCode === 'B'
+        ? paymentTermsState['fm_payment_terms_pay_by_date']
+        : paymentTermsState['fm_payment_terms_start_date'];
+
+    return {
+      payment_terms_type_code: paymentTermsTypeCode,
+      effective_date: effectiveDate,
+      instalment_period: this.getInstallmentPeriod(paymentTermsState['fm_payment_instalment_period']),
+      lump_sum_amount: paymentTermsState['fm_payment_terms_lump_sum_amount'],
+      instalment_amount: paymentTermsState['fm_payment_terms_instalment_amount'],
+      default_days_in_jail: paymentTermsState['fm_payment_terms_default_days_in_jail'],
+    };
+  }
+
   private initialSetup(accountDetailsState: IFinesMacAccountDetailsState): void {
     const {
       fm_create_account_defendant_type: defendantType,
@@ -339,6 +375,7 @@ export class FinesMacPayloadService {
   }
 
   public buildPayload(finesMacState: IFinesMacState): any {
+    console.log(finesMacState);
     const {
       courtDetails,
       accountDetails,
@@ -404,6 +441,26 @@ export class FinesMacPayloadService {
       payment_card_request: paymentTermsState['fm_payment_terms_payment_card_request'],
       account_sentence_date: '2023-09-15', // Derived from from the earliest of all offence sentence dates
       defendant: defendant,
+      fp_ticket_detail: null,
+      payment_terms: {
+        payment_terms_type_code: 'B',
+        effective_date: '2023-09-16',
+        instalment_period: 'M',
+        lump_sum_amount: 200.0,
+        instalment_amount: 50.0,
+        default_days_in_jail: 10,
+        enforcements: [
+          {
+            result_id: 'PRIS',
+            enforcement_result_responses: [
+              {
+                parameter_name: 'Reason',
+                response: 'Failure to Pay',
+              },
+            ],
+          },
+        ],
+      },
     };
   }
 }

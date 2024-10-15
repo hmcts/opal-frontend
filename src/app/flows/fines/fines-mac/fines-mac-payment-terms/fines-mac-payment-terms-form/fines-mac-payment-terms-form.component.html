@@ -123,12 +123,12 @@
                 <app-govuk-text-input-prefix-suffix
                   labelText="Lump sum"
                   labelClasses="govuk-label--s"
-                  inputId="fm_payment_terms_lump_sum"
-                  inputName="fm_payment_terms_lump_sum"
+                  inputId="fm_payment_terms_lump_sum_amount"
+                  inputName="fm_payment_terms_lump_sum_amount"
                   inputClasses="govuk-input--width-5"
                   prefixText="£"
-                  [control]="form.controls['fm_payment_terms_lump_sum']"
-                  [errors]="formControlErrorMessages['fm_payment_terms_lump_sum']"
+                  [control]="form.controls['fm_payment_terms_lump_sum_amount']"
+                  [errors]="formControlErrorMessages['fm_payment_terms_lump_sum_amount']"
                   [forceTwoDecimalPoints]="true"
                 >
                 </app-govuk-text-input-prefix-suffix>
@@ -183,12 +183,12 @@
             <app-govuk-text-input-prefix-suffix
               labelText="Enter days in default"
               labelClasses="govuk-label--s"
-              inputId="fm_payment_terms_days_in_default"
-              inputName="fm_payment_terms_days_in_default"
+              inputId="fm_payment_terms_default_days_in_jail"
+              inputName="fm_payment_terms_default_days_in_jail"
               inputClasses="govuk-input--width-5"
               suffixText="days"
-              [control]="form.controls['fm_payment_terms_days_in_default']"
-              [errors]="formControlErrorMessages['fm_payment_terms_days_in_default']"
+              [control]="form.controls['fm_payment_terms_default_days_in_jail']"
+              [errors]="formControlErrorMessages['fm_payment_terms_default_days_in_jail']"
             ></app-govuk-text-input-prefix-suffix>
           </div>
           <div class="govuk-form-group">
@@ -339,31 +339,31 @@
     <app-govuk-text-input-prefix-suffix
       labelText="Instalment"
       labelClasses="govuk-label--s"
-      inputId="fm_payment_terms_instalment"
-      inputName="fm_payment_terms_instalment"
+      inputId="fm_payment_terms_instalment_amount"
+      inputName="fm_payment_terms_instalment_amount"
       inputClasses="govuk-input--width-5"
       prefixText="£"
-      [control]="form.controls['fm_payment_terms_instalment']"
-      [errors]="formControlErrorMessages['fm_payment_terms_instalment']"
+      [control]="form.controls['fm_payment_terms_instalment_amount']"
+      [errors]="formControlErrorMessages['fm_payment_terms_instalment_amount']"
       [forceTwoDecimalPoints]="true"
     >
     </app-govuk-text-input-prefix-suffix>
   </div>
   <div class="govuk-form-group">
     <app-govuk-radio
-      fieldSetId="fm_payment_terms_frequency"
+      fieldSetId="fm_payment_instalment_period"
       legendText="Frequency"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages['fm_payment_terms_frequency']"
+      [errors]="formControlErrorMessages['fm_payment_instalment_period']"
     >
       @for (frequency of frequencyOptions; track frequency.key) {
         <div
           app-govuk-radios-item
           [labelText]="frequency.value"
           [inputId]="frequency.key"
-          inputName="fm_payment_terms_frequency"
+          inputName="fm_payment_instalment_period"
           [inputValue]="frequency.key"
-          [control]="form.controls['fm_payment_terms_frequency']"
+          [control]="form.controls['fm_payment_instalment_period']"
         ></div>
       }
     </app-govuk-radio>

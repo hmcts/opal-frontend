@@ -10,7 +10,7 @@ export const FINES_MAC_PAYMENT_TERMS_DEFAULT_DATES_CONTROL_VALIDATION: IAbstract
     validators: [Validators.required, dateOfBirthValidator(), optionalValidDateValidator()],
   },
   {
-    controlName: 'fm_payment_terms_days_in_default',
+    controlName: 'fm_payment_terms_default_days_in_jail',
     validators: [Validators.required, Validators.maxLength(5), numericalTextValidator()],
   },
 ];

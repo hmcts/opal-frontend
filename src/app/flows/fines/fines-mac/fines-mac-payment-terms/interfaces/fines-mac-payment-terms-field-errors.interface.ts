@@ -6,12 +6,12 @@ export interface IFinesMacPaymentTermsFieldErrors extends IAbstractFormBaseField
   fm_payment_terms_collection_order_date: IAbstractFormBaseFieldError;
   fm_payment_terms_payment_terms: IAbstractFormBaseFieldError;
   fm_payment_terms_pay_by_date: IAbstractFormBaseFieldError;
-  fm_payment_terms_lump_sum: IAbstractFormBaseFieldError;
-  fm_payment_terms_instalment: IAbstractFormBaseFieldError;
-  fm_payment_terms_frequency: IAbstractFormBaseFieldError;
+  fm_payment_terms_lump_sum_amount: IAbstractFormBaseFieldError;
+  fm_payment_terms_instalment_amount: IAbstractFormBaseFieldError;
+  fm_payment_instalment_period: IAbstractFormBaseFieldError;
   fm_payment_terms_start_date: IAbstractFormBaseFieldError;
   fm_payment_terms_suspended_committal_date: IAbstractFormBaseFieldError;
-  fm_payment_terms_days_in_default: IAbstractFormBaseFieldError;
+  fm_payment_terms_default_days_in_jail: IAbstractFormBaseFieldError;
   fm_payment_terms_enforcement_action: IAbstractFormBaseFieldError;
   fm_payment_terms_earliest_release_date: IAbstractFormBaseFieldError;
   fm_payment_terms_prison_and_prison_number: IAbstractFormBaseFieldError;

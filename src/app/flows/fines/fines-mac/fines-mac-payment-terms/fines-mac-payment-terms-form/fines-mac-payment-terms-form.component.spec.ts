@@ -139,7 +139,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     hasDaysInDefaultControl.setValue(true);
 
     expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_days_in_default')).toBe(true);
+    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
   });
 
   it('should remove controls when has days in default is false', () => {
@@ -151,7 +151,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     hasDaysInDefaultControl.setValue(false);
 
     expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_days_in_default')).toBe(false);
+    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
