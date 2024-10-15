@@ -13,7 +13,6 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 
@@ -92,6 +91,25 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     });
   }
 
+  private removeIndexFromImpositionKeys(form: IFinesMacOffenceDetailsForm): IFinesMacOffenceDetailsForm {
+    return {
+      formData: {
+        ...form.formData,
+        fm_offence_details_impositions: form.formData.fm_offence_details_impositions.map((imposition: any) => {
+          const cleanedImposition: any = {};
+          Object.keys(imposition).forEach((key) => {
+            // Use regex to remove the _{{index}} from the key
+            const newKey = key.replace(/_\d+$/, '');
+            cleanedImposition[newKey] = imposition[key];
+          });
+          return cleanedImposition;
+        }),
+      },
+      nestedFlow: form.nestedFlow,
+      status: form.status,
+    };
+  }
+
   /**
    * Updates the offence details in the finesMacState based on the provided form data.
    * If an offence detail with the same fm_offence_details_index already exists, it will be updated.
@@ -103,6 +121,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     const index = this.finesService.finesMacState.offenceDetails.findIndex(
       (item) => item.formData.fm_offence_details_index === form.formData.fm_offence_details_index,
     );
+
+    form = this.removeIndexFromImpositionKeys(form);
 
     if (index !== -1) {
       this.finesService.finesMacState.offenceDetails[index] = form;
@@ -146,10 +166,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     } else {
-      this.routerNavigate(
-        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-        true,
-      );
+      this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
     }
   }
 

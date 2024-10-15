@@ -1,0 +1,10 @@
+<ul class="govuk-summary-list__actions-list govuk-body">
+  @for (action of actions; track action) {
+    <li class="govuk-summary-list__actions-list-item govuk-link-colour">
+      <a class="govuk-link govuk-link--no-visited-state" (click)="handleActionClick($event, action)"
+        ><strong>{{ action }}</strong
+        ><span class="govuk-visually-hidden"></span
+      ></a>
+    </li>
+  }
+</ul>

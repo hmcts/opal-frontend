@@ -1,0 +1,177 @@
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">Offences and impositions</h1>
+  @if (offencesImpositions.length === 0) {
+    <ng-container *ngTemplateOutlet="emptyOffences"></ng-container>
+  } @else {
+    <ng-container *ngTemplateOutlet="populatedOffences"></ng-container>
+  }
+</div>
+
+<ng-template #emptyOffences>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p>There are no offences.</p>
+    </div>
+  </div>
+  <hr />
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button
+        buttonId="addAnOffence"
+        buttonClasses="govuk-button--secondary"
+        (buttonClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
+      >
+        Add an offence
+      </app-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button
+        buttonId="returnToCreateAccount"
+        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
+      >
+        Return to account details
+      </app-govuk-button>
+    </div>
+  </div>
+</ng-template>
+<ng-template #populatedOffences>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      @for (offence of offencesImpositions; track offence.formData.fm_offence_details_index) {
+        @if (offence.formData.fm_offence_details_date_of_offence) {
+          <!-- Summary List for Date of Sentence -->
+          <app-govuk-summary-list summaryListId="dateOfSentence">
+            <div
+              app-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions govuk-blue-background-white-text"
+              summaryListId="dateOfSentence"
+              summaryListRowId="dateOfSentence"
+            >
+              <ng-container name>
+                <div class="govuk-!-padding-left-2">Date of sentence</div>
+              </ng-container>
+              <ng-container value>{{
+                dateService.toFormat(
+                  dateService.getFromFormat(offence.formData.fm_offence_details_date_of_offence, 'dd/MM/yyyy'),
+                  'd MMMM yyyy'
+                )
+              }}</ng-container>
+            </div>
+          </app-govuk-summary-list>
+        }
+
+        @if (offence.formData.fm_offence_details_offence_code) {
+          <!-- Offence Info with Actions -->
+          <div class="govuk-!-margin-bottom-4 govuk-!-padding-bottom-2 offence-info border-bottom">
+            <app-govuk-heading-with-caption
+              [captionText]="offence.formData.fm_offence_details_offence_code"
+              captionClasses="govuk-caption-m"
+              [headingText]="(getOffenceCodeText(offence.formData.fm_offence_details_offence_code) | async) ?? ''"
+              headingClasses="govuk-heading-m govuk-!-margin-bottom-0"
+            ></app-govuk-heading-with-caption>
+            <app-govuk-summary-list-row-actions
+              [actions]="['Hide', 'Change', 'Remove']"
+            ></app-govuk-summary-list-row-actions>
+          </div>
+        }
+
+        <!-- Impositions Table -->
+        <app-govuk-table [results]="true">
+          <ng-container header>
+            <th scope="col" class="govuk-table__header">Imposition</th>
+            <th scope="col" class="govuk-table__header">Creditor</th>
+            <th scope="col" class="govuk-table__header">Amount imposed</th>
+            <th scope="col" class="govuk-table__header">Amount paid</th>
+            <th scope="col" class="govuk-table__header">Balance remaining</th>
+          </ng-container>
+          @for (
+            imposition of offence.formData.fm_offence_details_impositions;
+            let rowIndex = $index;
+            track imposition.fm_offence_details_result_code
+          ) {
+            <ng-container body>
+              <td class="govuk-table__cell" id="imposition">{{ imposition.fm_offence_details_result_code }}</td>
+              <td class="govuk-table__cell" id="creditor">{{ imposition.fm_offence_details_creditor }}</td>
+              <td class="govuk-table__cell" id="amountImposed">{{ imposition.fm_offence_details_amount_imposed }}</td>
+              <td class="govuk-table__cell" id="amountPaid">{{ imposition.fm_offence_details_amount_paid }}</td>
+              <td class="govuk-table__cell" id="balanceRemaining">
+                {{ imposition.fm_offence_details_balance_remaining }}
+              </td>
+            </ng-container>
+          }
+          <ng-container results>
+            <th scope="row" class="govuk-table__header"><strong>Totals</strong></th>
+            <th scope="row" class="govuk-table__header"></th>
+            <th scope="row" class="govuk-table__header">£360.00</th>
+            <th scope="row" class="govuk-table__header">£0.00</th>
+            <th scope="row" class="govuk-table__header">£360.00</th>
+          </ng-container>
+        </app-govuk-table>
+      }
+
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
+    </div>
+
+    <!-- Add Another Offence Button -->
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button
+        buttonId="addAnOffence"
+        buttonClasses="govuk-button--secondary"
+        (buttonClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
+      >
+        Add another offence
+      </app-govuk-button>
+    </div>
+
+    <!-- Totals Summary List -->
+    <div class="govuk-grid-column-full">
+      <div class="border-bottom">
+        <h1 class="govuk-heading-m">Totals</h1>
+      </div>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-summary-list summaryListId="offencesTotal">
+        <div app-govuk-summary-list-row summaryListId="offencesTotal" summaryListRowId="amountImposedTotals">
+          <ng-container name>Amount imposed</ng-container>
+          <ng-container value>£360.00</ng-container>
+        </div>
+        <div app-govuk-summary-list-row summaryListId="offencesTotal" summaryListRowId="amountPaidTotals">
+          <ng-container name>Amount paid</ng-container>
+          <ng-container value>£0.00</ng-container>
+        </div>
+        <div app-govuk-summary-list-row summaryListId="offencesTotal" summaryListRowId="balanceRemainingTotals">
+          <ng-container name>Balance remaining</ng-container>
+          <ng-container value>£360.00</ng-container>
+        </div>
+      </app-govuk-summary-list>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="govuk-grid-column-full">
+      <app-govuk-button
+        buttonId="returnToCreateAccount"
+        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails)"
+      >
+        Return to account details
+      </app-govuk-button>
+      <app-govuk-button
+        buttonId="submitForm"
+        buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
+        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.paymentTerms, true)"
+      >
+        Add payment terms
+      </app-govuk-button>
+    </div>
+  </div>
+
+  <!-- Cancel Link -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-cancel-link
+        (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
+      ></app-govuk-cancel-link>
+    </div>
+  </div>
+</ng-template>
