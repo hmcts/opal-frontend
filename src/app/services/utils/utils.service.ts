@@ -28,6 +28,9 @@ export class UtilsService {
    * @returns The monetary string representation of the number.
    */
   public convertToMonetaryString(amount: number): string {
+    if (typeof amount === 'string') {
+      amount = parseFloat(amount);
+    }
     return `£${amount.toFixed(2)}`;
   }
 }

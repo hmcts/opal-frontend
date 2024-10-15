@@ -17,6 +17,10 @@ import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListRowActionsComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row-actions/govuk-summary-list-row-actions.component';
 import { Observable, map } from 'rxjs';
+import { IFinesMacOffenceDetailsImpositionsState } from '../interfaces/fines-mac-offence-details-impositions-state.interface';
+import { UtilsService } from '@services/utils/utils.service';
+import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review',
@@ -42,15 +46,89 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public readonly dateService = inject(DateService);
+  public readonly utilsService = inject(UtilsService);
+
+  private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
+  public readonly resultCodeData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService.getResults(
+    this.resultCodeArray,
+  );
 
   public offencesImpositions!: IFinesMacOffenceDetailsForm[];
+  public impositions!: IFinesMacOffenceDetailsImpositionsState[];
 
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
+  private removeIndexFromImpositionKeys(forms: IFinesMacOffenceDetailsForm[]): IFinesMacOffenceDetailsForm[] {
+    return forms.map((form) => ({
+      formData: {
+        ...form.formData,
+        fm_offence_details_impositions: form.formData.fm_offence_details_impositions.map((imposition: any) => {
+          const cleanedImposition: any = {};
+          Object.keys(imposition).forEach((key) => {
+            // Use regex to remove the _{{index}} from the key
+            const newKey = key.replace(/_\d+$/, '');
+            cleanedImposition[newKey] = imposition[key];
+          });
+          return cleanedImposition;
+        }),
+      },
+      nestedFlow: form.nestedFlow,
+      status: form.status,
+    }));
+  }
+
   private getOffencesImpositions(): void {
-    this.offencesImpositions = this.finesService.finesMacState.offenceDetails;
-    console.log(this.offencesImpositions);
+    this.offencesImpositions = this.removeIndexFromImpositionKeys(this.finesService.finesMacState.offenceDetails);
+  }
+
+  /**
+   * Calculates the total value of a specific field in the offence details impositions for each offence.
+   *
+   * @param offences - An array of `IFinesMacOffenceDetailsForm` objects representing the offences.
+   * @param fieldName - The name of the field to calculate the total for.
+   * @returns A string representing the total value converted to a monetary string.
+   */
+  public calculateOffencesTotal(
+    offences: IFinesMacOffenceDetailsForm[],
+    fieldName: keyof IFinesMacOffenceDetailsImpositionsState,
+  ): string {
+    const total = offences.reduce((offenceTotal, offence) => {
+      const impositionTotal = offence.formData.fm_offence_details_impositions.reduce((impositionTotal, imposition) => {
+        return impositionTotal + parseFloat(imposition[fieldName] as string);
+      }, 0);
+
+      return offenceTotal + impositionTotal;
+    }, 0);
+
+    return this.utilsService.convertToMonetaryString(total);
+  }
+
+  /**
+   * Calculates the total value of a specific field in an array of `IFinesMacOffenceDetailsImpositionsState` objects.
+   *
+   * @param impositions - An array of `IFinesMacOffenceDetailsImpositionsState` objects.
+   * @param fieldName - The name of the field to calculate the total for.
+   * @returns The total value of the specified field as a formatted monetary string.
+   */
+  public calculateImpositionTotals(
+    impositions: IFinesMacOffenceDetailsImpositionsState[],
+    fieldName: keyof IFinesMacOffenceDetailsImpositionsState,
+  ): string {
+    const total = impositions.reduce((total, imposition) => {
+      return total + parseFloat(imposition[fieldName] as string);
+    }, 0);
+    return this.utilsService.convertToMonetaryString(total);
+  }
+
+  /**
+   * Retrieves the description of a result code from the provided reference data.
+   * @param resultCodes - The reference data containing the result codes.
+   * @param resultCode - The result code for which to retrieve the description.
+   * @returns The description of the specified result code.
+   */
+  public getResultCodeDescription(resultCodes: IOpalFinesResultsRefData, resultCode: string): string {
+    return resultCodes.refData.filter((result) => result.result_id === resultCode)[0].result_title;
   }
 
   /**

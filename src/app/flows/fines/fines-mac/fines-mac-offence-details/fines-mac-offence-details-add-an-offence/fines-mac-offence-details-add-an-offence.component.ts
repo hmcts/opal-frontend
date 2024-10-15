@@ -91,25 +91,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     });
   }
 
-  private removeIndexFromImpositionKeys(form: IFinesMacOffenceDetailsForm): IFinesMacOffenceDetailsForm {
-    return {
-      formData: {
-        ...form.formData,
-        fm_offence_details_impositions: form.formData.fm_offence_details_impositions.map((imposition: any) => {
-          const cleanedImposition: any = {};
-          Object.keys(imposition).forEach((key) => {
-            // Use regex to remove the _{{index}} from the key
-            const newKey = key.replace(/_\d+$/, '');
-            cleanedImposition[newKey] = imposition[key];
-          });
-          return cleanedImposition;
-        }),
-      },
-      nestedFlow: form.nestedFlow,
-      status: form.status,
-    };
-  }
-
   /**
    * Updates the offence details in the finesMacState based on the provided form data.
    * If an offence detail with the same fm_offence_details_index already exists, it will be updated.
@@ -121,8 +102,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     const index = this.finesService.finesMacState.offenceDetails.findIndex(
       (item) => item.formData.fm_offence_details_index === form.formData.fm_offence_details_index,
     );
-
-    form = this.removeIndexFromImpositionKeys(form);
 
     if (index !== -1) {
       this.finesService.finesMacState.offenceDetails[index] = form;
