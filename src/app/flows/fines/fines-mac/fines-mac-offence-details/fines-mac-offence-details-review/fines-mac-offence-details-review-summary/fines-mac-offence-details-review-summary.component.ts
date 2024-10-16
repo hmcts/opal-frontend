@@ -79,6 +79,10 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   public offenceAction(action: { actionName: string; offenceId: number }): void {
     if (action.actionName === 'Change') {
       this.finesMacOffenceDetailsService.offenceIndex = action.offenceId;
+      const offence = this.offencesImpositions.find((x) => x.formData.fm_offence_details_id === action.offenceId);
+      this.finesMacOffenceDetailsService.disabledDates = this.finesMacOffenceDetailsService.disabledDates.filter(
+        (item) => item !== offence?.formData.fm_offence_details_date_of_offence!,
+      );
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     }
   }

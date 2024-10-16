@@ -33,13 +33,37 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   private totalBalanceRemaining: number = 0;
   private readonly defaultValues = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
-  
+  private sortImpositionsByAllocationOrder(): void {
+    const allocationOrderMap = this.impositionRefData.refData.reduce(
+      (acc, item) => {
+        acc[item.result_id] = {
+          allocationOrder: item.imposition_allocation_order!,
+          resultTitle: item.result_title,
+        };
+        return acc;
+      },
+      {} as { [key: string]: { allocationOrder: number; resultTitle: string } },
+    );
+
+    this.impositions.sort((a, b) => {
+      const impositionA = allocationOrderMap[a.fm_offence_details_result_code!];
+      const impositionB = allocationOrderMap[b.fm_offence_details_result_code!];
+
+      const allocationOrderComparison = impositionA.allocationOrder - impositionB.allocationOrder;
+      if (allocationOrderComparison !== 0) {
+        return allocationOrderComparison;
+      }
+
+      return impositionA.resultTitle.localeCompare(impositionB.resultTitle);
+    });
+  }
+
   /**
    * Retrieves the creditor information based on the provided creditor and major creditor ID.
    * If the creditor is 'major', it retrieves the major creditor information from the refData.
    * If the creditor is not 'major', it uses the default minor creditor value.
    * If the creditor is null, it uses the default creditor value.
-   * 
+   *
    * @param creditor - The type of creditor ('major' or null).
    * @param majorCreditor - The ID of the major creditor.
    * @returns The creditor information as a string.
@@ -107,6 +131,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   }
 
   public ngOnInit(): void {
+    this.sortImpositionsByAllocationOrder();
     this.getImpositionData();
   }
 }
