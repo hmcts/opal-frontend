@@ -47,6 +47,9 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
 
   public newlyAddedOffenceCode!: string;
 
+  /**
+   * Retrieves the newly added offence code and sets it to the `newlyAddedOffenceCode` property.
+   */
   private getNewlyAddedOffenceCode(): void {
     if (
       this.finesMacOffenceDetailsService.addedOffenceCode &&
@@ -56,6 +59,17 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
     } else {
       this.newlyAddedOffenceCode = '';
     }
+  }
+
+  /**
+   * Returns the maximum offence ID from the `offencesImpositions` array.
+   * @returns The maximum offence ID.
+   */
+  private getMaxOffenceId(): number {
+    return this.offencesImpositions.reduce(
+      (max, offence) => (offence.formData.fm_offence_details_id > max ? offence.formData.fm_offence_details_id : max),
+      0,
+    );
   }
 
   /**
@@ -73,7 +87,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
    * Adds another offence.
    */
   public addAnotherOffence(): void {
-    this.finesMacOffenceDetailsService.offenceIndex = this.offencesImpositions.length;
+    this.finesMacOffenceDetailsService.offenceIndex = this.getMaxOffenceId() + 1;
     this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }
 
