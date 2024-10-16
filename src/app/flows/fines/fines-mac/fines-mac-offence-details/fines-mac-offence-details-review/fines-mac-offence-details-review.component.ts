@@ -10,6 +10,7 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 import { CommonModule } from '@angular/common';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { DateService } from '@services/date-service/date.service';
+import { IFinesMacOffenceDetailsReviewSummaryForm } from './interfaces/fines-mac-offence-details-review-summary-form.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review',
@@ -36,30 +37,44 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
     majorCreditorRefData: this.majorCreditorRefData$,
   });
 
-  public offencesImpositions!: IFinesMacOffenceDetailsForm[];
+  public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
 
   /**
    * Removes the index from the keys of the `fm_offence_details_impositions` array in each form data object.
    * @param forms - An array of `IFinesMacOffenceDetailsForm` objects.
    * @returns An array of `IFinesMacOffenceDetailsForm` objects with the index removed from the keys of `fm_offence_details_impositions`.
    */
-  private removeIndexFromImpositionKeys(forms: IFinesMacOffenceDetailsForm[]): IFinesMacOffenceDetailsForm[] {
-    return forms.map((form) => ({
-      formData: {
-        ...form.formData,
-        fm_offence_details_impositions: form.formData.fm_offence_details_impositions.map((imposition: any) => {
-          const cleanedImposition: any = {};
-          Object.keys(imposition).forEach((key) => {
-            // Use regex to remove the _{{index}} from the key
-            const newKey = key.replace(/_\d+$/, '');
-            cleanedImposition[newKey] = imposition[key];
-          });
-          return cleanedImposition;
-        }),
-      },
-      nestedFlow: form.nestedFlow,
-      status: form.status,
-    }));
+  private removeIndexFromImpositionKeys(
+    forms: IFinesMacOffenceDetailsForm[],
+  ): IFinesMacOffenceDetailsReviewSummaryForm[] {
+    const uniqueDates = new Set<string>(); // Track unique dates of offence
+    return forms.map((form) => {
+      const dateOfOffence = form.formData.fm_offence_details_date_of_offence;
+
+      let showDateOfSentence = false;
+      if (dateOfOffence && !uniqueDates.has(dateOfOffence)) {
+        showDateOfSentence = true;
+        uniqueDates.add(dateOfOffence);
+      }
+
+      return {
+        formData: {
+          ...form.formData,
+          fm_offence_details_impositions: form.formData.fm_offence_details_impositions.map((imposition: any) => {
+            const cleanedImposition: any = {};
+            Object.keys(imposition).forEach((key) => {
+              // Use regex to remove the _{{index}} from the key
+              const newKey = key.replace(/_\d+$/, '');
+              cleanedImposition[newKey] = imposition[key];
+            });
+            return cleanedImposition;
+          }),
+          showDateOfSentence,
+        },
+        nestedFlow: form.nestedFlow,
+        status: form.status,
+      };
+    });
   }
 
   private sortOffencesByDate(): void {
@@ -86,11 +101,9 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
    */
   private getOffencesImpositions(): void {
     this.offencesImpositions = this.removeIndexFromImpositionKeys(this.finesService.finesMacState.offenceDetails);
+    console.log(this.offencesImpositions);
     this.sortOffencesByDate();
     this.finesMacOffenceDetailsService.emptyOffences = this.offencesImpositions.length === 0;
-    this.finesMacOffenceDetailsService.disabledDates = this.offencesImpositions.map(
-      (offence) => offence.formData.fm_offence_details_date_of_offence!,
-    );
   }
 
   public ngOnInit(): void {

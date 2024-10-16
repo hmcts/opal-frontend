@@ -33,6 +33,9 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   private totalBalanceRemaining: number = 0;
   private readonly defaultValues = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
+  /**
+   * Sorts the impositions array based on the allocation order and result title.
+   */
   private sortImpositionsByAllocationOrder(): void {
     const allocationOrderMap = this.impositionRefData.refData.reduce(
       (acc, item) => {

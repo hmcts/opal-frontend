@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-details-form.interface';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -15,6 +14,7 @@ import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fin
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FinesMacOffenceDetailsReviewSummaryOffenceComponent } from './fines-mac-offence-details-review-summary-offence/fines-mac-offence-details-review-summary-offence.component';
 import { MojBannerComponent } from '../../../../../../components/moj/moj-banner/moj-banner.component';
+import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-mac-offence-details-review-summary-form.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -36,7 +36,7 @@ import { MojBannerComponent } from '../../../../../../components/moj/moj-banner/
 export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
-  @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsForm[];
+  @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -79,10 +79,6 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   public offenceAction(action: { actionName: string; offenceId: number }): void {
     if (action.actionName === 'Change') {
       this.finesMacOffenceDetailsService.offenceIndex = action.offenceId;
-      const offence = this.offencesImpositions.find((x) => x.formData.fm_offence_details_id === action.offenceId);
-      this.finesMacOffenceDetailsService.disabledDates = this.finesMacOffenceDetailsService.disabledDates.filter(
-        (item) => item !== offence?.formData.fm_offence_details_date_of_offence!,
-      );
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     }
   }

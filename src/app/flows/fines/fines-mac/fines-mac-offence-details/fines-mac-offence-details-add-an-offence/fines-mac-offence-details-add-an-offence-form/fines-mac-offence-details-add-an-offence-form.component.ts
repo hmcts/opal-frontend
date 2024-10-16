@@ -53,7 +53,6 @@ import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offenc
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
-import { invalidValueValidator } from '@validators/invalid-value/invalid-value.validator';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 
@@ -102,7 +101,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public selectedOffenceSuccessful!: boolean;
   public selectedOffenceTitle!: string;
   public today!: string;
-  public disabledOffenceDates = this.finesMacOffenceDetailsService.disabledDates;
 
   public offenceCode$: Observable<IOpalFinesOffencesRefData> = EMPTY;
 
@@ -122,7 +120,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         Validators.required,
         optionalValidDateValidator(),
         futureDateValidator(),
-        invalidValueValidator(this.disabledOffenceDates),
       ]),
       fm_offence_details_offence_code: new FormControl(null, [Validators.required]),
       fm_offence_details_impositions: new FormArray([]),

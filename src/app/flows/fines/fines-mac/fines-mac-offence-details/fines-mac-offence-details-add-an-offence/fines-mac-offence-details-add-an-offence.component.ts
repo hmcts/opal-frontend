@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
@@ -25,7 +25,7 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
 })
 export class FinesMacOffenceDetailsAddAnOffenceComponent
   extends AbstractFormParentBaseComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
@@ -169,13 +169,5 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    */
   public ngOnInit(): void {
     this.retrieveFormData();
-  }
-
-  /**
-   * Lifecycle hook that is called when the component is about to be destroyed.
-   * Use this hook to perform any necessary cleanup tasks before the component is removed from the DOM.
-   */
-  public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsService.disabledDates = [];
   }
 }
