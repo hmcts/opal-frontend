@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -8,6 +8,7 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-
 import { FinesMacOffenceDetailsReviewSummaryComponent } from './fines-mac-offence-details-review-summary/fines-mac-offence-details-review-summary.component';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { CommonModule } from '@angular/common';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review',
@@ -16,9 +17,10 @@ import { CommonModule } from '@angular/common';
   templateUrl: './fines-mac-offence-details-review.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsReviewComponent implements OnInit {
+export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly impositionRefData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
@@ -64,9 +66,17 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit {
    */
   private getOffencesImpositions(): void {
     this.offencesImpositions = this.removeIndexFromImpositionKeys(this.finesService.finesMacState.offenceDetails);
+    this.finesMacOffenceDetailsService.emptyOffences = this.offencesImpositions.length === 0;
+    this.finesMacOffenceDetailsService.disabledDates = this.offencesImpositions.map(
+      (offence) => offence.formData.fm_offence_details_date_of_offence!,
+    );
   }
 
   public ngOnInit(): void {
     this.getOffencesImpositions();
+  }
+
+  public ngOnDestroy(): void {
+    this.finesMacOffenceDetailsService.addedOffenceCode = '';
   }
 }

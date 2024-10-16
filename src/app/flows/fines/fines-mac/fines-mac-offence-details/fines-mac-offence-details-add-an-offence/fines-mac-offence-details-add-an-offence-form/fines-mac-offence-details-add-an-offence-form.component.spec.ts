@@ -363,15 +363,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
-  it('should navigate to account details', () => {
-    const handleRouteSpy = spyOn(component, 'handleRoute');
-    const expectedRoute = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
-
-    component.goToAccountDetails();
-
-    expect(handleRouteSpy).toHaveBeenCalledWith(expectedRoute, true);
-  });
-
   it('should test majorCreditorValidation and add validator when add is true', () => {
     const index = 0;
     const formGroup = new FormGroup({

@@ -13,19 +13,29 @@ import { FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent } from './fine
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewSummaryOffenceComponent implements OnInit {
+  @Input({ required: true }) public offenceId!: number;
   @Input({ required: true }) public offenceCode!: string;
-  @Output() public actionClicked = new EventEmitter<string>();
+  @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
 
   private readonly opalFinesService = inject(OpalFines);
 
   public offenceRefData$: Observable<IOpalFinesOffencesRefData> = EMPTY;
 
+  /**
+   * Retrieves the offence reference data.
+   * @returns {void}
+   */
   private getOffenceRefData(): void {
     this.offenceRefData$ = this.opalFinesService.getOffenceByCjsCode(this.offenceCode).pipe(map((result) => result));
   }
 
+  /**
+   * Handles the click event for an action.
+   * @param action - The name of the action.
+   * @returns void
+   */
   public onActionClick(action: string): void {
-    this.actionClicked.emit(action);
+    this.actionClicked.emit({ actionName: action, offenceId: this.offenceId });
   }
 
   public ngOnInit(): void {

@@ -1,4 +1,11 @@
 <div class="govuk-grid-column-full">
+  <div class="govuk-grid-row">
+    @if (newlyAddedOffenceCode && newlyAddedOffenceCode.length > 0) {
+      <div class="govuk-grid-column-full">
+        <app-moj-banner type="success" [text]="newlyAddedOffenceCode"></app-moj-banner>
+      </div>
+    }
+  </div>
   <h1 class="govuk-heading-l">Offences and impositions</h1>
   @if (offencesImpositions.length === 0) {
     <ng-container *ngTemplateOutlet="emptyOffences"></ng-container>
@@ -15,32 +22,17 @@
   </div>
   <hr />
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <app-govuk-button
-        buttonId="addAnOffence"
-        buttonClasses="govuk-button--secondary"
-        (buttonClickEvent)="addAnotherOffence()"
-      >
-        Add an offence
-      </app-govuk-button>
-    </div>
+    <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
   </div>
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <app-govuk-button
-        buttonId="returnToCreateAccount"
-        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
-      >
-        Return to account details
-      </app-govuk-button>
-    </div>
+    <ng-container *ngTemplateOutlet="returnToAccountDetails; context: { $implicit: false }"></ng-container>
   </div>
 </ng-template>
 
 <ng-template #populatedOffences>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      @for (offence of offencesImpositions; track offence.formData.fm_offence_details_index) {
+      @for (offence of offencesImpositions; track offence.formData.fm_offence_details_id) {
         @if (offence.formData.fm_offence_details_date_of_offence) {
           <app-fines-mac-offence-details-review-summary-date-of-sentence
             [dateOfSentence]="offence.formData.fm_offence_details_date_of_offence"
@@ -48,6 +40,7 @@
         }
         @if (offence.formData.fm_offence_details_offence_code) {
           <app-fines-mac-offence-details-review-summary-offence
+            [offenceId]="offence.formData.fm_offence_details_id"
             [offenceCode]="offence.formData.fm_offence_details_offence_code"
             (actionClicked)="offenceAction($event)"
           ></app-fines-mac-offence-details-review-summary-offence>
@@ -61,15 +54,7 @@
       }
     </div>
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
-    <div class="govuk-grid-column-full">
-      <app-govuk-button
-        buttonId="addAnOffence"
-        buttonClasses="govuk-button--secondary"
-        (buttonClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
-      >
-        Add another offence
-      </app-govuk-button>
-    </div>
+    <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
     <div class="govuk-grid-column-full">
       <div class="border-bottom">
         <h1 class="govuk-heading-m">Totals</h1>
@@ -80,13 +65,36 @@
         [offences]="offencesImpositions"
       ></app-fines-mac-offence-details-review-summary-offences-total>
     </div>
+    <ng-container *ngTemplateOutlet="returnToAccountDetails; context: { $implicit: true }"></ng-container>
     <div class="govuk-grid-column-full">
-      <app-govuk-button
-        buttonId="returnToCreateAccount"
-        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
-      >
-        Return to account details
-      </app-govuk-button>
+      <app-govuk-cancel-link
+        (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
+      ></app-govuk-cancel-link>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #offenceTemplate>
+  <div class="govuk-grid-column-full">
+    <app-govuk-button
+      buttonId="addAnOffence"
+      buttonClasses="govuk-button--secondary"
+      (buttonClickEvent)="addAnotherOffence()"
+    >
+      Add another offence
+    </app-govuk-button>
+  </div>
+</ng-template>
+
+<ng-template #returnToAccountDetails let-subNavigationButton>
+  <div class="govuk-grid-column-full">
+    <app-govuk-button
+      buttonId="returnToCreateAccount"
+      (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
+    >
+      Return to account details
+    </app-govuk-button>
+    @if (subNavigationButton) {
       <app-govuk-button
         buttonId="submitForm"
         buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
@@ -94,11 +102,6 @@
       >
         Add payment terms
       </app-govuk-button>
-    </div>
-    <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link
-        (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
-      ></app-govuk-cancel-link>
-    </div>
+    }
   </div>
 </ng-template>

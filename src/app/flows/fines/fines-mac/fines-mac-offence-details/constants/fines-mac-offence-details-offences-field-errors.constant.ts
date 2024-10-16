@@ -18,6 +18,10 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       message: 'Enter a valid date of sentence in the past',
       priority: 4,
     },
+    valueInArray: {
+      message: 'Date of sentence has already been used',
+      priority: 5,
+    },
   },
   fm_offence_details_offence_code: {
     required: {

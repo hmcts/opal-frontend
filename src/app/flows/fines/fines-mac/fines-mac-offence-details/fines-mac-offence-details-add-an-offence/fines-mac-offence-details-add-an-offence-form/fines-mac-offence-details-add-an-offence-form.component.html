@@ -11,6 +11,7 @@
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
       [maxDate]="today"
+      [disabledDates]="disabledOffenceDates"
       [control]="form.controls['fm_offence_details_date_of_offence']"
       [errors]="formControlErrorMessages['fm_offence_details_date_of_offence']"
       (dateChange)="setInputValue($event, 'fm_offence_details_date_of_offence')"
@@ -229,7 +230,7 @@
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link (linkClickEvent)="goToAccountDetails()"></app-govuk-cancel-link>
+      <app-govuk-cancel-link (linkClickEvent)="cancelLink()"></app-govuk-cancel-link>
     </div>
   </div>
 </form>

@@ -18,10 +18,17 @@ export class FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent implements
 
   public offenceTitle!: string;
 
+  /**
+   * Handles the click event on the action button.
+   * @param action - The action to be performed.
+   */
   public onActionClick(action: string): void {
     this.actionClicked.emit(action);
   }
 
+  /**
+   * Retrieves the offence title from the offence reference data and assigns it to the `offenceTitle` property.
+   */
   public getOffenceTitle(): void {
     this.offenceTitle = this.offenceRefData.refData[0].offence_title;
   }
