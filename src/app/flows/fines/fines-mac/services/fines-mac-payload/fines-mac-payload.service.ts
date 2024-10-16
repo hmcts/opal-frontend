@@ -347,7 +347,15 @@ export class FinesMacPayloadService {
     }
   }
 
-  private buildEnforcementResponses(
+  /**
+   * Builds an enforcement response object for fines MAC payment terms.
+   *
+   * @param parameterName - The name of the parameter to be included in the response.
+   * @param response - The response value, which can be a string or null.
+   * @returns An object conforming to the `IFinesMacPaymentTermsEnforcementResultResponse` interface,
+   *          containing the parameter name and the response.
+   */
+  private buildEnforcementResultResponse(
     [parameterName]: string,
     response: string | null,
   ): IFinesMacPaymentTermsEnforcementResultResponse {
@@ -357,6 +365,13 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds an enforcement object for fines MAC payment terms.
+   *
+   * @param resultId - The unique identifier for the result.
+   * @param enforcementResponses - An array of enforcement result responses or null.
+   * @returns An object representing the enforcement details.
+   */
   private buildEnforcement(
     resultId: string,
     enforcementResponses: IFinesMacPaymentTermsEnforcementResultResponse[] | null,
@@ -386,11 +401,11 @@ export class FinesMacPayloadService {
       case 'PRIS':
         enforcements.push(
           this.buildEnforcement('PRIS', [
-            this.buildEnforcementResponses(
+            this.buildEnforcementResultResponse(
               'earliestreleasedate',
               paymentTermsState['fm_payment_terms_earliest_release_date'] || null,
             ),
-            this.buildEnforcementResponses(
+            this.buildEnforcementResultResponse(
               'prisonandprisonnumber',
               paymentTermsState['fm_payment_terms_prison_and_prison_number'] || null,
             ),
@@ -400,7 +415,7 @@ export class FinesMacPayloadService {
       case 'NOENF':
         enforcements.push(
           this.buildEnforcement('NOENF', [
-            this.buildEnforcementResponses(
+            this.buildEnforcementResultResponse(
               'reason',
               paymentTermsState['fm_payment_terms_reason_account_is_on_noenf'] || null,
             ),
@@ -413,7 +428,6 @@ export class FinesMacPayloadService {
 
   private buildPaymentTerms(paymentTermsState: IFinesMacPaymentTermsState): IFinesMacPaymentTerms {
     // If the payment terms are 'Pay in full', the payment terms type code is 'B' else it is 'I'
-
     let paymentTermsTypeCode = null;
     if (paymentTermsState['fm_payment_terms_payment_terms']) {
       paymentTermsTypeCode = paymentTermsState['fm_payment_terms_payment_terms'] === 'payInFull' ? 'B' : 'I';
