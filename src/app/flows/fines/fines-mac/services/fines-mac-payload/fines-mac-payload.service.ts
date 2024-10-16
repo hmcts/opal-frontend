@@ -332,8 +332,6 @@ export class FinesMacPayloadService {
   }
 
   private getInstallmentPeriod(installmentPeriod: string | null | undefined): string | null {
-    console.log(installmentPeriod);
-    console.log(FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS.weekly);
     switch (installmentPeriod?.toLocaleLowerCase()) {
       case FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS.weekly.toLowerCase():
         return 'W';
@@ -396,8 +394,6 @@ export class FinesMacPayloadService {
 
   private buildPaymentTerms(paymentTermsState: IFinesMacPaymentTermsState) {
     // If the payment terms are 'Pay in full', the payment terms type code is 'B' else it is 'I'
-
-    console.log(paymentTermsState['fm_payment_terms_payment_terms']);
 
     const paymentTermsTypeCode = paymentTermsState['fm_payment_terms_payment_terms'] === 'payInFull' ? 'B' : 'I';
 
@@ -485,10 +481,10 @@ export class FinesMacPayloadService {
     return {
       account_type: this.accountType,
       defendant_type: this.defendantType,
-      originator_name: 'awaiting autocomplete change',
-      originator_id: 'awaiting autocomplete change',
+      originator_name: courtDetailsState['fm_court_details_originator_name'],
+      originator_id: courtDetailsState['fm_court_details_originator_id'],
       prosecutor_case_reference: courtDetailsState['fm_court_details_prosecutor_case_reference'],
-      enforcement_court_id: 'awaiting autocomplete change',
+      enforcement_court_id: courtDetailsState['fm_court_details_enforcement_court_id'],
       collection_order_made: paymentTermsState['fm_payment_terms_collection_order_made'],
       collection_order_made_today: paymentTermsState['fm_payment_terms_collection_order_made_today'],
       collection_order_date: paymentTermsState['fm_payment_terms_collection_order_date'],
