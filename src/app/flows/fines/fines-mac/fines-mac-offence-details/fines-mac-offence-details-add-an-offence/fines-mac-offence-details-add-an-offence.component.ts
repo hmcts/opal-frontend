@@ -15,6 +15,7 @@ import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-off
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -26,6 +27,7 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
@@ -120,7 +122,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
       this.formDataIndex = 0;
       this.finesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
     } else {
-      this.formDataIndex = this.finesService.finesMacState.offenceDetails.length - 1;
+      this.formDataIndex = this.finesMacOffenceDetailsService.offenceIndex;
     }
   }
 

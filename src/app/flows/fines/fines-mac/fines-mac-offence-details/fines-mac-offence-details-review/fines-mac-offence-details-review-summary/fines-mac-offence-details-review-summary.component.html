@@ -19,7 +19,7 @@
       <app-govuk-button
         buttonId="addAnOffence"
         buttonClasses="govuk-button--secondary"
-        (buttonClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
+        (buttonClickEvent)="addAnotherOffence()"
       >
         Add an offence
       </app-govuk-button>
@@ -46,13 +46,11 @@
             [dateOfSentence]="offence.formData.fm_offence_details_date_of_offence"
           ></app-fines-mac-offence-details-review-summary-date-of-sentence>
         }
-        @if (offenceRefData$ | async; as offenceRefData) {
-          @if (offence.formData.fm_offence_details_offence_code) {
-            <app-fines-mac-offence-details-review-summary-offence-title
-              [offenceCode]="offence.formData.fm_offence_details_offence_code"
-              [offenceRefData]="offenceRefData"
-            ></app-fines-mac-offence-details-review-summary-offence-title>
-          }
+        @if (offence.formData.fm_offence_details_offence_code) {
+          <app-fines-mac-offence-details-review-summary-offence
+            [offenceCode]="offence.formData.fm_offence_details_offence_code"
+            (actionClicked)="offenceAction($event)"
+          ></app-fines-mac-offence-details-review-summary-offence>
         }
         <app-fines-mac-offence-details-review-summary-imposition-table
           [impositionRefData]="impositionRefData"
@@ -85,7 +83,7 @@
     <div class="govuk-grid-column-full">
       <app-govuk-button
         buttonId="returnToCreateAccount"
-        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails)"
+        (buttonClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
       >
         Return to account details
       </app-govuk-button>

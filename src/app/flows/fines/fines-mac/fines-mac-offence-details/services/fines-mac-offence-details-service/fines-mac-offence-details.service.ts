@@ -7,4 +7,5 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac
 })
 export class FinesMacOffenceDetailsService {
   public finesMacOffenceDetailsDraftState: IFinesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+  public offenceIndex: number = 0;
 }

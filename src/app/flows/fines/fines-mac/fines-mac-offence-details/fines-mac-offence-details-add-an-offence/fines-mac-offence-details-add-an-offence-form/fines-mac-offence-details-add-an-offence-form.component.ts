@@ -54,6 +54,9 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { CommonModule } from '@angular/common';
+import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../../constants/fines-mac-offence-details-form.constant';
+import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
+import f from 'session-file-store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -139,7 +142,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const impositionsKey = 'fm_offence_details_impositions';
     const formData = hasOffenceDetailsDraft
       ? offenceDetailsDraft[0].formData
-      : this.finesMacService.finesMacState.offenceDetails[0].formData;
+      : this.finesMacService.finesMacState.offenceDetails[this.formDataIndex]
+        ? this.finesMacService.finesMacState.offenceDetails[this.formDataIndex].formData
+        : { ...FINES_MAC_OFFENCE_DETAILS_STATE, fm_offence_details_index: this.formDataIndex };
     const impositionsLength = formData[impositionsKey].length;
 
     this.setupAddAnOffenceForm();

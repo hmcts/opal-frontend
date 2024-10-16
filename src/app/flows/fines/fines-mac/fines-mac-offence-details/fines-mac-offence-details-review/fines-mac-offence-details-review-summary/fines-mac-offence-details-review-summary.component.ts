@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-details-form.interface';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
@@ -9,13 +9,12 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants
 import { FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent } from './fines-mac-offence-details-review-summary-date-of-sentence/fines-mac-offence-details-review-summary-date-of-sentence.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { CommonModule } from '@angular/common';
-import { FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent } from './fines-mac-offence-details-review-summary-offence-title/fines-mac-offence-details-review-summary-offence-title.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { EMPTY, Observable, map } from 'rxjs';
-import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { FinesMacOffenceDetailsReviewSummaryImpositionTableComponent } from './fines-mac-offence-details-review-summary-imposition-table/fines-mac-offence-details-review-summary-imposition-table.component';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fines-mac-offence-details-review-summary-offences-total/fines-mac-offence-details-review-summary-offences-total.component';
+import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FinesMacOffenceDetailsReviewSummaryOffenceComponent } from './fines-mac-offence-details-review-summary-offence/fines-mac-offence-details-review-summary-offence.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -25,7 +24,7 @@ import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fin
     GovukButtonComponent,
     GovukCancelLinkComponent,
     FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent,
-    FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent,
+    FinesMacOffenceDetailsReviewSummaryOffenceComponent,
     FinesMacOffenceDetailsReviewSummaryImpositionTableComponent,
     FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent,
   ],
@@ -33,7 +32,7 @@ import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fin
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './fines-mac-offence-details-review-summary.component.scss',
 })
-export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
+export class FinesMacOffenceDetailsReviewSummaryComponent {
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsForm[];
@@ -41,15 +40,21 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly opalFinesService = inject(OpalFines);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
-  public offenceRefData$: Observable<IOpalFinesOffencesRefData> = EMPTY;
+  public offenceAction(action: string): void {
+    if (action === 'Change') {
+      this.finesMacOffenceDetailsService.offenceIndex = 0;
+      this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
+    }
+  }
 
-  private getOffenceRefData(): void {
-    const offenceCodes = this.offencesImpositions.map((offence) => offence.formData.fm_offence_details_offence_code!);
-    this.offenceRefData$ = this.opalFinesService.getOffencesByCjsCodes(offenceCodes).pipe(map((result) => result));
+  public addAnotherOffence(): void {
+    this.finesMacOffenceDetailsService.offenceIndex = this.offencesImpositions.length + 1;
+    this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }
 
   /**
@@ -65,14 +70,6 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
       this.router.navigate([`${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${route}`]);
     } else {
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
-    }
-  }
-
-  public ngOnInit(): void {
-    console.log('FinesMacOffenceDetailsReviewSummaryComponent', this.impositionRefData);
-
-    if (this.offencesImpositions.length > 0) {
-      this.getOffenceRefData();
     }
   }
 }

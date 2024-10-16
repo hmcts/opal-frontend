@@ -1,0 +1,7 @@
+@if (offenceRefData$ | async; as offenceRefData) {
+  <app-fines-mac-offence-details-review-summary-offence-title
+    [offenceCode]="offenceCode"
+    [offenceRefData]="offenceRefData"
+    (actionClicked)="onActionClick($event)"
+  ></app-fines-mac-offence-details-review-summary-offence-title>
+}

@@ -22,6 +22,9 @@ export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implement
   private totalAmountPaid: number = 0;
   private totalBalanceRemaining: number = 0;
 
+  /**
+   * Calculates the total amounts for the offences.
+   */
   private getTotals(): void {
     this.offences.forEach((offence) => {
       offence.formData.fm_offence_details_impositions.forEach((imposition) => {
