@@ -36,13 +36,16 @@ import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interf
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-enforcement-action-options';
+import {
+  IFinesMacPaymentTerms,
+  IFinesMacPaymentTermsEnforcement,
+  IFinesMacPaymentTermsEnforcementResultResponse,
+} from './interfaces/fines-mac-payment-terms.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
-  private dateService = inject(DateService);
-
   private defendantType!: string | null;
   private accountType!: string | null;
 
@@ -344,7 +347,28 @@ export class FinesMacPayloadService {
     }
   }
 
-  private buildPaymentTermEnforcements(paymentTermsState: IFinesMacPaymentTermsState) {
+  private buildEnforcementResponses(
+    [parameterName]: string,
+    response: string | null,
+  ): IFinesMacPaymentTermsEnforcementResultResponse {
+    return {
+      parameter_name: parameterName,
+      response: response || null,
+    };
+  }
+
+  private buildEnforcement(
+    resultId: string,
+    enforcementResponses: IFinesMacPaymentTermsEnforcementResultResponse[] | null,
+  ): IFinesMacPaymentTermsEnforcement {
+    return {
+      result_id: resultId,
+      enforcement_result_responses: enforcementResponses,
+    };
+  }
+  private buildPaymentTermEnforcements(
+    paymentTermsState: IFinesMacPaymentTermsState,
+  ): IFinesMacPaymentTermsEnforcement[] | null {
     let enforcements = [];
     const hasCollectionOrderBeenMade: any = paymentTermsState['fm_payment_terms_collection_order_made'];
     const hasCollectionOrderBeenMadeToday = paymentTermsState['fm_payment_terms_collection_order_made_today'];
@@ -355,61 +379,62 @@ export class FinesMacPayloadService {
       paymentTermsState['fm_payment_terms_enforcement_action'] === 'defendantIsInCustody' ? 'PRIS' : 'NOENF';
 
     if (addColloEnforcement) {
-      enforcements.push({
-        result_id: 'COLLO',
-        enforcement_result_responses: null,
-      });
+      enforcements.push(this.buildEnforcement('COLLO', null));
     }
 
     switch (resultId) {
       case 'PRIS':
-        enforcements.push({
-          result_id: resultId,
-          enforcement_result_responses: [
-            {
-              parameter_name: 'earliestreleasedate',
-              response: paymentTermsState['fm_payment_terms_earliest_release_date'],
-            },
-            {
-              parameter_name: 'prisonandprisonnumber',
-              response: paymentTermsState['fm_payment_terms_prison_and_prison_number'],
-            },
-          ],
-        });
+        enforcements.push(
+          this.buildEnforcement('PRIS', [
+            this.buildEnforcementResponses(
+              'earliestreleasedate',
+              paymentTermsState['fm_payment_terms_earliest_release_date'] || null,
+            ),
+            this.buildEnforcementResponses(
+              'prisonandprisonnumber',
+              paymentTermsState['fm_payment_terms_prison_and_prison_number'] || null,
+            ),
+          ]),
+        );
         break;
       case 'NOENF':
-        enforcements.push({
-          result_id: resultId,
-          enforcement_result_responses: [
-            {
-              parameter_name: 'reason',
-              response: paymentTermsState['fm_payment_terms_reason_account_is_on_noenf'],
-            },
-          ],
-        });
+        enforcements.push(
+          this.buildEnforcement('NOENF', [
+            this.buildEnforcementResponses(
+              'reason',
+              paymentTermsState['fm_payment_terms_reason_account_is_on_noenf'] || null,
+            ),
+          ]),
+        );
     }
 
-    return enforcements;
+    return enforcements.length ? enforcements : null;
   }
 
-  private buildPaymentTerms(paymentTermsState: IFinesMacPaymentTermsState) {
+  private buildPaymentTerms(paymentTermsState: IFinesMacPaymentTermsState): IFinesMacPaymentTerms {
     // If the payment terms are 'Pay in full', the payment terms type code is 'B' else it is 'I'
 
-    const paymentTermsTypeCode = paymentTermsState['fm_payment_terms_payment_terms'] === 'payInFull' ? 'B' : 'I';
+    let paymentTermsTypeCode = null;
+    if (paymentTermsState['fm_payment_terms_payment_terms']) {
+      paymentTermsTypeCode = paymentTermsState['fm_payment_terms_payment_terms'] === 'payInFull' ? 'B' : 'I';
+    }
 
     // The effective date is the 'fm_payment_terms_pay_by_date' if the payment terms type code is 'B'
-    const effectiveDate =
-      paymentTermsTypeCode === 'B'
-        ? paymentTermsState['fm_payment_terms_pay_by_date']
-        : paymentTermsState['fm_payment_terms_start_date'];
+    let effectiveDate = null;
+    if (paymentTermsTypeCode) {
+      effectiveDate =
+        paymentTermsTypeCode === 'B'
+          ? paymentTermsState['fm_payment_terms_pay_by_date']
+          : paymentTermsState['fm_payment_terms_start_date'];
+    }
 
     return {
       payment_terms_type_code: paymentTermsTypeCode,
-      effective_date: effectiveDate,
+      effective_date: effectiveDate || null,
       instalment_period: this.getInstallmentPeriod(paymentTermsState['fm_payment_instalment_period']),
-      lump_sum_amount: paymentTermsState['fm_payment_terms_lump_sum_amount'],
-      instalment_amount: paymentTermsState['fm_payment_terms_instalment_amount'],
-      default_days_in_jail: paymentTermsState['fm_payment_terms_default_days_in_jail'],
+      lump_sum_amount: paymentTermsState['fm_payment_terms_lump_sum_amount'] || null,
+      instalment_amount: paymentTermsState['fm_payment_terms_instalment_amount'] || null,
+      default_days_in_jail: paymentTermsState['fm_payment_terms_default_days_in_jail'] || null,
       enforcements: this.buildPaymentTermEnforcements(paymentTermsState),
     };
   }
@@ -492,8 +517,16 @@ export class FinesMacPayloadService {
       payment_card_request: paymentTermsState['fm_payment_terms_payment_card_request'],
       account_sentence_date: '2023-09-15', // Derived from from the earliest of all offence sentence dates
       defendant: defendant,
+      offences: null,
       fp_ticket_detail: null,
       payment_terms: this.buildPaymentTerms(paymentTermsState),
+      account_notes: [
+        {
+          account_note_serial: 1,
+          account_note_text: 'Initial account creation',
+          note_type: 'AC',
+        },
+      ],
     };
   }
 }
