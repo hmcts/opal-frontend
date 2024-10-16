@@ -144,6 +144,47 @@
                       ])
                     "
                   ></div>
+                  <div app-govuk-radios-conditional conditionalId="creditor">
+                    @if (creditorOption.key === 'major') {
+                      @if (
+                        form.get([
+                          'fm_offence_details_impositions',
+                          rowIndex,
+                          formArrayControl['fm_offence_details_creditor'].controlName,
+                        ])?.value === 'major'
+                      ) {
+                        <app-alphagov-accessible-autocomplete
+                          [control]="
+                            form.get([
+                              'fm_offence_details_impositions',
+                              rowIndex,
+                              formArrayControl['fm_offence_details_major_creditor'].controlName,
+                            ])
+                          "
+                          labelText="Search using name or code"
+                          labelClasses="govuk-fieldset__legend--s"
+                          [inputId]="formArrayControl['fm_offence_details_major_creditor'].inputId"
+                          [inputName]="formArrayControl['fm_offence_details_major_creditor'].inputName"
+                          inputClasses="govuk-!-width-one-half"
+                          [autoCompleteItems]="majorCreditorItems"
+                          [errors]="
+                            formControlErrorMessages[formArrayControl['fm_offence_details_major_creditor'].controlName]
+                          "
+                        >
+                        </app-alphagov-accessible-autocomplete>
+                      }
+                    } @else {
+                      @if (
+                        form.get([
+                          'fm_offence_details_impositions',
+                          rowIndex,
+                          formArrayControl['fm_offence_details_creditor'].controlName,
+                        ])?.value === 'minor'
+                      ) {
+                        <a class="govuk-link govuk-link--no-visited-state" tabindex="0"> Add minor creditor details </a>
+                      }
+                    }
+                  </div>
                 }
               </app-govuk-radio>
             </div>

@@ -27,6 +27,10 @@ import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-se
 import { Observable, shareReplay } from 'rxjs';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import {
+  IOpalFinesMajorCreditor,
+  IOpalFinesMajorCreditorRefData,
+} from './interfaces/opal-fines-major-creditor-ref-data.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -37,6 +41,7 @@ export class OpalFines {
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
+  private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
 
   /**
    * Searches for courts based on the provided search criteria.
@@ -217,5 +222,33 @@ export class OpalFines {
     return this.http
       .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
       .pipe(shareReplay(1));
+  }
+
+  /**
+   * Retrieves the major creditors for a given business unit.
+   * If the major creditors for the specified business unit have already been fetched,
+   * it returns the cached result. Otherwise, it makes an HTTP request to fetch the data
+   * and caches the result for future use.
+   *
+   * @param businessUnit - The business unit for which to retrieve the major creditors.
+   * @returns An Observable that emits the major creditors data.
+   */
+  public getMajorCreditors(businessUnit: number) {
+    if (!this.majorCreditorsCache$[businessUnit]) {
+      this.majorCreditorsCache$[businessUnit] = this.http
+        .get<IOpalFinesMajorCreditorRefData>(OPAL_FINES_PATHS.majorCreditorRefData, { params: { businessUnit } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.majorCreditorsCache$[businessUnit];
+  }
+
+  /**
+   * Returns the pretty name of a major creditor.
+   * @param majorCreditor - The major creditor object.
+   * @returns The pretty name of the major creditor.
+   */
+  public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor) {
+    return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
   }
 }
