@@ -9,6 +9,7 @@ import { FinesMacOffenceDetailsReviewSummaryComponent } from './fines-mac-offenc
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { CommonModule } from '@angular/common';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review',
@@ -21,6 +22,7 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  private readonly dateService = inject(DateService);
 
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly impositionRefData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
@@ -60,12 +62,31 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
     }));
   }
 
+  private sortOffencesByDate(): void {
+    this.offencesImpositions.sort((a, b) => {
+      const dateOfOffenceA = this.dateService.getFromFormat(
+        a.formData.fm_offence_details_date_of_offence!,
+        'dd/MM/yyyy',
+      );
+      const dateOfOffenceB = this.dateService.getFromFormat(
+        b.formData.fm_offence_details_date_of_offence!,
+        'dd/MM/yyyy',
+      );
+      if (!dateOfOffenceA && !dateOfOffenceB) return 0; // Both null, considered equal
+      if (!dateOfOffenceA) return 1; // null values pushed to the end
+      if (!dateOfOffenceB) return -1; // null values pushed to the end
+
+      return dateOfOffenceA.toMillis() - dateOfOffenceB.toMillis(); // Compare dates by milliseconds
+    });
+  }
+
   /**
    * Retrieves the offences impositions from the finesMacState offenceDetails
    * and removes the index from the imposition keys.
    */
   private getOffencesImpositions(): void {
     this.offencesImpositions = this.removeIndexFromImpositionKeys(this.finesService.finesMacState.offenceDetails);
+    this.sortOffencesByDate();
     this.finesMacOffenceDetailsService.emptyOffences = this.offencesImpositions.length === 0;
     this.finesMacOffenceDetailsService.disabledDates = this.offencesImpositions.map(
       (offence) => offence.formData.fm_offence_details_date_of_offence!,
