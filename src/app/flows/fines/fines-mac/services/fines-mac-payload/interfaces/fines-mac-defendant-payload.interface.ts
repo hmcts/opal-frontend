@@ -1,10 +1,10 @@
-export interface IFinesMacDefendantPayloadDebtorDetailAlias {
+export interface IFinesMacDefendantDebtorDetailAliasPayload {
   alias_forenames: string | null;
   alias_surname: string | null;
   alias_company_name: string | null;
 }
 
-export interface IFinesMacDefendantPayloadDebtorDetail {
+export interface IFinesMacDefendantDebtorDetailPayload {
   vehicle_make: string | null;
   vehicle_registration_mark: string | null;
   document_language: string | null;
@@ -19,7 +19,7 @@ export interface IFinesMacDefendantPayloadDebtorDetail {
   employer_post_code: string | null;
   employer_telephone_number: string | null;
   employer_email_address: string | null;
-  aliases: IFinesMacDefendantPayloadDebtorDetailAlias[] | null;
+  aliases: IFinesMacDefendantDebtorDetailAliasPayload[] | null;
 }
 
 export interface IFinesMacDefendantPayloadParentGuardian {
@@ -40,7 +40,7 @@ export interface IFinesMacDefendantPayloadParentGuardian {
   telephone_number_mobile: string | null;
   email_address_1: string | null;
   email_address_2: string | null;
-  debtor_detail: IFinesMacDefendantPayloadDebtorDetail | null;
+  debtor_detail: IFinesMacDefendantDebtorDetailPayload | null;
 }
 
 export interface IFinesMacDefendantPayload {
@@ -74,6 +74,6 @@ export interface IFinesMacDefendantPayload {
   custody_status: string | null;
   prison_number: string | null;
   interpreter_lang: string | null;
-  debtor_detail: IFinesMacDefendantPayloadDebtorDetail | null;
+  debtor_detail: IFinesMacDefendantDebtorDetailPayload | null;
   parent_guardian: IFinesMacDefendantPayloadParentGuardian | null;
 }

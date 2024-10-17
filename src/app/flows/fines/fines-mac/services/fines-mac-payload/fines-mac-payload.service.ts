@@ -16,72 +16,64 @@ import { DateService } from '@services/date-service/date.service';
 
 import {
   IFinesMacDefendantPayload,
-  IFinesMacDefendantPayloadDebtorDetail,
-  IFinesMacDefendantPayloadDebtorDetailAlias,
+  IFinesMacDefendantDebtorDetailPayload,
+  IFinesMacDefendantDebtorDetailAliasPayload,
   IFinesMacDefendantPayloadParentGuardian,
 } from './interfaces/fines-mac-defendant-payload.interface';
 import { FINES_MAC_DEFENDANT_PAYLOAD } from './constants/fines-mac-defendant-payload.constant';
 import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD } from './constants/fines-mac-defendant-debtor-details-payload.constant';
 import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD } from './constants/fines-mac-defendant-debtor-details-alias-payload.constant';
-import { IFinesMacIndividualDefendant } from './interfaces/fines-mac-individual-defendant.interface';
-import { IFinesMacIndividualDefendantDebtorDetails } from './interfaces/fines-mac-individual-defendant-debtor-details.interface';
-import { IFinesMacIndividualDefendantDebtorDetailsAlias } from './interfaces/fines-mac-individual-defendant-debtor-details-alias.interface';
-import { IFinesMacCompanyDefendant } from './interfaces/fines-mac-company-defendant.interface';
-import { IFinesMacCompanyDefendantDebtorDetails } from './interfaces/fines-mac-company-defendant-debtor-details.interface';
-import { IFinesMacCompanyDefendantDebtorDetailsAlias } from './interfaces/fines-mac-company-defendant-debtor-details-alias.interface';
-import { IFinesMacParentGuardianDefendant } from './interfaces/fines-mac-parent-guardian-defendant.interface';
-import { IFinesMacParentGuardianDefendantParentGuardian } from './interfaces/fines-mac-parent-guardian-defendant-parent-guardian.interface';
+import { IFinesMacDefendantIndividualPayload } from './interfaces/fines-mac-individual-defendant.interface';
+import { IFinesMacDefendantIndividualDebtorDetailsPayload } from './interfaces/fines-mac-defendant-individual-debtor-details-payload.interface';
+import { IFinesMacDefendantIndividualDebtorDetailsAliasPayload } from './interfaces/fines-mac-defendant-individual-debtor-details-alias-payload.interface';
+import { IFinesMacDefendantCompanyPayload } from './interfaces/fines-mac-defendant-company.interface';
+import { IFinesMacDefendantCompanyDebtorDetailsPayload } from './interfaces/fines-mac-defendant-company-debtor-details-payload.interface';
+import { IFinesMacDefendantCompanyDebtorDetailsAliasPayload } from './interfaces/fines-mac-defendant-company-debtor-details-alias-payload.interface';
+import { IFinesMacDefendantParentGuardianPayload } from './interfaces/fines-mac-defendant-parent-guardian-payload.interface';
+import { IFinesMacDefendantParentGuardianParentGuardianPayload } from './interfaces/fines-mac-defendant-parent-guardian-parent-guardian-payload.interface';
 import { FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD } from './constants/fines-mac-defendant-parent-guardian-payload.constant';
 import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-frequency-options';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-enforcement-action-options';
-import {
-  IFinesMacPaymentTerms,
-  IFinesMacPaymentTermsEnforcement,
-  IFinesMacPaymentTermsEnforcementResultResponse,
-} from './interfaces/fines-mac-payment-terms.interface';
+
 import { IFinesMacAccountCommentsNotesState } from '../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
-import { IFinesMacAccountNote } from './interfaces/fines-mac-account-note.interface';
+
+import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
+import { IFinesMacInitialPayload } from './interfaces/fines-mac-initial-payload.interface';
+import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-terms-payload.interface';
+import { IFinesMacAccountNotePayload } from './interfaces/fines-mac-account-note-payload.interface';
+import { IFinesMacPaymentTermsEnforcementResultResponsePayload } from './interfaces/fines-mac-payment-terms-enforcement-result-response-payload.interface';
+import { IFinesMacPaymentTermsEnforcementPayload } from './interfaces/fines-mac-payment-terms-enforcement-payload.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
-  private defendantType!: string | null;
-  private accountType!: string | null;
-
   /**
-   * Applies base payloads to an individual or company defendant to ensure all fields are present.
+   * Applies base payloads to an individual or company defendant.
    *
    * This method takes a defendant object, which can be either an individual or a company,
-   * and applies base payloads to its properties. This ensures that all required fields are
-   * present in the defendant object.
+   * and merges it with predefined payload templates to create a complete defendant payload.
    *
    * @param defendant - The defendant object, which can be either an individual or a company.
-   * @returns The defendant payload with all required fields populated.
+   * @returns The complete defendant payload with base payloads applied.
    */
   private applyBasePayloadsToIndividualOrCompanyDefendant(
-    defendant: IFinesMacIndividualDefendant | IFinesMacCompanyDefendant,
+    defendant: IFinesMacDefendantIndividualPayload | IFinesMacDefendantCompanyPayload,
   ): IFinesMacDefendantPayload {
-    // We want to apply the base payload files to the defendant object so that all the fields are present
-
-    // Apply the base payload to the aliases so that all the fields are present
-    const aliases: IFinesMacDefendantPayloadDebtorDetailAlias[] =
+    const aliases: IFinesMacDefendantDebtorDetailAliasPayload[] | null =
       defendant.debtor_detail.aliases?.map((alias) => ({
         ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
         ...alias,
-      })) || [];
+      })) || null;
 
-    // Apply the base payload to the debtor detail so that all the fields are present
-    // and the aliases are included
-    const debtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
+    const debtorDetail: IFinesMacDefendantDebtorDetailPayload = {
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
       ...defendant.debtor_detail,
       aliases: aliases,
     };
 
-    // Apply the base payload to the defendant so that all the fields are present
     return {
       ...FINES_MAC_DEFENDANT_PAYLOAD,
       ...defendant,
@@ -90,33 +82,30 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Applies base payloads to the parent guardian defendant object to ensure all fields are present.
+   * Applies base payloads to the parent guardian defendant.
    *
-   * This function takes a `IFinesMacParentGuardianDefendant` object and merges it with predefined
-   * base payloads to ensure that all necessary fields are populated. It specifically handles the
-   * `debtor_detail` and `aliases` fields within the `parent_guardian` property.
+   * This method takes a `IFinesMacDefendantParentGuardianPayload` object and merges it with predefined
+   * payload constants to create a new `IFinesMacDefendantPayload` object. It ensures that the
+   * `debtor_detail` and its `aliases` are properly merged with their respective payload constants.
    *
    * @param defendant - The parent guardian defendant object to which the base payloads will be applied.
    * @returns A new `IFinesMacDefendantPayload` object with the base payloads applied.
    */
   private applyBasePayloadsToParentGuardianDefendant(
-    defendant: IFinesMacParentGuardianDefendant,
+    defendant: IFinesMacDefendantParentGuardianPayload,
   ): IFinesMacDefendantPayload {
-    // We want to apply the base payload files to the defendant object so that all the fields are present
-
-    const parentGuardianDebtorAliases: IFinesMacDefendantPayloadDebtorDetailAlias[] =
+    const parentGuardianDebtorAliases: IFinesMacDefendantDebtorDetailAliasPayload[] | null =
       defendant.parent_guardian.debtor_detail.aliases?.map((alias) => ({
         ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
         ...alias,
-      })) || [];
+      })) || null;
 
-    const parentGuardianDebtorDetail: IFinesMacDefendantPayloadDebtorDetail = {
+    const parentGuardianDebtorDetail: IFinesMacDefendantDebtorDetailPayload = {
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
       ...defendant.parent_guardian.debtor_detail,
       aliases: parentGuardianDebtorAliases,
     };
 
-    // Apply the base payload to the defendant so that all the fields are present
     return {
       ...FINES_MAC_DEFENDANT_PAYLOAD,
       ...defendant,
@@ -128,9 +117,15 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds an array of individual defendant debtor details aliases from the provided aliases state.
+   *
+   * @param aliases - An array of alias states containing personal details.
+   * @returns An array of individual defendant debtor details aliases.
+   */
   private buildIndividualDefendantDebtorDetailsAliases(
     aliases: IFinesMacPersonalDetailsAliasState[],
-  ): IFinesMacIndividualDefendantDebtorDetailsAlias[] {
+  ): IFinesMacDefendantIndividualDebtorDetailsAliasPayload[] {
     return aliases.map((alias, index) => {
       const forenameKey = `fm_personal_details_alias_forenames_${index}` as keyof IFinesMacPersonalDetailsAliasState;
       const surnameKey = `fm_personal_details_alias_surname_${index}` as keyof IFinesMacPersonalDetailsAliasState;
@@ -141,52 +136,112 @@ export class FinesMacPayloadService {
     });
   }
 
+  /**
+   * Builds the individual defendant debtor details object.
+   *
+   * @param personalDetailsState - The state containing personal details of the defendant.
+   * @param employerDetailsState - The state containing employer details of the defendant.
+   * @param languagePreferencesState - The state containing language preferences of the defendant.
+   * @returns An object representing the individual defendant debtor details.
+   */
   private buildIndividualDefendantDebtorDetails(
     personalDetailsState: IFinesMacPersonalDetailsState,
     employerDetailsState: IFinesMacEmployerDetailsState,
     languagePreferencesState: IFinesMacLanguagePreferencesState,
-  ): IFinesMacIndividualDefendantDebtorDetails {
+  ): IFinesMacDefendantIndividualDebtorDetailsPayload {
+    const {
+      fm_personal_details_vehicle_make: vehicle_make,
+      fm_personal_details_vehicle_registration_mark: vehicle_registration_mark,
+      fm_personal_details_aliases: aliases,
+    } = personalDetailsState;
+
+    const {
+      fm_employer_details_employer_reference: employee_reference,
+      fm_employer_details_employer_company_name: employer_company_name,
+      fm_employer_details_employer_address_line_2: employer_address_line_2,
+      fm_employer_details_employer_address_line_3: employer_address_line_3,
+      fm_employer_details_employer_address_line_4: employer_address_line_4,
+      fm_employer_details_employer_address_line_5: employer_address_line_5,
+      fm_employer_details_employer_post_code: employer_post_code,
+      fm_employer_details_employer_telephone_number: employer_telephone_number,
+      fm_employer_details_employer_email_address: employer_email_address,
+    } = employerDetailsState;
+
+    const {
+      fm_language_preferences_document_language: document_language,
+      fm_language_preferences_hearing_language: hearing_language,
+    } = languagePreferencesState;
+
     return {
-      vehicle_make: personalDetailsState['fm_personal_details_vehicle_make'],
-      vehicle_registration_mark: personalDetailsState['fm_personal_details_vehicle_registration_mark'],
-      document_language: languagePreferencesState['fm_language_preferences_document_language'],
-      hearing_language: languagePreferencesState['fm_language_preferences_hearing_language'],
-      employee_reference: employerDetailsState['fm_employer_details_employer_reference'],
-      employer_company_name: employerDetailsState['fm_employer_details_employer_company_name'],
-      employer_address_line_1: employerDetailsState['fm_employer_details_employer_company_name'],
-      employer_address_line_2: employerDetailsState['fm_employer_details_employer_address_line_2'],
-      employer_address_line_3: employerDetailsState['fm_employer_details_employer_address_line_3'],
-      employer_address_line_4: employerDetailsState['fm_employer_details_employer_address_line_4'],
-      employer_address_line_5: employerDetailsState['fm_employer_details_employer_address_line_5'],
-      employer_post_code: employerDetailsState['fm_employer_details_employer_post_code'],
-      employer_telephone_number: employerDetailsState['fm_employer_details_employer_telephone_number'],
-      employer_email_address: employerDetailsState['fm_employer_details_employer_email_address'],
-      aliases: this.buildIndividualDefendantDebtorDetailsAliases(personalDetailsState['fm_personal_details_aliases']),
+      vehicle_make,
+      vehicle_registration_mark,
+      document_language,
+      hearing_language,
+      employee_reference,
+      employer_company_name,
+      employer_address_line_1: employer_company_name,
+      employer_address_line_2,
+      employer_address_line_3,
+      employer_address_line_4,
+      employer_address_line_5,
+      employer_post_code,
+      employer_telephone_number,
+      employer_email_address,
+      aliases: this.buildIndividualDefendantDebtorDetailsAliases(aliases),
     };
   }
 
+  /**
+   * Builds an individual defendant object from the provided state objects.
+   *
+   * @param personalDetailsState - The state containing personal details of the defendant.
+   * @param contactDetailsState - The state containing contact details of the defendant.
+   * @param employerDetailsState - The state containing employer details of the defendant.
+   * @param languagePreferencesState - The state containing language preferences of the defendant.
+   * @returns An object representing an individual defendant.
+   */
   private buildIndividualDefendant(
     personalDetailsState: IFinesMacPersonalDetailsState,
     contactDetailsState: IFinesMacContactDetailsState,
     employerDetailsState: IFinesMacEmployerDetailsState,
     languagePreferencesState: IFinesMacLanguagePreferencesState,
-  ): IFinesMacIndividualDefendant {
+  ): IFinesMacDefendantIndividualPayload {
+    const {
+      fm_personal_details_title: title,
+      fm_personal_details_surname: surname,
+      fm_personal_details_forenames: forenames,
+      fm_personal_details_dob: dob,
+      fm_personal_details_address_line_1: address_line_1,
+      fm_personal_details_address_line_2: address_line_2,
+      fm_personal_details_address_line_3: address_line_3,
+      fm_personal_details_post_code: post_code,
+      fm_personal_details_national_insurance_number: national_insurance_number,
+    } = personalDetailsState;
+
+    const {
+      fm_contact_details_telephone_number_home: telephone_number_home,
+      fm_contact_details_telephone_number_business: telephone_number_business,
+      fm_contact_details_telephone_number_mobile: telephone_number_mobile,
+      fm_contact_details_email_address_1: email_address_1,
+      fm_contact_details_email_address_2: email_address_2,
+    } = contactDetailsState;
+
     return {
       company_flag: false,
-      title: personalDetailsState['fm_personal_details_title'],
-      surname: personalDetailsState['fm_personal_details_surname'],
-      forenames: personalDetailsState['fm_personal_details_forenames'],
-      dob: personalDetailsState['fm_personal_details_dob'],
-      address_line_1: personalDetailsState['fm_personal_details_address_line_1'],
-      address_line_2: personalDetailsState['fm_personal_details_address_line_2'],
-      address_line_3: personalDetailsState['fm_personal_details_address_line_3'],
-      post_code: personalDetailsState['fm_personal_details_post_code'],
-      telephone_number_home: contactDetailsState['fm_contact_details_telephone_number_home'],
-      telephone_number_business: contactDetailsState['fm_contact_details_telephone_number_business'],
-      telephone_number_mobile: contactDetailsState['fm_contact_details_telephone_number_mobile'],
-      email_address_1: contactDetailsState['fm_contact_details_email_address_1'],
-      email_address_2: contactDetailsState['fm_contact_details_email_address_2'],
-      national_insurance_number: personalDetailsState['fm_personal_details_national_insurance_number'],
+      title,
+      surname,
+      forenames,
+      dob,
+      address_line_1,
+      address_line_2,
+      address_line_3,
+      post_code,
+      telephone_number_home,
+      telephone_number_business,
+      telephone_number_mobile,
+      email_address_1,
+      email_address_2,
+      national_insurance_number,
       debtor_detail: this.buildIndividualDefendantDebtorDetails(
         personalDetailsState,
         employerDetailsState,
@@ -195,9 +250,15 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds an array of company defendant debtor details aliases from the provided aliases state.
+   *
+   * @param aliases - An array of company details alias states.
+   * @returns An array of company defendant debtor details aliases.
+   */
   private buildCompanyDefendantDebtorDetailsAliases(
     aliases: IFinesMacCompanyDetailsAliasState[],
-  ): IFinesMacCompanyDefendantDebtorDetailsAlias[] {
+  ): IFinesMacDefendantCompanyDebtorDetailsAliasPayload[] {
     return aliases.map((alias, index) => {
       const companyNameKey =
         `fm_company_details_alias_organisation_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
@@ -207,41 +268,82 @@ export class FinesMacPayloadService {
     });
   }
 
+  /**
+   * Builds the company defendant debtor details object.
+   *
+   * @param companyDetailsState - The state containing company details.
+   * @param languagePreferencesState - The state containing language preferences.p
+   * @returns An object containing the document language, hearing language, and aliases.
+   * */
   private buildCompanyDefendantDebtorDetails(
     companyDetailsState: IFinesMacCompanyDetailsState,
     languagePreferencesState: IFinesMacLanguagePreferencesState,
-  ): IFinesMacCompanyDefendantDebtorDetails {
+  ): IFinesMacDefendantCompanyDebtorDetailsPayload {
+    const { fm_language_preferences_document_language, fm_language_preferences_hearing_language } =
+      languagePreferencesState;
+    const { fm_company_details_aliases } = companyDetailsState;
+
     return {
-      document_language: languagePreferencesState['fm_language_preferences_document_language'],
-      hearing_language: languagePreferencesState['fm_language_preferences_hearing_language'],
-      aliases: this.buildCompanyDefendantDebtorDetailsAliases(companyDetailsState['fm_company_details_aliases']),
+      document_language: fm_language_preferences_document_language,
+      hearing_language: fm_language_preferences_hearing_language,
+      aliases: this.buildCompanyDefendantDebtorDetailsAliases(fm_company_details_aliases),
     };
   }
 
+  /**
+   * Builds a company defendant object based on the provided state objects.
+   *
+   * @param companyDetailsState - The state object containing company details.
+   * @param contactDetailsState - The state object containing contact details.
+   * @param languagePreferencesState - The state object containing language preferences.
+   * @returns An object representing the company defendant.
+   */
   private buildCompanyDefendant(
     companyDetailsState: IFinesMacCompanyDetailsState,
     contactDetailsState: IFinesMacContactDetailsState,
     languagePreferencesState: IFinesMacLanguagePreferencesState,
-  ): IFinesMacCompanyDefendant {
+  ): IFinesMacDefendantCompanyPayload {
+    const {
+      fm_company_details_organisation_name: organisation_name,
+      fm_company_details_address_line_1: address_line_1,
+      fm_company_details_address_line_2: address_line_2,
+      fm_company_details_address_line_3: address_line_3,
+      fm_company_details_postcode: post_code,
+    } = companyDetailsState;
+
+    const {
+      fm_contact_details_telephone_number_home: telephone_number_home,
+      fm_contact_details_telephone_number_business: telephone_number_business,
+      fm_contact_details_telephone_number_mobile: telephone_number_mobile,
+      fm_contact_details_email_address_1: email_address_1,
+      fm_contact_details_email_address_2: email_address_2,
+    } = contactDetailsState;
+
     return {
       company_flag: true,
-      organisation_name: companyDetailsState['fm_company_details_organisation_name'],
-      address_line_1: companyDetailsState['fm_company_details_address_line_1'],
-      address_line_2: companyDetailsState['fm_company_details_address_line_2'],
-      address_line_3: companyDetailsState['fm_company_details_address_line_3'],
-      post_code: companyDetailsState['fm_company_details_postcode'],
-      telephone_number_home: contactDetailsState['fm_contact_details_telephone_number_home'],
-      telephone_number_business: contactDetailsState['fm_contact_details_telephone_number_business'],
-      telephone_number_mobile: contactDetailsState['fm_contact_details_telephone_number_mobile'],
-      email_address_1: contactDetailsState['fm_contact_details_email_address_1'],
-      email_address_2: contactDetailsState['fm_contact_details_email_address_2'],
+      organisation_name,
+      address_line_1,
+      address_line_2,
+      address_line_3,
+      post_code,
+      telephone_number_home,
+      telephone_number_business,
+      telephone_number_mobile,
+      email_address_1,
+      email_address_2,
       debtor_detail: this.buildCompanyDefendantDebtorDetails(companyDetailsState, languagePreferencesState),
     };
   }
 
+  /**
+   * Builds an array of parent or guardian debtor details aliases based on the provided state objects.
+   *
+   * @param aliases - The state array containing alias details.
+   * @returns An array of objects representing the parent or guardian debtor details aliases.
+   */
   private buildParentGuardianDebtorDetailsAliases(
     aliases: IFinesMacParentGuardianDetailsAliasState[],
-  ): IFinesMacIndividualDefendantDebtorDetailsAlias[] {
+  ): IFinesMacDefendantIndividualDebtorDetailsAliasPayload[] {
     return aliases.map((alias, index) => {
       const forenameKey =
         `fm_parent_guardian_details_alias_forenames_${index}` as keyof IFinesMacParentGuardianDetailsAliasState;
@@ -254,53 +356,111 @@ export class FinesMacPayloadService {
     });
   }
 
+  /**
+   * Builds a parent or guardian debtor details object based on the provided state objects.
+   *
+   * @param parentGuardianDetailsState - The state object containing parent or guardian details.
+   * @param employerDetailsState - The state object containing employer details.
+   * @param languagePreferencesState - The state object containing language preferences.
+   * @returns An object representing the parent or guardian debtor details.
+   */
   private buildParentGuardianDebtorDetails(
     parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
     employerDetailsState: IFinesMacEmployerDetailsState,
     languagePreferencesState: IFinesMacLanguagePreferencesState,
-  ): IFinesMacIndividualDefendantDebtorDetails {
+  ): IFinesMacDefendantIndividualDebtorDetailsPayload {
+    const {
+      fm_parent_guardian_details_vehicle_make: vehicle_make,
+      fm_parent_guardian_details_vehicle_registration_mark: vehicle_registration_mark,
+      fm_parent_guardian_details_aliases: aliases,
+    } = parentGuardianDetailsState;
+
+    const {
+      fm_employer_details_employer_reference: employee_reference,
+      fm_employer_details_employer_company_name: employer_company_name,
+      fm_employer_details_employer_address_line_1: employer_address_line_1,
+      fm_employer_details_employer_address_line_2: employer_address_line_2,
+      fm_employer_details_employer_address_line_3: employer_address_line_3,
+      fm_employer_details_employer_address_line_4: employer_address_line_4,
+      fm_employer_details_employer_address_line_5: employer_address_line_5,
+      fm_employer_details_employer_post_code: employer_post_code,
+      fm_employer_details_employer_telephone_number: employer_telephone_number,
+      fm_employer_details_employer_email_address: employer_email_address,
+    } = employerDetailsState;
+
+    const {
+      fm_language_preferences_document_language: document_language,
+      fm_language_preferences_hearing_language: hearing_language,
+    } = languagePreferencesState;
+
     return {
-      vehicle_make: parentGuardianDetailsState['fm_parent_guardian_details_vehicle_make'],
-      vehicle_registration_mark: parentGuardianDetailsState['fm_parent_guardian_details_vehicle_registration_mark'],
-      document_language: languagePreferencesState['fm_language_preferences_document_language'],
-      hearing_language: languagePreferencesState['fm_language_preferences_hearing_language'],
-      employee_reference: employerDetailsState['fm_employer_details_employer_reference'],
-      employer_company_name: employerDetailsState['fm_employer_details_employer_company_name'],
-      employer_address_line_1: employerDetailsState['fm_employer_details_employer_company_name'],
-      employer_address_line_2: employerDetailsState['fm_employer_details_employer_address_line_2'],
-      employer_address_line_3: employerDetailsState['fm_employer_details_employer_address_line_3'],
-      employer_address_line_4: employerDetailsState['fm_employer_details_employer_address_line_4'],
-      employer_address_line_5: employerDetailsState['fm_employer_details_employer_address_line_5'],
-      employer_post_code: employerDetailsState['fm_employer_details_employer_post_code'],
-      employer_telephone_number: employerDetailsState['fm_employer_details_employer_telephone_number'],
-      employer_email_address: employerDetailsState['fm_employer_details_employer_email_address'],
-      aliases: this.buildParentGuardianDebtorDetailsAliases(
-        parentGuardianDetailsState['fm_parent_guardian_details_aliases'],
-      ),
+      vehicle_make,
+      vehicle_registration_mark,
+      document_language,
+      hearing_language,
+      employee_reference,
+      employer_company_name,
+      employer_address_line_1,
+      employer_address_line_2,
+      employer_address_line_3,
+      employer_address_line_4,
+      employer_address_line_5,
+      employer_post_code,
+      employer_telephone_number,
+      employer_email_address,
+      aliases: this.buildParentGuardianDebtorDetailsAliases(aliases),
     };
   }
 
+  /**
+   * Builds a parent or guardian defendant object based on the provided state objects.
+   *
+   * @param parentGuardianDetailsState - The state object containing parent or guardian details.
+   * @param contactDetailsState - The state object containing contact details.
+   * @param employerDetailsState - The state object containing employer details.
+   * @param languagePreferencesState - The state object containing language preferences.
+   * @returns An object representing the parent or guardian defendant.
+   */
   private buildParentGuardian(
     parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
     contactDetailsState: IFinesMacContactDetailsState,
     employerDetailsState: IFinesMacEmployerDetailsState,
     languagePreferencesState: IFinesMacLanguagePreferencesState,
-  ): IFinesMacParentGuardianDefendantParentGuardian {
+  ): IFinesMacDefendantParentGuardianParentGuardianPayload {
+    const {
+      fm_parent_guardian_details_surname: surname,
+      fm_parent_guardian_details_forenames: forenames,
+      fm_parent_guardian_details_dob: dob,
+      fm_parent_guardian_details_national_insurance_number: nationalInsuranceNumber,
+      fm_parent_guardian_details_address_line_1: addressLine1,
+      fm_parent_guardian_details_address_line_2: addressLine2,
+      fm_parent_guardian_details_address_line_3: addressLine3,
+      fm_parent_guardian_details_post_code: postCode,
+    } = parentGuardianDetailsState;
+
+    const {
+      fm_contact_details_telephone_number_home: telephoneNumberHome,
+      fm_contact_details_telephone_number_business: telephoneNumberBusiness,
+      fm_contact_details_telephone_number_mobile: telephoneNumberMobile,
+      fm_contact_details_email_address_1: emailAddress1,
+      fm_contact_details_email_address_2: emailAddress2,
+    } = contactDetailsState;
+
     return {
       company_flag: false,
-      surname: parentGuardianDetailsState['fm_parent_guardian_details_surname'],
-      forenames: parentGuardianDetailsState['fm_parent_guardian_details_forenames'],
-      dob: parentGuardianDetailsState['fm_parent_guardian_details_dob'],
-      national_insurance_number: parentGuardianDetailsState['fm_parent_guardian_details_national_insurance_number'],
-      address_line_1: parentGuardianDetailsState['fm_parent_guardian_details_address_line_1'],
-      address_line_2: parentGuardianDetailsState['fm_parent_guardian_details_address_line_2'],
-      address_line_3: parentGuardianDetailsState['fm_parent_guardian_details_address_line_3'],
-      post_code: parentGuardianDetailsState['fm_parent_guardian_details_post_code'],
-      telephone_number_home: contactDetailsState['fm_contact_details_telephone_number_home'],
-      telephone_number_business: contactDetailsState['fm_contact_details_telephone_number_business'],
-      telephone_number_mobile: contactDetailsState['fm_contact_details_telephone_number_mobile'],
-      email_address_1: contactDetailsState['fm_contact_details_email_address_1'],
-      email_address_2: contactDetailsState['fm_contact_details_email_address_2'],
+      surname,
+      forenames,
+      dob,
+      national_insurance_number: nationalInsuranceNumber,
+      address_line_1: addressLine1,
+      address_line_2: addressLine2,
+      address_line_3: addressLine3,
+      post_code: postCode,
+      telephone_number_home: telephoneNumberHome,
+      telephone_number_business: telephoneNumberBusiness,
+      telephone_number_mobile: telephoneNumberMobile,
+      email_address_1: emailAddress1,
+      email_address_2: emailAddress2,
       debtor_detail: this.buildParentGuardianDebtorDetails(
         parentGuardianDetailsState,
         employerDetailsState,
@@ -309,24 +469,46 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds a parent or guardian defendant object based on the provided state objects.
+   *
+   * @param personalDetailsState - The state object containing personal details.
+   * @param contactDetailsState - The state object containing contact details.
+   * @param employerDetailsState - The state object containing employer details.
+   * @param parentGuardianDetailsState - The state object containing parent or guardian details.
+   * @param languagePreferencesState - The state object containing language preferences.
+   * @returns An object representing the parent or guardian defendant.
+   */
   private buildParentGuardianDefendant(
     personalDetailsState: IFinesMacPersonalDetailsState,
     contactDetailsState: IFinesMacContactDetailsState,
     employerDetailsState: IFinesMacEmployerDetailsState,
     parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
     languagePreferencesState: IFinesMacLanguagePreferencesState,
-  ): IFinesMacParentGuardianDefendant {
+  ): IFinesMacDefendantParentGuardianPayload {
+    const {
+      fm_personal_details_title: title,
+      fm_personal_details_surname: surname,
+      fm_personal_details_forenames: forenames,
+      fm_personal_details_dob: dob,
+      fm_personal_details_address_line_1: address_line_1,
+      fm_personal_details_address_line_2: address_line_2,
+      fm_personal_details_address_line_3: address_line_3,
+      fm_personal_details_post_code: post_code,
+      fm_personal_details_national_insurance_number: national_insurance_number,
+    } = personalDetailsState;
+
     return {
       company_flag: false,
-      title: personalDetailsState['fm_personal_details_title'],
-      surname: personalDetailsState['fm_personal_details_surname'],
-      forenames: personalDetailsState['fm_personal_details_forenames'],
-      dob: personalDetailsState['fm_personal_details_dob'],
-      address_line_1: personalDetailsState['fm_personal_details_address_line_1'],
-      address_line_2: personalDetailsState['fm_personal_details_address_line_2'],
-      address_line_3: personalDetailsState['fm_personal_details_address_line_3'],
-      post_code: personalDetailsState['fm_personal_details_post_code'],
-      national_insurance_number: personalDetailsState['fm_personal_details_national_insurance_number'],
+      title,
+      surname,
+      forenames,
+      dob,
+      address_line_1,
+      address_line_2,
+      address_line_3,
+      post_code,
+      national_insurance_number,
       parent_guardian: this.buildParentGuardian(
         parentGuardianDetailsState,
         contactDetailsState,
@@ -360,7 +542,7 @@ export class FinesMacPayloadService {
   private buildEnforcementResultResponse(
     [parameterName]: string,
     response: string | null,
-  ): IFinesMacPaymentTermsEnforcementResultResponse {
+  ): IFinesMacPaymentTermsEnforcementResultResponsePayload {
     return {
       parameter_name: parameterName,
       response: response || null,
@@ -376,24 +558,28 @@ export class FinesMacPayloadService {
    */
   private buildEnforcement(
     resultId: string,
-    enforcementResponses: IFinesMacPaymentTermsEnforcementResultResponse[] | null,
-  ): IFinesMacPaymentTermsEnforcement {
+    enforcementResponses: IFinesMacPaymentTermsEnforcementResultResponsePayload[] | null,
+  ): IFinesMacPaymentTermsEnforcementPayload {
     return {
       result_id: resultId,
       enforcement_result_responses: enforcementResponses,
     };
   }
+
+  // TODO: Refactor once changes have been made
   private buildPaymentTermEnforcements(
     paymentTermsState: IFinesMacPaymentTermsState,
-  ): IFinesMacPaymentTermsEnforcement[] | null {
+  ): IFinesMacPaymentTermsEnforcementPayload[] | null {
     let enforcements = [];
     const hasCollectionOrderBeenMade: any = paymentTermsState['fm_payment_terms_collection_order_made'];
     const hasCollectionOrderBeenMadeToday = paymentTermsState['fm_payment_terms_collection_order_made_today'];
     // const addColloEnforcement = !hasCollectionOrderBeenMade && hasCollectionOrderBeenMadeToday;
     // Temporary until value is set to
     const addColloEnforcement = hasCollectionOrderBeenMade === 'no' && hasCollectionOrderBeenMadeToday;
-    const resultId =
-      paymentTermsState['fm_payment_terms_enforcement_action'] === 'defendantIsInCustody' ? 'PRIS' : 'NOENF';
+    let resultId = null;
+    if (paymentTermsState['fm_payment_terms_enforcement_action']) {
+      resultId = paymentTermsState['fm_payment_terms_enforcement_action'] === 'defendantIsInCustody' ? 'PRIS' : 'NOENF';
+    }
 
     if (addColloEnforcement) {
       enforcements.push(this.buildEnforcement('COLLO', null));
@@ -428,34 +614,56 @@ export class FinesMacPayloadService {
     return enforcements.length ? enforcements : null;
   }
 
-  private buildPaymentTerms(paymentTermsState: IFinesMacPaymentTermsState): IFinesMacPaymentTerms {
-    // If the payment terms are 'Pay in full', the payment terms type code is 'B' else it is 'I'
-    let paymentTermsTypeCode = null;
-    if (paymentTermsState['fm_payment_terms_payment_terms']) {
-      paymentTermsTypeCode = paymentTermsState['fm_payment_terms_payment_terms'] === 'payInFull' ? 'B' : 'I';
-    }
+  /**
+   * Builds the payment terms object based on the provided payment terms state.
+   *
+   * @param paymentTermsState - The state object containing payment terms information.
+   * @returns An object representing the payment terms.
+   *
+   */
+  private buildPaymentTerms(paymentTermsState: IFinesMacPaymentTermsState): IFinesMacPaymentTermsPayload {
+    const {
+      fm_payment_terms_payment_terms,
+      fm_payment_terms_pay_by_date,
+      fm_payment_terms_start_date,
+      fm_payment_instalment_period,
+      fm_payment_terms_lump_sum_amount,
+      fm_payment_terms_instalment_amount,
+      fm_payment_terms_default_days_in_jail,
+    } = paymentTermsState;
 
-    // The effective date is the 'fm_payment_terms_pay_by_date' if the payment terms type code is 'B'
+    let paymentTermsTypeCode = null;
     let effectiveDate = null;
-    if (paymentTermsTypeCode) {
-      effectiveDate =
-        paymentTermsTypeCode === 'B'
-          ? paymentTermsState['fm_payment_terms_pay_by_date']
-          : paymentTermsState['fm_payment_terms_start_date'];
+
+    if (fm_payment_terms_payment_terms) {
+      paymentTermsTypeCode = fm_payment_terms_payment_terms === 'payInFull' ? 'B' : 'I';
+      effectiveDate = paymentTermsTypeCode === 'B' ? fm_payment_terms_pay_by_date : fm_payment_terms_start_date;
     }
 
     return {
       payment_terms_type_code: paymentTermsTypeCode,
       effective_date: effectiveDate || null,
-      instalment_period: this.getInstallmentPeriod(paymentTermsState['fm_payment_instalment_period']),
-      lump_sum_amount: paymentTermsState['fm_payment_terms_lump_sum_amount'] || null,
-      instalment_amount: paymentTermsState['fm_payment_terms_instalment_amount'] || null,
-      default_days_in_jail: paymentTermsState['fm_payment_terms_default_days_in_jail'] || null,
+      instalment_period: this.getInstallmentPeriod(fm_payment_instalment_period),
+      lump_sum_amount: fm_payment_terms_lump_sum_amount || null,
+      instalment_amount: fm_payment_terms_instalment_amount || null,
+      default_days_in_jail: fm_payment_terms_default_days_in_jail || null,
       enforcements: this.buildPaymentTermEnforcements(paymentTermsState),
     };
   }
 
-  private buildAccountNote(noteSerial: number, accountNoteText: string | null, noteType: string): IFinesMacAccountNote {
+  /**
+   * Builds an account note object for fines management.
+   *
+   * @param noteSerial - The serial number of the account note.
+   * @param accountNoteText - The text content of the account note. Can be null.
+   * @param noteType - The type/category of the note.
+   * @returns An object representing the account note.
+   */
+  private buildAccountNote(
+    noteSerial: number,
+    accountNoteText: string | null,
+    noteType: string,
+  ): IFinesMacAccountNotePayload {
     return {
       account_note_serial: noteSerial,
       account_note_text: accountNoteText,
@@ -463,111 +671,155 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds an array of account notes based on the provided account comments and notes state.
+   *
+   * @param accountCommentsNotesState - The state containing account comments and notes.
+   * @returns An array of account notes if any are present, otherwise null.
+   */
   private buildAccountNotes(
     accountCommentsNotesState: IFinesMacAccountCommentsNotesState,
-  ): IFinesMacAccountNote[] | null {
-    let accountNotes: IFinesMacAccountNote[] = [];
-    const accountCommentsNotesComments = accountCommentsNotesState['fm_account_comments_notes_comments'];
-    const accountCommentsNotesNotes = accountCommentsNotesState['fm_account_comments_notes_notes'];
+  ): IFinesMacAccountNotePayload[] | null {
+    const accountNotes: IFinesMacAccountNotePayload[] = [];
+    const { fm_account_comments_notes_comments: comments, fm_account_comments_notes_notes: notes } =
+      accountCommentsNotesState;
 
-    if (accountCommentsNotesComments) {
-      accountNotes.push(this.buildAccountNote(3, accountCommentsNotesComments, 'AC'));
-    }
+    const addNote = (type: number, content: string | null, code: string) => {
+      if (content) {
+        accountNotes.push(this.buildAccountNote(type, content, code));
+      }
+    };
 
-    if (accountCommentsNotesNotes) {
-      accountNotes.push(this.buildAccountNote(2, accountCommentsNotesNotes, 'AA'));
-    }
-
-    //TODO: Return system note
-    // accountNotes.push(this.buildAccountNote(1, null, 'AA'));
+    addNote(3, comments, 'AC');
+    addNote(2, notes, 'AA');
+    // addNote(1, systemNotes, 'AA');
 
     return accountNotes.length ? accountNotes : null;
   }
 
-  private initialSetup(accountDetailsState: IFinesMacAccountDetailsState): void {
-    const {
-      fm_create_account_defendant_type: defendantType,
-      fm_create_account_account_type: accountType,
-      fm_create_account_business_unit: businessUnit,
-    } = accountDetailsState;
+  /**
+   * Builds the defendant payload based on the provided state details.
+   *
+   * @param accountDetailsState - The state containing account details.
+   * @param personalDetailsState - The state containing personal details.
+   * @param contactDetailsState - The state containing contact details.
+   * @param employerDetailsState - The state containing employer details.
+   * @param languageDetailsState - The state containing language preferences.
+   * @param companyDetailsState - The state containing company details.
+   * @param parentGuardianDetailsState - The state containing parent or guardian details.
+   * @returns The constructed generic defendant payload.
+   */
+  private buildDefendant(
+    accountDetailsState: IFinesMacAccountDetailsState,
+    personalDetailsState: IFinesMacPersonalDetailsState,
+    contactDetailsState: IFinesMacContactDetailsState,
+    employerDetailsState: IFinesMacEmployerDetailsState,
+    languageDetailsState: IFinesMacLanguagePreferencesState,
+    companyDetailsState: IFinesMacCompanyDetailsState,
+    parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
+  ): IFinesMacDefendantPayload {
+    const defendantType = accountDetailsState['fm_create_account_defendant_type'];
 
-    this.defendantType = defendantType;
-    this.accountType = accountType;
+    switch (defendantType) {
+      case 'parentOrGuardianToPay':
+        return this.applyBasePayloadsToParentGuardianDefendant(
+          this.buildParentGuardianDefendant(
+            personalDetailsState,
+            contactDetailsState,
+            employerDetailsState,
+            parentGuardianDetailsState,
+            languageDetailsState,
+          ),
+        );
+      case 'company':
+        return this.applyBasePayloadsToIndividualOrCompanyDefendant(
+          this.buildCompanyDefendant(companyDetailsState, contactDetailsState, languageDetailsState),
+        );
+      default:
+        return this.applyBasePayloadsToIndividualOrCompanyDefendant(
+          this.buildIndividualDefendant(
+            personalDetailsState,
+            contactDetailsState,
+            employerDetailsState,
+            languageDetailsState,
+          ),
+        );
+    }
+  }
+
+  private buildInitialPayload(
+    accountDetailsState: IFinesMacAccountDetailsState,
+    courtDetailsState: IFinesMacCourtDetailsState,
+    paymentTermsState: IFinesMacPaymentTermsState,
+  ): IFinesMacInitialPayload {
+    const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
+      accountDetailsState;
+
+    const {
+      fm_court_details_originator_name: originator_name,
+      fm_court_details_originator_id: originator_id,
+      fm_court_details_prosecutor_case_reference: prosecutor_case_reference,
+      fm_court_details_enforcement_court_id: enforcement_court_id,
+    } = courtDetailsState;
+
+    const {
+      fm_payment_terms_collection_order_made: collection_order_made,
+      fm_payment_terms_collection_order_made_today: collection_order_made_today,
+      fm_payment_terms_collection_order_date: collection_order_date,
+      fm_payment_terms_suspended_committal_date: suspended_committal_date,
+      fm_payment_terms_payment_card_request: payment_card_request,
+    } = paymentTermsState;
+
+    return {
+      account_type,
+      defendant_type,
+      originator_name,
+      originator_id,
+      prosecutor_case_reference,
+      enforcement_court_id,
+      collection_order_made: collection_order_made || null,
+      collection_order_made_today: collection_order_made_today || null,
+      collection_order_date: collection_order_date || null,
+      suspended_committal_date: suspended_committal_date || null,
+      payment_card_request: payment_card_request || null,
+      account_sentence_date: null, // Derived from the earliest of all offence sentence dates
+    };
   }
 
   public buildPayload(finesMacState: IFinesMacState): any {
-    console.log(finesMacState);
-    const {
-      courtDetails,
-      accountDetails,
-      paymentTerms,
-      employerDetails,
-      personalDetails,
-      contactDetails,
-      languagePreferences,
-      companyDetails,
-      parentGuardianDetails,
-      accountCommentsNotes,
-    } = finesMacState;
-    const courtDetailsState = courtDetails.formData;
-    const accountDetailsState = accountDetails.formData;
-    const paymentTermsState = paymentTerms.formData;
-    const personalDetailsState = personalDetails.formData;
-    const employerDetailsState = employerDetails.formData;
-    const contactDetailsState = contactDetails.formData;
-    const languagePreferencesState = languagePreferences.formData;
-    const companyDetailsState = companyDetails.formData;
-    const parentGuardianDetailsState = parentGuardianDetails.formData;
-    const accountCommentsNotesState = accountCommentsNotes.formData;
+    const { formData: accountDetailsState } = finesMacState.accountDetails;
+    const { formData: courtDetailsState } = finesMacState.courtDetails;
+    const { formData: paymentTermsState } = finesMacState.paymentTerms;
+    const { formData: personalDetailsState } = finesMacState.personalDetails;
+    const { formData: contactDetailsState } = finesMacState.contactDetails;
+    const { formData: employerDetailsState } = finesMacState.employerDetails;
+    const { formData: languageDetailsState } = finesMacState.languagePreferences;
+    const { formData: companyDetailsState } = finesMacState.companyDetails;
+    const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
+    const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
 
-    let defendant: IFinesMacDefendantPayload;
+    // Build the parts of our payload...
+    const initialPayload = this.buildInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
+    const defendant = this.buildDefendant(
+      accountDetailsState,
+      personalDetailsState,
+      contactDetailsState,
+      employerDetailsState,
+      languageDetailsState,
+      companyDetailsState,
+      parentGuardianDetailsState,
+    );
+    const paymentTerms = this.buildPaymentTerms(paymentTermsState);
+    const accountNotes = this.buildAccountNotes(accountCommentsNotesState);
 
-    // Setup frequently used values.
-    this.initialSetup(accountDetailsState);
-
-    if (this.defendantType === 'parentOrGuardianToPay') {
-      defendant = this.applyBasePayloadsToParentGuardianDefendant(
-        this.buildParentGuardianDefendant(
-          personalDetailsState,
-          contactDetailsState,
-          employerDetailsState,
-          parentGuardianDetailsState,
-          languagePreferencesState,
-        ),
-      );
-    } else if (this.defendantType === 'company') {
-      defendant = this.applyBasePayloadsToIndividualOrCompanyDefendant(
-        this.buildCompanyDefendant(companyDetailsState, contactDetailsState, languagePreferencesState),
-      );
-    } else {
-      defendant = this.applyBasePayloadsToIndividualOrCompanyDefendant(
-        this.buildIndividualDefendant(
-          personalDetailsState,
-          contactDetailsState,
-          employerDetailsState,
-          languagePreferencesState,
-        ),
-      );
-    }
-
+    // Return our payload object
     return {
-      account_type: this.accountType,
-      defendant_type: this.defendantType,
-      originator_name: courtDetailsState['fm_court_details_originator_name'],
-      originator_id: courtDetailsState['fm_court_details_originator_id'],
-      prosecutor_case_reference: courtDetailsState['fm_court_details_prosecutor_case_reference'],
-      enforcement_court_id: courtDetailsState['fm_court_details_enforcement_court_id'],
-      collection_order_made: paymentTermsState['fm_payment_terms_collection_order_made'],
-      collection_order_made_today: paymentTermsState['fm_payment_terms_collection_order_made_today'],
-      collection_order_date: paymentTermsState['fm_payment_terms_collection_order_date'],
-      suspended_committal_date: paymentTermsState['fm_payment_terms_suspended_committal_date'],
-      payment_card_request: paymentTermsState['fm_payment_terms_payment_card_request'],
-      account_sentence_date: '2023-09-15', // Derived from from the earliest of all offence sentence dates
+      ...initialPayload,
       defendant: defendant,
       offences: null,
       fp_ticket_detail: null,
-      payment_terms: this.buildPaymentTerms(paymentTermsState),
-      account_notes: this.buildAccountNotes(accountCommentsNotesState),
+      payment_terms: paymentTerms,
+      account_notes: accountNotes,
     };
   }
 }

@@ -1,6 +1,6 @@
-import { IFinesMacIndividualDefendantDebtorDetails } from './fines-mac-individual-defendant-debtor-details.interface';
+import { IFinesMacDefendantIndividualDebtorDetailsPayload } from './fines-mac-defendant-individual-debtor-details-payload.interface';
 
-export interface IFinesMacParentGuardianDefendantParentGuardian {
+export interface IFinesMacDefendantParentGuardianParentGuardianPayload {
   company_flag: boolean | null;
   surname: string | null;
   forenames: string | null;
@@ -15,5 +15,5 @@ export interface IFinesMacParentGuardianDefendantParentGuardian {
   email_address_1: string | null;
   email_address_2: string | null;
   national_insurance_number: string | null;
-  debtor_detail: IFinesMacIndividualDefendantDebtorDetails;
+  debtor_detail: IFinesMacDefendantIndividualDebtorDetailsPayload;
 }
