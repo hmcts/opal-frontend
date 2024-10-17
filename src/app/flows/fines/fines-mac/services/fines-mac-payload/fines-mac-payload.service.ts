@@ -154,6 +154,7 @@ export class FinesMacPayloadService {
     const {
       fm_employer_details_employer_reference: employee_reference,
       fm_employer_details_employer_company_name: employer_company_name,
+      fm_employer_details_employer_address_line_1: employer_address_line_1,
       fm_employer_details_employer_address_line_2: employer_address_line_2,
       fm_employer_details_employer_address_line_3: employer_address_line_3,
       fm_employer_details_employer_address_line_4: employer_address_line_4,
@@ -175,7 +176,7 @@ export class FinesMacPayloadService {
       hearing_language,
       employee_reference,
       employer_company_name,
-      employer_address_line_1: employer_company_name,
+      employer_address_line_1,
       employer_address_line_2,
       employer_address_line_3,
       employer_address_line_4,
