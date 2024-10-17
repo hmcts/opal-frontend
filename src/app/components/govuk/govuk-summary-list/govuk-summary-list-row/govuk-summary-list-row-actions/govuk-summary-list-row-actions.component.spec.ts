@@ -8,9 +8,8 @@ describe('GovukSummaryListRowActionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukSummaryListRowActionsComponent]
-    })
-    .compileComponents();
+      imports: [GovukSummaryListRowActionsComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GovukSummaryListRowActionsComponent);
     component = fixture.componentInstance;

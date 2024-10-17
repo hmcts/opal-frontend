@@ -60,7 +60,9 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
       return {
         formData: {
           ...form.formData,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           fm_offence_details_impositions: form.formData.fm_offence_details_impositions.map((imposition: any) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const cleanedImposition: any = {};
             Object.keys(imposition).forEach((key) => {
               // Use regex to remove the _{{index}} from the key

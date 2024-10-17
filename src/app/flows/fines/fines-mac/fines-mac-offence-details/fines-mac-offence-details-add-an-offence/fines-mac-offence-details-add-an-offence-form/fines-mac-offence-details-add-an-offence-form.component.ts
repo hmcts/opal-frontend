@@ -24,15 +24,7 @@ import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-
 import { IFinesMacOffenceDetailsState } from '../../interfaces/fines-mac-offence-details-state.interface';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormArray,
-  FormsModule,
-  ReactiveFormsModule,
-  AbstractControl,
-} from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { futureDateValidator } from '@validators/future-date/future-date.validator';
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../constants/fines-mac-offence-details-impositions.constant';
@@ -356,17 +348,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         nestedFlow: false,
       });
     }
-  }
-
-  /**
-   * Retrieves the value of a form control or returns a default value if the control is null or undefined.
-   *
-   * @param control - The form control to retrieve the value from.
-   * @param defaultValue - The default value to return if the control is null or undefined.
-   * @returns The value of the control if it exists, otherwise the default value.
-   */
-  private getControlValueOrDefault(control: AbstractControl | null, defaultValue: any): any {
-    return control?.value || defaultValue;
   }
 
   /**

@@ -56,13 +56,13 @@ app-govuk-footer {
 
 .govuk-link-colour {
   color: $govuk-link-colour;
-} 
+}
 
 .govuk-light-grey-background-color {
-  background-color: govuk-colour("light-grey")
+  background-color: govuk-colour('light-grey');
 }
 
 .govuk-blue-background-white-text {
-  background-color: govuk-colour("blue");
-  color: govuk-colour("white");
+  background-color: govuk-colour('blue');
+  color: govuk-colour('white');
 }

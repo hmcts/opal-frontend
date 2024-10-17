@@ -23,10 +23,7 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsAddAnOffenceComponent
-  extends AbstractFormParentBaseComponent
-  implements OnInit
-{
+export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
