@@ -12,14 +12,7 @@ import { IFinesMacCompanyDetailsState } from '../../fines-mac-company-details/in
 import { IFinesMacCompanyDetailsAliasState } from '../../fines-mac-company-details/interfaces/fines-mac-company-details-alias-state.interface';
 import { IFinesMacParentGuardianDetailsState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacParentGuardianDetailsAliasState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
-import { DateService } from '@services/date-service/date.service';
 
-import {
-  IFinesMacDefendantPayload,
-  IFinesMacDefendantDebtorDetailPayload,
-  IFinesMacDefendantDebtorDetailAliasPayload,
-  IFinesMacDefendantPayloadParentGuardian,
-} from './interfaces/fines-mac-defendant-payload.interface';
 import { FINES_MAC_DEFENDANT_PAYLOAD } from './constants/fines-mac-defendant-payload.constant';
 import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD } from './constants/fines-mac-defendant-debtor-details-payload.constant';
 import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD } from './constants/fines-mac-defendant-debtor-details-alias-payload.constant';
@@ -45,6 +38,9 @@ import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-ter
 import { IFinesMacAccountNotePayload } from './interfaces/fines-mac-account-note-payload.interface';
 import { IFinesMacPaymentTermsEnforcementResultResponsePayload } from './interfaces/fines-mac-payment-terms-enforcement-result-response-payload.interface';
 import { IFinesMacPaymentTermsEnforcementPayload } from './interfaces/fines-mac-payment-terms-enforcement-payload.interface';
+import { IFinesMacDefendantCompletePayload } from './interfaces/fines-mac-defendant-complete-payload.interface';
+import { IFinesMacDefendantDebtorDetailAliasCompletePayload } from './interfaces/fines-mac-defendant-debtor-detail-alias-complete-payload.interface';
+import { IFinesMacDefendantDebtorDetailCompletePayload } from './interfaces/fines-mac-defendant-debtor-detail-complete-payload.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -61,14 +57,14 @@ export class FinesMacPayloadService {
    */
   private applyBasePayloadsToIndividualOrCompanyDefendant(
     defendant: IFinesMacDefendantIndividualPayload | IFinesMacDefendantCompanyPayload,
-  ): IFinesMacDefendantPayload {
-    const aliases: IFinesMacDefendantDebtorDetailAliasPayload[] | null =
+  ): IFinesMacDefendantCompletePayload {
+    const aliases: IFinesMacDefendantDebtorDetailAliasCompletePayload[] | null =
       defendant.debtor_detail.aliases?.map((alias) => ({
         ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
         ...alias,
       })) || null;
 
-    const debtorDetail: IFinesMacDefendantDebtorDetailPayload = {
+    const debtorDetail: IFinesMacDefendantDebtorDetailCompletePayload = {
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
       ...defendant.debtor_detail,
       aliases: aliases,
@@ -85,22 +81,22 @@ export class FinesMacPayloadService {
    * Applies base payloads to the parent guardian defendant.
    *
    * This method takes a `IFinesMacDefendantParentGuardianPayload` object and merges it with predefined
-   * payload constants to create a new `IFinesMacDefendantPayload` object. It ensures that the
+   * payload constants to create a new `IFinesMacDefendantCompletePayload` object. It ensures that the
    * `debtor_detail` and its `aliases` are properly merged with their respective payload constants.
    *
    * @param defendant - The parent guardian defendant object to which the base payloads will be applied.
-   * @returns A new `IFinesMacDefendantPayload` object with the base payloads applied.
+   * @returns A new `IFinesMacDefendantCompletePayload` object with the base payloads applied.
    */
   private applyBasePayloadsToParentGuardianDefendant(
     defendant: IFinesMacDefendantParentGuardianPayload,
-  ): IFinesMacDefendantPayload {
-    const parentGuardianDebtorAliases: IFinesMacDefendantDebtorDetailAliasPayload[] | null =
+  ): IFinesMacDefendantCompletePayload {
+    const parentGuardianDebtorAliases: IFinesMacDefendantDebtorDetailAliasCompletePayload[] | null =
       defendant.parent_guardian.debtor_detail.aliases?.map((alias) => ({
         ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
         ...alias,
       })) || null;
 
-    const parentGuardianDebtorDetail: IFinesMacDefendantDebtorDetailPayload = {
+    const parentGuardianDebtorDetail: IFinesMacDefendantDebtorDetailCompletePayload = {
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
       ...defendant.parent_guardian.debtor_detail,
       aliases: parentGuardianDebtorAliases,
@@ -518,6 +514,7 @@ export class FinesMacPayloadService {
     };
   }
 
+  // TODO: Remove after https://tools.hmcts.net/jira/browse/PO-909
   private getInstallmentPeriod(installmentPeriod: string | null | undefined): string | null {
     switch (installmentPeriod?.toLocaleLowerCase()) {
       case FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS.weekly.toLowerCase():
@@ -567,6 +564,10 @@ export class FinesMacPayloadService {
   }
 
   // TODO: Refactor once changes have been made
+  // https://tools.hmcts.net/jira/browse/PO-906
+  // https://tools.hmcts.net/jira/browse/PO-907
+  // https://tools.hmcts.net/jira/browse/PO-908
+  //
   private buildPaymentTermEnforcements(
     paymentTermsState: IFinesMacPaymentTermsState,
   ): IFinesMacPaymentTermsEnforcementPayload[] | null {
@@ -717,8 +718,12 @@ export class FinesMacPayloadService {
     languageDetailsState: IFinesMacLanguagePreferencesState,
     companyDetailsState: IFinesMacCompanyDetailsState,
     parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
-  ): IFinesMacDefendantPayload {
+  ): IFinesMacDefendantCompletePayload {
     const defendantType = accountDetailsState['fm_create_account_defendant_type'];
+
+    // We want to start by building the defendant object based on the type of defendant we have
+    // Then we want to apply the base payloads to the defendant object
+    // This is so we have all fields present in the payload, even if they are null
 
     switch (defendantType) {
       case 'parentOrGuardianToPay':
