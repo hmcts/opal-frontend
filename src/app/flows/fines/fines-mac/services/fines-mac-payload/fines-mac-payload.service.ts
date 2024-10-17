@@ -41,6 +41,8 @@ import {
   IFinesMacPaymentTermsEnforcement,
   IFinesMacPaymentTermsEnforcementResultResponse,
 } from './interfaces/fines-mac-payment-terms.interface';
+import { IFinesMacAccountCommentsNotesState } from '../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
+import { IFinesMacAccountNote } from './interfaces/fines-mac-account-note.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -453,6 +455,35 @@ export class FinesMacPayloadService {
     };
   }
 
+  private buildAccountNote(noteSerial: number, accountNoteText: string | null, noteType: string): IFinesMacAccountNote {
+    return {
+      account_note_serial: noteSerial,
+      account_note_text: accountNoteText,
+      note_type: noteType,
+    };
+  }
+
+  private buildAccountNotes(
+    accountCommentsNotesState: IFinesMacAccountCommentsNotesState,
+  ): IFinesMacAccountNote[] | null {
+    let accountNotes: IFinesMacAccountNote[] = [];
+    const accountCommentsNotesComments = accountCommentsNotesState['fm_account_comments_notes_comments'];
+    const accountCommentsNotesNotes = accountCommentsNotesState['fm_account_comments_notes_notes'];
+
+    if (accountCommentsNotesComments) {
+      accountNotes.push(this.buildAccountNote(3, accountCommentsNotesComments, 'AC'));
+    }
+
+    if (accountCommentsNotesNotes) {
+      accountNotes.push(this.buildAccountNote(2, accountCommentsNotesNotes, 'AA'));
+    }
+
+    //TODO: Return system note
+    // accountNotes.push(this.buildAccountNote(1, null, 'AA'));
+
+    return accountNotes.length ? accountNotes : null;
+  }
+
   private initialSetup(accountDetailsState: IFinesMacAccountDetailsState): void {
     const {
       fm_create_account_defendant_type: defendantType,
@@ -476,6 +507,7 @@ export class FinesMacPayloadService {
       languagePreferences,
       companyDetails,
       parentGuardianDetails,
+      accountCommentsNotes,
     } = finesMacState;
     const courtDetailsState = courtDetails.formData;
     const accountDetailsState = accountDetails.formData;
@@ -486,6 +518,7 @@ export class FinesMacPayloadService {
     const languagePreferencesState = languagePreferences.formData;
     const companyDetailsState = companyDetails.formData;
     const parentGuardianDetailsState = parentGuardianDetails.formData;
+    const accountCommentsNotesState = accountCommentsNotes.formData;
 
     let defendant: IFinesMacDefendantPayload;
 
@@ -534,13 +567,7 @@ export class FinesMacPayloadService {
       offences: null,
       fp_ticket_detail: null,
       payment_terms: this.buildPaymentTerms(paymentTermsState),
-      account_notes: [
-        {
-          account_note_serial: 1,
-          account_note_text: 'Initial account creation',
-          note_type: 'AC',
-        },
-      ],
+      account_notes: this.buildAccountNotes(accountCommentsNotesState),
     };
   }
 }
