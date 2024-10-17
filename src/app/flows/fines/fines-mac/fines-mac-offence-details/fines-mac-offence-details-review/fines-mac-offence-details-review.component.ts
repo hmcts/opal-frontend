@@ -51,9 +51,9 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
     return forms.map((form) => {
       const dateOfOffence = form.formData.fm_offence_details_date_of_offence;
 
-      let showDateOfSentence = false;
+      let show_date_of_sentence = false;
       if (dateOfOffence && !uniqueDates.has(dateOfOffence)) {
-        showDateOfSentence = true;
+        show_date_of_sentence = true;
         uniqueDates.add(dateOfOffence);
       }
 
@@ -71,7 +71,7 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
             });
             return cleanedImposition;
           }),
-          showDateOfSentence,
+          show_date_of_sentence,
         },
         nestedFlow: form.nestedFlow,
         status: form.status,
@@ -89,11 +89,8 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
         b.formData.fm_offence_details_date_of_offence!,
         'dd/MM/yyyy',
       );
-      if (!dateOfOffenceA && !dateOfOffenceB) return 0; // Both null, considered equal
-      if (!dateOfOffenceA) return 1; // null values pushed to the end
-      if (!dateOfOffenceB) return -1; // null values pushed to the end
 
-      return dateOfOffenceA.toMillis() - dateOfOffenceB.toMillis(); // Compare dates by milliseconds
+      return dateOfOffenceA.toMillis() - dateOfOffenceB.toMillis();
     });
   }
 
@@ -103,7 +100,6 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
    */
   private getOffencesImpositions(): void {
     this.offencesImpositions = this.removeIndexFromImpositionKeys(this.finesService.finesMacState.offenceDetails);
-    console.log(this.offencesImpositions);
     this.sortOffencesByDate();
     this.finesMacOffenceDetailsService.emptyOffences = this.offencesImpositions.length === 0;
   }

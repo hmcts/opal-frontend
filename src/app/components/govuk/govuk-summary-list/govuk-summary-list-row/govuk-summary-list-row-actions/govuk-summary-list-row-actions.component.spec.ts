@@ -19,4 +19,15 @@ describe('GovukSummaryListRowActionsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit linkClicked event when handleActionClick is called', () => {
+    const linkClicked = 'example-link';
+    const event = new Event('click');
+    spyOn(component.linkClick, 'emit');
+
+    component.handleActionClick(event, linkClicked);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(component.linkClick.emit).toHaveBeenCalledWith(linkClicked);
+  });
 });

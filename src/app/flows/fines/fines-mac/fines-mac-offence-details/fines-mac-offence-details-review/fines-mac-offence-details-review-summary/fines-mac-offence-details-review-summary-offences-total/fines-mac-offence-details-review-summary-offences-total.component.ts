@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-import { IFinesMacOffenceDetailsForm } from '../../../interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacOffenceDetailsReviewSummaryOffencesTotalTotals } from './interfaces/fines-mac-offence-details-review-summary-offences-total-totals.interface';
 import { UtilsService } from '@services/utils/utils.service';
+import { IFinesMacOffenceDetailsReviewSummaryForm } from '../../interfaces/fines-mac-offence-details-review-summary-form.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-offences-total',
@@ -13,7 +13,7 @@ import { UtilsService } from '@services/utils/utils.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implements OnInit {
-  @Input({ required: true }) public offences!: IFinesMacOffenceDetailsForm[];
+  @Input({ required: true }) public offences!: IFinesMacOffenceDetailsReviewSummaryForm[];
 
   private readonly utilsService = inject(UtilsService);
 
@@ -28,13 +28,19 @@ export class FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent implement
   private getTotals(): void {
     this.offences.forEach((offence) => {
       offence.formData.fm_offence_details_impositions.forEach((imposition) => {
-        const amountImposed: number = +imposition.fm_offence_details_amount_imposed!;
-        const amountPaid: number = +imposition.fm_offence_details_amount_paid!;
-        const balanceRemaining: number = +imposition.fm_offence_details_balance_remaining!;
+        if (
+          imposition.fm_offence_details_amount_imposed &&
+          imposition.fm_offence_details_amount_paid &&
+          imposition.fm_offence_details_balance_remaining
+        ) {
+          const amountImposed: number = +imposition.fm_offence_details_amount_imposed;
+          const amountPaid: number = +imposition.fm_offence_details_amount_paid;
+          const balanceRemaining: number = +imposition.fm_offence_details_balance_remaining;
 
-        this.totalAmountImposed += amountImposed;
-        this.totalAmountPaid += amountPaid;
-        this.totalBalanceRemaining += balanceRemaining;
+          this.totalAmountImposed += amountImposed;
+          this.totalAmountPaid += amountPaid;
+          this.totalBalanceRemaining += balanceRemaining;
+        }
       });
     });
 

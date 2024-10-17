@@ -25,9 +25,12 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
       getResultPrettyName: jasmine.createSpy('getResults').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
     };
+
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
     await TestBed.configureTestingModule({
@@ -51,19 +54,17 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsRemoveImpositionComponent);
     component = fixture.componentInstance;
 
-    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    //component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     component.resultCode = OPAL_FINES_RESULTS_REF_DATA_MOCK;
 
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     expect(component).toBeTruthy();
   });
 
   it('should have state and populate resultCodeData$', () => {
-    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     expect(component['resultCodeData$']).not.toBeUndefined();
   });
 

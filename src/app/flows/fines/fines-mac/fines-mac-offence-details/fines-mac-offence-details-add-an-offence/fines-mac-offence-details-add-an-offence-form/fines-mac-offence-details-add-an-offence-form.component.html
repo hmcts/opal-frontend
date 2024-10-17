@@ -1,6 +1,6 @@
 <h1 class="govuk-heading-l">Add an offence</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
     <app-moj-date-picker

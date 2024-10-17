@@ -397,6 +397,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeImposition);
   }
 
+  /**
+   * Cancels the current operation and navigates to the appropriate route.
+   * If there are no offences, it navigates to the account details page.
+   * Otherwise, it navigates to the review offences page.
+   */
   public cancelLink(): void {
     if (this.finesMacOffenceDetailsService.emptyOffences) {
       this.handleRoute(
@@ -408,9 +413,15 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     }
   }
 
-  public override handleFormSubmit(event: SubmitEvent): void {
+  /**
+   * Handles the submit event for adding an offence.
+   * This method calculates the remaining balance and handles the form submission.
+   *
+   * @param event - The submit event.
+   */
+  public handleAddAnOffenceSubmit(event: SubmitEvent): void {
     this.calculateBalanceRemaining();
-    super.handleFormSubmit(event);
+    this.handleFormSubmit(event);
   }
 
   /**
