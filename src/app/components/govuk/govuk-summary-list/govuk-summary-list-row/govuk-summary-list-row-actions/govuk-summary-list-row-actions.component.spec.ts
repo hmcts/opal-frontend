@@ -22,7 +22,7 @@ describe('GovukSummaryListRowActionsComponent', () => {
 
   it('should emit linkClicked event when handleActionClick is called', () => {
     const linkClicked = 'example-link';
-    const event = new Event('click');
+    const event = jasmine.createSpyObj('event', ['preventDefault']);
     spyOn(component.linkClick, 'emit');
 
     component.handleActionClick(event, linkClicked);
