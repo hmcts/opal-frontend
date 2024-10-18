@@ -17,8 +17,10 @@ import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK } from './m
 import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../../../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-defendant-company-with-aliases.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK } from './mocks/fines-mac-payload-defendant-company.mock';
+import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-individual-with-alias.mock';
+import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_MOCK } from './mocks/fines-mac-payload-defendant-individual.mock';
 
-fdescribe('buildDefendantPayload', () => {
+describe('buildDefendantPayload', () => {
   it('should build payload for parent or guardian defendant', () => {
     const accountDetailsState: IFinesMacAccountDetailsState = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
@@ -180,38 +182,77 @@ fdescribe('buildDefendantPayload', () => {
     expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_WITH_ALIASES_MOCK);
   });
 
-  // it('should build payload for individual defendant', () => {
-  //   const accountDetailsState: IFinesMacAccountDetailsState = { fm_create_account_defendant_type: 'individual' };
-  //   const personalDetailsState: IFinesMacPersonalDetailsState = {
-  //     /* mock data */
-  //   };
-  //   const contactDetailsState: IFinesMacContactDetailsState = {
-  //     /* mock data */
-  //   };
-  //   const employerDetailsState: IFinesMacEmployerDetailsState = {
-  //     /* mock data */
-  //   };
-  //   const languageDetailsState: IFinesMacLanguagePreferencesState = {
-  //     /* mock data */
-  //   };
-  //   const companyDetailsState: IFinesMacCompanyDetailsState = {
-  //     /* mock data */
-  //   };
-  //   const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
-  //     /* mock data */
-  //   };
+  it('should build payload for individual defendant with aliases', () => {
+    const accountDetailsState: IFinesMacAccountDetailsState = {
+      ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+      fm_create_account_defendant_type: 'individual',
+    };
 
-  //   const result = buildDefendantPayload(
-  //     accountDetailsState,
-  //     personalDetailsState,
-  //     contactDetailsState,
-  //     employerDetailsState,
-  //     languageDetailsState,
-  //     companyDetailsState,
-  //     parentGuardianDetailsState,
-  //   );
+    const personalDetailsState: IFinesMacPersonalDetailsState = {
+      ...FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
+    };
+    const contactDetailsState: IFinesMacContactDetailsState = {
+      ...FINES_MAC_CONTACT_DETAILS_STATE_MOCK,
+    };
+    const employerDetailsState: IFinesMacEmployerDetailsState = {
+      ...FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK,
+    };
+    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
+      ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
+    };
+    const companyDetailsState: IFinesMacCompanyDetailsState = { ...FINES_MAC_COMPANY_DETAILS_STATE_MOCK };
 
-  //   expect(result).to.have.property('debtor_detail');
-  //   expect(result).to.not.have.property('parent_guardian');
-  // });
+    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
+      ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+    };
+    const result = buildDefendantPayload(
+      accountDetailsState,
+      personalDetailsState,
+      contactDetailsState,
+      employerDetailsState,
+      languagePreferencesState,
+      companyDetailsState,
+      parentGuardianDetailsState,
+    );
+
+    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK);
+  });
+
+  it('should build payload for individual defendant', () => {
+    const accountDetailsState: IFinesMacAccountDetailsState = {
+      ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+      fm_create_account_defendant_type: 'individual',
+    };
+
+    const personalDetailsState: IFinesMacPersonalDetailsState = {
+      ...FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
+      fm_personal_details_add_alias: false,
+      fm_personal_details_aliases: [],
+    };
+    const contactDetailsState: IFinesMacContactDetailsState = {
+      ...FINES_MAC_CONTACT_DETAILS_STATE_MOCK,
+    };
+    const employerDetailsState: IFinesMacEmployerDetailsState = {
+      ...FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK,
+    };
+    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
+      ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
+    };
+    const companyDetailsState: IFinesMacCompanyDetailsState = { ...FINES_MAC_COMPANY_DETAILS_STATE_MOCK };
+
+    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
+      ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+    };
+    const result = buildDefendantPayload(
+      accountDetailsState,
+      personalDetailsState,
+      contactDetailsState,
+      employerDetailsState,
+      languagePreferencesState,
+      companyDetailsState,
+      parentGuardianDetailsState,
+    );
+
+    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_MOCK);
+  });
 });

@@ -484,7 +484,6 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
   public override handleFormSubmit(event: SubmitEvent): void {
     this.setCollectionOrderDate();
-    console.log(this.form.value);
     super.handleFormSubmit(event);
   }
 
