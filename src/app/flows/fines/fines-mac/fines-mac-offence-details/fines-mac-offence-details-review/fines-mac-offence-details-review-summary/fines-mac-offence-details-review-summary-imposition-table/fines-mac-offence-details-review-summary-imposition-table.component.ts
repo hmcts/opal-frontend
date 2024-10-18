@@ -62,18 +62,19 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   }
 
   /**
-   * Retrieves the creditor information based on the provided creditor and major creditor ID.
-   * If the creditor is 'major', it retrieves the major creditor information from the refData.
-   * If the creditor is not 'major', it uses the default minor creditor value.
-   * If the creditor is null, it uses the default creditor value.
-   *
-   * @param creditor - The type of creditor ('major' or null).
-   * @param majorCreditor - The ID of the major creditor.
+   * Retrieves the creditor information based on the provided parameters.
+   * @param creditor - The creditor value.
+   * @param majorCreditor - The major creditor value.
+   * @param resultCodeCreditor - The result code creditor value.
    * @returns The creditor information as a string.
    */
-  private getCreditorInformation(creditor: string | null, majorCreditor: number | null): string {
+  private getCreditorInformation(
+    creditor: string | null,
+    majorCreditor: number | null,
+    resultCodeCreditor: string,
+  ): string {
     let creditorText = '';
-    if (creditor) {
+    if (resultCodeCreditor === 'Any' || resultCodeCreditor === '!CPS') {
       if (creditor === 'major') {
         if (majorCreditor) {
           const majorCreditorRefData = this.majorCreditorRefData.refData.filter(
@@ -84,6 +85,8 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
       } else {
         creditorText = this.defaultValues.defaultMinorCreditor;
       }
+    } else if (resultCodeCreditor === 'CPS') {
+      creditorText = this.defaultValues.defaultCpsCreditor;
     } else {
       creditorText = this.defaultValues.defaultCreditor;
     }
@@ -104,13 +107,16 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
       this.totalAmountPaid += amountPaid;
       this.totalBalanceRemaining += balanceRemaining;
 
+      const resultCodeImposition = this.impositionRefData.refData.filter(
+        (refData) => refData.result_id === imposition.fm_offence_details_result_code,
+      )[0];
+
       return {
-        impositionDescription: this.impositionRefData.refData.filter(
-          (refData) => refData.result_id === imposition.fm_offence_details_result_code,
-        )[0].result_title,
+        impositionDescription: resultCodeImposition.result_title,
         creditor: this.getCreditorInformation(
           imposition.fm_offence_details_creditor,
           imposition.fm_offence_details_major_creditor,
+          resultCodeImposition.imposition_creditor,
         ),
         amountImposed: this.utilsService.convertToMonetaryString(amountImposed),
         amountPaid: this.utilsService.convertToMonetaryString(amountPaid),

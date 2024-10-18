@@ -72,7 +72,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
         impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
           (x) => x.result_id === FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0].fm_offence_details_result_code!,
         )!.result_title,
-        creditor: 'Aldi Stores Ltd (ALDI)',
+        creditor: 'HM Courts & Tribunals Service (HMCTS)',
         amountImposed: expectedTotal,
         amountPaid: expectedTotal,
         balanceRemaining: expectedTotal,
@@ -88,17 +88,31 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   it('should return empty string if creditor is null', () => {
     const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
-    const actualCreditorText = component['getCreditorInformation'](null, null);
+    const actualCreditorText = component['getCreditorInformation'](null, null, 'Any');
 
-    expect(actualCreditorText).toBe(expectedCreditorText.defaultCreditor);
+    expect(actualCreditorText).toBe(expectedCreditorText.defaultMinorCreditor);
+  });
+
+  it('should return major creditor if creditor is major', () => {
+    const actualCreditorText = component['getCreditorInformation']('major', 3856, '!CPS');
+
+    expect(actualCreditorText).toBe('Aldi Stores Ltd (ALDI)');
   });
 
   it('should return defaultMinorCreditor if creditor is not "major"', () => {
     const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
-    const actualCreditorText = component['getCreditorInformation']('minor', null);
+    const actualCreditorText = component['getCreditorInformation']('minor', null, 'Any');
 
     expect(actualCreditorText).toBe(expectedCreditorText.defaultMinorCreditor);
+  });
+
+  it('should return empty string if creditor is null', () => {
+    const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
+
+    const actualCreditorText = component['getCreditorInformation'](null, null, 'CPS');
+
+    expect(actualCreditorText).toBe(expectedCreditorText.defaultCpsCreditor);
   });
 
   it('should sort impositions by allocation order and result title', () => {
