@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractFormBaseComponent } from '../abstract-form-base/abstract-form-base.component';
 import { IAbstractFormArrayControls } from '../interfaces/abstract-form-array-controls.interface';
 import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
-import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { IAbstractFormArrayControl } from '../interfaces/abstract-form-array-control.interface';
 
 @Component({
@@ -161,6 +161,18 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
   ): IAbstractFormArrayControls[] {
     formArrayControls.splice(index, 1);
     return formArrayControls;
+  }
+
+  /**
+   * Retrieves the value of a form control or returns a default value if the control is null or undefined.
+   *
+   * @param control - The form control to retrieve the value from.
+   * @param defaultValue - The default value to return if the control is null or undefined.
+   * @returns The value of the control if it exists, otherwise the default value.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getControlValueOrDefault(control: AbstractControl | null, defaultValue: any): any {
+    return control?.value || defaultValue;
   }
 
   /**

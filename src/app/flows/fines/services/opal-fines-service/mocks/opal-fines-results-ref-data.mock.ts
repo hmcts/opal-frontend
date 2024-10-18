@@ -55,7 +55,7 @@ export const OPAL_FINES_RESULTS_REF_DATA_MOCK: IOpalFinesResultsRefData = {
       active: true,
       result_type: 'Result',
       imposition_creditor: 'CF',
-      imposition_allocation_order: null,
+      imposition_allocation_order: 5,
     },
     {
       result_id: 'FVEBD',

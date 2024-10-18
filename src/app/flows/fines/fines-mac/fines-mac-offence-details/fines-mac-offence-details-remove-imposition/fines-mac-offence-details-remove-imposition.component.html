@@ -18,20 +18,22 @@
           <th scope="col" class="govuk-table__header">Balance remaining</th>
         </ng-container>
         <ng-container body>
-          <td class="govuk-table__cell" id="imposition">
-            {{ imposition }}
-          </td>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell" id="imposition">
+              {{ imposition }}
+            </td>
 
-          <td class="govuk-table__cell" id="creditor">{{ creditor }}</td>
-          <td class="govuk-table__cell" id="amountImposed">
-            {{ amountImposedString }}
-          </td>
-          <td class="govuk-table__cell" id="amountPaid">
-            {{ amountPaidString }}
-          </td>
-          <td class="govuk-table__cell" id="balanceRemaining">
-            {{ balanceString }}
-          </td>
+            <td class="govuk-table__cell" id="creditor">{{ creditor }}</td>
+            <td class="govuk-table__cell" id="amountImposed">
+              {{ amountImposedString }}
+            </td>
+            <td class="govuk-table__cell" id="amountPaid">
+              {{ amountPaidString }}
+            </td>
+            <td class="govuk-table__cell" id="balanceRemaining">
+              {{ balanceString }}
+            </td>
+          </tr>
         </ng-container>
       </app-govuk-table>
       <div class="govuk-grid-row">

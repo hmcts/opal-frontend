@@ -4,8 +4,15 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-o
 export const routing: Routes = [
   {
     path: '',
-    redirectTo: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence,
+    redirectTo: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences,
     pathMatch: 'full',
+  },
+  {
+    path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences,
+    loadComponent: () =>
+      import('../fines-mac-offence-details-review/fines-mac-offence-details-review.component').then(
+        (c) => c.FinesMacOffenceDetailsReviewComponent,
+      ),
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence,
