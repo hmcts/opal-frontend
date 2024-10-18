@@ -5,8 +5,10 @@
     [headingText]="offenceTitle"
     headingClasses="govuk-heading-m govuk-!-margin-bottom-0"
   ></app-govuk-heading-with-caption>
-  <app-govuk-summary-list-row-actions
-    [actions]="['Hide', 'Change', 'Remove']"
-    (linkClick)="onActionClick($event)"
-  ></app-govuk-summary-list-row-actions>
+  <app-govuk-summary-list-row-actions>
+    <app-govuk-summary-list-row-action-items
+      [actions]="['Hide', 'Change', 'Remove']"
+      (linkClick)="onActionClick($event)"
+    ></app-govuk-summary-list-row-action-items>
+  </app-govuk-summary-list-row-actions>
 </div>

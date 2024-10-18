@@ -12,6 +12,7 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-o
 import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names.constant';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK } from '../mocks/fines-mac-offence-details-remove-imposition.mock';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
@@ -54,7 +55,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsRemoveImpositionComponent);
     component = fixture.componentInstance;
 
-    //component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     component.resultCode = OPAL_FINES_RESULTS_REF_DATA_MOCK;
 
     fixture.detectChanges();
@@ -79,11 +79,11 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should get imposition to be removed', () => {
-    const { rowIndex, formArray, formArrayControls } = component['draftOffenceDetailsState'].removeImposition!;
-    fixture.detectChanges();
+    const { formArray, formArrayControls } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
     mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
 
-    component['getImpositionToBeRemoved'](rowIndex, formArray, formArrayControls);
+    fixture.detectChanges();
+    component['getImpositionToBeRemoved'](0, formArray, formArrayControls);
 
     expect(component.imposition).toEqual(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
     expect(component.creditor).toEqual('major');
@@ -91,6 +91,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.amountPaidString).toEqual('£50.00');
     expect(component.balanceString).toEqual('£50.00');
 
+    fixture.detectChanges();
     component['getImpositionToBeRemoved'](1, formArray, formArrayControls);
 
     expect(component.imposition).toEqual('Not provided');
