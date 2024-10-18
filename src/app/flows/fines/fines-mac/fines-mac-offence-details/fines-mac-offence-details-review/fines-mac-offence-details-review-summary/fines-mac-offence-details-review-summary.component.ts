@@ -77,7 +77,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
    * @param action - The action object containing the action name and offence ID.
    */
   public offenceAction(action: { actionName: string; offenceId: number }): void {
-    if (action.actionName === 'Change') {
+    if (action.actionName === 'change') {
       this.finesMacOffenceDetailsService.offenceIndex = action.offenceId;
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     }

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GovukSummaryListRowActionItemsComponent } from './govuk-summary-list-row-action-items.component';
+import { GovukSummaryListRowActionItemComponent } from './govuk-summary-list-row-action-item.component';
 
-describe('GovukSummaryListRowActionItemsComponent', () => {
-  let component: GovukSummaryListRowActionItemsComponent;
-  let fixture: ComponentFixture<GovukSummaryListRowActionItemsComponent>;
+describe('GovukSummaryListRowActionItemComponent', () => {
+  let component: GovukSummaryListRowActionItemComponent;
+  let fixture: ComponentFixture<GovukSummaryListRowActionItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukSummaryListRowActionItemsComponent],
+      imports: [GovukSummaryListRowActionItemComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GovukSummaryListRowActionItemsComponent);
+    fixture = TestBed.createComponent(GovukSummaryListRowActionItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,7 +21,7 @@ describe('GovukSummaryListRowActionItemsComponent', () => {
   });
 
   it('should emit linkClicked event when handleActionClick is called', () => {
-    const linkClicked = 'example-link';
+    const linkClicked = 'change';
     const event = jasmine.createSpyObj('event', ['preventDefault']);
     spyOn(component.linkClick, 'emit');
 

@@ -87,7 +87,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
   it('should set the offenceIndex and navigate to addOffence route when actionName is "Change"', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const action = { actionName: 'Change', offenceId: 1 };
+    const action = { actionName: 'change', offenceId: 1 };
 
     component.offenceAction(action);
 
@@ -99,7 +99,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
   it('should not set the offenceIndex and navigate to addOffence route when actionName is not "Change"', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    const action = { actionName: 'Delete', offenceId: 1 };
+    const action = { actionName: 'remove', offenceId: 1 };
 
     component.offenceAction(action);
 

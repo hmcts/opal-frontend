@@ -6,9 +6,23 @@
     headingClasses="govuk-heading-m govuk-!-margin-bottom-0"
   ></app-govuk-heading-with-caption>
   <app-govuk-summary-list-row-actions>
-    <app-govuk-summary-list-row-action-items
-      [actions]="['Hide', 'Change', 'Remove']"
+    <li
+      app-govuk-summary-list-row-action-item
+      actionId="hide"
+      actionName="Hide"
       (linkClick)="onActionClick($event)"
-    ></app-govuk-summary-list-row-action-items>
+    ></li>
+    <li
+      app-govuk-summary-list-row-action-item
+      actionId="change"
+      actionName="Change"
+      (linkClick)="onActionClick($event)"
+    ></li>
+    <li
+      app-govuk-summary-list-row-action-item
+      actionId="remove"
+      actionName="Remove"
+      (linkClick)="onActionClick($event)"
+    ></li>
   </app-govuk-summary-list-row-actions>
 </div>
