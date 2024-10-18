@@ -94,7 +94,7 @@ describe('buildDefendantCompanyPayload', () => {
       debtor_detail: {
         document_language: 'EN',
         hearing_language: 'FR',
-        aliases: [],
+        aliases: null,
       },
     });
   });

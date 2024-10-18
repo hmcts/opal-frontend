@@ -113,7 +113,7 @@ describe('buildDefendantParentGuardianPayload', () => {
           employer_post_code: '67890',
           employer_telephone_number: '01122334455',
           employer_email_address: 'contact@company.com',
-          aliases: [],
+          aliases: null,
         },
       },
     });

@@ -14,14 +14,16 @@ import { IFinesMacDefendantCompanyPayload } from '../interfaces/fines-mac-defend
  */
 const buildCompanyDefendantDebtorDetailsAliases = (
   aliases: IFinesMacCompanyDetailsAliasState[],
-): IFinesMacDefendantCompanyDebtorDetailsAliasPayload[] => {
-  return aliases.map((alias, index) => {
+): IFinesMacDefendantCompanyDebtorDetailsAliasPayload[] | null => {
+  const mappedAliases = aliases.map((alias, index) => {
     const companyNameKey =
       `fm_company_details_alias_organisation_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
     return {
       alias_company_name: alias[companyNameKey] || null,
     };
   });
+
+  return mappedAliases.length ? mappedAliases : null;
 };
 
 /**

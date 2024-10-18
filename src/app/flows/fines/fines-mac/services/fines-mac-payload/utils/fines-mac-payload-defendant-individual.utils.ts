@@ -15,8 +15,8 @@ import { IFinesMacDefendantIndividualPayload } from '../interfaces/fines-mac-ind
  */
 const buildIndividualDefendantDebtorDetailsAliases = (
   aliases: IFinesMacPersonalDetailsAliasState[],
-): IFinesMacDefendantIndividualDebtorDetailsAliasPayload[] => {
-  return aliases.map((alias, index) => {
+): IFinesMacDefendantIndividualDebtorDetailsAliasPayload[] | null => {
+  const mappedAliases = aliases.map((alias, index) => {
     const forenameKey = `fm_personal_details_alias_forenames_${index}` as keyof IFinesMacPersonalDetailsAliasState;
     const surnameKey = `fm_personal_details_alias_surname_${index}` as keyof IFinesMacPersonalDetailsAliasState;
     return {
@@ -24,6 +24,8 @@ const buildIndividualDefendantDebtorDetailsAliases = (
       alias_surname: alias[surnameKey] || null,
     };
   });
+
+  return mappedAliases.length ? mappedAliases : null;
 };
 
 /**

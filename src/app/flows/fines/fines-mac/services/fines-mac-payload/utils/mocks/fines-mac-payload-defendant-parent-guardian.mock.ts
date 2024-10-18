@@ -79,7 +79,7 @@ export const FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_MOCK = {
       employer_post_code: 'TE10 1ST',
       employer_telephone_number: '12345678910',
       employer_email_address: 'abc@def.co.uk',
-      aliases: [],
+      aliases: null,
     },
   },
 };

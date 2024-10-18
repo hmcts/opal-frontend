@@ -17,8 +17,8 @@ import { IFinesMacDefendantParentGuardianPayload } from '../interfaces/fines-mac
  */
 const buildParentGuardianDebtorDetailsAliases = (
   aliases: IFinesMacParentGuardianDetailsAliasState[],
-): IFinesMacDefendantIndividualDebtorDetailsAliasPayload[] => {
-  return aliases.map((alias, index) => {
+): IFinesMacDefendantIndividualDebtorDetailsAliasPayload[] | null => {
+  const mappedAliases = aliases.map((alias, index) => {
     const forenameKey =
       `fm_parent_guardian_details_alias_forenames_${index}` as keyof IFinesMacParentGuardianDetailsAliasState;
     const surnameKey =
@@ -28,6 +28,8 @@ const buildParentGuardianDebtorDetailsAliases = (
       alias_surname: alias[surnameKey] || null,
     };
   });
+
+  return mappedAliases.length ? mappedAliases : null;
 };
 
 /**
