@@ -15,8 +15,8 @@ import { FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from '../../../fines-mac-employ
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../../../fines-mac-parent-guardian-details/mocks/fines-mac-parent-guardian-details-state.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-parent-guardian-with-alias.mock';
 import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../../../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-defendant-company-with-aliases.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK } from './mocks/fines-mac-payload-defendant-company.mock';
+import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-defendant-company-complete-with-aliases.mock';
+import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_MOCK } from './mocks/fines-mac-payload-defendant-company-complete.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-individual-with-alias.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_MOCK } from './mocks/fines-mac-payload-defendant-individual.mock';
 
@@ -142,7 +142,7 @@ describe('buildDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_MOCK);
   });
 
   it('should build payload for company defendant with aliases', () => {
@@ -179,7 +179,7 @@ describe('buildDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_WITH_ALIASES_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK);
   });
 
   it('should build payload for individual defendant with aliases', () => {
