@@ -5,8 +5,9 @@
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-      <ng-content select="[body]"></ng-content>
+    <ng-content select="[body]"></ng-content>
+    <tr class="govuk-table__row govuk-light-grey-background-color">
+      <ng-content select="[results]"></ng-content>
     </tr>
   </tbody>
 </table>

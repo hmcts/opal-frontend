@@ -9,4 +9,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class GovukTableComponent {
   @Input({ required: false }) public tableClasses!: string;
+  @Input({ required: false }) public results!: boolean;
 }

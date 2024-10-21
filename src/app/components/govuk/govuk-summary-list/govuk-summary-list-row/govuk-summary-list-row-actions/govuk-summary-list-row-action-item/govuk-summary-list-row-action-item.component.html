@@ -1,0 +1,11 @@
+<a
+  href="#"
+  class="govuk-link govuk-link--no-visited-state"
+  [id]="actionId"
+  (click)="handleActionClick($event, actionId)"
+  (keyup.enter)="handleActionClick($event, actionId)"
+  tabindex="0"
+>
+  <strong>{{ actionName }}</strong
+  ><span class="govuk-visually-hidden"></span
+></a>
