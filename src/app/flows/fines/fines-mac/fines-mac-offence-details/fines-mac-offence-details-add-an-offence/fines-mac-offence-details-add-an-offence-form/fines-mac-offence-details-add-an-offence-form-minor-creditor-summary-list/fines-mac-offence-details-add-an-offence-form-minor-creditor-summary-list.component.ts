@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../../../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../../../fines-mac-offence-details-minor-creditor/constants/fines-mac-offence-details-minor-creditor-state.constant';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
@@ -8,6 +8,7 @@ import { GovukSummaryListRowActionsComponent } from '@components/govuk/govuk-sum
 import { GovukSummaryListRowActionItemComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row-actions/govuk-summary-list-row-action-item/govuk-summary-list-row-action-item.component';
 import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList } from './enums/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.enum';
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
+import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list',
@@ -27,6 +28,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input({ required: true }) public minorCreditor!: any;
   @Input({ required: true }) public index!: number;
+
+  private readonly utilsService = inject(UtilsService);
 
   public minorCreditorData: IFinesMacOffenceDetailsMinorCreditorState = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE;
   public name!: string;
@@ -107,6 +110,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
     } = this.minorCreditorData;
 
     this.address = [addressLine1, addressLine2, addressLine3, postCode].filter((line) => line).join('\n');
+
+    if (this.address.length === 0) {
+      this.address = FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList.defaultNotProvided;
+    }
   }
 
   /**
@@ -121,13 +128,13 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
       fm_offence_details_minor_creditor_account_number: accountNumber,
       fm_offence_details_minor_creditor_payment_reference: paymentReference,
     } = this.minorCreditorData;
-    if (hasPaymentDetails) {
-      this.paymentMethod = FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList.defaultPaymentMethod;
-      this.accountName = nameOnAccount ?? '';
-      this.sortCode = sortCode ?? '';
-      this.accountNumber = accountNumber ?? '';
-      this.paymentReference = paymentReference ?? '';
-    }
+    this.paymentMethod = hasPaymentDetails
+      ? FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList.defaultPaymentMethod
+      : FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList.defaultNotProvided;
+    this.accountName = nameOnAccount ?? '';
+    this.sortCode = sortCode ? this.utilsService.formatSortCode(sortCode) : '';
+    this.accountNumber = accountNumber ?? '';
+    this.paymentReference = paymentReference ?? '';
   }
 
   ngOnInit(): void {

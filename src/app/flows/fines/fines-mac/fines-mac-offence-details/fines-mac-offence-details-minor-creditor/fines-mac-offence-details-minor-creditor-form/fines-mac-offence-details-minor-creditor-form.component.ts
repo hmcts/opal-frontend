@@ -112,34 +112,6 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   }
 
   /**
-   * Listens for changes in the hasPaymentDetails form control and updates the validators accordingly.
-   */
-  private hasPaymentDetailsListener(): void {
-    const {
-      fm_offence_details_minor_creditor_has_payment_details: hasPaymentDetails,
-      fm_offence_details_minor_creditor_name_on_account: nameOnAccount,
-      fm_offence_details_minor_creditor_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
-      fm_offence_details_minor_creditor_payment_reference: paymentReference,
-    } = this.form.controls;
-
-    hasPaymentDetails.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      if (hasPaymentDetails.value) {
-        nameOnAccount.setValidators([Validators.required, Validators.maxLength(18), alphabeticalTextValidator()]);
-        sortCode.setValidators([Validators.required, Validators.maxLength(6), numericalTextValidator()]);
-        accountNumber.setValidators([Validators.required, Validators.maxLength(10), numericalTextValidator()]);
-        paymentReference.setValidators([Validators.required, Validators.maxLength(18), alphabeticalTextValidator()]);
-      } else {
-        nameOnAccount.clearValidators();
-        sortCode.clearValidators();
-        accountNumber.clearValidators();
-        paymentReference.clearValidators();
-      }
-      this.form.updateValueAndValidity();
-    });
-  }
-
-  /**
    * Sets individual validators for the forenames and surname form controls.
    * The forenames control is validated with a maximum length of 50 characters and an alphabetical text validator.
    * The surname control is validated as required, with a maximum length of 50 characters, and an alphabetical text validator.
@@ -149,8 +121,8 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_forenames: forenames,
       fm_offence_details_minor_creditor_surname: surname,
     } = this.form.controls;
-    forenames.setValidators([Validators.maxLength(50), alphabeticalTextValidator()]);
-    surname.setValidators([Validators.required, Validators.maxLength(50), alphabeticalTextValidator()]);
+    forenames.setValidators([Validators.maxLength(20), alphabeticalTextValidator()]);
+    surname.setValidators([Validators.required, Validators.maxLength(30), alphabeticalTextValidator()]);
   }
 
   /**
@@ -162,10 +134,27 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   }
 
   /**
+   * Sets the validators for the payment detail form controls.
+   */
+  private setPaymentDetailValidators(): void {
+    const {
+      fm_offence_details_minor_creditor_name_on_account: nameOnAccount,
+      fm_offence_details_minor_creditor_sort_code: sortCode,
+      fm_offence_details_minor_creditor_account_number: accountNumber,
+      fm_offence_details_minor_creditor_payment_reference: paymentReference,
+    } = this.form.controls;
+
+    nameOnAccount.setValidators([Validators.required, Validators.maxLength(18), alphabeticalTextValidator()]);
+    sortCode.setValidators([Validators.required, Validators.maxLength(6), numericalTextValidator()]);
+    accountNumber.setValidators([Validators.required, Validators.maxLength(8), numericalTextValidator()]);
+    paymentReference.setValidators([Validators.required, Validators.maxLength(18), alphabeticalTextValidator()]);
+  }
+
+  /**
    * Resets the validators for the form controls related to minor creditor details.
    * This method clears the validators and resets the values of the form controls.
    */
-  private resetValidators(): void {
+  private resetNameValidators(): void {
     const {
       fm_offence_details_minor_creditor_title: title,
       fm_offence_details_minor_creditor_forenames: forenames,
@@ -182,8 +171,54 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
   }
 
   /**
+   * Resets the validators for the payment detail form controls.
+   */
+  private resetPaymentDetailValidators(): void {
+    const {
+      fm_offence_details_minor_creditor_name_on_account: nameOnAccount,
+      fm_offence_details_minor_creditor_sort_code: sortCode,
+      fm_offence_details_minor_creditor_account_number: accountNumber,
+      fm_offence_details_minor_creditor_payment_reference: paymentReference,
+    } = this.form.controls;
+
+    nameOnAccount.reset();
+    nameOnAccount.clearValidators();
+    sortCode.reset();
+    sortCode.clearValidators();
+    accountNumber.reset();
+    accountNumber.clearValidators();
+    paymentReference.reset();
+    paymentReference.clearValidators();
+  }
+
+  /**
+   * Listens for changes in the payment details form controls and updates their validity accordingly.
+   */
+  private hasPaymentDetailsListener(): void {
+    const {
+      fm_offence_details_minor_creditor_has_payment_details: hasPaymentDetails,
+      fm_offence_details_minor_creditor_name_on_account: nameOnAccount,
+      fm_offence_details_minor_creditor_sort_code: sortCode,
+      fm_offence_details_minor_creditor_account_number: accountNumber,
+      fm_offence_details_minor_creditor_payment_reference: paymentReference,
+    } = this.form.controls;
+
+    hasPaymentDetails.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      this.resetPaymentDetailValidators();
+
+      if (hasPaymentDetails.value) {
+        this.setPaymentDetailValidators();
+      }
+      nameOnAccount.updateValueAndValidity();
+      sortCode.updateValueAndValidity();
+      accountNumber.updateValueAndValidity();
+      paymentReference.updateValueAndValidity();
+    });
+  }
+
+  /**
    * Listens for changes in the creditor type form control and updates the form validators accordingly.
-   * Resets the validators and sets individual or company validators based on the selected creditor type.
+   * Resets the name validators and sets individual or company validators based on the selected creditor type.
    * Updates the validity of the company name, forenames, and surname form controls.
    */
   private creditorTypeListener(): void {
@@ -195,7 +230,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     } = this.form.controls;
 
     creditorType.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      this.resetValidators();
+      this.resetNameValidators();
 
       switch (creditorType.value) {
         case 'individual':

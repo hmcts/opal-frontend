@@ -3,13 +3,13 @@ import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form
 export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   fm_offence_details_minor_creditor_creditor_type: {
     required: {
-      message: 'Select creditor type',
+      message: 'Select whether minor creditor is an individual or company',
       priority: 1,
     },
   },
   fm_offence_details_minor_creditor_forenames: {
     maxlength: {
-      message: `The first name(s) must be 50 characters or fewer`,
+      message: `The first name(s) must be 20 characters or fewer`,
       priority: 1,
     },
     alphabeticalTextPattern: {
@@ -23,7 +23,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 1,
     },
     maxlength: {
-      message: `The last name must be 50 characters or fewer`,
+      message: `The last name must be 30 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
@@ -115,7 +115,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 1,
     },
     maxLength: {
-      message: 'Account number must be 10 characters or fewer',
+      message: 'Account number must be 8 characters or fewer',
       priority: 2,
     },
     numericalTextPattern: {
