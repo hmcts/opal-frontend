@@ -15,11 +15,8 @@ describe('GovukSummaryCardActionComponent', () => {
     fixture = TestBed.createComponent(GovukSummaryCardActionComponent);
     component = fixture.componentInstance;
 
-    component.cardTitle = 'Testing Summary Card Actions';
-    component.actions = [
-      { text: 'Change', route: 'Change Link' },
-      { text: 'Remove', route: 'Remove Link' },
-    ];
+    component.actionText = 'Change'
+    component.actionRoute = 'change'
 
     fixture.detectChanges();
   });
@@ -32,20 +29,13 @@ describe('GovukSummaryCardActionComponent', () => {
     const listItems = fixture.debugElement.queryAll(By.css('.govuk-summary-card__action'));
 
     const changeItem = listItems.find((item) => item.nativeElement.textContent.includes('Change'));
-    const removeItem = listItems.find((item) => item.nativeElement.textContent.includes('Remove'));
 
     expect(changeItem).toBeTruthy();
-    expect(removeItem).toBeTruthy();
 
     // Check for the presence of the visually hidden span and its content for Change
     const changeVisuallyHiddenSpan = changeItem?.nativeElement.querySelector('span.govuk-visually-hidden');
     expect(changeVisuallyHiddenSpan).toBeTruthy();
-    expect(changeVisuallyHiddenSpan.textContent.trim()).toBe(component.cardTitle);
-
-    // Check for the presence of the visually hidden span and its content for Remove
-    const removeVisuallyHiddenSpan = removeItem?.nativeElement.querySelector('span.govuk-visually-hidden');
-    expect(removeVisuallyHiddenSpan).toBeTruthy();
-    expect(removeVisuallyHiddenSpan.textContent.trim()).toBe(component.cardTitle);
+    expect(changeVisuallyHiddenSpan.textContent.trim()).toBe(component.actionText);
   });
 
   it('should test onClick', () => {

@@ -385,7 +385,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   /**
    * Navigates to the minor creditor page for the specified row index.
-   * 
+   *
    * @param rowIndex - The index of the row.
    */
   public goToMinorCreditor(rowIndex: number): void {

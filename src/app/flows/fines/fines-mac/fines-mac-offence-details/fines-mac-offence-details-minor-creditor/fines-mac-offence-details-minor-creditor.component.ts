@@ -26,15 +26,18 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
    * @param rowIndex - The index of the row to patch the values for.
    * @param formData - The data to patch the values with.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private patchFormValues(formArray: FormArray, rowIndex: number, formData: any): void {
     const fields = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_NAMES.fieldNames;
     const dynamicFieldPrefix = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_NAMES.dynamicFieldPrefix;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const patchData: { [key: string]: any } = fields.reduce(
       (acc, field) => {
         acc[`${dynamicFieldPrefix}_${field}_${rowIndex}`] = formData[`${dynamicFieldPrefix}_${field}`];
         return acc;
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {} as { [key: string]: any },
     );
 
@@ -45,7 +48,7 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
    * Handles the form submission for the minor creditor in the fines MAC offence details component.
    * Updates the form status, patches the form values, and updates the state with the form data.
    * Navigates to the add offence route after form submission.
-   * 
+   *
    * @param form - The form data for the minor creditor.
    */
   public handleMinorCreditorFormSubmit(form: IFinesMacOffenceDetailsMinorCreditorForm): void {

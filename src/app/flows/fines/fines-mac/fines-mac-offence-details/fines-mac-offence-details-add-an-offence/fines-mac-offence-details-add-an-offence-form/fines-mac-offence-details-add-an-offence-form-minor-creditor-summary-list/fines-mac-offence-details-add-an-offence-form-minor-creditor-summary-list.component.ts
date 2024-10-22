@@ -24,6 +24,7 @@ import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent implements OnInit {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input({ required: true }) public minorCreditor!: any;
   @Input({ required: true }) public index!: number;
 
@@ -56,6 +57,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
    *
    * @param data - The input object containing the keys with suffixes.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private removeIndexFromData(data: { [key: string]: any }) {
     // Iterate over each key in the IFinesMacOffenceDetailsMinorCreditorState interface
     Object.keys(this.minorCreditorData).forEach((key) => {
