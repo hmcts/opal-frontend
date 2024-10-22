@@ -61,11 +61,13 @@ const buildEnforcement = (
 const buildPaymentTermEnforcements = (
   paymentTermsState: IFinesMacPaymentTermsState,
 ): IFinesMacPaymentTermsEnforcementPayload[] | null => {
-  let enforcements = [];
+  const enforcements = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const hasCollectionOrderBeenMade: any = paymentTermsState['fm_payment_terms_collection_order_made'];
   const hasCollectionOrderBeenMadeToday = paymentTermsState['fm_payment_terms_collection_order_made_today'];
   // const addColloEnforcement = !hasCollectionOrderBeenMade && hasCollectionOrderBeenMadeToday;
   // Temporary until value is set to
+
   const addColloEnforcement = hasCollectionOrderBeenMade === 'no' && hasCollectionOrderBeenMadeToday;
   let resultId = null;
   if (paymentTermsState['fm_payment_terms_enforcement_action']) {

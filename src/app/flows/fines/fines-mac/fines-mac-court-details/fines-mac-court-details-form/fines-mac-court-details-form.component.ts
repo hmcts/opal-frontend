@@ -23,7 +23,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
+
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 @Component({

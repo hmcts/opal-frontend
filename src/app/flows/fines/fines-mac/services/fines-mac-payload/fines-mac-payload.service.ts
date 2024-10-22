@@ -11,6 +11,8 @@ import { IFinesMacInitialPayload } from './interfaces/fines-mac-initial-payload.
 import { buildDefendantPayload } from './utils/fines-mac-payload-defendant.utils';
 import { buildPaymentTermsPayload } from './utils/fines-mac-payload-payment-terms.utils';
 import { buildAccountNotesPayload } from './utils/fines-mac-payload-account-notes.utils';
+import { IFinesMacPayload } from './interfaces/fines-mac-payload.interface';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,7 +56,7 @@ export class FinesMacPayloadService {
     };
   }
 
-  public buildPayload(finesMacState: IFinesMacState): any {
+  public buildPayload(finesMacState: IFinesMacState): IFinesMacPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { formData: courtDetailsState } = finesMacState.courtDetails;
     const { formData: paymentTermsState } = finesMacState.paymentTerms;

@@ -5,10 +5,6 @@ import { FinesMacPayloadService } from './fines-mac-payload.service';
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService;
 
-  const a = () => {
-    return true;
-  };
-
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(FinesMacPayloadService);
