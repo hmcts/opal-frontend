@@ -56,6 +56,12 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds the payload for fines MAC based on the provided state.
+   *
+   * @param {IFinesMacState} finesMacState - The state containing all the necessary form data.
+   * @returns {IFinesMacPayload} The constructed payload object.
+   */
   public buildPayload(finesMacState: IFinesMacState): IFinesMacPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { formData: courtDetailsState } = finesMacState.courtDetails;
