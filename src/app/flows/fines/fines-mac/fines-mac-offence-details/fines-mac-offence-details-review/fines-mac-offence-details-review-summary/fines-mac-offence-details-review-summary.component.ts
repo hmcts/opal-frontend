@@ -15,6 +15,8 @@ import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-
 import { FinesMacOffenceDetailsReviewSummaryOffenceComponent } from './fines-mac-offence-details-review-summary-offence/fines-mac-offence-details-review-summary-offence.component';
 import { MojBannerComponent } from '../../../../../../components/moj/moj-banner/moj-banner.component';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-mac-offence-details-review-summary-form.interface';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -40,8 +42,10 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  public readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
+  public readonly finesMacStatus = FINES_MAC_STATUS;
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 

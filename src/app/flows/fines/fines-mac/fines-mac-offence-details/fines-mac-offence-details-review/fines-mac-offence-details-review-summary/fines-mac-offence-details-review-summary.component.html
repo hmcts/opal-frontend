@@ -96,7 +96,7 @@
     >
       Return to account details
     </app-govuk-button>
-    @if (subNavigationButton) {
+    @if (subNavigationButton && finesService.finesMacState.personalDetails.status === finesMacStatus.PROVIDED) {
       <app-govuk-button
         buttonId="submitForm"
         buttonClasses="nested-flow govuk-button--secondary govuk-!-margin-left-3"
