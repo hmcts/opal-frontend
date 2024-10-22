@@ -217,6 +217,56 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
     this.removeFormArrayControls(formArrayControlIndex, formArrayName, this.formArrayControls, this.formArrayFields);
   }
 
+  /**
+   * Retrieves the FormGroup at the specified index from a FormArray.
+   *
+   * @param index - The index of the FormGroup to retrieve.
+   * @param formArrayName - The name of the FormArray.
+   * @returns The FormGroup at the specified index.
+   */
+  public getFormArrayFormGroup(index: number, formArrayName: string): FormGroup {
+    const formArray = this.form.get(formArrayName) as FormArray;
+    return formArray.controls[index] as FormGroup;
+  }
+
+  /**
+   * Retrieves the FormControl from a FormGroup within a FormArray at the specified index.
+   *
+   * @param formGroup - The FormGroup containing the FormControl.
+   * @param controlName - The name of the FormControl.
+   * @param index - The index of the FormArray.
+   * @returns The FormControl at the specified index.
+   */
+  public getFormArrayFormGroupControl(formGroup: FormGroup, controlName: string, index: number): FormControl {
+    return formGroup.controls[`${controlName}_${index}`] as FormControl;
+  }
+
+  /**
+   * Adds validators to a specific form control within a form array group.
+   *
+   * @param formGroup - The form group containing the form array.
+   * @param controlName - The name of the form control within the form array group.
+   * @param index - The index of the form array group within the form array.
+   * @param validators - An array of validator functions to be added to the form control.
+   */
+  public addFormArrayFormGroupControlValidators(formControl: FormControl, validators: ValidatorFn[]): void {
+    formControl.setValidators(validators);
+    formControl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  /**
+   * Removes validators from a specific form control within a form array group.
+   * @param formGroup - The form group containing the form array.
+   * @param controlName - The name of the form control within the form array group.
+   * @param index - The index of the form array group within the form array.
+   */
+  public removeFormArrayFormGroupControlValidators(formControl: FormControl): void {
+    formControl.clearValidators();
+    formControl.setErrors(null);
+    formControl.setValue(null, { emitEvent: false });
+    formControl.updateValueAndValidity({ emitEvent: false });
+  }
+
   public override ngOnInit(): void {
     super.ngOnInit();
   }

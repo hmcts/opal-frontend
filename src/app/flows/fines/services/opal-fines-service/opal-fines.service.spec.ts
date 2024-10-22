@@ -34,6 +34,11 @@ import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from './mocks/opal-fines-offences-ref-data.mock';
 import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from './mocks/opal-fines-results-ref-data.mock';
+import {
+  IOpalFinesMajorCreditor,
+  IOpalFinesMajorCreditorRefData,
+} from './interfaces/opal-fines-major-creditor-ref-data.interface';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-major-creditor-ref-data.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -382,5 +387,51 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(expectedUrl);
     expect(req.request.method).toBe('GET');
     req.flush(expectedResponse);
+  });
+
+  it('should send a GET request to major creditor ref data API', () => {
+    const businessUnit = 1;
+    const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.majorCreditorRefData}?businessUnit=${businessUnit}`;
+
+    service.getMajorCreditors(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockMajorCreditor);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockMajorCreditor);
+  });
+
+  it('should return cached response for the same ref data search', () => {
+    const businessUnit = 1;
+    const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.majorCreditorRefData}?businessUnit=${businessUnit}`;
+
+    service.getMajorCreditors(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockMajorCreditor);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockMajorCreditor);
+
+    // Make a second call to major creditor with the same search body
+    service.getMajorCreditors(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockMajorCreditor);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should return the major creditor name and code in a pretty format', () => {
+    const majorCreditor: IOpalFinesMajorCreditor = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0];
+
+    const result = service.getMajorCreditorPrettyName(majorCreditor);
+
+    expect(result).toEqual(`${majorCreditor.name} (${majorCreditor.major_creditor_code})`);
   });
 });

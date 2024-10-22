@@ -1,0 +1,1 @@
+export const OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK = 'Aldi Stores Ltd (ALDI)';

@@ -11,8 +11,9 @@ export const FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK: IFinesMacOffenceDetails
         fm_offence_details_result_code_0: new FormControl('FCC'),
         fm_offence_details_amount_imposed_0: new FormControl(200),
         fm_offence_details_amount_paid_0: new FormControl(50),
-        fm_offence_details_needs_creditor_0: new FormControl(false),
-        fm_offence_details_creditor_0: new FormControl(null),
+        fm_offence_details_needs_creditor_0: new FormControl(true),
+        fm_offence_details_creditor_0: new FormControl('major'),
+        fm_offence_details_major_creditor_0: new FormControl('ALDI'),
       }),
       new FormGroup({
         fm_offence_details_result_code_1: new FormControl(null),
@@ -20,6 +21,7 @@ export const FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK: IFinesMacOffenceDetails
         fm_offence_details_amount_paid_1: new FormControl(0),
         fm_offence_details_needs_creditor_1: new FormControl(false),
         fm_offence_details_creditor_1: new FormControl(null),
+        fm_offence_details_major_creditor_1: new FormControl(null),
       }),
     ]),
     formArrayControls: [
@@ -49,6 +51,11 @@ export const FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK: IFinesMacOffenceDetails
           inputName: 'fm_offence_details_creditor_0',
           controlName: 'fm_offence_details_creditor_0',
         },
+        fm_offence_details_major_creditor: {
+          inputId: 'fm_offence_details_major_creditor_0',
+          inputName: 'fm_offence_details_major_creditor_0',
+          controlName: 'fm_offence_details_major_creditor_0',
+        },
       },
       {
         fm_offence_details_result_code: {
@@ -75,6 +82,11 @@ export const FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK: IFinesMacOffenceDetails
           inputId: 'fm_offence_details_creditor_1',
           inputName: 'fm_offence_details_creditor_1',
           controlName: 'fm_offence_details_creditor_1',
+        },
+        fm_offence_details_major_creditor: {
+          inputId: 'fm_offence_details_major_creditor_1',
+          inputName: 'fm_offence_details_major_creditor_1',
+          controlName: 'fm_offence_details_major_creditor_1',
         },
       },
     ],

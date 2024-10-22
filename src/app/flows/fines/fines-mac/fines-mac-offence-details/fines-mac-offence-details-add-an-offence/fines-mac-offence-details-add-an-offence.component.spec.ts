@@ -10,34 +10,47 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form';
+import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form.constant';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockOpalFinesService: Partial<OpalFines>;
   let formSubmit: IFinesMacOffenceDetailsForm[];
 
   beforeEach(async () => {
-    mockOpalFinesService = jasmine.createSpyObj(OpalFines, ['getResults', 'getResultPrettyName']);
-    mockOpalFinesService.getResults.and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK));
-    mockOpalFinesService.getResultPrettyName.and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
-
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+
+    mockOpalFinesService = {
+      getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
+      getResultPrettyName: jasmine.createSpy('getResultPrettyName').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
+      getMajorCreditors: jasmine
+        .createSpy('getMajorCreditors')
+        .and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
+      getMajorCreditorPrettyName: jasmine
+        .createSpy('getMajorCreditorPrettyName')
+        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getOffenceByCjsCode: jasmine
+        .createSpy('getOffenceByCjsCode')
+        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+    };
+
     formSubmit = FINES_MAC_OFFENCE_DETAILS_FORM;
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceComponent],
       providers: [
-        { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesService, useValue: mockFinesService },
+        { provide: OpalFines, useValue: mockOpalFinesService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -57,6 +70,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have state and populate data$', () => {
+    expect(component['resultCodeData$']).not.toBeUndefined();
+    expect(component['majorCreditorData$']).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate to account details', () => {
