@@ -77,6 +77,17 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   }
 
   /**
+   * Checks if the defendant type is 'adultOrYouthOnly'.
+   *
+   * @returns {boolean} Returns true if the defendant type is 'adultOrYouthOnly', otherwise returns false.
+   */
+  private isAdultOrYouthOnly(): boolean {
+    return (
+      this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
+    );
+  }
+
+  /**
    * Handles the action performed on an offence.
    * @param action - The action object containing the action name and offence ID.
    */
@@ -109,6 +120,20 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
     } else {
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
+  }
+
+  /**
+   * Checks the sub-navigation button status based on the provided conditions.
+   * If the user is an adult or youth only, it checks if the finesMacState personalDetails status is provided.
+   * Otherwise, it returns true.
+   *
+   * @returns {boolean} The sub-navigation button status.
+   */
+  public checkSubNavigationButton(): boolean {
+    if (this.isAdultOrYouthOnly()) {
+      return this.finesService.finesMacState.personalDetails.status === FINES_MAC_STATUS.PROVIDED;
+    }
+    return true;
   }
 
   public ngOnInit(): void {
