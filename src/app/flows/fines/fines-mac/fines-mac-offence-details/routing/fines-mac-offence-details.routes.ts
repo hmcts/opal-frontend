@@ -35,4 +35,11 @@ export const routing: Routes = [
         '../fines-mac-offence-details-remove-imposition/fines-mac-offence-details-remove-imposition.component'
       ).then((c) => c.FinesMacOffenceDetailsRemoveImpositionComponent),
   },
+  {
+    path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addMinorCreditor,
+    loadComponent: () =>
+      import('../fines-mac-offence-details-minor-creditor/fines-mac-offence-details-minor-creditor.component').then(
+        (c) => c.FinesMacOffenceDetailsMinorCreditorComponent,
+      ),
+  },
 ];

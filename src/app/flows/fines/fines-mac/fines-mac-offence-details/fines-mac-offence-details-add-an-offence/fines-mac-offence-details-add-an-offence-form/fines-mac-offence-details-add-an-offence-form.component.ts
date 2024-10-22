@@ -47,6 +47,8 @@ import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELDS } from '../../constants/fines-mac-offence-details-minor-creditor-fields.constant';
+import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent } from './fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -66,6 +68,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-ro
     GovukCancelLinkComponent,
     GovukTextInputComponent,
     GovukRadiosConditionalComponent,
+    FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -152,9 +155,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     if (!hasOffenceDetailsDraft && impositionsLength === 0) {
       this.addControlsToFormArray(0, impositionsKey);
     } else {
-      formData[impositionsKey].forEach((_, index) => this.setupResultCodeListener(index));
+      formData[impositionsKey].forEach((_, index) => {
+        this.setupResultCodeListener(index);
+      });
     }
-
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 
@@ -220,6 +224,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private setupImpositionsConfiguration(): void {
     this.formArrayFields = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS.map((item) => item.controlName);
+    this.formArrayFormGroupFields = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELDS;
     this.formArrayControlsValidation = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS;
   }
 
@@ -376,6 +381,24 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public goToSearchOffences(): void {
     this.updateOffenceDetailsDraft(this.form.value);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
+  }
+
+  /**
+   * Navigates to the minor creditor page for the specified row index.
+   * 
+   * @param rowIndex - The index of the row.
+   */
+  public goToMinorCreditor(rowIndex: number): void {
+    const formArray = this.form.controls['fm_offence_details_impositions'] as FormArray;
+
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = {
+      rowIndex,
+      formArray: formArray,
+      formArrayControls: this.formArrayControls,
+    };
+
+    this.updateOffenceDetailsDraft(this.form.value);
+    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addMinorCreditor);
   }
 
   /**

@@ -39,6 +39,7 @@ import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/gov
 import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
+import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
@@ -73,7 +74,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   };
 
-  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_PERSONAL_DETAILS_TITLE_DROPDOWN_OPTIONS;
+  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
 
   public age!: number;

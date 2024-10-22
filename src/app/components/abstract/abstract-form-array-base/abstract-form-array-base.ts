@@ -13,6 +13,7 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
   public formArrayControls: IAbstractFormArrayControls[] = [];
   public formArrayControlsValidation: IAbstractFormArrayControlValidation[] = [];
   public formArrayFields: string[] = [];
+  public formArrayFormGroupFields: { [key: string]: IAbstractFormArrayControlValidation[] } = {};
 
   /**
    * Builds an array of form controls for a form array.
@@ -58,6 +59,46 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
 
     // Add the controls to the form group...
     this.addControlsToFormGroup(formArrayFormGroup, controlValidation, index);
+
+    if (this.formArrayFormGroupFields) {
+      Object.keys(this.formArrayFormGroupFields).forEach((groupKey) => {
+        // Create a new nested form group for each key in formArrayFormGroupFields
+        const nestedFormGroup = new FormGroup({});
+
+        // Loop through each field in the group and add controls with validation
+        this.formArrayFormGroupFields[groupKey].forEach((field) => {
+          nestedFormGroup.addControl(
+            `${field.controlName}_${index}`,
+            new FormControl('', field.validators), // Add validators dynamically
+          );
+        });
+
+        // Add this nested form group to the main form group
+        formArrayFormGroup.addControl(`${groupKey}_${index}`, nestedFormGroup);
+      });
+    }
+
+    // Add the form group to the form array...
+    formArray.push(formArrayFormGroup);
+
+    // Return the form controls...
+    return controls;
+  }
+
+  private addFormArrayFormGroupControls(
+    index: number,
+    formArrayName: string,
+    formGroupName: string,
+    fieldNames: string[],
+  ) {
+    const formArray = this.form.get(formArrayName) as FormArray;
+    const formArrayFormGroup = formArray.get(formGroupName) as FormGroup;
+
+    // Create the form controls...
+    const controls = this.createFormArrayControls(fieldNames, index);
+
+    // Add the controls to the form group...
+    this.addControlsToFormGroup(formArrayFormGroup, [], index);
 
     // Add the form group to the form array...
     formArray.push(formArrayFormGroup);
