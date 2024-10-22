@@ -21,8 +21,6 @@ describe('buildDefendantCompanyPayload', () => {
 
     const result = buildDefendantCompanyPayload(companyDetailsState, contactDetailsState, languagePreferencesState);
 
-    console.log(result);
-
     expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_WITH_ALIASES_MOCK);
   });
 

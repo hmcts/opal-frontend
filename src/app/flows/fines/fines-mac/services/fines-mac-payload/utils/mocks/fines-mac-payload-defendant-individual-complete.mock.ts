@@ -1,4 +1,6 @@
-export const FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK = {
+import { IFinesMacDefendantCompletePayload } from '../../interfaces/fines-mac-defendant-complete-payload.interface';
+
+export const FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK: IFinesMacDefendantCompletePayload = {
   company_flag: false,
   title: 'Mr',
   surname: 'Doe',

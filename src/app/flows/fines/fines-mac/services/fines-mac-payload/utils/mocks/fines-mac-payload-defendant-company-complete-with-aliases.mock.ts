@@ -1,4 +1,6 @@
-export const FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK = {
+import { IFinesMacDefendantCompletePayload } from '../../interfaces/fines-mac-defendant-complete-payload.interface';
+
+export const FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK: IFinesMacDefendantCompletePayload = {
   company_flag: true,
   title: null,
   surname: null,

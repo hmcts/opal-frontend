@@ -27,7 +27,7 @@ const getInstallmentPeriod = (installmentPeriod: string | null | undefined): str
  *          containing the parameter name and the response.
  */
 const buildEnforcementResultResponse = (
-  [parameterName]: string,
+  parameterName: string,
   response: string | null,
 ): IFinesMacPaymentTermsEnforcementResultResponsePayload => {
   return {
