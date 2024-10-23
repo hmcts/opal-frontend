@@ -15,8 +15,8 @@ describe('GovukSummaryCardActionComponent', () => {
     fixture = TestBed.createComponent(GovukSummaryCardActionComponent);
     component = fixture.componentInstance;
 
-    component.actionText = 'Change'
-    component.actionRoute = 'change'
+    component.actionText = 'Change';
+    component.actionRoute = 'change';
 
     fixture.detectChanges();
   });

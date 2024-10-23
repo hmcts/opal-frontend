@@ -54,16 +54,19 @@ export class UtilsService {
    * @returns The modified target object.
    */
   public removeIndexFromData(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     target: { [key: string]: any },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: { [key: string]: any },
     index: number,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): { [key: string]: any } {
     const suffix = `_${index}`;
 
     Object.entries(target).forEach(([key]) => {
       const keyWithSuffix = `${key}${suffix}`;
       if (data[keyWithSuffix] !== undefined) {
-        target[key] = data[keyWithSuffix]; // No need for casting to `any`
+        target[key] = data[keyWithSuffix];
       }
     });
 
