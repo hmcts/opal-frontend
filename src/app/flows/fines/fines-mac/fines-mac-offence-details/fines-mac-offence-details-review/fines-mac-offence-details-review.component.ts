@@ -102,8 +102,8 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
     this.offencesImpositions = this.removeIndexFromImpositionKeys(this.finesService.finesMacState.offenceDetails);
     this.sortOffencesByDate();
     this.finesMacOffenceDetailsService.emptyOffences = this.offencesImpositions.length === 0;
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = null;
+    //this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    //this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = null;
   }
 
   public ngOnInit(): void {
@@ -112,5 +112,9 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
 
   public ngOnDestroy(): void {
     this.finesMacOffenceDetailsService.addedOffenceCode = '';
+    if (this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState) {
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = null;
+    }
   }
 }

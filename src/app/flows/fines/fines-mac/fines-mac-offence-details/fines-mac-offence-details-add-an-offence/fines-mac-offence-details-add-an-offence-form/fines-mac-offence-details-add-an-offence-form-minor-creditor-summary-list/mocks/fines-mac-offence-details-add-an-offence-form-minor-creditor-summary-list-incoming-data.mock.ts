@@ -1,0 +1,16 @@
+export const FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_INCOMING_DATA_MOCK = {
+  fm_offence_details_minor_creditor_creditor_type_0: 'individual',
+  fm_offence_details_minor_creditor_title_0: 'Mr',
+  fm_offence_details_minor_creditor_forenames_0: 'Test',
+  fm_offence_details_minor_creditor_surname_0: 'Tester',
+  fm_offence_details_minor_creditor_company_name_0: null,
+  fm_offence_details_minor_creditor_address_line_1_0: '1 Test Lane',
+  fm_offence_details_minor_creditor_address_line_2_0: 'Testington',
+  fm_offence_details_minor_creditor_address_line_3_0: 'Testshire',
+  fm_offence_details_minor_creditor_post_code_0: 'TE1 1ST',
+  fm_offence_details_minor_creditor_has_payment_details_0: true,
+  fm_offence_details_minor_creditor_name_on_account_0: 'Test Tester',
+  fm_offence_details_minor_creditor_sort_code_0: '123456',
+  fm_offence_details_minor_creditor_account_number_0: '12345678',
+  fm_offence_details_minor_creditor_payment_reference_0: 'Test',
+};

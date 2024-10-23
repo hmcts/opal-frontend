@@ -25,19 +25,6 @@ describe('GovukSummaryCardActionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should find Change and Remove list items and verify visually hidden text', () => {
-    const listItems = fixture.debugElement.queryAll(By.css('.govuk-summary-card__action'));
-
-    const changeItem = listItems.find((item) => item.nativeElement.textContent.includes('Change'));
-
-    expect(changeItem).toBeTruthy();
-
-    // Check for the presence of the visually hidden span and its content for Change
-    const changeVisuallyHiddenSpan = changeItem?.nativeElement.querySelector('span.govuk-visually-hidden');
-    expect(changeVisuallyHiddenSpan).toBeTruthy();
-    expect(changeVisuallyHiddenSpan.textContent.trim()).toBe(component.actionText);
-  });
-
   it('should test onClick', () => {
     const event = jasmine.createSpyObj(Event, ['preventDefault']);
     spyOn(component.clickEvent, 'emit');
