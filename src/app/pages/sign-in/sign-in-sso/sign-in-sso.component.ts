@@ -10,7 +10,7 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInSsoComponent {
-  @Output() private signInButtonClick = new EventEmitter();
+  @Output() private readonly signInButtonClick = new EventEmitter();
 
   /**
    * Handles the button click event.

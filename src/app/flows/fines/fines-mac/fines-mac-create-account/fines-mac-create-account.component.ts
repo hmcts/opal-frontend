@@ -30,9 +30,9 @@ import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interf
 })
 export class FinesMacCreateAccountComponent extends AbstractFormParentBaseComponent implements OnInit {
   protected readonly finesService = inject(FinesService);
-  private opalFinesService = inject(OpalFines);
+  private readonly opalFinesService = inject(OpalFines);
   private businessUnits!: IOpalFinesBusinessUnit[];
-  private configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
+  private readonly configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
   public data$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getBusinessUnits('CREATE_MANAGE_DRAFT_ACCOUNTS')
     .pipe(
