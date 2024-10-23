@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { GovukSummaryCardActionComponent } from './govuk-summary-card-action.component';
-import { By } from '@angular/platform-browser';
 
 describe('GovukSummaryCardActionComponent', () => {
   let component: GovukSummaryCardActionComponent;
