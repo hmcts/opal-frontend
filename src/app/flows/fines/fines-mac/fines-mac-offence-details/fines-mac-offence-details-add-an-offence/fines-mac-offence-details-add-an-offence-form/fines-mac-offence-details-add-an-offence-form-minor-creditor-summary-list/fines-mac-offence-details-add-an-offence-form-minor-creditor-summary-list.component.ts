@@ -47,29 +47,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
    */
   private initialMinorCreditorSummaryListSetup(): void {
     // Strip index suffix and initialize minorCreditorData
-    this.removeIndexFromData(this.minorCreditor);
+    this.minorCreditorData = this.utilsService.removeIndexFromData(
+      this.minorCreditorData,
+      this.minorCreditor,
+      this.index,
+    ) as IFinesMacOffenceDetailsMinorCreditorState;
 
     // Populate information for summary list
     this.setupMinorCreditorSummaryListData();
-  }
-
-  /**
-   * Removes the index from the data object by assigning values from the input object to the corresponding keys in `minorCreditorData`.
-   * The keys in `minorCreditorData` are constructed by appending the index as a suffix to the original keys.
-   * If a key with the suffix exists in the input object, its value is assigned to the corresponding key in `minorCreditorData` without the suffix.
-   *
-   * @param data - The input object containing the keys with suffixes.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private removeIndexFromData(data: { [key: string]: any }) {
-    // Iterate over each key in the IFinesMacOffenceDetailsMinorCreditorState interface
-    Object.keys(this.minorCreditorData).forEach((key) => {
-      const keyWithSuffix = `${key}_${this.index}`; // Construct the key with the suffix (e.g., key_0)
-      if (data[keyWithSuffix] !== undefined) {
-        // Assign the value from the input object, removing the suffix
-        this.minorCreditorData[key as keyof IFinesMacOffenceDetailsMinorCreditorState] = data[keyWithSuffix];
-      }
-    });
   }
 
   /**
