@@ -142,5 +142,6 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
         },
       },
     };
+    this.finesService.finesMacState.offenceDetails = [];
   }
 }
