@@ -40,13 +40,15 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
       'emptyOffences',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
 
     mockDateService = jasmine.createSpyObj(DateService, ['getDateNow', 'toFormat']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['upperCaseAllLetters']);
@@ -155,10 +157,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
-    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState =
-      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].formData.fm_offence_details_offence_code =
-      'TEST1234';
+    const mockData = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK };
+    mockData.offenceDetailsDraft[0].formData.fm_offence_details_offence_code = 'TEST1234';
+    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = mockData;
 
     component['initialAddAnOffenceDetailsSetup']();
 
@@ -260,8 +261,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should populate offence details draft when navigating to search offences', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    component['rePopulateForm'](FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft[0].formData);
 
     component.goToSearchOffences();
 
@@ -273,7 +272,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should populate offence details draft when navigating to search offences when draft is empty - search offences', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
     component['initialAddAnOffenceDetailsSetup']();
 
     component.goToSearchOffences();
@@ -310,7 +309,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
     component.removeImpositionConfirmation(0);
 
@@ -495,13 +494,15 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should initialize the form and setup listeners', () => {
     // Mock data
-    const offenceDetailsDraft = [...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft];
+    const offenceDetailsDraft = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft };
     offenceDetailsDraft[0].formData.fm_offence_details_impositions.splice(0, 1);
     const impositionsLength = offenceDetailsDraft[0].formData.fm_offence_details_impositions.length;
 
     // Mock dependencies
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAddAnOffenceForm');

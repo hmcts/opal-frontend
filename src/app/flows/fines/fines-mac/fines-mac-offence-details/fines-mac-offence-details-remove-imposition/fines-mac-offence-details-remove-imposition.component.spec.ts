@@ -30,6 +30,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
@@ -55,8 +56,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     component = fixture.componentInstance;
 
     component.resultCode = OPAL_FINES_RESULTS_REF_DATA_MOCK;
-
-    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
 
     fixture.detectChanges();
   });
@@ -109,6 +108,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
     fixture.detectChanges();
 
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     component.confirmRemoval(rowIndex, formArray);
 
     expect(component['removeControlAndRenumber']).toHaveBeenCalledWith(

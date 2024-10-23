@@ -39,8 +39,8 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    mockFinesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
     mockFinesService.finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
       FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0],
     ];
@@ -77,7 +77,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should set offencesImpositions and sort offences by date', () => {
-    component['finesService'].finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM;
+    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM];
 
     component['getOffencesImpositions']();
 
@@ -86,7 +86,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should set emptyOffences to true when offencesImpositions is empty', () => {
-    component['finesService'].finesMacState.offenceDetails = [];
+    mockFinesService.finesMacState.offenceDetails = [];
 
     component['getOffencesImpositions']();
 
@@ -103,7 +103,9 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should reset addedOffenceCode and offenceDetailsDraft on ngOnDestroy', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
 
     component.ngOnDestroy();
 
