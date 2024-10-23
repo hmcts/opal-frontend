@@ -30,7 +30,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
@@ -56,6 +55,8 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     component = fixture.componentInstance;
 
     component.resultCode = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+
+    component['draftOffenceDetailsState'] = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
 
     fixture.detectChanges();
   });
@@ -105,7 +106,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
     spyOn(component, 'handleRoute');
-    const { rowIndex, formArray } = component['draftOffenceDetailsState'].removeImposition!;
+    const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
     fixture.detectChanges();
 
     component.confirmRemoval(rowIndex, formArray);

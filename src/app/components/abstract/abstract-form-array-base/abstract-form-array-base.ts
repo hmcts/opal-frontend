@@ -85,28 +85,6 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
     return controls;
   }
 
-  private addFormArrayFormGroupControls(
-    index: number,
-    formArrayName: string,
-    formGroupName: string,
-    fieldNames: string[],
-  ) {
-    const formArray = this.form.get(formArrayName) as FormArray;
-    const formArrayFormGroup = formArray.get(formGroupName) as FormGroup;
-
-    // Create the form controls...
-    const controls = this.createFormArrayControls(fieldNames, index);
-
-    // Add the controls to the form group...
-    this.addControlsToFormGroup(formArrayFormGroup, [], index);
-
-    // Add the form group to the form array...
-    formArray.push(formArrayFormGroup);
-
-    // Return the form controls...
-    return controls;
-  }
-
   /**
    * Creates a new instance of FormArray with the specified validators and controls.
    *
