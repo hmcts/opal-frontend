@@ -210,7 +210,10 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_payment_reference'];
 
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resetPaymentDetailValidatorsSpy = spyOn<any>(component, 'resetPaymentDetailValidators').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setPaymentDetailValidatorsSpy = spyOn<any>(component, 'setPaymentDetailValidators').and.callThrough();
 
     // Spy on updateValueAndValidity for the payment detail controls
@@ -247,7 +250,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_payment_reference'];
 
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resetPaymentDetailValidatorsSpy = spyOn<any>(component, 'resetPaymentDetailValidators').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setPaymentDetailValidatorsSpy = spyOn<any>(component, 'setPaymentDetailValidators').and.callThrough();
 
     // Spy on updateValueAndValidity for the payment detail controls
@@ -283,7 +288,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
 
     // Spy on resetNameValidators and setIndividualValidators methods
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resetNameValidatorsSpy = spyOn<any>(component, 'resetNameValidators').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setIndividualValidatorsSpy = spyOn<any>(component, 'setIndividualValidators').and.callThrough();
 
     // Spy on updateValueAndValidity for form controls
@@ -317,7 +324,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
 
     // Spy on resetNameValidators and setCompanyValidators methods
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resetNameValidatorsSpy = spyOn<any>(component, 'resetNameValidators').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setCompanyValidatorsSpy = spyOn<any>(component, 'setCompanyValidators').and.callThrough();
 
     // Spy on updateValueAndValidity for form controls
