@@ -156,10 +156,15 @@ Feature: PO-684 Create the 'Add an offence' screen - Company
     And I enter "200" into the "Amount imposed" payment field
     And I enter "100" into the "Amount paid" payment field
     And I click the "Review offence" button
+    Then I see "Offences and impositions" on the page header
+
+    When I click the "Return to account details" button
     Then I see "Account details" on the page header
     And I see the status of "Offence details" is "Provided"
 
     When I click on the "Offence details" link
+    And I see "Offences and impositions" on the page header
+    And I click on the "Change" link
     Then I see "Add an offence" on the page header
     And I see a date 2 weeks into the past in the "Date of sentence" date field
     And I see "TP11003" in the "Offence code" field
