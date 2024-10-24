@@ -21,10 +21,10 @@ import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabe
 import { numericalTextValidator } from '@validators/numerical-only/numerical-only.validator';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS } from '../constants/fines-mac-offence-details-minor-creditor-field-errors.constant';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
-import { GovukButtonComponent } from '../../../../../../components/govuk/govuk-button/govuk-button.component';
-import { GovukCancelLinkComponent } from '../../../../../../components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
+import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
+import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
