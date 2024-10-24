@@ -17,6 +17,7 @@ import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines
 import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form.constant';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM } from './mocks/fines-mac-offence-details-review-summary-service-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 
 describe('FinesMacOffenceDetailsReviewComponent', () => {
   let component: FinesMacOffenceDetailsReviewComponent;
@@ -38,8 +39,8 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    mockFinesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
     mockFinesService.finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
       FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0],
     ];
@@ -76,7 +77,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should set offencesImpositions and sort offences by date', () => {
-    component['finesService'].finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM;
+    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM];
 
     component['getOffencesImpositions']();
 
@@ -85,7 +86,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should set emptyOffences to true when offencesImpositions is empty', () => {
-    component['finesService'].finesMacState.offenceDetails = [];
+    mockFinesService.finesMacState.offenceDetails = [];
 
     component['getOffencesImpositions']();
 
@@ -99,5 +100,17 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     component['sortOffencesByDate']();
 
     expect(component.offencesImpositions).toEqual(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK);
+  });
+
+  it('should reset addedOffenceCode and offenceDetailsDraft on ngOnDestroy', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
+
+    component.ngOnDestroy();
+
+    expect(mockFinesMacOffenceDetailsService.addedOffenceCode).toEqual('');
+    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft).toEqual([]);
+    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition).toBeNull();
   });
 });

@@ -100,14 +100,15 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
    * @param form - The form data containing the offence details to be updated or added.
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
-    const index = this.finesService.finesMacState.offenceDetails.findIndex(
+    const { offenceDetails } = this.finesService.finesMacState;
+    const index = offenceDetails.findIndex(
       (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
     );
 
     if (index !== -1) {
-      this.finesService.finesMacState.offenceDetails[index] = form;
+      offenceDetails[index] = form;
     } else {
-      this.finesService.finesMacState.offenceDetails.push(form);
+      offenceDetails.push(form);
     }
   }
 

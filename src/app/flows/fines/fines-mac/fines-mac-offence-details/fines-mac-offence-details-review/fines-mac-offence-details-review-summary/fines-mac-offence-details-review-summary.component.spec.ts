@@ -12,13 +12,20 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants
 import { of } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
+import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryComponent>;
+  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
 
   beforeEach(async () => {
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'addedOffenceCode',
       'offenceIndex',
@@ -28,6 +35,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewSummaryComponent],
       providers: [
+        { provide: FinesService, useValue: mockFinesService },
         { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
@@ -137,5 +145,37 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     component.ngOnInit();
 
     expect(addAnotherOffenceSpy).toHaveBeenCalled();
+  });
+
+  it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+    mockFinesService.finesMacState = {
+      ...FINES_MAC_STATE_MOCK,
+      personalDetails: {
+        ...FINES_MAC_STATE_MOCK.personalDetails,
+        status: FINES_MAC_STATUS.PROVIDED,
+      },
+    };
+
+    const result = component.checkSubNavigationButton();
+
+    expect(result).toBe(true);
+  });
+
+  it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+    mockFinesService.finesMacState = {
+      ...FINES_MAC_STATE_MOCK,
+      accountDetails: {
+        ...FINES_MAC_STATE_MOCK,
+        formData: {
+          ...FINES_MAC_STATE_MOCK.accountDetails.formData,
+          fm_create_account_defendant_type: 'parentOrGuardianToPay',
+        },
+        nestedFlow: false,
+      },
+    };
+
+    const result = component.checkSubNavigationButton();
+
+    expect(result).toBe(true);
   });
 });

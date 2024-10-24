@@ -225,4 +225,9 @@ describe('AbstractFormArrayBaseComponent', () => {
     expect(formControl.value).toBeNull();
     expect(formControl.valid).toBe(true);
   });
+
+  it('should return the default value if control is null', () => {
+    const result = component['getControlValueOrDefault'](null, 'default value');
+    expect(result).toBe('default value');
+  });
 });

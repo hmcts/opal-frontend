@@ -181,7 +181,34 @@
                           formArrayControl['fm_offence_details_creditor'].controlName,
                         ])?.value === 'minor'
                       ) {
-                        <a class="govuk-link govuk-link--no-visited-state" tabindex="0"> Add minor creditor details </a>
+                        @if (
+                          form.get([
+                            'fm_offence_details_impositions',
+                            rowIndex,
+                            'fm_offence_details_minor_creditor_' + rowIndex,
+                            'fm_offence_details_minor_creditor_creditor_type_' + rowIndex,
+                          ])?.value
+                        ) {
+                          <app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list
+                            [minorCreditor]="
+                              form.get([
+                                'fm_offence_details_impositions',
+                                rowIndex,
+                                'fm_offence_details_minor_creditor_' + rowIndex,
+                              ])?.value
+                            "
+                            [index]="rowIndex"
+                          ></app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list>
+                        } @else {
+                          <a
+                            class="govuk-link govuk-link--no-visited-state"
+                            (click)="goToMinorCreditor(rowIndex)"
+                            (keyup.enter)="goToMinorCreditor(rowIndex)"
+                            tabindex="0"
+                          >
+                            Add minor creditor details
+                          </a>
+                        }
                       }
                     }
                   </div>

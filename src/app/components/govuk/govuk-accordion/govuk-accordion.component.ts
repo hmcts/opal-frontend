@@ -9,7 +9,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukAccordionComponent implements AfterViewInit {
-  private platformId = inject(PLATFORM_ID);
+  private readonly platformId = inject(PLATFORM_ID);
 
   /**
    * Lifecycle hook that is called after Angular has fully initialized the component's view.

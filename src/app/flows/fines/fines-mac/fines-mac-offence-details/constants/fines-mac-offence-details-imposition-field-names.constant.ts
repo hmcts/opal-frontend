@@ -10,5 +10,6 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES: IFinesMacOffenceD
     'needs_creditor',
     'result_code',
     'major_creditor',
+    'minor_creditor',
   ],
 };

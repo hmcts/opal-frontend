@@ -5,17 +5,20 @@ import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-pare
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK } from '../mocks/fines-mac-parent-guardian-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacParentGuardianDetailsFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
+  let mockDateService: jasmine.SpyObj<DateService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   let formSubmit: IFinesMacParentGuardianDetailsForm;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockDateService = jasmine.createSpyObj(DateService, ['getPreviousDate']);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
     formSubmit = FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK;
@@ -24,6 +27,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       imports: [FinesMacParentGuardianDetailsFormComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
+        { provide: DateService, useValue: mockDateService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
@@ -31,6 +35,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);
     component = fixture.componentInstance;
 
+    mockDateService.getPreviousDate.and.returnValue('19/08/2024');
     mockFinesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
     fixture.detectChanges();

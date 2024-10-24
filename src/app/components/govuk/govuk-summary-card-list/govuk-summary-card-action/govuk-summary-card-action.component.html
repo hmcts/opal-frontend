@@ -1,12 +1,11 @@
-@for (action of actions; track action) {
-  <li class="govuk-summary-card__action" role="listitem">
-    <a
-      href="#"
-      class="govuk-link"
-      (click)="onClick($event, action.route)"
-      (keyup.enter)="onClick($event, action.route)"
-    >
-      {{ action.text }}<span class="govuk-visually-hidden"> {{ cardTitle }}</span>
-    </a>
-  </li>
-}
+<a
+  href="#"
+  class="govuk-link govuk-link--no-visited-state"
+  [id]="actionText"
+  (click)="onClick($event, actionRoute)"
+  (keyup.enter)="onClick($event, actionRoute)"
+  tabindex="0"
+>
+  <strong>{{ actionText }}</strong
+  ><span class="govuk-visually-hidden"> {{ actionText }}</span>
+</a>

@@ -10,7 +10,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input, PLATFORM_ID, 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukTabsComponent implements AfterViewInit {
-  private platformId = inject(PLATFORM_ID);
+  private readonly platformId = inject(PLATFORM_ID);
 
   @Input({ required: true }) public tabsId!: string;
   /**
