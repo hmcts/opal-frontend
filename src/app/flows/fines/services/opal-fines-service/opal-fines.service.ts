@@ -7,18 +7,30 @@ import {
   IOpalFinesBusinessUnit,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import {
+  IOpalFinesCourt,
+  IOpalFinesCourtRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { IOpalFinesDefendantAccountDetails } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-details.interface';
 import { IOpalFinesDefendantAccountNote } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-note.interface';
 import { IOpalFinesGetDefendantAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-get-defendant-account-params.interface';
-import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import {
+  IOpalFinesLocalJusticeArea,
+  IOpalFinesLocalJusticeAreaRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court.interface';
 import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body.interface';
 import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body.interface';
 import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-accounts.interface';
 
 import { Observable, shareReplay } from 'rxjs';
+import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import {
+  IOpalFinesMajorCreditor,
+  IOpalFinesMajorCreditorRefData,
+} from './interfaces/opal-fines-major-creditor-ref-data.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +40,8 @@ export class OpalFines {
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
+  private resultsCache$!: Observable<IOpalFinesResultsRefData>;
+  private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
 
   /**
    * Searches for courts based on the provided search criteria.
@@ -61,6 +75,15 @@ export class OpalFines {
     }
 
     return this.courtRefDataCache$[businessUnit];
+  }
+
+  /**
+   * Returns the pretty name of a court.
+   * @param court - The court object.
+   * @returns The pretty name of the court.
+   */
+  public getCourtPrettyName(court: IOpalFinesCourt) {
+    return `${court.name} (${court.court_code})`;
   }
 
   /**
@@ -148,6 +171,15 @@ export class OpalFines {
   }
 
   /**
+   * Returns the pretty name of a local justice area.
+   * @param localJusticeArea - The local justice area object.
+   * @returns The pretty name of the local justice area.
+   */
+  public getLocalJusticeAreaPrettyName(localJusticeArea: IOpalFinesLocalJusticeArea) {
+    return `${localJusticeArea.name} (${localJusticeArea.lja_code})`;
+  }
+
+  /**
    * Retrieves the value of a configuration item for a specific business unit.
    * @param businessUnit - The business unit for which to retrieve the configuration item value.
    * @param itemName - The name of the configuration item.
@@ -155,5 +187,68 @@ export class OpalFines {
    */
   public getConfigurationItemValue(businessUnit: IOpalFinesBusinessUnit, itemName: string): string | null {
     return businessUnit.configurationItems.find((item) => item.item_name === itemName)?.item_value ?? null;
+  }
+
+  /**
+   * Retrieves the Opal fines results based on the provided result IDs.
+   * @param result_ids - An array of result IDs.
+   * @returns An Observable that emits the Opal fines results reference data.
+   */
+  public getResults(result_ids: string[]): Observable<IOpalFinesResultsRefData> {
+    if (!this.resultsCache$) {
+      this.resultsCache$ = this.http
+        .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, { params: { result_ids } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.resultsCache$;
+  }
+
+  /**
+   * Returns the pretty name of the result.
+   * @param result - The IOpalFinesResults object.
+   * @returns The pretty name of the result.
+   */
+  public getResultPrettyName(result: IOpalFinesResults): string {
+    return `${result.result_title} (${result.result_id})`;
+  }
+
+  /**
+   * Retrieves the offence data for a given CJS code.
+   * @param cjsCode - The CJS code for the offence.
+   * @returns An Observable that emits the offence data.
+   */
+  public getOffenceByCjsCode(cjsCode: string): Observable<IOpalFinesOffencesRefData> {
+    return this.http
+      .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
+      .pipe(shareReplay(1));
+  }
+
+  /**
+   * Retrieves the major creditors for a given business unit.
+   * If the major creditors for the specified business unit have already been fetched,
+   * it returns the cached result. Otherwise, it makes an HTTP request to fetch the data
+   * and caches the result for future use.
+   *
+   * @param businessUnit - The business unit for which to retrieve the major creditors.
+   * @returns An Observable that emits the major creditors data.
+   */
+  public getMajorCreditors(businessUnit: number) {
+    if (!this.majorCreditorsCache$[businessUnit]) {
+      this.majorCreditorsCache$[businessUnit] = this.http
+        .get<IOpalFinesMajorCreditorRefData>(OPAL_FINES_PATHS.majorCreditorRefData, { params: { businessUnit } })
+        .pipe(shareReplay(1));
+    }
+
+    return this.majorCreditorsCache$[businessUnit];
+  }
+
+  /**
+   * Returns the pretty name of a major creditor.
+   * @param majorCreditor - The major creditor object.
+   * @returns The pretty name of the major creditor.
+   */
+  public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor) {
+    return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
   }
 }

@@ -3,9 +3,15 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body.interface';
-import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import {
+  IOpalFinesCourt,
+  IOpalFinesCourtRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesGetDefendantAccountParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-get-defendant-account-params.interface';
-import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import {
+  IOpalFinesLocalJusticeArea,
+  IOpalFinesLocalJusticeAreaRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court.interface';
 import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body.interface';
 import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body.interface';
@@ -24,6 +30,15 @@ import { OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK } from './mocks/opal-fines-se
 
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from './mocks/opal-fines-offences-ref-data.mock';
+import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from './mocks/opal-fines-results-ref-data.mock';
+import {
+  IOpalFinesMajorCreditor,
+  IOpalFinesMajorCreditorRefData,
+} from './interfaces/opal-fines-major-creditor-ref-data.interface';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-major-creditor-ref-data.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -158,6 +173,14 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should return the court name and code in a pretty format', () => {
+    const court: IOpalFinesCourt = OPAL_FINES_COURT_REF_DATA_MOCK.refData[0];
+
+    const result = service.getCourtPrettyName(court);
+
+    expect(result).toEqual(`${court.name} (${court.court_code})`);
+  });
+
   it('should GET the defendant account', () => {
     const params: IOpalFinesGetDefendantAccountParams = {
       businessUnitId: 1,
@@ -281,6 +304,14 @@ describe('OpalFines', () => {
     httpMock.expectNone(expectedUrl);
   });
 
+  it('should return the local justice area name and code in a pretty format', () => {
+    const localJusticeArea: IOpalFinesLocalJusticeArea = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData[0];
+
+    const result = service.getLocalJusticeAreaPrettyName(localJusticeArea);
+
+    expect(result).toEqual(`${localJusticeArea.name} (${localJusticeArea.lja_code})`);
+  });
+
   it('should return the item value for a given configuration item name', () => {
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     const expectedValue = 'Item1';
@@ -297,5 +328,110 @@ describe('OpalFines', () => {
     const result = service.getConfigurationItemValue(businessUnit, itemName);
 
     expect(result).toBeNull();
+  });
+
+  it('should send a GET request to results ref data API', () => {
+    const resultIds = ['1', '2', '3'];
+    const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${resultIds[0]}&result_ids=${resultIds[1]}&result_ids=${resultIds[2]}`;
+
+    service.getResults(resultIds).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+  });
+
+  it('should return cached response for the same result ids', () => {
+    const resultIds = ['1', '2', '3'];
+    const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${resultIds[0]}&result_ids=${resultIds[1]}&result_ids=${resultIds[2]}`;
+
+    service.getResults(resultIds).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+
+    service.getResults(resultIds).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should return the result name and code in a pretty format', () => {
+    const result: IOpalFinesResults = OPAL_FINES_RESULTS_REF_DATA_MOCK.refData[0];
+
+    const prettyName = service.getResultPrettyName(result);
+
+    expect(prettyName).toEqual(`${result.result_title} (${result.result_id})`);
+  });
+
+  it('should send a GET request to offences ref data API', () => {
+    const refData = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
+    const expectedResponse: IOpalFinesOffencesRefData = {
+      count: 1,
+      refData: [refData],
+    };
+    const expectedUrl = `${OPAL_FINES_PATHS.offencesRefData}?q=${refData.get_cjs_code}`;
+
+    service.getOffenceByCjsCode(refData.get_cjs_code).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(expectedResponse);
+  });
+
+  it('should send a GET request to major creditor ref data API', () => {
+    const businessUnit = 1;
+    const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.majorCreditorRefData}?businessUnit=${businessUnit}`;
+
+    service.getMajorCreditors(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockMajorCreditor);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockMajorCreditor);
+  });
+
+  it('should return cached response for the same ref data search', () => {
+    const businessUnit = 1;
+    const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    const expectedUrl = `${OPAL_FINES_PATHS.majorCreditorRefData}?businessUnit=${businessUnit}`;
+
+    service.getMajorCreditors(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockMajorCreditor);
+    });
+
+    const req = httpMock.expectOne(expectedUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(mockMajorCreditor);
+
+    // Make a second call to major creditor with the same search body
+    service.getMajorCreditors(businessUnit).subscribe((response) => {
+      expect(response).toEqual(mockMajorCreditor);
+    });
+
+    // No new request should be made since the response is cached
+    httpMock.expectNone(expectedUrl);
+  });
+
+  it('should return the major creditor name and code in a pretty format', () => {
+    const majorCreditor: IOpalFinesMajorCreditor = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0];
+
+    const result = service.getMajorCreditorPrettyName(majorCreditor);
+
+    expect(result).toEqual(`${majorCreditor.name} (${majorCreditor.major_creditor_code})`);
   });
 });

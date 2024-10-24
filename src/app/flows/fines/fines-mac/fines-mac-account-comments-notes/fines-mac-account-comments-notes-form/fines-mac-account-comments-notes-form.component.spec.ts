@@ -7,6 +7,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from '../mocks/fines-mac-account-comments-notes-form.mock';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
+import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-form.constant';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let component: FinesMacAccountCommentsNotesFormComponent;
@@ -78,7 +79,8 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.offenceDetails.status = FINES_MAC_STATUS.PROVIDED;
+    mockFinesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
+    mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.PROVIDED;
 
     // Act
@@ -93,7 +95,8 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.offenceDetails.status = FINES_MAC_STATUS.PROVIDED;
+    mockFinesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
+    mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.NOT_PROVIDED;
 
     // Act

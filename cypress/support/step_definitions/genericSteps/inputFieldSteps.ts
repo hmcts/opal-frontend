@@ -57,3 +57,61 @@ Then(
       .should('contain.text', expectedRemaining.toString());
   },
 );
+
+Then(
+  'I enter {string} into the {string} field for imposition {int}',
+  (value: string, labelText: string, index: number) => {
+    cy.contains('legend', 'Impositions')
+      .parent()
+      .find('app-moj-ticket-panel')
+      .eq(index - 1)
+      .contains('label', labelText)
+      .nextUntil('input')
+      .type(value);
+  },
+);
+
+Then('I see {string} in the {string} field for imposition {int}', (value: string, labelText: string, index: number) => {
+  cy.contains('legend', 'Impositions')
+    .parent()
+    .find('app-moj-ticket-panel')
+    .eq(index - 1)
+    .contains('label', labelText)
+    .nextUntil('input')
+    .find('input')
+    .should('have.value', value);
+});
+
+Then('I see {string} link for imposition {int}', (labelText: string, index: number) => {
+  cy.contains('legend', 'Impositions')
+    .parent()
+    .find('app-moj-ticket-panel')
+    .eq(index - 1)
+    .contains(labelText);
+});
+
+//Below step may need it's own .ts file, maybe table related
+
+Then('row number {int} should have the following data:', (rowNumber: number, dataTable: any) => {
+  const expectedValues = dataTable.raw();
+
+  const columnNames = expectedValues[0];
+  const rowData = expectedValues[1];
+
+  cy.get('app-govuk-table').within(() => {
+    columnNames.forEach((columnName: string, colIndex: number) => {
+      cy.get('th')
+        .contains(columnName)
+        .invoke('index')
+        .then((colIndexInTable) => {
+          cy.get(`tbody tr`)
+            .eq(rowNumber - 1)
+            .find('td')
+            .eq(colIndexInTable)
+            .invoke('text')
+            .then((text) => text.replace(/\u00a0/g, ' ').trim())
+            .should('equal', rowData[colIndex]);
+        });
+    });
+  });
+});

@@ -12,4 +12,22 @@ export class UtilsService {
   public upperCaseFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+
+  /**
+   * Converts the entire string to uppercase.
+   * @param str - The input string.
+   * @returns The input string in uppercase.
+   */
+  public upperCaseAllLetters(str: string): string {
+    return str.toUpperCase();
+  }
+
+  /**
+   * Converts a number to a monetary string representation.
+   * @param amount - The number to convert.
+   * @returns The monetary string representation of the number.
+   */
+  public convertToMonetaryString(amount: number): string {
+    return `£${amount.toFixed(2)}`;
+  }
 }

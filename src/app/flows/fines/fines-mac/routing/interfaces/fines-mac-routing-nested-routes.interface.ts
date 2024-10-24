@@ -6,6 +6,7 @@ export interface IFinesMacRoutingNestedRoutes {
   contactDetails: INestedRoutes | null;
   employerDetails: INestedRoutes | null;
   offenceDetails: INestedRoutes | null;
+  addAnotherOffence: INestedRoutes | null;
   companyDetails: INestedRoutes | null;
   parentOrGuardianDetails: INestedRoutes | null;
   accountCommentsNotes: INestedRoutes | null;

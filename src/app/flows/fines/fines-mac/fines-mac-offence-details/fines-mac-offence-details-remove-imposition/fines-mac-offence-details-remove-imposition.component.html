@@ -1,0 +1,63 @@
+@if (resultCodeData$ | async) {
+  @if (draftOffenceDetailsState.removeImposition) {
+    {{
+      getImpositionToBeRemoved(
+        draftOffenceDetailsState.removeImposition.rowIndex,
+        draftOffenceDetailsState.removeImposition.formArray,
+        draftOffenceDetailsState.removeImposition.formArrayControls
+      )
+    }}
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">Are you sure you want to remove this imposition?</h1>
+      <app-govuk-table>
+        <ng-container header>
+          <th scope="col" class="govuk-table__header">Imposition</th>
+          <th scope="col" class="govuk-table__header">Creditor</th>
+          <th scope="col" class="govuk-table__header">Amount imposed</th>
+          <th scope="col" class="govuk-table__header">Amount paid</th>
+          <th scope="col" class="govuk-table__header">Balance remaining</th>
+        </ng-container>
+        <ng-container body>
+          <td class="govuk-table__cell" id="imposition">
+            {{ imposition }}
+          </td>
+
+          <td class="govuk-table__cell" id="creditor">{{ creditor }}</td>
+          <td class="govuk-table__cell" id="amountImposed">
+            {{ amountImposedString }}
+          </td>
+          <td class="govuk-table__cell" id="amountPaid">
+            {{ amountPaidString }}
+          </td>
+          <td class="govuk-table__cell" id="balanceRemaining">
+            {{ balanceString }}
+          </td>
+        </ng-container>
+      </app-govuk-table>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <app-govuk-button
+            buttonId="confirmDeletion"
+            buttonClasses="govuk-button--warning"
+            (buttonClickEvent)="
+              confirmRemoval(
+                draftOffenceDetailsState.removeImposition.rowIndex,
+                draftOffenceDetailsState.removeImposition.formArray
+              )
+            "
+          >
+            Yes - remove imposition
+          </app-govuk-button>
+        </div>
+      </div>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <app-govuk-cancel-link
+            (linkClickEvent)="handleRoute(fineMacOffenceDetailsRoutingPaths.children.addOffence)"
+            cancelLinkText="No - cancel"
+          ></app-govuk-cancel-link>
+        </div>
+      </div>
+    </div>
+  }
+}

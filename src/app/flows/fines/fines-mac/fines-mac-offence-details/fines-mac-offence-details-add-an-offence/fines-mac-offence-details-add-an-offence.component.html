@@ -1,0 +1,13 @@
+@if (groupResultCodeAndMajorCreditorData$ | async; as data) {
+  <div class="govuk-grid-column-full">
+    <app-fines-mac-offence-details-add-an-offence-form
+      [defendantType]="defendantType"
+      [formDataIndex]="formDataIndex"
+      [resultCodeItems]="data.resultCodeData"
+      [majorCreditorItems]="data.majorCreditorData"
+      (formSubmit)="handleOffenceDetailsSubmit($event)"
+      (unsavedChanges)="handleUnsavedChanges($event)"
+    >
+    </app-fines-mac-offence-details-add-an-offence-form>
+  </div>
+}

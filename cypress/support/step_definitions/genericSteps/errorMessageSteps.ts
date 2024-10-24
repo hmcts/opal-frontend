@@ -4,7 +4,7 @@ Then('I see the error message {string} at the top of the page', (errorMessage: s
   cy.get('.govuk-error-summary').should('contain', errorMessage);
 });
 Then('I see the error message {string} above the {string} field', (errorMessage: string, fieldName: string) => {
-  cy.contains('.govuk-error-message', errorMessage).siblings().find('label').should('contain', fieldName);
+  cy.contains('.govuk-error-message', errorMessage).siblings('label, h1').should('contain', fieldName);
 });
 Then('I see the error message {string} above the {string} payment field', (errorMessage: string, fieldName: string) => {
   cy.contains('.govuk-error-message', errorMessage).prev().should('contain', fieldName);
@@ -18,3 +18,9 @@ Then(
     cy.contains('.govuk-radios', radioButton).prev().should('contain', errorMessage);
   },
 );
+
+Then('I see the error message {string} above the result code field', (errorMessage: string) => {
+  cy.get('app-alphagov-accessible-autocomplete[labeltext="Result code"]')
+    .find('.govuk-error-message')
+    .should('contain', errorMessage);
+});

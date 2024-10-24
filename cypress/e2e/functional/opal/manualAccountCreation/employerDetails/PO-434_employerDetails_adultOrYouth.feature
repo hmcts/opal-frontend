@@ -102,7 +102,7 @@ Feature: PO-434 Employer details - Adult or Youth Only - 'Add offence details' b
 
     When I click the "Add offence details" button
 
-    Then I see "Offence details" on the page header
+    Then I see "Add an offence" on the page header
     And I click on the "Cancel" link
 
     Then I see the status of "Employer details" is "Provided"
@@ -174,7 +174,7 @@ Feature: PO-434 Employer details - Adult or Youth Only - 'Add offence details' b
 
     When I click the "Add offence details" button
 
-    Then I see "Offence details" on the page header
+    Then I see "Add an offence" on the page header
     And I click on the "Cancel" link
 
     Then I see the status of "Employer details" is "Provided"

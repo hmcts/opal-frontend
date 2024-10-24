@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractFormAliasBaseComponent } from './abstract-form-alias-base';
-import { FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormArray, FormControl, Validators, ValidatorFn } from '@angular/forms';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
 import { IAbstractFormArrayControls } from '../interfaces/abstract-form-array-controls.interface';
 import { IAbstractFormControlErrorMessage } from '../interfaces/abstract-form-control-error-message.interface';
+import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
 
 class TestAbstractFormAliasBaseComponent extends AbstractFormAliasBaseComponent {
   constructor() {
@@ -17,7 +17,7 @@ class TestAbstractFormAliasBaseComponent extends AbstractFormAliasBaseComponent 
   }
 }
 
-describe('FormArrayBase', () => {
+describe('AbstractFormAliasBaseComponent', () => {
   let component: TestAbstractFormAliasBaseComponent;
   let fixture: ComponentFixture<TestAbstractFormAliasBaseComponent>;
 
@@ -107,7 +107,7 @@ describe('FormArrayBase', () => {
       },
     ];
 
-    const result = component['removeFormArrayControl'](index, formArrayControls);
+    const result = component['removeFormAliasControl'](index, formArrayControls);
 
     expect(result).toEqual(expectedFormArrayControls);
   });
@@ -116,7 +116,7 @@ describe('FormArrayBase', () => {
     const fields = ['field1', 'field2', 'field3'];
     const index = 0;
 
-    const result = component['createControls'](fields, index);
+    const result = component['createAliasControls'](fields, index);
 
     expect(result).toEqual({
       field1: {
@@ -147,7 +147,7 @@ describe('FormArrayBase', () => {
       { controlName: 'field3', validators: [Validators.pattern('[a-zA-Z]*')] },
     ];
 
-    const result = component['buildFormArrayControls'](formControlCount, formArrayName, fieldNames, controlValidation);
+    const result = component['buildFormAliasControls'](formControlCount, formArrayName, fieldNames, controlValidation);
 
     expect(result).toEqual([
       {
@@ -255,7 +255,7 @@ describe('FormArrayBase', () => {
     };
 
     // Act
-    const result = component['removeAllFormArrayControls'](formArrayControls, formArrayName, fieldNames);
+    const result = component['removeAllFormAliasControls'](formArrayControls, formArrayName, fieldNames);
 
     // Assert
     expect(result).toEqual([]);
@@ -287,7 +287,7 @@ describe('FormArrayBase', () => {
 
     component.formControlErrorMessages = errorMessage;
 
-    component['removeFormArrayControlsErrors'](index, formArrayControls, fieldNames);
+    component['removeFormAliasControlsErrors'](index, formArrayControls, fieldNames);
 
     expect(component.formControlErrorMessages).toEqual({});
   });
@@ -316,7 +316,7 @@ describe('FormArrayBase', () => {
 
     component.formControlErrorMessages = errorMessage;
 
-    component['removeFormArrayControlsErrors'](index, formArrayControls, fieldNames);
+    component['removeFormAliasControlsErrors'](index, formArrayControls, fieldNames);
 
     expect(component.formControlErrorMessages).toEqual(errorMessage);
   });
@@ -334,7 +334,7 @@ describe('FormArrayBase', () => {
       field2: { inputId: 'field2_0', inputName: 'field2_0', controlName: 'field2_0' },
     };
 
-    const controls = component.addFormArrayControls(index, formArrayName, fieldNames, controlValidation);
+    const controls = component['addAliasControls'](index, formArrayName, fieldNames, controlValidation);
     const aliasArray = component.form.get('aliases') as FormArray;
 
     expect(controls).toEqual(expectedControlObj);
@@ -381,7 +381,7 @@ describe('FormArrayBase', () => {
 
     component.formControlErrorMessages = errorMessage;
 
-    component['removeFormArrayControls'](index, formArrayName, formArrayControls, fieldNames);
+    component['removeFormAliasControls'](index, formArrayName, formArrayControls, fieldNames);
 
     expect(formArrayControls.length).toBe(1);
 
@@ -397,9 +397,6 @@ describe('FormArrayBase', () => {
 
     // Mark checkbox as true
     addAliasControl?.setValue(true);
-
-    // Check addAliasListener is setup
-    expect(component['addAliasListener']).toBeDefined();
 
     // Check that the aliasControls array is populated with the expected number of controls
     expect(component.aliasControls.length).toBe(1);
@@ -464,9 +461,9 @@ describe('FormArrayBase', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setUpAliasCheckboxListener').and.callThrough();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'buildFormArrayControls').and.returnValue(of([]));
+    spyOn<any>(component, 'buildFormAliasControls').and.returnValue(of([]));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'removeAllFormArrayControls').and.returnValue(of([]));
+    spyOn<any>(component, 'removeAllFormAliasControls').and.returnValue(of([]));
 
     component['setUpAliasCheckboxListener']('addAlias', 'aliases');
 
@@ -474,8 +471,334 @@ describe('FormArrayBase', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect<any>(component['setUpAliasCheckboxListener']).toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect<any>(component['buildFormArrayControls']).not.toHaveBeenCalled();
+    expect<any>(component['buildFormAliasControls']).not.toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect<any>(component['removeAllFormArrayControls']).not.toHaveBeenCalled();
+    expect<any>(component['removeAllFormAliasControls']).not.toHaveBeenCalled();
+  });
+
+  it('should remove field errors for the specified form array control', () => {
+    const index = 0;
+    const formArrayControls: IAbstractFormArrayControls[] = [
+      {
+        firstNames: {
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+          controlName: 'firstNames_0',
+        },
+        lastName: {
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+          controlName: 'lastName_0',
+        },
+      },
+    ];
+    const fieldNames = ['firstNames', 'lastName'];
+    const errorMessage: IAbstractFormControlErrorMessage = {
+      firstNames_0: 'test message',
+      lastName_0: 'test message',
+    };
+
+    component.formControlErrorMessages = errorMessage;
+
+    component['removeFormAliasControlsErrors'](index, formArrayControls, fieldNames);
+
+    expect(component.formControlErrorMessages).toEqual({});
+  });
+
+  it('should not remove field errors if the form array control does not exist', () => {
+    const index = 1;
+    const formArrayControls: IAbstractFormArrayControls[] = [
+      {
+        firstNames: {
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+          controlName: 'firstNames_0',
+        },
+        lastName: {
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+          controlName: 'lastName_0',
+        },
+      },
+    ];
+    const fieldNames = ['firstNames', 'lastName'];
+    const errorMessage: IAbstractFormControlErrorMessage = {
+      firstNames_0: 'test message',
+      lastName_0: 'test message',
+    };
+
+    component.formControlErrorMessages = errorMessage;
+
+    component['removeFormAliasControlsErrors'](index, formArrayControls, fieldNames);
+
+    expect(component.formControlErrorMessages).toEqual(errorMessage);
+  });
+
+  it('should add form array controls to the form group', () => {
+    const index = 0;
+    const formArrayName = 'aliases';
+    const fieldNames = ['field1', 'field2'];
+    const controlValidation = [
+      { controlName: 'field1', validators: [Validators.required] },
+      { controlName: 'field2', validators: [Validators.maxLength(10)] },
+    ];
+    const expectedControlObj = {
+      field1: { inputId: 'field1_0', inputName: 'field1_0', controlName: 'field1_0' },
+      field2: { inputId: 'field2_0', inputName: 'field2_0', controlName: 'field2_0' },
+    };
+
+    const controls = component['addAliasControls'](index, formArrayName, fieldNames, controlValidation);
+    const aliasArray = component.form.get('aliases') as FormArray;
+
+    expect(controls).toEqual(expectedControlObj);
+    expect(aliasArray.at(0).get('field1_0')).toBeInstanceOf(FormControl);
+    expect(aliasArray.at(0).get('field2_0')).toBeInstanceOf(FormControl);
+  });
+
+  it('should remove the form array control at the specified index', () => {
+    const index = 1;
+    const formArrayName = 'aliases';
+    const formArrayControls: IAbstractFormArrayControls[] = [
+      {
+        firstNames: {
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+          controlName: 'firstNames_0',
+        },
+        lastName: {
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+          controlName: 'lastName_0',
+        },
+      },
+      {
+        firstNames: {
+          inputId: 'firstNames_1',
+          inputName: 'firstNames_1',
+          controlName: 'firstNames_1',
+        },
+        lastName: {
+          inputId: 'lastName_1',
+          inputName: 'lastName_1',
+          controlName: 'lastName_1',
+        },
+      },
+    ];
+    const fieldNames = ['firstNames', 'lastName'];
+    const errorMessage: IAbstractFormControlErrorMessage = {
+      firstNames_0: 'test message',
+      lastName_0: 'test message',
+      firstNames_1: 'test message',
+      lastName_1: 'test message',
+    };
+
+    component.formControlErrorMessages = errorMessage;
+
+    component['removeFormAliasControls'](index, formArrayName, formArrayControls, fieldNames);
+
+    expect(formArrayControls.length).toBe(1);
+
+    expect(component.formControlErrorMessages['firstNames_1']).toBeUndefined();
+    expect(component.formControlErrorMessages['firstNames_0']).toBeDefined();
+  });
+
+  it('should remove the form array control at the specified index', () => {
+    const index = 1;
+    const formArrayControls: IAbstractFormArrayControls[] = [
+      {
+        firstNames: {
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+          controlName: 'firstNames_0',
+        },
+        lastName: {
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+          controlName: 'lastName_0',
+        },
+      },
+      {
+        firstNames: {
+          inputId: 'firstNames_1',
+          inputName: 'firstNames_1',
+          controlName: 'firstNames_1',
+        },
+        lastName: {
+          inputId: 'lastName_1',
+          inputName: 'lastName_1',
+          controlName: 'lastName_1',
+        },
+      },
+    ];
+    const expectedFormArrayControls: IAbstractFormArrayControls[] = [
+      {
+        firstNames: {
+          inputId: 'firstNames_0',
+          inputName: 'firstNames_0',
+          controlName: 'firstNames_0',
+        },
+        lastName: {
+          inputId: 'lastName_0',
+          inputName: 'lastName_0',
+          controlName: 'lastName_0',
+        },
+      },
+    ];
+
+    const result = component['removeFormAliasControl'](index, formArrayControls);
+
+    expect(result).toEqual(expectedFormArrayControls);
+  });
+
+  it('should create form controls based on the given fields and index', () => {
+    const fields = ['field1', 'field2', 'field3'];
+    const index = 0;
+
+    const result = component['createAliasControls'](fields, index);
+
+    expect(result).toEqual({
+      field1: {
+        inputId: 'field1_0',
+        inputName: 'field1_0',
+        controlName: 'field1_0',
+      },
+      field2: {
+        inputId: 'field2_0',
+        inputName: 'field2_0',
+        controlName: 'field2_0',
+      },
+      field3: {
+        inputId: 'field3_0',
+        inputName: 'field3_0',
+        controlName: 'field3_0',
+      },
+    });
+  });
+
+  it('should build form array controls with the given form control count, form array name, field names, and control validation', () => {
+    const formControlCount = [0, 1, 2];
+    const formArrayName = 'aliases';
+    const fieldNames = ['field1', 'field2', 'field3'];
+    const controlValidation = [
+      { controlName: 'field1', validators: [Validators.required] },
+      { controlName: 'field2', validators: [Validators.maxLength(10)] },
+      { controlName: 'field3', validators: [Validators.pattern('[a-zA-Z]*')] },
+    ];
+
+    const result = component['buildFormAliasControls'](formControlCount, formArrayName, fieldNames, controlValidation);
+
+    expect(result).toEqual([
+      {
+        field1: {
+          inputId: 'field1_0',
+          inputName: 'field1_0',
+          controlName: 'field1_0',
+        },
+        field2: {
+          inputId: 'field2_0',
+          inputName: 'field2_0',
+          controlName: 'field2_0',
+        },
+        field3: {
+          inputId: 'field3_0',
+          inputName: 'field3_0',
+          controlName: 'field3_0',
+        },
+      },
+      {
+        field1: {
+          inputId: 'field1_1',
+          inputName: 'field1_1',
+          controlName: 'field1_1',
+        },
+        field2: {
+          inputId: 'field2_1',
+          inputName: 'field2_1',
+          controlName: 'field2_1',
+        },
+        field3: {
+          inputId: 'field3_1',
+          inputName: 'field3_1',
+          controlName: 'field3_1',
+        },
+      },
+      {
+        field1: {
+          inputId: 'field1_2',
+          inputName: 'field1_2',
+          controlName: 'field1_2',
+        },
+        field2: {
+          inputId: 'field2_2',
+          inputName: 'field2_2',
+          controlName: 'field2_2',
+        },
+        field3: {
+          inputId: 'field3_2',
+          inputName: 'field3_2',
+          controlName: 'field3_2',
+        },
+      },
+    ]);
+  });
+
+  it('should create a new FormArray with validators and controls', () => {
+    const validators = [Validators.required];
+    const controls = [new FormControl('value1'), new FormControl('value2'), new FormControl('value3')];
+
+    const formArray = component['createFormAlias'](validators, controls);
+
+    expect(formArray instanceof FormArray).toBe(true);
+    expect(formArray.controls.length).toBe(3);
+    expect(formArray.controls[0].value).toBe('value1');
+    expect(formArray.controls[1].value).toBe('value2');
+    expect(formArray.controls[2].value).toBe('value3');
+    expect(formArray.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should create a new FormArray with validators and no controls', () => {
+    const validators = [Validators.required];
+
+    const formArray = component['createFormAlias'](validators);
+
+    expect(formArray instanceof FormArray).toBe(true);
+    expect(formArray.controls.length).toBe(0);
+    expect(formArray.hasValidator(Validators.required)).toBeTruthy();
+  });
+
+  it('should create a new FormArray without validators and controls', () => {
+    const formArray = component['createFormAlias']([]);
+
+    expect(formArray instanceof FormArray).toBe(true);
+    expect(formArray.controls.length).toBe(0);
+    expect(formArray.hasValidator(Validators.required)).toBeFalsy();
+  });
+
+  it('should create a form array with validators and controls', () => {
+    const validators: ValidatorFn[] = [Validators.required];
+    const controls: FormControl[] = [new FormControl('test')];
+
+    const formArray = component['createFormAlias'](validators, controls);
+
+    expect(formArray instanceof FormArray).toBeTruthy();
+    expect(formArray.controls.length).toBe(1);
+  });
+
+  it('should create a form array with validators and no controls', () => {
+    const validators: ValidatorFn[] = [Validators.required];
+
+    const formArray = component['createFormAlias'](validators);
+
+    expect(formArray instanceof FormArray).toBeTruthy();
+    expect(formArray.controls.length).toBe(0);
+  });
+
+  it('should create a form array with no validators and controls', () => {
+    const controls: FormControl[] = [new FormControl('test')];
+
+    const formArray = component['createFormAlias']([], controls);
+
+    expect(formArray instanceof FormArray).toBeTruthy();
+    expect(formArray.controls.length).toBe(1);
   });
 });

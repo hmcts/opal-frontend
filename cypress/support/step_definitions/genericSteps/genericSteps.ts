@@ -87,6 +87,23 @@ Then('I see {string} above the {string} field', (subHeading: string, fieldName: 
 Then('I see {string} help text on the page', (helpText: string) => {
   cy.get('.moj-ticket-panel').should('contain.text', helpText);
 });
+
+Then('I do not see {string} help text on the page', (helpText: string) => {
+  cy.get('.moj-ticket-panel').should('not.contain.text', helpText);
+});
+
+Then('I see {string} hint text on the page', (hintText: string) => {
+  cy.get('.govuk-hint').should('contain', hintText);
+});
+
+Then('I see {string} text on the page', (text: string) => {
+  cy.get('legend').should('contain', text);
+});
+
+Then('I do not see {string} text on the page', (text: string) => {
+  cy.contains(text).should('not.exist', text);
+});
+
 When('I see {string} text under the {string} field', (text: string, inputField: string) => {
   cy.get('app-govuk-text-area[labeltext="' + inputField + '"]')
     .find('textarea')

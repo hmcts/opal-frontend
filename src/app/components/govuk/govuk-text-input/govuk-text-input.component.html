@@ -10,6 +10,10 @@
     </div>
   }
 
+  @if (hintHtml) {
+    <div id="{{ inputId }}-hint" class="govuk-hint"><ng-content></ng-content></div>
+  }
+
   @if (errors) {
     <p id="{{ this.inputId }}-error-message" class="govuk-error-message">
       <span class="govuk-visually-hidden">Error:</span> {{ errors }}

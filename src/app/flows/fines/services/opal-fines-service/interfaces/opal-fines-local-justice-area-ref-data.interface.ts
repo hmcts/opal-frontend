@@ -1,4 +1,4 @@
-interface IOpalFinesLocalJusticeArea {
+export interface IOpalFinesLocalJusticeArea {
   local_justice_area_id: number;
   lja_code: string;
   name: string;
