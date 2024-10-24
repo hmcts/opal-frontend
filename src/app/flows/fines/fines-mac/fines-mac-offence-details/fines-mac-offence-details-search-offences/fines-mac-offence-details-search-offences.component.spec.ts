@@ -7,17 +7,15 @@ import { of } from 'rxjs';
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesComponent>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsSearchOffencesComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
         {
           provide: ActivatedRoute,
           useValue: {
-            parent: of('manual-account-creation'),
+            parent: of('offence-details'),
           },
         },
       ],

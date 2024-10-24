@@ -115,3 +115,63 @@ Then('row number {int} should have the following data:', (rowNumber: number, dat
     });
   });
 });
+
+Then(
+  'the table with offence code {string} should contain the following data:',
+  (offenceCode: string, dataTable: any) => {
+    const expectedRows = dataTable.raw();
+
+    cy.get('span.govuk-caption-m')
+      .contains(offenceCode)
+      .parentsUntil('app-fines-mac-offence-details-review-summary-offence')
+      .parent()
+      .next()
+      .within(() => {
+        cy.get('thead th').each((header, headerIndex) => {
+          cy.wrap(header).should('contain.text', expectedRows[0][headerIndex].trim());
+        });
+
+        cy.get('tbody tr').each((row, rowIndex) => {
+          cy.wrap(row)
+            .invoke('attr', 'class')
+            .then((className) => {
+              const isLastRow = className ? className.includes('light-grey-background-color') : false;
+
+              if (isLastRow) {
+                expectedRows[rowIndex + 1].forEach((expectedValue: string, colIndex: number) => {
+                  cy.wrap(row).within(() => {
+                    cy.get('th').eq(colIndex).should('contain.text', expectedValue.trim());
+                  });
+                });
+              } else {
+                cy.wrap(row).within(() => {
+                  expectedRows[rowIndex + 1].forEach((expectedValue: string, colIndex: number) => {
+                    cy.get('td').eq(colIndex).should('contain.text', expectedValue.trim());
+                  });
+                });
+              }
+            });
+        });
+      });
+  },
+);
+
+Then('the summary list should contain the following data:', (dataTable: any) => {
+  const expectedData: string[][] = dataTable.raw();
+
+  cy.get('h1')
+    .contains('Totals')
+    .parent()
+    .parent()
+    .next()
+    .children()
+    .children()
+    .within(() => {
+      expectedData.forEach((row: string[], index: number) => {
+        const [term, value] = row;
+
+        cy.get('dt').eq(index).should('contain.text', term.trim());
+        cy.get('dd').eq(index).should('contain.text', value.trim());
+      });
+    });
+});

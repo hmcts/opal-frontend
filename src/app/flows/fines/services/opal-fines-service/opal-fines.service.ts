@@ -41,6 +41,7 @@ export class OpalFines {
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
   private localJusticeAreasCache$!: Observable<IOpalFinesLocalJusticeAreaRefData>;
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
+  private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
 
   /**
@@ -67,7 +68,7 @@ export class OpalFines {
    * @param businessUnit - The business unit for which to retrieve the court data.
    * @returns An Observable that emits the court data for the specified business unit.
    */
-  public getCourts(businessUnit: number) {
+  public getCourts(businessUnit: number): Observable<IOpalFinesCourtRefData> {
     if (!this.courtRefDataCache$[businessUnit]) {
       this.courtRefDataCache$[businessUnit] = this.http
         .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { businessUnit } })
@@ -82,7 +83,7 @@ export class OpalFines {
    * @param court - The court object.
    * @returns The pretty name of the court.
    */
-  public getCourtPrettyName(court: IOpalFinesCourt) {
+  public getCourtPrettyName(court: IOpalFinesCourt): string {
     return `${court.name} (${court.court_code})`;
   }
 
@@ -141,7 +142,14 @@ export class OpalFines {
     );
   }
 
-  public getBusinessUnits(permission: string) {
+  /**
+   * Retrieves the business units based on the specified permission.
+   * Business units are cached to prevent multiple requests for the same data.
+   * Multiple permission types can be provided, and they will be cached separately.
+   * @param permission The permission type for which to retrieve the business units.
+   * @returns An Observable that emits the business units.
+   */
+  public getBusinessUnits(permission: string): Observable<IOpalFinesBusinessUnitRefData> {
     // Business units are cached to prevent multiple requests for the same data.
     // We can have multiple permission types so we need to cache them separately.
     // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
@@ -160,7 +168,7 @@ export class OpalFines {
    * Subsequent calls to this method will return the cached data.
    * @returns An Observable that emits the local justice areas.
    */
-  public getLocalJusticeAreas() {
+  public getLocalJusticeAreas(): Observable<IOpalFinesLocalJusticeAreaRefData> {
     if (!this.localJusticeAreasCache$) {
       this.localJusticeAreasCache$ = this.http
         .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
@@ -175,7 +183,7 @@ export class OpalFines {
    * @param localJusticeArea - The local justice area object.
    * @returns The pretty name of the local justice area.
    */
-  public getLocalJusticeAreaPrettyName(localJusticeArea: IOpalFinesLocalJusticeArea) {
+  public getLocalJusticeAreaPrettyName(localJusticeArea: IOpalFinesLocalJusticeArea): string {
     return `${localJusticeArea.name} (${localJusticeArea.lja_code})`;
   }
 
@@ -219,9 +227,12 @@ export class OpalFines {
    * @returns An Observable that emits the offence data.
    */
   public getOffenceByCjsCode(cjsCode: string): Observable<IOpalFinesOffencesRefData> {
-    return this.http
-      .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
-      .pipe(shareReplay(1));
+    if (!this.offenceCodesCache$[cjsCode]) {
+      this.offenceCodesCache$[cjsCode] = this.http
+        .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
+        .pipe(shareReplay(1));
+    }
+    return this.offenceCodesCache$[cjsCode];
   }
 
   /**
@@ -233,7 +244,7 @@ export class OpalFines {
    * @param businessUnit - The business unit for which to retrieve the major creditors.
    * @returns An Observable that emits the major creditors data.
    */
-  public getMajorCreditors(businessUnit: number) {
+  public getMajorCreditors(businessUnit: number): Observable<IOpalFinesMajorCreditorRefData> {
     if (!this.majorCreditorsCache$[businessUnit]) {
       this.majorCreditorsCache$[businessUnit] = this.http
         .get<IOpalFinesMajorCreditorRefData>(OPAL_FINES_PATHS.majorCreditorRefData, { params: { businessUnit } })
@@ -248,7 +259,7 @@ export class OpalFines {
    * @param majorCreditor - The major creditor object.
    * @returns The pretty name of the major creditor.
    */
-  public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor) {
+  public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
     return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
   }
 }

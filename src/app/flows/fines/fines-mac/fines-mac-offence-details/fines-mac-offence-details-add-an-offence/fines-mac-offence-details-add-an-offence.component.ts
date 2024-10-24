@@ -13,9 +13,8 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -27,6 +26,7 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
@@ -94,14 +94,14 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
 
   /**
    * Updates the offence details in the finesMacState based on the provided form data.
-   * If an offence detail with the same fm_offence_details_index already exists, it will be updated.
+   * If an offence detail with the same fm_offence_details_id already exists, it will be updated.
    * Otherwise, the new offence detail will be added to the finesMacState.
    *
    * @param form - The form data containing the offence details to be updated or added.
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
     const index = this.finesService.finesMacState.offenceDetails.findIndex(
-      (item) => item.formData.fm_offence_details_index === form.formData.fm_offence_details_index,
+      (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
     );
 
     if (index !== -1) {
@@ -119,9 +119,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
   private retrieveFormData(): void {
     if (this.finesService.finesMacState.offenceDetails.length === 0) {
       this.formDataIndex = 0;
-      this.finesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
     } else {
-      this.formDataIndex = this.finesService.finesMacState.offenceDetails.length - 1;
+      this.formDataIndex = this.finesMacOffenceDetailsService.offenceIndex;
     }
   }
 
@@ -143,13 +142,12 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
 
     this.updateOffenceDetailsIndex(form);
 
+    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
+
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     } else {
-      this.routerNavigate(
-        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-        true,
-      );
+      this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
     }
   }
 
