@@ -94,7 +94,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
       fm_offence_details_minor_creditor_post_code: postCode,
     } = this.minorCreditorData;
 
-    this.address = [addressLine1, addressLine2, addressLine3, postCode].filter((line) => line).join('\n');
+    this.address = [addressLine1, addressLine2, addressLine3, postCode].filter((line) => line).join('<br>');
 
     if (this.address.length === 0) {
       this.address = FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList.defaultNotProvided;

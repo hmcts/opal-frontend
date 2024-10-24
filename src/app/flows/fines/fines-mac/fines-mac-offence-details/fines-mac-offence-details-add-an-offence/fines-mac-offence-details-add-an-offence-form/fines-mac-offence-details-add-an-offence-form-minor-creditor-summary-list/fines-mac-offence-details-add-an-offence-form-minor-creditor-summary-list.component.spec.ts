@@ -127,7 +127,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
     component['getAddress']();
 
     // Check that address is formatted correctly
-    expect(component.address).toBe('123 Main St\nApt 4B\nDistrict 9\nAB12 3CD');
+    expect(component.address).toBe('123 Main St<br>Apt 4B<br>District 9<br>AB12 3CD');
   });
 
   it('should set address with missing address line 2 and line 3', () => {
@@ -144,7 +144,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
     component['getAddress']();
 
     // Check that address is formatted correctly without missing lines
-    expect(component.address).toBe('123 Main St\nAB12 3CD');
+    expect(component.address).toBe('123 Main St<br>AB12 3CD');
   });
 
   it('should set address to "Not Provided" if all address fields are missing', () => {

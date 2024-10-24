@@ -22,7 +22,7 @@
         [summaryListRowId]="'minorCreditorName' + index"
       >
         <ng-container name>Address</ng-container>
-        <ng-container value> {{ address }}</ng-container>
+        <ng-container value> <p class="govuk-!-margin-top-0" [innerHTML]="address"></p> </ng-container>
       </div>
 
       <div
