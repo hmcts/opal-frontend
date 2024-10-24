@@ -68,8 +68,13 @@ describe('buildDefendantParentGuardianPayload', () => {
 
     const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
       ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-      fm_parent_guardian_details_add_alias: false,
-      fm_parent_guardian_details_aliases: [],
+      fm_parent_guardian_details_add_alias: true,
+      fm_parent_guardian_details_aliases: [
+        {
+          fm_parent_guardian_details_alias_forenames_0: 'Testing',
+          fm_parent_guardian_details_alias_surname_0: 'Test',
+        },
+      ],
     };
 
     const languagePreferencesState: IFinesMacLanguagePreferencesState = {
