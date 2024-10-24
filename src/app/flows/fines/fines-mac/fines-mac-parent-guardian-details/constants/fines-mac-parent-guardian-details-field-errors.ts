@@ -223,7 +223,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 2,
     },
   },
-  fm_parent_guardian_details_postcode: {
+  fm_parent_guardian_details_post_code: {
     maxlength: {
       message: `The postcode must be 8 characters or fewer`,
       priority: 1,

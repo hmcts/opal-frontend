@@ -97,7 +97,7 @@ export class FinesMacParentGuardianDetailsFormComponent
         optionalMaxLengthValidator(13),
         specialCharactersValidator(),
       ]),
-      fm_parent_guardian_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_parent_guardian_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
       fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(10)]),
     });

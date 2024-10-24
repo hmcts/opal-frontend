@@ -19,7 +19,7 @@ export interface IFinesMacParentGuardianDetailsFieldErrors extends IAbstractForm
   fm_parent_guardian_details_address_line_1: IAbstractFormBaseFieldError;
   fm_parent_guardian_details_address_line_2: IAbstractFormBaseFieldError;
   fm_parent_guardian_details_address_line_3: IAbstractFormBaseFieldError;
-  fm_parent_guardian_details_postcode: IAbstractFormBaseFieldError;
+  fm_parent_guardian_details_post_code: IAbstractFormBaseFieldError;
   fm_parent_guardian_details_vehicle_make: IAbstractFormBaseFieldError;
   fm_parent_guardian_details_vehicle_registration_mark: IAbstractFormBaseFieldError;
 }

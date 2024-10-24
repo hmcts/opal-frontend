@@ -10,7 +10,7 @@ export interface IFinesMacParentGuardianDetailsState {
   fm_parent_guardian_details_address_line_1: string | null;
   fm_parent_guardian_details_address_line_2: string | null;
   fm_parent_guardian_details_address_line_3: string | null;
-  fm_parent_guardian_details_postcode: string | null;
+  fm_parent_guardian_details_post_code: string | null;
   fm_parent_guardian_details_vehicle_make: string | null;
   fm_parent_guardian_details_vehicle_registration_mark: string | null;
 }

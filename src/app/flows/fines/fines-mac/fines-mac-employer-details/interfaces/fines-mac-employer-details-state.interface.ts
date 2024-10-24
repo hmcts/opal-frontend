@@ -8,5 +8,5 @@ export interface IFinesMacEmployerDetailsState {
   fm_employer_details_employer_address_line_3: string | null;
   fm_employer_details_employer_address_line_4: string | null;
   fm_employer_details_employer_address_line_5: string | null;
-  fm_employer_details_employer_postcode: string | null;
+  fm_employer_details_employer_post_code: string | null;
 }

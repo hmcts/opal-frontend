@@ -95,7 +95,7 @@ export const FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS: IFinesMacEmployerDetailsFi
       priority: 2,
     },
   },
-  fm_employer_details_employer_postcode: {
+  fm_employer_details_employer_post_code: {
     maxlength: {
       message: 'The employer postcode must be 8 characters or fewer',
       priority: 1,

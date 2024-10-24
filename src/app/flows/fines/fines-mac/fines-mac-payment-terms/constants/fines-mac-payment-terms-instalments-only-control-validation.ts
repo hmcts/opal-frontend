@@ -5,11 +5,11 @@ import { twoDecimalPlacesValidator } from '@validators/two-decimal-places/two-de
 
 export const FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION: IAbstractFormArrayControlValidation[] = [
   {
-    controlName: 'fm_payment_terms_instalment',
+    controlName: 'fm_payment_terms_instalment_amount',
     validators: [Validators.required, twoDecimalPlacesValidator()],
   },
   {
-    controlName: 'fm_payment_terms_frequency',
+    controlName: 'fm_payment_instalment_period',
     validators: [Validators.required],
   },
   {

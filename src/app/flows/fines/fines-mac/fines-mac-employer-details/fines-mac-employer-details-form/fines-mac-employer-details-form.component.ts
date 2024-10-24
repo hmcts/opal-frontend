@@ -88,7 +88,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
         optionalMaxLengthValidator(30),
         specialCharactersValidator(),
       ]),
-      fm_employer_details_employer_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_employer_details_employer_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 

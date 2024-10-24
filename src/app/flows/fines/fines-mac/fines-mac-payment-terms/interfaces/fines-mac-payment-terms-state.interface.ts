@@ -1,17 +1,17 @@
 export interface IFinesMacPaymentTermsState {
-  fm_payment_terms_has_collection_order?: boolean | null;
+  fm_payment_terms_collection_order_made?: boolean | null;
   fm_payment_terms_collection_order_date?: string | null;
-  fm_payment_terms_make_collection_order_today?: boolean | null;
+  fm_payment_terms_collection_order_made_today?: boolean | null;
   fm_payment_terms_payment_terms: string | null;
   fm_payment_terms_pay_by_date?: string | null;
-  fm_payment_terms_lump_sum?: number | null;
-  fm_payment_terms_instalment?: number | null;
-  fm_payment_terms_frequency?: string | null;
+  fm_payment_terms_lump_sum_amount?: number | null;
+  fm_payment_terms_instalment_amount?: number | null;
+  fm_payment_instalment_period?: string | null;
   fm_payment_terms_start_date?: string | null;
-  fm_payment_terms_request_payment_card?: boolean | null;
+  fm_payment_terms_payment_card_request?: boolean | null;
   fm_payment_terms_has_days_in_default?: boolean | null;
-  fm_payment_terms_days_in_default_date?: string | null;
-  fm_payment_terms_days_in_default?: number | null;
+  fm_payment_terms_suspended_committal_date?: string | null;
+  fm_payment_terms_default_days_in_jail?: number | null;
   fm_payment_terms_add_enforcement_action?: boolean | null;
   fm_payment_terms_enforcement_action?: string | null;
   fm_payment_terms_earliest_release_date?: string | null;

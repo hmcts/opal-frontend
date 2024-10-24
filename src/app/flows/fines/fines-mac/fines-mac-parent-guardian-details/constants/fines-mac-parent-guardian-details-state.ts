@@ -10,7 +10,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE: IFinesMacParentGuardianDet
   fm_parent_guardian_details_address_line_1: null,
   fm_parent_guardian_details_address_line_2: null,
   fm_parent_guardian_details_address_line_3: null,
-  fm_parent_guardian_details_postcode: null,
+  fm_parent_guardian_details_post_code: null,
   fm_parent_guardian_details_vehicle_make: null,
   fm_parent_guardian_details_vehicle_registration_mark: null,
 };

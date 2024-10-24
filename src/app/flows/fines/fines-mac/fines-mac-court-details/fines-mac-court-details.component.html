@@ -2,6 +2,7 @@
   <div class="govuk-grid-column-two-thirds">
     <app-fines-mac-court-details-form
       [defendantType]="defendantType"
+      [localJusticeAreas]="localJusticeAreas"
       [sendingCourtAutoCompleteItems]="data.sendingCourtData"
       [enforcingCourtAutoCompleteItems]="data.enforcementCourtData"
       (formSubmit)="handleCourtDetailsSubmit($event)"
