@@ -326,6 +326,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     if (add) {
       this.addFormArrayFormGroupControlValidators(majorCreditorControl, [Validators.required]);
+
+      // Reset minor creditor data if it exists
+      formGroup.get(`fm_offence_details_minor_creditor_${index}`)?.reset();
     } else {
       this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
     }
