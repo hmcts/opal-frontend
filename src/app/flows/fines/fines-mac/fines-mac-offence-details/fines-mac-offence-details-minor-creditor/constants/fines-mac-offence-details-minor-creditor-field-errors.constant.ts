@@ -86,7 +86,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter name on the account',
       priority: 1,
     },
-    maxLength: {
+    maxlength: {
       message: 'Name on the account must be 18 characters or fewer',
       priority: 2,
     },
@@ -100,7 +100,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter sort code',
       priority: 1,
     },
-    maxLength: {
+    maxlength: {
       message: 'Sort code must be 6 characters or fewer',
       priority: 2,
     },
@@ -114,7 +114,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter account number',
       priority: 1,
     },
-    maxLength: {
+    maxlength: {
       message: 'Account number must be 8 characters or fewer',
       priority: 2,
     },
@@ -128,7 +128,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter payment reference',
       priority: 1,
     },
-    maxLength: {
+    maxlength: {
       message: 'Payment reference must be 18 characters or fewer',
       priority: 2,
     },
