@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-task-list` component:
-
 ---
 
 # GOV.UK Task List Component

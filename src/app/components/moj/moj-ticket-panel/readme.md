@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-ticket-panel` component:
-
 ---
 
 # MOJ Ticket Panel Component

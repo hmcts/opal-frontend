@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-tag` component:
-
 ---
 
 # GOV.UK Tag Component

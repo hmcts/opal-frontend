@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-primary-navigation` component:
-
 ---
 
 # MOJ Primary Navigation Component

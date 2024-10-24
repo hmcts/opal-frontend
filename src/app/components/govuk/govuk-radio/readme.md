@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-radio` component based on the files you provided:
-
 ---
 
 # GOV.UK Radio Component
@@ -96,4 +94,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of the `govuk-radio` component, detailing how to configure it with legends, hints, and error messages【205†source】.
+This `README.md` provides an overview of the `govuk-radio` component, detailing how to configure it with legends, hints, and error messages.

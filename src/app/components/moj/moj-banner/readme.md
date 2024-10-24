@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-banner` component based on the previous examples:
-
 ---
 
 # MOJ Banner Component

@@ -1,5 +1,3 @@
-Based on the provided files for the `govuk-accordion` component, here is a `README.md` that explains the component, following the structure you requested:
-
 ---
 
 # GOV.UK Accordion Component

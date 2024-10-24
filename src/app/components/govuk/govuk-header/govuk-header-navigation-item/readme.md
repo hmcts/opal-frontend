@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-header-navigation-item` component based on the files you provided:
-
 ---
 
 # GOV.UK Header Navigation Item Component
@@ -84,4 +82,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of the `govuk-header-navigation-item` component, detailing its usage as a clickable navigation item within the GOV.UK-styled header【146†source】.
+This `README.md` provides an overview of the `govuk-header-navigation-item` component, detailing its usage as a clickable navigation item within the GOV.UK-styled header.

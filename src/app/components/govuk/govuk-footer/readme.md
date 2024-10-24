@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-footer` component based on the files you provided:
-
 ---
 
 # GOV.UK Footer Component
@@ -97,4 +95,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` explains how to use and configure the `govuk-footer` component, including its inputs for the license and copyright information【127†source】.
+This `README.md` explains how to use and configure the `govuk-footer` component, including its inputs for the license and copyright information.

@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-text-input-prefix-suffix` component:
-
 ---
 
 # GOV.UK Text Input Prefix/Suffix Component

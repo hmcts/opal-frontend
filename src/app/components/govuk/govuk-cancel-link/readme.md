@@ -1,5 +1,3 @@
-Based on the files you provided for the `govuk-cancel-link` component, here is a `README.md` for this component:
-
 ---
 
 # GOV.UK Cancel Link Component
@@ -31,20 +29,17 @@ You can use the cancel link component in your template as follows:
 ```
 
 ### Example in HTML:
-
 ```html
 <a (keyup.enter)="handleClick()" (click)="handleClick()" class="govuk-link button-link" role="link" tabindex="0">
   {{ cancelLinkText }}
 </a>
 ```
 
-This creates a cancel link, and you can customize the displayed text using the `cancelLinkText` input.
-
 ## Inputs
 
-| Input            | Type     | Description                                 |
-| ---------------- | -------- | ------------------------------------------- |
-| `cancelLinkText` | `string` | The text to display inside the cancel link. |
+| Input           | Type     | Default       | Description                                      |
+| --------------- | -------- | ------------- | ------------------------------------------------ |
+| `cancelLinkText`| `string` | 'Cancel'      | The text displayed inside the cancel link.        |
 
 ## Outputs
 
@@ -54,13 +49,7 @@ There are no custom outputs for this component.
 
 ### `handleClick()`
 
-This method is triggered when the user clicks or presses "Enter" on the cancel link. It allows you to customize what happens when the cancel action is initiated.
-
-```typescript
-handleClick(): void {
-  // Custom logic for handling the cancel action
-}
-```
+This method handles the click and Enter key events.
 
 ## Testing
 
@@ -76,4 +65,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides detailed information on how to install, use, and test the `govuk-cancel-link` component, based on the provided files【55†source】.
+This updated version includes a "Default" column, highlighting the default value of the `cancelLinkText` input, which is 'Cancel'. This allows developers to easily understand how to override the default behavior.

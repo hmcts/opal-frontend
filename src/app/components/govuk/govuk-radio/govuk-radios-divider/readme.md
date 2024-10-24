@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-radios-divider` component based on the previous structure:
-
 ---
 
 # GOV.UK Radios Divider Component

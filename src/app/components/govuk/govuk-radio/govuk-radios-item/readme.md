@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-radios-item` component based on the structure of previous readmes:
-
 ---
 
 # GOV.UK Radios Item Component

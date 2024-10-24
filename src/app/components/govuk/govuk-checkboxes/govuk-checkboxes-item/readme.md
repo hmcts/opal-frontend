@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-checkboxes-item` component based on the files you provided:
-
 ---
 
 # GOV.UK Checkboxes Item Component
@@ -86,4 +84,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of the `govuk-checkboxes-item` component, detailing the key inputs, such as `inputId`, `labelText`, and how it integrates with Angular forms【89†source】.
+This `README.md` provides an overview of the `govuk-checkboxes-item` component, detailing the key inputs, such as `inputId`, `labelText`, and how it integrates with Angular forms .

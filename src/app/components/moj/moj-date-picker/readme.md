@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-date-picker` component:
-
 ---
 
 # MOJ Date Picker Component

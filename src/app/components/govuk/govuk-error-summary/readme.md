@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-error-summary` component based on the files you provided:
-
 ---
 
 # GOV.UK Error Summary Component
@@ -84,4 +82,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of how to use and configure the `govuk-error-summary` component, detailing the error handling and the clickable error messages that link to specific form fields【117†source】.
+This `README.md` provides an overview of how to use and configure the `govuk-error-summary` component, detailing the error handling and the clickable error messages that link to specific form fields.

@@ -1,5 +1,3 @@
-Based on the complete files you uploaded, here is the `README.md` file for the `govuk-back-link` component in the Opal frontend repository:
-
 ---
 
 # GOV.UK Back Link Component
@@ -81,4 +79,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides complete information about the installation, usage, and testing of the `govuk-back-link` component, helping developers integrate it into their projects【39†source】【47†source】.
+This `README.md` provides complete information about the installation, usage, and testing of the `govuk-back-link` component, helping developers integrate it into their projects

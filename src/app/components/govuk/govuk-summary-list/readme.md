@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-summary-list` component based on previous examples:
-
 ---
 
 # GOV.UK Summary List Component

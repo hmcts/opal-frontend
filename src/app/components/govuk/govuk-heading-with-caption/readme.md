@@ -1,7 +1,3 @@
-It seems that the files you provided for the `govuk-heading-with-caption` component are the same as the previous files. Based on the structure, the `README.md` for this component has already been generated.
-
-However, if this is a different version or has any additional inputs or features, feel free to let me know, and I can generate a new `README.md` for this specific version. Otherwise, the previously generated `README.md` should suffice:
-
 ---
 
 # GOV.UK Heading with Caption Component

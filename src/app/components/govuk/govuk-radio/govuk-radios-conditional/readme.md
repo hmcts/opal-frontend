@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-radios-conditional` component based on the files you provided:
-
 ---
 
 # GOV.UK Radios Conditional Component
@@ -69,4 +67,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of the `govuk-radios-conditional` component and explains how to use it for displaying conditional content based on radio button selections【213†source】.
+This `README.md` provides an overview of the `govuk-radios-conditional` component and explains how to use it for displaying conditional content based on radio button selections.

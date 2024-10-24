@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-sub-navigation` component:
-
 ---
 
 # MOJ Sub Navigation Component

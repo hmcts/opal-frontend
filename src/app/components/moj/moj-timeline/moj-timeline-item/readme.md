@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-timeline-item` component:
-
 ---
 
 # MOJ Timeline Item Component

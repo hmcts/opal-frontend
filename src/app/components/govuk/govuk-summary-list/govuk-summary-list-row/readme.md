@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-summary-list-row` component:
-
 ---
 
 # GOV.UK Summary List Row Component

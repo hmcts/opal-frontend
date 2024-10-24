@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-text-input` component:
-
 ---
 
 # GOV.UK Text Input Component

@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-header` component:
-
 ---
 
 # MOJ Header Component

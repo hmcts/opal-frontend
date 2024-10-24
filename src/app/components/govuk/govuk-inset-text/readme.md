@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-inset-text` component based on the files you provided:
-
 ---
 
 # GOV.UK Inset Text Component
@@ -70,4 +68,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` explains how to use and configure the `govuk-inset-text` component to display important information in a GOV.UK-styled box【170†source】.
+This `README.md` explains how to use and configure the `govuk-inset-text` component to display important information in a GOV.UK-styled box.

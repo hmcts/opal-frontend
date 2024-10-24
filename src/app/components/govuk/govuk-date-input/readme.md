@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-date-input` component based on the files you provided:
-
 ---
 
 # GOV.UK Date Input Component
@@ -101,4 +99,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of how to use and configure the `govuk-date-input` component, including its input properties for validation, legends, and hints【101†source】.
+This `README.md` provides an overview of how to use and configure the `govuk-date-input` component, including its input properties for validation, legends, and hints.

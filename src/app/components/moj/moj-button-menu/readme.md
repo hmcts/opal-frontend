@@ -1,5 +1,3 @@
-Here is the `README.md` for the `moj-button-menu` component:
-
 ---
 
 # MOJ Button Menu Component

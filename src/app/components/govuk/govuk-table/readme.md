@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-table` component:
-
 ---
 
 # GOV.UK Table Component

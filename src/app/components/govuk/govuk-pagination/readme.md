@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-pagination` component based on the files you provided:
-
 ---
 
 # GOV.UK Pagination Component
@@ -111,4 +109,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` explains how to use the `govuk-pagination` component, configure it with the current and total pages, and handle page changes【186†source】.
+This `README.md` explains how to use the `govuk-pagination` component, configure it with the current and total pages, and handle page changes.

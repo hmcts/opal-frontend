@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-details` component based on the files you provided:
-
 ---
 
 # GOV.UK Details Component
@@ -74,4 +72,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides information on how to use and configure the `govuk-details` component, including the `summaryText` input, which controls the text displayed in the expandable summary【109†source】.
+This `README.md` provides information on how to use and configure the `govuk-details` component, including the `summaryText` input, which controls the text displayed in the expandable summary.

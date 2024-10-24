@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-checkboxes-divider` component based on the files you provided:
-
 ---
 
 # GOV.UK Checkboxes Divider Component
@@ -78,4 +76,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` outlines the functionality and usage of the `govuk-checkboxes-divider` component, which is used to add a visual divider between groups of checkboxes【81†source】.
+This `README.md` outlines the functionality and usage of the `govuk-checkboxes-divider` component, which is used to add a visual divider between groups of checkboxes.

@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-summary-card-list` component based on the structure of previous readmes:
-
 ---
 
 # GOV.UK Summary Card List Component

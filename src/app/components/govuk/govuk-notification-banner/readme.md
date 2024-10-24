@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-notification-banner` component based on the files you provided:
-
 ---
 
 # GOV.UK Notification Banner Component
@@ -87,4 +85,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of how to use and configure the `govuk-notification-banner` component to display important messages or alerts in your application【178†source】.
+This `README.md` provides an overview of how to use and configure the `govuk-notification-banner` component to display important messages or alerts in your application.

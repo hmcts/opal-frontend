@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-header` component based on the files you provided:
-
 ---
 
 # GOV.UK Header Component
@@ -101,4 +99,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` explains how to use and configure the `govuk-header` component, including the inputs for linking to the GOV.UK homepage and service page【137†source】.
+This `README.md` explains how to use and configure the `govuk-header` component, including the inputs for linking to the GOV.UK homepage and service page.

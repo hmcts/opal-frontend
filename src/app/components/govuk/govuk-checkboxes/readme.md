@@ -1,5 +1,3 @@
-Based on the files you uploaded for the `govuk-checkboxes` component, here is the corresponding `README.md`:
-
 ---
 
 # GOV.UK Checkboxes Component
@@ -96,4 +94,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` outlines the key inputs, structure, and usage details of the `govuk-checkboxes` component, along with how to customize it using inputs like `legendText`, `legendHint`, and others【65†source】.
+This `README.md` outlines the key inputs, structure, and usage details of the `govuk-checkboxes` component, along with how to customize it using inputs like `legendText`, `legendHint`, and others.

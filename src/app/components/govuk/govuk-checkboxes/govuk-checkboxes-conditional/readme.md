@@ -1,5 +1,3 @@
-Here is the `README.md` file for the `govuk-checkboxes-conditional` component based on the files you uploaded:
-
 ---
 
 # GOV.UK Checkboxes Conditional Component
@@ -69,4 +67,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of the `govuk-checkboxes-conditional` component, detailing its purpose and usage, particularly for conditional content that is tied to checkbox selections【73†source】.
+This `README.md` provides an overview of the `govuk-checkboxes-conditional` component, detailing its purpose and usage, particularly for conditional content that is tied to checkbox selections.

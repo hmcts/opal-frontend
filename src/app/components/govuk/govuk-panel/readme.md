@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-panel` component based on the files you provided:
-
 ---
 
 # GOV.UK Panel Component
@@ -73,4 +71,4 @@ Feel free to submit issues or pull requests to improve this component.
 
 ---
 
-This `README.md` provides an overview of how to use the `govuk-panel` component, including configuring its title and displaying content inside a GOV.UK-styled panel【194†source】.
+This `README.md` provides an overview of how to use the `govuk-panel` component, including configuring its title and displaying content inside a GOV.UK-styled panel.

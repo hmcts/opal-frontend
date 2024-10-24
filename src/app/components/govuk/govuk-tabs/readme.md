@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-tabs` component:
-
 ---
 
 # GOV.UK Tabs Component

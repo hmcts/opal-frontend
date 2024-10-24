@@ -1,5 +1,3 @@
-Here is the `README.md` for the `govuk-text-area` component:
-
 ---
 
 # GOV.UK Text Area Component
