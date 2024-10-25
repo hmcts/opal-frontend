@@ -7528,15 +7528,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-multi-reporters@npm:^1.6.4":
-  version: 1.6.4
-  resolution: "cypress-multi-reporters@npm:1.6.4"
+"cypress-multi-reporters@npm:^2.0.0":
+  version: 2.0.3
+  resolution: "cypress-multi-reporters@npm:2.0.3"
   dependencies:
-    debug: "npm:^4.3.4"
+    debug: "npm:^4.3.7"
     lodash: "npm:^4.17.21"
   peerDependencies:
     mocha: ">=3.1.2"
-  checksum: 10/194554ac7d5720cbd3a9175f94393bbc37c60ccd258027a57b87353d7f33c86210b6280922dfa80ba9686ed195091b45191827e40487f26ea8b0a5d1b0f3b575
+  checksum: 10/eb68829e5f070ce1b32428df7e6261a7966b5c1ff7726f058a461d48661649c2d6d531c5b2b842e0a855a9977daf3bff8ff5767dd4c20fd93e912dc4313a7425
   languageName: node
   linkType: hard
 
@@ -7687,6 +7687,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10/d3adb9af7d57a9e809a68f404490cf776122acca16e6359a2702c0f462e510e91f9765c07f707b8ab0d91e03bad57328f3256f5082631cefb5393d0394d50fb7
+  languageName: node
+  linkType: hard
+
+"debug@npm:^4.3.7":
+  version: 4.3.7
+  resolution: "debug@npm:4.3.7"
+  dependencies:
+    ms: "npm:^2.1.3"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10/71168908b9a78227ab29d5d25fe03c5867750e31ce24bf2c44a86efc5af041758bb56569b0a3d48a9b5344c00a24a777e6f4100ed6dfd9534a42c1dde285125a
   languageName: node
   linkType: hard
 
@@ -12368,7 +12380,7 @@ __metadata:
     csrf-csrf: "npm:^3.0.6"
     cypress: "npm:^13.6.0"
     cypress-axe: "npm:^1.5.0"
-    cypress-multi-reporters: "npm:^1.6.4"
+    cypress-multi-reporters: "npm:^2.0.0"
     cypress-parallel: "npm:^0.14.0"
     domino-ext: "npm:^2.1.4"
     eslint: "npm:^9.0.0"
