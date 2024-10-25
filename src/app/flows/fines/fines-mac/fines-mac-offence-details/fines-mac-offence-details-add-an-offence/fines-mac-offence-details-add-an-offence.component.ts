@@ -3,46 +3,51 @@ import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/cor
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
-import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { Observable, map } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-details-form';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    GovukButtonComponent,
-    GovukCancelLinkComponent,
-    FinesMacOffenceDetailsAddAnOffenceFormComponent,
-  ],
+  imports: [CommonModule, RouterModule, FinesMacOffenceDetailsAddAnOffenceFormComponent],
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
-  public readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+  private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getResults(this.resultCodeArray)
     .pipe(
       map((response: IOpalFinesResultsRefData) => {
         return this.createAutoCompleteItemsResults(response);
       }),
     );
+  private readonly majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
+    .getMajorCreditors(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .pipe(
+      map((response: IOpalFinesMajorCreditorRefData) => {
+        return this.createAutoCompleteItemsMajorCreditors(response);
+      }),
+    );
+
+  protected groupResultCodeAndMajorCreditorData$ = forkJoin({
+    resultCodeData: this.resultCodeData$,
+    majorCreditorData: this.majorCreditorData$,
+  });
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   public formDataIndex!: number;
@@ -74,16 +79,29 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     });
   }
 
+  private createAutoCompleteItemsMajorCreditors(
+    response: IOpalFinesMajorCreditorRefData,
+  ): IAlphagovAccessibleAutocompleteItem[] {
+    const results = response.refData;
+
+    return results.map((item) => {
+      return {
+        value: item.major_creditor_id,
+        name: this.opalFinesService.getMajorCreditorPrettyName(item),
+      };
+    });
+  }
+
   /**
    * Updates the offence details in the finesMacState based on the provided form data.
-   * If an offence detail with the same fm_offence_details_index already exists, it will be updated.
+   * If an offence detail with the same fm_offence_details_id already exists, it will be updated.
    * Otherwise, the new offence detail will be added to the finesMacState.
    *
    * @param form - The form data containing the offence details to be updated or added.
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
     const index = this.finesService.finesMacState.offenceDetails.findIndex(
-      (item) => item.formData.fm_offence_details_index === form.formData.fm_offence_details_index,
+      (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
     );
 
     if (index !== -1) {
@@ -101,9 +119,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
   private retrieveFormData(): void {
     if (this.finesService.finesMacState.offenceDetails.length === 0) {
       this.formDataIndex = 0;
-      this.finesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
     } else {
-      this.formDataIndex = this.finesService.finesMacState.offenceDetails.length + 1;
+      this.formDataIndex = this.finesMacOffenceDetailsService.offenceIndex;
     }
   }
 
@@ -119,20 +136,18 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
-      offenceDetails: [...this.finesService.finesMacState.offenceDetails],
       unsavedChanges: false,
       stateChanges: true,
     };
 
     this.updateOffenceDetailsIndex(form);
 
+    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
+
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     } else {
-      this.routerNavigate(
-        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-        true,
-      );
+      this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
     }
   }
 

@@ -19,5 +19,5 @@ export const FINES_MAC_PAYMENT_TERMS_STATE: IFinesMacPaymentTermsState = {
   fm_payment_terms_enforcement_action: null,
   fm_payment_terms_collection_order_made: null,
   fm_payment_terms_collection_order_date: null,
-  fm_payment_terms_make_collection_order_today: null,
+  fm_payment_terms_collection_order_made_today: null,
 };

@@ -471,10 +471,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Sets the collection order date based on the value of `fm_payment_terms_make_collection_order_today` control.
+   * Sets the collection order date based on the value of `fm_payment_terms_collection_order_made_today` control.
    */
   private setCollectionOrderDate(): void {
-    const makeCollectionOrderTodayControl = this.form.get('fm_payment_terms_make_collection_order_today');
+    const makeCollectionOrderTodayControl = this.form.get('fm_payment_terms_collection_order_made_today');
     const collectionOrderDateControl = this.form.get('fm_payment_terms_collection_order_date');
 
     if (makeCollectionOrderTodayControl?.value === true) {

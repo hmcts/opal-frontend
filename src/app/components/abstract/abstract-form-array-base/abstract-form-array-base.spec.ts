@@ -212,4 +212,17 @@ describe('AbstractFormArrayBaseComponent', () => {
     // Check that the form array control is removed
     expect(component.formArrayControls.length).toBe(0);
   });
+
+  it('should remove form array form group control validators', () => {
+    const formControl = new FormControl();
+    formControl.setValidators(Validators.required);
+    formControl.setValue('test');
+
+    component.removeFormArrayFormGroupControlValidators(formControl);
+
+    expect(formControl.validator).toBeNull();
+    expect(formControl.errors).toBeNull();
+    expect(formControl.value).toBeNull();
+    expect(formControl.valid).toBe(true);
+  });
 });

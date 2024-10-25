@@ -1,11 +1,18 @@
 import { Routes } from '@angular/router';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-offence-details-routing-paths.constant';
 
 export const routing: Routes = [
   {
     path: '',
-    redirectTo: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence,
+    redirectTo: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences,
     pathMatch: 'full',
+  },
+  {
+    path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences,
+    loadComponent: () =>
+      import('../fines-mac-offence-details-review/fines-mac-offence-details-review.component').then(
+        (c) => c.FinesMacOffenceDetailsReviewComponent,
+      ),
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence,

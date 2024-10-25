@@ -9,5 +9,5 @@ export const FINES_MAC_PAYMENT_TERMS_STATE_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_has_days_in_default: false,
   fm_payment_terms_add_enforcement_action: false,
-  fm_payment_terms_make_collection_order_today: null,
+  fm_payment_terms_collection_order_made_today: null,
 };

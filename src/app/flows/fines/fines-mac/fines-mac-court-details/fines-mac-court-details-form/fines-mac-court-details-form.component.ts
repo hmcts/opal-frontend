@@ -23,7 +23,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
-import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
+
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 @Component({
@@ -65,7 +65,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
         Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z0-9 ]*$/),
       ]),
-      fm_court_details_enforcing_court: new FormControl(null, [Validators.required]),
+      fm_court_details_enforcement_court_id: new FormControl(null, [Validators.required]),
       fm_court_details_originator_name: new FormControl(),
     });
   }

@@ -16,22 +16,20 @@ import { DateService } from '@services/date-service/date.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap } from 'rxjs';
+import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap, takeUntil, map } from 'rxjs';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes';
-import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options';
-import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-offences-field-errors';
+import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options.constant';
+import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-offences-field-errors.constant';
 import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacOffenceDetailsState } from '../../interfaces/fines-mac-offence-details-state.interface';
-import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { futureDateValidator } from '@validators/future-date/future-date.validator';
 import { optionalValidDateValidator } from '@validators/optional-valid-date/optional-valid-date.validator';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../constants/fines-mac-offence-details-impositions';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-impositions-field-errors';
-import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes';
-import { CommonModule } from '@angular/common';
+import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS } from '../../constants/fines-mac-offence-details-impositions.constant';
+import { FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-impositions-field-errors.constant';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
@@ -42,9 +40,13 @@ import { GovukTextInputPrefixSuffixComponent } from '@components/govuk/govuk-tex
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
+import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
+import { CommonModule } from '@angular/common';
+import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -63,6 +65,7 @@ import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offenc
     GovukRadiosItemComponent,
     GovukCancelLinkComponent,
     GovukTextInputComponent,
+    GovukRadiosConditionalComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,6 +76,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 {
   @Input() public defendantType!: string;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public majorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public formDataIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 
@@ -103,7 +107,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
-      fm_offence_details_index: new FormControl(this.formDataIndex),
+      fm_offence_details_id: new FormControl(this.formDataIndex),
       fm_offence_details_date_of_offence: new FormControl(null, [
         Validators.required,
         optionalValidDateValidator(),
@@ -126,9 +130,16 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
     const hasOffenceDetailsDraft = offenceDetailsDraft.length > 0;
     const impositionsKey = 'fm_offence_details_impositions';
-    const formData = hasOffenceDetailsDraft
-      ? offenceDetailsDraft[0].formData
-      : this.finesMacService.finesMacState.offenceDetails[0].formData;
+    let formData;
+
+    if (hasOffenceDetailsDraft) {
+      formData = offenceDetailsDraft[0].formData;
+    } else {
+      const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.formDataIndex];
+      formData = offenceDetails
+        ? offenceDetails.formData
+        : { ...FINES_MAC_OFFENCE_DETAILS_STATE, fm_offence_details_id: this.formDataIndex };
+    }
     const impositionsLength = formData[impositionsKey].length;
 
     this.setupAddAnOffenceForm();
@@ -159,6 +170,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         tap((offence) => {
           offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
         }),
+        map((response) => response),
       );
 
       this.selectedOffenceConfirmation = true;
@@ -194,6 +206,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
           offenceCodeControl.setValue(cjs_code, { emitEvent: false });
         }),
         debounceTime(FinesMacOffenceDetailsDebounceTime.debounceTime),
+        takeUntil(this['ngUnsubscribe']),
       )
       .subscribe((cjs_code: string) => {
         this.populateOffenceHint(cjs_code);
@@ -231,18 +244,86 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param index - The index of the impositions form group.
    */
   private resultCodeListener(index: number): void {
-    const impositionsFormArray = this.form.get('fm_offence_details_impositions') as FormArray;
-    const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
-    const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
+    const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const resultCodeControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_result_code',
+      index,
+    );
+    const needsCreditorControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_needs_creditor',
+      index,
+    );
+    const creditorControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      index,
+    );
 
-    resultCodeControl.valueChanges.subscribe((result_code: string) => {
-      const needsCreditor =
-        result_code &&
-        (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
-          result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
-      needsCreditorControl.setValue(needsCreditor);
-    });
+    if (needsCreditorControl.value) {
+      this.creditorListener(index);
+    }
+
+    resultCodeControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
+      .subscribe((result_code: string) => {
+        const needsCreditor =
+          result_code &&
+          (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
+            result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
+        needsCreditorControl.setValue(needsCreditor);
+        if (needsCreditor) {
+          this.addFormArrayFormGroupControlValidators(creditorControl, [Validators.required]);
+          this.creditorListener(index);
+        } else {
+          this.removeFormArrayFormGroupControlValidators(creditorControl);
+        }
+      });
+  }
+
+  /**
+   * Listens for changes in the creditor control and performs validation based on the selected value.
+   *
+   * @param index - The index of the form array group.
+   */
+  private creditorListener(index: number): void {
+    const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
+    const creditorControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_creditor',
+      index,
+    );
+
+    if (creditorControl.value === 'major' || creditorControl.value === 'minor') {
+      this.majorCreditorValidation(index, creditorControl.value === 'major', impositionsFormGroup);
+    }
+
+    creditorControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
+      .subscribe((creditor: string) => {
+        this.majorCreditorValidation(index, creditor === 'major', impositionsFormGroup);
+      });
+  }
+
+  /**
+   * Validates the major creditor control in the form group.
+   * @param index - The index of the form group.
+   * @param add - Indicates whether to add or remove validators.
+   * @param formGroup - The form group containing the major creditor control.
+   */
+  private majorCreditorValidation(index: number, add: boolean, formGroup: FormGroup): void {
+    const majorCreditorControl = this.getFormArrayFormGroupControl(
+      formGroup,
+      'fm_offence_details_major_creditor',
+      index,
+    );
+
+    if (add) {
+      this.addFormArrayFormGroupControlValidators(majorCreditorControl, [Validators.required]);
+    } else {
+      this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
+    }
   }
 
   /**
@@ -255,11 +336,9 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private updateOffenceDetailsDraft(formData: IFinesMacOffenceDetailsState): void {
     const offenceDetailsDraft = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft;
-    const offenceDetailsIndex = this.form.get('fm_offence_details_index')!.value;
+    const offenceDetailsIndex = this.form.get('fm_offence_details_id')!.value;
 
-    const index = offenceDetailsDraft.findIndex(
-      (item) => item.formData.fm_offence_details_index === offenceDetailsIndex,
-    );
+    const index = offenceDetailsDraft.findIndex((item) => item.formData.fm_offence_details_id === offenceDetailsIndex);
 
     if (index !== -1) {
       offenceDetailsDraft[index].formData = formData;
@@ -272,13 +351,23 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
-   * Navigates to the account details page.
+   * Calculates the balance remaining for each offence in the form.
+   * Updates the 'balance_remaining' control value for each offence.
    */
-  public goToAccountDetails(): void {
-    this.handleRoute(
-      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-      true,
-    );
+  private calculateBalanceRemaining(): void {
+    const formArray = this.form.get('fm_offence_details_impositions') as FormArray;
+    const formGroupsFormArray = formArray.controls as FormGroup[];
+
+    formGroupsFormArray.forEach((control, rowIndex) => {
+      const amountImposedControl = control.controls[`fm_offence_details_amount_imposed_${rowIndex}`];
+      const amountPaidControl = control.controls[`fm_offence_details_amount_paid_${rowIndex}`];
+      const balanceRemainingControl = control.controls[`fm_offence_details_balance_remaining_${rowIndex}`];
+
+      const amountImposed: number = this.getControlValueOrDefault(amountImposedControl, 0);
+      const amountPaid: number = this.getControlValueOrDefault(amountPaidControl, 0);
+
+      balanceRemainingControl?.setValue(amountImposed - amountPaid);
+    });
   }
 
   /**
@@ -306,6 +395,33 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     this.updateOffenceDetailsDraft(this.form.value);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeImposition);
+  }
+
+  /**
+   * Cancels the current operation and navigates to the appropriate route.
+   * If there are no offences, it navigates to the account details page.
+   * Otherwise, it navigates to the review offences page.
+   */
+  public cancelLink(): void {
+    if (this.finesMacOffenceDetailsService.emptyOffences) {
+      this.handleRoute(
+        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
+        true,
+      );
+    } else {
+      this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
+    }
+  }
+
+  /**
+   * Handles the submit event for adding an offence.
+   * This method calculates the remaining balance and handles the form submission.
+   *
+   * @param event - The submit event.
+   */
+  public handleAddAnOffenceSubmit(event: SubmitEvent): void {
+    this.calculateBalanceRemaining();
+    this.handleFormSubmit(event);
   }
 
   /**

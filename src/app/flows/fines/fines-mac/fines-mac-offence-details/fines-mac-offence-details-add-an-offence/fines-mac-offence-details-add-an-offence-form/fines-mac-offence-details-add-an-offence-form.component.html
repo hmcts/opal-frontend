@@ -1,6 +1,6 @@
 <h1 class="govuk-heading-l">Add an offence</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form">
+<form (submit)="handleAddAnOffenceSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Offence details</legend>
     <app-moj-date-picker
@@ -144,6 +144,47 @@
                       ])
                     "
                   ></div>
+                  <div app-govuk-radios-conditional conditionalId="creditor">
+                    @if (creditorOption.key === 'major') {
+                      @if (
+                        form.get([
+                          'fm_offence_details_impositions',
+                          rowIndex,
+                          formArrayControl['fm_offence_details_creditor'].controlName,
+                        ])?.value === 'major'
+                      ) {
+                        <app-alphagov-accessible-autocomplete
+                          [control]="
+                            form.get([
+                              'fm_offence_details_impositions',
+                              rowIndex,
+                              formArrayControl['fm_offence_details_major_creditor'].controlName,
+                            ])
+                          "
+                          labelText="Search using name or code"
+                          labelClasses="govuk-fieldset__legend--s"
+                          [inputId]="formArrayControl['fm_offence_details_major_creditor'].inputId"
+                          [inputName]="formArrayControl['fm_offence_details_major_creditor'].inputName"
+                          inputClasses="govuk-!-width-one-half"
+                          [autoCompleteItems]="majorCreditorItems"
+                          [errors]="
+                            formControlErrorMessages[formArrayControl['fm_offence_details_major_creditor'].controlName]
+                          "
+                        >
+                        </app-alphagov-accessible-autocomplete>
+                      }
+                    } @else {
+                      @if (
+                        form.get([
+                          'fm_offence_details_impositions',
+                          rowIndex,
+                          formArrayControl['fm_offence_details_creditor'].controlName,
+                        ])?.value === 'minor'
+                      ) {
+                        <a class="govuk-link govuk-link--no-visited-state" tabindex="0"> Add minor creditor details </a>
+                      }
+                    }
+                  </div>
                 }
               </app-govuk-radio>
             </div>
@@ -188,7 +229,7 @@
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link (linkClickEvent)="goToAccountDetails()"></app-govuk-cancel-link>
+      <app-govuk-cancel-link (linkClickEvent)="cancelLink()"></app-govuk-cancel-link>
     </div>
   </div>
 </form>

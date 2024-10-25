@@ -1,6 +1,6 @@
-import { IFinesMacDefendantPayloadDebtorDetail } from '../interfaces/fines-mac-defendant-payload.interface';
+import { IFinesMacPayloadDefendantDebtorDetailComplete } from '../utils/interfaces/fines-mac-payload-defendant-debtor-detail-complete.interface';
 
-export const FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD: IFinesMacDefendantPayloadDebtorDetail = {
+export const FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD: IFinesMacPayloadDefendantDebtorDetailComplete = {
   vehicle_make: null,
   vehicle_registration_mark: null,
   document_language: null,
