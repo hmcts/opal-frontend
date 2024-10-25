@@ -1,4 +1,4 @@
-<app-govuk-summary-card-list cardTitle="Minor creditor">
+<app-govuk-summary-card-list [cardTitle]="name">
   <ng-container actions>
     <li app-govuk-summary-card-action actionText="Hide details" actionRoute=""></li>
     <li app-govuk-summary-card-action class="govuk-!-padding-left-2" actionText="Change" actionRoute=""></li>
@@ -6,15 +6,6 @@
   </ng-container>
   <ng-container content>
     <app-govuk-summary-list [summaryListId]="'minorCreditor' + index">
-      <div
-        app-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        [summaryListId]="'minorCreditor' + index"
-        [summaryListRowId]="'minorCreditorName' + index"
-      >
-        <ng-container name>Name</ng-container>
-        <ng-container value> {{ name }}</ng-container>
-      </div>
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"

@@ -49,6 +49,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELDS } from '../../constants/fines-mac-offence-details-minor-creditor-fields.constant';
 import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent } from './fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.component';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -69,6 +70,7 @@ import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent
     GovukTextInputComponent,
     GovukRadiosConditionalComponent,
     FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent,
+    MojBannerComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -326,9 +328,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     if (add) {
       this.addFormArrayFormGroupControlValidators(majorCreditorControl, [Validators.required]);
-
-      // Reset minor creditor data if it exists
-      formGroup.get(`fm_offence_details_minor_creditor_${index}`)?.reset();
     } else {
       this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
     }

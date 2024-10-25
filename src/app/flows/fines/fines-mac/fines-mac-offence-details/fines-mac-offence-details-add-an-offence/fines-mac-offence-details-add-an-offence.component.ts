@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
@@ -23,7 +23,10 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
+export class FinesMacOffenceDetailsAddAnOffenceComponent
+  extends AbstractFormParentBaseComponent
+  implements OnInit, OnDestroy
+{
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
@@ -162,10 +165,11 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     this.stateUnsavedChanges = unsavedChanges;
   }
 
-  /**
-   * Initializes the component.
-   */
   public ngOnInit(): void {
     this.retrieveFormData();
+  }
+
+  public ngOnDestroy(): void {
+    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
   }
 }

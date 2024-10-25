@@ -65,6 +65,8 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
     // Update the state with the form data
     offenceDetailsDraft[0].formData.fm_offence_details_impositions = removeImposition?.formArray.value;
 
+    this.finesMacOffenceDetailsService.minorCreditorAdded = true;
+
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }
 
