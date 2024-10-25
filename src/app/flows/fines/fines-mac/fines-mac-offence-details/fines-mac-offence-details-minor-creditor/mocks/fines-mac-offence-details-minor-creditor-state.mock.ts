@@ -1,6 +1,7 @@
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 
 export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK: IFinesMacOffenceDetailsMinorCreditorState = {
+  fm_offence_details_imposition_position: 0,
   fm_offence_details_minor_creditor_creditor_type: 'individual',
   fm_offence_details_minor_creditor_title: 'Mr',
   fm_offence_details_minor_creditor_forenames: 'John',

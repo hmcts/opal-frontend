@@ -9,6 +9,7 @@ import { GovukSummaryListRowActionItemComponent } from '@components/govuk/govuk-
 import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList } from './enums/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.enum';
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { UtilsService } from '@services/utils/utils.service';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list',
@@ -25,10 +26,9 @@ import { UtilsService } from '@services/utils/utils.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent implements OnInit {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  @Input({ required: true }) public minorCreditor!: any;
   @Input({ required: true }) public index!: number;
 
+  private readonly finesService = inject(FinesService);
   private readonly utilsService = inject(UtilsService);
 
   public minorCreditorData: IFinesMacOffenceDetailsMinorCreditorState = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE;
@@ -41,17 +41,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
   public paymentReference!: string;
 
   /**
-   * Sets up the initial setup for the minor creditor summary list.
-   * This method strips the index suffix from object keys and initializes minorCreditorData.
-   * It also populates information for the summary list.
+   * Sets up the initial minor creditor summary list.
+   * Retrieves the minor creditor data from the fines service based on the imposition position,
+   * and populates the information for the summary list.
    */
   private initialMinorCreditorSummaryListSetup(): void {
-    // Strip index suffix and initialize minorCreditorData
-    this.minorCreditorData = this.utilsService.removeIndexFromData(
-      this.minorCreditorData,
-      this.minorCreditor,
-      this.index,
-    ) as IFinesMacOffenceDetailsMinorCreditorState;
+    this.minorCreditorData = this.finesService.finesMacState.minorCreditors.find(
+      (x) => x.formData.fm_offence_details_imposition_position === this.index,
+    )!.formData;
 
     // Populate information for summary list
     this.setupMinorCreditorSummaryListData();

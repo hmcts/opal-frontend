@@ -126,24 +126,10 @@
         ) {
           <div class="govuk-grid-row govuk-form-group">
             <div class="govuk-grid-column-full">
-              @if (
-                form.get([
-                  'fm_offence_details_impositions',
-                  rowIndex,
-                  'fm_offence_details_minor_creditor_' + rowIndex,
-                  'fm_offence_details_minor_creditor_creditor_type_' + rowIndex,
-                ])?.value !== '' || undefined
-              ) {
+              @if (minorCreditorExist(rowIndex)) {
                 <fieldset class="govuk-fieldset">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
                   <app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list
-                    [minorCreditor]="
-                      form.get([
-                        'fm_offence_details_impositions',
-                        rowIndex,
-                        'fm_offence_details_minor_creditor_' + rowIndex,
-                      ])?.value
-                    "
                     [index]="rowIndex"
                   ></app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list>
                 </fieldset>

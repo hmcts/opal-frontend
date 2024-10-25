@@ -9,6 +9,5 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_STATE: IFinesMacOffenceDetail
     fm_offence_details_creditor: null,
     fm_offence_details_needs_creditor: null,
     fm_offence_details_major_creditor: null,
-    fm_offence_details_minor_creditor: null,
   },
 ];

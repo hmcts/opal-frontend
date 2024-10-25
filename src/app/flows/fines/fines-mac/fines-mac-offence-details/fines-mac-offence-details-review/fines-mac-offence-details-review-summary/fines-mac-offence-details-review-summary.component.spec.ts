@@ -24,7 +24,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'addedOffenceCode',
@@ -54,7 +54,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.offencesImpositions = FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK;
+    component.offencesImpositions = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK];
 
     fixture.detectChanges();
   });

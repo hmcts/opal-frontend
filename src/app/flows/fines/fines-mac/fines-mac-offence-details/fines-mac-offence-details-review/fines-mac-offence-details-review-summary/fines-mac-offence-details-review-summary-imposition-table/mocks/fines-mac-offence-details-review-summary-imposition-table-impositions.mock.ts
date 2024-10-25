@@ -10,7 +10,6 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMP
       fm_offence_details_needs_creditor: true,
       fm_offence_details_creditor: 'major',
       fm_offence_details_major_creditor: 3856,
-      fm_offence_details_minor_creditor: null,
     },
     {
       fm_offence_details_result_code: 'FCC',
@@ -20,7 +19,6 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMP
       fm_offence_details_needs_creditor: true,
       fm_offence_details_creditor: 'major',
       fm_offence_details_major_creditor: 3856,
-      fm_offence_details_minor_creditor: null,
     },
     {
       fm_offence_details_result_code: 'FCOMP',
@@ -30,6 +28,5 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMP
       fm_offence_details_needs_creditor: true,
       fm_offence_details_creditor: 'major',
       fm_offence_details_major_creditor: 3856,
-      fm_offence_details_minor_creditor: null,
     },
   ];

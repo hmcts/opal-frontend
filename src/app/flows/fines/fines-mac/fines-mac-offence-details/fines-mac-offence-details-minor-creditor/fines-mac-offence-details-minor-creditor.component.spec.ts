@@ -57,7 +57,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     component.handleMinorCreditorFormSubmit(formSubmit);
+    fixture.detectChanges();
 
+    expect(mockFinesService.finesMacState.minorCreditors).toEqual([formSubmit]);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });

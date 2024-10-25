@@ -1,4 +1,5 @@
 export interface IFinesMacOffenceDetailsMinorCreditorState {
+  fm_offence_details_imposition_position: number | null;
   fm_offence_details_minor_creditor_creditor_type: string | null;
   fm_offence_details_minor_creditor_title: string | null;
   fm_offence_details_minor_creditor_forenames: string | null;

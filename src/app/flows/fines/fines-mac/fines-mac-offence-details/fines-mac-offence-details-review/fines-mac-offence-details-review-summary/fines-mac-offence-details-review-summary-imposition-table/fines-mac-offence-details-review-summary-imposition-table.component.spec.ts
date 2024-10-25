@@ -49,6 +49,12 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     fixture.detectChanges();
   });
 
+  beforeEach(() => {
+    component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -85,7 +91,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
   });
 
-  it('should return empty string if creditor is null', () => {
+  it('should return empty string if creditor is null - Any resultCodeCreditor', () => {
     const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'Any');
@@ -107,7 +113,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     expect(actualCreditorText).toBe(expectedCreditorText.defaultMinorCreditor);
   });
 
-  it('should return empty string if creditor is null', () => {
+  it('should return empty string if creditor is null - CPS resultCodeCreditor', () => {
     const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'CPS');

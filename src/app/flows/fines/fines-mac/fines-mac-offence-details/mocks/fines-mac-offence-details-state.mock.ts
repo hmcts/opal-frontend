@@ -10,7 +10,6 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceD
     fm_offence_details_needs_creditor: true,
     fm_offence_details_creditor: 'major',
     fm_offence_details_major_creditor: 3856,
-    fm_offence_details_minor_creditor: null,
   },
   {
     fm_offence_details_result_code: null,
@@ -20,7 +19,6 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceD
     fm_offence_details_needs_creditor: false,
     fm_offence_details_creditor: null,
     fm_offence_details_major_creditor: null,
-    fm_offence_details_minor_creditor: null,
   },
 ];
 

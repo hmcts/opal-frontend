@@ -1,5 +1,3 @@
-import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
-
 export interface IFinesMacOffenceDetailsImpositionsState {
   fm_offence_details_result_code: string | null;
   fm_offence_details_amount_imposed: number | null;
@@ -8,5 +6,4 @@ export interface IFinesMacOffenceDetailsImpositionsState {
   fm_offence_details_needs_creditor: boolean | null;
   fm_offence_details_creditor: string | null;
   fm_offence_details_major_creditor: number | null;
-  fm_offence_details_minor_creditor: IFinesMacOffenceDetailsMinorCreditorForm | null;
 }

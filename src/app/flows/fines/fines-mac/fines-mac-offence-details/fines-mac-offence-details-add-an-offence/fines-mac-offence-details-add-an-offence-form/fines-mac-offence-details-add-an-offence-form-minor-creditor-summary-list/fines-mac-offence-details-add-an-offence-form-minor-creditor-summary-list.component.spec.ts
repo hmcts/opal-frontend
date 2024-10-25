@@ -3,29 +3,30 @@ import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent
 import { UtilsService } from '@services/utils/utils.service';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK } from './mocks/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list-stripped-data.mock';
-import { FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_INCOMING_DATA_MOCK } from './mocks/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list-incoming-data.mock';
 import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList } from './enums/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.enum';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_STATE_MOCK } from '../../../../mocks/fines-mac-state.mock';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent>;
+  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
-      'removeIndexFromData',
-      'formatSortCode',
-      'upperCaseFirstLetter',
-    ]);
-    mockUtilsService.removeIndexFromData.and.returnValue(
-      FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
-    );
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService.finesMacState = {
+      ...FINES_MAC_STATE_MOCK,
+      minorCreditors: [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
+    };
+    mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
     mockUtilsService.formatSortCode.and.returnValue('12-34-56');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent],
       providers: [
+        { provide: FinesService, useValue: mockFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
         {
           provide: ActivatedRoute,
@@ -39,8 +40,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
     fixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent);
     component = fixture.componentInstance;
 
-    component.minorCreditor =
-      FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_INCOMING_DATA_MOCK;
     component.index = 0;
 
     fixture.detectChanges();
@@ -51,21 +50,17 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   });
 
   it('should set name to formatted individual name if creditor_type is individual', () => {
-    // Set minorCreditorData with individual type and names
-    component.minorCreditorData =
-      FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK;
-
     // Call the method
     component['getName']();
 
     // Check that name is formatted correctly
-    expect(component.name).toBe('Test Tester');
+    expect(component.name).toBe('John Doe');
   });
 
   it('should set name to company name if creditor_type is company', () => {
     // Set minorCreditorData with company type
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_creditor_type: 'company',
       fm_offence_details_minor_creditor_forenames: null,
       fm_offence_details_minor_creditor_surname: null,
@@ -82,7 +77,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should handle null or empty forenames and surnames correctly for individual type', () => {
     // Set minorCreditorData with individual type but no forenames or surname
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_creditor_type: 'individual',
       fm_offence_details_minor_creditor_forenames: null,
       fm_offence_details_minor_creditor_surname: null,
@@ -99,7 +94,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should handle missing company name correctly for company type', () => {
     // Set minorCreditorData with company type but no company name
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_creditor_type: 'company',
       fm_offence_details_minor_creditor_forenames: null,
       fm_offence_details_minor_creditor_surname: null,
@@ -116,7 +111,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should set address with all address lines and post code', () => {
     // Set minorCreditorData with full address details
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_address_line_1: '123 Main St',
       fm_offence_details_minor_creditor_address_line_2: 'Apt 4B',
       fm_offence_details_minor_creditor_address_line_3: 'District 9',
@@ -133,7 +128,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should set address with missing address line 2 and line 3', () => {
     // Set minorCreditorData with only address line 1 and post code
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_address_line_1: '123 Main St',
       fm_offence_details_minor_creditor_address_line_2: null,
       fm_offence_details_minor_creditor_address_line_3: null,
@@ -150,7 +145,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should set address to "Not Provided" if all address fields are missing', () => {
     // Set minorCreditorData with no address details
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_address_line_1: null,
       fm_offence_details_minor_creditor_address_line_2: null,
       fm_offence_details_minor_creditor_address_line_3: null,
@@ -167,7 +162,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should set address with only post code provided', () => {
     // Set minorCreditorData with only post code
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_address_line_1: null,
       fm_offence_details_minor_creditor_address_line_2: null,
       fm_offence_details_minor_creditor_address_line_3: null,
@@ -184,7 +179,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should set payment details when payment details are provided', () => {
     // Set minorCreditorData with payment details
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_has_payment_details: true,
       fm_offence_details_minor_creditor_name_on_account: 'John Doe',
       fm_offence_details_minor_creditor_sort_code: '123456',
@@ -210,7 +205,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should set default "Not Provided" when payment details are not available', () => {
     // Set minorCreditorData without payment details
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_has_payment_details: false,
       fm_offence_details_minor_creditor_name_on_account: null,
       fm_offence_details_minor_creditor_sort_code: null,
@@ -236,7 +231,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   it('should handle missing payment details gracefully', () => {
     // Set minorCreditorData with partial payment details
     component.minorCreditorData = {
-      ...FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR_SUMMARY_LIST_STRIPPED_DATA_MOCK,
+      ...component.minorCreditorData,
       fm_offence_details_minor_creditor_has_payment_details: true,
       fm_offence_details_minor_creditor_name_on_account: null, // No account name
       fm_offence_details_minor_creditor_sort_code: '123456', // Only sort code provided

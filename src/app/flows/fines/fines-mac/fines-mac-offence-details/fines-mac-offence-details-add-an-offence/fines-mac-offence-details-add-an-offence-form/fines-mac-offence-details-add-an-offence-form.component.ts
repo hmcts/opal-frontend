@@ -47,7 +47,6 @@ import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELDS } from '../../constants/fines-mac-offence-details-minor-creditor-fields.constant';
 import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent } from './fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 
@@ -226,7 +225,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private setupImpositionsConfiguration(): void {
     this.formArrayFields = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS.map((item) => item.controlName);
-    this.formArrayFormGroupFields = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELDS;
     this.formArrayControlsValidation = FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS;
   }
 
@@ -447,6 +445,18 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public handleAddAnOffenceSubmit(event: SubmitEvent): void {
     this.calculateBalanceRemaining();
     this.handleFormSubmit(event);
+  }
+
+  /**
+   * Checks if a minor creditor exists for the specified row index.
+   * @param rowIndex - The index of the row to check.
+   * @returns A boolean indicating whether a minor creditor exists for the specified row index.
+   */
+  public minorCreditorExist(rowIndex: number): boolean {
+    const minorCreditor = this.finesMacService.finesMacState.minorCreditors.find(
+      (x) => x.formData.fm_offence_details_imposition_position === rowIndex,
+    );
+    return !!minorCreditor;
   }
 
   /**

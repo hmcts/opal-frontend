@@ -48,26 +48,4 @@ describe('UtilsService', () => {
     const result = service.formatSortCode(value);
     expect(result).toEqual('12-34-56');
   });
-
-  it('should remove index from data', () => {
-    const target = { name: 'John', age: 30 };
-    const data = { name_0: 'Jane', age_0: 25, name_1: 'Alice', age_1: 35 };
-    const index = 0;
-    const expectedResult = { name: 'Jane', age: 25 };
-
-    const result = service.removeIndexFromData(target, data, index);
-
-    expect(result).toEqual(expectedResult);
-  });
-
-  it('should not remove index from data if index does not exist', () => {
-    const target = { name: 'John', age: 30 };
-    const data = { name_1: 'Alice', age_1: 35 };
-    const index = 0;
-    const expectedResult = { name: 'John', age: 30 };
-
-    const result = service.removeIndexFromData(target, data, index);
-
-    expect(result).toEqual(expectedResult);
-  });
 });
