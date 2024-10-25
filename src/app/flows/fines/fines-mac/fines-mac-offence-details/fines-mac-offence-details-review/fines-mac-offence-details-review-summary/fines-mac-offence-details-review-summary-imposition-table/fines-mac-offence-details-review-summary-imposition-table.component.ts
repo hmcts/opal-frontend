@@ -10,6 +10,7 @@ import {
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor } from './enums/fines-mac-offence-details-review-summary-imposition-table-default-creditor.enum';
+import { FinesService } from '@services/fines/fines-service/fines.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-imposition-table',
@@ -24,6 +25,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
 
   private readonly opalFinesService = inject(OpalFines);
+  private readonly finesService = inject(FinesService);
   public utilsService = inject(UtilsService);
 
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];
@@ -62,36 +64,77 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   }
 
   /**
+   * Retrieves the major creditor text based on the provided major creditor ID.
+   * @param majorCreditor - The major creditor ID.
+   * @returns The major creditor text.
+   */
+  private getMajorCreditorText(majorCreditor: number): string {
+    const majorCreditorRefData = this.majorCreditorRefData.refData.find((x) => x.major_creditor_id === majorCreditor);
+    return this.opalFinesService.getMajorCreditorPrettyName(majorCreditorRefData!);
+  }
+
+  /**
+   * Retrieves the text representation of a minor creditor based on the imposition ID.
+   * @param impositionId - The ID of the imposition.
+   * @returns The text representation of the minor creditor.
+   */
+  private getMinorCreditorText(impositionId: number): string {
+    const minorCreditor = this.finesService.finesMacState.minorCreditors.find(
+      (x) => x.formData.fm_offence_details_imposition_position === impositionId,
+    );
+
+    if (!minorCreditor) return FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor.defaultMinorCreditor;
+
+    const {
+      fm_offence_details_minor_creditor_creditor_type: creditorType,
+      fm_offence_details_minor_creditor_title: title,
+      fm_offence_details_minor_creditor_forenames: forenames,
+      fm_offence_details_minor_creditor_surname: surname,
+      fm_offence_details_minor_creditor_company_name: companyName,
+    } = minorCreditor.formData;
+
+    return creditorType === 'individual' ? `${title ?? ''} ${forenames ?? ''} ${surname}`.trim() : companyName!;
+  }
+
+  /**
+   * Returns the default creditor text based on the given resultCodeCreditor.
+   * If the resultCodeCreditor is 'CPS', it returns the default CPS creditor text.
+   * Otherwise, it returns the default creditor text.
+   *
+   * @param resultCodeCreditor - The resultCodeCreditor to determine the default creditor text.
+   * @returns The default creditor text.
+   */
+  private getDefaultCreditorText(resultCodeCreditor: string): string {
+    if (resultCodeCreditor === 'CPS') {
+      return this.defaultValues.defaultCpsCreditor;
+    }
+    return this.defaultValues.defaultCreditor;
+  }
+
+  /**
    * Retrieves the creditor information based on the provided parameters.
+   *
    * @param creditor - The creditor value.
    * @param majorCreditor - The major creditor value.
    * @param resultCodeCreditor - The result code creditor value.
+   * @param impositionId - The imposition ID value.
    * @returns The creditor information as a string.
    */
   private getCreditorInformation(
     creditor: string | null,
     majorCreditor: number | null,
     resultCodeCreditor: string,
+    impositionId: number,
   ): string {
-    let creditorText = '';
     if (resultCodeCreditor === 'Any' || resultCodeCreditor === '!CPS') {
-      if (creditor === 'major') {
-        if (majorCreditor) {
-          const majorCreditorRefData = this.majorCreditorRefData.refData.filter(
-            (x) => x.major_creditor_id === majorCreditor,
-          )[0];
-          creditorText = this.opalFinesService.getMajorCreditorPrettyName(majorCreditorRefData);
-        }
+      if (creditor === 'major' && majorCreditor !== null) {
+        return this.getMajorCreditorText(majorCreditor);
       } else {
-        creditorText = this.defaultValues.defaultMinorCreditor;
+        return this.getMinorCreditorText(impositionId);
       }
-    } else if (resultCodeCreditor === 'CPS') {
-      creditorText = this.defaultValues.defaultCpsCreditor;
     } else {
-      creditorText = this.defaultValues.defaultCreditor;
+      return this.getDefaultCreditorText(resultCodeCreditor);
     }
-
-    return creditorText;
   }
 
   /**
@@ -117,6 +160,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
           imposition.fm_offence_details_creditor,
           imposition.fm_offence_details_major_creditor,
           resultCodeImposition.imposition_creditor,
+          imposition.fm_offence_details_imposition_id!,
         ),
         amountImposed: this.utilsService.convertToMonetaryString(amountImposed),
         amountPaid: this.utilsService.convertToMonetaryString(amountPaid),

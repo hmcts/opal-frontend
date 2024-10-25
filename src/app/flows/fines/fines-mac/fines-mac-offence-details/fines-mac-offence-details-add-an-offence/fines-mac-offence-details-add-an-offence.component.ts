@@ -103,6 +103,11 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @param form - The form data containing the offence details to be updated or added.
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
+    // Update the impositions array with their respective index positions
+    form.formData.fm_offence_details_impositions.forEach((imposition, index) => {
+      imposition.fm_offence_details_imposition_id = index;
+    });
+
     const { offenceDetails } = this.finesService.finesMacState;
     const index = offenceDetails.findIndex(
       (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,

@@ -50,6 +50,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
   });
 
   it('should set name to formatted individual name if creditor_type is individual', () => {
+    component.minorCreditorData = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData;
+
     // Call the method
     component['getName']();
 

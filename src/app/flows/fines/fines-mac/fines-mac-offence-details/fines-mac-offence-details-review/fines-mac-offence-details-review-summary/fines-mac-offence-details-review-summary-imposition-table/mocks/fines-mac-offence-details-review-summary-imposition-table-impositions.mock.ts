@@ -3,6 +3,7 @@ import { IFinesMacOffenceDetailsImpositionsState } from '../../../../interfaces/
 export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK: IFinesMacOffenceDetailsImpositionsState[] =
   [
     {
+      fm_offence_details_imposition_id: 0,
       fm_offence_details_result_code: 'FCC',
       fm_offence_details_amount_imposed: 200,
       fm_offence_details_amount_paid: 50,
@@ -12,6 +13,7 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMP
       fm_offence_details_major_creditor: 3856,
     },
     {
+      fm_offence_details_imposition_id: 1,
       fm_offence_details_result_code: 'FCC',
       fm_offence_details_amount_imposed: 200,
       fm_offence_details_amount_paid: 50,
@@ -21,6 +23,7 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMP
       fm_offence_details_major_creditor: 3856,
     },
     {
+      fm_offence_details_imposition_id: 2,
       fm_offence_details_result_code: 'FCOMP',
       fm_offence_details_amount_imposed: 200,
       fm_offence_details_amount_paid: 50,
