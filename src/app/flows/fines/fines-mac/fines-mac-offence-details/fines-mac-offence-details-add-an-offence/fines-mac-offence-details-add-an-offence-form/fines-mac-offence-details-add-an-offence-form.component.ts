@@ -447,6 +447,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     this.handleFormSubmit(event);
   }
 
+  public minorCreditorActions(event: { action: string; index: number }): void {
+    console.log(event);
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = event.index;
+
+    this.updateOffenceDetailsDraft(this.form.value);
+    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeMinorCreditor);
+  }
+
   /**
    * Checks if a minor creditor exists for the specified row index.
    * @param rowIndex - The index of the row to check.

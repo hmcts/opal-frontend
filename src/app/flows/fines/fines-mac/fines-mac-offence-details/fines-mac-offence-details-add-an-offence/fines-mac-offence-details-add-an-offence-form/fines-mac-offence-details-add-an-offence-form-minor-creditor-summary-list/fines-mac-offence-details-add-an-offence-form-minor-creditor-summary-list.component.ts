@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../../../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../../../fines-mac-offence-details-minor-creditor/constants/fines-mac-offence-details-minor-creditor-state.constant';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
@@ -27,6 +27,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 })
 export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent implements OnInit {
   @Input({ required: true }) public index!: number;
+  @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
 
   private readonly finesService = inject(FinesService);
   private readonly utilsService = inject(UtilsService);
@@ -117,6 +118,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
     this.sortCode = sortCode ? this.utilsService.formatSortCode(sortCode) : '';
     this.accountNumber = accountNumber ?? '';
     this.paymentReference = paymentReference ?? '';
+  }
+
+  /**
+   * Handles the click event on the summary list action.
+   * @param event The event triggered by the click action.
+   */
+  public summaryListActionClick(action: string) {
+    this.actionClicked.emit({ action, index: this.index });
   }
 
   ngOnInit(): void {

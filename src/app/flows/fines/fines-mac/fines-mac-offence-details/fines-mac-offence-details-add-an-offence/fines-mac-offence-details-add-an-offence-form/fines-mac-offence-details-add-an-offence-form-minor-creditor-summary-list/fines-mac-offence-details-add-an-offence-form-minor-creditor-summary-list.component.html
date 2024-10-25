@@ -2,7 +2,12 @@
   <ng-container actions>
     <li app-govuk-summary-card-action actionText="Hide details" actionRoute=""></li>
     <li app-govuk-summary-card-action class="govuk-!-padding-left-2" actionText="Change" actionRoute=""></li>
-    <li app-govuk-summary-card-action actionText="Remove" actionRoute=""></li>
+    <li
+      app-govuk-summary-card-action
+      actionText="Remove"
+      actionRoute="remove"
+      (clickEvent)="summaryListActionClick($event)"
+    ></li>
   </ng-container>
   <ng-container content>
     <app-govuk-summary-list [summaryListId]="'minorCreditor' + index">

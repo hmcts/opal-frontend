@@ -42,4 +42,11 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsMinorCreditorComponent,
       ),
   },
+  {
+    path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeMinorCreditor,
+    loadComponent: () =>
+      import(
+        '../fines-mac-offence-details-remove-minor-creditor/fines-mac-offence-details-remove-minor-creditor.component'
+      ).then((c) => c.FinesMacOffenceDetailsRemoveMinorCreditorComponent),
+  },
 ];
