@@ -1,4 +1,4 @@
-export interface IFinesMacInitialPayload {
+export interface IFinesMacPayloadInitial {
   account_type: string | null;
   defendant_type: string | null;
   originator_name: string | null;

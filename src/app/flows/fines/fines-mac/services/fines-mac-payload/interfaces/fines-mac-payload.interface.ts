@@ -1,12 +1,12 @@
-import { IFinesMacAccountNotePayload } from './fines-mac-account-note-payload.interface';
-import { IFinesMacDefendantCompletePayload } from './fines-mac-defendant-complete-payload.interface';
-import { IFinesMacInitialPayload } from './fines-mac-initial-payload.interface';
+import { IFinesMacPayloadAccountNote } from './fines-mac-payload-account-note.interface';
+import { IFinesMacPayloadDefendantComplete } from './fines-mac-payload-defendant-complete.interface';
+import { IFinesMacPayloadInitial } from './fines-mac-payload-initial.interface';
 import { IFinesMacPaymentTermsPayload } from './fines-mac-payment-terms-payload.interface';
 
-export interface IFinesMacPayload extends IFinesMacInitialPayload {
-  defendant: IFinesMacDefendantCompletePayload;
+export interface IFinesMacPayload extends IFinesMacPayloadInitial {
+  defendant: IFinesMacPayloadDefendantComplete;
   offences: null;
   fp_ticket_detail: null;
   payment_terms: IFinesMacPaymentTermsPayload;
-  account_notes: IFinesMacAccountNotePayload[] | null;
+  account_notes: IFinesMacPayloadAccountNote[] | null;
 }

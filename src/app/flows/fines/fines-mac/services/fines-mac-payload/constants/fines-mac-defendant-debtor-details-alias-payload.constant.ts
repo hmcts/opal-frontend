@@ -1,6 +1,6 @@
-import { IFinesMacDefendantDebtorDetailAliasCompletePayload } from '../interfaces/fines-mac-defendant-debtor-detail-alias-complete-payload.interface';
+import { IFinesMacPayloadDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-defendant-debtor-detail-alias-complete.interface';
 
-export const FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD: IFinesMacDefendantDebtorDetailAliasCompletePayload = {
+export const FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD: IFinesMacPayloadDefendantDebtorDetailAliasComplete = {
   alias_forenames: null,
   alias_surname: null,
   alias_company_name: null,

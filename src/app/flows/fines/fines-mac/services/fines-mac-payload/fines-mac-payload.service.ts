@@ -6,7 +6,7 @@ import { IFinesMacAccountDetailsState } from '../../fines-mac-account-details/in
 import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 
 import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
-import { IFinesMacInitialPayload } from './interfaces/fines-mac-initial-payload.interface';
+import { IFinesMacPayloadInitial } from './interfaces/fines-mac-payload-initial.interface';
 
 import { buildDefendantPayload } from './utils/fines-mac-payload-defendant.utils';
 import { buildPaymentTermsPayload } from './utils/fines-mac-payload-payment-terms.utils';
@@ -21,7 +21,7 @@ export class FinesMacPayloadService {
     accountDetailsState: IFinesMacAccountDetailsState,
     courtDetailsState: IFinesMacCourtDetailsState,
     paymentTermsState: IFinesMacPaymentTermsState,
-  ): IFinesMacInitialPayload {
+  ): IFinesMacPayloadInitial {
     const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
       accountDetailsState;
 

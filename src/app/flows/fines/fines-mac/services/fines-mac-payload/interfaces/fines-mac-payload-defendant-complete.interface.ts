@@ -1,7 +1,7 @@
-import { IFinesMacDefendantDebtorDetailCompletePayload } from './fines-mac-defendant-debtor-detail-complete-payload.interface';
-import { IFinesMacDefendantParentGuardianCompletePayload } from './fines-mac-defendant-parent-guardian-complete-payload.interface';
+import { IFinesMacPayloadDefendantDebtorDetailComplete } from './fines-mac-payload-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadDefendantParentGuardianComplete } from './fines-mac-payload-defendant-parent-guardian-complete.interface';
 
-export interface IFinesMacDefendantCompletePayload {
+export interface IFinesMacPayloadDefendantComplete {
   company_flag: boolean | null;
   title: string | null;
   surname: string | null;
@@ -32,6 +32,6 @@ export interface IFinesMacDefendantCompletePayload {
   custody_status: string | null;
   prison_number: string | null;
   interpreter_lang: string | null;
-  debtor_detail: IFinesMacDefendantDebtorDetailCompletePayload | null;
-  parent_guardian: IFinesMacDefendantParentGuardianCompletePayload | null;
+  debtor_detail: IFinesMacPayloadDefendantDebtorDetailComplete | null;
+  parent_guardian: IFinesMacPayloadDefendantParentGuardianComplete | null;
 }

@@ -4,10 +4,10 @@ import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-p
 import { IFinesMacParentGuardianDetailsAliasState } from '../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { IFinesMacParentGuardianDetailsState } from '../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
-import { IFinesMacDefendantIndividualDebtorDetailsAliasPayload } from '../interfaces/fines-mac-defendant-individual-debtor-details-alias-payload.interface';
-import { IFinesMacDefendantIndividualDebtorDetailsPayload } from '../interfaces/fines-mac-defendant-individual-debtor-details-payload.interface';
-import { IFinesMacDefendantParentGuardianParentGuardianPayload } from '../interfaces/fines-mac-defendant-parent-guardian-parent-guardian-payload.interface';
-import { IFinesMacDefendantParentGuardianPayload } from '../interfaces/fines-mac-defendant-parent-guardian-payload.interface';
+import { IFinesMacPayloadDefendantIndividualDebtorDetailsAlias } from '../interfaces/fines-mac-payload-defendant-individual-debtor-details-alias.interface';
+import { IFinesMacPayloadDefendantIndividualDebtorDetails } from '../interfaces/fines-mac-payload-defendant-individual-debtor-details.interface';
+import { IFinesMacPayloadDefendantParentGuardianParentGuardian } from '../interfaces/fines-mac-payload-defendant-parent-guardian-parent-guardian.interface';
+import { IFinesMacPayloadDefendantParentGuardian } from '../interfaces/fines-mac-payload-defendant-parent-guardian.interface';
 
 /**
  * Builds an array of parent or guardian debtor details aliases based on the provided state objects.
@@ -17,7 +17,7 @@ import { IFinesMacDefendantParentGuardianPayload } from '../interfaces/fines-mac
  */
 const buildParentGuardianDebtorDetailsAliases = (
   aliases: IFinesMacParentGuardianDetailsAliasState[],
-): IFinesMacDefendantIndividualDebtorDetailsAliasPayload[] | null => {
+): IFinesMacPayloadDefendantIndividualDebtorDetailsAlias[] | null => {
   const mappedAliases = aliases.map((alias, index) => {
     const forenameKey =
       `fm_parent_guardian_details_alias_forenames_${index}` as keyof IFinesMacParentGuardianDetailsAliasState;
@@ -44,7 +44,7 @@ const buildParentGuardianDebtorDetails = (
   parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
   employerDetailsState: IFinesMacEmployerDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,
-): IFinesMacDefendantIndividualDebtorDetailsPayload => {
+): IFinesMacPayloadDefendantIndividualDebtorDetails => {
   const {
     fm_parent_guardian_details_vehicle_make: vehicle_make,
     fm_parent_guardian_details_vehicle_registration_mark: vehicle_registration_mark,
@@ -102,7 +102,7 @@ const buildParentGuardian = (
   contactDetailsState: IFinesMacContactDetailsState,
   employerDetailsState: IFinesMacEmployerDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,
-): IFinesMacDefendantParentGuardianParentGuardianPayload => {
+): IFinesMacPayloadDefendantParentGuardianParentGuardian => {
   const {
     fm_parent_guardian_details_surname: surname,
     fm_parent_guardian_details_forenames: forenames,
@@ -161,7 +161,7 @@ export const buildDefendantParentGuardianPayload = (
   employerDetailsState: IFinesMacEmployerDetailsState,
   parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,
-): IFinesMacDefendantParentGuardianPayload => {
+): IFinesMacPayloadDefendantParentGuardian => {
   const {
     fm_personal_details_title: title,
     fm_personal_details_surname: surname,
