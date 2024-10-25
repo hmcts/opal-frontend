@@ -84,11 +84,11 @@ const buildPaymentTermEnforcements = (
         buildEnforcement('PRIS', [
           buildEnforcementResultResponse(
             'earliestreleasedate',
-            paymentTermsState['fm_payment_terms_earliest_release_date'] || null,
+            paymentTermsState['fm_payment_terms_earliest_release_date'] ?? null,
           ),
           buildEnforcementResultResponse(
             'prisonandprisonnumber',
-            paymentTermsState['fm_payment_terms_prison_and_prison_number'] || null,
+            paymentTermsState['fm_payment_terms_prison_and_prison_number'] ?? null,
           ),
         ]),
       );
@@ -98,7 +98,7 @@ const buildPaymentTermEnforcements = (
         buildEnforcement('NOENF', [
           buildEnforcementResultResponse(
             'reason',
-            paymentTermsState['fm_payment_terms_reason_account_is_on_noenf'] || null,
+            paymentTermsState['fm_payment_terms_reason_account_is_on_noenf'] ?? null,
           ),
         ]),
       );
@@ -137,11 +137,11 @@ export const buildPaymentTermsPayload = (
 
   return {
     payment_terms_type_code: paymentTermsTypeCode,
-    effective_date: effectiveDate || null,
+    effective_date: effectiveDate ?? null,
     instalment_period: getInstallmentPeriod(fm_payment_instalment_period),
-    lump_sum_amount: fm_payment_terms_lump_sum_amount || null,
-    instalment_amount: fm_payment_terms_instalment_amount || null,
-    default_days_in_jail: fm_payment_terms_default_days_in_jail || null,
+    lump_sum_amount: fm_payment_terms_lump_sum_amount ?? null,
+    instalment_amount: fm_payment_terms_instalment_amount ?? null,
+    default_days_in_jail: fm_payment_terms_default_days_in_jail ?? null,
     enforcements: buildPaymentTermEnforcements(paymentTermsState),
   };
 };

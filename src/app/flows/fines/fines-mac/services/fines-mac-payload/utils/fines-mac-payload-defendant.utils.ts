@@ -67,7 +67,7 @@ const applyBasePayloadsToParentGuardianDefendant = (
     defendant.parent_guardian.debtor_detail.aliases?.map((alias) => ({
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
       ...alias,
-    })) || null;
+    })) ?? null;
 
   const parentGuardianDebtorDetail: IFinesMacPayloadDefendantDebtorDetailComplete = {
     ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
