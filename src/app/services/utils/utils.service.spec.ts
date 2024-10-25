@@ -30,4 +30,10 @@ describe('UtilsService', () => {
     const result = service.convertToMonetaryString(amount);
     expect(result).toEqual('£10.50');
   });
+
+  it('should convert a number to a monetary string', () => {
+    const amount = '10.5';
+    const result = service.convertToMonetaryString(amount);
+    expect(result).toEqual('£10.50');
+  });
 });

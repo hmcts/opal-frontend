@@ -5,5 +5,5 @@ export interface IFinesMacOffenceDetailsImpositionsState {
   fm_offence_details_balance_remaining: number | null;
   fm_offence_details_needs_creditor: boolean | null;
   fm_offence_details_creditor: string | null;
-  fm_offence_details_major_creditor: string | null;
+  fm_offence_details_major_creditor: number | null;
 }

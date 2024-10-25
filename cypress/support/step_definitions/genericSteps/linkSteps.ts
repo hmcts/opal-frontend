@@ -18,8 +18,9 @@ When('the link with text {string} should not be present', (linkText: string) => 
   cy.contains('a', linkText).should('not.exist');
 });
 Then('I click on the {string} link for imposition {int}', (linkText: string, index: number) => {
-  cy.contains('fieldset>legend', 'Impositions')
-    .get('app-moj-ticket-panel')
+  cy.contains('legend', 'Impositions')
+    .parent()
+    .find('app-moj-ticket-panel')
     .eq(index - 1)
     .contains('a', linkText)
     .click();

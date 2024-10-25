@@ -33,11 +33,15 @@ Feature: PO-817 Introduce Major Creditor functionality onto the 'Add an Offence'
     And I enter "BTPO" into the "Search using name or code" search box
     Then I see "British Transport Police (BTPO)" in the "Search using name or code" field for imposition 2
 
-    And I click the "Review offence" button
+    When I click the "Review offence" button
+    And I see "Offences and impositions" on the page header
+    And I click the "Return to account details" button
     Then I see "Account details" on the page header
     And I see the status of "Offence details" is "Provided"
 
     When I click on the "Offence details" link
+    And I see "Offences and impositions" on the page header
+    And I click on the "Change" link
     Then I see "Add an offence" on the page header
     And I see a date 9 weeks into the past in the "Date of sentence" date field
     And I see "TP11003" in the "Offence code" field

@@ -97,7 +97,7 @@ Then('I see {string} hint text on the page', (hintText: string) => {
 });
 
 Then('I see {string} text on the page', (text: string) => {
-  cy.get('legend').should('contain', text);
+  cy.get('body').should('contain', text);
 });
 
 Then('I do not see {string} text on the page', (text: string) => {

@@ -3,7 +3,7 @@ Feature: PO-464 Language Preferences Screen
 
 
 
-  Scenario Outline: AC1,2aii,3 - South Wales BU - 'English Only' default
+  Scenario Outline: AC1,2aii,2b,3 - South Wales BU - 'English Only' default
     Given I am on the Opal Frontend and I sign in as "opal-test-8@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
@@ -44,7 +44,7 @@ Feature: PO-464 Language Preferences Screen
       | Adult or youth only |
 
 
-  Scenario Outline: AC1,2aii,3 - Wales BU - 'Welsh and English' default
+  Scenario Outline: AC1,2ai,3 - Wales BU - 'Welsh and English' default
     Given I am on the Opal Frontend and I sign in as "opal-test-6@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation
