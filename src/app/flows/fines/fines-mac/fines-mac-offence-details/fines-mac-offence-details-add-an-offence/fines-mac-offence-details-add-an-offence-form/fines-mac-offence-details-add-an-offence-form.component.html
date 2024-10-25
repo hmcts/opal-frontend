@@ -132,7 +132,7 @@
                   rowIndex,
                   'fm_offence_details_minor_creditor_' + rowIndex,
                   'fm_offence_details_minor_creditor_creditor_type_' + rowIndex,
-                ])?.value
+                ])?.value !== '' || undefined
               ) {
                 <fieldset class="govuk-fieldset">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
