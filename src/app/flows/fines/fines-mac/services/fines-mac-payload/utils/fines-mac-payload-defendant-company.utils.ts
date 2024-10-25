@@ -2,9 +2,9 @@ import { IFinesMacCompanyDetailsAliasState } from '../../../fines-mac-company-de
 import { IFinesMacCompanyDetailsState } from '../../../fines-mac-company-details/interfaces/fines-mac-company-details-state.interface';
 import { IFinesMacContactDetailsState } from '../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
 import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
-import { IFinesMacPayloadDefendantCompanyDebtorDetailsAlias } from '../interfaces/fines-mac-payload-defendant-company-debtor-details-alias.interface';
-import { IFinesMacPayloadDefendantCompanyDebtorDetails } from '../interfaces/fines-mac-payload-defendant-company-debtor-details.interface';
-import { IFinesMacPayloadDefendantCompany } from '../interfaces/fines-mac-payload-defendant-company.interface';
+import { IFinesMacPayloadDefendantCompanyDebtorDetailsAlias } from './interfaces/fines-mac-payload-defendant-company-debtor-details-alias.interface';
+import { IFinesMacPayloadDefendantCompanyDebtorDetails } from './interfaces/fines-mac-payload-defendant-company-debtor-details.interface';
+import { IFinesMacPayloadDefendantCompany } from './interfaces/fines-mac-payload-defendant-company.interface';
 
 /**
  * Builds an array of company defendant debtor details aliases from the provided aliases state.

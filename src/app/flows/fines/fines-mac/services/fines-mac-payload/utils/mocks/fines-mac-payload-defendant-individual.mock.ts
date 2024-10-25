@@ -1,4 +1,4 @@
-import { IFinesMacPayloadDefendantIndividual } from '../../interfaces/fines-mac-payload-individual-defendant.interface';
+import { IFinesMacPayloadDefendantIndividual } from '../interfaces/fines-mac-payload-individual-defendant.interface';
 
 export const FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_MOCK: IFinesMacPayloadDefendantIndividual = {
   company_flag: false,

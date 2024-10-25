@@ -1,8 +1,8 @@
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-frequency-options';
 import { IFinesMacPaymentTermsState } from '../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
-import { IFinesMacPaymentTermsEnforcementPayload } from '../interfaces/fines-mac-payment-terms-enforcement-payload.interface';
-import { IFinesMacPaymentTermsEnforcementResultResponsePayload } from '../interfaces/fines-mac-payment-terms-enforcement-result-response-payload.interface';
-import { IFinesMacPaymentTermsPayload } from '../interfaces/fines-mac-payment-terms-payload.interface';
+import { IFinesMacPaymentTermsEnforcementPayload } from './interfaces/fines-mac-payment-terms-enforcement-payload.interface';
+import { IFinesMacPaymentTermsEnforcementResultResponsePayload } from './interfaces/fines-mac-payment-terms-enforcement-result-response-payload.interface';
+import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-terms-payload.interface';
 
 // TODO: Remove after https://tools.hmcts.net/jira/browse/PO-909
 const getInstallmentPeriod = (installmentPeriod: string | null | undefined): string | null => {

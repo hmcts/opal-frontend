@@ -1,4 +1,4 @@
-import { IFinesMacPayloadDefendantComplete } from '../interfaces/fines-mac-payload-defendant-complete.interface';
+import { IFinesMacPayloadDefendantComplete } from '../utils/interfaces/fines-mac-payload-defendant-complete.interface';
 import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD } from './fines-mac-defendant-debtor-details-payload.constant';
 import { FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD } from './fines-mac-defendant-parent-guardian-payload.constant';
 

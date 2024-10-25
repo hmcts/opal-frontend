@@ -1,5 +1,5 @@
 import { IFinesMacAccountCommentsNotesState } from '../../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
-import { IFinesMacPayloadAccountNote } from '../interfaces/fines-mac-payload-account-note.interface';
+import { IFinesMacPayloadAccountNote } from './interfaces/fines-mac-payload-account-note.interface';
 
 /**
  * Builds an account note object for fines management.

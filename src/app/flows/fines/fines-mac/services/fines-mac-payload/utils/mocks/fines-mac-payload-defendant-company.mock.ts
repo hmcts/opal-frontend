@@ -1,4 +1,4 @@
-import { IFinesMacPayloadDefendantCompany } from '../../interfaces/fines-mac-payload-defendant-company.interface';
+import { IFinesMacPayloadDefendantCompany } from '../interfaces/fines-mac-payload-defendant-company.interface';
 
 export const FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadDefendantCompany = {
   company_flag: true,

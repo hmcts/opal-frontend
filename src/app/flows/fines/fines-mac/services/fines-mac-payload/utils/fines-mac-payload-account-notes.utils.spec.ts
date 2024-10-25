@@ -1,6 +1,6 @@
 import { buildAccountNotesPayload } from './fines-mac-payload-account-notes.utils';
 import { IFinesMacAccountCommentsNotesState } from '../../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
-import { IFinesMacPayloadAccountNote } from '../interfaces/fines-mac-payload-account-note.interface';
+import { IFinesMacPayloadAccountNote } from './interfaces/fines-mac-payload-account-note.interface';
 
 describe('buildAccountNotesPayload', () => {
   it('should return an array of account notes when comments and notes are provided', () => {

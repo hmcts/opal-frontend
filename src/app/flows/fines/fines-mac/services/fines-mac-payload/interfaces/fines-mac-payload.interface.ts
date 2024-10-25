@@ -1,7 +1,7 @@
-import { IFinesMacPayloadAccountNote } from './fines-mac-payload-account-note.interface';
-import { IFinesMacPayloadDefendantComplete } from './fines-mac-payload-defendant-complete.interface';
+import { IFinesMacPayloadAccountNote } from '../utils/interfaces/fines-mac-payload-account-note.interface';
+import { IFinesMacPayloadDefendantComplete } from '../utils/interfaces/fines-mac-payload-defendant-complete.interface';
 import { IFinesMacPayloadInitial } from './fines-mac-payload-initial.interface';
-import { IFinesMacPaymentTermsPayload } from './fines-mac-payment-terms-payload.interface';
+import { IFinesMacPaymentTermsPayload } from '../utils/interfaces/fines-mac-payment-terms-payload.interface';
 
 export interface IFinesMacPayload extends IFinesMacPayloadInitial {
   defendant: IFinesMacPayloadDefendantComplete;

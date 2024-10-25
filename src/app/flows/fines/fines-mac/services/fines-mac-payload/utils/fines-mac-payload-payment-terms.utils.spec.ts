@@ -1,6 +1,6 @@
 import { buildPaymentTermsPayload } from './fines-mac-payload-payment-terms.utils';
 import { IFinesMacPaymentTermsState } from '../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
-import { IFinesMacPaymentTermsPayload } from '../interfaces/fines-mac-payment-terms-payload.interface';
+import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-terms-payload.interface';
 
 describe('buildPaymentTermsPayload', () => {
   it('should build payment terms payload for payInFull, collection order made, payment card request, default days in jail, PRIS Enforcement', () => {
