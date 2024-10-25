@@ -4,14 +4,6 @@ import { FINES_MAC_DEFENDANT_PAYLOAD } from '../../constants/fines-mac-defendant
 import { IFinesMacDefendantCompletePayload } from '../../interfaces/fines-mac-defendant-complete-payload.interface';
 import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK } from './fines-mac-payload-defendant-parent-guardian-with-alias.mock';
 
-const aliases = FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK.parent_guardian.debtor_detail.aliases || [];
-const completeAliases = [
-  {
-    alias_company_name: null,
-    ...aliases[0],
-  },
-];
-
 export const FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK: IFinesMacDefendantCompletePayload = {
   ...FINES_MAC_DEFENDANT_PAYLOAD,
   ...FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK,
@@ -22,7 +14,13 @@ export const FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOC
     debtor_detail: {
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
       ...FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK.parent_guardian.debtor_detail,
-      aliases: completeAliases,
+      aliases: [
+        {
+          alias_company_name: null,
+          alias_forenames: 'Testing',
+          alias_surname: 'Test',
+        },
+      ],
     },
   },
 };
