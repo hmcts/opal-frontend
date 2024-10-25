@@ -20,8 +20,8 @@ const buildIndividualDefendantDebtorDetailsAliases = (
     const forenameKey = `fm_personal_details_alias_forenames_${index}` as keyof IFinesMacPersonalDetailsAliasState;
     const surnameKey = `fm_personal_details_alias_surname_${index}` as keyof IFinesMacPersonalDetailsAliasState;
     return {
-      alias_forenames: alias[forenameKey] || null,
-      alias_surname: alias[surnameKey] || null,
+      alias_forenames: alias[forenameKey] ?? null,
+      alias_surname: alias[surnameKey] ?? null,
     };
   });
 

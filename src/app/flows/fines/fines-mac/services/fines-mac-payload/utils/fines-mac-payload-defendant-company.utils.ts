@@ -19,7 +19,7 @@ const buildCompanyDefendantDebtorDetailsAliases = (
     const companyNameKey =
       `fm_company_details_alias_organisation_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
     return {
-      alias_company_name: alias[companyNameKey] || null,
+      alias_company_name: alias[companyNameKey] ?? null,
     };
   });
 

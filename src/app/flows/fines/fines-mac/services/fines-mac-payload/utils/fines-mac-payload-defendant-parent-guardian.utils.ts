@@ -24,8 +24,8 @@ const buildParentGuardianDebtorDetailsAliases = (
     const surnameKey =
       `fm_parent_guardian_details_alias_surname_${index}` as keyof IFinesMacParentGuardianDetailsAliasState;
     return {
-      alias_forenames: alias[forenameKey] || null,
-      alias_surname: alias[surnameKey] || null,
+      alias_forenames: alias[forenameKey] ?? null,
+      alias_surname: alias[surnameKey] ?? null,
     };
   });
 

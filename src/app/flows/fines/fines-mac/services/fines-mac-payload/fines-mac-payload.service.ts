@@ -47,11 +47,11 @@ export class FinesMacPayloadService {
       originator_id,
       prosecutor_case_reference,
       enforcement_court_id,
-      collection_order_made: collection_order_made || null,
-      collection_order_made_today: collection_order_made_today || null,
-      collection_order_date: collection_order_date || null,
-      suspended_committal_date: suspended_committal_date || null,
-      payment_card_request: payment_card_request || null,
+      collection_order_made: collection_order_made ?? null,
+      collection_order_made_today: collection_order_made_today ?? null,
+      collection_order_date: collection_order_date ?? null,
+      suspended_committal_date: suspended_committal_date ?? null,
+      payment_card_request: payment_card_request ?? null,
       account_sentence_date: null, // Derived from the earliest of all offence sentence dates
     };
   }

@@ -32,7 +32,7 @@ const buildEnforcementResultResponse = (
 ): IFinesMacPaymentTermsEnforcementResultResponsePayload => {
   return {
     parameter_name: parameterName,
-    response: response || null,
+    response: response ?? null,
   };
 };
 
