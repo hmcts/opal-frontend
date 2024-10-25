@@ -376,7 +376,6 @@
       inputName="fm_payment_terms_start_date"
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
-      [maxDate]="yesterday"
       [control]="form.controls['fm_payment_terms_start_date']"
       [errors]="formControlErrorMessages['fm_payment_terms_start_date']"
       (dateChange)="setInputValue($event, 'fm_payment_terms_start_date')"
