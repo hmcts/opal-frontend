@@ -17,6 +17,14 @@ import { IFinesMacPayload } from './interfaces/fines-mac-payload.interface';
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
+  /**
+   * Builds the initial payload for fines MAC based on the provided state objects.
+   *
+   * @param accountDetailsState - The state object containing account details.
+   * @param courtDetailsState - The state object containing court details.
+   * @param paymentTermsState - The state object containing payment terms.
+   * @returns The initial payload for fines MAC.
+   */
   private buildInitialPayload(
     accountDetailsState: IFinesMacAccountDetailsState,
     courtDetailsState: IFinesMacCourtDetailsState,
