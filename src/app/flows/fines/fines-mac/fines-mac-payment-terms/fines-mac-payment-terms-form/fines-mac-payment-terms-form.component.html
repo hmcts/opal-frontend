@@ -11,13 +11,13 @@
       <div
         app-govuk-radios-item
         labelText="Yes"
-        inputId="yes"
+        inputId="fm_payment_terms_collection_order_made_true"
         inputName="fm_payment_terms_collection_order_made"
-        inputValue="yes"
+        [inputValue]="true"
         [control]="form.controls['fm_payment_terms_collection_order_made']"
       ></div>
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
-        @if (form.get('fm_payment_terms_collection_order_made')!.value === 'yes') {
+        @if (form.get('fm_payment_terms_collection_order_made')!.value === true) {
           <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
             <div class="govuk-form-group">
               <app-moj-date-picker
@@ -40,13 +40,13 @@
       <div
         app-govuk-radios-item
         labelText="No"
-        inputId="no"
+        inputId="fm_payment_terms_collection_order_made_false"
         inputName="fm_payment_terms_collection_order_made"
-        inputValue="no"
+        [inputValue]="false"
         [control]="form.controls['fm_payment_terms_collection_order_made']"
       ></div>
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
-        @if (form.get('fm_payment_terms_collection_order_made')!.value === 'no') {
+        @if (form.get('fm_payment_terms_collection_order_made')!.value === false) {
           @if (permissions[permissionsMap.collectionOrder] !== false) {
             <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
               <div class="govuk-form-group">

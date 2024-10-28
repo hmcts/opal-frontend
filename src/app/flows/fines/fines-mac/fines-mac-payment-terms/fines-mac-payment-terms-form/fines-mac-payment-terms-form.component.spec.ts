@@ -319,10 +319,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     spyOn<any>(component, 'removeControls');
 
     component['hasCollectionOrderListener']();
-    hasCollectionOrderControl.setValue('yes');
+    hasCollectionOrderControl.setValue(true);
 
-    expect(component['addControls']).toHaveBeenCalledWith(component.collectionOrderControls.yes.fieldsToAdd);
-    expect(component['removeControls']).toHaveBeenCalledWith(component.collectionOrderControls.yes.fieldsToRemove);
+    expect(component['addControls']).toHaveBeenCalledWith(component.collectionOrderControls.true.fieldsToAdd);
+    expect(component['removeControls']).toHaveBeenCalledWith(component.collectionOrderControls.true.fieldsToRemove);
   });
 
   it('should remove collection order date and create make collection order today and collection order date when has collection order value is not "yes"', () => {
@@ -336,10 +336,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     spyOn<any>(component, 'removeControls');
 
     component['hasCollectionOrderListener']();
-    hasCollectionOrderControl.setValue('no');
+    hasCollectionOrderControl.setValue(false);
 
-    expect(component['addControls']).toHaveBeenCalledWith(component.collectionOrderControls.no.fieldsToAdd);
-    expect(component['removeControls']).toHaveBeenCalledWith(component.collectionOrderControls.no.fieldsToRemove);
+    expect(component['addControls']).toHaveBeenCalledWith(component.collectionOrderControls.false.fieldsToAdd);
+    expect(component['removeControls']).toHaveBeenCalledWith(component.collectionOrderControls.false.fieldsToRemove);
   });
 
   it('should set collection order date when make collection order today is true', () => {
@@ -349,7 +349,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['addCollectionOrderFormControls']();
     component['hasCollectionOrderListener']();
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
-    hasCollectionOrderControl.setValue('no');
+    hasCollectionOrderControl.setValue(false);
 
     const makeCollectionOrderToday = component.form.controls['fm_payment_terms_collection_order_made_today'];
     makeCollectionOrderToday.setValue(true);
