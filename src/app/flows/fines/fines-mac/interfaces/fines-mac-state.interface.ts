@@ -10,7 +10,6 @@ import { IFinesMacPersonalDetailsForm } from '../fines-mac-personal-details/inte
 import { IFinesMacOffenceDetailsForm } from '../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacAccountCommentsNotesForm } from '../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-form.interface';
 import { IFinesMacLanguagePreferencesForm } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-form.interface';
-import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 
 export interface IFinesMacState {
   employerDetails: IFinesMacEmployerDetailsForm;
@@ -22,7 +21,6 @@ export interface IFinesMacState {
   courtDetails: IFinesMacCourtDetailsForm;
   accountCommentsNotes: IFinesMacAccountCommentsNotesForm;
   offenceDetails: IFinesMacOffenceDetailsForm[];
-  minorCreditors: IFinesMacOffenceDetailsMinorCreditorForm[];
   paymentTerms: IFinesMacPaymentTermsForm;
   languagePreferences: IFinesMacLanguagePreferencesForm;
   businessUnit: IOpalFinesBusinessUnit;

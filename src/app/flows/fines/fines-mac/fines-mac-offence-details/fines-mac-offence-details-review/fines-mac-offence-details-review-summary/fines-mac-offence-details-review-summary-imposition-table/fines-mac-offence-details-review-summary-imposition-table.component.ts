@@ -23,6 +23,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
+  @Input({ required: true }) public offenceIndex!: number;
 
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesService = inject(FinesService);
@@ -79,7 +80,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
    * @returns The text representation of the minor creditor.
    */
   private getMinorCreditorText(impositionId: number): string {
-    const minorCreditor = this.finesService.finesMacState.minorCreditors.find(
+    const minorCreditor = this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
       (x) => x.formData.fm_offence_details_imposition_position === impositionId,
     );
 

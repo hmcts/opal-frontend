@@ -10,6 +10,7 @@ import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList } from '
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacOffenceDetailsService } from '../../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list',
@@ -27,8 +28,10 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 })
 export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent implements OnInit {
   @Input({ required: true }) public index!: number;
+  @Input({ required: true }) public offenceIndex!: number;
 
   private readonly finesService = inject(FinesService);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly utilsService = inject(UtilsService);
 
   public minorCreditorData: IFinesMacOffenceDetailsMinorCreditorState = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE;
@@ -46,9 +49,13 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
    * and populates the information for the summary list.
    */
   private initialMinorCreditorSummaryListSetup(): void {
-    this.minorCreditorData = this.finesService.finesMacState.minorCreditors.find(
-      (x) => x.formData.fm_offence_details_imposition_position === this.index,
-    )!.formData;
+    this.minorCreditorData = this.finesService.finesMacState.offenceDetails[this.offenceIndex]
+      ? this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
+          (x) => x.formData.fm_offence_details_imposition_position === this.index,
+        )!.formData
+      : this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.find(
+          (x) => x.formData.fm_offence_details_imposition_position === this.index,
+        )!.formData;
 
     // Populate information for summary list
     this.setupMinorCreditorSummaryListData();

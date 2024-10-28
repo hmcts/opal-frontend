@@ -53,7 +53,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   });
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-  public formDataIndex!: number;
+  public offenceIndex!: number;
 
   /**
    * Creates an array of autocomplete items based on the provided response data.
@@ -109,12 +109,18 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     });
 
     const { offenceDetails } = this.finesService.finesMacState;
+    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+
+    if (offenceDetailsDraft.length === 1 && offenceDetailsDraft[0].childFormData) {
+      form.childFormData = offenceDetailsDraft[0].childFormData;
+    }
+
     const index = offenceDetails.findIndex(
       (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
     );
 
     if (index !== -1) {
-      offenceDetails[index] = form;
+      offenceDetails[index] = { ...offenceDetails[index], formData: form.formData };
     } else {
       offenceDetails.push(form);
     }
@@ -122,14 +128,14 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
   /**
    * Retrieves the form data for adding an offence.
-   * If the offence details are empty, it sets the formDataIndex to 0 and assigns the default form data.
-   * Otherwise, it sets the formDataIndex to the length of offenceDetails + 1.
+   * If the offence details are empty, it sets the offenceIndex to 0 and assigns the default form data.
+   * Otherwise, it sets the offenceIndex to the length of offenceDetails + 1.
    */
   private retrieveFormData(): void {
     if (this.finesService.finesMacState.offenceDetails.length === 0) {
-      this.formDataIndex = 0;
+      this.offenceIndex = 0;
     } else {
-      this.formDataIndex = this.finesMacOffenceDetailsService.offenceIndex;
+      this.offenceIndex = this.finesMacOffenceDetailsService.offenceIndex;
     }
   }
 

@@ -27,7 +27,10 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
     form.status = FINES_MAC_STATUS.PROVIDED;
 
     // Push data to state and update minor creditor added flag
-    this.finesService.finesMacState.minorCreditors.push(form);
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.push(
+      form,
+    );
+    //this.finesService.finesMacState.minorCreditors.push(form);
     this.finesMacOffenceDetailsService.minorCreditorAdded = true;
 
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);

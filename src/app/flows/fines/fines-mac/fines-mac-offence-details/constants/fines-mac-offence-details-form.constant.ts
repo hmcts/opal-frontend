@@ -7,5 +7,6 @@ export const FINES_MAC_OFFENCE_DETAILS_FORM: IFinesMacOffenceDetailsForm[] = [
     formData: FINES_MAC_OFFENCE_DETAILS_STATE,
     nestedFlow: false,
     status: FINES_MAC_STATUS.NOT_PROVIDED,
+    formDataMinorCreditors: [],
   },
 ];
