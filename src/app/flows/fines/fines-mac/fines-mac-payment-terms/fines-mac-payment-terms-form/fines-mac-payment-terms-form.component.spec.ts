@@ -261,7 +261,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const holdEnforcementListener = spyOn<any>(component, 'holdEnforcementOnAccountListener');
+    const holdEnforcementListener = spyOn<any>(component, 'NOENFListener');
 
     component['addEnforcementFields']();
 
@@ -289,10 +289,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should add control when hold enforcement on account is true', () => {
     component.defendantType = 'company';
     component['addEnforcementFields']();
-    const holdEnforcementOnAccountControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
-    holdEnforcementOnAccountControl.setValue(true);
+    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
+    NOENFControl.setValue(true);
 
-    component['holdEnforcementOnAccountListener']();
+    component['NOENFListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(true);
   });
@@ -300,10 +300,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should remove control when hold enforcement on account is false', () => {
     component.defendantType = 'company';
     component['addEnforcementFields']();
-    const holdEnforcementOnAccountControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
-    holdEnforcementOnAccountControl.setValue(false);
+    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
+    NOENFControl.setValue(false);
 
-    component['holdEnforcementOnAccountListener']();
+    component['NOENFListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(false);
   });
@@ -383,7 +383,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const removeControlsSpy = spyOn<any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
-    enforcementActionsControl.setValue('defendantIsInCustody');
+    enforcementActionsControl.setValue('PRIS');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
     expect(removeControlsSpy).toHaveBeenCalledTimes(4);
@@ -403,7 +403,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const removeControlsSpy = spyOn<any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
-    enforcementActionsControl.setValue('holdEnforcementOnAccount');
+    enforcementActionsControl.setValue('NOENF');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
     expect(removeControlsSpy).toHaveBeenCalledTimes(4);

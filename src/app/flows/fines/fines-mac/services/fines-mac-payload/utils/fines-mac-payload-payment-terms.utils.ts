@@ -69,16 +69,12 @@ const buildPaymentTermEnforcements = (
   // Temporary until value is set to
 
   const addColloEnforcement = hasCollectionOrderBeenMade === 'no' && hasCollectionOrderBeenMadeToday;
-  let resultId = null;
-  if (paymentTermsState['fm_payment_terms_enforcement_action']) {
-    resultId = paymentTermsState['fm_payment_terms_enforcement_action'] === 'defendantIsInCustody' ? 'PRIS' : 'NOENF';
-  }
 
   if (addColloEnforcement) {
     enforcements.push(buildEnforcement('COLLO', null));
   }
 
-  switch (resultId) {
+  switch (paymentTermsState['fm_payment_terms_enforcement_action']) {
     case 'PRIS':
       enforcements.push(
         buildEnforcement('PRIS', [

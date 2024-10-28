@@ -14,7 +14,7 @@ describe('buildPaymentTermsPayload', () => {
       fm_payment_terms_pay_by_date: '2024-10-14',
       fm_payment_terms_suspended_committal_date: '2024-10-11',
       fm_payment_terms_default_days_in_jail: 11,
-      fm_payment_terms_enforcement_action: 'defendantIsInCustody',
+      fm_payment_terms_enforcement_action: 'PRIS',
       fm_payment_terms_earliest_release_date: '2024-10-21',
       fm_payment_terms_prison_and_prison_number: 'Test and test',
     };
@@ -55,7 +55,7 @@ describe('buildPaymentTermsPayload', () => {
       fm_payment_terms_instalment_amount: 100,
       fm_payment_instalment_period: 'weekly',
       fm_payment_terms_start_date: '2019-10-11',
-      fm_payment_terms_enforcement_action: 'holdEnforcementOnAccount',
+      fm_payment_terms_enforcement_action: 'NOENF',
       fm_payment_terms_reason_account_is_on_noenf: 'Test',
     };
 
@@ -97,7 +97,7 @@ describe('buildPaymentTermsPayload', () => {
       fm_payment_terms_collection_order_date: '2024-10-21',
       fm_payment_terms_suspended_committal_date: '2024-10-11',
       fm_payment_terms_default_days_in_jail: 11,
-      fm_payment_terms_enforcement_action: 'defendantIsInCustody',
+      fm_payment_terms_enforcement_action: 'PRIS',
       fm_payment_terms_earliest_release_date: '2024-10-24',
       fm_payment_terms_prison_and_prison_number: 'Test and test',
     };
