@@ -261,7 +261,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const holdEnforcementListener = spyOn<any>(component, 'NOENFListener');
+    const holdEnforcementListener = spyOn<any>(component, 'noEnfListener');
 
     component['addEnforcementFields']();
 
@@ -292,7 +292,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(true);
 
-    component['NOENFListener']();
+    component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(true);
   });
@@ -303,7 +303,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(false);
 
-    component['NOENFListener']();
+    component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(false);
   });

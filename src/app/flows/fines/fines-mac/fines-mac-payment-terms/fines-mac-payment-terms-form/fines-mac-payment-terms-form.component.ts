@@ -229,7 +229,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
           validators: [],
         },
       ]);
-      this.NOENFListener();
+      this.noEnfListener();
     } else {
       this.addControls([
         {
@@ -369,7 +369,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   /**
    * Listens for changes in the NOENF form control and performs actions accordingly.
    */
-  private NOENFListener(): void {
+  private noEnfListener(): void {
     const { fm_payment_terms_hold_enforcement_on_account: NOENF } = this.form.controls;
 
     NOENF.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
