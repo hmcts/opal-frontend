@@ -49,6 +49,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent } from './fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -102,6 +103,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   public creditorOptions = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS;
 
+  public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
+
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
@@ -150,6 +153,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     this.setupImpositionsConfiguration();
     this.setupFormArrayFormControls([...Array(impositionsLength).keys()], impositionsKey);
     this.setInitialErrorMessages();
+    this.getMinorCreditors();
     this.rePopulateForm(formData);
     this.offenceCodeListener();
 
@@ -448,15 +452,22 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
-   * Checks if a minor creditor exists for the specified row index.
-   * @param rowIndex - The index of the row to check.
-   * @returns A boolean indicating whether a minor creditor exists for the specified row index.
+   * Retrieves the minor creditors from the finesMacService and organizes them into an object using the imposition_position as the key.
    */
-  public minorCreditorExist(rowIndex: number): boolean {
-    const minorCreditor = this.finesMacService.finesMacState.minorCreditors.find(
-      (x) => x.formData.fm_offence_details_imposition_position === rowIndex,
-    );
-    return !!minorCreditor;
+  public getMinorCreditors(): void {
+    const minorCreditorsArray = this.finesMacService.finesMacState.minorCreditors;
+
+    // Ensure that the resulting object uses the imposition_position as the key
+    this.minorCreditors = minorCreditorsArray.reduce((acc, creditor) => {
+      const position = creditor.formData.fm_offence_details_imposition_position;
+
+      // Ensure the position is not null
+      if (position !== null && position !== undefined) {
+        acc[position] = creditor.formData;
+      }
+
+      return acc;
+    }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor);
   }
 
   /**

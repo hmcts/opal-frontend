@@ -126,7 +126,7 @@
         ) {
           <div class="govuk-grid-row govuk-form-group">
             <div class="govuk-grid-column-full">
-              @if (minorCreditorExist(rowIndex)) {
+              @if (minorCreditors[rowIndex]) {
                 <fieldset class="govuk-fieldset">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
                   <app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list
