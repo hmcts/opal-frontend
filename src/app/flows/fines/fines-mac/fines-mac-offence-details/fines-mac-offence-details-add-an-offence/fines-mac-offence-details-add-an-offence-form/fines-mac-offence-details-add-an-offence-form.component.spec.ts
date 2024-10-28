@@ -556,4 +556,19 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(component.minorCreditorExist(0)).toBe(false);
   });
+
+  it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+      removeMinorCreditor: 0,
+    };
+
+    component.minorCreditorActions({ action: 'remove', index: 0 });
+
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeMinorCreditor], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
 });

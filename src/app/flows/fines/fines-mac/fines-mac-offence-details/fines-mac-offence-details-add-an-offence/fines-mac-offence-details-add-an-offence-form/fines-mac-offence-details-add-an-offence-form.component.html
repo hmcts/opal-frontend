@@ -129,10 +129,11 @@
               @if (minorCreditorExist(rowIndex)) {
                 <fieldset class="govuk-fieldset">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
-                  <app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list
-                    [index]="rowIndex"
+                  <app-fines-mac-offence-details-minor-creditor-information
+                    [minorCreditor]="getMinorCreditor(rowIndex)!"
+                    [showActions]="true"
                     (actionClicked)="minorCreditorActions($event)"
-                  ></app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list>
+                  ></app-fines-mac-offence-details-minor-creditor-information>
                 </fieldset>
               } @else {
                 <app-govuk-radio

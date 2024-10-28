@@ -1,21 +1,23 @@
 <app-govuk-summary-card-list [cardTitle]="name">
-  <ng-container actions>
-    <li app-govuk-summary-card-action actionText="Hide details" actionRoute=""></li>
-    <li app-govuk-summary-card-action class="govuk-!-padding-left-2" actionText="Change" actionRoute=""></li>
-    <li
-      app-govuk-summary-card-action
-      actionText="Remove"
-      actionRoute="remove"
-      (clickEvent)="summaryListActionClick($event)"
-    ></li>
-  </ng-container>
+  @if (showActions) {
+    <ng-container actions>
+      <li app-govuk-summary-card-action actionText="Hide details" actionRoute=""></li>
+      <li app-govuk-summary-card-action class="govuk-!-padding-left-2" actionText="Change" actionRoute=""></li>
+      <li
+        app-govuk-summary-card-action
+        actionText="Remove"
+        actionRoute="remove"
+        (clickEvent)="summaryListActionClick($event)"
+      ></li>
+    </ng-container>
+  }
   <ng-container content>
-    <app-govuk-summary-list [summaryListId]="'minorCreditor' + index">
+    <app-govuk-summary-list summaryListId="minorCreditor">
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        [summaryListId]="'minorCreditor' + index"
-        [summaryListRowId]="'minorCreditorName' + index"
+        summaryListId="minorCreditorAddress"
+        summaryListRowId="minorCreditor"
       >
         <ng-container name>Address</ng-container>
         <ng-container value> <p class="govuk-!-margin-top-0" [innerHTML]="address"></p> </ng-container>
@@ -24,8 +26,8 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        [summaryListId]="'minorCreditor' + index"
-        [summaryListRowId]="'minorCreditorPaymentMethod' + index"
+        summaryListId="minorCreditorPaymentMethod"
+        summaryListRowId="minorCreditor"
       >
         <ng-container name>Payment method</ng-container>
         <ng-container value> {{ paymentMethod }}</ng-container>
@@ -34,8 +36,8 @@
         <div
           app-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          [summaryListId]="'minorCreditor' + index"
-          [summaryListRowId]="'minorCreditorAccountName' + index"
+          summaryListId="minorCreditorAccountName"
+          summaryListRowId="minorCreditor"
         >
           <ng-container name>Account name</ng-container>
           <ng-container value> {{ accountName }}</ng-container>
@@ -43,8 +45,8 @@
         <div
           app-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          [summaryListId]="'minorCreditor' + index"
-          [summaryListRowId]="'minorCreditorSortCode' + index"
+          summaryListId="minorCreditorSortCode"
+          summaryListRowId="minorCreditor"
         >
           <ng-container name>Sort code</ng-container>
           <ng-container value> {{ sortCode }}</ng-container>
@@ -52,8 +54,8 @@
         <div
           app-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          [summaryListId]="'minorCreditor' + index"
-          [summaryListRowId]="'minorCreditorAccountNumber' + index"
+          summaryListId="minorCreditorAccountNumber"
+          summaryListRowId="minorCreditor"
         >
           <ng-container name>Account number</ng-container>
           <ng-container value> {{ accountNumber }}</ng-container>
@@ -61,8 +63,8 @@
         <div
           app-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          [summaryListId]="'minorCreditor' + index"
-          [summaryListRowId]="'minorCreditorPaymentReference' + index"
+          summaryListId="minorCreditorPaymentReference"
+          summaryListRowId="minorCreditor"
         >
           <ng-container name>Payment reference</ng-container>
           <ng-container value> {{ paymentReference }}</ng-container>

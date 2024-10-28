@@ -11,8 +11,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 
-fdescribe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
+describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
   let component: FinesMacOffenceDetailsRemoveMinorCreditorComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveMinorCreditorComponent>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
@@ -58,5 +59,24 @@ fdescribe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should find the index of a minor creditor with the given imposition position', () => {
+    const actualIndex = component['findMinorCreditorIndex'](0);
+
+    expect(actualIndex).toBe(0);
+  });
+
+  it('should remove minor creditor when confirmMinorCreditorRemoval is called', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.confirmMinorCreditorRemoval();
+
+    expect(mockFinesService.finesMacState.minorCreditors).not.toContain(
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    );
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 });
