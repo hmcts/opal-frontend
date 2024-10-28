@@ -7529,14 +7529,14 @@ __metadata:
   linkType: hard
 
 "cypress-multi-reporters@npm:^2.0.0":
-  version: 2.0.3
-  resolution: "cypress-multi-reporters@npm:2.0.3"
+  version: 2.0.4
+  resolution: "cypress-multi-reporters@npm:2.0.4"
   dependencies:
     debug: "npm:^4.3.7"
     lodash: "npm:^4.17.21"
   peerDependencies:
     mocha: ">=3.1.2"
-  checksum: 10/eb68829e5f070ce1b32428df7e6261a7966b5c1ff7726f058a461d48661649c2d6d531c5b2b842e0a855a9977daf3bff8ff5767dd4c20fd93e912dc4313a7425
+  checksum: 10/4cedc30e50661e0a1a62f24b7e0870fc380eddfb185e29345bab836145d1760294ad3b458e3585bd9cd2c57dc84c4b67b1229626d2be54cbb5bdbec64dd7dc06
   languageName: node
   linkType: hard
 
@@ -7562,8 +7562,8 @@ __metadata:
   linkType: hard
 
 "cypress@npm:^13.6.0":
-  version: 13.15.0
-  resolution: "cypress@npm:13.15.0"
+  version: 13.15.1
+  resolution: "cypress@npm:13.15.1"
   dependencies:
     "@cypress/request": "npm:^3.0.4"
     "@cypress/xvfb": "npm:^1.2.4"
@@ -7605,11 +7605,12 @@ __metadata:
     semver: "npm:^7.5.3"
     supports-color: "npm:^8.1.1"
     tmp: "npm:~0.2.3"
+    tree-kill: "npm:1.2.2"
     untildify: "npm:^4.0.0"
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 10/eb1012234716ae912ad579839dee63f4abcfcfcfd1e5f9281d3d4d69f164d6ba98fac9ecee6432924c72344f5e3c58e694f4a0066ae9ba4b9b81e7fd0aa64f9f
+  checksum: 10/fa822dd7db5283d01b81fbad6278743e63b3bbb9e72e689b5bc92f6d7fbe8f62501d644e3db45fa4a11a810dccebae9c999cc59475a8f3d4c22536f7797e415b
   languageName: node
   linkType: hard
 
