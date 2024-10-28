@@ -13,7 +13,7 @@ export const FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION
         },
       ],
       fieldsToRemove: [
-        { controlName: 'fm_payment_terms_make_collection_order_today', validators: [] },
+        { controlName: 'fm_payment_terms_collection_order_made_today', validators: [] },
         {
           controlName: 'fm_payment_terms_collection_order_date',
           validators: [],
@@ -22,7 +22,7 @@ export const FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION
     },
     no: {
       fieldsToAdd: [
-        { controlName: 'fm_payment_terms_make_collection_order_today', validators: [] },
+        { controlName: 'fm_payment_terms_collection_order_made_today', validators: [] },
         {
           controlName: 'fm_payment_terms_collection_order_date',
           validators: [],

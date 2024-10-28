@@ -16,7 +16,7 @@ export const FINES_MAC_PERSONAL_DETAILS_STATE_MOCK: IFinesMacPersonalDetailsStat
   fm_personal_details_address_line_1: '123 Street',
   fm_personal_details_address_line_2: 'City',
   fm_personal_details_address_line_3: 'County',
-  fm_personal_details_postcode: 'AB12 3CD',
+  fm_personal_details_post_code: 'AB12 3CD',
   fm_personal_details_vehicle_make: 'Ford',
   fm_personal_details_vehicle_registration_mark: 'AB123CDE',
 };

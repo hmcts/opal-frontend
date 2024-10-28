@@ -112,7 +112,7 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
         optionalMaxLengthValidator(16),
         specialCharactersValidator(),
       ]),
-      fm_personal_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_personal_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
     });
   }
 
@@ -165,8 +165,8 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
 
       // Reset payment terms default date data
       paymentTermsFormData['fm_payment_terms_has_days_in_default'] = false;
-      paymentTermsFormData['fm_payment_terms_days_in_default'] = null;
-      paymentTermsFormData['fm_payment_terms_days_in_default_date'] = null;
+      paymentTermsFormData['fm_payment_terms_default_days_in_jail'] = null;
+      paymentTermsFormData['fm_payment_terms_suspended_committal_date'] = null;
     }
   }
 
