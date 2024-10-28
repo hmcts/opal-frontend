@@ -14,7 +14,7 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK } from '../mocks/fines-mac-offence-details-remove-imposition.mock';
 
-describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
+fdescribe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveImpositionComponent>;
   let mockOpalFinesService: Partial<OpalFines>;

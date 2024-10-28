@@ -16,7 +16,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 
-describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
+fdescribe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;

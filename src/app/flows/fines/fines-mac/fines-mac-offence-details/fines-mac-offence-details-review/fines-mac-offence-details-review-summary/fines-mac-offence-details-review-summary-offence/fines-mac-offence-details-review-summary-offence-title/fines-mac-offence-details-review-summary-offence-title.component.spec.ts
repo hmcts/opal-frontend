@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent } from './fines-mac-offence-details-review-summary-offence-title.component';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 
-describe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
+fdescribe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent>;
 

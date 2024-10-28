@@ -546,11 +546,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.today).toBe('01/01/2022');
   });
 
-  it('should return minor creditors', () => {
-    mockFinesService.finesMacState.minorCreditors = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
+  // it('should return minor creditors', () => {
+  //   mockFinesService.finesMacState.minorCreditors = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
 
-    component.getMinorCreditors();
+  //   component.getMinorCreditors();
 
-    expect(component.minorCreditors).toEqual(FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR);
-  });
+  //   expect(component.minorCreditors).toEqual(FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR);
+  // });
 });

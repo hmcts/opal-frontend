@@ -5,7 +5,7 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
-describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
+fdescribe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;

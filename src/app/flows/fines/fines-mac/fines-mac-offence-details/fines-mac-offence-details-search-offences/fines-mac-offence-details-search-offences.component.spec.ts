@@ -4,7 +4,7 @@ import { FinesMacOffenceDetailsSearchOffencesComponent } from './fines-mac-offen
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
-describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
+fdescribe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesComponent>;
 

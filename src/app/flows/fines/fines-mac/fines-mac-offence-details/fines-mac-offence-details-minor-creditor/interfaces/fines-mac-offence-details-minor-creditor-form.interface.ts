@@ -7,5 +7,4 @@ export interface IFinesMacOffenceDetailsMinorCreditorForm
   formData: IFinesMacOffenceDetailsMinorCreditorState;
   nestedFlow: boolean;
   status?: FinesMacStatus | null;
-  linkingId?: number;
 }

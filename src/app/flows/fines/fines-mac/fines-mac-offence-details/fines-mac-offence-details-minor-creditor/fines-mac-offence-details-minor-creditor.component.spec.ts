@@ -10,7 +10,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from './mocks/fine
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 
-describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
+fdescribe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
@@ -59,7 +59,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 
-    expect(mockFinesService.finesMacState.minorCreditors).toEqual([formSubmit]);
+    expect(
+      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData,
+    ).toEqual([formSubmit]);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });

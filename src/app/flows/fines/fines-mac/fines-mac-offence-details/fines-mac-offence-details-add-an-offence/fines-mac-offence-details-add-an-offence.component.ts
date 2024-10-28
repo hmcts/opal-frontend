@@ -147,6 +147,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   public handleOffenceDetailsSubmit(form: IFinesMacOffenceDetailsForm): void {
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
+    form.childFormData = [];
 
     // Update the state with the form data
     this.finesService.finesMacState = {

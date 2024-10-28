@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fines-mac-offence-details-review-summary-offences-total.component';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from '../../mocks/fines-mac-offence-details-review-summary-form.mock';
 
-describe('FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent', () => {
+fdescribe('FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent>;
 

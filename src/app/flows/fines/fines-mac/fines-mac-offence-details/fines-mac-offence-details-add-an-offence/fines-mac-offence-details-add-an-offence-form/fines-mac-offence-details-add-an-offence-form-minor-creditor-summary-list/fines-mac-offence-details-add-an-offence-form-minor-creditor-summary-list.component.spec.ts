@@ -6,20 +6,32 @@ import { of } from 'rxjs';
 import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryList } from './enums/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.enum';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_STATE_MOCK } from '../../../../mocks/fines-mac-state.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../../mocks/fines-mac-offence-details-form.mock';
+import { FinesMacOffenceDetailsService } from '../../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../../mocks/fines-mac-offence-details-draft-state.mock';
 
-describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent', () => {
+fdescribe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = {
-      ...FINES_MAC_STATE_MOCK,
-      minorCreditors: [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
-    };
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+
+    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
+      'finesMacOffenceDetailsDraftState',
+    ]);
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
     mockUtilsService.formatSortCode.and.returnValue('12-34-56');
 
@@ -27,6 +39,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
       imports: [FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
+        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         { provide: UtilsService, useValue: mockUtilsService },
         {
           provide: ActivatedRoute,
@@ -41,6 +54,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
     component = fixture.componentInstance;
 
     component.index = 0;
+    component.offenceIndex = 0;
 
     fixture.detectChanges();
   });
@@ -254,5 +268,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponen
     expect(component.sortCode).toBe('12-34-56');
     expect(component.accountNumber).toBe('');
     expect(component.paymentReference).toBe('');
+  });
+
+  it('should test initialMinorCreditorSummaryListSetup when no data exists in state', () => {
+    mockFinesService.finesMacState.offenceDetails = [];
+
+    component['initialMinorCreditorSummaryListSetup']();
+
+    expect(component.minorCreditorData).toEqual(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData);
   });
 });

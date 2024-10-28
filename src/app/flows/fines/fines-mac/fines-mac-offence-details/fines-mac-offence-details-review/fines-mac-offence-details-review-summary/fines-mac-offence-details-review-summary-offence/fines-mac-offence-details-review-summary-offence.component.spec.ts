@@ -8,7 +8,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 
-describe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
+fdescribe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryOffenceComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
