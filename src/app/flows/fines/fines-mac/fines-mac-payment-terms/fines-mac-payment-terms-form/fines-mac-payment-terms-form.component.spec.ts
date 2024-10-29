@@ -365,7 +365,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     hasCollectionOrderControl.setValue(false);
 
     const makeCollectionOrderToday = component.form.controls['fm_payment_terms_collection_order_made_today'];
-    const makeCollectionOrderToday = component.form.controls['fm_payment_terms_collection_order_made_today'];
     makeCollectionOrderToday.setValue(true);
 
     component['setCollectionOrderDate']();
