@@ -19,7 +19,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM } from './mocks/fines-mac-offence-details-review-summary-service-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 
-fdescribe('FinesMacOffenceDetailsReviewComponent', () => {
+describe('FinesMacOffenceDetailsReviewComponent', () => {
   let component: FinesMacOffenceDetailsReviewComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;

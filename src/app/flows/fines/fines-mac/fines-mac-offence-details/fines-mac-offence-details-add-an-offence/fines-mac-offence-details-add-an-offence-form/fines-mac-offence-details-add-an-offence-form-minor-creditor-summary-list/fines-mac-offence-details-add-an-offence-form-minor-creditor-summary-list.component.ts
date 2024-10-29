@@ -49,13 +49,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListCompo
    * and populates the information for the summary list.
    */
   private initialMinorCreditorSummaryListSetup(): void {
-    this.minorCreditorData = this.finesService.finesMacState.offenceDetails[this.offenceIndex]
-      ? this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
-          (x) => x.formData.fm_offence_details_imposition_position === this.index,
-        )!.formData
-      : this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.find(
-          (x) => x.formData.fm_offence_details_imposition_position === this.index,
-        )!.formData;
+    const offenceDetails = this.finesService.finesMacState.offenceDetails[this.offenceIndex];
+    const draftOffenceDetails =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+
+    const childFormData = offenceDetails?.childFormData || draftOffenceDetails?.childFormData || [];
+    const minorCreditor = childFormData.find((x) => x.formData.fm_offence_details_imposition_position === this.index);
+
+    this.minorCreditorData = minorCreditor!.formData;
 
     // Populate information for summary list
     this.setupMinorCreditorSummaryListData();

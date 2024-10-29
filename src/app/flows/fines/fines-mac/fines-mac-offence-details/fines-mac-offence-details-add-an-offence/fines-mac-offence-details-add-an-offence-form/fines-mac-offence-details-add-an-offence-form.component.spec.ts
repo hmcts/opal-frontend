@@ -22,8 +22,6 @@ import { OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fin
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
-import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
-import { FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR } from './mocks/fines-mac-offence-details-add-an-offence-form-minor-creditor.mocks';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -545,12 +543,4 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component['setupResultCodeListener']).toHaveBeenCalledTimes(impositionsLength);
     expect(component.today).toBe('01/01/2022');
   });
-
-  // it('should return minor creditors', () => {
-  //   mockFinesService.finesMacState.minorCreditors = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
-
-  //   component.getMinorCreditors();
-
-  //   expect(component.minorCreditors).toEqual(FINES_MAC_OFFENCE_DETAILS_ADD_AN_OFFENCE_FORM_MINOR_CREDITOR);
-  // });
 });

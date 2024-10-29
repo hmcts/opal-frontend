@@ -16,7 +16,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../../mocks/fines-mac-offence-details-form.mock';
 
-fdescribe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
+describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryImpositionTableComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryImpositionTableComponent>;
   let mockOpalFinesService: Partial<OpalFines>;

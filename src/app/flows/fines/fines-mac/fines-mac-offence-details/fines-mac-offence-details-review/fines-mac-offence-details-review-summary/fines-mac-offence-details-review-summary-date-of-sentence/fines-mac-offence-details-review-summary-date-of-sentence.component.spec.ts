@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent } from './fines-mac-offence-details-review-summary-date-of-sentence.component';
 import { DateService } from '@services/date-service/date.service';
 
-fdescribe('FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent', () => {
+describe('FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;

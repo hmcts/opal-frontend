@@ -10,7 +10,7 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../../mocks/fines-mac-of
 import { FinesMacOffenceDetailsService } from '../../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../../mocks/fines-mac-offence-details-draft-state.mock';
 
-fdescribe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent', () => {
+describe('FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;

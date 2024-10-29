@@ -349,17 +349,18 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     const index = offenceDetailsDraft.findIndex((item) => item.formData.fm_offence_details_id === offenceDetailsIndex);
 
+    const childFormData =
+      this.finesMacService.finesMacState.offenceDetails[this.offenceIndex]?.childFormData ||
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0]?.childFormData ||
+      [];
+
     if (index !== -1) {
       offenceDetailsDraft[index].formData = formData;
     } else {
       offenceDetailsDraft.push({
         formData: formData,
         nestedFlow: false,
-        childFormData: this.finesMacService.finesMacState.offenceDetails[this.offenceIndex]
-          ? this.finesMacService.finesMacState.offenceDetails[this.offenceIndex].childFormData!
-          : this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0]
-            ? this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!
-            : [],
+        childFormData: childFormData,
       });
     }
   }
@@ -458,21 +459,21 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
-   * Retrieves the minor creditors from the finesMacService and organizes them into an object using the imposition_position as the key.
+   * Retrieves the minor creditors for the offence details.
+   * The minor creditors are obtained from the offence details or the draft offence details.
+   * The minor creditors are then stored in the `minorCreditors` property of the component.
    */
   public getMinorCreditors(): void {
-    const minorCreditorsArray = this.finesMacService.finesMacState.offenceDetails[this.offenceIndex]
-      ? this.finesMacService.finesMacState.offenceDetails[this.offenceIndex].childFormData!
-      : this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0]
-        ? this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!
-        : [];
+    const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.offenceIndex];
+    const draftOffenceDetails =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
 
-    // Ensure that the resulting object uses the imposition_position as the key
+    const minorCreditorsArray = offenceDetails?.childFormData || draftOffenceDetails?.childFormData || [];
+
     this.minorCreditors = minorCreditorsArray.reduce((acc, creditor) => {
       const position = creditor.formData.fm_offence_details_imposition_position;
 
-      // Ensure the position is not null
-      if (position !== null && position !== undefined) {
+      if (position != null) {
         acc[position] = creditor.formData;
       }
 
