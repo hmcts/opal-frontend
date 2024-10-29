@@ -229,7 +229,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
           validators: [],
         },
       ]);
-      this.holdEnforcementOnAccountListener();
+      this.noEnfListener();
     } else {
       this.addControls([
         {
@@ -270,10 +270,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
               controlName: 'fm_payment_terms_hold_enforcement_on_account',
               validators: [],
             },
-            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.defendantIsInCustody
-              .fieldsToRemove,
-            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.holdEnforcementOnAccount
-              .fieldsToRemove,
+            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.PRIS.fieldsToRemove,
+            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.NOENF.fieldsToRemove,
           ]);
         }
       }
@@ -360,7 +358,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     enforcementActions!.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       const actionOptions =
         FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION[
-          enforcementActions!.value === 'defendantIsInCustody' ? 'defendantIsInCustody' : 'holdEnforcementOnAccount'
+          enforcementActions!.value === 'PRIS' ? 'PRIS' : 'NOENF'
         ];
 
       this.addControls(actionOptions.fieldsToAdd);
@@ -369,20 +367,18 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Listens for changes in the holdEnforcementOnAccount form control and performs actions accordingly.
+   * Listens for changes in the NOENF form control and performs actions accordingly.
    */
-  private holdEnforcementOnAccountListener(): void {
-    const { fm_payment_terms_hold_enforcement_on_account: holdEnforcementOnAccount } = this.form.controls;
+  private noEnfListener(): void {
+    const { fm_payment_terms_hold_enforcement_on_account: NOENF } = this.form.controls;
 
-    holdEnforcementOnAccount.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      if (holdEnforcementOnAccount.value !== null) {
-        if (holdEnforcementOnAccount.value === true) {
-          this.addControls(
-            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.holdEnforcementOnAccount.fieldsToAdd,
-          );
+    NOENF.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      if (NOENF.value !== null) {
+        if (NOENF.value === true) {
+          this.addControls(FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.NOENF.fieldsToAdd);
         } else {
           this.removeControls(
-            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.defendantIsInCustody.fieldsToRemove,
+            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.PRIS.fieldsToRemove,
           );
         }
       }

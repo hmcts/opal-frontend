@@ -255,7 +255,7 @@
                   [control]="form.controls['fm_payment_terms_enforcement_action']"
                 ></div>
 
-                @if (enforcementAction.key === 'defendantIsInCustody') {
+                @if (enforcementAction.key === 'PRIS') {
                   @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
                     <div app-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
                       <div class="govuk-form-group">

@@ -6,6 +6,6 @@ interface IFinesMacPaymentTermsEnforcementActionsOptionsFieldsAddRemove {
 }
 
 export interface IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation {
-  defendantIsInCustody: IFinesMacPaymentTermsEnforcementActionsOptionsFieldsAddRemove;
-  holdEnforcementOnAccount: IFinesMacPaymentTermsEnforcementActionsOptionsFieldsAddRemove;
+  PRIS: IFinesMacPaymentTermsEnforcementActionsOptionsFieldsAddRemove;
+  NOENF: IFinesMacPaymentTermsEnforcementActionsOptionsFieldsAddRemove;
 }
