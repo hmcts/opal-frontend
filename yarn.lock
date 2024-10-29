@@ -3910,15 +3910,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ministryofjustice/frontend@npm:^2.1.0":
-  version: 2.2.4
-  resolution: "@ministryofjustice/frontend@npm:2.2.4"
+"@ministryofjustice/frontend@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@ministryofjustice/frontend@npm:3.0.0"
   dependencies:
     govuk-frontend: "npm:^5.0.0"
     moment: "npm:^2.27.0"
   peerDependencies:
     jquery: ^3.6.0
-  checksum: 10/f913d328834a68d31449072ab8de71776bb9751a63fc7c1da0c2c278a22457269f63d870b2aa141fea89ced87c3e97748a159eece0751f6c013aec26832c1f15
+  checksum: 10/a9b4ceee84b72c0aefd6d6ca466ecb31091ade89bf8531d4f2d74abc85349ed510a58c72d3f6ce140f649237301d7e6c385128a8c29ca48f087c93efe8e48970
   languageName: node
   linkType: hard
 
@@ -12382,7 +12382,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/properties-volume": "npm:^1.1.0"
-    "@ministryofjustice/frontend": "npm:^2.1.0"
+    "@ministryofjustice/frontend": "npm:^3.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"
