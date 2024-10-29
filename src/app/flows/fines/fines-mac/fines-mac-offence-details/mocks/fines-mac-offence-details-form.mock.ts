@@ -6,5 +6,5 @@ export const FINES_MAC_OFFENCE_DETAILS_FORM_MOCK: IFinesMacOffenceDetailsForm = 
   formData: FINES_MAC_OFFENCE_DETAILS_STATE_MOCK,
   nestedFlow: false,
   status: FINES_MAC_STATUS.PROVIDED,
-  childFormData: [],
+  childFormData: null,
 };
