@@ -130,6 +130,6 @@
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
-    "@cucumber/messages": "^26.0.0"
+    "@cucumber/messages": "^27.0.0"
   }
 }
