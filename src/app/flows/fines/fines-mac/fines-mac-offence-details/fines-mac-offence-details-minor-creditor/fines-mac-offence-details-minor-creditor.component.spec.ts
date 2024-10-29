@@ -53,11 +53,10 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     mockFinesService.finesMacState.offenceDetails = [];
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
-
     formSubmit.nestedFlow = false;
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [];
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 
