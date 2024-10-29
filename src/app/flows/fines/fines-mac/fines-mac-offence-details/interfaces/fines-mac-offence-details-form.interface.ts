@@ -7,5 +7,5 @@ export interface IFinesMacOffenceDetailsForm extends IAbstractFormBaseForm<IFine
   formData: IFinesMacOffenceDetailsState;
   nestedFlow: boolean;
   status?: FinesMacStatus | null;
-  childFormData?: IFinesMacOffenceDetailsMinorCreditorForm[];
+  childFormData?: IFinesMacOffenceDetailsMinorCreditorForm[] | null;
 }
