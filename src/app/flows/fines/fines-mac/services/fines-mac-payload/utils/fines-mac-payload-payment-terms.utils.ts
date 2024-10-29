@@ -1,22 +1,7 @@
-import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-frequency-options';
 import { IFinesMacPaymentTermsState } from '../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { IFinesMacPaymentTermsEnforcementPayload } from './interfaces/fines-mac-payment-terms-enforcement-payload.interface';
 import { IFinesMacPaymentTermsEnforcementResultResponsePayload } from './interfaces/fines-mac-payment-terms-enforcement-result-response-payload.interface';
 import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-terms-payload.interface';
-
-// TODO: Remove after https://tools.hmcts.net/jira/browse/PO-909
-const getInstallmentPeriod = (installmentPeriod: string | null | undefined): string | null => {
-  switch (installmentPeriod?.toLocaleLowerCase()) {
-    case FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS.weekly.toLowerCase():
-      return 'W';
-    case FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS.fortnightly.toLowerCase():
-      return 'F';
-    case FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS.monthly.toLowerCase():
-      return 'M';
-    default:
-      return null;
-  }
-};
 
 /**
  * Builds an enforcement response object for fines MAC payment terms.
@@ -134,7 +119,7 @@ export const buildPaymentTermsPayload = (
   return {
     payment_terms_type_code: paymentTermsTypeCode,
     effective_date: effectiveDate ?? null,
-    instalment_period: getInstallmentPeriod(fm_payment_instalment_period),
+    instalment_period: fm_payment_instalment_period ?? null,
     lump_sum_amount: fm_payment_terms_lump_sum_amount ?? null,
     instalment_amount: fm_payment_terms_instalment_amount ?? null,
     default_days_in_jail: fm_payment_terms_default_days_in_jail ?? null,
