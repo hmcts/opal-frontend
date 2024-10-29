@@ -47,6 +47,50 @@ describe('buildPaymentTermsPayload', () => {
     expect(result).toEqual(expectedPayload);
   });
 
+  it('should build payment terms payload for payInFull, collection order made, payment card request, default days in jail, PRIS Enforcement with undefined values', () => {
+    const paymentTermsState: IFinesMacPaymentTermsState = {
+      fm_payment_terms_payment_terms: 'payInFull',
+      fm_payment_terms_payment_card_request: true,
+      fm_payment_terms_collection_order_made: true,
+      fm_payment_terms_has_days_in_default: true,
+      fm_payment_terms_add_enforcement_action: true,
+      fm_payment_terms_collection_order_date: '2024-10-22',
+      fm_payment_terms_pay_by_date: '2024-10-15',
+      fm_payment_terms_suspended_committal_date: '2024-10-12',
+      fm_payment_terms_default_days_in_jail: 12,
+      fm_payment_terms_enforcement_action: 'PRIS',
+      fm_payment_terms_earliest_release_date: undefined,
+      fm_payment_terms_prison_and_prison_number: undefined,
+    };
+
+    const expectedPayload: IFinesMacPaymentTermsPayload = {
+      payment_terms_type_code: 'B',
+      effective_date: '2024-10-15',
+      instalment_period: null,
+      lump_sum_amount: null,
+      instalment_amount: null,
+      default_days_in_jail: 12,
+      enforcements: [
+        {
+          result_id: 'PRIS',
+          enforcement_result_responses: [
+            {
+              parameter_name: 'earliestreleasedate',
+              response: null,
+            },
+            {
+              parameter_name: 'prisonandprisonnumber',
+              response: null,
+            },
+          ],
+        },
+      ],
+    };
+
+    const result = buildPaymentTermsPayload(paymentTermsState);
+    expect(result).toEqual(expectedPayload);
+  });
+
   it('should build payment terms payload for instalments, card request, hold enforcement on account', () => {
     const paymentTermsState: IFinesMacPaymentTermsState = {
       fm_payment_terms_payment_terms: 'instalmentsOnly',
@@ -73,6 +117,42 @@ describe('buildPaymentTermsPayload', () => {
             {
               parameter_name: 'reason',
               response: 'Test',
+            },
+          ],
+        },
+      ],
+    };
+
+    const result = buildPaymentTermsPayload(paymentTermsState);
+    expect(result).toEqual(expectedPayload);
+  });
+
+  it('should build payment terms payload for instalments, card request, hold enforcement on account, NoEnf with undefined', () => {
+    const paymentTermsState: IFinesMacPaymentTermsState = {
+      fm_payment_terms_payment_terms: 'instalmentsOnly',
+      fm_payment_terms_payment_card_request: true,
+      fm_payment_terms_add_enforcement_action: true,
+      fm_payment_terms_instalment_amount: 100,
+      fm_payment_instalment_period: 'W',
+      fm_payment_terms_start_date: '2019-10-11',
+      fm_payment_terms_enforcement_action: 'NOENF',
+      fm_payment_terms_reason_account_is_on_noenf: undefined,
+    };
+
+    const expectedPayload: IFinesMacPaymentTermsPayload = {
+      payment_terms_type_code: 'I',
+      effective_date: '2019-10-11',
+      instalment_period: 'W',
+      lump_sum_amount: null,
+      instalment_amount: 100,
+      default_days_in_jail: null,
+      enforcements: [
+        {
+          result_id: 'NOENF',
+          enforcement_result_responses: [
+            {
+              parameter_name: 'reason',
+              response: null,
             },
           ],
         },
