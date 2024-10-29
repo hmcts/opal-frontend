@@ -66,6 +66,8 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+    component.offenceIndex = 0;
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [
       FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
     ];
