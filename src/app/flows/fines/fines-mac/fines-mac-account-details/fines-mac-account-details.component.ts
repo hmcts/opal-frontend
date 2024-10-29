@@ -48,6 +48,7 @@ import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-
 export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly payloadService = inject(FinesMacPayloadService);
   protected readonly finesService = inject(FinesService);
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
@@ -171,6 +172,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.payloadService.buildPayload(this.finesService.finesMacState);
     this.initialAccountDetailsSetup();
   }
 
