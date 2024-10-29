@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacOffenceDetailsDefaultValues } from '../enums/fines-mac-offence-details-default-values.enum';
 import { CommonModule } from '@angular/common';
@@ -9,6 +8,7 @@ import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { GovukSummaryListRowActionItemComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row-actions/govuk-summary-list-row-action-item/govuk-summary-list-row-action-item.component';
 import { GovukSummaryListRowActionsComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row-actions/govuk-summary-list-row-actions.component';
+import { IFinesMacOffenceDetailsMinorCreditorState } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',
@@ -26,7 +26,7 @@ import { GovukSummaryListRowActionsComponent } from '@components/govuk/govuk-sum
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements OnInit {
-  @Input({ required: true }) public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorForm;
+  @Input({ required: true }) public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorState;
   @Input({ required: false }) public showActions!: boolean;
   @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
 
@@ -60,7 +60,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
     const {
       fm_offence_details_minor_creditor_forenames: forenames,
       fm_offence_details_minor_creditor_surname: surname,
-    } = this.minorCreditor.formData;
+    } = this.minorCreditor;
 
     return `${forenames ?? ''} ${surname}`.trim();
   }
@@ -70,14 +70,14 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
    * @returns The company name.
    */
   private getCompanyName(): string {
-    return this.minorCreditor.formData.fm_offence_details_minor_creditor_company_name!;
+    return this.minorCreditor.fm_offence_details_minor_creditor_company_name!;
   }
 
   /**
    * Sets the name based on the creditor type.
    */
   private setName(): void {
-    const { fm_offence_details_minor_creditor_creditor_type: creditorType } = this.minorCreditor.formData;
+    const { fm_offence_details_minor_creditor_creditor_type: creditorType } = this.minorCreditor;
 
     this.name = creditorType === 'individual' ? this.getIndividualName() : this.getCompanyName();
   }
@@ -102,7 +102,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
       fm_offence_details_minor_creditor_address_line_2: addressLine2,
       fm_offence_details_minor_creditor_address_line_3: addressLine3,
       fm_offence_details_minor_creditor_post_code: postCode,
-    } = this.minorCreditor.formData;
+    } = this.minorCreditor;
 
     this.address = this.formatAddress([addressLine1, addressLine2, addressLine3, postCode]);
   }
@@ -146,7 +146,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
       fm_offence_details_minor_creditor_sort_code: sortCode,
       fm_offence_details_minor_creditor_account_number: accountNumber,
       fm_offence_details_minor_creditor_payment_reference: paymentReference,
-    } = this.minorCreditor.formData;
+    } = this.minorCreditor;
 
     this.paymentMethod = hasPaymentDetails ? this.setDefaultPaymentMethod() : this.setDefaultNotProvided();
     this.accountName = nameOnAccount ?? '';
@@ -160,7 +160,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
    * @param event The event triggered by the click action.
    */
   public summaryListActionClick(action: string) {
-    this.actionClicked.emit({ action, index: this.minorCreditor.formData.fm_offence_details_imposition_position! });
+    this.actionClicked.emit({ action, index: this.minorCreditor.fm_offence_details_imposition_position! });
   }
 
   public ngOnInit(): void {

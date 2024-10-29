@@ -476,7 +476,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @returns The minor creditor form data for the specified row index, or undefined if not found.
    */
   public getMinorCreditor(rowIndex: number): IFinesMacOffenceDetailsMinorCreditorForm | undefined {
-    return this.finesMacService.finesMacState.minorCreditors.find(
+    return this.finesMacService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
       (x) => x.formData.fm_offence_details_imposition_position === rowIndex,
     );
   }

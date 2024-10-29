@@ -43,9 +43,11 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
    * @returns The minor creditor form data matching the imposition position.
    */
   private findMinorCreditor(impositionPosition: number): IFinesMacOffenceDetailsMinorCreditorForm {
-    return this.finesService.finesMacState.minorCreditors.find(
-      (x) => x.formData.fm_offence_details_imposition_position === impositionPosition,
-    )!;
+    const draftOffenceDetails =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+
+    const minorCreditorsArray = draftOffenceDetails?.childFormData!;
+    return minorCreditorsArray.find((x) => x.formData.fm_offence_details_imposition_position === impositionPosition)!;
   }
 
   /**
@@ -62,7 +64,11 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
    * @returns The index of the minor creditor, or -1 if not found.
    */
   private findMinorCreditorIndex(impositionPosition: number): number {
-    return this.finesService.finesMacState.minorCreditors.findIndex(
+    const draftOffenceDetails =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+
+    const minorCreditorsArray = draftOffenceDetails?.childFormData!;
+    return minorCreditorsArray.findIndex(
       (x) => x.formData.fm_offence_details_imposition_position === impositionPosition,
     );
   }
@@ -77,7 +83,10 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
     const index = this.findMinorCreditorIndex(impositionPosition);
 
     if (index !== -1) {
-      this.finesService.finesMacState.minorCreditors.splice(index, 1);
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.splice(
+        index,
+        1,
+      );
     }
 
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);

@@ -16,6 +16,7 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-of
 import { CommonModule } from '@angular/common';
 import { FormArray } from '@angular/forms';
 import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
+import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -53,6 +54,27 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    */
   private updateMonetaryString(value: number): string {
     return this.utilsService.convertToMonetaryString(value);
+  }
+
+  // Assuming `offenceDetailsArray` is the array containing IFinesMacOffenceDetailsMinorCreditorForm items
+  private updateImpositionPositionsAfterSplice(
+    offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[],
+    splicedIndex: number,
+  ): IFinesMacOffenceDetailsMinorCreditorForm[] {
+    // Splice the array at the specified index
+    offenceDetailsArray.splice(splicedIndex, 1);
+
+    // Update imposition positions for the remaining items
+    for (let i = splicedIndex; i < offenceDetailsArray.length; i++) {
+      const currentItem = offenceDetailsArray[i];
+
+      // Check if the position is not null before updating
+      if (currentItem.formData.fm_offence_details_imposition_position !== null) {
+        currentItem.formData.fm_offence_details_imposition_position = i + 1;
+      }
+    }
+
+    return offenceDetailsArray;
   }
 
   /**
@@ -133,7 +155,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    * @param formArray - The form array containing the offence details.
    */
   public confirmRemoval(rowIndex: number, formArray: FormArray): void {
-    const { formData } = this.draftOffenceDetailsState.offenceDetailsDraft[0];
+    const { formData, childFormData } = this.draftOffenceDetailsState.offenceDetailsDraft[0];
 
     this.removeControlAndRenumber(
       formArray,
@@ -141,6 +163,11 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.fieldNames,
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
+
+    if (childFormData) {
+      const index = childFormData.findIndex((x) => x.formData.fm_offence_details_imposition_position === rowIndex);
+      this.updateImpositionPositionsAfterSplice(childFormData, index);
+    }
 
     formData.fm_offence_details_impositions = formArray.value;
 

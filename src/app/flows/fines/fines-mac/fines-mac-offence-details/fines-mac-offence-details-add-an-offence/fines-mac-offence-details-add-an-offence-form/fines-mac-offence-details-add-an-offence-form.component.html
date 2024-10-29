@@ -130,7 +130,7 @@
                 <fieldset class="govuk-fieldset">
                   <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Minor creditor</legend>
                   <app-fines-mac-offence-details-minor-creditor-information
-                    [minorCreditor]="getMinorCreditor(rowIndex)!"
+                    [minorCreditor]="minorCreditors[rowIndex]!"
                     [showActions]="true"
                     (actionClicked)="minorCreditorActions($event)"
                   ></app-fines-mac-offence-details-minor-creditor-information>
