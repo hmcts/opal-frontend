@@ -295,10 +295,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(true);
-    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
-    NOENFControl.setValue(true);
 
-    component['noEnfListener']();
     component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(true);
@@ -309,10 +306,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(false);
-    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
-    NOENFControl.setValue(false);
 
-    component['noEnfListener']();
     component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(false);
@@ -323,7 +317,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -341,7 +335,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -396,7 +390,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['enforcementActionsListener']();
     enforcementActionsControl.setValue('PRIS');
-    enforcementActionsControl.setValue('PRIS');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
     expect(removeControlsSpy).toHaveBeenCalledTimes(4);
@@ -416,7 +409,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const removeControlsSpy = spyOn<any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
-    enforcementActionsControl.setValue('NOENF');
     enforcementActionsControl.setValue('NOENF');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
