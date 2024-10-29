@@ -70,6 +70,15 @@ Then(
       .type(value);
   },
 );
+Then('I clear the {string} field for imposition {int}', (labelText: string, index: number) => {
+  cy.contains('legend', 'Impositions')
+    .parent()
+    .find('app-moj-ticket-panel')
+    .eq(index - 1)
+    .contains('label', labelText)
+    .nextUntil('input')
+    .clear();
+});
 
 Then('I see {string} in the {string} field for imposition {int}', (value: string, labelText: string, index: number) => {
   cy.contains('legend', 'Impositions')
