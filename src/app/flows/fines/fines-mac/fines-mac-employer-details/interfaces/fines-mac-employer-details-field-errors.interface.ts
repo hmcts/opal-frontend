@@ -11,5 +11,5 @@ export interface IFinesMacEmployerDetailsFieldErrors extends IAbstractFormBaseFi
   fm_employer_details_employer_address_line_3: IAbstractFormBaseFieldError;
   fm_employer_details_employer_address_line_4: IAbstractFormBaseFieldError;
   fm_employer_details_employer_address_line_5: IAbstractFormBaseFieldError;
-  fm_employer_details_employer_postcode: IAbstractFormBaseFieldError;
+  fm_employer_details_employer_post_code: IAbstractFormBaseFieldError;
 }

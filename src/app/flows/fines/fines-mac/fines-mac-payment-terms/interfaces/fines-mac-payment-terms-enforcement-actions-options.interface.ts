@@ -1,4 +1,4 @@
 export interface IFinesMacPaymentTermsEnforcementActionsOptions {
-  defendantIsInCustody: string;
-  holdEnforcementOnAccount: string;
+  PRIS: string;
+  NOENF: string;
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
@@ -26,13 +26,15 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseComponent {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
-  private readonly sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
-    .getLocalJusticeAreas()
-    .pipe(
-      map((response: IOpalFinesLocalJusticeAreaRefData) => {
-        return this.createAutoCompleteItemsLja(response);
-      }),
-    );
+  public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
+  private readonly sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService.getLocalJusticeAreas().pipe(
+    tap((response: IOpalFinesLocalJusticeAreaRefData) => {
+      this.localJusticeAreas = response;
+    }),
+    map((response: IOpalFinesLocalJusticeAreaRefData) => {
+      return this.createAutoCompleteItemsLja(response);
+    }),
+  );
   private readonly enforcementCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
     .pipe(

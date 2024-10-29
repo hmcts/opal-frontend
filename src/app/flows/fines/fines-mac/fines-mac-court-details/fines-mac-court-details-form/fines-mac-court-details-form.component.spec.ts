@@ -7,6 +7,7 @@ import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-f
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-autocomplete-items.mock';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-court-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;
@@ -33,6 +34,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     component.defendantType = 'adultOrYouthOnly';
+    component.localJusticeAreas = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
     component.sendingCourtAutoCompleteItems = OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK;
     component.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
 
@@ -75,5 +77,22 @@ describe('FinesMacCourtDetailsFormComponent', () => {
         nestedFlow: true,
       }),
     );
+  });
+
+  it('should get originator name based on originator ID', () => {
+    const originatorName = component['getOriginatorName']('3865');
+    expect(originatorName).toBe('Asylum & Immigration Tribunal');
+  });
+
+  it('should return empty string if originator ID is not found', () => {
+    const originatorName = component['getOriginatorName']('999');
+    expect(originatorName).toBe('');
+  });
+
+  it('should set originator name based on sending court details', () => {
+    component['setupCourtDetailsForm']();
+    component.form.get('fm_court_details_originator_id')?.setValue('3865');
+    component['setOriginatorName']();
+    expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
   });
 });
