@@ -27,14 +27,16 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
-  private readonly sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService.getLocalJusticeAreas().pipe(
-    tap((response: IOpalFinesLocalJusticeAreaRefData) => {
-      this.localJusticeAreas = response;
-    }),
-    map((response: IOpalFinesLocalJusticeAreaRefData) => {
-      return this.createAutoCompleteItemsLja(response);
-    }),
-  );
+  private readonly sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
+    .getLocalJusticeAreas()
+    .pipe(
+      tap((response: IOpalFinesLocalJusticeAreaRefData) => {
+        this.localJusticeAreas = response;
+      }),
+      map((response: IOpalFinesLocalJusticeAreaRefData) => {
+        return this.createAutoCompleteItemsLja(response);
+      }),
+    );
   private readonly enforcementCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
     .pipe(
