@@ -140,6 +140,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
     expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
+    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
+    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
   });
 
   it('should remove controls when has days in default is false', () => {
@@ -150,6 +152,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(false);
 
+    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
+    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
     expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
     expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
   });
@@ -262,6 +266,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const addControlsSpy = spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const holdEnforcementListener = spyOn<any>(component, 'noEnfListener');
+    const holdEnforcementListener = spyOn<any>(component, 'noEnfListener');
 
     component['addEnforcementFields']();
 
@@ -291,7 +296,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(true);
+    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
+    NOENFControl.setValue(true);
 
+    component['noEnfListener']();
     component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(true);
@@ -302,7 +310,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
     NOENFControl.setValue(false);
+    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
+    NOENFControl.setValue(false);
 
+    component['noEnfListener']();
     component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(false);
@@ -312,6 +323,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
@@ -329,6 +341,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
@@ -351,6 +364,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     hasCollectionOrderControl.setValue(false);
 
+    const makeCollectionOrderToday = component.form.controls['fm_payment_terms_collection_order_made_today'];
     const makeCollectionOrderToday = component.form.controls['fm_payment_terms_collection_order_made_today'];
     makeCollectionOrderToday.setValue(true);
 
@@ -384,6 +398,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     component['enforcementActionsListener']();
     enforcementActionsControl.setValue('PRIS');
+    enforcementActionsControl.setValue('PRIS');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
     expect(removeControlsSpy).toHaveBeenCalledTimes(4);
@@ -403,6 +418,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const removeControlsSpy = spyOn<any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
+    enforcementActionsControl.setValue('NOENF');
     enforcementActionsControl.setValue('NOENF');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
