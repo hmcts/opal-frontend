@@ -266,7 +266,6 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const addControlsSpy = spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const holdEnforcementListener = spyOn<any>(component, 'noEnfListener');
-    const holdEnforcementListener = spyOn<any>(component, 'noEnfListener');
 
     component['addEnforcementFields']();
 
