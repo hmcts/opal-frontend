@@ -4,10 +4,8 @@
   @if (accessCollectionOrder) {
     <app-govuk-radio
       fieldSetId="fm_payment_terms_collection_order_made"
-      fieldSetId="fm_payment_terms_collection_order_made"
       legendText="Has a collection order been made?"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages['fm_payment_terms_collection_order_made']"
       [errors]="formControlErrorMessages['fm_payment_terms_collection_order_made']"
     >
       <div
@@ -50,7 +48,6 @@
       @if (form.get('fm_payment_terms_collection_order_made')!.value !== null) {
         @if (form.get('fm_payment_terms_collection_order_made')!.value === false) {
           @if (permissions[permissionsMap.collectionOrder] !== false) {
-            <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
             <div app-govuk-radios-conditional conditionalId="'fm_payment_terms_collection_order_made'">
               <div class="govuk-form-group">
                 <app-govuk-checkboxes-item
@@ -277,8 +274,6 @@
                   [inputValue]="enforcementAction.key"
                   [control]="form.controls['fm_payment_terms_enforcement_action']"
                 ></div>
-
-                @if (enforcementAction.key === 'PRIS') {
                 @if (enforcementAction.key === 'PRIS') {
                   @if (form.get('fm_payment_terms_enforcement_action')!.value === enforcementAction.key) {
                     <div app-govuk-radios-conditional conditionalId="fm_payment_terms_enforcement_action">
