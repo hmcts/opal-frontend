@@ -30,7 +30,6 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
   courtDetails: FINES_MAC_COURT_DETAILS_FORM,
   accountCommentsNotes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM,
   offenceDetails: FINES_MAC_OFFENCE_DETAILS_FORM,
-  minorCreditors: [],
   paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,

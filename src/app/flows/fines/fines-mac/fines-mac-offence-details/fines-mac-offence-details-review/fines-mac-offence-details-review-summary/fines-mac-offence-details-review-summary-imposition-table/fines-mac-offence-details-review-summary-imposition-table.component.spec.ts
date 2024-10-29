@@ -14,6 +14,7 @@ import { FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor } fro
 import { FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK } from './mocks/fines-mac-offence-details-review-summary-imposition-table-impositions.mock';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryImpositionTableComponent;
@@ -31,7 +32,10 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState.minorCreditors = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
@@ -53,6 +57,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+    component.offenceIndex = 0;
 
     fixture.detectChanges();
   });
@@ -61,7 +66,11 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
-    mockFinesService.finesMacState.minorCreditors = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
+    component.offenceIndex = 0;
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
   });
 
   it('should create', () => {
@@ -101,7 +110,9 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   });
 
   it('should return minor creditor - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.minorCreditors = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
     const {
       fm_offence_details_minor_creditor_title: title,
       fm_offence_details_minor_creditor_forenames: forenames,
@@ -115,13 +126,18 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   });
 
   it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.minorCreditors[0] = {
-      ...mockFinesService.finesMacState.minorCreditors[0],
-      formData: {
-        ...mockFinesService.finesMacState.minorCreditors[0].formData,
-        fm_offence_details_minor_creditor_title: null,
-        fm_offence_details_minor_creditor_forenames: null,
-      },
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      childFormData: [
+        {
+          ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
+          formData: {
+            ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
+            fm_offence_details_minor_creditor_title: null,
+            fm_offence_details_minor_creditor_forenames: null,
+          },
+        },
+      ],
     };
 
     const { fm_offence_details_minor_creditor_surname: surname } =
@@ -134,16 +150,21 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   });
 
   it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.minorCreditors[0] = {
-      ...mockFinesService.finesMacState.minorCreditors[0],
-      formData: {
-        ...mockFinesService.finesMacState.minorCreditors[0].formData,
-        fm_offence_details_minor_creditor_creditor_type: 'company',
-        fm_offence_details_minor_creditor_company_name: 'Test Ltd',
-        fm_offence_details_minor_creditor_title: null,
-        fm_offence_details_minor_creditor_forenames: null,
-        fm_offence_details_minor_creditor_surname: null,
-      },
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      childFormData: [
+        {
+          ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
+          formData: {
+            ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
+            fm_offence_details_minor_creditor_creditor_type: 'company',
+            fm_offence_details_minor_creditor_company_name: 'Test Ltd',
+            fm_offence_details_minor_creditor_title: null,
+            fm_offence_details_minor_creditor_forenames: null,
+            fm_offence_details_minor_creditor_surname: null,
+          },
+        },
+      ],
     };
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
@@ -152,7 +173,10 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   });
 
   it('should return default minor creditor if minor creditor does not exist - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.minorCreditors = [];
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      childFormData: [],
+    };
     const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);

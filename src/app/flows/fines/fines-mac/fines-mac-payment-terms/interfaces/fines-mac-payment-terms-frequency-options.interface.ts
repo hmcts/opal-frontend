@@ -1,5 +1,5 @@
 export interface IFinesMacPaymentTermsFrequencyOptions {
-  weekly: string;
-  fortnightly: string;
-  monthly: string;
+  W: string;
+  F: string;
+  M: string;
 }

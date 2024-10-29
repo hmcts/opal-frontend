@@ -52,14 +52,15 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-
+    mockFinesService.finesMacState.offenceDetails = [];
     formSubmit.nestedFlow = false;
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [];
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 
-    expect(mockFinesService.finesMacState.minorCreditors).toEqual([formSubmit]);
+    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.length).toEqual(1);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });

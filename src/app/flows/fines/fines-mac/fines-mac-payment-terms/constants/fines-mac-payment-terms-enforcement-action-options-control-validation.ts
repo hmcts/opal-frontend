@@ -6,7 +6,7 @@ import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabe
 
 export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION: IFinesMacPaymentTermsEnforcementActionsOptionsControlValidation =
   {
-    defendantIsInCustody: {
+    PRIS: {
       fieldsToAdd: [
         {
           controlName: 'fm_payment_terms_earliest_release_date',
@@ -24,7 +24,7 @@ export const FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATI
         },
       ],
     },
-    holdEnforcementOnAccount: {
+    NOENF: {
       fieldsToAdd: [
         {
           controlName: 'fm_payment_terms_reason_account_is_on_noenf',

@@ -138,8 +138,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(true);
 
-    expect(component.form.contains('fm_payment_terms_days_in_default_date')).toBe(true);
-    expect(component.form.contains('fm_payment_terms_days_in_default')).toBe(true);
+    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(true);
+    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(true);
   });
 
   it('should remove controls when has days in default is false', () => {
@@ -150,8 +150,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const hasDaysInDefaultControl = component.form.controls['fm_payment_terms_has_days_in_default'];
     hasDaysInDefaultControl.setValue(false);
 
-    expect(component.form.contains('fm_payment_terms_days_in_default_date')).toBe(false);
-    expect(component.form.contains('fm_payment_terms_days_in_default')).toBe(false);
+    expect(component.form.contains('fm_payment_terms_suspended_committal_date')).toBe(false);
+    expect(component.form.contains('fm_payment_terms_default_days_in_jail')).toBe(false);
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
@@ -261,7 +261,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const holdEnforcementListener = spyOn<any>(component, 'holdEnforcementOnAccountListener');
+    const holdEnforcementListener = spyOn<any>(component, 'noEnfListener');
 
     component['addEnforcementFields']();
 
@@ -289,10 +289,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should add control when hold enforcement on account is true', () => {
     component.defendantType = 'company';
     component['addEnforcementFields']();
-    const holdEnforcementOnAccountControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
-    holdEnforcementOnAccountControl.setValue(true);
+    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
+    NOENFControl.setValue(true);
 
-    component['holdEnforcementOnAccountListener']();
+    component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(true);
   });
@@ -300,10 +300,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should remove control when hold enforcement on account is false', () => {
     component.defendantType = 'company';
     component['addEnforcementFields']();
-    const holdEnforcementOnAccountControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
-    holdEnforcementOnAccountControl.setValue(false);
+    const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
+    NOENFControl.setValue(false);
 
-    component['holdEnforcementOnAccountListener']();
+    component['noEnfListener']();
 
     expect(component.form.contains('fm_payment_terms_reason_account_is_on_noenf')).toBe(false);
   });
@@ -312,7 +312,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_has_collection_order'];
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -329,7 +329,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_has_collection_order'];
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'addControls');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -348,10 +348,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component.today = '31/08/2024';
     component['addCollectionOrderFormControls']();
     component['hasCollectionOrderListener']();
-    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_has_collection_order'];
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
     hasCollectionOrderControl.setValue('no');
 
-    const makeCollectionOrderToday = component.form.controls['fm_payment_terms_make_collection_order_today'];
+    const makeCollectionOrderToday = component.form.controls['fm_payment_terms_collection_order_made_today'];
     makeCollectionOrderToday.setValue(true);
 
     component['setCollectionOrderDate']();
@@ -383,7 +383,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const removeControlsSpy = spyOn<any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
-    enforcementActionsControl.setValue('defendantIsInCustody');
+    enforcementActionsControl.setValue('PRIS');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
     expect(removeControlsSpy).toHaveBeenCalledTimes(4);
@@ -403,7 +403,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     const removeControlsSpy = spyOn<any>(component, 'removeControls');
 
     component['enforcementActionsListener']();
-    enforcementActionsControl.setValue('holdEnforcementOnAccount');
+    enforcementActionsControl.setValue('NOENF');
 
     expect(addControlsSpy).toHaveBeenCalledTimes(4);
     expect(removeControlsSpy).toHaveBeenCalledTimes(4);
