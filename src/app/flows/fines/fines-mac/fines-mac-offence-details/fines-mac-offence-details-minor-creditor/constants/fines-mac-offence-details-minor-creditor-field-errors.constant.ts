@@ -9,25 +9,25 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
   },
   fm_offence_details_minor_creditor_forenames: {
     maxlength: {
-      message: `The first name(s) must be 20 characters or fewer`,
+      message: `The minor creditor's first name(s) must be 20 characters or fewer`,
       priority: 1,
     },
     alphabeticalTextPattern: {
-      message: `The first name(s) must only contain alphabetical text`,
+      message: `The minor creditor's first name(s) must only contain alphabetical text`,
       priority: 2,
     },
   },
   fm_offence_details_minor_creditor_surname: {
     required: {
-      message: `Enter last name`,
+      message: `Enter minor creditor's last name`,
       priority: 1,
     },
     maxlength: {
-      message: `The last name must be 30 characters or fewer`,
+      message: `The minor creditor's last name must be 30 characters or fewer`,
       priority: 2,
     },
     alphabeticalTextPattern: {
-      message: `The last name must only contain alphabetical text`,
+      message: `The minor creditor's last name must only contain alphabetical text`,
       priority: 3,
     },
   },
