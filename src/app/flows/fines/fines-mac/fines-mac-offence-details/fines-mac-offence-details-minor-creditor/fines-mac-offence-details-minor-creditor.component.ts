@@ -18,6 +18,15 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly finesService = inject(FinesService);
 
+  /**
+   * Handles the submission of the minor creditor form.
+   *
+   * @param {IFinesMacOffenceDetailsMinorCreditorForm} form - The form data for the minor creditor.
+   *
+   * Updates the imposition position in the form data, sets the form status as provided,
+   * pushes the form data to the offence details draft state, sets the minor creditor added flag,
+   * and navigates to the add offence route.
+   */
   public handleMinorCreditorFormSubmit(form: IFinesMacOffenceDetailsMinorCreditorForm): void {
     // Update the imposition position in the form data
     form.formData.fm_offence_details_imposition_position =
