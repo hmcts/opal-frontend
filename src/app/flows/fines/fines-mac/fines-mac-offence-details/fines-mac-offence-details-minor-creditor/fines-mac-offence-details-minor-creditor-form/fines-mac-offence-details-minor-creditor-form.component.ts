@@ -25,6 +25,7 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
+import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
@@ -78,20 +79,17 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_company_name: new FormControl(null),
       fm_offence_details_minor_creditor_address_line_1: new FormControl(null, [
         Validators.maxLength(30),
-        alphabeticalTextValidator(),
+        specialCharactersValidator(),
       ]),
       fm_offence_details_minor_creditor_address_line_2: new FormControl(null, [
         Validators.maxLength(30),
-        alphabeticalTextValidator(),
+        specialCharactersValidator(),
       ]),
       fm_offence_details_minor_creditor_address_line_3: new FormControl(null, [
         Validators.maxLength(16),
-        alphabeticalTextValidator(),
+        specialCharactersValidator(),
       ]),
-      fm_offence_details_minor_creditor_post_code: new FormControl(null, [
-        Validators.maxLength(8),
-        alphabeticalTextValidator(),
-      ]),
+      fm_offence_details_minor_creditor_post_code: new FormControl(null, [Validators.maxLength(8)]),
       fm_offence_details_minor_creditor_has_payment_details: new FormControl(null),
       fm_offence_details_minor_creditor_name_on_account: new FormControl(null),
       fm_offence_details_minor_creditor_sort_code: new FormControl(null),

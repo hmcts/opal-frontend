@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-offence-details-routing-paths.constant';
+import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
 
 export const routing: Routes = [
   {
@@ -41,6 +42,7 @@ export const routing: Routes = [
       import('../fines-mac-offence-details-minor-creditor/fines-mac-offence-details-minor-creditor.component').then(
         (c) => c.FinesMacOffenceDetailsMinorCreditorComponent,
       ),
+    canDeactivate: [canDeactivateGuard],
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeMinorCreditor,
