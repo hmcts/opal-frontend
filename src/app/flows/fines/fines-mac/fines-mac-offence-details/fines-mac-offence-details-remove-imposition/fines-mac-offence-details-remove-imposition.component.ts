@@ -56,7 +56,13 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     return this.utilsService.convertToMonetaryString(value);
   }
 
-  // Assuming `offenceDetailsArray` is the array containing IFinesMacOffenceDetailsMinorCreditorForm items
+  /**
+   * Updates the imposition positions of offence details after an item has been spliced from the array.
+   *
+   * @param offenceDetailsArray - The array of offence details.
+   * @param splicedIndex - The index at which the item was spliced.
+   * @returns The updated array of offence details with corrected imposition positions.
+   */
   private updateImpositionPositionsAfterSplice(
     offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[],
     splicedIndex: number,
@@ -70,7 +76,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
 
       // Check if the position is not null before updating
       if (currentItem.formData.fm_offence_details_imposition_position !== null) {
-        currentItem.formData.fm_offence_details_imposition_position = i + 1;
+        currentItem.formData.fm_offence_details_imposition_position = i;
       }
     }
 
@@ -148,11 +154,16 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   }
 
   /**
-   * Removes an offence detail at the specified index from the form array and updates the form data.
-   * Navigates to the add offence page after removal.
+   * Confirms the removal of an imposition from the offence details.
    *
-   * @param rowIndex - The index of the offence detail to be removed.
-   * @param formArray - The form array containing the offence details.
+   * This method performs the following actions:
+   * 1. Removes the control from the form array and renumbers the remaining controls.
+   * 2. Updates the imposition positions in the child form data if it exists.
+   * 3. Updates the offence details impositions in the form data.
+   * 4. Handles routing to the add offence path.
+   *
+   * @param rowIndex - The index of the row to be removed.
+   * @param formArray - The form array containing the impositions.
    */
   public confirmRemoval(rowIndex: number, formArray: FormArray): void {
     const { formData, childFormData } = this.draftOffenceDetailsState.offenceDetailsDraft[0];

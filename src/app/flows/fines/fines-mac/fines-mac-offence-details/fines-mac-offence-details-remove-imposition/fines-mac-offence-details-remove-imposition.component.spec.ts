@@ -13,6 +13,8 @@ import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/f
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK } from '../mocks/fines-mac-offence-details-remove-imposition.mock';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
@@ -104,11 +106,16 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   it('should confirm removal and update form data', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'updateImpositionPositionsAfterSplice');
     spyOn(component, 'handleRoute');
     const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
     fixture.detectChanges();
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
     component.confirmRemoval(rowIndex, formArray);
 
     expect(component['removeControlAndRenumber']).toHaveBeenCalledWith(
@@ -117,6 +124,40 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.fieldNames,
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
+    expect(component['updateImpositionPositionsAfterSplice']).toHaveBeenCalledWith(
+      [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
+      0,
+    );
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
+  });
+
+  it('should update imposition positions correctly after removing an item', () => {
+    // Setup mock offenceDetailsArray and formArray
+    const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_imposition_position: 1,
+        },
+      },
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_imposition_position: 2,
+        },
+      },
+    ];
+
+    const splicedIndex = 0;
+
+    const result = component['updateImpositionPositionsAfterSplice'](offenceDetailsArray, splicedIndex);
+
+    // Verify that positions are updated
+    expect(result.length).toBe(2);
+    expect(result[0].formData.fm_offence_details_imposition_position).toBe(0);
+    expect(result[1].formData.fm_offence_details_imposition_position).toBe(1);
   });
 });

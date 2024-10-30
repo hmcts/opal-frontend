@@ -12,6 +12,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
   let component: FinesMacOffenceDetailsRemoveMinorCreditorComponent;
@@ -29,8 +30,11 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockFinesService.finesMacState = {
       ...FINES_MAC_STATE_MOCK,
-      minorCreditors: [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
+      offenceDetails: [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK],
     };
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
 
@@ -72,7 +76,7 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
 
     component.confirmMinorCreditorRemoval();
 
-    expect(mockFinesService.finesMacState.minorCreditors).not.toContain(
+    expect(mockFinesService.finesMacState.offenceDetails[0].childFormData).not.toContain(
       FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
     );
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {

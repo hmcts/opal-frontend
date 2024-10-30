@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from './fines-mac-offence-details-minor-creditor-information.component';
-import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FinesMacOffenceDetailsDefaultValues } from '../enums/fines-mac-offence-details-default-values.enum';
 import { UtilsService } from '@services/utils/utils.service';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
 
 describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorInformationComponent;
@@ -22,7 +21,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsMinorCreditorInformationComponent);
     component = fixture.componentInstance;
 
-    component.minorCreditor = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
+    component.minorCreditor = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK;
 
     fixture.detectChanges();
   });
@@ -32,7 +31,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set name to formatted individual name if creditor_type is individual', () => {
-    component.minorCreditor = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
+    component.minorCreditor = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK;
 
     // Call the method
     component['setName']();
@@ -45,13 +44,10 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor with company type
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_creditor_type: 'company',
-        fm_offence_details_minor_creditor_forenames: null,
-        fm_offence_details_minor_creditor_surname: null,
-        fm_offence_details_minor_creditor_company_name: 'Acme Corp',
-      },
+      fm_offence_details_minor_creditor_creditor_type: 'company',
+      fm_offence_details_minor_creditor_forenames: null,
+      fm_offence_details_minor_creditor_surname: null,
+      fm_offence_details_minor_creditor_company_name: 'Acme Corp',
     };
 
     // Call the method
@@ -65,13 +61,10 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor with individual type but no forenames or surname
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_creditor_type: 'individual',
-        fm_offence_details_minor_creditor_forenames: null,
-        fm_offence_details_minor_creditor_surname: 'Doe',
-        fm_offence_details_minor_creditor_company_name: null,
-      },
+      fm_offence_details_minor_creditor_creditor_type: 'individual',
+      fm_offence_details_minor_creditor_forenames: null,
+      fm_offence_details_minor_creditor_surname: 'Doe',
+      fm_offence_details_minor_creditor_company_name: null,
     };
 
     // Call the method
@@ -85,13 +78,10 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor with full address details
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_address_line_1: '123 Main St',
-        fm_offence_details_minor_creditor_address_line_2: 'Apt 4B',
-        fm_offence_details_minor_creditor_address_line_3: 'District 9',
-        fm_offence_details_minor_creditor_post_code: 'AB12 3CD',
-      },
+      fm_offence_details_minor_creditor_address_line_1: '123 Main St',
+      fm_offence_details_minor_creditor_address_line_2: 'Apt 4B',
+      fm_offence_details_minor_creditor_address_line_3: 'District 9',
+      fm_offence_details_minor_creditor_post_code: 'AB12 3CD',
     };
 
     // Call the method
@@ -105,13 +95,10 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor with only address line 1 and post code
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_address_line_1: '123 Main St',
-        fm_offence_details_minor_creditor_address_line_2: null,
-        fm_offence_details_minor_creditor_address_line_3: null,
-        fm_offence_details_minor_creditor_post_code: 'AB12 3CD',
-      },
+      fm_offence_details_minor_creditor_address_line_1: '123 Main St',
+      fm_offence_details_minor_creditor_address_line_2: null,
+      fm_offence_details_minor_creditor_address_line_3: null,
+      fm_offence_details_minor_creditor_post_code: 'AB12 3CD',
     };
 
     // Call the method
@@ -125,13 +112,10 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor with no address details
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_address_line_1: null,
-        fm_offence_details_minor_creditor_address_line_2: null,
-        fm_offence_details_minor_creditor_address_line_3: null,
-        fm_offence_details_minor_creditor_post_code: null,
-      },
+      fm_offence_details_minor_creditor_address_line_1: null,
+      fm_offence_details_minor_creditor_address_line_2: null,
+      fm_offence_details_minor_creditor_address_line_3: null,
+      fm_offence_details_minor_creditor_post_code: null,
     };
 
     // Call the method
@@ -145,13 +129,10 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor with only post code
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_address_line_1: null,
-        fm_offence_details_minor_creditor_address_line_2: null,
-        fm_offence_details_minor_creditor_address_line_3: null,
-        fm_offence_details_minor_creditor_post_code: 'AB12 3CD',
-      },
+      fm_offence_details_minor_creditor_address_line_1: null,
+      fm_offence_details_minor_creditor_address_line_2: null,
+      fm_offence_details_minor_creditor_address_line_3: null,
+      fm_offence_details_minor_creditor_post_code: 'AB12 3CD',
     };
 
     // Call the method
@@ -165,14 +146,11 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor with payment details
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_has_payment_details: true,
-        fm_offence_details_minor_creditor_name_on_account: 'John Doe',
-        fm_offence_details_minor_creditor_sort_code: '123456',
-        fm_offence_details_minor_creditor_account_number: '98765432',
-        fm_offence_details_minor_creditor_payment_reference: 'REF12345',
-      },
+      fm_offence_details_minor_creditor_has_payment_details: true,
+      fm_offence_details_minor_creditor_name_on_account: 'John Doe',
+      fm_offence_details_minor_creditor_sort_code: '123456',
+      fm_offence_details_minor_creditor_account_number: '98765432',
+      fm_offence_details_minor_creditor_payment_reference: 'REF12345',
     };
 
     // Call the method
@@ -192,14 +170,11 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     // Set minorCreditor without payment details
     component.minorCreditor = {
       ...component.minorCreditor,
-      formData: {
-        ...component.minorCreditor.formData,
-        fm_offence_details_minor_creditor_has_payment_details: false,
-        fm_offence_details_minor_creditor_name_on_account: null,
-        fm_offence_details_minor_creditor_sort_code: null,
-        fm_offence_details_minor_creditor_account_number: null,
-        fm_offence_details_minor_creditor_payment_reference: null,
-      },
+      fm_offence_details_minor_creditor_has_payment_details: false,
+      fm_offence_details_minor_creditor_name_on_account: null,
+      fm_offence_details_minor_creditor_sort_code: null,
+      fm_offence_details_minor_creditor_account_number: null,
+      fm_offence_details_minor_creditor_payment_reference: null,
     };
 
     // Call the method
