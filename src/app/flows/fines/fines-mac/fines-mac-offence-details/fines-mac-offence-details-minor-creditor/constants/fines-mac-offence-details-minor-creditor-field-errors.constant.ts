@@ -75,7 +75,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 2,
     },
   },
-  fm_offence_details_minor_creditor_postcode: {
+  fm_offence_details_minor_creditor_post_code: {
     maxlength: {
       message: `The postcode must be 8 characters or fewer`,
       priority: 1,
