@@ -53,7 +53,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
 
   public imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
   public creditor!: string;
-  public defaultCreditor!: string;
+  public defaultCreditor: string = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
   public majorCreditor!: string;
   public minorCreditor!: string;
   public amountImposedString = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
