@@ -6,6 +6,12 @@ Then(
     cy.contains('label', previousRadioButton).parent().next().contains('label', radioButton);
   },
 );
+Then('I see the {string} radio button', (radioButton: string) => {
+  cy.contains('label', radioButton).prev().should('exist').should('have.attr', 'type', 'radio');
+});
+Then('I do not see the {string} radio button', (radioButton: string) => {
+  cy.contains('label', radioButton).should('not.exist');
+});
 Then('I select the {string} radio button', (radioButton: string) => {
   cy.contains('label', radioButton).click();
 });
