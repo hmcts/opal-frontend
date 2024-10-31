@@ -29,8 +29,12 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     mockOpalFinesService = {
       getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
       getResultPrettyName: jasmine.createSpy('getResults').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
-      getMajorCreditors: jasmine.createSpy('getMajorCreditors').and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
-      getMajorCreditorPrettyName: jasmine.createSpy('getMajorCreditorPrettyName').and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getMajorCreditors: jasmine
+        .createSpy('getMajorCreditors')
+        .and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
+      getMajorCreditorPrettyName: jasmine
+        .createSpy('getMajorCreditorPrettyName')
+        .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
@@ -106,7 +110,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.amountImposedString).toEqual('£0.00');
     expect(component.amountPaidString).toEqual('£0.00');
     expect(component.balanceString).toEqual('£0.00');
-
   });
 
   it('should confirm removal and update form data', () => {

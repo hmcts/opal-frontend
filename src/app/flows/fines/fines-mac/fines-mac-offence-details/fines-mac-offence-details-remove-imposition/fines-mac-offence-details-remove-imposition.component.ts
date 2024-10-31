@@ -111,22 +111,26 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   ): void {
     const formArrayControl = formArrayControls[rowIndex];
 
-    const getControlValue = (controlName: string, defaultValue: any) =>
-      this.getFormArrayControlValue(formArray, controlName, rowIndex, defaultValue);
-
-    const resultCode = getControlValue(
+    const resultCode = this.getFormArrayControlValue(
+      formArray,
       formArrayControl[`fm_offence_details_result_code`].controlName,
+      rowIndex,
       FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.nullDefault,
     );
 
-    this.creditor = getControlValue(
+    this.creditor = this.getFormArrayControlValue(
+      formArray,
       formArrayControl[`fm_offence_details_creditor`].controlName,
+      rowIndex,
       FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault,
     ) as string;
 
-    const majorCreditorId = getControlValue(formArrayControl[`fm_offence_details_major_creditor`].controlName, null) as
-      | number
-      | null;
+    const majorCreditorId = this.getFormArrayControlValue(
+      formArray,
+      formArrayControl[`fm_offence_details_major_creditor`].controlName,
+      rowIndex,
+      null,
+    ) as number | null;
     if (majorCreditorId) {
       const majorCreditor = this.majorCreditors.refData.find((item) => item.major_creditor_id === majorCreditorId);
       if (majorCreditor) {
@@ -148,11 +152,18 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       }
     }
 
-    const amountImposed = getControlValue(
+    const amountImposed = this.getFormArrayControlValue(
+      formArray,
       formArrayControl[`fm_offence_details_amount_imposed`].controlName,
+      rowIndex,
       FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault,
     ) as number;
-    const amountPaid = getControlValue(formArrayControl[`fm_offence_details_amount_paid`].controlName, 0) as number;
+    const amountPaid = this.getFormArrayControlValue(
+      formArray,
+      formArrayControl[`fm_offence_details_amount_paid`].controlName,
+      rowIndex,
+      0,
+    ) as number;
     const balance = amountImposed - amountPaid;
 
     this.amountImposedString =
