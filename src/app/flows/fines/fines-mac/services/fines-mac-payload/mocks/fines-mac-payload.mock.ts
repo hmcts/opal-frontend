@@ -113,7 +113,7 @@ export const FINES_MAC_PAYLOAD_MOCK: IFinesMacPayload = {
         enforcement_result_responses: [
           {
             parameter_name: 'earliestreleasedate',
-            response: '21/10/2024',
+            response: '2024-10-21',
           },
           {
             parameter_name: 'prisonandprisonnumber',

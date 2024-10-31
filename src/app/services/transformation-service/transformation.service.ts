@@ -15,7 +15,7 @@ export class TransformationService {
    * @param transformItem - The configuration for the transformation, including the type of transformation and any necessary format details.
    * @returns The transformed value, or the original value if no transformation is applied.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   private applyTransformation(value: any, transformItem: ITransformItem): any | null {
     if (!value) {
       return value;
@@ -25,7 +25,9 @@ export class TransformationService {
       case 'date':
         if (transformItem.dateInputFormat !== null && transformItem.dateOutputFormat !== null) {
           const parsedDate = this.dateService.getFromFormat(value, transformItem.dateInputFormat);
-          return this.dateService.toFormat(parsedDate, transformItem.dateOutputFormat);
+          if (this.dateService.isValidDate(parsedDate)) {
+            return this.dateService.toFormat(parsedDate, transformItem.dateOutputFormat);
+          }
         }
         return value;
       default:
@@ -56,11 +58,14 @@ export class TransformationService {
 
       if (transformItem) {
         obj[key] = this.applyTransformation(value, transformItem);
+      } else if (Array.isArray(value)) {
+        obj[key] = value.map((item) =>
+          typeof item === 'object' ? this.transformObjectValues(item, toTransform) : item,
+        );
       } else if (typeof value === 'object') {
         obj[key] = this.transformObjectValues(value, toTransform); // Recursive call
       }
     }
-
     return obj;
   }
 }

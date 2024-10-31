@@ -31,4 +31,10 @@ export const FINES_MAC_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
     dateInputFormat: 'dd/MM/yyyy',
     dateOutputFormat: 'yyyy-MM-dd',
   },
+  {
+    key: 'response',
+    transformType: 'date',
+    dateInputFormat: 'dd/MM/yyyy',
+    dateOutputFormat: 'yyyy-MM-dd',
+  },
 ];
