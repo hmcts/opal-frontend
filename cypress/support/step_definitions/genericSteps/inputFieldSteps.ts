@@ -1,4 +1,4 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import { generateString } from '../../../support/utils/stringUtils';
 
 Then('I enter more than 30 characters into the {string} field', (fieldName: string) => {
@@ -48,7 +48,7 @@ Then(
   'the characters remaining counter should show {int} after entering {int} characters into the {string} input field',
   (expectedRemaining: number, numCharsEntered: number, inputField: string) => {
     const textToEnter = generateString(numCharsEntered);
-    cy.contains('app-govuk-text-area', inputField).find('textarea').clear().type(textToEnter);
+    cy.contains('app-govuk-text-area', inputField).find('textarea').clear().type(textToEnter, { delay: 0 });
     cy.get('.govuk-hint').should('contain.text', expectedRemaining.toString());
   },
 );
@@ -130,39 +130,40 @@ Then('row number {int} should have the following data:', (rowNumber: number, dat
 
 Then(
   'the table with offence code {string} should contain the following data:',
-  (offenceCode: string, dataTable: any) => {
+  (offenceCode: string, dataTable: DataTable) => {
+    // Extract expected rows from the data table
     const expectedRows = dataTable.raw();
 
+    // Locate the table by finding the offence code in the caption
     cy.get('span.govuk-caption-m')
       .contains(offenceCode)
       .parentsUntil('app-fines-mac-offence-details-review-summary-offence')
       .parent()
       .next()
       .within(() => {
+        // Verify table headers
         cy.get('thead th').each((header, headerIndex) => {
+          // Check if each header matches the expected header text
           cy.wrap(header).should('contain.text', expectedRows[0][headerIndex].trim());
         });
 
+        // Verify table rows
         cy.get('tbody tr').each((row, rowIndex) => {
-          cy.wrap(row)
-            .invoke('attr', 'class')
-            .then((className) => {
-              const isLastRow = className ? className.includes('light-grey-background-color') : false;
-
-              if (isLastRow) {
-                expectedRows[rowIndex + 1].forEach((expectedValue: string, colIndex: number) => {
-                  cy.wrap(row).within(() => {
-                    cy.get('th').eq(colIndex).should('contain.text', expectedValue.trim());
-                  });
-                });
-              } else {
-                cy.wrap(row).within(() => {
-                  expectedRows[rowIndex + 1].forEach((expectedValue: string, colIndex: number) => {
-                    cy.get('td').eq(colIndex).should('contain.text', expectedValue.trim());
-                  });
-                });
+          // Get the expected data for the current row
+          const expectedRowData = expectedRows[rowIndex + 1];
+          cy.wrap(row).within(() => {
+            // Verify each cell in the row
+            cy.get('td, th').each((cell, colIndex) => {
+              // Adjust column index if the row has a specific class
+              if (row.hasClass('govuk-light-grey-background-color')) {
+                if (colIndex >= 1 && colIndex <= 3) {
+                  colIndex += 1;
+                }
               }
+              // Check if each cell matches the expected cell text
+              cy.wrap(cell).should('contain.text', expectedRowData[colIndex].trim());
             });
+          });
         });
       });
   },

@@ -483,7 +483,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   public getMinorCreditor(rowIndex: number): IFinesMacOffenceDetailsMinorCreditorForm | undefined {
     return this.finesMacService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
-      (x) => x.formData.fm_offence_details_imposition_position === rowIndex,
+      (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
     );
   }
 
