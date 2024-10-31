@@ -219,7 +219,9 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     );
 
     if (childFormData) {
-      const index = childFormData.findIndex((x) => x.formData.fm_offence_details_imposition_position === rowIndex);
+      const index = childFormData.findIndex(
+        (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
+      );
       this.updateImpositionPositionsAfterSplice(childFormData, index);
     }
 

@@ -47,7 +47,9 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
 
     const minorCreditorsArray = draftOffenceDetails.childFormData!;
-    return minorCreditorsArray.find((x) => x.formData.fm_offence_details_imposition_position === impositionPosition)!;
+    return minorCreditorsArray.find(
+      (childFormData) => childFormData.formData.fm_offence_details_imposition_position === impositionPosition,
+    )!;
   }
 
   /**
@@ -69,7 +71,7 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
 
     const minorCreditorsArray = draftOffenceDetails.childFormData!;
     return minorCreditorsArray.findIndex(
-      (x) => x.formData.fm_offence_details_imposition_position === impositionPosition,
+      (childFormData) => childFormData.formData.fm_offence_details_imposition_position === impositionPosition,
     );
   }
 

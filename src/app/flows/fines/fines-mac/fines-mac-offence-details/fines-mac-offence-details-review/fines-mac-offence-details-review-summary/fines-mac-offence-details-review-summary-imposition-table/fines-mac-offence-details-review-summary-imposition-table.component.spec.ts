@@ -94,7 +94,8 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     const expectedImpositionTableData = [
       {
         impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
-          (x) => x.result_id === FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0].fm_offence_details_result_code!,
+          (result) =>
+            result.result_id === FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0].fm_offence_details_result_code!,
         )!.result_title,
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
         amountImposed: expectedTotal,
