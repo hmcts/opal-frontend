@@ -3,7 +3,7 @@ appVersion: '1.0'
 description: A Helm chart for opal-frontend
 name: opal-frontend
 home: https://github.com/hmcts/opal-frontend/
-version: 0.0.143
+version: 0.0.144
 maintainers:
   - name: HMCTS Opal team
 dependencies:
@@ -15,7 +15,7 @@ dependencies:
     repository: 'https://charts.bitnami.com/bitnami'
     condition: redis.enabled
   - name: postgresql
-    version: 16.0.6
+    version: 16.1.0
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: opal-fines-service
