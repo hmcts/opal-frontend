@@ -466,11 +466,15 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param event - The event object containing the action and index.
    */
   public minorCreditorActions(event: { action: string; index: number }): void {
-    if (event.action === 'remove') {
+    if (event.action === 'remove' || event.action === 'change') {
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = event.index;
 
       this.updateOffenceDetailsDraft(this.form.value);
-      this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeMinorCreditor);
+      this.handleRoute(
+        event.action === 'remove'
+          ? this.fineMacOffenceDetailsRoutingPaths.children.removeMinorCreditor
+          : this.fineMacOffenceDetailsRoutingPaths.children.addMinorCreditor,
+      );
     } else if (event.action === 'showHideDetails') {
       this.minorCreditorsHidden[event.index] = !this.minorCreditorsHidden[event.index];
     }

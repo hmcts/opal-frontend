@@ -107,6 +107,19 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     this.creditorTypeListener();
     this.hasPaymentDetailsListener();
     this.setInitialErrorMessages();
+
+    // The following code is when editing a minor creditor to repopulate the form with the existing data
+    const impositionPosition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor;
+    if (impositionPosition !== null) {
+      const minorCreditors =
+        this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!;
+      const minorCreditor = minorCreditors.find(
+        (x) => x.formData.fm_offence_details_imposition_position === impositionPosition,
+      )!;
+      if (minorCreditor) {
+        this.rePopulateForm(minorCreditor.formData);
+      }
+    }
   }
 
   /**
