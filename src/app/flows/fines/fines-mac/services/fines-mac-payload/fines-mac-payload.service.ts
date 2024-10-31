@@ -12,32 +12,15 @@ import { buildDefendantPayload } from './utils/fines-mac-payload-defendant.utils
 import { buildPaymentTermsPayload } from './utils/fines-mac-payload-payment-terms.utils';
 import { buildAccountNotesPayload } from './utils/fines-mac-payload-account-notes.utils';
 import { IFinesMacPayload } from './interfaces/fines-mac-payload.interface';
-import { DateService } from '@services/date-service/date.service';
+import { TransformationService } from '@services/transformation-service/transformation.service';
+import { FINES_MAC_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
+import { ITransformItem } from '@services/transformation-service/interfaces/transform-item.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
-  private readonly dateService = inject(DateService);
-
-  private formatDateValues(obj: any, keysToReplace: string[]): any {
-    if (typeof obj !== 'object' || obj === null) {
-      return obj;
-    }
-
-    for (let key in obj) {
-      if (keysToReplace.includes(key)) {
-        if (obj[key]) {
-          const parsedDate = this.dateService.getFromFormat(obj[key], 'dd/MM/yyyy');
-          obj[key] = this.dateService.toFormat(parsedDate, 'yyyy-MM-dd');
-        }
-      } else if (typeof obj[key] === 'object') {
-        obj[key] = this.formatDateValues(obj[key], keysToReplace); // Recursive call
-      }
-    }
-
-    return obj;
-  }
+  private transformationService = inject(TransformationService);
 
   /**
    * Builds the initial payload for fines MAC based on the provided state objects.
@@ -87,6 +70,20 @@ export class FinesMacPayloadService {
   }
 
   /**
+   * Transforms the given finesMacPayload object by applying the transformations
+   * defined in the FINES_MAC_TRANSFORM_ITEMS_CONFIG.
+   *
+   * @param finesMacPayload - The payload object to be transformed.
+   * @returns The transformed payload object.
+   */
+  private transformPayload(
+    finesMacPayload: IFinesMacPayload,
+    transformItemsConfig: ITransformItem[],
+  ): IFinesMacPayload {
+    return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
+  }
+
+  /**
    * Builds the payload for fines MAC based on the provided state.
    *
    * @param {IFinesMacState} finesMacState - The state containing all the necessary form data.
@@ -103,19 +100,6 @@ export class FinesMacPayloadService {
     const { formData: companyDetailsState } = finesMacState.companyDetails;
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
-
-    // Before we build the payload, transform the dates to the required format...
-    // const parentGuardianDateKeys = ['fm_parent_guardian_details_dob'];
-    // const personalDetailsDateKeys = ['fm_personal_details_dob'];
-    // const offenceDetailsDateKeys = ['fm_offence_details_offence_date'];
-    // const paymentTermsDateKeys = [
-    //   'fm_payment_terms_collection_order_date',
-    //   'fm_payment_terms_start_date',
-    //   'fm_payment_terms_pay_by_date',
-    //   'fm_payment_terms_earliest_release_date',
-    // ];
-
-    // console.log(this.formatDateValues(parentGuardianDetailsState, parentGuardianDateKeys));
 
     // Build the parts of our payload...
     const initialPayload = this.buildInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
@@ -141,16 +125,6 @@ export class FinesMacPayloadService {
       account_notes: accountNotes,
     };
 
-    const dateKeys = [
-      'dob',
-      'effective_date',
-      'collection_order_date',
-      'suspended_committal_date',
-      'account_sentence_date',
-    ];
-
-    console.log(this.formatDateValues(finesMacPayload, dateKeys));
-
-    return finesMacPayload;
+    return this.transformPayload(finesMacPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
   }
 }
