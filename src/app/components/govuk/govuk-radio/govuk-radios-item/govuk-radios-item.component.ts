@@ -17,7 +17,7 @@ export class GovukRadiosItemComponent {
   @Input({ required: true }) inputId!: string;
   @Input({ required: true }) inputName!: string;
   @Input({ required: false }) inputClasses!: string;
-  @Input({ required: true }) inputValue!: string;
+  @Input({ required: true }) inputValue!: string | boolean;
   @Input({ required: false }) inputValueHint!: string;
   @Input({ required: false }) ariaControls!: string;
 
