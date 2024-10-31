@@ -41,12 +41,14 @@ describe('TransformationService', () => {
       };
 
       const result = service['applyTransformation'](value, transformItem);
+      expect(result).toBe('1991-06-04');
     });
   });
 
   describe('transformObjectValues', () => {
     it('should return the input if it is not an object', () => {
       const input = 'not an object';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = service.transformObjectValues(input as any, []);
       expect(result).toBe(input);
     });

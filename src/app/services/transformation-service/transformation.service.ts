@@ -15,6 +15,7 @@ export class TransformationService {
    * @param transformItem - The configuration for the transformation, including the type of transformation and any necessary format details.
    * @returns The transformed value, or the original value if no transformation is applied.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private applyTransformation(value: any, transformItem: ITransformItem): any | null {
     if (!value) {
       return value;
@@ -44,6 +45,7 @@ export class TransformationService {
    * - If the input `obj` is not an object or is null, it returns the input as is.
    * - The function recursively processes nested objects.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public transformObjectValues(obj: { [key: string]: any }, toTransform: ITransformItem[]): any {
     if (typeof obj !== 'object' || obj === null) {
       return obj;
