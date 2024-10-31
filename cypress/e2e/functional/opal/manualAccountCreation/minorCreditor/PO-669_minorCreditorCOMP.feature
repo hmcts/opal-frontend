@@ -1,4 +1,4 @@
-Feature: PO-669 - Minor Creditor - Adult or Youth
+Feature: PO-669 - Minor Creditor - Company
 
   Background:
     Given I am on the Opal Frontend and I sign in as "opal-test@hmcts.net"
