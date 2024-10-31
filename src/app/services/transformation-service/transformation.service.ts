@@ -43,7 +43,6 @@ export class TransformationService {
    * @remarks
    * - If the input `obj` is not an object or is null, it returns the input as is.
    * - The function recursively processes nested objects.
-   * - The function does not modify the input object; it returns a new object with the transformed values.
    */
   public transformObjectValues(obj: { [key: string]: any }, toTransform: ITransformItem[]): any {
     if (typeof obj !== 'object' || obj === null) {
