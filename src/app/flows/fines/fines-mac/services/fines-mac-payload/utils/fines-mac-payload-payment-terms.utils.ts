@@ -38,51 +38,38 @@ const buildEnforcement = (
   };
 };
 
-// TODO: Refactor once changes have been made
-// https://tools.hmcts.net/jira/browse/PO-906
-// https://tools.hmcts.net/jira/browse/PO-907
-// https://tools.hmcts.net/jira/browse/PO-908
-//
 const buildPaymentTermEnforcements = (
   paymentTermsState: IFinesMacPaymentTermsState,
 ): IFinesMacPaymentTermsEnforcementPayload[] | null => {
+  const {
+    fm_payment_terms_collection_order_made: hasCollectionOrderBeenMade,
+    fm_payment_terms_collection_order_made_today: hasCollectionOrderBeenMadeToday,
+    fm_payment_terms_enforcement_action: enforcementAction,
+    fm_payment_terms_earliest_release_date: earliestReleaseDate,
+    fm_payment_terms_prison_and_prison_number: prisonAndPrisonNumber,
+    fm_payment_terms_reason_account_is_on_noenf: reasonAccountIsOnNoenf,
+  } = paymentTermsState;
+
   const enforcements = [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const hasCollectionOrderBeenMade: any = paymentTermsState['fm_payment_terms_collection_order_made'];
-  const hasCollectionOrderBeenMadeToday = paymentTermsState['fm_payment_terms_collection_order_made_today'];
-  // const addColloEnforcement = !hasCollectionOrderBeenMade && hasCollectionOrderBeenMadeToday;
-  // Temporary until value is set to
 
-  const addColloEnforcement = hasCollectionOrderBeenMade === 'no' && hasCollectionOrderBeenMadeToday;
-
-  if (addColloEnforcement) {
+  if (!hasCollectionOrderBeenMade && hasCollectionOrderBeenMadeToday) {
     enforcements.push(buildEnforcement('COLLO', null));
   }
 
-  switch (paymentTermsState['fm_payment_terms_enforcement_action']) {
+  switch (enforcementAction) {
     case 'PRIS':
       enforcements.push(
         buildEnforcement('PRIS', [
-          buildEnforcementResultResponse(
-            'earliestreleasedate',
-            paymentTermsState['fm_payment_terms_earliest_release_date'] ?? null,
-          ),
-          buildEnforcementResultResponse(
-            'prisonandprisonnumber',
-            paymentTermsState['fm_payment_terms_prison_and_prison_number'] ?? null,
-          ),
+          buildEnforcementResultResponse('earliestreleasedate', earliestReleaseDate ?? null),
+          buildEnforcementResultResponse('prisonandprisonnumber', prisonAndPrisonNumber ?? null),
         ]),
       );
       break;
     case 'NOENF':
       enforcements.push(
-        buildEnforcement('NOENF', [
-          buildEnforcementResultResponse(
-            'reason',
-            paymentTermsState['fm_payment_terms_reason_account_is_on_noenf'] ?? null,
-          ),
-        ]),
+        buildEnforcement('NOENF', [buildEnforcementResultResponse('reason', reasonAccountIsOnNoenf ?? null)]),
       );
+      break;
   }
 
   return enforcements.length ? enforcements : null;

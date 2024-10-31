@@ -6,6 +6,6 @@ interface IFinesMacPaymentTermsCollectionOrderOptionsFieldsAddRemove {
 }
 
 export interface IFinesMacPaymentTermsCollectionOrderOptionsControlValidation {
-  yes: IFinesMacPaymentTermsCollectionOrderOptionsFieldsAddRemove;
-  no: IFinesMacPaymentTermsCollectionOrderOptionsFieldsAddRemove;
+  true: IFinesMacPaymentTermsCollectionOrderOptionsFieldsAddRemove;
+  false: IFinesMacPaymentTermsCollectionOrderOptionsFieldsAddRemove;
 }
