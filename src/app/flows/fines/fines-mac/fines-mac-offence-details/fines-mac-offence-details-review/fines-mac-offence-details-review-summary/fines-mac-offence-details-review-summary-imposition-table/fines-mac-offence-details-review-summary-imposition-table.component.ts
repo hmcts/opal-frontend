@@ -70,7 +70,9 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
    * @returns The major creditor text.
    */
   private getMajorCreditorText(majorCreditor: number): string {
-    const majorCreditorRefData = this.majorCreditorRefData.refData.find((x) => x.major_creditor_id === majorCreditor);
+    const majorCreditorRefData = this.majorCreditorRefData.refData.find(
+      (creditor) => creditor.major_creditor_id === majorCreditor,
+    );
     return this.opalFinesService.getMajorCreditorPrettyName(majorCreditorRefData!);
   }
 
@@ -81,7 +83,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
    */
   private getMinorCreditorText(impositionId: number): string {
     const minorCreditor = this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
-      (x) => x.formData.fm_offence_details_imposition_position === impositionId,
+      (childFormData) => childFormData.formData.fm_offence_details_imposition_position === impositionId,
     );
 
     if (!minorCreditor) return FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor.defaultMinorCreditor;
