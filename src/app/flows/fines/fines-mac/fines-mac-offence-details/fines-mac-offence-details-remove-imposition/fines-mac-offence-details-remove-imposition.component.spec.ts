@@ -15,6 +15,8 @@ import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-s
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK } from '../mocks/fines-mac-offence-details-remove-imposition.mock';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
@@ -27,6 +29,8 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     mockOpalFinesService = {
       getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
       getResultPrettyName: jasmine.createSpy('getResults').and.returnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
+      getMajorCreditors: jasmine.createSpy('getMajorCreditors').and.returnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
+      getMajorCreditorPrettyName: jasmine.createSpy('getMajorCreditorPrettyName').and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
@@ -89,6 +93,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     expect(component.imposition).toEqual(OPAL_FINES_RESULT_PRETTY_NAME_MOCK);
     expect(component.creditor).toEqual('major');
+    expect(component.majorCreditor).toEqual(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
     expect(component.amountImposedString).toEqual('£50.00');
     expect(component.amountPaidString).toEqual('£50.00');
     expect(component.balanceString).toEqual('£50.00');
@@ -101,6 +106,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.amountImposedString).toEqual('£0.00');
     expect(component.amountPaidString).toEqual('£0.00');
     expect(component.balanceString).toEqual('£0.00');
+
   });
 
   it('should confirm removal and update form data', () => {

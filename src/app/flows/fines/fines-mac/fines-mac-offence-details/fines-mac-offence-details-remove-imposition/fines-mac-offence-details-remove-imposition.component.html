@@ -1,4 +1,4 @@
-@if (resultCodeData$ | async) {
+@if (groupResultCodeAndMajorCreditorData$ | async) {
   @if (draftOffenceDetailsState.removeImposition) {
     {{
       getImpositionToBeRemoved(
@@ -23,7 +23,15 @@
               {{ imposition }}
             </td>
 
-            <td class="govuk-table__cell" id="creditor">{{ creditor }}</td>
+            <td class="govuk-table__cell" id="creditor">
+              @if (creditor === 'major') {
+                {{ majorCreditor }}
+              } @else if (creditor === 'minor') {
+                {{ minorCreditor }}
+              } @else {
+                {{ defaultCreditor }}
+              }
+            </td>
             <td class="govuk-table__cell" id="amountImposed">
               {{ amountImposedString }}
             </td>
