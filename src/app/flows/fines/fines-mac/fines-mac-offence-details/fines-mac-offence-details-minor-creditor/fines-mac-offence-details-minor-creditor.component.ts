@@ -45,7 +45,7 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
       const childFormData =
         this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!;
       const minorCreditor = childFormData.find(
-        (x) => x.formData.fm_offence_details_imposition_position === changeMinorCreditor,
+        (childFormData) => childFormData.formData.fm_offence_details_imposition_position === changeMinorCreditor,
       );
       minorCreditor!.formData = form.formData;
     }

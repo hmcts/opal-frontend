@@ -114,7 +114,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       const minorCreditors =
         this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!;
       const minorCreditor = minorCreditors.find(
-        (x) => x.formData.fm_offence_details_imposition_position === impositionPosition,
+        (creditor) => creditor.formData.fm_offence_details_imposition_position === impositionPosition,
       )!;
       if (minorCreditor) {
         this.rePopulateForm(minorCreditor.formData);
