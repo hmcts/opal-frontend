@@ -7,6 +7,7 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_STATE_MOCK: IFinesMacOffen
     fm_offence_details_offence_code: 'AK123456',
     fm_offence_details_impositions: [
       {
+        fm_offence_details_imposition_id: 0,
         fm_offence_details_result_code: 'FCC',
         fm_offence_details_amount_imposed: 200,
         fm_offence_details_amount_paid: 50,
@@ -24,6 +25,7 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_STATE_MOCK: IFinesMacOffen
     fm_offence_details_offence_code: 'AK123456',
     fm_offence_details_impositions: [
       {
+        fm_offence_details_imposition_id: 1,
         fm_offence_details_result_code: 'FCC',
         fm_offence_details_amount_imposed: 200,
         fm_offence_details_amount_paid: 50,

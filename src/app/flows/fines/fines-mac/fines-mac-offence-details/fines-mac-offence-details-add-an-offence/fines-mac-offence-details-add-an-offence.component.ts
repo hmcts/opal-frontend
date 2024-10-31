@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
@@ -23,7 +23,10 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormParentBaseComponent implements OnInit {
+export class FinesMacOffenceDetailsAddAnOffenceComponent
+  extends AbstractFormParentBaseComponent
+  implements OnInit, OnDestroy
+{
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
@@ -50,7 +53,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
   });
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-  public formDataIndex!: number;
+  public offenceIndex!: number;
 
   /**
    * Creates an array of autocomplete items based on the provided response data.
@@ -100,27 +103,39 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
    * @param form - The form data containing the offence details to be updated or added.
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
-    const index = this.finesService.finesMacState.offenceDetails.findIndex(
+    // Update the impositions array with their respective index positions
+    form.formData.fm_offence_details_impositions.forEach((imposition, index) => {
+      imposition.fm_offence_details_imposition_id = index;
+    });
+
+    const { offenceDetails } = this.finesService.finesMacState;
+    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+
+    if (offenceDetailsDraft.length === 1 && offenceDetailsDraft[0].childFormData) {
+      form.childFormData = offenceDetailsDraft[0].childFormData;
+    }
+
+    const index = offenceDetails.findIndex(
       (item) => item.formData.fm_offence_details_id === form.formData.fm_offence_details_id,
     );
 
     if (index !== -1) {
-      this.finesService.finesMacState.offenceDetails[index] = form;
+      offenceDetails[index] = { ...offenceDetails[index], formData: form.formData };
     } else {
-      this.finesService.finesMacState.offenceDetails.push(form);
+      offenceDetails.push(form);
     }
   }
 
   /**
    * Retrieves the form data for adding an offence.
-   * If the offence details are empty, it sets the formDataIndex to 0 and assigns the default form data.
-   * Otherwise, it sets the formDataIndex to the length of offenceDetails + 1.
+   * If the offence details are empty, it sets the offenceIndex to 0 and assigns the default form data.
+   * Otherwise, it sets the offenceIndex to the length of offenceDetails + 1.
    */
   private retrieveFormData(): void {
     if (this.finesService.finesMacState.offenceDetails.length === 0) {
-      this.formDataIndex = 0;
+      this.offenceIndex = 0;
     } else {
-      this.formDataIndex = this.finesMacOffenceDetailsService.offenceIndex;
+      this.offenceIndex = this.finesMacOffenceDetailsService.offenceIndex;
     }
   }
 
@@ -132,6 +147,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
   public handleOffenceDetailsSubmit(form: IFinesMacOffenceDetailsForm): void {
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
+    form.childFormData = [];
 
     // Update the state with the form data
     this.finesService.finesMacState = {
@@ -161,10 +177,11 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent extends AbstractFormPar
     this.stateUnsavedChanges = unsavedChanges;
   }
 
-  /**
-   * Initializes the component.
-   */
   public ngOnInit(): void {
     this.retrieveFormData();
+  }
+
+  public ngOnDestroy(): void {
+    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
   }
 }

@@ -36,4 +36,16 @@ describe('UtilsService', () => {
     const result = service.convertToMonetaryString(amount);
     expect(result).toEqual('£10.50');
   });
+
+  it('should format the sort code correctly', () => {
+    const value = 123456;
+    const result = service.formatSortCode(value);
+    expect(result).toEqual('12-34-56');
+  });
+
+  it('should format the sort code correctly when value is a string', () => {
+    const value = '123456';
+    const result = service.formatSortCode(value);
+    expect(result).toEqual('12-34-56');
+  });
 });
