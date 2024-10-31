@@ -14,7 +14,7 @@ import { ISignInStubForm } from '../interfaces';
 })
 export class SignInStubComponent implements OnInit {
   public signInForm!: FormGroup;
-  @Output() private signInFormSubmit = new EventEmitter<ISignInStubForm>();
+  @Output() private readonly signInFormSubmit = new EventEmitter<ISignInStubForm>();
 
   /**
    * Sets up the sign-in form.

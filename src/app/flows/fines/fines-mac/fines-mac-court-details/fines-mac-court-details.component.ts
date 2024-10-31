@@ -24,18 +24,20 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseComponent {
-  private opalFinesService = inject(OpalFines);
+  private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
-  private sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService.getLocalJusticeAreas().pipe(
-    tap((response: IOpalFinesLocalJusticeAreaRefData) => {
-      this.localJusticeAreas = response;
-    }),
-    map((response: IOpalFinesLocalJusticeAreaRefData) => {
-      return this.createAutoCompleteItemsLja(response);
-    }),
-  );
-  private enforcementCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
+  private readonly sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
+    .getLocalJusticeAreas()
+    .pipe(
+      tap((response: IOpalFinesLocalJusticeAreaRefData) => {
+        this.localJusticeAreas = response;
+      }),
+      map((response: IOpalFinesLocalJusticeAreaRefData) => {
+        return this.createAutoCompleteItemsLja(response);
+      }),
+    );
+  private readonly enforcementCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
     .pipe(
       map((response: IOpalFinesCourtRefData) => {

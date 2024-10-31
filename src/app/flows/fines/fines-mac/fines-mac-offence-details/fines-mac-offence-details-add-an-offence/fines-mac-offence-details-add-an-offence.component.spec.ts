@@ -18,6 +18,8 @@ import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state.constant';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;
@@ -25,7 +27,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let formSubmit: IFinesMacOffenceDetailsForm[];
+  let formSubmit: IFinesMacOffenceDetailsForm;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
@@ -52,7 +54,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
-    formSubmit = FINES_MAC_OFFENCE_DETAILS_FORM;
+    formSubmit = FINES_MAC_OFFENCE_DETAILS_FORM[0];
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceComponent],
@@ -88,12 +90,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+    mockFinesService.finesMacState.offenceDetails = [];
 
-    formSubmit[0].nestedFlow = false;
+    formSubmit.nestedFlow = false;
 
-    component.handleOffenceDetailsSubmit(formSubmit[0]);
+    component.handleOffenceDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.offenceDetails).toEqual(formSubmit);
+    expect(mockFinesService.finesMacState.offenceDetails).toContain(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -101,12 +104,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+    mockFinesService.finesMacState.offenceDetails = [];
 
-    formSubmit[0].nestedFlow = true;
+    formSubmit.nestedFlow = true;
 
-    component.handleOffenceDetailsSubmit(formSubmit[0]);
+    component.handleOffenceDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.offenceDetails).toEqual([formSubmit[0]]);
+    expect(mockFinesService.finesMacState.offenceDetails).toContain(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -137,6 +141,21 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should add offence details form to the state when form does not exist', () => {
     const form = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+
+    mockFinesService.finesMacState.offenceDetails = [];
+
+    component['updateOffenceDetailsIndex'](form);
+
+    expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
+    expect(mockFinesService.finesMacState.offenceDetails[0]).toEqual(form);
+  });
+
+  it('should add offence details form to the state when form does not exist', () => {
+    const form = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
 
     mockFinesService.finesMacState.offenceDetails = [];
 

@@ -53,6 +53,7 @@ export class FinesMacComponent implements OnDestroy {
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
     this.finesService.finesMacState = FINES_MAC_STATE;
+    this.finesService.finesMacState.offenceDetails = [];
 
     // Clear any errors...
     this.globalStateService.error.set({

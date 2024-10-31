@@ -412,7 +412,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
     const formControls = this.form.controls;
     const initialFormControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
-    Object.keys(formControls).map((controlName) => {
+    Object.keys(formControls).forEach((controlName) => {
       initialFormControlErrorMessages[controlName] = null;
     });
 

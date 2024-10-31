@@ -47,6 +47,9 @@ import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
+import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent } from './fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.component';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -66,6 +69,8 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-ro
     GovukCancelLinkComponent,
     GovukTextInputComponent,
     GovukRadiosConditionalComponent,
+    FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent,
+    MojBannerComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,7 +82,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   @Input() public defendantType!: string;
   @Input({ required: true }) public resultCodeItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public majorCreditorItems!: IAlphagovAccessibleAutocompleteItem[];
-  @Input({ required: true }) public formDataIndex!: number;
+  @Input({ required: true }) public offenceIndex!: number;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsForm>();
 
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
@@ -98,6 +103,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
   public creditorOptions = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS;
 
+  public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
+
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
   };
@@ -107,7 +114,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
-      fm_offence_details_id: new FormControl(this.formDataIndex),
+      fm_offence_details_id: new FormControl(this.offenceIndex),
       fm_offence_details_date_of_offence: new FormControl(null, [
         Validators.required,
         optionalValidDateValidator(),
@@ -135,10 +142,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     if (hasOffenceDetailsDraft) {
       formData = offenceDetailsDraft[0].formData;
     } else {
-      const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.formDataIndex];
+      const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.offenceIndex];
       formData = offenceDetails
         ? offenceDetails.formData
-        : { ...FINES_MAC_OFFENCE_DETAILS_STATE, fm_offence_details_id: this.formDataIndex };
+        : { ...FINES_MAC_OFFENCE_DETAILS_STATE, fm_offence_details_id: this.offenceIndex };
     }
     const impositionsLength = formData[impositionsKey].length;
 
@@ -146,15 +153,17 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     this.setupImpositionsConfiguration();
     this.setupFormArrayFormControls([...Array(impositionsLength).keys()], impositionsKey);
     this.setInitialErrorMessages();
+    this.getMinorCreditors();
     this.rePopulateForm(formData);
     this.offenceCodeListener();
 
     if (!hasOffenceDetailsDraft && impositionsLength === 0) {
       this.addControlsToFormArray(0, impositionsKey);
     } else {
-      formData[impositionsKey].forEach((_, index) => this.setupResultCodeListener(index));
+      formData[impositionsKey].forEach((_, index) => {
+        this.setupResultCodeListener(index);
+      });
     }
-
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
   }
 
@@ -340,12 +349,18 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     const index = offenceDetailsDraft.findIndex((item) => item.formData.fm_offence_details_id === offenceDetailsIndex);
 
+    const childFormData =
+      this.finesMacService.finesMacState.offenceDetails[this.offenceIndex]?.childFormData ||
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0]?.childFormData ||
+      [];
+
     if (index !== -1) {
       offenceDetailsDraft[index].formData = formData;
     } else {
       offenceDetailsDraft.push({
         formData: formData,
         nestedFlow: false,
+        childFormData: childFormData,
       });
     }
   }
@@ -376,6 +391,24 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public goToSearchOffences(): void {
     this.updateOffenceDetailsDraft(this.form.value);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.searchOffences);
+  }
+
+  /**
+   * Navigates to the minor creditor page for the specified row index.
+   *
+   * @param rowIndex - The index of the row.
+   */
+  public goToMinorCreditor(rowIndex: number): void {
+    const formArray = this.form.controls['fm_offence_details_impositions'] as FormArray;
+
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition = {
+      rowIndex,
+      formArray: formArray,
+      formArrayControls: this.formArrayControls,
+    };
+
+    this.updateOffenceDetailsDraft(this.form.value);
+    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addMinorCreditor);
   }
 
   /**
@@ -421,7 +454,31 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    */
   public handleAddAnOffenceSubmit(event: SubmitEvent): void {
     this.calculateBalanceRemaining();
+
     this.handleFormSubmit(event);
+  }
+
+  /**
+   * Retrieves the minor creditors for the offence details.
+   * The minor creditors are obtained from the offence details or the draft offence details.
+   * The minor creditors are then stored in the `minorCreditors` property of the component.
+   */
+  public getMinorCreditors(): void {
+    const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.offenceIndex];
+    const draftOffenceDetails =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+
+    const minorCreditorsArray = offenceDetails?.childFormData || draftOffenceDetails?.childFormData || [];
+
+    this.minorCreditors = minorCreditorsArray.reduce((acc, creditor) => {
+      const position = creditor.formData.fm_offence_details_imposition_position;
+
+      if (position != null) {
+        acc[position] = creditor.formData;
+      }
+
+      return acc;
+    }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor);
   }
 
   /**

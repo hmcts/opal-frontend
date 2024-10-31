@@ -39,7 +39,7 @@ export class AlphagovAccessibleAutocompleteComponent implements OnInit, OnDestro
 
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _control!: FormControl;
-  private ngUnsubscribe = new Subject<void>();
+  private readonly ngUnsubscribe = new Subject<void>();
   public autoCompleteId!: string;
 
   @Input({ required: true }) set control(abstractControl: AbstractControl | null) {

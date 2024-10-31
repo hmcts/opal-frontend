@@ -105,9 +105,10 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
     spyOn(component, 'handleRoute');
-    const { rowIndex, formArray } = component['draftOffenceDetailsState'].removeImposition!;
+    const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
     fixture.detectChanges();
 
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     component.confirmRemoval(rowIndex, formArray);
 
     expect(component['removeControlAndRenumber']).toHaveBeenCalledWith(
