@@ -7,7 +7,7 @@ Then('I see the following Minor creditor details for impostion {int}:', (index: 
     .parent()
     .find('app-moj-ticket-panel')
     .eq(index - 1)
-    .find('app-fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list');
+    .find('app-fines-mac-offence-details-minor-creditor-information');
 
   const detailKeys: { [key: string]: string } = {
     'Minor creditor': 'h2',
