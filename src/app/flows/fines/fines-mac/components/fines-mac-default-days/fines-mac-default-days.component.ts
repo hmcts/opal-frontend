@@ -24,8 +24,8 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy, OnChanges {
   @Input({ required: true }) date!: string;
-  private dateService = inject(DateService);
-  private ngUnsubscribe = new Subject<void>();
+  private readonly dateService = inject(DateService);
+  private readonly ngUnsubscribe = new Subject<void>();
   public daysInDefaultCalculatorForm = new FormGroup({
     years: new FormControl<number | null>(null),
     months: new FormControl<number | null>(null),

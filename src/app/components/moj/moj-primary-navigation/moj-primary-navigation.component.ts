@@ -21,7 +21,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class MojPrimaryNavigationComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private ngUnsubscribe = new Subject<void>();
+  private readonly ngUnsubscribe = new Subject<void>();
 
   @Input({ required: true }) public primaryNavigationId!: string;
   @Output() activeItemFragment = new EventEmitter<string>();

@@ -12,11 +12,15 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../../../mocks/fines-mac-offence-details-state.mock';
 import { FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor } from './enums/fines-mac-offence-details-review-summary-imposition-table-default-creditor.enum';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK } from './mocks/fines-mac-offence-details-review-summary-imposition-table-impositions.mock';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryImpositionTableComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryImpositionTableComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
+  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
@@ -26,12 +30,20 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
         .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewSummaryImpositionTableComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: FinesService, useValue: mockFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
@@ -45,8 +57,20 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+    component.offenceIndex = 0;
 
     fixture.detectChanges();
+  });
+
+  beforeEach(() => {
+    component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+    component.offenceIndex = 0;
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
   });
 
   it('should create', () => {
@@ -85,32 +109,91 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
   });
 
-  it('should return empty string if creditor is null', () => {
+  it('should return minor creditor - Any resultCodeCreditor', () => {
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+    const {
+      fm_offence_details_minor_creditor_title: title,
+      fm_offence_details_minor_creditor_forenames: forenames,
+      fm_offence_details_minor_creditor_surname: surname,
+    } = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData;
+    const expectedCreditorText = `${title} ${forenames} ${surname}`;
+
+    const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
+
+    expect(actualCreditorText).toBe(expectedCreditorText);
+  });
+
+  it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      childFormData: [
+        {
+          ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
+          formData: {
+            ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
+            fm_offence_details_minor_creditor_title: null,
+            fm_offence_details_minor_creditor_forenames: null,
+          },
+        },
+      ],
+    };
+
+    const { fm_offence_details_minor_creditor_surname: surname } =
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData;
+    const expectedCreditorText = `${surname}`;
+
+    const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
+
+    expect(actualCreditorText).toBe(expectedCreditorText);
+  });
+
+  it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      childFormData: [
+        {
+          ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
+          formData: {
+            ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
+            fm_offence_details_minor_creditor_creditor_type: 'company',
+            fm_offence_details_minor_creditor_company_name: 'Test Ltd',
+            fm_offence_details_minor_creditor_title: null,
+            fm_offence_details_minor_creditor_forenames: null,
+            fm_offence_details_minor_creditor_surname: null,
+          },
+        },
+      ],
+    };
+
+    const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
+
+    expect(actualCreditorText).toBe('Test Ltd');
+  });
+
+  it('should return default minor creditor if minor creditor does not exist - Any resultCodeCreditor', () => {
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      childFormData: [],
+    };
     const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
-    const actualCreditorText = component['getCreditorInformation'](null, null, 'Any');
+    const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
 
     expect(actualCreditorText).toBe(expectedCreditorText.defaultMinorCreditor);
   });
 
   it('should return major creditor if creditor is major', () => {
-    const actualCreditorText = component['getCreditorInformation']('major', 3856, '!CPS');
+    const actualCreditorText = component['getCreditorInformation']('major', 3856, '!CPS', 0);
 
     expect(actualCreditorText).toBe('Aldi Stores Ltd (ALDI)');
   });
 
-  it('should return defaultMinorCreditor if creditor is not "major"', () => {
+  it('should return empty string if creditor is null - CPS resultCodeCreditor', () => {
     const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
 
-    const actualCreditorText = component['getCreditorInformation']('minor', null, 'Any');
-
-    expect(actualCreditorText).toBe(expectedCreditorText.defaultMinorCreditor);
-  });
-
-  it('should return empty string if creditor is null', () => {
-    const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
-
-    const actualCreditorText = component['getCreditorInformation'](null, null, 'CPS');
+    const actualCreditorText = component['getCreditorInformation'](null, null, 'CPS', 0);
 
     expect(actualCreditorText).toBe(expectedCreditorText.defaultCpsCreditor);
   });
@@ -118,10 +201,8 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   it('should sort impositions by allocation order and result title', () => {
     component.impositions = FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK;
 
-    // Act
     component['sortImpositionsByAllocationOrder']();
 
-    // Assert
     expect(component.impositions).toEqual(
       FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK,
     );

@@ -18,10 +18,10 @@ export class AppComponent implements OnInit, OnDestroy {
   public readonly sessionService = inject(SessionService);
   public dateService = inject(DateService);
   public minutesRemaining$!: Observable<number>;
-  private platformId = inject(PLATFORM_ID);
-  private ngZone = inject(NgZone);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly ngZone = inject(NgZone);
   private timerSub!: Subscription;
-  private ngUnsubscribe = new Subject<void>();
+  private readonly ngUnsubscribe = new Subject<void>();
 
   // Defined in seconds
   private readonly POLL_INTERVAL = 60;

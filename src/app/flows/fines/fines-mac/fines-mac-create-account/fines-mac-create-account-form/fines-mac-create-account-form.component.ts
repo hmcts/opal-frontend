@@ -59,7 +59,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
   protected readonly finesService = inject(FinesService);
-  private accountTypeSubject = new Subject<void>();
+  private readonly accountTypeSubject = new Subject<void>();
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly routingPath = RoutingPaths;

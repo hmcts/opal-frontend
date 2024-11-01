@@ -10,4 +10,5 @@ export class FinesMacOffenceDetailsService {
   public offenceIndex: number = 0;
   public emptyOffences: boolean = false;
   public addedOffenceCode!: string;
+  public minorCreditorAdded!: boolean;
 }
