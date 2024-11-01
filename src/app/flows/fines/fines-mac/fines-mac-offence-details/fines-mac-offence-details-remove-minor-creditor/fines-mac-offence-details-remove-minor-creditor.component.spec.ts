@@ -26,14 +26,8 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
       'finesMacOffenceDetailsDraftState',
     ]);
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = {
-      ...FINES_MAC_STATE_MOCK,
-      offenceDetails: [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK],
-    };
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
@@ -42,7 +36,6 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
       imports: [FinesMacOffenceDetailsRemoveMinorCreditorComponent],
       providers: [
         { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
-        { provide: FinesService, useValue: mockFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
@@ -76,9 +69,9 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
 
     component.confirmMinorCreditorRemoval();
 
-    expect(mockFinesService.finesMacState.offenceDetails[0].childFormData).not.toContain(
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
-    );
+    expect(
+      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData,
+    ).not.toContain(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });

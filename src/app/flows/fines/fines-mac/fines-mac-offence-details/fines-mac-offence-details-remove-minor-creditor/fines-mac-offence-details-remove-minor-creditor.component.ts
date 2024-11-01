@@ -31,7 +31,6 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
   extends AbstractFormArrayRemovalComponent
   implements OnInit
 {
-  protected readonly finesService = inject(FinesService);
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
