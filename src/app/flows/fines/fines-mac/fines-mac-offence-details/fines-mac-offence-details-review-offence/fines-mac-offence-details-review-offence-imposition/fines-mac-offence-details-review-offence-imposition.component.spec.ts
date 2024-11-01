@@ -1,24 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FinesMacOffenceDetailsReviewSummaryImpositionTableComponent } from './fines-mac-offence-details-review-summary-imposition-table.component';
-import { UtilsService } from '@services/utils/utils.service';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
+import { FinesMacOffenceDetailsReviewOffenceImpositionComponent } from './fines-mac-offence-details-review-offence-imposition.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
-import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../../../mocks/fines-mac-offence-details-state.mock';
-import { FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor } from './enums/fines-mac-offence-details-review-summary-imposition-table-default-creditor.enum';
-import { FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK } from './mocks/fines-mac-offence-details-review-summary-imposition-table-impositions.mock';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
-import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../../mocks/fines-mac-offence-details-form.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
+import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { UtilsService } from '@services/utils/utils.service';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../../mocks/fines-mac-offence-details-state.mock';
+import { FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor } from './enums/fines-mac-offence-details-review-offence-imposition-default-creditor.enum';
+import { FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK } from './mocks/fines-mac-offence-details-review-offence-imposition-data.mock';
 
-describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
-  let component: FinesMacOffenceDetailsReviewSummaryImpositionTableComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryImpositionTableComponent>;
+describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
+  let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceImpositionComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
@@ -40,7 +40,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
     await TestBed.configureTestingModule({
-      imports: [FinesMacOffenceDetailsReviewSummaryImpositionTableComponent],
+      imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesService, useValue: mockFinesService },
@@ -51,7 +51,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryImpositionTableComponent);
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceImpositionComponent);
     component = fixture.componentInstance;
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
@@ -178,7 +178,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
       ...mockFinesService.finesMacState.offenceDetails[0],
       childFormData: [],
     };
-    const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
+    const expectedCreditorText = FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
 
@@ -192,7 +192,7 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   });
 
   it('should return empty string if creditor is null - CPS resultCodeCreditor', () => {
-    const expectedCreditorText = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
+    const expectedCreditorText = FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'CPS', 0);
 
@@ -200,12 +200,10 @@ describe('FinesMacOffenceDetailsReviewSummaryImpositionTableComponent', () => {
   });
 
   it('should sort impositions by allocation order and result title', () => {
-    component.impositions = FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK;
+    component.impositions = FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK;
 
     component['sortImpositionsByAllocationOrder']();
 
-    expect(component.impositions).toEqual(
-      FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK,
-    );
+    expect(component.impositions).toEqual(FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK);
   });
 });

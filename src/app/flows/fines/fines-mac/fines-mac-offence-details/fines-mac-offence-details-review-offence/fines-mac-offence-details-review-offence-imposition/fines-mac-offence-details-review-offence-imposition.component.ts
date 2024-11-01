@@ -1,25 +1,25 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
-import { IFinesMacOffenceDetailsImpositionsState } from '../../../interfaces/fines-mac-offence-details-impositions-state.interface';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@services/utils/utils.service';
+import { IFinesMacOffenceDetailsImpositionsState } from '../../interfaces/fines-mac-offence-details-impositions-state.interface';
 import {
   IFinesMacOffenceDetailsReviewSummaryImpositionTableData,
   IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData,
-} from './interfaces/fines-mac-offence-details-review-summary-imposition-table-data.interface';
-import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor } from './enums/fines-mac-offence-details-review-summary-imposition-table-default-creditor.enum';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+} from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
+import { FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor } from './enums/fines-mac-offence-details-review-offence-imposition-default-creditor.enum';
 
 @Component({
-  selector: 'app-fines-mac-offence-details-review-summary-imposition-table',
+  selector: 'app-fines-mac-offence-details-review-offence-imposition',
   standalone: true,
   imports: [GovukTableComponent],
-  templateUrl: './fines-mac-offence-details-review-summary-imposition-table.component.html',
+  templateUrl: './fines-mac-offence-details-review-offence-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent implements OnInit {
+export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements OnInit {
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
@@ -34,7 +34,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
   private totalAmountImposed: number = 0;
   private totalAmountPaid: number = 0;
   private totalBalanceRemaining: number = 0;
-  private readonly defaultValues = FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor;
+  private readonly defaultValues = FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor;
 
   /**
    * Sorts the impositions array based on the allocation order and result title.
@@ -86,7 +86,7 @@ export class FinesMacOffenceDetailsReviewSummaryImpositionTableComponent impleme
       (childFormData) => childFormData.formData.fm_offence_details_imposition_position === impositionId,
     );
 
-    if (!minorCreditor) return FinesMacOffenceDetailsReviewSummaryImpositionTableDefaultCreditor.defaultMinorCreditor;
+    if (!minorCreditor) return FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor.defaultMinorCreditor;
 
     const {
       fm_offence_details_minor_creditor_creditor_type: creditorType,

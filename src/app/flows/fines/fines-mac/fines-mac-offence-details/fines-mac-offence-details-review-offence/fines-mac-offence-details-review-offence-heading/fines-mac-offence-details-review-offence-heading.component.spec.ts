@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FinesMacOffenceDetailsReviewSummaryOffenceComponent } from './fines-mac-offence-details-review-summary-offence.component';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { of } from 'rxjs';
+import { FinesMacOffenceDetailsReviewOffenceHeadingComponent } from './fines-mac-offence-details-review-offence-heading.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { of } from 'rxjs';
 
-describe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
-  let component: FinesMacOffenceDetailsReviewSummaryOffenceComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryOffenceComponent>;
+describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
+  let component: FinesMacOffenceDetailsReviewOffenceHeadingComponent;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceHeadingComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
 
   beforeEach(async () => {
@@ -21,7 +21,7 @@ describe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [FinesMacOffenceDetailsReviewSummaryOffenceComponent],
+      imports: [FinesMacOffenceDetailsReviewOffenceHeadingComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         provideRouter([]),
@@ -30,7 +30,7 @@ describe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryOffenceComponent);
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceHeadingComponent);
     component = fixture.componentInstance;
 
     component.offenceId = 0;
@@ -42,7 +42,6 @@ describe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
   it('should fetch offence reference data', () => {
     component['getOffenceRefData']();
 
