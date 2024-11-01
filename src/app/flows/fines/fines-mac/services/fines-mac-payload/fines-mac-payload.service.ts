@@ -79,7 +79,10 @@ export class FinesMacPayloadService {
    * @param finesMacPayload - The payload object to be transformed.
    * @returns The transformed payload object.
    */
-  private transformPayload(finesMacPayload: any, transformItemsConfig: ITransformItem[]): IFinesMacAddAccountPayload {
+  private transformPayload(
+    finesMacPayload: IFinesMacAddAccountPayload,
+    transformItemsConfig: ITransformItem[],
+  ): IFinesMacAddAccountPayload {
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
@@ -141,7 +144,7 @@ export class FinesMacPayloadService {
     const accountPayload = this.buildAccountPayload(finesMacState);
 
     // Build the add account payload
-    const addAccountPayload = {
+    const addAccountPayload: IFinesMacAddAccountPayload = {
       business_unit_id: businessUnit['business_unit_id'],
       submitted_by: this.getBusinessUnitBusinessUserId(businessUnit['business_unit_id'], sessionUserState),
       submitted_by_name: sessionUserState['name'],
