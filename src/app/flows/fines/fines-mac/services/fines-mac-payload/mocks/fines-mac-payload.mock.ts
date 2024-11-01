@@ -19,7 +19,7 @@ export const FINES_MAC_PAYLOAD_MOCK: IFinesMacPayload = {
     surname: 'Doe',
     forenames: 'John',
     organisation_name: null,
-    dob: '01/01/1990',
+    dob: '1990-01-01',
     address_line_1: '123 Street',
     address_line_2: 'City',
     address_line_3: 'County',
