@@ -1,10 +1,10 @@
 class UserState {
   user_id!: string;
   user_name!: string;
-  roles?: Role[];
+  business_unit_user?: BusinessUnitUser[];
 }
 
-class Role {
+class BusinessUnitUser {
   business_user_id!: string;
   business_unit!: string;
   permissions?: Permissions[];
