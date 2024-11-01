@@ -1,6 +1,6 @@
-import { IFinesMacPayloadDefendantCompanyDebtorDetails } from './fines-mac-payload-defendant-company-debtor-details.interface';
+import { IFinesMacPayloadAccountDefendantCompanyDebtorDetails } from './fines-mac-payload-defendant-company-debtor-details.interface';
 
-export interface IFinesMacPayloadDefendantCompany {
+export interface IFinesMacPayloadAccountDefendantCompany {
   company_flag: boolean | null;
   organisation_name: string | null;
   address_line_1: string | null;
@@ -12,5 +12,5 @@ export interface IFinesMacPayloadDefendantCompany {
   telephone_number_mobile: string | null;
   email_address_1: string | null;
   email_address_2: string | null;
-  debtor_detail: IFinesMacPayloadDefendantCompanyDebtorDetails;
+  debtor_detail: IFinesMacPayloadAccountDefendantCompanyDebtorDetails;
 }

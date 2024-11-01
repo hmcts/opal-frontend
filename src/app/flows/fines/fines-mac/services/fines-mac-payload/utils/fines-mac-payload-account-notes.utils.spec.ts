@@ -1,6 +1,6 @@
 import { buildAccountNotesPayload } from './fines-mac-payload-account-notes.utils';
 import { IFinesMacAccountCommentsNotesState } from '../../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
-import { IFinesMacPayloadAccountNote } from './interfaces/fines-mac-payload-account-note.interface';
+import { IFinesMacPayloadAccountAccountNote } from './interfaces/fines-mac-payload-account-note.interface';
 
 describe('buildAccountNotesPayload', () => {
   it('should return an array of account notes when comments and notes are provided', () => {
@@ -10,7 +10,7 @@ describe('buildAccountNotesPayload', () => {
     };
 
     const result = buildAccountNotesPayload(accountCommentsNotesState);
-    const expectedResult: IFinesMacPayloadAccountNote[] = [
+    const expectedResult: IFinesMacPayloadAccountAccountNote[] = [
       { account_note_serial: 3, account_note_text: 'Test comment', note_type: 'AC' },
       { account_note_serial: 2, account_note_text: 'Test note', note_type: 'AA' },
     ];
@@ -35,7 +35,7 @@ describe('buildAccountNotesPayload', () => {
     };
 
     const result = buildAccountNotesPayload(accountCommentsNotesState);
-    const expectedResult: IFinesMacPayloadAccountNote[] = [
+    const expectedResult: IFinesMacPayloadAccountAccountNote[] = [
       { account_note_serial: 3, account_note_text: 'Only comment', note_type: 'AC' },
     ];
 
@@ -49,7 +49,7 @@ describe('buildAccountNotesPayload', () => {
     };
 
     const result = buildAccountNotesPayload(accountCommentsNotesState);
-    const expectedResult: IFinesMacPayloadAccountNote[] = [
+    const expectedResult: IFinesMacPayloadAccountAccountNote[] = [
       { account_note_serial: 2, account_note_text: 'Only note', note_type: 'AA' },
     ];
 

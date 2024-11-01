@@ -9,12 +9,12 @@ import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD } from '../constants/f
 import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD } from '../constants/fines-mac-defendant-debtor-details-payload.constant';
 import { FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD } from '../constants/fines-mac-defendant-parent-guardian-payload.constant';
 import { FINES_MAC_DEFENDANT_PAYLOAD } from '../constants/fines-mac-defendant-payload.constant';
-import { IFinesMacPayloadDefendantCompany } from './interfaces/fines-mac-payload-defendant-company.interface';
-import { IFinesMacPayloadDefendantComplete } from './interfaces/fines-mac-payload-defendant-complete.interface';
-import { IFinesMacPayloadDefendantDebtorDetailAliasComplete } from './interfaces/fines-mac-payload-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadDefendantDebtorDetailComplete } from './interfaces/fines-mac-payload-defendant-debtor-detail-complete.interface';
-import { IFinesMacPayloadDefendantParentGuardian } from './interfaces/fines-mac-payload-defendant-parent-guardian.interface';
-import { IFinesMacPayloadDefendantIndividual } from './interfaces/fines-mac-payload-individual-defendant.interface';
+import { IFinesMacPayloadAccountDefendantCompany } from './interfaces/fines-mac-payload-defendant-company.interface';
+import { IFinesMacPayloadAccountDefendantComplete } from './interfaces/fines-mac-payload-defendant-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from './interfaces/fines-mac-payload-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from './interfaces/fines-mac-payload-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardian } from './interfaces/fines-mac-payload-defendant-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-individual-defendant.interface';
 import { buildDefendantCompanyPayload } from './fines-mac-payload-defendant-company.utils';
 import { buildDefendantIndividualPayload } from './fines-mac-payload-defendant-individual.utils';
 import { buildDefendantParentGuardianPayload } from './fines-mac-payload-defendant-parent-guardian.utils';
@@ -29,15 +29,15 @@ import { buildDefendantParentGuardianPayload } from './fines-mac-payload-defenda
  * @returns The complete defendant payload with base payloads applied.
  */
 const applyBasePayloadsToIndividualOrCompanyDefendant = (
-  defendant: IFinesMacPayloadDefendantIndividual | IFinesMacPayloadDefendantCompany,
-): IFinesMacPayloadDefendantComplete => {
-  const aliases: IFinesMacPayloadDefendantDebtorDetailAliasComplete[] | null =
+  defendant: IFinesMacPayloadAccountDefendantIndividual | IFinesMacPayloadAccountDefendantCompany,
+): IFinesMacPayloadAccountDefendantComplete => {
+  const aliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null =
     defendant.debtor_detail.aliases?.map((alias) => ({
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
       ...alias,
     })) || null;
 
-  const debtorDetail: IFinesMacPayloadDefendantDebtorDetailComplete = {
+  const debtorDetail: IFinesMacPayloadAccountDefendantDebtorDetailComplete = {
     ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
     ...defendant.debtor_detail,
     aliases: aliases,
@@ -53,23 +53,23 @@ const applyBasePayloadsToIndividualOrCompanyDefendant = (
 /**
  * Applies base payloads to the parent guardian defendant.
  *
- * This method takes a `IFinesMacPayloadDefendantParentGuardian` object and merges it with predefined
- * payload constants to create a new `IFinesMacPayloadDefendantComplete` object. It ensures that the
+ * This method takes a `IFinesMacPayloadAccountDefendantParentGuardian` object and merges it with predefined
+ * payload constants to create a new `IFinesMacPayloadAccountDefendantComplete` object. It ensures that the
  * `debtor_detail` and its `aliases` are properly merged with their respective payload constants.
  *
  * @param defendant - The parent guardian defendant object to which the base payloads will be applied.
- * @returns A new `IFinesMacPayloadDefendantComplete` object with the base payloads applied.
+ * @returns A new `IFinesMacPayloadAccountDefendantComplete` object with the base payloads applied.
  */
 const applyBasePayloadsToParentGuardianDefendant = (
-  defendant: IFinesMacPayloadDefendantParentGuardian,
-): IFinesMacPayloadDefendantComplete => {
-  const parentGuardianDebtorAliases: IFinesMacPayloadDefendantDebtorDetailAliasComplete[] | null =
+  defendant: IFinesMacPayloadAccountDefendantParentGuardian,
+): IFinesMacPayloadAccountDefendantComplete => {
+  const parentGuardianDebtorAliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null =
     defendant.parent_guardian.debtor_detail.aliases?.map((alias) => ({
       ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
       ...alias,
     })) ?? null;
 
-  const parentGuardianDebtorDetail: IFinesMacPayloadDefendantDebtorDetailComplete = {
+  const parentGuardianDebtorDetail: IFinesMacPayloadAccountDefendantDebtorDetailComplete = {
     ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
     ...defendant.parent_guardian.debtor_detail,
     aliases: parentGuardianDebtorAliases,
@@ -106,7 +106,7 @@ export const buildDefendantPayload = (
   languageDetailsState: IFinesMacLanguagePreferencesState,
   companyDetailsState: IFinesMacCompanyDetailsState,
   parentGuardianDetailsState: IFinesMacParentGuardianDetailsState,
-): IFinesMacPayloadDefendantComplete => {
+): IFinesMacPayloadAccountDefendantComplete => {
   const defendantType = accountDetailsState['fm_create_account_defendant_type'];
 
   // We want to start by building the defendant object based on the type of defendant we have

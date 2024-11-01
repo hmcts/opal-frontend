@@ -1,6 +1,6 @@
-import { IFinesMacPayloadDefendantParentGuardianParentGuardian } from './fines-mac-payload-defendant-parent-guardian-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from './fines-mac-payload-defendant-parent-guardian-parent-guardian.interface';
 
-export interface IFinesMacPayloadDefendantParentGuardian {
+export interface IFinesMacPayloadAccountDefendantParentGuardian {
   company_flag: boolean | null;
   title: string | null;
   surname: string | null;
@@ -11,5 +11,5 @@ export interface IFinesMacPayloadDefendantParentGuardian {
   address_line_3: string | null;
   post_code: string | null;
   national_insurance_number: string | null;
-  parent_guardian: IFinesMacPayloadDefendantParentGuardianParentGuardian;
+  parent_guardian: IFinesMacPayloadAccountDefendantParentGuardianParentGuardian;
 }

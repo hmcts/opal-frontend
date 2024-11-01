@@ -1,6 +1,6 @@
-import { IFinesMacPayloadDefendantParentGuardian } from '../interfaces/fines-mac-payload-defendant-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardian } from '../interfaces/fines-mac-payload-defendant-parent-guardian.interface';
 
-export const FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_MOCK: IFinesMacPayloadDefendantParentGuardian = {
+export const FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_MOCK: IFinesMacPayloadAccountDefendantParentGuardian = {
   company_flag: false,
   title: 'Mr',
   surname: 'Doe',

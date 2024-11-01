@@ -3,9 +3,9 @@ import { IFinesMacEmployerDetailsState } from '../../../fines-mac-employer-detai
 import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { IFinesMacPersonalDetailsAliasState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
-import { IFinesMacPayloadDefendantIndividualDebtorDetailsAlias } from './interfaces/fines-mac-payload-defendant-individual-debtor-details-alias.interface';
-import { IFinesMacPayloadDefendantIndividualDebtorDetails } from './interfaces/fines-mac-payload-defendant-individual-debtor-details.interface';
-import { IFinesMacPayloadDefendantIndividual } from './interfaces/fines-mac-payload-individual-defendant.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './interfaces/fines-mac-payload-defendant-individual-debtor-details-alias.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './interfaces/fines-mac-payload-defendant-individual-debtor-details.interface';
+import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-individual-defendant.interface';
 
 /*
  * Builds an array of individual defendant debtor details aliases from the provided aliases state.
@@ -15,7 +15,7 @@ import { IFinesMacPayloadDefendantIndividual } from './interfaces/fines-mac-payl
  */
 const buildIndividualDefendantDebtorDetailsAliases = (
   aliases: IFinesMacPersonalDetailsAliasState[],
-): IFinesMacPayloadDefendantIndividualDebtorDetailsAlias[] | null => {
+): IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias[] | null => {
   const mappedAliases = aliases.map((alias, index) => {
     const forenameKey = `fm_personal_details_alias_forenames_${index}` as keyof IFinesMacPersonalDetailsAliasState;
     const surnameKey = `fm_personal_details_alias_surname_${index}` as keyof IFinesMacPersonalDetailsAliasState;
@@ -40,7 +40,7 @@ const buildIndividualDefendantDebtorDetails = (
   personalDetailsState: IFinesMacPersonalDetailsState,
   employerDetailsState: IFinesMacEmployerDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,
-): IFinesMacPayloadDefendantIndividualDebtorDetails => {
+): IFinesMacPayloadAccountDefendantIndividualDebtorDetails => {
   const {
     fm_personal_details_vehicle_make: vehicle_make,
     fm_personal_details_vehicle_registration_mark: vehicle_registration_mark,
@@ -98,7 +98,7 @@ export const buildDefendantIndividualPayload = (
   contactDetailsState: IFinesMacContactDetailsState,
   employerDetailsState: IFinesMacEmployerDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,
-): IFinesMacPayloadDefendantIndividual => {
+): IFinesMacPayloadAccountDefendantIndividual => {
   const {
     fm_personal_details_title: title,
     fm_personal_details_surname: surname,

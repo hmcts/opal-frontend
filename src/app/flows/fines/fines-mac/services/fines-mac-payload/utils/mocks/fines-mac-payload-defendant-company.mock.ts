@@ -1,6 +1,6 @@
-import { IFinesMacPayloadDefendantCompany } from '../interfaces/fines-mac-payload-defendant-company.interface';
+import { IFinesMacPayloadAccountDefendantCompany } from '../interfaces/fines-mac-payload-defendant-company.interface';
 
-export const FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadDefendantCompany = {
+export const FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadAccountDefendantCompany = {
   company_flag: true,
   organisation_name: 'Acme Org Ltd.',
   address_line_1: '123 Street',

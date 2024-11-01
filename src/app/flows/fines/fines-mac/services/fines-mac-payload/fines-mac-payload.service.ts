@@ -6,17 +6,18 @@ import { IFinesMacAccountDetailsState } from '../../fines-mac-account-details/in
 import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 
 import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
-import { IFinesMacPayloadInitial } from './interfaces/fines-mac-payload-initial.interface';
+import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-payload-account-initial.interface';
 
 import { buildDefendantPayload } from './utils/fines-mac-payload-defendant.utils';
 import { buildPaymentTermsPayload } from './utils/fines-mac-payload-payment-terms.utils';
 import { buildAccountNotesPayload } from './utils/fines-mac-payload-account-notes.utils';
-import { IFinesMacPayload } from './interfaces/fines-mac-payload.interface';
+import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
 import { TransformationService } from '@services/transformation-service/transformation.service';
 import { FINES_MAC_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
 import { ITransformItem } from '@services/transformation-service/interfaces/transform-item.interface';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+
+import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -32,11 +33,11 @@ export class FinesMacPayloadService {
    * @param paymentTermsState - The state object containing payment terms.
    * @returns The initial payload for fines MAC.
    */
-  private buildInitialPayload(
+  private buildAccountInitialPayload(
     accountDetailsState: IFinesMacAccountDetailsState,
     courtDetailsState: IFinesMacCourtDetailsState,
     paymentTermsState: IFinesMacPaymentTermsState,
-  ): IFinesMacPayloadInitial {
+  ): IFinesMacPayloadAccountAccountInitial {
     const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
       accountDetailsState;
 
@@ -78,10 +79,7 @@ export class FinesMacPayloadService {
    * @param finesMacPayload - The payload object to be transformed.
    * @returns The transformed payload object.
    */
-  private transformPayload(
-    finesMacPayload: IFinesMacPayload,
-    transformItemsConfig: ITransformItem[],
-  ): IFinesMacPayload {
+  private transformPayload(finesMacPayload: any, transformItemsConfig: ITransformItem[]): IFinesMacAddAccountPayload {
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
@@ -97,29 +95,7 @@ export class FinesMacPayloadService {
     return null;
   }
 
-  private buildAddAccountPayload(
-    accountDetailsState: IFinesMacAccountDetailsState,
-    businessUnit: IOpalFinesBusinessUnit,
-    sessionUserState: ISessionUserState,
-  ) {
-    return {
-      business_unit_id: businessUnit['business_unit_id'],
-      submitted_by: this.getBusinessUnitBusinessUserId(businessUnit['business_unit_id'], sessionUserState),
-      submitted_by_name: sessionUserState['name'],
-      account: null,
-      account_type: accountDetailsState['fm_create_account_account_type'],
-      account_status: 'submitted',
-      timeline_data: null,
-    };
-  }
-
-  /**
-   * Builds the payload for fines MAC based on the provided state.
-   *
-   * @param {IFinesMacState} finesMacState - The state containing all the necessary form data.
-   * @returns {IFinesMacPayload} The constructed payload object.
-   */
-  public buildPayload(finesMacState: IFinesMacState, sessionUserState: ISessionUserState): IFinesMacPayload {
+  private buildAccountPayload(finesMacState: IFinesMacState): IFinesMacPayloadAccount {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { formData: courtDetailsState } = finesMacState.courtDetails;
     const { formData: paymentTermsState } = finesMacState.paymentTerms;
@@ -130,10 +106,9 @@ export class FinesMacPayloadService {
     const { formData: companyDetailsState } = finesMacState.companyDetails;
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
-    const { businessUnit } = finesMacState;
 
     // Build the parts of our payload...
-    const initialPayload = this.buildInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
+    const initialPayload = this.buildAccountInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
     const defendant = buildDefendantPayload(
       accountDetailsState,
       personalDetailsState,
@@ -147,7 +122,7 @@ export class FinesMacPayloadService {
     const accountNotes = buildAccountNotesPayload(accountCommentsNotesState);
 
     // Return our payload object
-    const finesMacPayload: IFinesMacPayload = {
+    return {
       ...initialPayload,
       defendant: defendant,
       offences: null,
@@ -155,9 +130,44 @@ export class FinesMacPayloadService {
       payment_terms: paymentTerms,
       account_notes: accountNotes,
     };
-
-    console.log(this.buildAddAccountPayload(accountDetailsState, businessUnit, sessionUserState));
-
-    return this.transformPayload(finesMacPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
   }
+
+  public buildAddAccountPayload(
+    finesMacState: IFinesMacState,
+    sessionUserState: ISessionUserState,
+  ): IFinesMacAddAccountPayload {
+    const { formData: accountDetailsState } = finesMacState.accountDetails;
+    const { businessUnit } = finesMacState;
+    const accountPayload = this.buildAccountPayload(finesMacState);
+
+    // Build the add account payload
+    const addAccountPayload = {
+      business_unit_id: businessUnit['business_unit_id'],
+      submitted_by: this.getBusinessUnitBusinessUserId(businessUnit['business_unit_id'], sessionUserState),
+      submitted_by_name: sessionUserState['name'],
+      account: accountPayload,
+      account_type: accountDetailsState['fm_create_account_account_type'],
+      account_status: 'submitted',
+      timeline_data: null,
+    };
+
+    // Transform the payload, format the dates to the correct format
+    return this.transformPayload(addAccountPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  /**
+   * Builds the payload for fines MAC based on the provided state.
+   *
+   * @param {IFinesMacState} finesMacState - The state containing all the necessary form data.
+   * @returns {IFinesMacPayloadAccount} The constructed payload object.
+   */
+  // public buildPayload(
+  //   finesMacState: IFinesMacState,
+  //   sessionUserState: ISessionUserState,
+  //   type: string,
+  // ): IFinesMacPayloadAccount {
+  //   const addAccountPayload = this.buildAddAccountPayload(finesMacState, sessionUserState);
+
+  //   return this.transformPayload(addAccountPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
+  // }
 }
