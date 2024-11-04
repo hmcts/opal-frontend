@@ -111,3 +111,7 @@ When('I see {string} text under the {string} field', (text: string, inputField: 
     .invoke('text')
     .should('contains', text);
 });
+
+Then('I see green banner on the top of the page', () => {
+  cy.get('app-moj-banner').should('exist');
+});
