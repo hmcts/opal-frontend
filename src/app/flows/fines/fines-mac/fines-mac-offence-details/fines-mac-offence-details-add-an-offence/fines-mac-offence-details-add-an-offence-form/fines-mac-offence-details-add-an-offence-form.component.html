@@ -132,6 +132,7 @@
                   <app-fines-mac-offence-details-minor-creditor-information
                     [minorCreditor]="minorCreditors[rowIndex]!"
                     [showActions]="true"
+                    [isDetailsHidden]="minorCreditorsHidden[rowIndex]"
                     (actionClicked)="minorCreditorActions($event)"
                   ></app-fines-mac-offence-details-minor-creditor-information>
                 </fieldset>

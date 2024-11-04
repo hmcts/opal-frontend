@@ -33,3 +33,11 @@ Then('I see the {string} link for imposition {int}', (linkText: string, index: n
     .contains('a', linkText)
     .should('exist');
 });
+Then('I do not see the {string} link for imposition {int}', (linkText: string, index: number) => {
+  cy.contains('legend', 'Impositions')
+    .parent()
+    .find('app-moj-ticket-panel')
+    .eq(index - 1)
+    .contains('a', linkText)
+    .should('not.exist');
+});

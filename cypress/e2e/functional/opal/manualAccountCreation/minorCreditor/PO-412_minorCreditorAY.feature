@@ -285,6 +285,7 @@ Feature: PO-412 - Minor Creditor - Adult or Youth
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
+    When I click on the "Show details" link for imposition 1
     Then I see the following Minor creditor details for impostion 1:
       | Minor creditor | FNAME LNAME  |
       | Address        | Not provided |
@@ -304,6 +305,7 @@ Feature: PO-412 - Minor Creditor - Adult or Youth
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
+    When I click on the "Show details" link for imposition 1
     Then I see the following Minor creditor details for impostion 1:
       | Minor creditor | COMPANY NAME |
       | Address        | Not provided |
@@ -333,6 +335,7 @@ Feature: PO-412 - Minor Creditor - Adult or Youth
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
+    When I click on the "Show details" link for imposition 1
     Then I see the following Minor creditor details for impostion 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
