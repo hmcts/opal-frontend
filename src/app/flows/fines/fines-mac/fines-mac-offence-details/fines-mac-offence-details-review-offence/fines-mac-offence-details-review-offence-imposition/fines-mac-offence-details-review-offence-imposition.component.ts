@@ -55,9 +55,11 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
       const impositionA = allocationOrderMap[a.fm_offence_details_result_code!];
       const impositionB = allocationOrderMap[b.fm_offence_details_result_code!];
 
-      const allocationOrderComparison = impositionA.allocationOrder - impositionB.allocationOrder;
-      if (allocationOrderComparison !== 0) {
-        return allocationOrderComparison;
+      if (impositionA && impositionB) {
+        const allocationOrderComparison = impositionA.allocationOrder - impositionB.allocationOrder;
+        if (allocationOrderComparison !== 0) {
+          return allocationOrderComparison;
+        }
       }
 
       return impositionA.resultTitle.localeCompare(impositionB.resultTitle);

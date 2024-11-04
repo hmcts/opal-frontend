@@ -56,7 +56,7 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
   private getOffenceAndImpositions(): void {
     this.offence = this.finesMacOffenceDetailsService.removeIndexFromImpositionKeys(
       this.finesService.finesMacState.offenceDetails,
-    )[0];
+    )[this.finesMacOffenceDetailsService.offenceIndex];
   }
 
   public confirmOffenceRemoval(): void {
