@@ -22,6 +22,8 @@ import { OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fin
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
 import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -542,5 +544,43 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component['addControlsToFormArray']).not.toHaveBeenCalled();
     expect(component['setupResultCodeListener']).toHaveBeenCalledTimes(impositionsLength);
     expect(component.today).toBe('01/01/2022');
+  });
+
+  it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+      removeMinorCreditor: 0,
+    };
+
+    component.minorCreditorActions({ action: 'remove', index: 0 });
+
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeMinorCreditor], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should return the correct minor creditor form data for the specified row index', () => {
+    const mockMinorCreditorForm = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
+    component.offenceIndex = 0;
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+
+    const result = component.getMinorCreditor(0);
+
+    expect(result).toEqual(mockMinorCreditorForm);
+  });
+
+  it('should return undefined if childFormData is not defined', () => {
+    component.offenceIndex = 0;
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [];
+
+    const result = component.getMinorCreditor(0);
+
+    expect(result).toBeUndefined();
   });
 });

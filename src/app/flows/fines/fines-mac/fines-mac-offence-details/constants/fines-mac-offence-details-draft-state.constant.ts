@@ -3,4 +3,5 @@ import { IFinesMacOffenceDetailsDraftState } from '../interfaces/fines-mac-offen
 export const FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE: IFinesMacOffenceDetailsDraftState = {
   offenceDetailsDraft: [],
   removeImposition: null,
+  removeMinorCreditor: null,
 };

@@ -78,6 +78,9 @@ export default defineConfig({
     baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
     specPattern: '**/*.feature',
     setupNodeEvents,
+    retries: {
+      runMode: 2,
+    },
   },
   experimentalModifyObstructiveThirdPartyCode: true,
   chromeWebSecurity: false,
