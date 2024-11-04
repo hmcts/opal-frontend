@@ -1,6 +1,6 @@
-import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from './fines-mac-payload-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './fines-mac-payload-account-defendant-individual-debtor-details-alias.interface';
 
-export interface IFinesMacPayloadAccountDefendantDebtorDetailComplete {
+export interface IFinesMacPayloadAccountDefendantIndividualDebtorDetails {
   vehicle_make: string | null;
   vehicle_registration_mark: string | null;
   document_language: string | null;
@@ -15,5 +15,5 @@ export interface IFinesMacPayloadAccountDefendantDebtorDetailComplete {
   employer_post_code: string | null;
   employer_telephone_number: string | null;
   employer_email_address: string | null;
-  aliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null;
+  aliases: IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias[] | null;
 }

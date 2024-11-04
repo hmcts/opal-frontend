@@ -1,4 +1,4 @@
-import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../utils/interfaces/fines-mac-payload-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../utils/interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 
 export const FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD: IFinesMacPayloadAccountDefendantDebtorDetailComplete = {
   vehicle_make: null,

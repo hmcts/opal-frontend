@@ -1,4 +1,4 @@
-import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from './fines-mac-payload-defendant-parent-guardian-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from './fines-mac-payload-account-defendant-parent-guardian-parent-guardian.interface';
 
 export interface IFinesMacPayloadAccountDefendantParentGuardian {
   company_flag: boolean | null;

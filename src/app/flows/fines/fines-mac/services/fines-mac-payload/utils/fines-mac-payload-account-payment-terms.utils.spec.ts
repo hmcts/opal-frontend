@@ -1,6 +1,6 @@
 import { buildAccountPaymentTermsPayload } from './fines-mac-payload-account-payment-terms.utils';
 import { IFinesMacPaymentTermsState } from '../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
-import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-terms-payload.interface';
+import { IFinesMacPayloadAccountPaymentTerms } from './interfaces/fines-mac-payload-account-payment-terms.interface';
 
 describe('buildAccountPaymentTermsPayload', () => {
   it('should build payment terms payload for payInFull, collection order made, payment card request, default days in jail, PRIS Enforcement', () => {
@@ -19,7 +19,7 @@ describe('buildAccountPaymentTermsPayload', () => {
       fm_payment_terms_prison_and_prison_number: 'Test and test',
     };
 
-    const expectedPayload: IFinesMacPaymentTermsPayload = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'B',
       effective_date: '2024-10-14',
       instalment_period: null,
@@ -63,7 +63,7 @@ describe('buildAccountPaymentTermsPayload', () => {
       fm_payment_terms_prison_and_prison_number: undefined,
     };
 
-    const expectedPayload: IFinesMacPaymentTermsPayload = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'B',
       effective_date: '2024-10-15',
       instalment_period: null,
@@ -103,7 +103,7 @@ describe('buildAccountPaymentTermsPayload', () => {
       fm_payment_terms_reason_account_is_on_noenf: 'Test',
     };
 
-    const expectedPayload: IFinesMacPaymentTermsPayload = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'I',
       effective_date: '2019-10-11',
       instalment_period: 'W',
@@ -139,7 +139,7 @@ describe('buildAccountPaymentTermsPayload', () => {
       fm_payment_terms_reason_account_is_on_noenf: undefined,
     };
 
-    const expectedPayload: IFinesMacPaymentTermsPayload = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'I',
       effective_date: '2019-10-11',
       instalment_period: 'W',
@@ -182,7 +182,7 @@ describe('buildAccountPaymentTermsPayload', () => {
       fm_payment_terms_prison_and_prison_number: 'Test and test',
     };
 
-    const expectedPayload: IFinesMacPaymentTermsPayload = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'I',
       effective_date: '2024-10-18',
       instalment_period: 'W',
@@ -229,7 +229,7 @@ describe('buildAccountPaymentTermsPayload', () => {
       fm_payment_terms_prison_and_prison_number: null,
     };
 
-    const expectedPayload: IFinesMacPaymentTermsPayload = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: null,
       effective_date: null,
       instalment_period: null,

@@ -1,4 +1,4 @@
-import { IFinesMacPayloadAccountDefendantParentGuardian } from '../interfaces/fines-mac-payload-defendant-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardian } from '../interfaces/fines-mac-payload-account-defendant-parent-guardian.interface';
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK: IFinesMacPayloadAccountDefendantParentGuardian =
   {

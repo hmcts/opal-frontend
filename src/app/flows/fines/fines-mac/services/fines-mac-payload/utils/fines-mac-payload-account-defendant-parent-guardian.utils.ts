@@ -4,10 +4,10 @@ import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-p
 import { IFinesMacParentGuardianDetailsAliasState } from '../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { IFinesMacParentGuardianDetailsState } from '../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
-import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './interfaces/fines-mac-payload-defendant-individual-debtor-details-alias.interface';
-import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './interfaces/fines-mac-payload-defendant-individual-debtor-details.interface';
-import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from './interfaces/fines-mac-payload-defendant-parent-guardian-parent-guardian.interface';
-import { IFinesMacPayloadAccountDefendantParentGuardian } from './interfaces/fines-mac-payload-defendant-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './interfaces/fines-mac-payload-account-defendant-individual-debtor-details-alias.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './interfaces/fines-mac-payload-account-defendant-individual-debtor-details.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from './interfaces/fines-mac-payload-account-defendant-parent-guardian-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardian } from './interfaces/fines-mac-payload-account-defendant-parent-guardian.interface';
 
 /**
  * Builds an array of parent or guardian debtor details aliases based on the provided state objects.

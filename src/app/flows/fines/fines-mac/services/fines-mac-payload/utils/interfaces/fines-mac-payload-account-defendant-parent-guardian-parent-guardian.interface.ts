@@ -1,4 +1,4 @@
-import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './fines-mac-payload-defendant-individual-debtor-details.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './fines-mac-payload-account-defendant-individual-debtor-details.interface';
 
 export interface IFinesMacPayloadAccountDefendantParentGuardianParentGuardian {
   company_flag: boolean | null;

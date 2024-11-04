@@ -3,9 +3,9 @@ import { IFinesMacEmployerDetailsState } from '../../../fines-mac-employer-detai
 import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { IFinesMacPersonalDetailsAliasState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
-import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './interfaces/fines-mac-payload-defendant-individual-debtor-details-alias.interface';
-import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './interfaces/fines-mac-payload-defendant-individual-debtor-details.interface';
-import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-individual-defendant.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './interfaces/fines-mac-payload-account-defendant-individual-debtor-details-alias.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './interfaces/fines-mac-payload-account-defendant-individual-debtor-details.interface';
+import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-account-individual-defendant.interface';
 
 /*
  * Builds an array of individual defendant debtor details aliases from the provided aliases state.

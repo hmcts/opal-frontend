@@ -1,7 +1,7 @@
 import { IFinesMacPaymentTermsState } from '../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
-import { IFinesMacPaymentTermsEnforcementPayload } from './interfaces/fines-mac-payment-terms-enforcement-payload.interface';
-import { IFinesMacPaymentTermsEnforcementResultResponsePayload } from './interfaces/fines-mac-payment-terms-enforcement-result-response-payload.interface';
-import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-terms-payload.interface';
+import { IFinesMacPayloadAccountPaymentTermsEnforcement } from './interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
+import { IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse } from './interfaces/fines-mac-payload-account-payment-terms-enforcement-result-response.interface';
+import { IFinesMacPayloadAccountPaymentTerms } from './interfaces/fines-mac-payload-account-payment-terms.interface';
 
 /**
  * Builds an enforcement response object for fines MAC payment terms.
@@ -14,7 +14,7 @@ import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-ter
 const buildEnforcementResultResponse = (
   parameterName: string,
   response: string | null,
-): IFinesMacPaymentTermsEnforcementResultResponsePayload => {
+): IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse => {
   return {
     parameter_name: parameterName,
     response: response ?? null,
@@ -30,8 +30,8 @@ const buildEnforcementResultResponse = (
  */
 const buildEnforcement = (
   resultId: string,
-  enforcementResponses: IFinesMacPaymentTermsEnforcementResultResponsePayload[] | null,
-): IFinesMacPaymentTermsEnforcementPayload => {
+  enforcementResponses: IFinesMacPayloadAccountPaymentTermsEnforcementResultResponse[] | null,
+): IFinesMacPayloadAccountPaymentTermsEnforcement => {
   return {
     result_id: resultId,
     enforcement_result_responses: enforcementResponses,
@@ -40,7 +40,7 @@ const buildEnforcement = (
 
 const buildPaymentTermEnforcements = (
   paymentTermsState: IFinesMacPaymentTermsState,
-): IFinesMacPaymentTermsEnforcementPayload[] | null => {
+): IFinesMacPayloadAccountPaymentTermsEnforcement[] | null => {
   const {
     fm_payment_terms_collection_order_made: hasCollectionOrderBeenMade,
     fm_payment_terms_collection_order_made_today: hasCollectionOrderBeenMadeToday,
@@ -84,7 +84,7 @@ const buildPaymentTermEnforcements = (
  */
 export const buildAccountPaymentTermsPayload = (
   paymentTermsState: IFinesMacPaymentTermsState,
-): IFinesMacPaymentTermsPayload => {
+): IFinesMacPayloadAccountPaymentTerms => {
   const {
     fm_payment_terms_payment_terms,
     fm_payment_terms_pay_by_date,

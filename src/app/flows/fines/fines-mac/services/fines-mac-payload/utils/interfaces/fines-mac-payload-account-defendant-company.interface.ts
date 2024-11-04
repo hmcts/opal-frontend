@@ -1,4 +1,4 @@
-import { IFinesMacPayloadAccountDefendantCompanyDebtorDetails } from './fines-mac-payload-defendant-company-debtor-details.interface';
+import { IFinesMacPayloadAccountDefendantCompanyDebtorDetails } from './fines-mac-payload-account-defendant-company-debtor-details.interface';
 
 export interface IFinesMacPayloadAccountDefendantCompany {
   company_flag: boolean | null;
