@@ -107,7 +107,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'updateImpositionPositionsAfterSplice');
+    spyOn<any>(component, 'removeMinorCreditorAndUpdateIds');
     spyOn(component, 'handleRoute');
     const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
     fixture.detectChanges();
@@ -124,8 +124,42 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.fieldNames,
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
-    expect(component['updateImpositionPositionsAfterSplice']).toHaveBeenCalledWith(
+    expect(component['removeMinorCreditorAndUpdateIds']).toHaveBeenCalledWith(
       [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
+      0,
+    );
+    expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
+  });
+
+  it('should confirm removal and update form data', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'removeControlAndRenumber');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'dropMinorCreditorImpositionPosition');
+    spyOn(component, 'handleRoute');
+    const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
+    fixture.detectChanges();
+
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_imposition_position: 5,
+        },
+      },
+    ];
+    component.confirmRemoval(rowIndex, formArray);
+
+    expect(component['removeControlAndRenumber']).toHaveBeenCalledWith(
+      formArray,
+      rowIndex,
+      FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.fieldNames,
+      FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
+    );
+    expect(component['dropMinorCreditorImpositionPosition']).toHaveBeenCalledWith(
+      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData,
       0,
     );
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
@@ -153,11 +187,39 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     const splicedIndex = 0;
 
-    const result = component['updateImpositionPositionsAfterSplice'](offenceDetailsArray, splicedIndex);
+    component['removeMinorCreditorAndUpdateIds'](offenceDetailsArray, splicedIndex);
 
     // Verify that positions are updated
-    expect(result.length).toBe(2);
-    expect(result[0].formData.fm_offence_details_imposition_position).toBe(0);
-    expect(result[1].formData.fm_offence_details_imposition_position).toBe(1);
+
+    expect(offenceDetailsArray.length).toBe(2);
+    expect(offenceDetailsArray[0].formData.fm_offence_details_imposition_position).toBe(0);
+    expect(offenceDetailsArray[1].formData.fm_offence_details_imposition_position).toBe(1);
+  });
+
+  it('should drop imposition positions correctly', () => {
+    const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_imposition_position: 1,
+        },
+      },
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_imposition_position: 2,
+        },
+      },
+    ];
+
+    const dropIndex = 1;
+
+    component['dropMinorCreditorImpositionPosition'](offenceDetailsArray, dropIndex);
+
+    expect(offenceDetailsArray[1].formData.fm_offence_details_imposition_position).toBe(0);
+    expect(offenceDetailsArray[2].formData.fm_offence_details_imposition_position).toBe(1);
   });
 });
