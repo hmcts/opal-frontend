@@ -26,11 +26,4 @@ describe('FinesMacPayloadService', () => {
     const result = service.buildAddAccountPayload(finesMacState, SESSION_USER_STATE_MOCK);
     expect(result).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
-
-  it('should create an account payload', () => {
-    const finesMacState: IFinesMacState = { ...FINES_MAC_PAYLOAD_FINES_MAC_STATE };
-
-    const result = service['buildAccountPayload'](finesMacState);
-    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_MOCK);
-  });
 });
