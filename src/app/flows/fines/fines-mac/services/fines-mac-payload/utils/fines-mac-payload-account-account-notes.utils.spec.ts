@@ -1,15 +1,15 @@
-import { buildAccountNotesPayload } from './fines-mac-payload-account-notes.utils';
+import { buildAccountAccountNotesPayload } from './fines-mac-payload-account-account-notes.utils';
 import { IFinesMacAccountCommentsNotesState } from '../../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
 import { IFinesMacPayloadAccountAccountNote } from './interfaces/fines-mac-payload-account-account-note.interface';
 
-describe('buildAccountNotesPayload', () => {
+describe('buildAccountAccountNotesPayload', () => {
   it('should return an array of account notes when comments and notes are provided', () => {
     const accountCommentsNotesState: IFinesMacAccountCommentsNotesState = {
       fm_account_comments_notes_comments: 'Test comment',
       fm_account_comments_notes_notes: 'Test note',
     };
 
-    const result = buildAccountNotesPayload(accountCommentsNotesState);
+    const result = buildAccountAccountNotesPayload(accountCommentsNotesState);
     const expectedResult: IFinesMacPayloadAccountAccountNote[] = [
       { account_note_serial: 3, account_note_text: 'Test comment', note_type: 'AC' },
       { account_note_serial: 2, account_note_text: 'Test note', note_type: 'AA' },
@@ -24,7 +24,7 @@ describe('buildAccountNotesPayload', () => {
       fm_account_comments_notes_notes: null,
     };
 
-    const result = buildAccountNotesPayload(accountCommentsNotesState);
+    const result = buildAccountAccountNotesPayload(accountCommentsNotesState);
     expect(result).toBeNull();
   });
 
@@ -34,7 +34,7 @@ describe('buildAccountNotesPayload', () => {
       fm_account_comments_notes_notes: null,
     };
 
-    const result = buildAccountNotesPayload(accountCommentsNotesState);
+    const result = buildAccountAccountNotesPayload(accountCommentsNotesState);
     const expectedResult: IFinesMacPayloadAccountAccountNote[] = [
       { account_note_serial: 3, account_note_text: 'Only comment', note_type: 'AC' },
     ];
@@ -48,7 +48,7 @@ describe('buildAccountNotesPayload', () => {
       fm_account_comments_notes_notes: 'Only note',
     };
 
-    const result = buildAccountNotesPayload(accountCommentsNotesState);
+    const result = buildAccountAccountNotesPayload(accountCommentsNotesState);
     const expectedResult: IFinesMacPayloadAccountAccountNote[] = [
       { account_note_serial: 2, account_note_text: 'Only note', note_type: 'AA' },
     ];

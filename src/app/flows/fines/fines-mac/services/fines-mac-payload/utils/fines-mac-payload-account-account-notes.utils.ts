@@ -27,7 +27,7 @@ const buildAccountNote = (
  * @param accountCommentsNotesState - The state containing account comments and notes.
  * @returns An array of account notes if any are present, otherwise null.
  */
-export const buildAccountNotesPayload = (
+export const buildAccountAccountNotesPayload = (
   accountCommentsNotesState: IFinesMacAccountCommentsNotesState,
 ): IFinesMacPayloadAccountAccountNote[] | null => {
   const accountNotes: IFinesMacPayloadAccountAccountNote[] = [];

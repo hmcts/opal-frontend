@@ -10,7 +10,7 @@ import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-pa
 
 import { buildAccountDefendantPayload } from './utils/fines-mac-payload-account-defendant.utils';
 import { buildAccountPaymentTermsPayload } from './utils/fines-mac-payload-account-payment-terms.utils';
-import { buildAccountNotesPayload } from './utils/fines-mac-payload-account-notes.utils';
+import { buildAccountAccountNotesPayload } from './utils/fines-mac-payload-account-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
 import { TransformationService } from '@services/transformation-service/transformation.service';
 import { FINES_MAC_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
@@ -122,7 +122,7 @@ export class FinesMacPayloadService {
       parentGuardianDetailsState,
     );
     const paymentTerms = buildAccountPaymentTermsPayload(paymentTermsState);
-    const accountNotes = buildAccountNotesPayload(accountCommentsNotesState);
+    const accountNotes = buildAccountAccountNotesPayload(accountCommentsNotesState);
 
     // Return our payload object
     return {
