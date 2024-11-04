@@ -25,7 +25,44 @@ import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/
 You can use the summary list component in your template as follows:
 
 ```html
-<app-govuk-summary-list [items]="summaryItems"></app-govuk-summary-list>
+<app-govuk-summary-list summaryListId="exampleSummaryList">
+  <div
+    app-govuk-summary-list-row
+    class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+    summaryListId="exampleSummaryList"
+    summaryListRowId="row1"
+  >
+    <ng-container name>Name</ng-container>
+    <ng-container value>
+      <p class="govuk-body">Arnab Subedi</p>
+    </ng-container>
+  </div>
+  <div
+    app-govuk-summary-list-row
+    class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+    summaryListId="exampleSummaryList"
+    summaryListRowId="row2"
+  >
+    <ng-container name>Date of birth</ng-container>
+    <ng-container value>
+      <p class="govuk-body">01 January 1990</p>
+    </ng-container>
+  </div>
+  <div
+    app-govuk-summary-list-row
+    class="govuk-summary-list__row"
+    summaryListId="exampleSummaryList"
+    summaryListRowId="row3"
+    [actionEnabled]="true"
+    (actionClick)="handleRoute('/change-date-of-birth')"
+  >
+    <ng-container name>Change Date of birth</ng-container>
+    <ng-container value>
+      <p class="govuk-body">01 January 1990</p>
+    </ng-container>
+    <ng-container action>Change</ng-container>
+  </div>
+</app-govuk-summary-list>
 ```
 
 ### Example in HTML:

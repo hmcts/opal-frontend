@@ -25,7 +25,12 @@ import { GovukTaskListItemComponent } from '@components/govuk/govuk-task-list-it
 You can use the task list item component in your template as follows:
 
 ```html
-<app-govuk-task-list-item [title]="'Task 1'" [link]="'/task-1'" [status]="'Complete'"></app-govuk-task-list-item>
+<app-govuk-task-list taskListId="exampleTaskList" taskListClasses="govuk-!-margin-left-0">
+  <ng-container *ngTemplateOutlet="task1"></ng-container>
+  <ng-container *ngTemplateOutlet="task2"></ng-container>
+  <ng-container *ngTemplateOutlet="task3"></ng-container>
+</app-govuk-task-list>
+<app-govuk-table>
 ```
 
 ### Example in HTML:
