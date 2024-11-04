@@ -1,11 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsService } from './fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac-offence-details-draft-state.constant';
-import { IFinesMacOffenceDetailsReviewSummaryForm } from '../../fines-mac-offence-details-review/interfaces/fines-mac-offence-details-review-summary-form.interface';
-import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-details-form.interface';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
-import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM } from '../../fines-mac-offence-details-review/mocks/fines-mac-offence-details-review-summary-service-form.mock';
 
 describe('FinesMacOffenceDetailsService', () => {
   let service: FinesMacOffenceDetailsService;
