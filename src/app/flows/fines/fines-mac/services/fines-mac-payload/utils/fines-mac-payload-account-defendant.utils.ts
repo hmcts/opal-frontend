@@ -5,10 +5,10 @@ import { IFinesMacEmployerDetailsState } from '../../../fines-mac-employer-detai
 import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { IFinesMacParentGuardianDetailsState } from '../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
-import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD } from '../constants/fines-mac-defendant-debtor-details-alias-payload.constant';
-import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD } from '../constants/fines-mac-defendant-debtor-details-payload.constant';
-import { FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD } from '../constants/fines-mac-defendant-parent-guardian-payload.constant';
-import { FINES_MAC_DEFENDANT_PAYLOAD } from '../constants/fines-mac-defendant-payload.constant';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS_ALIAS } from '../constants/fines-mac-payload-account-defendant-debtor-details-alias.constant';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS } from '../constants/fines-mac-payload-account-defendant-debtor-details.constant';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from '../constants/fines-mac-payload-account-defendant-parent-guardian.constant';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
 import { IFinesMacPayloadAccountDefendantCompany } from './interfaces/fines-mac-payload-account-defendant-company.interface';
 import { IFinesMacPayloadAccountDefendantComplete } from './interfaces/fines-mac-payload-account-defendant-complete.interface';
 import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from './interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
@@ -33,18 +33,18 @@ const applyBasePayloadsToIndividualOrCompanyDefendant = (
 ): IFinesMacPayloadAccountDefendantComplete => {
   const aliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null =
     defendant.debtor_detail.aliases?.map((alias) => ({
-      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS_ALIAS,
       ...alias,
     })) || null;
 
   const debtorDetail: IFinesMacPayloadAccountDefendantDebtorDetailComplete = {
-    ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
+    ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS,
     ...defendant.debtor_detail,
     aliases: aliases,
   };
 
   return {
-    ...FINES_MAC_DEFENDANT_PAYLOAD,
+    ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
     ...defendant,
     debtor_detail: debtorDetail,
   };
@@ -65,21 +65,21 @@ const applyBasePayloadsToParentGuardianDefendant = (
 ): IFinesMacPayloadAccountDefendantComplete => {
   const parentGuardianDebtorAliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null =
     defendant.parent_guardian.debtor_detail.aliases?.map((alias) => ({
-      ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_ALIAS_PAYLOAD,
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS_ALIAS,
       ...alias,
     })) ?? null;
 
   const parentGuardianDebtorDetail: IFinesMacPayloadAccountDefendantDebtorDetailComplete = {
-    ...FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
+    ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS,
     ...defendant.parent_guardian.debtor_detail,
     aliases: parentGuardianDebtorAliases,
   };
 
   return {
-    ...FINES_MAC_DEFENDANT_PAYLOAD,
+    ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
     ...defendant,
     parent_guardian: {
-      ...FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD,
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN,
       ...defendant.parent_guardian,
       debtor_detail: parentGuardianDebtorDetail,
     },

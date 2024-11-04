@@ -1,6 +1,6 @@
 import { IFinesMacPayloadAccount } from '../interfaces/fines-mac-payload-account.interface';
 
-export const FINES_MAC_PAYLOAD_MOCK: IFinesMacPayloadAccount = {
+export const FINES_MAC_PAYLOAD_ACCOUNT_MOCK: IFinesMacPayloadAccount = {
   account_type: 'conditionalCaution',
   defendant_type: 'individual',
   originator_name: null,

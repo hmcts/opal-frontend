@@ -1,8 +1,8 @@
 import { IFinesMacPayloadAccountDefendantComplete } from '../utils/interfaces/fines-mac-payload-account-defendant-complete.interface';
-import { FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD } from './fines-mac-defendant-debtor-details-payload.constant';
-import { FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD } from './fines-mac-defendant-parent-guardian-payload.constant';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS } from './fines-mac-payload-account-defendant-debtor-details.constant';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from './fines-mac-payload-account-defendant-parent-guardian.constant';
 
-export const FINES_MAC_DEFENDANT_PAYLOAD: IFinesMacPayloadAccountDefendantComplete = {
+export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT: IFinesMacPayloadAccountDefendantComplete = {
   company_flag: null,
   title: null,
   surname: null,
@@ -33,6 +33,6 @@ export const FINES_MAC_DEFENDANT_PAYLOAD: IFinesMacPayloadAccountDefendantComple
   custody_status: null,
   prison_number: null,
   interpreter_lang: null,
-  debtor_detail: FINES_MAC_DEFENDANT_DEBTOR_DETAILS_PAYLOAD,
-  parent_guardian: FINES_MAC_DEFENDANT_PARENT_GUARDIAN_PAYLOAD,
+  debtor_detail: FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS,
+  parent_guardian: FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN,
 };
