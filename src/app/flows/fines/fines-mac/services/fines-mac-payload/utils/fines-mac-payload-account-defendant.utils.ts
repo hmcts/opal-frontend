@@ -15,9 +15,9 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from './int
 import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from './interfaces/fines-mac-payload-defendant-debtor-detail-complete.interface';
 import { IFinesMacPayloadAccountDefendantParentGuardian } from './interfaces/fines-mac-payload-defendant-parent-guardian.interface';
 import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-individual-defendant.interface';
-import { buildDefendantCompanyPayload } from './fines-mac-payload-defendant-company.utils';
-import { buildDefendantIndividualPayload } from './fines-mac-payload-defendant-individual.utils';
-import { buildDefendantParentGuardianPayload } from './fines-mac-payload-defendant-parent-guardian.utils';
+import { buildAccountDefendantCompanyPayload } from './fines-mac-payload-account-defendant-company.utils';
+import { buildAccountDefendantIndividualPayload } from './fines-mac-payload-account-defendant-individual.utils';
+import { buildAccountDefendantParentGuardianPayload } from './fines-mac-payload-account-defendant-parent-guardian.utils';
 
 /**
  * Applies base payloads to an individual or company defendant.
@@ -98,7 +98,7 @@ const applyBasePayloadsToParentGuardianDefendant = (
  * @param parentGuardianDetailsState - The state containing parent or guardian details.
  * @returns The constructed generic defendant payload.
  */
-export const buildDefendantPayload = (
+export const buildAccountDefendantPayload = (
   accountDetailsState: IFinesMacAccountDetailsState,
   personalDetailsState: IFinesMacPersonalDetailsState,
   contactDetailsState: IFinesMacContactDetailsState,
@@ -116,7 +116,7 @@ export const buildDefendantPayload = (
   switch (defendantType) {
     case 'parentOrGuardianToPay':
       return applyBasePayloadsToParentGuardianDefendant(
-        buildDefendantParentGuardianPayload(
+        buildAccountDefendantParentGuardianPayload(
           personalDetailsState,
           contactDetailsState,
           employerDetailsState,
@@ -126,11 +126,11 @@ export const buildDefendantPayload = (
       );
     case 'company':
       return applyBasePayloadsToIndividualOrCompanyDefendant(
-        buildDefendantCompanyPayload(companyDetailsState, contactDetailsState, languageDetailsState),
+        buildAccountDefendantCompanyPayload(companyDetailsState, contactDetailsState, languageDetailsState),
       );
     default:
       return applyBasePayloadsToIndividualOrCompanyDefendant(
-        buildDefendantIndividualPayload(
+        buildAccountDefendantIndividualPayload(
           personalDetailsState,
           contactDetailsState,
           employerDetailsState,

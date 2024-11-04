@@ -1,4 +1,4 @@
-import { buildDefendantIndividualPayload } from './fines-mac-payload-defendant-individual.utils';
+import { buildAccountDefendantIndividualPayload } from './fines-mac-payload-account-defendant-individual.utils';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { IFinesMacContactDetailsState } from '../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
 import { IFinesMacEmployerDetailsState } from '../../../fines-mac-employer-details/interfaces/fines-mac-employer-details-state.interface';
@@ -10,7 +10,7 @@ import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../../fines-mac-person
 import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_MOCK } from './mocks/fines-mac-payload-defendant-individual.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-individual-with-alias.mock';
 
-describe('buildDefendantIndividualPayload', () => {
+describe('buildAccountDefendantIndividualPayload', () => {
   it('should build the individual defendant payload correctly', () => {
     const personalDetailsState: IFinesMacPersonalDetailsState = {
       ...FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
@@ -30,7 +30,7 @@ describe('buildDefendantIndividualPayload', () => {
       ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
     };
 
-    const result = buildDefendantIndividualPayload(
+    const result = buildAccountDefendantIndividualPayload(
       personalDetailsState,
       contactDetailsState,
       employerDetailsState,
@@ -57,7 +57,7 @@ describe('buildDefendantIndividualPayload', () => {
       ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
     };
 
-    const result = buildDefendantIndividualPayload(
+    const result = buildAccountDefendantIndividualPayload(
       personalDetailsState,
       contactDetailsState,
       employerDetailsState,

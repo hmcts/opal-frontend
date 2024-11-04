@@ -1,8 +1,8 @@
-import { buildPaymentTermsPayload } from './fines-mac-payload-payment-terms.utils';
+import { buildAccountPaymentTermsPayload } from './fines-mac-payload-account-payment-terms.utils';
 import { IFinesMacPaymentTermsState } from '../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { IFinesMacPaymentTermsPayload } from './interfaces/fines-mac-payment-terms-payload.interface';
 
-describe('buildPaymentTermsPayload', () => {
+describe('buildAccountPaymentTermsPayload', () => {
   it('should build payment terms payload for payInFull, collection order made, payment card request, default days in jail, PRIS Enforcement', () => {
     const paymentTermsState: IFinesMacPaymentTermsState = {
       fm_payment_terms_payment_terms: 'payInFull',
@@ -43,7 +43,7 @@ describe('buildPaymentTermsPayload', () => {
       ],
     };
 
-    const result = buildPaymentTermsPayload(paymentTermsState);
+    const result = buildAccountPaymentTermsPayload(paymentTermsState);
     expect(result).toEqual(expectedPayload);
   });
 
@@ -87,7 +87,7 @@ describe('buildPaymentTermsPayload', () => {
       ],
     };
 
-    const result = buildPaymentTermsPayload(paymentTermsState);
+    const result = buildAccountPaymentTermsPayload(paymentTermsState);
     expect(result).toEqual(expectedPayload);
   });
 
@@ -123,7 +123,7 @@ describe('buildPaymentTermsPayload', () => {
       ],
     };
 
-    const result = buildPaymentTermsPayload(paymentTermsState);
+    const result = buildAccountPaymentTermsPayload(paymentTermsState);
     expect(result).toEqual(expectedPayload);
   });
 
@@ -159,7 +159,7 @@ describe('buildPaymentTermsPayload', () => {
       ],
     };
 
-    const result = buildPaymentTermsPayload(paymentTermsState);
+    const result = buildAccountPaymentTermsPayload(paymentTermsState);
     expect(result).toEqual(expectedPayload);
   });
 
@@ -206,7 +206,7 @@ describe('buildPaymentTermsPayload', () => {
       ],
     };
 
-    const result = buildPaymentTermsPayload(paymentTermsState);
+    const result = buildAccountPaymentTermsPayload(paymentTermsState);
     expect(result).toEqual(expectedPayload);
   });
 
@@ -239,7 +239,7 @@ describe('buildPaymentTermsPayload', () => {
       enforcements: null,
     };
 
-    const result = buildPaymentTermsPayload(paymentTermsState);
+    const result = buildAccountPaymentTermsPayload(paymentTermsState);
     expect(result).toEqual(expectedPayload);
   });
 });

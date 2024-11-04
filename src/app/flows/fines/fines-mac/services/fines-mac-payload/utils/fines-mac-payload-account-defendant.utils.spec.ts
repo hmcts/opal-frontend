@@ -1,4 +1,4 @@
-import { buildDefendantPayload } from './fines-mac-payload-defendant.utils';
+import { buildAccountDefendantPayload } from './fines-mac-payload-account-defendant.utils';
 import { IFinesMacAccountDetailsState } from '../../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
 import { IFinesMacCompanyDetailsState } from '../../../fines-mac-company-details/interfaces/fines-mac-company-details-state.interface';
 import { IFinesMacContactDetailsState } from '../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
@@ -20,7 +20,7 @@ import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_MOCK } from './mocks/fines
 import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-individual-complete-with-alias.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK } from './mocks/fines-mac-payload-defendant-individual-complete.mock';
 
-describe('buildDefendantPayload', () => {
+describe('buildAccountDefendantPayload', () => {
   it('should build payload for parent or guardian defendant', () => {
     const accountDetailsState: IFinesMacAccountDetailsState = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
@@ -51,7 +51,7 @@ describe('buildDefendantPayload', () => {
       fm_parent_guardian_details_aliases: [],
     };
 
-    const result = buildDefendantPayload(
+    const result = buildAccountDefendantPayload(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,
@@ -91,7 +91,7 @@ describe('buildDefendantPayload', () => {
       ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     };
 
-    const result = buildDefendantPayload(
+    const result = buildAccountDefendantPayload(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,
@@ -132,7 +132,7 @@ describe('buildDefendantPayload', () => {
       ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     };
 
-    const result = buildDefendantPayload(
+    const result = buildAccountDefendantPayload(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,
@@ -169,7 +169,7 @@ describe('buildDefendantPayload', () => {
       ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     };
 
-    const result = buildDefendantPayload(
+    const result = buildAccountDefendantPayload(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,
@@ -205,7 +205,7 @@ describe('buildDefendantPayload', () => {
     const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
       ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     };
-    const result = buildDefendantPayload(
+    const result = buildAccountDefendantPayload(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,
@@ -243,7 +243,7 @@ describe('buildDefendantPayload', () => {
     const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
       ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     };
-    const result = buildDefendantPayload(
+    const result = buildAccountDefendantPayload(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,

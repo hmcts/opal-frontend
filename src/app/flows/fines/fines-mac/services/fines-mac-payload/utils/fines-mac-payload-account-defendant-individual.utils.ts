@@ -93,7 +93,7 @@ const buildIndividualDefendantDebtorDetails = (
  * @param languagePreferencesState - The state containing language preferences of the defendant.
  * @returns An object representing an individual defendant.
  */
-export const buildDefendantIndividualPayload = (
+export const buildAccountDefendantIndividualPayload = (
   personalDetailsState: IFinesMacPersonalDetailsState,
   contactDetailsState: IFinesMacContactDetailsState,
   employerDetailsState: IFinesMacEmployerDetailsState,

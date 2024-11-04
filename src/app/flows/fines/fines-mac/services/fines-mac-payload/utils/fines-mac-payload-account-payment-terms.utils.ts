@@ -82,7 +82,7 @@ const buildPaymentTermEnforcements = (
  * @returns An object representing the payment terms.
  *
  */
-export const buildPaymentTermsPayload = (
+export const buildAccountPaymentTermsPayload = (
   paymentTermsState: IFinesMacPaymentTermsState,
 ): IFinesMacPaymentTermsPayload => {
   const {

@@ -155,7 +155,7 @@ const buildParentGuardian = (
  * @param languagePreferencesState - The state object containing language preferences.
  * @returns An object representing the parent or guardian defendant.
  */
-export const buildDefendantParentGuardianPayload = (
+export const buildAccountDefendantParentGuardianPayload = (
   personalDetailsState: IFinesMacPersonalDetailsState,
   contactDetailsState: IFinesMacContactDetailsState,
   employerDetailsState: IFinesMacEmployerDetailsState,

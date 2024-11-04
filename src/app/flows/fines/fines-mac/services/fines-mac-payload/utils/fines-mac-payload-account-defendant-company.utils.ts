@@ -56,7 +56,7 @@ const buildCompanyDefendantDebtorDetails = (
  * @param languagePreferencesState - The state object containing language preferences.
  * @returns An object representing the company defendant.
  */
-export const buildDefendantCompanyPayload = (
+export const buildAccountDefendantCompanyPayload = (
   companyDetailsState: IFinesMacCompanyDetailsState,
   contactDetailsState: IFinesMacContactDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,

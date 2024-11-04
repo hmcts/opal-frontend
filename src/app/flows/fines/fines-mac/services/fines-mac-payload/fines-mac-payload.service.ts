@@ -8,8 +8,8 @@ import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interf
 import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-payload-account-initial.interface';
 
-import { buildDefendantPayload } from './utils/fines-mac-payload-defendant.utils';
-import { buildPaymentTermsPayload } from './utils/fines-mac-payload-payment-terms.utils';
+import { buildAccountDefendantPayload } from './utils/fines-mac-payload-account-defendant.utils';
+import { buildAccountPaymentTermsPayload } from './utils/fines-mac-payload-account-payment-terms.utils';
 import { buildAccountNotesPayload } from './utils/fines-mac-payload-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
 import { TransformationService } from '@services/transformation-service/transformation.service';
@@ -112,7 +112,7 @@ export class FinesMacPayloadService {
 
     // Build the parts of our payload...
     const initialPayload = this.buildAccountInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
-    const defendant = buildDefendantPayload(
+    const defendant = buildAccountDefendantPayload(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,
@@ -121,7 +121,7 @@ export class FinesMacPayloadService {
       companyDetailsState,
       parentGuardianDetailsState,
     );
-    const paymentTerms = buildPaymentTermsPayload(paymentTermsState);
+    const paymentTerms = buildAccountPaymentTermsPayload(paymentTermsState);
     const accountNotes = buildAccountNotesPayload(accountCommentsNotesState);
 
     // Return our payload object

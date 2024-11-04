@@ -10,9 +10,9 @@ import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-detai
 import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../../fines-mac-personal-details/mocks/fines-mac-personal-details-state.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_MOCK } from './mocks/fines-mac-payload-defendant-parent-guardian.mock';
 import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-parent-guardian-with-alias.mock';
-import { buildDefendantParentGuardianPayload } from './fines-mac-payload-defendant-parent-guardian.utils';
+import { buildAccountDefendantParentGuardianPayload } from './fines-mac-payload-account-defendant-parent-guardian.utils';
 
-describe('buildDefendantParentGuardianPayload', () => {
+describe('buildAccountDefendantParentGuardianPayload', () => {
   it('should build the correct payload', () => {
     const personalDetailsState: IFinesMacPersonalDetailsState = {
       ...FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
@@ -39,7 +39,7 @@ describe('buildDefendantParentGuardianPayload', () => {
       ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
     };
 
-    const result = buildDefendantParentGuardianPayload(
+    const result = buildAccountDefendantParentGuardianPayload(
       personalDetailsState,
       contactDetailsState,
       employerDetailsState,
@@ -81,7 +81,7 @@ describe('buildDefendantParentGuardianPayload', () => {
       ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
     };
 
-    const result = buildDefendantParentGuardianPayload(
+    const result = buildAccountDefendantParentGuardianPayload(
       personalDetailsState,
       contactDetailsState,
       employerDetailsState,
