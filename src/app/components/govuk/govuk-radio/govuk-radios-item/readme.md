@@ -25,11 +25,22 @@ import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-ra
 You can use the radios item component in your template as follows:
 
 ```html
-<app-govuk-radios-item
-  [inputId]="'radio1'"
-  [inputName]="'exampleRadio'"
-  [labelText]="'Option 1'"
-></app-govuk-radios-item>
+<app-govuk-radio
+  [fieldSetId]="'example-radio'"
+  [legendText]="'Choose an option'"
+  [legendHint]="'Please select one'"
+  [errors]="'You must select an option'"
+  [radioClasses]="'custom-radio-class'"
+>
+  <div class="govuk-radios__item">
+    <input class="govuk-radios__input" id="option1" name="options" type="radio" value="option1" />
+    <label class="govuk-label govuk-radios__label" for="option1">Option 1</label>
+  </div>
+  <div class="govuk-radios__item">
+    <input class="govuk-radios__input" id="option2" name="options" type="radio" value="option2" />
+    <label class="govuk-label govuk-radios__label" for="option2">Option 2</label>
+  </div>
+</app-govuk-radio>
 ```
 
 ### Example in HTML:

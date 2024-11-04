@@ -15,9 +15,11 @@ This Angular component provides a GOV.UK-styled select dropdown for selecting fr
 - [Contributing](#contributing)
 
 ## Installation
+You have to create a constant holding the options then reference that constant in your templates
 
 ```typescript
 import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
+public readonly titleOptions: IGovUkSelectOptions[] = DASHBOARD_DETAILS_TITLE_DROPDOWN_OPTIONS;
 ```
 
 ## Usage
@@ -26,9 +28,12 @@ You can use the select component in your template as follows:
 
 ```html
 <app-govuk-select
-  [selectId]="'example-select'"
-  [selectOptions]="options"
-  [labelText]="'Choose an option'"
+  labelText="Select an option"
+  selectId="selectOption"
+  selectName="selectOption"
+  [options]="titleOptions"
+  [control]="form.controls['selectOption']"
+  [errors]="formControlErrorMessages['fm_personal_details_title']"
 ></app-govuk-select>
 ```
 

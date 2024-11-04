@@ -25,7 +25,31 @@ import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.c
 You can use the table component in your template as follows:
 
 ```html
-<app-govuk-table [caption]="'Table caption'" [headers]="tableHeaders" [rows]="tableRows"></app-govuk-table>
+<app-govuk-table>
+  <ng-container header>
+    <th scope="col" class="govuk-table__header">TEST</th>
+    <th scope="col" class="govuk-table__header">TEST</th>
+    <th scope="col" class="govuk-table__header">TEST</th>
+    <th scope="col" class="govuk-table__header">TEST</th>
+    <th scope="col" class="govuk-table__header">TEST</th>
+  </ng-container>
+  <ng-container body>
+    <td class="govuk-table__cell" id="imposition">
+      {{ 'NULL' }}
+    </td>
+
+    <td class="govuk-table__cell" id="creditor">{{ 'NULL' }}</td>
+    <td class="govuk-table__cell" id="amountImposed">
+      {{ 'NULL' }}
+    </td>
+    <td class="govuk-table__cell" id="amountPaid">
+      {{ 'NULL' }}
+    </td>
+    <td class="govuk-table__cell" id="balanceRemaining">
+      {{ 'NULL' }}
+    </td>
+  </ng-container>
+</app-govuk-table>
 ```
 
 ### Example in HTML:
