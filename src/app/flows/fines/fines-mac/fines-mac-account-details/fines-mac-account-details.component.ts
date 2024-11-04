@@ -23,9 +23,6 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
-import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { SessionService } from '@services/session-service/session.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -50,9 +47,8 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly payloadService = inject(FinesMacPayloadService);
+
   protected readonly finesService = inject(FinesService);
-  private readonly globalStateService = inject(GlobalStateService);
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
@@ -175,9 +171,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    console.log(
-      this.payloadService.buildAddAccountPayload(this.finesService.finesMacState, this.globalStateService.userState()),
-    );
     this.initialAccountDetailsSetup();
   }
 

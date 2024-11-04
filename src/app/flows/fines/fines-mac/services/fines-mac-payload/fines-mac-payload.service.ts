@@ -157,20 +157,4 @@ export class FinesMacPayloadService {
     // Transform the payload, format the dates to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
   }
-
-  /**
-   * Builds the payload for fines MAC based on the provided state.
-   *
-   * @param {IFinesMacState} finesMacState - The state containing all the necessary form data.
-   * @returns {IFinesMacPayloadAccount} The constructed payload object.
-   */
-  // public buildPayload(
-  //   finesMacState: IFinesMacState,
-  //   sessionUserState: ISessionUserState,
-  //   type: string,
-  // ): IFinesMacPayloadAccount {
-  //   const addAccountPayload = this.buildAddAccountPayload(finesMacState, sessionUserState);
-
-  //   return this.transformPayload(addAccountPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
-  // }
 }
