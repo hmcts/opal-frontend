@@ -71,30 +71,43 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   }
 
   /**
-   * Updates the imposition positions of offence details after an item has been spliced from the array.
+   * Removes a minor creditor from the array at the specified index and updates the imposition positions
+   * for the remaining items in the array.
    *
-   * @param offenceDetailsArray - The array of offence details.
-   * @param splicedIndex - The index at which the item was spliced.
-   * @returns The updated array of offence details with corrected imposition positions.
+   * @param minorCreditorArray - The array of minor creditor forms.
+   * @param splicedIndex - The index at which to remove the minor creditor.
+   * @returns The updated array of minor creditor forms.
    */
-  private updateImpositionPositionsAfterSplice(
-    offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[],
+  private removeMinorCreditorAndUpdateIds(
+    minorCreditorArray: IFinesMacOffenceDetailsMinorCreditorForm[],
     splicedIndex: number,
-  ): IFinesMacOffenceDetailsMinorCreditorForm[] {
+  ): void {
     // Splice the array at the specified index
-    offenceDetailsArray.splice(splicedIndex, 1);
+    minorCreditorArray.splice(splicedIndex, 1);
 
-    // Update imposition positions for the remaining items
-    for (let i = splicedIndex; i < offenceDetailsArray.length; i++) {
-      const currentItem = offenceDetailsArray[i];
+    // Update imposition position for the remaining items
+    for (let i = splicedIndex; i < minorCreditorArray.length; i++) {
+      const currentItem = minorCreditorArray[i];
 
-      // Check if the position is not null before updating
-      if (currentItem.formData.fm_offence_details_imposition_position !== null) {
-        currentItem.formData.fm_offence_details_imposition_position = i;
-      }
+      currentItem.formData.fm_offence_details_imposition_position = i;
     }
+  }
 
-    return offenceDetailsArray;
+  /**
+   * Decrements the imposition position by 1 for minor creditors after the specified index.
+   *
+   * @param minorCreditorArray - The array of minor creditor forms.
+   * @param dropIndex - The index after which to decrement the imposition positions.
+   * @returns The updated array of minor creditor forms.
+   */
+  private dropMinorCreditorImpositionPosition(
+    minorCreditorArray: IFinesMacOffenceDetailsMinorCreditorForm[],
+    dropIndex: number,
+  ): void {
+    const minorCreditors = minorCreditorArray.filter(
+      (x) => x.formData.fm_offence_details_imposition_position! >= dropIndex,
+    );
+    minorCreditors.forEach((minorCreditor) => (minorCreditor.formData.fm_offence_details_imposition_position! -= 1));
   }
 
   /**
@@ -222,7 +235,11 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       const index = childFormData.findIndex(
         (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
       );
-      this.updateImpositionPositionsAfterSplice(childFormData, index);
+      if (index >= 0) {
+        this.removeMinorCreditorAndUpdateIds(childFormData, index);
+      } else {
+        this.dropMinorCreditorImpositionPosition(childFormData, rowIndex);
+      }
     }
 
     formData.fm_offence_details_impositions = formArray.value;
