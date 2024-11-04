@@ -7,5 +7,6 @@ export interface IFinesMacOffenceDetailsRoutingPaths extends IChildRoutingPaths 
     searchOffences: string;
     removeImposition: string;
     addMinorCreditor: string;
+    removeMinorCreditor: string;
   };
 }
