@@ -47,9 +47,10 @@ import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
-import { FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent } from './fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list/fines-mac-offence-details-add-an-offence-form-minor-creditor-summary-list.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor.interface';
+import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
+import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -69,8 +70,8 @@ import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfac
     GovukCancelLinkComponent,
     GovukTextInputComponent,
     GovukRadiosConditionalComponent,
-    FinesMacOffenceDetailsAddAnOffenceFormMinorCreditorSummaryListComponent,
     MojBannerComponent,
+    FinesMacOffenceDetailsMinorCreditorInformationComponent,
   ],
   templateUrl: './fines-mac-offence-details-add-an-offence-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -456,6 +457,28 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     this.calculateBalanceRemaining();
 
     this.handleFormSubmit(event);
+  }
+
+  /**
+   * Handles the minor creditor actions.
+   * @param event - The event object containing the action and index.
+   */
+  public minorCreditorActions(event: { action: string; index: number }): void {
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = event.index;
+
+    this.updateOffenceDetailsDraft(this.form.value);
+    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeMinorCreditor);
+  }
+
+  /**
+   * Retrieves the minor creditor form data for the specified row index.
+   * @param rowIndex - The index of the row for which to retrieve the minor creditor form data.
+   * @returns The minor creditor form data for the specified row index, or undefined if not found.
+   */
+  public getMinorCreditor(rowIndex: number): IFinesMacOffenceDetailsMinorCreditorForm | undefined {
+    return this.finesMacService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
+      (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
+    );
   }
 
   /**
