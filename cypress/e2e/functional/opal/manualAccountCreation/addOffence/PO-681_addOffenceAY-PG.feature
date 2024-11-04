@@ -102,11 +102,13 @@ Feature: PO-681 Create the 'Add an offence' screen - Adult or youth with parent 
     Then I see the error message "Enter sentence date" at the top of the page
     And I see the error message "Enter an offence code" at the top of the page
     And I see the error message "Enter an imposition code" at the top of the page
-    And I see the error message "Enter an amount" at the top of the page
+    #And I see the error message "Enter an amount" at the top of the page
+    And I see the error message "Enter amount imposed" at the top of the page
     And I see the error message "Enter sentence date" above the "Date of sentence" date field
     And I see the error message "Enter an offence code" above the "Offence code" field
     And I see the error message "Enter an imposition code" above the result code field
-    And I see the error message "Enter an amount" above the "Amount imposed" payment field
+    #And I see the error message "Enter an amount" above the "Amount imposed" payment field
+    And I see the error message "Enter amount imposed" above the "Amount imposed" payment field
 
     When I enter "18.09.2024" into the "Date of sentence" date field
     And I enter "AB12345" into the "Offence code" field
@@ -115,38 +117,50 @@ Feature: PO-681 Create the 'Add an offence' screen - Adult or youth with parent 
     And I click the "Review offence" button
     Then I see the error message "Enter date of sentence in the format DD/MM/YYYY" at the top of the page
     And I see the error message "Offence not found" at the top of the page
-    And I see the error message "Enter an amount using numbers only" at the top of the page
-    And I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount using numbers only" at the top of the page
+    And I see the error message "Enter a valid amount" at the top of the page
+    And I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
     And I see the error message "Enter date of sentence in the format DD/MM/YYYY" above the "Date of sentence" date field
     And I see the error message "Offence not found" above the "Offence code" field
-    And I see the error message "Enter an amount using numbers only" above the "Amount imposed" payment field
-    And I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount paid" payment field
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount using numbers only" above the "Amount imposed" payment field
+    And I see the error message "Enter a valid amount" above the "Amount imposed" payment field
+    And I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount paid" payment field
 
     When I enter "32/09/2024" into the "Date of sentence" date field
     And I enter "1234567891234567890" into the "Amount imposed" payment field
     And I enter "50b" into the "Amount paid" payment field
     And I click the "Review offence" button
     Then I see the error message "Enter a valid date of sentence" at the top of the page
-    And I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
-    And I see the error message "Enter an amount using numbers only" at the top of the page
+    And I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount using numbers only" at the top of the page
+    And I see the error message "Enter a valid amount" at the top of the page
     And I see the error message "Enter a valid date of sentence" above the "Date of sentence" date field
-    And I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount imposed" payment field
-    And I see the error message "Enter an amount using numbers only" above the "Amount paid" payment field
+    And I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount imposed" payment field
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount using numbers only" above the "Amount paid" payment field
+    And I see the error message "Enter a valid amount" above the "Amount paid" payment field
 
     When I enter a date 2 weeks into the future into the "Date of sentence" date field
     And I enter "200.255" into the "Amount imposed" payment field
     And I enter "100.50" into the "Amount paid" payment field
     And I click the "Review offence" button
-    Then I see the error message "Enter a valid date of sentence in the past" at the top of the page
-    And I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
-    And I see the error message "Enter a valid date of sentence in the past" above the "Date of sentence" date field
-    And I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount imposed" payment field
+    #updated error message on PO-852
+    #Then I see the error message "Enter a valid date of sentence in the past" at the top of the page
+    Then I see the error message "Sentence date must not be in the future" at the top of the page
+    And I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
+    #updated error message on PO-852
+    #And I see the error message "Enter a valid date of sentence in the past" above the "Date of sentence" date field
+    And I see the error message "Sentence date must not be in the future" above the "Date of sentence" date field
+    And I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount imposed" payment field
 
     When I enter "100.525" into the "Amount paid" payment field
     And I enter "200.25" into the "Amount imposed" payment field
     And I click the "Review offence" button
-    Then I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
-    And I see the error message "Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount paid" payment field
+    Then I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" at the top of the page
+    And I see the error message "Enter an amount that is no more than 18 numbers before the decimal and 2 or less after" above the "Amount paid" payment field
 
   Scenario: AC8 - Validation passes, review offence, return to account details
 
@@ -201,15 +215,23 @@ Feature: PO-681 Create the 'Add an offence' screen - Adult or youth with parent 
     And I enter "200" into the "Amount paid" payment field
     And I click the "Review offence" button
     And I see the error message "Enter an offence code" at the top of the page
-    And I see the error message "Enter an amount" at the top of the page
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount" at the top of the page
+    And I see the error message "Enter amount imposed" at the top of the page
     And I see the error message "Enter an offence code" above the "Offence code" field
-    And I see the error message "Enter an amount" above the "Amount imposed" payment field
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount" above the "Amount imposed" payment field
+    And I see the error message "Enter amount imposed" above the "Amount imposed" payment field
     And I click Cancel, a window pops up and I click Cancel
     Then I see "Add an offence" on the page header
     And I see a date 3 weeks into the past in the "Date of sentence" date field
     And I see "Fine (FO)" in the "Result code" searchbox
     And I see "200" in the "Amount paid" payment field
     And I see the error message "Enter an offence code" at the top of the page
-    And I see the error message "Enter an amount" at the top of the page
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount" at the top of the page
+    And I see the error message "Enter amount imposed" at the top of the page
     And I see the error message "Enter an offence code" above the "Offence code" field
-    And I see the error message "Enter an amount" above the "Amount imposed" payment field
+    #updated error messages on PO-852
+    #And I see the error message "Enter an amount" above the "Amount imposed" payment field
+    And I see the error message "Enter amount imposed" above the "Amount imposed" payment field
