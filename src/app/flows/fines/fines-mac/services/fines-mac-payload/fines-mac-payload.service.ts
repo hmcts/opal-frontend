@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
 
 import { IFinesMacAccountDetailsState } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
@@ -12,11 +12,16 @@ import { buildDefendantPayload } from './utils/fines-mac-payload-defendant.utils
 import { buildPaymentTermsPayload } from './utils/fines-mac-payload-payment-terms.utils';
 import { buildAccountNotesPayload } from './utils/fines-mac-payload-account-notes.utils';
 import { IFinesMacPayload } from './interfaces/fines-mac-payload.interface';
+import { TransformationService } from '@services/transformation-service/transformation.service';
+import { FINES_MAC_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
+import { ITransformItem } from '@services/transformation-service/interfaces/transform-item.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
+  private transformationService = inject(TransformationService);
+
   /**
    * Builds the initial payload for fines MAC based on the provided state objects.
    *
@@ -65,6 +70,20 @@ export class FinesMacPayloadService {
   }
 
   /**
+   * Transforms the given finesMacPayload object by applying the transformations
+   * defined in the FINES_MAC_TRANSFORM_ITEMS_CONFIG.
+   *
+   * @param finesMacPayload - The payload object to be transformed.
+   * @returns The transformed payload object.
+   */
+  private transformPayload(
+    finesMacPayload: IFinesMacPayload,
+    transformItemsConfig: ITransformItem[],
+  ): IFinesMacPayload {
+    return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
+  }
+
+  /**
    * Builds the payload for fines MAC based on the provided state.
    *
    * @param {IFinesMacState} finesMacState - The state containing all the necessary form data.
@@ -97,7 +116,7 @@ export class FinesMacPayloadService {
     const accountNotes = buildAccountNotesPayload(accountCommentsNotesState);
 
     // Return our payload object
-    return {
+    const finesMacPayload: IFinesMacPayload = {
       ...initialPayload,
       defendant: defendant,
       offences: null,
@@ -105,5 +124,7 @@ export class FinesMacPayloadService {
       payment_terms: paymentTerms,
       account_notes: accountNotes,
     };
+
+    return this.transformPayload(finesMacPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
   }
 }
