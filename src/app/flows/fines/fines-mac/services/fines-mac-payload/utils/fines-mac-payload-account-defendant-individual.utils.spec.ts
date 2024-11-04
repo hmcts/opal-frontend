@@ -7,8 +7,8 @@ import { FINES_MAC_CONTACT_DETAILS_STATE_MOCK } from '../../../fines-mac-contact
 import { FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from '../../../fines-mac-employer-details/mocks/fines-mac-employer-details-state.mock';
 import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../../../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
 import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../../fines-mac-personal-details/mocks/fines-mac-personal-details-state.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_MOCK } from './mocks/fines-mac-payload-defendant-individual.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-individual-with-alias.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from './mocks/fines-mac-payload-account-defendant-individual.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-account-defendant-individual-with-alias.mock';
 
 describe('buildAccountDefendantIndividualPayload', () => {
   it('should build the individual defendant payload correctly', () => {
@@ -37,7 +37,7 @@ describe('buildAccountDefendantIndividualPayload', () => {
       languagePreferencesState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK);
   });
 
   it('should build the individual defendant payload correctly with aliases', () => {
@@ -64,6 +64,6 @@ describe('buildAccountDefendantIndividualPayload', () => {
       languagePreferencesState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK);
   });
 });

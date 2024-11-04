@@ -8,8 +8,8 @@ import { IFinesMacParentGuardianDetailsState } from '../../../fines-mac-parent-g
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../../../fines-mac-parent-guardian-details/mocks/fines-mac-parent-guardian-details-state.mock';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../../fines-mac-personal-details/mocks/fines-mac-personal-details-state.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_MOCK } from './mocks/fines-mac-payload-defendant-parent-guardian.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-parent-guardian-with-alias.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK } from './mocks/fines-mac-payload-account-defendant-parent-guardian.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-account-defendant-parent-guardian-with-alias.mock';
 import { buildAccountDefendantParentGuardianPayload } from './fines-mac-payload-account-defendant-parent-guardian.utils';
 
 describe('buildAccountDefendantParentGuardianPayload', () => {
@@ -47,7 +47,7 @@ describe('buildAccountDefendantParentGuardianPayload', () => {
       languagePreferencesState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK);
   });
 
   it('should build the correct payload with aliases', () => {
@@ -89,6 +89,6 @@ describe('buildAccountDefendantParentGuardianPayload', () => {
       languagePreferencesState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK);
   });
 });

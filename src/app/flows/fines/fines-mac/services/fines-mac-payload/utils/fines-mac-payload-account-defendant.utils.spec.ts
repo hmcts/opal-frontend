@@ -8,17 +8,17 @@ import { IFinesMacParentGuardianDetailsState } from '../../../fines-mac-parent-g
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../../fines-mac-account-details/mocks/fines-mac-account-details-state.mock';
 import { FINES_MAC_COMPANY_DETAILS_STATE_MOCK } from '../../../fines-mac-company-details/mocks/fines-mac-company-details-state.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK } from './mocks/fines-mac-payload-defendant-parent-guardian-complete.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK } from './mocks/fines-mac-payload-account-defendant-parent-guardian-complete.mock';
 import { FINES_MAC_CONTACT_DETAILS_STATE_MOCK } from '../../../fines-mac-contact-details/mocks/fines-mac-contact-details-state.mock';
 import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../../fines-mac-personal-details/mocks/fines-mac-personal-details-state.mock';
 import { FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from '../../../fines-mac-employer-details/mocks/fines-mac-employer-details-state.mock';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../../../fines-mac-parent-guardian-details/mocks/fines-mac-parent-guardian-details-state.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-parent-guardian-complete-with-alias.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-account-defendant-parent-guardian-complete-with-alias.mock';
 import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../../../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-defendant-company-complete-with-aliases.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_MOCK } from './mocks/fines-mac-payload-defendant-company-complete.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-defendant-individual-complete-with-alias.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK } from './mocks/fines-mac-payload-defendant-individual-complete.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-defendant-company-complete-with-aliases.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK } from './mocks/fines-mac-payload-account-defendant-company-complete.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK } from './mocks/fines-mac-payload-account-defendant-individual-complete-with-alias.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK } from './mocks/fines-mac-payload-account-defendant-individual-complete.mock';
 
 describe('buildAccountDefendantPayload', () => {
   it('should build payload for parent or guardian defendant', () => {
@@ -61,7 +61,7 @@ describe('buildAccountDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK);
   });
 
   it('should build payload for parent or guardian defendant with aliases', () => {
@@ -101,7 +101,7 @@ describe('buildAccountDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK);
   });
 
   it('should build payload for company defendant', () => {
@@ -142,7 +142,7 @@ describe('buildAccountDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK);
   });
 
   it('should build payload for company defendant with aliases', () => {
@@ -179,7 +179,7 @@ describe('buildAccountDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK);
   });
 
   it('should build payload for individual defendant with aliases', () => {
@@ -215,7 +215,7 @@ describe('buildAccountDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK);
   });
 
   it('should build payload for individual defendant', () => {
@@ -253,6 +253,6 @@ describe('buildAccountDefendantPayload', () => {
       parentGuardianDetailsState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK);
   });
 });

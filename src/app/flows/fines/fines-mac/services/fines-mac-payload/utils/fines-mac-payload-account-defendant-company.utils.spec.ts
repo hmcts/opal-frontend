@@ -5,8 +5,8 @@ import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-p
 import { FINES_MAC_COMPANY_DETAILS_STATE_MOCK } from '../../../fines-mac-company-details/mocks/fines-mac-company-details-state.mock';
 import { FINES_MAC_CONTACT_DETAILS_STATE_MOCK } from '../../../fines-mac-contact-details/mocks/fines-mac-contact-details-state.mock';
 import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../../../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK } from './mocks/fines-mac-payload-defendant-company.mock';
-import { FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-defendant-company-with-aliases.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK } from './mocks/fines-mac-payload-account-defendant-company.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-account-defendant-company-with-aliases.mock';
 
 describe('buildAccountDefendantCompanyPayload', () => {
   it('should build the correct payload', () => {
@@ -25,7 +25,7 @@ describe('buildAccountDefendantCompanyPayload', () => {
       languagePreferencesState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_WITH_ALIASES_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK);
   });
 
   it('should handle empty alias array', () => {
@@ -48,6 +48,6 @@ describe('buildAccountDefendantCompanyPayload', () => {
       languagePreferencesState,
     );
 
-    expect(result).toEqual(FINES_MAC_PAYLOAD_DEFENDANT_COMPANY_MOCK);
+    expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK);
   });
 });
