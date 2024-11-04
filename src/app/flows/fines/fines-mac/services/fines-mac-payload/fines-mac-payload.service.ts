@@ -26,8 +26,8 @@ import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
-  private transformationService = inject(TransformationService);
-  private dateService = inject(DateService);
+  private readonly transformationService = inject(TransformationService);
+  private readonly dateService = inject(DateService);
 
   /**
    * Builds the initial payload for fines MAC based on the provided state objects.
