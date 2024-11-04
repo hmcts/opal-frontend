@@ -9,6 +9,13 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
     ...FINES_MAC_PAYLOAD_ACCOUNT_MOCK,
   },
   account_type: 'conditionalCaution',
-  account_status: 'submitted',
-  timeline_data: null,
+  account_status: 'Submitted',
+  timeline_data: [
+    {
+      username: 'Timmy Test',
+      status: 'Submitted',
+      status_date: '2023-07-03',
+      reason_text: null,
+    },
+  ],
 };
