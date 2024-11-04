@@ -513,7 +513,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       const position = creditor.formData.fm_offence_details_imposition_position;
 
       if (position != null) {
-        acc[position] = false;
+        acc[position] = true;
       }
 
       return acc;
