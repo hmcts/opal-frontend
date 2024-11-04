@@ -18,12 +18,16 @@ import { ITransformItem } from '@services/transformation-service/interfaces/tran
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
+import { DateService } from '@services/date-service/date.service';
+import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
+import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
   private transformationService = inject(TransformationService);
+  private dateService = inject(DateService);
 
   /**
    * Builds the initial payload for fines MAC based on the provided state objects.
@@ -98,6 +102,23 @@ export class FinesMacPayloadService {
     return null;
   }
 
+  private buildTimelineDataPayload(
+    timelineData: any[] = [],
+    username: string,
+    status: string,
+    statusDate: string,
+    reasonText: string | null,
+  ): IFinesMacAccountTimelineData[] {
+    timelineData.push({
+      username,
+      status,
+      status_date: statusDate,
+      reason_text: reasonText,
+    });
+
+    return timelineData;
+  }
+
   private buildAccountPayload(finesMacState: IFinesMacState): IFinesMacPayloadAccount {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { formData: courtDetailsState } = finesMacState.courtDetails;
@@ -142,6 +163,13 @@ export class FinesMacPayloadService {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { businessUnit } = finesMacState;
     const accountPayload = this.buildAccountPayload(finesMacState);
+    const timeLineData = this.buildTimelineDataPayload(
+      [],
+      sessionUserState['name'],
+      FineMacPayloadAccountAccountStatuses.submitted,
+      this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
+      null,
+    );
 
     // Build the add account payload
     const addAccountPayload: IFinesMacAddAccountPayload = {
@@ -150,8 +178,8 @@ export class FinesMacPayloadService {
       submitted_by_name: sessionUserState['name'],
       account: accountPayload,
       account_type: accountDetailsState['fm_create_account_account_type'],
-      account_status: 'submitted',
-      timeline_data: null,
+      account_status: FineMacPayloadAccountAccountStatuses.submitted,
+      timeline_data: timeLineData,
     };
 
     // Transform the payload, format the dates to the correct format

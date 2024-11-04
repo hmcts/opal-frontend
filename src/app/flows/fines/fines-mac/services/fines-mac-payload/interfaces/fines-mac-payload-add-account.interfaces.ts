@@ -1,3 +1,4 @@
+import { IFinesMacAccountTimelineData } from './fines-mac-payload-account-timeline-data.interface';
 import { IFinesMacPayloadAccount } from './fines-mac-payload-account.interface';
 
 export interface IFinesMacAddAccountPayload {
@@ -7,5 +8,5 @@ export interface IFinesMacAddAccountPayload {
   account: IFinesMacPayloadAccount; // Replace 'any' with the actual type of accountPayload if known
   account_type: string | null;
   account_status: string;
-  timeline_data: null; // Replace 'any' with the actual type if known
+  timeline_data: IFinesMacAccountTimelineData[];
 }
