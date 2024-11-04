@@ -51,9 +51,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
 
-  private readonly payloadService = inject(FinesMacPayloadService);
-  private readonly globalStateService = inject(GlobalStateService);
-
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
   private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
@@ -175,9 +172,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    console.log(
-      this.payloadService.buildAddAccountPayload(this.finesService.finesMacState, this.globalStateService.userState()),
-    );
     this.initialAccountDetailsSetup();
   }
 
