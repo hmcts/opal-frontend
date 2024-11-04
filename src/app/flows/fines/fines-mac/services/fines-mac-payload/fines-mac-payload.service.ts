@@ -103,7 +103,7 @@ export class FinesMacPayloadService {
   }
 
   private buildTimelineDataPayload(
-    timelineData: any[] = [],
+    timelineData: IFinesMacAccountTimelineData[] = [],
     username: string,
     status: string,
     statusDate: string,
