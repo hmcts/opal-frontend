@@ -38,6 +38,16 @@ Then('I see the following Minor creditor details for impostion {int}:', (index: 
   verifyMinorCreditorDetails(summary, details);
 });
 
+Then('I do not see the Minor creditor details for impostion {int}', (index: number, dataTable: DataTable) => {
+  cy.contains('legend', 'Impositions')
+    .parent()
+    .find('app-moj-ticket-panel')
+    .eq(index - 1)
+    .find('app-fines-mac-offence-details-minor-creditor-information')
+    .find('app-govuk-summary-list[summarylistid="minorCreditor"]')
+    .should('not.exist');
+});
+
 Then('I see the following Minor creditor details:', (dataTable: DataTable) => {
   const details = dataTable.rowsHash();
   const summary = cy.get('app-fines-mac-offence-details-minor-creditor-information');
