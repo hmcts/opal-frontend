@@ -30,6 +30,7 @@ Feature: PO-670 - Minor Creditor - Removal - Adult or Youth with Parent or guard
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
+    When I click on the "Show details" link for imposition 1
     Then I see the following Minor creditor details for impostion 1:
       | Minor creditor | FNAME LNAME  |
       | Address        | Not provided |
@@ -44,6 +45,7 @@ Feature: PO-670 - Minor Creditor - Removal - Adult or Youth with Parent or guard
 
     When I click on the "No - cancel" link
     Then I see "Add an offence" on the page header
+    When I click on the "Show details" link for imposition 1
     And I see the following Minor creditor details for impostion 1:
       | Minor creditor | FNAME LNAME  |
       | Address        | Not provided |
@@ -84,6 +86,8 @@ Feature: PO-670 - Minor Creditor - Removal - Adult or Youth with Parent or guard
     When I click the "Save" button
     Then I see "Add an offence" on the page header
 
+    When I click on the "Show details" link for imposition 1
+
     Then I see the following Minor creditor details for impostion 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |
@@ -106,6 +110,7 @@ Feature: PO-670 - Minor Creditor - Removal - Adult or Youth with Parent or guard
 
     When I click on the "No - cancel" link
     Then I see "Add an offence" on the page header
+    When I click on the "Show details" link for imposition 1
     And I see the following Minor creditor details for impostion 1:
       | Minor creditor    | FNAME LNAME             |
       | Address           | Addr1Addr2Addr3TE12 3ST |

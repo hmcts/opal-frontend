@@ -561,6 +561,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
+  it('should update minorCreditorsHidden based on hidden imposition minor creditor', () => {
+    component.minorCreditorsHidden = { 0: false };
+
+    component.minorCreditorActions({ action: 'showHideDetails', index: 0 });
+
+    expect(component.minorCreditorsHidden).toEqual({ 0: true });
+  });
+
   it('should return the correct minor creditor form data for the specified row index', () => {
     const mockMinorCreditorForm = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
     component.offenceIndex = 0;

@@ -51,6 +51,7 @@ import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.compon
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor.interface';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
+import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor-hidden.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -105,6 +106,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   public creditorOptions = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS;
 
   public minorCreditors!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor;
+  public minorCreditorsHidden!: IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
     ...FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS,
@@ -464,10 +466,14 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param event - The event object containing the action and index.
    */
   public minorCreditorActions(event: { action: string; index: number }): void {
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = event.index;
+    if (event.action === 'remove') {
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = event.index;
 
-    this.updateOffenceDetailsDraft(this.form.value);
-    this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeMinorCreditor);
+      this.updateOffenceDetailsDraft(this.form.value);
+      this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.removeMinorCreditor);
+    } else if (event.action === 'showHideDetails') {
+      this.minorCreditorsHidden[event.index] = !this.minorCreditorsHidden[event.index];
+    }
   }
 
   /**
@@ -502,6 +508,16 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
       return acc;
     }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor);
+
+    this.minorCreditorsHidden = minorCreditorsArray.reduce((acc, creditor) => {
+      const position = creditor.formData.fm_offence_details_imposition_position;
+
+      if (position != null) {
+        acc[position] = true;
+      }
+
+      return acc;
+    }, {} as IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden);
   }
 
   /**

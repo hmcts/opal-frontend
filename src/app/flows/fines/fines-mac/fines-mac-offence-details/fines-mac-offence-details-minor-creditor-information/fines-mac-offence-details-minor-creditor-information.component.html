@@ -1,7 +1,12 @@
-<app-govuk-summary-card-list [cardTitle]="name">
+<app-govuk-summary-card-list [cardTitle]="name" [contentHidden]="isDetailsHidden">
   @if (showActions) {
     <ng-container actions>
-      <li app-govuk-summary-card-action actionText="Hide details" actionRoute=""></li>
+      <li
+        app-govuk-summary-card-action
+        [actionText]="isDetailsHidden ? 'Show details' : 'Hide details'"
+        actionRoute="showHideDetails"
+        (clickEvent)="summaryListActionClick($event)"
+      ></li>
       <li app-govuk-summary-card-action class="govuk-!-padding-left-2" actionText="Change" actionRoute=""></li>
       <li
         app-govuk-summary-card-action

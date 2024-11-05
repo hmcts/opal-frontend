@@ -28,6 +28,7 @@ import { IFinesMacOffenceDetailsMinorCreditorState } from '../fines-mac-offence-
 export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements OnInit {
   @Input({ required: true }) public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorState;
   @Input({ required: false }) public showActions!: boolean;
+  @Input({ required: true }) public isDetailsHidden!: boolean;
   @Output() public actionClicked = new EventEmitter<{ action: string; index: number }>();
 
   private readonly utilsService = inject(UtilsService);
