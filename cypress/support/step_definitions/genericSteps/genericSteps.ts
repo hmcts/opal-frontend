@@ -97,7 +97,7 @@ Then('I see {string} hint text on the page', (hintText: string) => {
 });
 
 Then('I see {string} text on the page', (text: string) => {
-  cy.get('legend').should('contain', text);
+  cy.get('body').should('contain', text);
 });
 
 Then('I do not see {string} text on the page', (text: string) => {
@@ -110,4 +110,8 @@ When('I see {string} text under the {string} field', (text: string, inputField: 
     .prev()
     .invoke('text')
     .should('contains', text);
+});
+
+Then('I see green banner on the top of the page', () => {
+  cy.get('app-moj-banner').should('exist');
 });

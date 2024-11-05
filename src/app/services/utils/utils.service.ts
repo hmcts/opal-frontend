@@ -27,7 +27,20 @@ export class UtilsService {
    * @param amount - The number to convert.
    * @returns The monetary string representation of the number.
    */
-  public convertToMonetaryString(amount: number): string {
+  public convertToMonetaryString(amount: number | string): string {
+    if (typeof amount === 'string') {
+      amount = parseFloat(amount);
+    }
     return `£${amount.toFixed(2)}`;
+  }
+
+  /**
+   * Formats a 6-digit number or string as a sort code.
+   * @param value - The 6-digit value to format.
+   * @returns The formatted sort code string (xx-xx-xx).
+   */
+  public formatSortCode(value: string | number): string {
+    const sortCode = value.toString();
+    return `${sortCode.slice(0, 2)}-${sortCode.slice(2, 4)}-${sortCode.slice(4, 6)}`;
   }
 }

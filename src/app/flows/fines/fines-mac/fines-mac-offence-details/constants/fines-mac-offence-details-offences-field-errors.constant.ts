@@ -15,7 +15,7 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       priority: 3,
     },
     invalidFutureDate: {
-      message: 'Enter a valid date of sentence in the past',
+      message: 'Sentence date must not be in the future',
       priority: 4,
     },
   },

@@ -17,11 +17,13 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
+import { OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-autocomplete-items.mock';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
-import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
-import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../../constants/fines-mac-offence-details-form.constant';
-import { OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-autocomplete-items.mock';
+import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -40,15 +42,22 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
+      'emptyOffences',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
 
     mockDateService = jasmine.createSpyObj(DateService, ['getDateNow', 'toFormat']);
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['upperCaseAllLetters']);
+    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+      'upperCaseAllLetters',
+      'formatSortCode',
+      'upperCaseFirstLetter',
+    ]);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceFormComponent],
@@ -75,6 +84,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     component.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
     component.majorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+
+    spyOn(AbstractFormArrayBaseComponent.prototype, 'handleFormSubmit').and.callThrough();
 
     fixture.detectChanges();
   });
@@ -152,11 +163,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
-    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState =
-      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    component[
-      'finesMacOffenceDetailsService'
-    ].finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].formData.fm_offence_details_offence_code = 'TEST1234';
+    const mockData = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK };
+    mockData.offenceDetailsDraft[0].formData.fm_offence_details_offence_code = 'TEST1234';
+    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = mockData;
 
     component['initialAddAnOffenceDetailsSetup']();
 
@@ -256,55 +265,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.selectedOffenceConfirmation).toBe(false);
   });
 
-  it('should initialize the form and setup initial configuration empty', () => {
-    mockFinesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
-    const offenceDetailsDraft = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
-    const impositionsKey = 'fm_offence_details_impositions';
-    const hasOffenceDetailsDraft = offenceDetailsDraft.offenceDetailsDraft.length > 0;
-    const formData = hasOffenceDetailsDraft
-      ? offenceDetailsDraft.offenceDetailsDraft[0].formData
-      : component['finesMacService'].finesMacState.offenceDetails[0].formData;
-    const impositionsLength = formData[impositionsKey].length;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupAddAnOffenceForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupImpositionsConfiguration');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setupFormArrayFormControls');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'setInitialErrorMessages');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'rePopulateForm');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'offenceCodeListener');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'addControlsToFormArray');
-
-    mockDateService.toFormat.and.returnValue('01/01/2022');
-
-    component['initialAddAnOffenceDetailsSetup']();
-
-    expect(component['setupAddAnOffenceForm']).toHaveBeenCalled();
-    expect(component['setupImpositionsConfiguration']).toHaveBeenCalled();
-    expect(component['setupFormArrayFormControls']).toHaveBeenCalledWith(
-      [...Array(impositionsLength).keys()],
-      impositionsKey,
-    );
-    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(formData);
-    expect(component['offenceCodeListener']).toHaveBeenCalled();
-
-    if (!offenceDetailsDraft.offenceDetailsDraft.length && impositionsLength === 0) {
-      expect(component.addControlsToFormArray).toHaveBeenCalledWith(0, impositionsKey);
-    }
-
-    expect(component.today).toBe('01/01/2022');
-  });
-
   it('should populate offence details draft when navigating to search offences', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component['rePopulateForm'](FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft[0].formData);
 
     component.goToSearchOffences();
 
@@ -316,7 +278,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should populate offence details draft when navigating to search offences when draft is empty - search offences', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
     component['initialAddAnOffenceDetailsSetup']();
 
     component.goToSearchOffences();
@@ -338,13 +300,24 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
+  it('should go to minor creditor', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component['initialAddAnOffenceDetailsSetup']();
+    component.goToMinorCreditor(0);
+
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addMinorCreditor], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
   it('should populate offence details draft when navigating to search offences when draft is empty - remove imposition', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
-    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
-    component.removeImpositionConfirmation(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeImposition!.rowIndex);
+    component.removeImpositionConfirmation(0);
 
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeImposition], {
       relativeTo: component['activatedRoute'].parent,
@@ -361,15 +334,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeImposition], {
       relativeTo: component['activatedRoute'].parent,
     });
-  });
-
-  it('should navigate to account details', () => {
-    const handleRouteSpy = spyOn(component, 'handleRoute');
-    const expectedRoute = `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
-
-    component.goToAccountDetails();
-
-    expect(handleRouteSpy).toHaveBeenCalledWith(expectedRoute, true);
   });
 
   it('should test majorCreditorValidation and add validator when add is true', () => {
@@ -473,5 +437,158 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component['creditorListener'](index);
 
     expect(component['majorCreditorValidation']).toHaveBeenCalledWith(index, true, impositionsFormGroup);
+  });
+
+  it('should navigate to account details when emptyOffences is true', () => {
+    mockFinesMacOffenceDetailsService.emptyOffences = true;
+    const handleRouteSpy = spyOn(component, 'handleRoute');
+
+    component.cancelLink();
+
+    expect(handleRouteSpy).toHaveBeenCalledWith(
+      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
+      true,
+    );
+  });
+
+  it('should navigate to review offences when emptyOffences is false', () => {
+    mockFinesMacOffenceDetailsService.emptyOffences = false;
+    const handleRouteSpy = spyOn(component, 'handleRoute');
+
+    component.cancelLink();
+
+    expect(handleRouteSpy).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
+  });
+
+  it('should calculate balance remaining for each form group', () => {
+    // Create a sample form array with two form groups
+    const formArray = new FormArray([
+      new FormGroup({
+        fm_offence_details_amount_imposed_0: new FormControl(100),
+        fm_offence_details_amount_paid_0: new FormControl(50),
+        fm_offence_details_balance_remaining_0: new FormControl(),
+      }),
+      new FormGroup({
+        fm_offence_details_amount_imposed_1: new FormControl(200),
+        fm_offence_details_amount_paid_1: new FormControl(150),
+        fm_offence_details_balance_remaining_1: new FormControl(),
+      }),
+    ]);
+
+    // Set the form array as the value of the component's form
+    component.form.setControl('fm_offence_details_impositions', formArray);
+
+    // Call the calculateBalanceRemaining method
+    component['calculateBalanceRemaining']();
+
+    // Check the balance remaining values in each form group
+    const formGroupsFormArray = formArray.controls as FormGroup[];
+    expect(formGroupsFormArray[0].controls['fm_offence_details_balance_remaining_0'].value).toBe(50);
+    expect(formGroupsFormArray[1].controls['fm_offence_details_balance_remaining_1'].value).toBe(50);
+  });
+
+  it('should calculate balance remaining and call super.handleFormSubmit', () => {
+    const event = jasmine.createSpyObj('event', ['preventDefault']);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'calculateBalanceRemaining');
+
+    component.handleAddAnOffenceSubmit(event);
+
+    expect(component['calculateBalanceRemaining']).toHaveBeenCalled();
+    expect(component.handleFormSubmit).toHaveBeenCalledWith(event);
+  });
+
+  it('should initialize the form and setup listeners', () => {
+    // Mock data
+    const offenceDetailsDraft = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft };
+    offenceDetailsDraft[0].formData.fm_offence_details_impositions.splice(0, 1);
+    const impositionsLength = offenceDetailsDraft[0].formData.fm_offence_details_impositions.length;
+
+    // Mock dependencies
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupAddAnOffenceForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupImpositionsConfiguration');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupFormArrayFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setInitialErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'rePopulateForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'offenceCodeListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addControlsToFormArray');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupResultCodeListener');
+    mockDateService.toFormat.and.returnValue('01/01/2022');
+
+    // Call the method
+    component['initialAddAnOffenceDetailsSetup']();
+
+    // Assertions
+    expect(component['setupAddAnOffenceForm']).toHaveBeenCalled();
+    expect(component['setupImpositionsConfiguration']).toHaveBeenCalled();
+    expect(component['setupFormArrayFormControls']).toHaveBeenCalledWith(
+      [...Array(impositionsLength).keys()],
+      'fm_offence_details_impositions',
+    );
+    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(offenceDetailsDraft[0].formData);
+    expect(component['offenceCodeListener']).toHaveBeenCalled();
+    expect(component['addControlsToFormArray']).not.toHaveBeenCalled();
+    expect(component['setupResultCodeListener']).toHaveBeenCalledTimes(impositionsLength);
+    expect(component.today).toBe('01/01/2022');
+  });
+
+  it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+      removeMinorCreditor: 0,
+    };
+
+    component.minorCreditorActions({ action: 'remove', index: 0 });
+
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeMinorCreditor], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should update minorCreditorsHidden based on hidden imposition minor creditor', () => {
+    component.minorCreditorsHidden = { 0: false };
+
+    component.minorCreditorActions({ action: 'showHideDetails', index: 0 });
+
+    expect(component.minorCreditorsHidden).toEqual({ 0: true });
+  });
+
+  it('should return the correct minor creditor form data for the specified row index', () => {
+    const mockMinorCreditorForm = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
+    component.offenceIndex = 0;
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+
+    const result = component.getMinorCreditor(0);
+
+    expect(result).toEqual(mockMinorCreditorForm);
+  });
+
+  it('should return undefined if childFormData is not defined', () => {
+    component.offenceIndex = 0;
+    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = [];
+
+    const result = component.getMinorCreditor(0);
+
+    expect(result).toBeUndefined();
   });
 });

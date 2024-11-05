@@ -43,7 +43,7 @@ Feature: PO-544 Language Preferences Screen - company
       | defendantType |
       | Company       |
 
-  Scenario Outline: AC1,2aii,3,4 - Wales BU - 'Welsh and English' default
+  Scenario Outline: AC1,2ai,3,4 - Wales BU - 'Welsh and English' default
     Given I am on the Opal Frontend and I sign in as "opal-test-7@HMCTS.NET"
     Then I am on the dashboard
     When I navigate to Manual Account Creation

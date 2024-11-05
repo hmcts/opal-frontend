@@ -27,6 +27,7 @@ import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-selec
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors';
+import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
@@ -55,6 +56,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
 
   protected readonly finesService = inject(FinesService);
+  protected readonly dateService = inject(DateService);
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
@@ -97,7 +99,7 @@ export class FinesMacParentGuardianDetailsFormComponent
         optionalMaxLengthValidator(13),
         specialCharactersValidator(),
       ]),
-      fm_parent_guardian_details_postcode: new FormControl(null, [optionalMaxLengthValidator(8)]),
+      fm_parent_guardian_details_post_code: new FormControl(null, [optionalMaxLengthValidator(8)]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
       fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(10)]),
     });
@@ -129,6 +131,7 @@ export class FinesMacParentGuardianDetailsFormComponent
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('fm_parent_guardian_details_add_alias', 'fm_parent_guardian_details_aliases');
+    this.yesterday = this.dateService.getPreviousDate({ days: 1 });
   }
 
   public override ngOnInit(): void {

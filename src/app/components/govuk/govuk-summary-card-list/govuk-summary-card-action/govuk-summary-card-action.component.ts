@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-govuk-summary-card-action',
+  selector: 'app-govuk-summary-card-action, [app-govuk-summary-card-action]',
   standalone: true,
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './govuk-summary-card-action.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukSummaryCardActionComponent {
-  @Input({ required: true }) actions!: { text: string; route: string }[];
-  @Input({ required: true }) cardTitle!: string;
+  @Input({ required: true }) actionText!: string;
+  @Input({ required: true }) actionRoute!: string;
   @Output() clickEvent = new EventEmitter<string>();
+
+  @HostBinding('class') hostClass = 'govuk-summary-card__action';
 
   /**
    * Handles click events, prevents default behavior, and emits a route.

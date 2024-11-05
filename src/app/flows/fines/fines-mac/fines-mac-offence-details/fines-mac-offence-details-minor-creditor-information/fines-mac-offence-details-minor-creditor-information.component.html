@@ -1,0 +1,86 @@
+<app-govuk-summary-card-list [cardTitle]="name" [contentHidden]="isDetailsHidden">
+  @if (showActions) {
+    <ng-container actions>
+      <li
+        app-govuk-summary-card-action
+        [actionText]="isDetailsHidden ? 'Show details' : 'Hide details'"
+        actionRoute="showHideDetails"
+        (clickEvent)="summaryListActionClick($event)"
+      ></li>
+      <li
+        app-govuk-summary-card-action
+        class="govuk-!-padding-left-2"
+        actionText="Change"
+        actionRoute="change"
+        (clickEvent)="summaryListActionClick($event)"
+      ></li>
+      <li
+        app-govuk-summary-card-action
+        actionText="Remove"
+        actionRoute="remove"
+        (clickEvent)="summaryListActionClick($event)"
+      ></li>
+    </ng-container>
+  }
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="minorCreditor">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="minorCreditorAddress"
+        summaryListRowId="minorCreditor"
+      >
+        <ng-container name>Address</ng-container>
+        <ng-container value> <p class="govuk-!-margin-top-0" [innerHTML]="address"></p> </ng-container>
+      </div>
+
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="minorCreditorPaymentMethod"
+        summaryListRowId="minorCreditor"
+      >
+        <ng-container name>Payment method</ng-container>
+        <ng-container value> {{ paymentMethod }}</ng-container>
+      </div>
+      @if (sortCode || accountNumber || paymentReference || accountName) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorAccountName"
+          summaryListRowId="minorCreditor"
+        >
+          <ng-container name>Account name</ng-container>
+          <ng-container value> {{ accountName }}</ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorSortCode"
+          summaryListRowId="minorCreditor"
+        >
+          <ng-container name>Sort code</ng-container>
+          <ng-container value> {{ sortCode }}</ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorAccountNumber"
+          summaryListRowId="minorCreditor"
+        >
+          <ng-container name>Account number</ng-container>
+          <ng-container value> {{ accountNumber }}</ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorPaymentReference"
+          summaryListRowId="minorCreditor"
+        >
+          <ng-container name>Payment reference</ng-container>
+          <ng-container value> {{ paymentReference }}</ng-container>
+        </div>
+      }
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

@@ -5,7 +5,9 @@
       <ng-content select="[actions]"></ng-content>
     </ul>
   </div>
-  <div class="govuk-summary-card__content">
-    <ng-content select="[content]"></ng-content>
-  </div>
+  @if (!contentHidden) {
+    <div class="govuk-summary-card__content govuk-white-background">
+      <ng-content select="[content]"></ng-content>
+    </div>
+  }
 </div>

@@ -20,7 +20,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class MojSubNavigationComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
-  private ngUnsubscribe = new Subject<void>();
+  private readonly ngUnsubscribe = new Subject<void>();
 
   @Input({ required: true }) public subNavId!: string;
   @Output() activeSubNavItemFragment = new EventEmitter<string>();

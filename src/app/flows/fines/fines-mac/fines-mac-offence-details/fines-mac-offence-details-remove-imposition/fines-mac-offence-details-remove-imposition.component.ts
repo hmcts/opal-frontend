@@ -16,6 +16,7 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-of
 import { CommonModule } from '@angular/common';
 import { FormArray } from '@angular/forms';
 import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
+import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -53,6 +54,46 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    */
   private updateMonetaryString(value: number): string {
     return this.utilsService.convertToMonetaryString(value);
+  }
+
+  /**
+   * Removes a minor creditor from the array at the specified index and updates the imposition positions
+   * for the remaining items in the array.
+   *
+   * @param minorCreditorArray - The array of minor creditor forms.
+   * @param splicedIndex - The index at which to remove the minor creditor.
+   * @returns The updated array of minor creditor forms.
+   */
+  private removeMinorCreditorAndUpdateIds(
+    minorCreditorArray: IFinesMacOffenceDetailsMinorCreditorForm[],
+    splicedIndex: number,
+  ): void {
+    // Splice the array at the specified index
+    minorCreditorArray.splice(splicedIndex, 1);
+
+    // Update imposition position for the remaining items
+    for (let i = splicedIndex; i < minorCreditorArray.length; i++) {
+      const currentItem = minorCreditorArray[i];
+
+      currentItem.formData.fm_offence_details_imposition_position = i;
+    }
+  }
+
+  /**
+   * Decrements the imposition position by 1 for minor creditors after the specified index.
+   *
+   * @param minorCreditorArray - The array of minor creditor forms.
+   * @param dropIndex - The index after which to decrement the imposition positions.
+   * @returns The updated array of minor creditor forms.
+   */
+  private dropMinorCreditorImpositionPosition(
+    minorCreditorArray: IFinesMacOffenceDetailsMinorCreditorForm[],
+    dropIndex: number,
+  ): void {
+    const minorCreditors = minorCreditorArray.filter(
+      (x) => x.formData.fm_offence_details_imposition_position! >= dropIndex,
+    );
+    minorCreditors.forEach((minorCreditor) => (minorCreditor.formData.fm_offence_details_imposition_position! -= 1));
   }
 
   /**
@@ -126,14 +167,19 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   }
 
   /**
-   * Removes an offence detail at the specified index from the form array and updates the form data.
-   * Navigates to the add offence page after removal.
+   * Confirms the removal of an imposition from the offence details.
    *
-   * @param rowIndex - The index of the offence detail to be removed.
-   * @param formArray - The form array containing the offence details.
+   * This method performs the following actions:
+   * 1. Removes the control from the form array and renumbers the remaining controls.
+   * 2. Updates the imposition positions in the child form data if it exists.
+   * 3. Updates the offence details impositions in the form data.
+   * 4. Handles routing to the add offence path.
+   *
+   * @param rowIndex - The index of the row to be removed.
+   * @param formArray - The form array containing the impositions.
    */
   public confirmRemoval(rowIndex: number, formArray: FormArray): void {
-    const { formData } = this.draftOffenceDetailsState.offenceDetailsDraft[0];
+    const { formData, childFormData } = this.draftOffenceDetailsState.offenceDetailsDraft[0];
 
     this.removeControlAndRenumber(
       formArray,
@@ -141,6 +187,17 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.fieldNames,
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
+
+    if (childFormData) {
+      const index = childFormData.findIndex(
+        (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
+      );
+      if (index >= 0) {
+        this.removeMinorCreditorAndUpdateIds(childFormData, index);
+      } else {
+        this.dropMinorCreditorImpositionPosition(childFormData, rowIndex);
+      }
+    }
 
     formData.fm_offence_details_impositions = formArray.value;
 

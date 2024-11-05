@@ -174,14 +174,14 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
   /**
    * Adds the collection order form controls to the component's form group.
-   * This method adds a control for the 'fm_payment_terms_has_collection_order' field
+   * This method adds a control for the 'fm_payment_terms_collection_order_made' field
    * and sets the required validator for it.
-   * It also registers the listener for changes in the 'fm_payment_terms_has_collection_order' field.
+   * It also registers the listener for changes in the 'fm_payment_terms_collection_order_made' field.
    */
   private addCollectionOrderFormControls(): void {
     this.addControls([
       {
-        controlName: 'fm_payment_terms_has_collection_order',
+        controlName: 'fm_payment_terms_collection_order_made',
         validators: [Validators.required],
       },
     ]);
@@ -210,7 +210,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private addRequestPaymentCardControl(): void {
     this.addControls([
       {
-        controlName: 'fm_payment_terms_request_payment_card',
+        controlName: 'fm_payment_terms_payment_card_request',
         validators: [],
       },
     ]);
@@ -229,7 +229,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
           validators: [],
         },
       ]);
-      this.holdEnforcementOnAccountListener();
+      this.noEnfListener();
     } else {
       this.addControls([
         {
@@ -270,10 +270,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
               controlName: 'fm_payment_terms_hold_enforcement_on_account',
               validators: [],
             },
-            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.defendantIsInCustody
-              .fieldsToRemove,
-            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.holdEnforcementOnAccount
-              .fieldsToRemove,
+            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.PRIS.fieldsToRemove,
+            ...FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.NOENF.fieldsToRemove,
           ]);
         }
       }
@@ -281,11 +279,11 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Listens for changes in the 'fm_payment_terms_has_collection_order' control and performs actions accordingly.
+   * Listens for changes in the 'fm_payment_terms_collection_order_made' control and performs actions accordingly.
    * This method is responsible for removing and adding controls based on the selected option.
    */
   private hasCollectionOrderListener(): void {
-    const { fm_payment_terms_has_collection_order: hasCollectionOrder } = this.form.controls;
+    const { fm_payment_terms_collection_order_made: hasCollectionOrder } = this.form.controls;
 
     hasCollectionOrder.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((selectedOption) => {
       const controls =
@@ -360,7 +358,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     enforcementActions!.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
       const actionOptions =
         FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION[
-          enforcementActions!.value === 'defendantIsInCustody' ? 'defendantIsInCustody' : 'holdEnforcementOnAccount'
+          enforcementActions!.value === 'PRIS' ? 'PRIS' : 'NOENF'
         ];
 
       this.addControls(actionOptions.fieldsToAdd);
@@ -369,20 +367,18 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Listens for changes in the holdEnforcementOnAccount form control and performs actions accordingly.
+   * Listens for changes in the NOENF form control and performs actions accordingly.
    */
-  private holdEnforcementOnAccountListener(): void {
-    const { fm_payment_terms_hold_enforcement_on_account: holdEnforcementOnAccount } = this.form.controls;
+  private noEnfListener(): void {
+    const { fm_payment_terms_hold_enforcement_on_account: NOENF } = this.form.controls;
 
-    holdEnforcementOnAccount.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
-      if (holdEnforcementOnAccount.value !== null) {
-        if (holdEnforcementOnAccount.value === true) {
-          this.addControls(
-            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.holdEnforcementOnAccount.fieldsToAdd,
-          );
+    NOENF.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {
+      if (NOENF.value !== null) {
+        if (NOENF.value === true) {
+          this.addControls(FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.NOENF.fieldsToAdd);
         } else {
           this.removeControls(
-            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.defendantIsInCustody.fieldsToRemove,
+            FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION.PRIS.fieldsToRemove,
           );
         }
       }
@@ -471,10 +467,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   }
 
   /**
-   * Sets the collection order date based on the value of `fm_payment_terms_make_collection_order_today` control.
+   * Sets the collection order date based on the value of `fm_payment_terms_collection_order_made_today` control.
    */
   private setCollectionOrderDate(): void {
-    const makeCollectionOrderTodayControl = this.form.get('fm_payment_terms_make_collection_order_today');
+    const makeCollectionOrderTodayControl = this.form.get('fm_payment_terms_collection_order_made_today');
     const collectionOrderDateControl = this.form.get('fm_payment_terms_collection_order_date');
 
     if (makeCollectionOrderTodayControl?.value === true) {

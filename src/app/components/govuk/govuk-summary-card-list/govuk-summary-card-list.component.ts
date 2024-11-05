@@ -9,4 +9,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class GovukSummaryCardListComponent {
   @Input({ required: true }) cardTitle!: string;
+  @Input({ required: false }) contentHidden!: boolean;
 }

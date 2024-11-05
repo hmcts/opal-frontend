@@ -11,13 +11,13 @@ When('I enter {string} into the {string} search box', (searchText: string, searc
     .children('div')
     .find('input')
     .clear()
-    .type(searchText);
+    .type(searchText, { delay: 0 });
   cy.contains('app-alphagov-accessible-autocomplete', searchBox).should('not.contain', 'No results found');
   cy.contains('app-alphagov-accessible-autocomplete', searchBox)
     .children('div')
     .children('div')
     .find('input')
-    .type('{downArrow}{enter}');
+    .type('{downArrow}{enter}', { delay: 0 });
 });
 
 When('I see {string} under the {string} search box', (text: string, fieldName: string) => {

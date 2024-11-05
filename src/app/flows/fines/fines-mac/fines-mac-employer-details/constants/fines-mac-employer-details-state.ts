@@ -10,5 +10,5 @@ export const FINES_MAC_EMPLOYER_DETAILS_STATE: IFinesMacEmployerDetailsState = {
   fm_employer_details_employer_address_line_3: null,
   fm_employer_details_employer_address_line_4: null,
   fm_employer_details_employer_address_line_5: null,
-  fm_employer_details_employer_postcode: null,
+  fm_employer_details_employer_post_code: null,
 };

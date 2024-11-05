@@ -16,6 +16,10 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlVal
     validators: [amountValidator(18, 2)],
   },
   {
+    controlName: 'fm_offence_details_balance_remaining',
+    validators: [],
+  },
+  {
     controlName: 'fm_offence_details_needs_creditor',
     validators: [],
   },

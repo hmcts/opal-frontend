@@ -1,0 +1,15 @@
+<app-govuk-summary-list summaryListId="dateOfSentence">
+  <div
+    app-govuk-summary-list-row
+    class="govuk-summary-list__row govuk-summary-list__row--no-actions govuk-blue-background-white-text"
+    summaryListId="dateOfSentence"
+    summaryListRowId="dateOfSentence"
+  >
+    <ng-container name>
+      <div class="govuk-!-padding-left-2">Date of sentence</div>
+    </ng-container>
+    <ng-container value>{{
+      dateService.toFormat(dateService.getFromFormat(dateOfSentence, 'dd/MM/yyyy'), 'd MMMM yyyy')
+    }}</ng-container>
+  </div>
+</app-govuk-summary-list>

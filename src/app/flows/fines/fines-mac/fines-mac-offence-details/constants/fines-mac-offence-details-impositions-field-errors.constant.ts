@@ -12,27 +12,25 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
     },
     [`fm_offence_details_amount_imposed${indexSuffix}`]: {
       required: {
-        message: 'Enter an amount',
+        message: 'Enter amount imposed',
         priority: 1,
       },
       invalidAmountValue: {
-        message: 'Enter an amount using numbers only',
+        message: 'Enter a valid amount',
         priority: 2,
       },
       invalidAmount: {
-        message:
-          'Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after',
+        message: 'Enter an amount that is no more than 18 numbers before the decimal and 2 or less after',
         priority: 3,
       },
     },
     [`fm_offence_details_amount_paid${indexSuffix}`]: {
       invalidAmountValue: {
-        message: 'Enter an amount using numbers only',
+        message: 'Enter a valid amount',
         priority: 2,
       },
       invalidAmount: {
-        message:
-          'Amount too long. Enter an amount that is no more than 18 numbers before the decimal and 2 or less after',
+        message: 'Enter an amount that is no more than 18 numbers before the decimal and 2 or less after',
         priority: 3,
       },
     },

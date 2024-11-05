@@ -5,7 +5,7 @@ import { futureDateValidator } from '@validators/future-date/future-date.validat
 
 export const FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION: IFinesMacPaymentTermsCollectionOrderOptionsControlValidation =
   {
-    yes: {
+    true: {
       fieldsToAdd: [
         {
           controlName: 'fm_payment_terms_collection_order_date',
@@ -13,16 +13,16 @@ export const FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION
         },
       ],
       fieldsToRemove: [
-        { controlName: 'fm_payment_terms_make_collection_order_today', validators: [] },
+        { controlName: 'fm_payment_terms_collection_order_made_today', validators: [] },
         {
           controlName: 'fm_payment_terms_collection_order_date',
           validators: [],
         },
       ],
     },
-    no: {
+    false: {
       fieldsToAdd: [
-        { controlName: 'fm_payment_terms_make_collection_order_today', validators: [] },
+        { controlName: 'fm_payment_terms_collection_order_made_today', validators: [] },
         {
           controlName: 'fm_payment_terms_collection_order_date',
           validators: [],
