@@ -4,6 +4,8 @@ import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac-offence-details-draft-state.constant';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-mac-offence-details-draft-state.mock';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fines-mac-offence-details-minor-creditor-form.mock';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
@@ -351,5 +353,34 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     expect(companyNameUpdateSpy).toHaveBeenCalled();
     expect(forenamesUpdateSpy).toHaveBeenCalled();
     expect(surnameUpdateSpy).toHaveBeenCalled();
+  });
+
+  it('should handle editing a minor creditor', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupMinorCreditorForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'creditorTypeListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'hasPaymentDetailsListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setInitialErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'rePopulateForm');
+
+    component['initialMinorCreditorSetup']();
+
+    expect(component['setupMinorCreditorForm']).toHaveBeenCalled();
+    expect(component['creditorTypeListener']).toHaveBeenCalled();
+    expect(component['hasPaymentDetailsListener']).toHaveBeenCalled();
+    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+    );
   });
 });
