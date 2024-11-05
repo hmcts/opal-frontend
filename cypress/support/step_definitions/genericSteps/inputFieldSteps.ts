@@ -16,6 +16,9 @@ Then('I enter {int} alphanumeric characters into the {string} field', (numChars:
 Then('I enter {string} into the {string} field', (value: string, fieldName: string) => {
   cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear().type(value, { delay: 0 });
 });
+Then('I clear the {string} field', (fieldName: string) => {
+  cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear();
+});
 
 Then('I enter {string} into the {string} text field', (value: string, fieldName: string) => {
   cy.contains('app-govuk-text-area', fieldName, { matchCase: false })
