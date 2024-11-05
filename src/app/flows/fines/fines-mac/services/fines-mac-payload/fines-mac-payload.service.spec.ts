@@ -34,9 +34,16 @@ describe('FinesMacPayloadService', () => {
 
   it('should create a replace account payload', () => {
     const finesMacState: IFinesMacState = { ...FINES_MAC_PAYLOAD_FINES_MAC_STATE };
-    const finesMacPayloadReplaceAccount = { ...FINES_MAC_PAYLOAD_ADD_ACCOUNT };
-    finesMacPayloadReplaceAccount.account_status = FineMacPayloadAccountAccountStatuses.resubmitted;
-    finesMacPayloadReplaceAccount.timeline_data[0].status = FineMacPayloadAccountAccountStatuses.resubmitted;
+    const finesMacPayloadReplaceAccount = {
+      ...FINES_MAC_PAYLOAD_ADD_ACCOUNT,
+      account_status: FineMacPayloadAccountAccountStatuses.resubmitted,
+      timeline_data: [
+        {
+          ...FINES_MAC_PAYLOAD_ADD_ACCOUNT.timeline_data[0],
+          status: FineMacPayloadAccountAccountStatuses.resubmitted,
+        },
+      ],
+    };
 
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
