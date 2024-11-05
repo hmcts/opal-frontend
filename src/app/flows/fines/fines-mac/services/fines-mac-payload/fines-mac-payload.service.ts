@@ -164,7 +164,7 @@ export class FinesMacPayloadService {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { businessUnit } = finesMacState;
     const accountPayload = this.buildAccountPayload(finesMacState);
-    const storedTimeLineData: IFinesMacAccountTimelineData[] = addAccount ? [] : []; // Replace with stored timeline data when we have it...awaiting edit mode.
+    const storedTimeLineData: IFinesMacAccountTimelineData[] = []; // Replace with stored timeline data when we have it...awaiting edit mode.
     const accountStatus = addAccount
       ? FineMacPayloadAccountAccountStatuses.submitted
       : FineMacPayloadAccountAccountStatuses.resubmitted;
