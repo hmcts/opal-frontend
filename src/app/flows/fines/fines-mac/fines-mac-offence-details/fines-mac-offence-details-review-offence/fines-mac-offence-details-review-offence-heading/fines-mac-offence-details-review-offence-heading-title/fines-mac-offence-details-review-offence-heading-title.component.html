@@ -9,8 +9,8 @@
     <app-govuk-summary-list-row-actions>
       <li
         app-govuk-summary-list-row-action-item
-        actionId="hide"
-        actionName="Hide"
+        [actionId]="showDetails ? 'hide' : 'show'"
+        [actionName]="showDetails ? 'Hide' : 'Show'"
         (linkClick)="onActionClick($event)"
       ></li>
       <li
