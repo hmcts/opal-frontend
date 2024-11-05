@@ -60,16 +60,25 @@ The class manages an array of form controls through `FormArray`. Components that
 
 Some common methods include:
 
-- **`addItem()`**: Adds a new form control or form group to the array.
-- **`removeItem(index: number)`**: Removes a form control or group at the specified index.
-- **`getItemAt(index: number)`**: Retrieves the form control or group at the given index.
-  
-Example:
+- **`buildFormArrayControls()`**: Builds an array of form controls for a form array.
+- **`addFormArrayControls()`**: Adds form array controls to the specified form array.
+- **`removeFormArrayControls()`**: Removes a form array control from a form array and updates the list of form array controls.
+- **`addFormArrayControl()`**: Adds a form array control to the specified index of the form array.
+- **`removeAllFormArrayControls()`**: Removes all form array controls from a form array.
+- **`removeFormArrayControlsErrors()`**: Removes errors from form array controls.
+- **`setupFormArrayControls()`**: Sets up form array controls.
 
-```typescript
-this.addItem(); // Adds a new item to the form array
-const item = this.getItemAt(0); // Gets the first item from the array
-this.removeItem(2); // Removes the third item
+###Example
+
+```
+<form [formGroup]="form">
+  <div formArrayName="items">
+    <div *ngFor="let item of form.controls.items.controls; let i = index">
+      <input [formControlName]="i" placeholder="Item {{ i + 1 }}">
+    </div>
+  </div>
+  <button type="submit">Submit</button>
+</form>
 ```
 
 ## Testing

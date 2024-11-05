@@ -59,19 +59,17 @@ The component may provide outputs to notify the parent component of changes in c
 
 ### Common Methods:
 
-- **`initializeChildForm()`**: Initializes child form components or controls within the parent form.
-- **`validateChildForms()`**: Runs validation on all child forms or form controls.
-- **`getChildFormErrors()`**: Retrieves error messages from child forms or controls.
-- **`submitParentForm()`**: Handles form submission for the parent form and triggers child form validation.
+- **`routerNavigate()`**: Navigates to the specified route using the Angular router.
+- **`canDeactivate()`**: Checks if there are unsaved changes and determines if the user can navigate away from the current route.
 
-Example:
 
-```typescript
-this.initializeChildForm();
-const childErrors = this.getChildFormErrors();
-if (this.validateChildForms()) {
-  this.submitParentForm(); // Proceed with form submission
-}
+###Example
+
+```
+<div>
+  <button (click)="saveChanges()">Save Changes</button>
+  <button (click)="navigateTo('/another-route')">Navigate</button>
+</div>
 ```
 
 ## Testing

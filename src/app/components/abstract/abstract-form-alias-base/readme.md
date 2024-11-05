@@ -58,19 +58,29 @@ Since `AbstractFormAliasBase` is an abstract class, the actual inputs will depen
 
 `AbstractFormAliasBase` provides common methods that are useful for handling alias-based form logic. Some common methods include:
 
-- **`initializeForm()`**: Initializes the form controls.
-- **`getControlAlias()`**: Retrieves alias controls from the form.
-- **`isValid()`**: Checks if the form is valid.
-  
-Example:
+- **`buildFormAliasControls()`**: Builds an array of form controls for the given form array.
+- **`addAliasControls()`**: Adds alias controls to the form array.
+- **`removeFormAliasControls()`**: Removes a form alias control from a form array and updates the list of form array controls.
+- **`addAlias()`**: Adds an alias to the specified index of the form array.
+- **`removeAllFormAliasControls()`**: Removes all form alias controls from a form array.
+- **`removeFormAliasControlsErrors()`**: Removes errors from form alias controls.
+- **`removeFormAliasControl()`**: Removes a specific form alias control.
+- **`setupAliasFormControls()`**: Sets up alias form controls.
+- **`setupAliasCheckboxListener()`**: Sets up a listener for the alias checkbox.
 
-```typescript
-this.initializeForm();
-const alias = this.getControlAlias('aliasField');
-if (this.isValid()) {
-  // Proceed with valid form actions
-}
+###Example
+
 ```
+<form [formGroup]="form">
+  <div formArrayName="aliases">
+    <div *ngFor="let alias of form.controls.aliases.controls; let i = index">
+      <input [formControlName]="i" placeholder="Alias {{ i + 1 }}">
+    </div>
+  </div>
+  <button type="submit">Submit</button>
+</form>
+```
+
 
 ## Testing
 

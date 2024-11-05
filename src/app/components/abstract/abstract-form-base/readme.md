@@ -56,22 +56,30 @@ export class MyFormComponent extends AbstractFormBaseComponent {
 
 ### Common Methods:
 
-- **`initializeForm()`**: Initializes the form with defined controls.
-- **`getControlErrors(controlName: string)`**: Retrieves the error messages for a specific form control.
-- **`isFormValid()`**: Returns `true` if the form is valid, otherwise `false`.
-- **`markAsTouched(controlName: string)`**: Marks the form control as touched for validation purposes.
-- **`displayErrorSummary()`**: Displays summary error messages based on the form’s validation state.
+- **`scroll()`**: Scrolls to the label of the component and focuses on the field id.
+- **`ngOnInit()`**: Lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
+- **`ngOnDestroy()`**: Lifecycle hook that is called when the directive is destroyed.
+###Examples
 
-Example:
-
-```typescript
-this.initializeForm();
-const errors = this.getControlErrors('email');
-if (this.isFormValid()) {
-  // Perform actions on valid form submission
-}
 ```
-
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="name">Name</label>
+    <input id="name" formControlName="name">
+    <div *ngIf="form.controls.name.invalid && form.controls.name.touched">
+      Name is required.
+    </div>
+  </div>
+  <div>
+    <label for="email">Email</label>
+    <input id="email" formControlName="email">
+    <div *ngIf="form.controls.email.invalid && form.controls.email.touched">
+      Enter a valid email.
+    </div>
+  </div>
+  <button type="submit">Submit</button>
+</form>
+```
 ## Interfaces
 
 `AbstractFormBaseComponent` utilizes several interfaces to manage form control states, error handling, and validation logic.

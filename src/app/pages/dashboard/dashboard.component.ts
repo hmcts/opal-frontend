@@ -16,6 +16,3 @@ export class DashboardComponent {
 
   public active: string = 'nav1';
 }
-
-
-

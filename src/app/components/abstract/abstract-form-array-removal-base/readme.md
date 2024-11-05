@@ -60,18 +60,23 @@ This base class handles dynamic arrays of form controls with the added feature o
 
 Some key methods include:
 
-- **`addItem()`**: Adds a new form control or form group to the array.
-- **`removeItem(index: number)`**: Removes a form control or form group at the specified index.
-- **`getItemAt(index: number)`**: Retrieves a form control or form group from the array by index.
+- **`getFormArrayControlValue()`**: Gets the value of a control in a form array.
+- **`removeControlAndRenumber()`**: Removes a control from the given form array at the specified index and renumbers the remaining controls.
+- **`renumberControls()`**: Renumbers the controls in a form array after a control has been removed.
 
-Example:
+###Example
 
-```typescript
-this.addItem(); // Adds a new form control to the array
-const item = this.getItemAt(0); // Retrieves the first item from the array
-this.removeItem(1); // Removes the second item in the form array
 ```
-
+<form [formGroup]="form">
+  <div formArrayName="items">
+    <div *ngFor="let item of form.controls.items.controls; let i = index">
+      <input [formControlName]="i" placeholder="Item {{ i + 1 }}">
+      <button type="button" (click)="removeItem(i)">Remove</button>
+    </div>
+  </div>
+  <button type="submit">Submit</button>
+</form>
+```
 ## Testing
 
 Unit tests for this component can be found in the `abstract-form-array-removal-base.spec.ts` file. To run the tests, use:
