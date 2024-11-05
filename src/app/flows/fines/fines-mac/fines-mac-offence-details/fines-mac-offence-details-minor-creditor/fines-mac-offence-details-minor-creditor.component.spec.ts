@@ -9,6 +9,7 @@ import { IFinesMacOffenceDetailsMinorCreditorForm } from './interfaces/fines-mac
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from './mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state.constant';
 
 describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorComponent;
@@ -24,6 +25,7 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
 
     formSubmit = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
 
@@ -50,13 +52,35 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle form submission and navigate to account details', () => {
+  it('should handle form submission when editing and navigate to add an offence', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     mockFinesService.finesMacState.offenceDetails = [];
     formSubmit.nestedFlow = false;
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+    ];
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
+
+    component.handleMinorCreditorFormSubmit(formSubmit);
+    fixture.detectChanges();
+
+    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.length).toEqual(1);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should handle form submission and navigate to add an offence', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    mockFinesService.finesMacState.offenceDetails = [];
+    formSubmit.nestedFlow = false;
+
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = null;
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [];
+
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 

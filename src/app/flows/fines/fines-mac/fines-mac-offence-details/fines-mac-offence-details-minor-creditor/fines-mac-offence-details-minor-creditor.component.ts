@@ -35,10 +35,21 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
 
-    // Push data to state and update minor creditor added flag
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.push(
-      form,
-    );
+    // If editing update the childFormData otherwise push new data to it
+    const changeMinorCreditor = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor;
+    if (changeMinorCreditor === null) {
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.push(
+        form,
+      );
+    } else {
+      const childFormData =
+        this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!;
+      const minorCreditor = childFormData.find(
+        (childFormData) => childFormData.formData.fm_offence_details_imposition_position === changeMinorCreditor,
+      );
+      minorCreditor!.formData = form.formData;
+    }
+
     //this.finesService.finesMacState.minorCreditors.push(form);
     this.finesMacOffenceDetailsService.minorCreditorAdded = true;
 
