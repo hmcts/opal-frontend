@@ -1,0 +1,21 @@
+<div class="govuk-grid-column-two-thirds">
+  <app-govuk-back-link (clickEvent)="navigateBack()"></app-govuk-back-link>
+  <h1 class="govuk-heading-l">Check account details</h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <app-govuk-button buttonId="submitAccountButton">Submit for review</app-govuk-button>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <a
+        class="govuk-link govuk-error-colour"
+        (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+        (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+        tabindex="0"
+        >Delete account</a
+      >
+    </div>
+  </div>
+</div>
