@@ -279,6 +279,28 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
     formControl.updateValueAndValidity({ emitEvent: false });
   }
 
+  /**
+   * Reverses the form array data by appending the index to each key in the objects.
+   *
+   * @param data - An array of objects containing form data.
+   * @returns An array of objects with keys modified to include their index in the original array.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public addIndexToFormArrayData(data: any[]): { [key: string]: any }[] {
+    return data.map((item, index) =>
+      Object.entries(item).reduce(
+        (indexedObject, [key, value]) => {
+          if (value !== undefined) {
+            indexedObject[`${key}_${index}`] = value;
+          }
+          return indexedObject;
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        {} as { [key: string]: any },
+      ),
+    );
+  }
+
   public override ngOnInit(): void {
     super.ngOnInit();
   }

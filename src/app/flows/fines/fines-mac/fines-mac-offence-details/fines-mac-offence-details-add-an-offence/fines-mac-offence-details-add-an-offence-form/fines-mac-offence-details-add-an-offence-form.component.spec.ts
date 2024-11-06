@@ -570,11 +570,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should return the correct minor creditor form data for the specified row index', () => {
-    const mockMinorCreditorForm = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
+    const mockMinorCreditorForm = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK };
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
 
     const result = component.getMinorCreditor(0);
@@ -584,7 +584,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should return undefined if childFormData is not defined', () => {
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [];
 
     const result = component.getMinorCreditor(0);

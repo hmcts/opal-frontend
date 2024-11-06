@@ -38,7 +38,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
       'addedOffenceCode',
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
     mockOpalFinesService = {
       getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
@@ -127,20 +127,21 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should update offence details index when form exists in the state', () => {
-    const form = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
 
-    const existingForm = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+    const existingForm = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
 
-    mockFinesService.finesMacState.offenceDetails = [existingForm];
+    mockFinesService.finesMacState.offenceDetails = [{ ...existingForm }];
 
     component['updateOffenceDetailsIndex'](form);
 
     expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
-    expect(mockFinesService.finesMacState.offenceDetails[0]).toEqual(form);
+    expect(mockFinesService.finesMacState.offenceDetails[0].formData).toEqual(form.formData);
+    expect(mockFinesService.finesMacState.offenceDetails[0].childFormData!.length).toEqual(1);
   });
 
   it('should add offence details form to the state when form does not exist', () => {
-    const form = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
+    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
 
     mockFinesService.finesMacState.offenceDetails = [];
 
@@ -151,10 +152,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should add offence details form to the state when form does not exist', () => {
-    const form = FINES_MAC_OFFENCE_DETAILS_FORM_MOCK;
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
 
     mockFinesService.finesMacState.offenceDetails = [];

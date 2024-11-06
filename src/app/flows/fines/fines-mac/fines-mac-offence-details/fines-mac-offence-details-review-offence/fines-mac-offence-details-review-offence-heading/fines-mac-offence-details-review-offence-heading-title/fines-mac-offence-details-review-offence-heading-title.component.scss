@@ -4,15 +4,15 @@
 }
 
 .heading-with-caption {
-  flex-grow: 1; 
-  min-width: 70%; 
+  flex-grow: 1;
+  min-width: 70%;
 }
 
 .heading-actions {
-  flex-shrink: 0; 
+  flex-shrink: 0;
   display: flex;
-  gap: 0.5rem; 
-  white-space: nowrap; 
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .border-bottom {
