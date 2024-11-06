@@ -156,17 +156,23 @@ export class FinesMacPayloadService {
     };
   }
 
-  public buildAddAccountPayload(
+  private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
+    addAccount: boolean,
   ): IFinesMacAddAccountPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { businessUnit } = finesMacState;
     const accountPayload = this.buildAccountPayload(finesMacState);
+    const storedTimeLineData: IFinesMacAccountTimelineData[] = []; // Replace with stored timeline data when we have it...awaiting edit mode.
+    const accountStatus = addAccount
+      ? FineMacPayloadAccountAccountStatuses.submitted
+      : FineMacPayloadAccountAccountStatuses.resubmitted;
+
     const timeLineData = this.buildTimelineDataPayload(
-      [],
+      storedTimeLineData,
       sessionUserState['name'],
-      FineMacPayloadAccountAccountStatuses.submitted,
+      accountStatus,
       this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
       null,
     );
@@ -178,11 +184,25 @@ export class FinesMacPayloadService {
       submitted_by_name: sessionUserState['name'],
       account: accountPayload,
       account_type: accountDetailsState['fm_create_account_account_type'],
-      account_status: FineMacPayloadAccountAccountStatuses.submitted,
+      account_status: accountStatus,
       timeline_data: timeLineData,
     };
 
     // Transform the payload, format the dates to the correct format
     return this.transformPayload(addAccountPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
+  }
+
+  public buildAddAccountPayload(
+    finesMacState: IFinesMacState,
+    sessionUserState: ISessionUserState,
+  ): IFinesMacAddAccountPayload {
+    return this.buildAddReplaceAccountPayload(finesMacState, sessionUserState, true);
+  }
+
+  public buildReplaceAccountPayload(
+    finesMacState: IFinesMacState,
+    sessionUserState: ISessionUserState,
+  ): IFinesMacAddAccountPayload {
+    return this.buildAddReplaceAccountPayload(finesMacState, sessionUserState, false);
   }
 }
