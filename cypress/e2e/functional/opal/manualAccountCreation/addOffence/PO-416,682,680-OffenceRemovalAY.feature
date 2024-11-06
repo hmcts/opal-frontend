@@ -1,6 +1,6 @@
-Feature: PO-416 - Offence Removal Confirmation Screen - Adult or Youth
+Feature: PO-416,682,680 - Offence Removal Confirmation Screen - All defendant types
 
-  Background:
+  Scenario Outline: AC12,3,4,5,6 - Offence Removal Confirmation Screen
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I am on the dashboard
     And I navigate to Manual Account Creation
@@ -8,14 +8,14 @@ Feature: PO-416 - Offence Removal Confirmation Screen - Adult or Youth
     And I see "Business unit and defendant type" on the page header
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
-    And I select the "Adult or youth with parent or guardian to pay" radio button
+    And I select the "<accountType>" radio button
     And I click the "Continue" button
     And I see "Account details" on the page header
     And I click on the "Offence details" link
     Then I see "Add an offence" on the page header
     And I see "Offence details" text on the page
 
-  Scenario: AC12,3,4,5,6 - Offence Removal Confirmation Screen
+
     When I enter "TP11003" into the "Offence code" field
     And I enter a date 9 weeks into the past into the "Date of sentence" date field
     And I click the "Add another imposition" button
@@ -127,3 +127,10 @@ Feature: PO-416 - Offence Removal Confirmation Screen - Adult or Youth
     And I see "There are no offences" text on the page
     And I see the "Add another offence" button
     And I see the "Return to account details" button
+
+
+    Examples:
+      | accountType                                   |
+      | Adult or youth only                           |
+      | Adult or youth with parent or guardian to pay |
+      | Company                                       |
