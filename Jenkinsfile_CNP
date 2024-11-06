@@ -29,6 +29,8 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 def getProjectName() {
   String projectPrefix = 'HMCTS/opal-frontend/'
   def githubApi = new GithubAPI(this)
+  echo "Branch name: ${env.BRANCH_NAME}"
+  echo "Labels: ${githubApi.getLabels(env.BRANCH_NAME)}"
   for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-')) {
     String prNumber = label.substring(21, label.length())
     return projectPrefix + 'PR-' + prNumber
