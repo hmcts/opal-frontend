@@ -9,6 +9,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
   let component: FinesMacOffenceDetailsRemoveMinorCreditorComponent;
@@ -20,10 +21,15 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
-    ];
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+      offenceDetailsDraft: [
+        {
+          ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+          childFormData: [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
+        },
+      ],
+    };
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
 

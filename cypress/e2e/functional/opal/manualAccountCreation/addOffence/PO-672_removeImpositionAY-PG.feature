@@ -33,9 +33,11 @@ Feature: PO-672 Create the Imposition Removal screen - Adult or youth with paren
 
     When I click on the "Remove imposition" link for imposition 2
     Then I see "Are you sure you want to remove this imposition?" on the page header
+
+    ###Creditor added, Test for PO-683
     And row number 1 should have the following data:
-      | Imposition                   | Creditor     | Amount imposed | Amount paid | Balance remaining |
-      | Criminal Courts Charge (FCC) | Not provided | £300.00        | £100.00     | £200.00           |
+      | Imposition                   | Creditor                                | Amount imposed | Amount paid | Balance remaining |
+      | Criminal Courts Charge (FCC) | HM Courts and Tribunals Service (HMCTS) | £300.00        | £100.00     | £200.00           |
 
     When I click the "Yes - remove imposition" button
     Then I see "Add an offence" on the page header
@@ -59,7 +61,7 @@ Feature: PO-672 Create the Imposition Removal screen - Adult or youth with paren
     And I enter "Criminal Courts Charge (FCC)" into the "Result code" field for imposition 2
     And I enter "300" into the "Amount imposed" field for imposition 2
     And I enter "100" into the "Amount paid" field for imposition 2
-    And I enter "Victim Surcharge (FVS)" into the "Result code" field for imposition 3
+    And I enter "Costs to Crown Prosecution Service (FCPC)" into the "Result code" field for imposition 3
     And I enter "500" into the "Amount imposed" field for imposition 3
     And I enter "200" into the "Amount paid" field for imposition 3
     Then I see "Remove imposition" link for imposition 1
@@ -68,9 +70,10 @@ Feature: PO-672 Create the Imposition Removal screen - Adult or youth with paren
 
     When I click on the "Remove imposition" link for imposition 3
     Then I see "Are you sure you want to remove this imposition?" on the page header
+    ###Creditor added, Test for PO-683
     And row number 1 should have the following data:
-      | Imposition             | Creditor     | Amount imposed | Amount paid | Balance remaining |
-      | Victim Surcharge (FVS) | Not provided | £500.00        | £200.00     | £300.00           |
+      | Imposition                                | Creditor                        | Amount imposed | Amount paid | Balance remaining |
+      | Costs to Crown Prosecution Service (FCPC) | Crown Prosecution Service (CPS) | £500.00        | £200.00     | £300.00           |
 
     When I click on the "No - cancel" link
     Then I see "Add an offence" on the page header
@@ -80,7 +83,7 @@ Feature: PO-672 Create the Imposition Removal screen - Adult or youth with paren
     And I see "Criminal Courts Charge (FCC)" in the "Result code" field for imposition 2
     And I see "300" in the "Amount imposed" field for imposition 2
     And I see "100" in the "Amount paid" field for imposition 2
-    And I see "Victim Surcharge (FVS)" in the "Result code" field for imposition 3
+    And I see "Costs to Crown Prosecution Service (FCPC)" in the "Result code" field for imposition 3
     And I see "500" in the "Amount imposed" field for imposition 3
     And I see "200" in the "Amount paid" field for imposition 3
     And I see "Remove imposition" link for imposition 1
@@ -99,11 +102,14 @@ Feature: PO-672 Create the Imposition Removal screen - Adult or youth with paren
     And I see "Add creditor" text on the page
     And I select the "Major creditor" radio button
 
+    And I enter "Tesco Stores (TESC)" into the "Search using name or code" search box
+
     When I click on the "Remove imposition" link for imposition 2
     Then I see "Are you sure you want to remove this imposition?" on the page header
+    ###Creditor added, Test for PO-683
     And row number 1 should have the following data:
-      | Imposition           | Creditor | Amount imposed | Amount paid | Balance remaining |
-      | Compensation (FCOMP) | major    | £300.00        | £100.00     | £200.00           |
+      | Imposition           | Creditor            | Amount imposed | Amount paid | Balance remaining |
+      | Compensation (FCOMP) | Tesco Stores (TESC) | £300.00        | £100.00     | £200.00           |
 
     When I click the "Yes - remove imposition" button
     Then I see "Add an offence" on the page header
@@ -121,11 +127,53 @@ Feature: PO-672 Create the Imposition Removal screen - Adult or youth with paren
     And I see "Add creditor" text on the page
     And I select the "Minor creditor" radio button
 
+    And I select the "Minor creditor" radio button
+
+    When I click on the "Add minor creditor details" link for imposition 2
+    Then I see "Minor creditor details" on the page header
+
+    When I select the "Company" radio button
+    And I enter "CNAME" into the "Company name" field
+
+    When I click the "Save" button
+    Then I see "Add an offence" on the page header
+
     When I click on the "Remove imposition" link for imposition 2
     Then I see "Are you sure you want to remove this imposition?" on the page header
+    ###Creditor added, Test for PO-683
     And row number 1 should have the following data:
       | Imposition    | Creditor | Amount imposed | Amount paid | Balance remaining |
-      | Costs (FCOST) | minor    | £500.00        | £200.00     | £300.00           |
+      | Costs (FCOST) | CNAME    | £500.00        | £200.00     | £300.00           |
+
+    When I click the "Yes - remove imposition" button
+    Then I see "Add an offence" on the page header
+
+    When I click the "Add another imposition" button
+    And I enter "Costs (FCOST)" into the "Result code" field for imposition 2
+    And I enter "500" into the "Amount imposed" field for imposition 2
+    And I enter "200" into the "Amount paid" field for imposition 2
+    And I see "Add creditor" text on the page
+    And I select the "Minor creditor" radio button
+
+    When I click on the "Add minor creditor details" link for imposition 2
+    Then I see "Minor creditor details" on the page header
+
+    Then I validate the "Individual" radio button is not selected
+
+    When I select the "Individual" radio button
+    And I select "Mr" from the "Title" dropdown
+    And I enter "FNAME" into the "First name" field
+    And I enter "LNAME" into the "Last name" field
+
+    When I click the "Save" button
+    Then I see "Add an offence" on the page header
+
+    When I click on the "Remove imposition" link for imposition 2
+    Then I see "Are you sure you want to remove this imposition?" on the page header
+    ###Creditor added, Test for PO-683
+    And row number 1 should have the following data:
+      | Imposition    | Creditor    | Amount imposed | Amount paid | Balance remaining |
+      | Costs (FCOST) | FNAME LNAME | £500.00        | £200.00     | £300.00           |
 
     When I click the "Yes - remove imposition" button
     Then I see "Add an offence" on the page header
