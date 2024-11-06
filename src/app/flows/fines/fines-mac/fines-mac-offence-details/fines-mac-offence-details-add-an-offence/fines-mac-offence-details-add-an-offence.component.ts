@@ -164,8 +164,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
     this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
 
-    console.log(this.finesService.finesMacState.offenceDetails);
-
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     } else {
