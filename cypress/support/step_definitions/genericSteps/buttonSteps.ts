@@ -11,6 +11,9 @@ When('The button {string} is clicked, nothing happens', (linkText: string) => {
 Then('I select {string} button', (removeButton: string) => {
   cy.contains('a', removeButton).click();
 });
+Then('I see the {string} button', (buttonText: string) => {
+  cy.contains('button', buttonText).should('exist');
+});
 Then('the button with text {string} should not be present', (buttonText: string) => {
   cy.contains('button', buttonText).should('not.exist');
 });
