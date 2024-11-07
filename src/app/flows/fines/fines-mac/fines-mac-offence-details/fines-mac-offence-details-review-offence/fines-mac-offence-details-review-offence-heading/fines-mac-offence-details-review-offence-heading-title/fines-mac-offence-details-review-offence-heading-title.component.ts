@@ -5,20 +5,21 @@ import { GovukSummaryListRowActionsComponent } from '@components/govuk/govuk-sum
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Component({
-  selector: 'app-fines-mac-offence-details-review-summary-offence-title',
+  selector: 'app-fines-mac-offence-details-review-offence-heading-title',
   standalone: true,
   imports: [
     GovukHeadingWithCaptionComponent,
     GovukSummaryListRowActionsComponent,
     GovukSummaryListRowActionItemComponent,
   ],
-  templateUrl: './fines-mac-offence-details-review-summary-offence-title.component.html',
-  styleUrl: './fines-mac-offence-details-review-summary-offence-title.component.scss',
+  templateUrl: './fines-mac-offence-details-review-offence-heading-title.component.html',
+  styleUrl: './fines-mac-offence-details-review-offence-heading-title.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent implements OnInit {
+export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements OnInit {
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: true }) public offenceRefData!: IOpalFinesOffencesRefData;
+  @Input({ required: false }) public showActions!: boolean;
   @Output() public actionClicked = new EventEmitter<string>();
 
   public offenceTitle!: string;

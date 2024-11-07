@@ -18,6 +18,7 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM } from '../constants/fines-mac-offence-d
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM } from './mocks/fines-mac-offence-details-review-summary-service-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
+import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 
 describe('FinesMacOffenceDetailsReviewComponent', () => {
   let component: FinesMacOffenceDetailsReviewComponent;
@@ -36,6 +37,9 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
       getMajorCreditorPrettyName: jasmine
         .createSpy('getMajorCreditorPrettyName')
         .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
+      getOffenceByCjsCode: jasmine
+        .createSpy('getOffenceByCjsCode')
+        .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
@@ -48,7 +52,11 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'addedOffenceCode',
       'emptyOffences',
+      'removeIndexFromImpositionKeys',
     ]);
+    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+    );
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat']);
 
     await TestBed.configureTestingModule({
@@ -87,6 +95,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
 
   it('should set emptyOffences to true when offencesImpositions is empty', () => {
     mockFinesService.finesMacState.offenceDetails = [];
+    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([]);
 
     component['getOffencesImpositions']();
 
