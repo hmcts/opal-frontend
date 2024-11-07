@@ -111,8 +111,10 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.offenceAction(action);
 
-    expect(mockFinesMacOffenceDetailsService.offenceIndex).not.toHaveBeenCalled();
-    expect(routerSpy).not.toHaveBeenCalled();
+    expect(mockFinesMacOffenceDetailsService.offenceIndex).toBe(action.offenceId);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence], {
+      relativeTo: component['activatedRoute'].parent,
+    });
   });
 
   it('should set the offenceIndex and navigate to addOffence route when addAnotherOffence is called', () => {
@@ -150,6 +152,13 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
     mockFinesService.finesMacState = {
       ...FINES_MAC_STATE_MOCK,
+      accountDetails: {
+        ...FINES_MAC_STATE_MOCK.accountDetails,
+        formData: {
+          ...FINES_MAC_STATE_MOCK.accountDetails.formData,
+          fm_create_account_defendant_type: 'adultOrYouthOnly',
+        },
+      },
       personalDetails: {
         ...FINES_MAC_STATE_MOCK.personalDetails,
         status: FINES_MAC_STATUS.PROVIDED,
@@ -165,7 +174,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     mockFinesService.finesMacState = {
       ...FINES_MAC_STATE_MOCK,
       accountDetails: {
-        ...FINES_MAC_STATE_MOCK,
+        ...FINES_MAC_STATE_MOCK.accountDetails,
         formData: {
           ...FINES_MAC_STATE_MOCK.accountDetails.formData,
           fm_create_account_defendant_type: 'parentOrGuardianToPay',

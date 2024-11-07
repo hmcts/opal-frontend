@@ -14,7 +14,7 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceD
   },
   {
     fm_offence_details_imposition_id: 1,
-    fm_offence_details_result_code: null,
+    fm_offence_details_result_code: 'FO',
     fm_offence_details_amount_imposed: 0,
     fm_offence_details_amount_paid: 0,
     fm_offence_details_balance_remaining: 0,
