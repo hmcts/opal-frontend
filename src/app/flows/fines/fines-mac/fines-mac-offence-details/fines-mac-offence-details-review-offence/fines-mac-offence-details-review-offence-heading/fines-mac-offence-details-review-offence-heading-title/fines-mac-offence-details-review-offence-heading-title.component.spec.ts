@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent } from './fines-mac-offence-details-review-summary-offence-title.component';
+import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fines-mac-offence-details-review-offence-heading-title.component';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 
-describe('FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent', () => {
-  let component: FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent>;
+describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
+  let component: FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent],
+      imports: [FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent);
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent);
     component = fixture.componentInstance;
 
     component.offenceRefData = OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK;

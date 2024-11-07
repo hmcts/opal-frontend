@@ -8,15 +8,14 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants
 import { FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent } from './fines-mac-offence-details-review-summary-date-of-sentence/fines-mac-offence-details-review-summary-date-of-sentence.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { CommonModule } from '@angular/common';
-import { FinesMacOffenceDetailsReviewSummaryImpositionTableComponent } from './fines-mac-offence-details-review-summary-imposition-table/fines-mac-offence-details-review-summary-imposition-table.component';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fines-mac-offence-details-review-summary-offences-total/fines-mac-offence-details-review-summary-offences-total.component';
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { FinesMacOffenceDetailsReviewSummaryOffenceComponent } from './fines-mac-offence-details-review-summary-offence/fines-mac-offence-details-review-summary-offence.component';
 import { MojBannerComponent } from '../../../../../../components/moj/moj-banner/moj-banner.component';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-mac-offence-details-review-summary-form.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
+import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -26,10 +25,9 @@ import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
     GovukButtonComponent,
     GovukCancelLinkComponent,
     FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent,
-    FinesMacOffenceDetailsReviewSummaryOffenceComponent,
-    FinesMacOffenceDetailsReviewSummaryImpositionTableComponent,
     FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent,
     MojBannerComponent,
+    FinesMacOffenceDetailsReviewOffenceComponent,
   ],
   templateUrl: './fines-mac-offence-details-review-summary.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -92,9 +90,11 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
    * @param action - The action object containing the action name and offence ID.
    */
   public offenceAction(action: { actionName: string; offenceId: number }): void {
+    this.finesMacOffenceDetailsService.offenceIndex = action.offenceId;
     if (action.actionName === 'change') {
-      this.finesMacOffenceDetailsService.offenceIndex = action.offenceId;
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
+    } else if (action.actionName === 'remove') {
+      this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence);
     }
   }
 
@@ -137,7 +137,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.offencesImpositions.length === 0) {
+    if (this.offencesImpositions.length === 0 && !this.finesMacOffenceDetailsService.offenceRemoved) {
       this.addAnotherOffence();
     }
     this.getNewlyAddedOffenceCode();
