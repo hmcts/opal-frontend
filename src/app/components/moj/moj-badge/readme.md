@@ -49,25 +49,25 @@ The `badgeClasses` input allows you to apply various color and size classes. Bel
 
 ### Color Modifiers
 
-- **`moj-badge--purple`**: `Lorem ipsum 1`
-- **`moj-badge--bright-purple`**: `Lorem ipsum 2`
-- **`moj-badge--red`**: `Lorem ipsum 3`
-- **`moj-badge--green`**: `Lorem ipsum 4`
-- **`moj-badge--blue`**: `Lorem ipsum 5`
-- **`moj-badge--black`**: `Lorem ipsum 6`
-- **`moj-badge--grey`**: `Lorem ipsum 7`
+- **`moj-badge--purple`**
+- **`moj-badge--bright-purple`**
+- **`moj-badge--red`**
+- **`moj-badge--green`**
+- **`moj-badge--blue`**
+- **`moj-badge--black`**
+- **`moj-badge--grey`**
 
 ### Size Modifiers
 
 You can combine any of the color modifiers above with the size modifier `moj-badge--large` to increase the badge size:
 
-- **`moj-badge--purple moj-badge--large`**: Large `Lorem ipsum 1`
-- **`moj-badge--bright-purple moj-badge--large`**: Large `Lorem ipsum 2`
-- **`moj-badge--red moj-badge--large`**: Large `Lorem ipsum 3`
-- **`moj-badge--green moj-badge--large`**: Large `Lorem ipsum 4`
-- **`moj-badge--blue moj-badge--large`**: Large `Lorem ipsum 5`
-- **`moj-badge--black moj-badge--large`**: Large `Lorem ipsum 6`
-- **`moj-badge--grey moj-badge--large`**: Large `Lorem ipsum 7`
+- **`moj-badge--purple moj-badge--large`**
+- **`moj-badge--bright-purple moj-badge--large`**
+- **`moj-badge--red moj-badge--large`**
+- **`moj-badge--green moj-badge--large`**
+- **`moj-badge--blue moj-badge--large`**
+- **`moj-badge--black moj-badge--large`**
+- **`moj-badge--grey moj-badge--large`**
 
 ## Testing
 
