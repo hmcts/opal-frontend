@@ -64,3 +64,12 @@ When('I see {string} under the {string} radio button', (inputField: string, radi
     .contains('label', inputField)
     .should('contain.text', inputField);
 });
+Then('I select the {string} radio button for imposition {int}', (radioButton: string, index: number) => {
+  cy.contains('legend', 'Impositions')
+    .parent()
+    .find('app-moj-ticket-panel')
+    .eq(index - 1)
+    .find('.govuk-radios')
+    .contains('label', radioButton)
+    .click();
+});
