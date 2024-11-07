@@ -13,6 +13,12 @@ Then('I enter {int} alphanumeric characters into the {string} field', (numChars:
     .clear()
     .type(generateString(numChars), { delay: 0 });
 });
+Then('I enter {int} alphanumeric characters into the {string} text field', (numChars: number, fieldName: string) => {
+  cy.contains('app-govuk-text-area', fieldName, { matchCase: false })
+    .find('textarea')
+    .clear()
+    .type(generateString(numChars), { delay: 0 });
+});
 Then('I enter {string} into the {string} field', (value: string, fieldName: string) => {
   cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear().type(value, { delay: 0 });
 });
@@ -45,6 +51,22 @@ Then('I see {string} in the {string} payment field', (value: string, fieldName: 
 
 When('I see {string} under the {string} field', (text: string, fieldName: string) => {
   cy.contains('app-govuk-text-input', fieldName).find('input').prev().invoke('text').should('contains', text);
+});
+Then('I see {int} alphanumeric characters in the {string} field', (numChars: number, fieldName: string) => {
+  cy.contains('app-govuk-text-input', fieldName, { matchCase: false })
+    .find('input')
+    .invoke('val')
+    .then((value) => {
+      expect(value).to.have.lengthOf(numChars);
+    });
+});
+Then('I see {int} alphanumeric characters in the {string} text field', (numChars: number, fieldName: string) => {
+  cy.contains('app-govuk-text-area', fieldName, { matchCase: false })
+    .find('textarea')
+    .invoke('val')
+    .then((value) => {
+      expect(value).to.have.lengthOf(numChars);
+    });
 });
 
 Then(
