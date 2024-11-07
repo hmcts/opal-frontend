@@ -41,3 +41,6 @@ Then('I do not see the {string} link for imposition {int}', (linkText: string, i
     .contains('a', linkText)
     .should('not.exist');
 });
+Then('I click the {string} link for offence {string}', (linkText: string, offence: string) => {
+  cy.contains('app-fines-mac-offence-details-review-offence', offence).find('a').contains(linkText).click();
+});
