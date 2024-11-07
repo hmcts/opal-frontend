@@ -1,6 +1,6 @@
-import { IFinesMacOffenceDetailsImpositionsState } from '../../../../interfaces/fines-mac-offence-details-impositions-state.interface';
+import { IFinesMacOffenceDetailsImpositionsState } from '../../../interfaces/fines-mac-offence-details-impositions-state.interface';
 
-export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_SUMMARY_IMPOSITION_TABLE_IMPOSITIONS_MOCK: IFinesMacOffenceDetailsImpositionsState[] =
+export const FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK: IFinesMacOffenceDetailsImpositionsState[] =
   [
     {
       fm_offence_details_imposition_id: 0,
