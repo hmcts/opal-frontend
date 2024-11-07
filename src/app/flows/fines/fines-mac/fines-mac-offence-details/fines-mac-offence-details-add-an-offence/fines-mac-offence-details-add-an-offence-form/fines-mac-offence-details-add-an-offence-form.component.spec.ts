@@ -95,9 +95,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    component.ngOnInit();
     const index = 0;
     const result_code = FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation;
-    const impositionsFormArray = fixture.componentInstance.form.get('fm_offence_details_impositions') as FormArray;
+    const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
     const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
     const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
@@ -108,9 +110,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true when result_code is costs', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    component.ngOnInit();
     const index = 0;
     const result_code = FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs;
-    const impositionsFormArray = fixture.componentInstance.form.get('fm_offence_details_impositions') as FormArray;
+    const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
     const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
     const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
@@ -121,8 +125,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true on initial call of resultCodeListener', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    component.ngOnInit();
     const index = 0;
-    const impositionsFormArray = fixture.componentInstance.form.get('fm_offence_details_impositions') as FormArray;
+    const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
     const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
 
@@ -135,8 +141,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true on initial call of resultCodeListener', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    component.ngOnInit();
     const index = 0;
-    const impositionsFormArray = fixture.componentInstance.form.get('fm_offence_details_impositions') as FormArray;
+    const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
     const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
 
@@ -383,6 +391,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should perform major creditor validation when creditor value is major', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    component.ngOnInit();
     const index = 0;
     const creditorValue = 'major';
     const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
@@ -402,6 +412,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should perform major creditor validation when creditor value is minor', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    component.ngOnInit();
     const index = 0;
     const creditorValue = 'minor';
     const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
@@ -421,6 +433,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should trigger majorCreditorValidation when the control is already populated when loading the listener', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    component.ngOnInit();
     const index = 0;
     const creditorValue = 'major';
     const impositionsFormGroup = component.getFormArrayFormGroup(index, 'fm_offence_details_impositions');

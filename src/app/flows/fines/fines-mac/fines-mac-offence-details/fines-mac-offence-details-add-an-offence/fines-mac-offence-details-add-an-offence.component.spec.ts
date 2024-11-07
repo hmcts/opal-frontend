@@ -132,12 +132,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     const existingForm = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
 
     mockFinesService.finesMacState.offenceDetails = [{ ...existingForm }];
+    mockFinesService.finesMacState.offenceDetails[0].childFormData = null;
 
     component['updateOffenceDetailsIndex'](form);
 
     expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
     expect(mockFinesService.finesMacState.offenceDetails[0].formData).toEqual(form.formData);
-    expect(mockFinesService.finesMacState.offenceDetails[0].childFormData!.length).toEqual(1);
+    expect(mockFinesService.finesMacState.offenceDetails[0].childFormData).toBeNull();
   });
 
   it('should add offence details form to the state when form does not exist', () => {
