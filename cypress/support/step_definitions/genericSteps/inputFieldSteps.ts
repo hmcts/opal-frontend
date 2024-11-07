@@ -5,13 +5,13 @@ Then('I enter more than 30 characters into the {string} field', (fieldName: stri
   cy.contains('app-govuk-text-input', fieldName, { matchCase: false })
     .find('input')
     .clear()
-    .type('Test'.repeat(10), { delay: 0 });
+    .type('Test'.repeat(10), { delay: 10 });
 });
 Then('I enter {int} alphanumeric characters into the {string} field', (numChars: number, fieldName: string) => {
   cy.contains('app-govuk-text-input', fieldName, { matchCase: false })
     .find('input')
     .clear()
-    .type(generateString(numChars), { delay: 0 });
+    .type(generateString(numChars), { delay: 10 });
 });
 Then('I enter {int} alphanumeric characters into the {string} text field', (numChars: number, fieldName: string) => {
   cy.contains('app-govuk-text-area', fieldName, { matchCase: false })
@@ -20,7 +20,7 @@ Then('I enter {int} alphanumeric characters into the {string} text field', (numC
     .type(generateString(numChars), { delay: 0 });
 });
 Then('I enter {string} into the {string} field', (value: string, fieldName: string) => {
-  cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear().type(value, { delay: 0 });
+  cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear().type(value, { delay: 10 });
 });
 Then('I clear the {string} field', (fieldName: string) => {
   cy.contains('app-govuk-text-input', fieldName, { matchCase: false }).find('input').clear();
@@ -30,11 +30,11 @@ Then('I enter {string} into the {string} text field', (value: string, fieldName:
   cy.contains('app-govuk-text-area', fieldName, { matchCase: false })
     .find('textarea')
     .clear()
-    .type(value, { delay: 0 });
+    .type(value, { delay: 10 });
 });
 
 Then('I enter {string} into the {string} payment field', (value: string, fieldName: string) => {
-  cy.contains('.govuk-form-group', fieldName, { matchCase: false }).find('input').clear().type(value, { delay: 0 });
+  cy.contains('.govuk-form-group', fieldName, { matchCase: false }).find('input').clear().type(value, { delay: 10 });
 });
 
 Then('I see {string} in the {string} field', (value: string, fieldName: string) => {
@@ -73,7 +73,7 @@ Then(
   'the characters remaining counter should show {int} after entering {int} characters into the {string} input field',
   (expectedRemaining: number, numCharsEntered: number, inputField: string) => {
     const textToEnter = generateString(numCharsEntered);
-    cy.contains('app-govuk-text-area', inputField).find('textarea').clear().type(textToEnter, { delay: 0 });
+    cy.contains('app-govuk-text-area', inputField).find('textarea').clear().type(textToEnter, { delay: 10 });
     cy.get('.govuk-hint').should('contain.text', expectedRemaining.toString());
   },
 );
@@ -95,7 +95,7 @@ Then(
       .eq(index - 1)
       .contains('label', labelText)
       .nextUntil('input')
-      .type(value, { delay: 0 });
+      .type(value, { delay: 10 });
   },
 );
 Then('I clear the {string} field for imposition {int}', (labelText: string, index: number) => {
