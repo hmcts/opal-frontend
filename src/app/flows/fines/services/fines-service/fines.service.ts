@@ -34,6 +34,16 @@ export class FinesService {
   }
 
   /**
+   * Helper function to check if all statuses are provided.
+   *
+   * @param statuses - Array of statuses to check.
+   * @returns {boolean} - Returns `true` if all statuses are provided, otherwise `false`.
+   */
+  private areAllStatusesProvided(statuses: (string | boolean | null | undefined)[]): boolean {
+    return statuses.every((status) => status === FINES_MAC_STATUS.PROVIDED || status === true);
+  }
+
+  /**
    * Checks if all mandatory sections for adult or youth are provided.
    *
    * This method verifies the status of various sections including court details,
@@ -53,7 +63,7 @@ export class FinesService {
       this.checkEachOffenceStatus(offenceDetails),
     ];
 
-    return statusesToCheck.every((status) => status === FINES_MAC_STATUS.PROVIDED || status === true);
+    return this.areAllStatusesProvided(statusesToCheck);
   }
 
   /**
@@ -79,7 +89,7 @@ export class FinesService {
       this.checkEachOffenceStatus(offenceDetails),
     ];
 
-    return statusesToCheck.every((status) => status === FINES_MAC_STATUS.PROVIDED || status === true);
+    return this.areAllStatusesProvided(statusesToCheck);
   }
 
   /**
@@ -101,7 +111,7 @@ export class FinesService {
       this.checkEachOffenceStatus(offenceDetails),
     ];
 
-    return statusesToCheck.every((status) => status === FINES_MAC_STATUS.PROVIDED || status === true);
+    return this.areAllStatusesProvided(statusesToCheck);
   }
 
   /**
