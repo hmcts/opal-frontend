@@ -9,5 +9,6 @@ export const FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS: IFinesMacOffenceDetailsRou
     removeImposition: 'remove-imposition',
     addMinorCreditor: 'add-minor-creditor',
     removeMinorCreditor: 'remove-minor-creditor',
+    removeOffence: 'remove-offence',
   },
 };

@@ -1,20 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { EMPTY, Observable, map } from 'rxjs';
-import { FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent } from './fines-mac-offence-details-review-summary-offence-title/fines-mac-offence-details-review-summary-offence-title.component';
+import { Observable, EMPTY, map } from 'rxjs';
+import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fines-mac-offence-details-review-offence-heading-title/fines-mac-offence-details-review-offence-heading-title.component';
 
 @Component({
-  selector: 'app-fines-mac-offence-details-review-summary-offence',
+  selector: 'app-fines-mac-offence-details-review-offence-heading',
   standalone: true,
-  imports: [CommonModule, FinesMacOffenceDetailsReviewSummaryOffenceTitleComponent],
-  templateUrl: './fines-mac-offence-details-review-summary-offence.component.html',
+  imports: [CommonModule, FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent],
+  templateUrl: './fines-mac-offence-details-review-offence-heading.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsReviewSummaryOffenceComponent implements OnInit {
+export class FinesMacOffenceDetailsReviewOffenceHeadingComponent implements OnInit {
   @Input({ required: true }) public offenceId!: number;
   @Input({ required: true }) public offenceCode!: string;
+  @Input({ required: false }) public showActions!: boolean;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
 
   private readonly opalFinesService = inject(OpalFines);
