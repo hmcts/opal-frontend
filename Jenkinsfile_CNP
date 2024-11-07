@@ -29,6 +29,8 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 def getProjectName() {
   String projectPrefix = 'HMCTS/opal-frontend/'
   def githubApi = new GithubAPI(this)
+  echo "Branch name: ${env.BRANCH_NAME}"
+  echo "Labels: ${githubApi.getLabels(env.BRANCH_NAME)}"
   for (label in githubApi.getLabelsbyPattern(env.BRANCH_NAME, 'opal-frontend-pr-')) {
     String prNumber = label.substring(21, label.length())
     return projectPrefix + 'PR-' + prNumber
@@ -43,6 +45,87 @@ def getProjectLabels() {
   }
   return testLabels
 }
+def performArtifactOperations() {
+    sh 'mkdir -p cypress/parallel/weights/pipeline'
+
+    sh '''
+    echo "Listing all artifacts before copy artifacts:"
+    ls -l1a cypress/parallel/weights/
+    ls -l1a cypress/parallel/weights/pipeline/
+    '''
+
+    script {
+        def projectName = getProjectName()
+        try {
+            copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline/*'
+        } catch (Exception e) {
+            echo "Error copying artifacts: ${e}"
+        }
+
+        sh '''
+        echo "Listing all artifacts after copy artifacts:"
+        ls -l1a cypress/parallel/weights/
+        ls -l1a cypress/parallel/weights/pipeline/
+        '''
+    }
+
+    try {
+        sh '''
+        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
+            echo "Moved smoke-parallel-weights.json"
+        else
+            echo "smoke-parallel-weights.json not found, skipping move"
+        fi
+        if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
+            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
+            echo "Moved functional-parallel-weights.json"
+        else
+            echo "functional-parallel-weights.json not found, skipping move"
+        fi
+        '''
+    } catch (Exception e) {
+        echo "Artifacts not found or copy failed: ${e}"
+    }
+
+    sh '''
+    echo "Listing all copied artifacts:"
+    ls -l1a cypress/parallel/weights/
+    ls -l1a cypress/parallel/weights/pipeline/
+    '''
+}
+
+def setupTestSpecifications() {
+    script {
+        def projectName = getProjectName()
+        def labels = getProjectLabels()
+        sh "echo 'Test Labels: ${labels}'"
+
+        def directories = []
+
+        // Add additional labels as needed
+        if (labels.contains('test_enq')) {
+            directories.add('accountEnquiry')
+        }
+        if (labels.contains('test_remo')) {
+            directories.add('reciprocalMaintenance')
+        }
+        if (labels.contains('test_mac')) {
+            directories.add('manualAccountCreation')
+        }
+        sh "echo 'Directories: ${directories}'"
+
+        if (directories.isEmpty() || projectName == 'HMCTS/opal-frontend/master') {
+            // No specific test labels, include all directories
+            env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
+        } else {
+            // Build the glob pattern using curly braces
+            def dirList = directories.join(',')
+            env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
+        }
+        sh "echo 'Test Specs: ${env.TEST_SPECS}'"
+    }
+}
 
 properties([
     copyArtifactPermission('*')
@@ -55,84 +138,9 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('build')
   }
     afterSuccess('checkout') {
-        sh 'mkdir -p cypress/parallel/weights/pipeline'
-
-        sh '''
-        echo "Listing all artifacts before copy artifacts:"
-        ls -l1a cypress/parallel/weights/
-        ls -l1a cypress/parallel/weights/pipeline/
-        '''
-
-        script {
-      def projectName = getProjectName()
-      try {
-        copyArtifacts projectName: projectName, selector: lastSuccessful(), filter: '**/cypress/parallel/weights/pipeline /*'
-            } catch (Exception e) {
-        echo "Error copying artifacts: ${e}"
-      }
-
-        sh '''
-        echo "Listing all artifacts after copy artifacts:"
-        ls -l1a cypress/parallel/weights/
-        ls -l1a cypress/parallel/weights/pipeline/
-        '''
-        try {
-        sh '''
-        if [ -f cypress/parallel/weights/pipeline/smoke-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/smoke-parallel-weights.json cypress/parallel/weights/smoke-parallel-weights.json
-            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json found, moving to cypress/parallel/weights/smoke-parallel-weights.json"
-        else
-            echo "cypress/parallel/weights/pipeline/smoke-parallel-weights.json not found, skipping move"
-        fi
-        if [ -f cypress/parallel/weights/pipeline/functional-parallel-weights.json ]; then
-            mv cypress/parallel/weights/pipeline/functional-parallel-weights.json cypress/parallel/weights/functional-parallel-weights.json
-            echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json found, moving to cypress/parallel/weights/functional-parallel-weights.json"
-        else
-            echo "cypress/parallel/weights/pipeline/functional-parallel-weights.json not found, skipping move"
-        fi
-        '''
-      } catch (Exception e) {
-            echo "Artifacts not found or copy failed: ${e}"
-        }
-        }
-
-        sh '''
-        echo "Listing all copied artifacts:"
-        ls -l1a cypress/parallel/weights/
-        ls -l1a cypress/parallel/weights/pipeline/
-        '''
-    }
-    afterSuccess('checkout') {
-      script {
-            def projectName = getProjectName()
-            def labels = getProjectLabels()
-            sh"echo 'Test Labels: ${labels}'"
-
-            def directories = []
-
-            // Add additional labels as needed
-            if (labels.contains('test_enq')) {
-                directories.add('accountEnquiry')
-            }
-            if (labels.contains('test_remo')) {
-                directories.add('reciprocalMaintenance')
-            }
-            if (labels.contains('test_mac')) {
-                directories.add('manualAccountCreation')
-            }
-            sh"echo 'Directories: ${directories}'"
-
-            if (directories.isEmpty() || projectName == 'HMCTS/opal-frontend/master') {
-                // No specific test labels, include all directories
-                env.TEST_SPECS = 'cypress/e2e/functional/opal/**/*.feature'
-      } else {
-        // Build the glob pattern using curly braces
-                def dirList = directories.join(',')
-                env.TEST_SPECS = "cypress/e2e/functional/opal/{required,${dirList}}/**/*.feature"
-      }
-            sh"echo 'Test Specs: ${env.TEST_SPECS}'"
-    }
-  }
+    performArtifactOperations()
+    setupTestSpecifications()
+}
 
   afterSuccess('functionalTest:dev') {
     script {
