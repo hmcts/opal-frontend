@@ -35,7 +35,7 @@ When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
         // Handle localhost or PR environment
         if (href.includes('pr-') || href.includes('localhost')) {
           cy.wait(50);
-          cy.get('input[type="text"]').type(emailSSO);
+          cy.get('input[type="text"]').type(emailSSO, { delay: 0 });
           cy.get('#submitForm').click();
 
           cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
@@ -53,10 +53,10 @@ When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
             },
             ({ emailSSO, passwordSSO }) => {
               cy.wait(500);
-              cy.get('input[type="email"]', { timeout: 12000 }).type(emailSSO);
+              cy.get('input[type="email"]', { timeout: 12000 }).type(emailSSO, { delay: 0 });
               cy.get('input[type="submit"]', { timeout: 12000 }).click();
 
-              cy.get('input[type="password"]', { timeout: 12000 }).type(passwordSSO, { log: false });
+              cy.get('input[type="password"]', { timeout: 12000 }).type(passwordSSO, { log: false, delay: 0 });
               cy.get('input[type="submit"]', { timeout: 12000 }).click();
               cy.get('#idBtn_Back', { timeout: 12000 }).click();
             },
