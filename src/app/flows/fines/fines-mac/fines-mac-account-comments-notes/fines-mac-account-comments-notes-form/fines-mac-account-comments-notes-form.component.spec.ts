@@ -75,7 +75,6 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it('should return true if all mandatory sections have been provided', () => {
-    // Arrange
     mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
@@ -83,15 +82,12 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.PROVIDED;
 
-    // Act
     const result = component['checkMandatorySections']();
 
-    // Assert
     expect(result).toBe(true);
   });
 
   it('should return false if any mandatory section is missing', () => {
-    // Arrange
     mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
@@ -99,10 +95,8 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
     mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.NOT_PROVIDED;
 
-    // Act
     const result = component['checkMandatorySections']();
 
-    // Assert
     expect(result).toBe(false);
   });
 });
