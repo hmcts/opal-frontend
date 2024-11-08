@@ -25,9 +25,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
-    formSubmit = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK;
+    formSubmit = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorComponent],
@@ -57,16 +57,50 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     mockFinesService.finesMacState.offenceDetails = [];
     formSubmit.nestedFlow = false;
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
 
     component.handleMinorCreditorFormSubmit(formSubmit);
     fixture.detectChanges();
 
-    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft.length).toEqual(1);
+    expect(
+      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData.length,
+    ).toEqual(1);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
+  it('should handle form submission when editing and navigate to add an offence multiple childFormData', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    mockFinesService.finesMacState.offenceDetails = [];
+    formSubmit.nestedFlow = false;
+
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_imposition_position: 1,
+        },
+      },
+    ];
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
+
+    component.handleMinorCreditorFormSubmit(formSubmit);
+    fixture.detectChanges();
+
+    expect(
+      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData.length,
+    ).toEqual(2);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -77,7 +111,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     mockFinesService.finesMacState.offenceDetails = [];
     formSubmit.nestedFlow = false;
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = null;
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [];
 

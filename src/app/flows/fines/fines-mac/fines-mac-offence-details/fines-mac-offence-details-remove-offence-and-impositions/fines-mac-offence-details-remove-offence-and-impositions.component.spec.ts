@@ -39,10 +39,12 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
       'finesMacOffenceDetailsDraftState',
       'removeIndexFromImpositionKeys',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue(
-      FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
-    );
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
+    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue({
+      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+    });
     mockFinesMacOffenceDetailsService.offenceIndex = 0;
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
