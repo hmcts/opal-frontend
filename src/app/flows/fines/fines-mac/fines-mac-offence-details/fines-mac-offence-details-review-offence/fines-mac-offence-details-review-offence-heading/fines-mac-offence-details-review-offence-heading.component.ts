@@ -16,6 +16,7 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingComponent implements OnIn
   @Input({ required: true }) public offenceId!: number;
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: false }) public showActions!: boolean;
+  @Input({ required: false }) public showDetails: boolean = true;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
 
   private readonly opalFinesService = inject(OpalFines);
