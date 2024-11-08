@@ -37,6 +37,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
       'offenceIndex',
       'addedOffenceCode',
       'finesMacOffenceDetailsDraftState',
+      'offenceCodeMessage',
     ]);
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
@@ -180,5 +181,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     component['retrieveFormData']();
 
     expect(mockFinesService.finesMacState.offenceDetails).toEqual([]);
+  });
+
+  it('should set the offenceCodeMessage', () => {
+    component['addOffenceCodeMessage']('TEST');
+
+    expect(mockFinesMacOffenceDetailsService.offenceCodeMessage).toBe(`Offence TEST added`);
   });
 });

@@ -90,15 +90,9 @@ describe('FinesService', () => {
   it('should check mandatory sections based on defendant type', () => {
     service.finesMacState = {
       ...FINES_MAC_STATE,
-      accountDetails: {
-        ...FINES_MAC_STATE.accountDetails,
-        formData: {
-          ...FINES_MAC_STATE.accountDetails.formData,
-          fm_create_account_defendant_type: 'adultOrYouthOnly',
-        },
-      },
     };
 
+    service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
     expect(service.checkMandatorySections()).toBeFalse();
 
     service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';

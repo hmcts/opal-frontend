@@ -155,9 +155,20 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    */
   private handleAddAnotherOffenceNestedFlow(): void {
     ++this.offenceIndex;
+    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
     this.finesMacOffenceDetailsService.emptyOffences = false;
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
     this.showOffenceDetailsForm = true;
     this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * Adds an offence code message to the offence details service.
+   *
+   * @param code - The offence code to be added.
+   */
+  private addOffenceCodeMessage(code: string): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = `Offence ${code} added`;
   }
 
   /**
@@ -180,6 +191,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     };
 
     this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
+    this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_code!);
 
     if (form.nestedFlow) {
       this.showOffenceDetailsForm = false;

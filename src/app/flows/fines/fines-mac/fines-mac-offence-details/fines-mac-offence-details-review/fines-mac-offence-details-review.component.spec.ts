@@ -53,6 +53,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
       'addedOffenceCode',
       'emptyOffences',
       'removeIndexFromImpositionKeys',
+      'offenceCodeMessage',
     ]);
     mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([
       ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
