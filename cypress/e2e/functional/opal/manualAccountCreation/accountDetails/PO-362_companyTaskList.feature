@@ -120,24 +120,26 @@ Feature: PO-362 Company task list screen
     And I click the "Continue" button
 
     Then I see the "Offence and imposition details" section heading
-  # due to new design descoping this step, implemented on PO-530
-  #And I see the "Payment terms" link under the "Offence and imposition details" section
-  # Then "Payment terms" is clicked, nothing happens
+# due to new design descoping this step, implemented on PO-530
+#And I see the "Payment terms" link under the "Offence and imposition details" section
+# Then "Payment terms" is clicked, nothing happens
 
-  Scenario: AC6a.b company task list Review and Publish section
-    Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
-    Then I am on the dashboard
 
-    When I navigate to Manual Account Creation
+#DESCOPED by PO-549
+# Scenario: AC6a.b company task list Check and submit for review section
+#   Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
+#   Then I am on the dashboard
 
-    And I enter "West London" into the business unit search box
-    And I select the "Fine" radio button
-    And I select the "Company" radio button
-    And I click the "Continue" button
+#   When I navigate to Manual Account Creation
 
-    Then I see the "Review and publish" section heading
-    And I see the "Check that all required fields have been entered before you publish" text under the "Review and publish" section
-    And I see the "Review account" button under the "Review and publish" section
+#   And I enter "West London" into the business unit search box
+#   And I select the "Fine" radio button
+#   And I select the "Company" radio button
+#   And I click the "Continue" button
+
+#   Then I see the "Check and submit for review" section heading
+#   And I see the "Check that all required fields have been entered before you publish" text under the "Check and submit for review" section
+#   And I see the "Review account" button under the "Check and submit for review" section
 
 # Descoped
 # Scenario: AC6.c company task list Review account button
