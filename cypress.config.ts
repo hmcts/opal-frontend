@@ -80,6 +80,7 @@ export default defineConfig({
     setupNodeEvents,
     retries: {
       runMode: 2,
+      openMode: 0,
     },
   },
   experimentalModifyObstructiveThirdPartyCode: true,
