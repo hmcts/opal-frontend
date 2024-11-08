@@ -131,4 +131,12 @@ export const routing: Routes = [
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
   },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.reviewAccount,
+    loadComponent: () =>
+      import('../fines-mac-review-account/fines-mac-review-account.component').then(
+        (c) => c.FinesMacReviewAccountComponent,
+      ),
+    canActivate: [authGuard],
+  },
 ];

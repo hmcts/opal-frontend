@@ -57,21 +57,23 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
 
     When I see the "Offence and imposition details" section heading
     And I see the "Offence details" link under the "Offence and imposition details" section
-  # due to new design descoping this step, implemented on PO-530
-  # And I see the "Payment terms" link under the "Offence and imposition details" section
+# due to new design descoping this step, implemented on PO-530
+# And I see the "Payment terms" link under the "Offence and imposition details" section
 
-  #Screens not configured yet, commenting out follow up until they are ready
-  #And I click on the "Offence details" link
-  #Then I see "Offence details" on the page header
+#Screens not configured yet, commenting out follow up until they are ready
+#And I click on the "Offence details" link
+#Then I see "Offence details" on the page header
 
-  #When I click on the "Cancel" link
-  #And I click on the "Payment terms" link
-  #Then I see "Payment terms" on the page header
+#When I click on the "Cancel" link
+#And I click on the "Payment terms" link
+#Then I see "Payment terms" on the page header
 
-  Scenario: AC7 - Review and publish, cancel
 
-    When I see the "Review and publish" section heading
-    And I see the "Check that all required fields have been entered before you publish" text under the "Review and publish" section
+##DESCOPED by PO-549
+# Scenario: AC7 - Check and submit for review, cancel
+
+#   When I see the "Check and submit for review" section heading
+#   And I see the "Check that all required fields have been entered before you publish" text under the "Check and submit for review" section
 #Review account button currently does nothing
 
 #Steps below need working on to pass

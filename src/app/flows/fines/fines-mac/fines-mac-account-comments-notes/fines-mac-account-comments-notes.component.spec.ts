@@ -70,7 +70,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     component.handleAccountCommentsNoteSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.accountCommentsNotes).toEqual(formSubmit);
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.review], {
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.reviewAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
   });
@@ -85,7 +85,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     component.handleAccountCommentsNoteSubmit(form);
 
     expect(mockFinesService.finesMacState.accountCommentsNotes).toEqual(form);
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.review], {
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.reviewAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
   });
