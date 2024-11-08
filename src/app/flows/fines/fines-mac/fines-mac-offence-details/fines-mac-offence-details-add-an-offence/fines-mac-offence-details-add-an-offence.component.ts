@@ -146,6 +146,21 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   /**
+   * Handles the addition of another offence in the nested flow.
+   * Increments the offence index, sets the emptyOffences flag to false,
+   * shows the offence details form, and triggers change detection.
+   *
+   * @private
+   * @returns {void}
+   */
+  private handleAddAnotherOffenceNestedFlow(): void {
+    ++this.offenceIndex;
+    this.finesMacOffenceDetailsService.emptyOffences = false;
+    this.showOffenceDetailsForm = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  /**
    * Handles the submission of the offence details form.
    *
    * @param form - The offence details form data.
@@ -169,10 +184,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     if (form.nestedFlow) {
       this.showOffenceDetailsForm = false;
       setTimeout(() => {
-        ++this.offenceIndex;
-        this.finesMacOffenceDetailsService.emptyOffences = false;
-        this.showOffenceDetailsForm = true;
-        this.changeDetectorRef.detectChanges();
+        this.handleAddAnotherOffenceNestedFlow();
       }, 0);
     } else {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
