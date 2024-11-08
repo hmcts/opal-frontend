@@ -1,13 +1,15 @@
 @if (groupResultCodeAndMajorCreditorData$ | async; as data) {
-  <div class="govuk-grid-column-full">
-    <app-fines-mac-offence-details-add-an-offence-form
-      [defendantType]="defendantType"
-      [offenceIndex]="offenceIndex"
-      [resultCodeItems]="data.resultCodeData"
-      [majorCreditorItems]="data.majorCreditorData"
-      (formSubmit)="handleOffenceDetailsSubmit($event)"
-      (unsavedChanges)="handleUnsavedChanges($event)"
-    >
-    </app-fines-mac-offence-details-add-an-offence-form>
-  </div>
+  @if (showOffenceDetailsForm) {
+    <div class="govuk-grid-column-full">
+      <app-fines-mac-offence-details-add-an-offence-form
+        [defendantType]="defendantType"
+        [offenceIndex]="offenceIndex"
+        [resultCodeItems]="data.resultCodeData"
+        [majorCreditorItems]="data.majorCreditorData"
+        (formSubmit)="handleOffenceDetailsSubmit($event)"
+        (unsavedChanges)="handleUnsavedChanges($event)"
+      >
+      </app-fines-mac-offence-details-add-an-offence-form>
+    </div>
+  }
 }

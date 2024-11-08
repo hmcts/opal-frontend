@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
@@ -27,6 +27,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   extends AbstractFormArrayParentBaseComponent
   implements OnInit, OnDestroy
 {
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
@@ -54,6 +55,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   public offenceIndex!: number;
+  public showOffenceDetailsForm: boolean = true;
 
   /**
    * Creates an array of autocomplete items based on the provided response data.
@@ -165,7 +167,13 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
 
     if (form.nestedFlow) {
-      this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
+      this.showOffenceDetailsForm = false;
+      setTimeout(() => {
+        ++this.offenceIndex;
+        this.finesMacOffenceDetailsService.emptyOffences = false;
+        this.showOffenceDetailsForm = true;
+        this.changeDetectorRef.detectChanges();
+      }, 0);
     } else {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
     }
