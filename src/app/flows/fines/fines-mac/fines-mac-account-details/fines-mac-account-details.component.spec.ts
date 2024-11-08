@@ -16,8 +16,9 @@ describe('FinesMacAccountDetailsComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
     mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.checkMandatorySections.and.returnValue(false);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
