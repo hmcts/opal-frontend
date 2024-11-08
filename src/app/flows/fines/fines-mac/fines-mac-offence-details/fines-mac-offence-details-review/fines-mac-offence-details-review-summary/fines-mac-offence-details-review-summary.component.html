@@ -44,11 +44,14 @@
           [impositionRefData]="impositionRefData"
           [majorCreditorRefData]="majorCreditorRefData"
           [showActions]="true"
+          [showDetails]="offencesHidden[offence.formData.fm_offence_details_id]"
           (actionClicked)="offenceAction($event)"
         ></app-fines-mac-offence-details-review-offence>
       }
     </div>
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
+    <div class="govuk-grid-column-full">
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
+    </div>
     <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
     <div class="govuk-grid-column-full">
       <div class="border-bottom">

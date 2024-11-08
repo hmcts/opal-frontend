@@ -2,13 +2,16 @@
   [offenceId]="offence.formData.fm_offence_details_id"
   [offenceCode]="offence.formData.fm_offence_details_offence_code!"
   [showActions]="showActions"
+  [showDetails]="showDetails"
   (actionClicked)="emitAction($event)"
 ></app-fines-mac-offence-details-review-offence-heading>
 
-<app-fines-mac-offence-details-review-offence-imposition
-  [impositionRefData]="impositionRefData"
-  [majorCreditorRefData]="majorCreditorRefData"
-  [impositions]="offence.formData.fm_offence_details_impositions"
-  [offenceIndex]="offence.formData.fm_offence_details_id"
->
-</app-fines-mac-offence-details-review-offence-imposition>
+@if (showDetails) {
+  <app-fines-mac-offence-details-review-offence-imposition
+    [impositionRefData]="impositionRefData"
+    [majorCreditorRefData]="majorCreditorRefData"
+    [impositions]="offence.formData.fm_offence_details_impositions"
+    [offenceIndex]="offence.formData.fm_offence_details_id"
+  >
+  </app-fines-mac-offence-details-review-offence-imposition>
+}
