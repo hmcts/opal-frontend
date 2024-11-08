@@ -230,4 +230,29 @@ describe('AbstractFormArrayBaseComponent', () => {
     const result = component['getControlValueOrDefault'](null, 'default value');
     expect(result).toBe('default value');
   });
+
+  it('should add index to form array data', () => {
+    const data = [
+      { field1: 'value1', field2: 'value2' },
+      { field1: 'value3', field2: 'value4' },
+    ];
+
+    const result = component.addIndexToFormArrayData(data);
+
+    expect(result).toEqual([
+      { field1_0: 'value1', field2_0: 'value2' },
+      { field1_1: 'value3', field2_1: 'value4' },
+    ]);
+  });
+
+  it('should handle undefined values in form array data', () => {
+    const data = [
+      { field1: 'value1', field2: undefined },
+      { field1: undefined, field2: 'value4' },
+    ];
+
+    const result = component.addIndexToFormArrayData(data);
+
+    expect(result).toEqual([{ field1_0: 'value1' }, { field2_1: 'value4' }]);
+  });
 });

@@ -40,7 +40,9 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
 
@@ -89,7 +91,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should get imposition to be removed', () => {
-    const { formArray, formArrayControls } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
+    const { formArray, formArrayControls } = { ...FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK };
     mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
 
     fixture.detectChanges();
@@ -118,12 +120,14 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeMinorCreditorAndUpdateIds');
     spyOn(component, 'handleRoute');
-    const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
+    const { rowIndex, formArray } = { ...FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK };
     fixture.detectChanges();
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
     component.confirmRemoval(rowIndex, formArray);
 
@@ -134,7 +138,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
     expect(component['removeMinorCreditorAndUpdateIds']).toHaveBeenCalledWith(
-      [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
+      [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
       0,
     );
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
@@ -146,10 +150,12 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'dropMinorCreditorImpositionPosition');
     spyOn(component, 'handleRoute');
-    const { rowIndex, formArray } = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK;
+    const { rowIndex, formArray } = { ...FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK };
     fixture.detectChanges();
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       {
         ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,

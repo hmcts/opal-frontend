@@ -147,9 +147,15 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     } else {
       const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.offenceIndex];
       formData = offenceDetails
-        ? offenceDetails.formData
+        ? {
+            ...offenceDetails.formData,
+            fm_offence_details_impositions: this.addIndexToFormArrayData(
+              offenceDetails.formData.fm_offence_details_impositions,
+            ),
+          }
         : { ...FINES_MAC_OFFENCE_DETAILS_STATE, fm_offence_details_id: this.offenceIndex };
     }
+
     const impositionsLength = formData[impositionsKey].length;
 
     this.setupAddAnOffenceForm();

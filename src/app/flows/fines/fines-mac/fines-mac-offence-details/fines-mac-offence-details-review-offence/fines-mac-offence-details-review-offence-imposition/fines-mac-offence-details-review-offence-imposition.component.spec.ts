@@ -32,9 +32,9 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
 
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
@@ -56,7 +56,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
     component.offenceIndex = 0;
 
     fixture.detectChanges();
@@ -65,11 +65,11 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   beforeEach(() => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
   });
 
@@ -104,7 +104,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     ];
 
-    component.impositions = [FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]];
+    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
     component['getImpositionData']();
 
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
@@ -112,7 +112,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
   it('should return minor creditor - Any resultCodeCreditor', () => {
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
     const {
       fm_offence_details_minor_creditor_title: title,
@@ -200,10 +200,15 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should sort impositions by allocation order and result title', () => {
-    component.impositions = FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK;
+    component.impositions = [...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK];
+    const expected = [
+      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[2] },
+      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[0] },
+      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[1] },
+    ];
 
     component['sortImpositionsByAllocationOrder']();
 
-    expect(component.impositions).toEqual(FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK);
+    expect(component.impositions).toEqual(expected);
   });
 });

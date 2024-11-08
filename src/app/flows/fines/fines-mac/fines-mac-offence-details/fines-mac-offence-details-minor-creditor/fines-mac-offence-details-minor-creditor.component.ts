@@ -29,28 +29,32 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
    */
   public handleMinorCreditorFormSubmit(form: IFinesMacOffenceDetailsMinorCreditorForm): void {
     // Update the imposition position in the form data
-    form.formData.fm_offence_details_imposition_position =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition!.rowIndex!;
+    const { removeImposition, removeMinorCreditor } =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+    form.formData.fm_offence_details_imposition_position = removeImposition
+      ? removeImposition.rowIndex
+      : removeMinorCreditor;
 
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
 
-    // If editing update the childFormData otherwise push new data to it
-    const changeMinorCreditor = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor;
-    if (changeMinorCreditor === null) {
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.push(
-        form,
-      );
-    } else {
-      const childFormData =
-        this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!;
+    // If childFormData exists and has at least one item in
+    const { childFormData } =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+
+    if (childFormData && childFormData.length > 0) {
       const minorCreditor = childFormData.find(
-        (childFormData) => childFormData.formData.fm_offence_details_imposition_position === changeMinorCreditor,
+        (childFormData) => childFormData.formData.fm_offence_details_imposition_position === removeMinorCreditor,
       );
-      minorCreditor!.formData = form.formData;
+      if (minorCreditor) {
+        minorCreditor.formData = form.formData;
+      } else {
+        childFormData.push(form);
+      }
+    } else {
+      childFormData!.push(form);
     }
 
-    //this.finesService.finesMacState.minorCreditors.push(form);
     this.finesMacOffenceDetailsService.minorCreditorAdded = true;
 
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
