@@ -15,6 +15,7 @@ import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-off
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -30,6 +31,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  private readonly dateService = inject(DateService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
@@ -139,6 +141,23 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     }
   }
 
+  private getCollectionOrderDate(): Date | null {
+    const { formData: paymentTerms } = this.finesService.finesMacState.paymentTerms;
+    if (paymentTerms?.fm_payment_terms_collection_order_date) {
+      return this.dateService.getDateFromFormat(paymentTerms.fm_payment_terms_collection_order_date, 'dd/MM/yyyy');
+    }
+    return null;
+  }
+
+  private checkPaymentTermsCollectionOrder(): void {
+    const collectionOrderDate = this.getCollectionOrderDate();
+    const earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
+
+    if (collectionOrderDate && earliestDateOfSentence && collectionOrderDate < earliestDateOfSentence) {
+      this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.INCOMPLETE;
+    }
+  }
+
   /**
    * Handles the submission of the offence details form.
    *
@@ -157,6 +176,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     };
 
     this.updateOffenceDetailsIndex(form);
+    this.checkPaymentTermsCollectionOrder();
 
     this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
 

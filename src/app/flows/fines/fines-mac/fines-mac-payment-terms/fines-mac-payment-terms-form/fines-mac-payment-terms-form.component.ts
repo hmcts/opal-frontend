@@ -48,6 +48,7 @@ import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION }
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
+import { dateBeforeValidator } from '@validators/date-before/date-before.validator';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -84,6 +85,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
   private readonly userStateRoles: ISessionUserStateRole[] =
     this.globalStateService.userState()?.business_unit_user || [];
+
+  private readonly earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
+  private readonly collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 
   public readonly permissionsMap = FinesMacPaymentTermsPermissions;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
@@ -170,6 +174,9 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     this.rePopulateForm(formData);
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.today = this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
+    if (formData.fm_payment_terms_collection_order_date) {
+      this.handleErrorMessages();
+    }
   }
 
   /**
@@ -297,6 +304,18 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
       this.removeControls(controls.fieldsToRemove);
       this.addControls(controls.fieldsToAdd);
+
+      const collectionOrderDateControl = this.form.get('fm_payment_terms_collection_order_date');
+      if (selectedOption === true && this.earliestDateOfSentence) {
+        collectionOrderDateControl?.addValidators(this.collectionOrderDateValidator);
+        if (collectionOrderDateControl?.value === null) {
+          collectionOrderDateControl?.setValue(
+            this.dateService.toDateStringFormat(this.earliestDateOfSentence, 'dd/MM/yyyy'),
+          );
+        }
+      } else {
+        collectionOrderDateControl?.removeValidators(this.collectionOrderDateValidator);
+      }
     });
   }
 
