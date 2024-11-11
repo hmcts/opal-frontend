@@ -117,6 +117,20 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     });
   });
 
+  it('should toggle the offencesHidden value when the action name is not "Change" or "Remove"', () => {
+    const action = { actionName: 'hide', offenceId: 1 };
+
+    component.offenceAction(action);
+
+    expect(component.offencesHidden[action.offenceId]).toBe(false);
+
+    action.actionName = 'show';
+
+    component.offenceAction(action);
+
+    expect(component.offencesHidden[action.offenceId]).toBe(true);
+  });
+
   it('should set the offenceIndex and navigate to addOffence route when addAnotherOffence is called', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const maxOffenceId = component['getMaxOffenceId']();

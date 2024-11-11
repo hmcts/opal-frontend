@@ -20,6 +20,7 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: true }) public offenceRefData!: IOpalFinesOffencesRefData;
   @Input({ required: false }) public showActions!: boolean;
+  @Input({ required: false }) public showDetails: boolean = true;
   @Output() public actionClicked = new EventEmitter<string>();
 
   public offenceTitle!: string;

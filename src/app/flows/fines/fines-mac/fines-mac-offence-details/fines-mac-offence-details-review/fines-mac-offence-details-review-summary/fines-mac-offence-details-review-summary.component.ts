@@ -16,6 +16,7 @@ import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-ma
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
+import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces/fines-mac-offence-details-review-summary-details-hidden.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -48,6 +49,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
   public newlyAddedOffenceCode!: string;
+  public offencesHidden!: IFinesMacOffenceDetailsReviewSummaryDetailsHidden;
 
   /**
    * Retrieves the newly added offence code and sets it to the `newlyAddedOffenceCode` property.
@@ -61,6 +63,24 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
     } else {
       this.newlyAddedOffenceCode = '';
     }
+  }
+
+  /**
+   * Hides the offence details by setting the corresponding offence ID to false in the accumulator object.
+   *
+   * @private
+   * @returns {void}
+   */
+  private offenceDetailsHidden(): void {
+    this.offencesHidden = this.offencesImpositions.reduce((acc, offence) => {
+      const offenceId = offence.formData.fm_offence_details_id;
+
+      if (offenceId !== null) {
+        acc[offenceId] = true;
+      }
+
+      return acc;
+    }, {} as IFinesMacOffenceDetailsReviewSummaryDetailsHidden);
   }
 
   /**
@@ -95,6 +115,8 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     } else if (action.actionName === 'remove') {
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence);
+    } else {
+      this.offencesHidden[action.offenceId] = !this.offencesHidden[action.offenceId];
     }
   }
 
@@ -141,5 +163,6 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
       this.addAnotherOffence();
     }
     this.getNewlyAddedOffenceCode();
+    this.offenceDetailsHidden();
   }
 }

@@ -46,7 +46,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
     mockFinesService.finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
-      FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0],
+      { ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] },
     ];
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
@@ -54,9 +54,9 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
       'emptyOffences',
       'removeIndexFromImpositionKeys',
     ]);
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue(
-      FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
-    );
+    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([
+      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+    ]);
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat']);
 
     await TestBed.configureTestingModule({
@@ -104,7 +104,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should sort offences by date in ascending order', () => {
-    component.offencesImpositions = FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK;
+    component.offencesImpositions = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK];
 
     component['sortOffencesByDate']();
 

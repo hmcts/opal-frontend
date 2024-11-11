@@ -64,7 +64,12 @@ Then(
       });
   },
 );
-
+Then('I do not see the offence details for offence {string}', (offenceCode: string) => {
+  cy.get('app-fines-mac-offence-details-review-offence')
+    .contains(offenceCode)
+    .find('app-fines-mac-offence-details-review-offence-imposition')
+    .should('not.exist');
+});
 Then('the summary list should contain the following data:', (dataTable: any) => {
   const expectedData: string[][] = dataTable.raw();
 

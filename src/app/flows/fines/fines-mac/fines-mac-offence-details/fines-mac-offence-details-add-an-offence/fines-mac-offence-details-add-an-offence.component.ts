@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
@@ -15,6 +14,7 @@ import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-off
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { AbstractFormArrayParentBaseComponent } from '@components/abstract/abstract-form-array-parent-base/abstract-form-array-parent-base.component';
 import { DateService } from '@services/date-service/date.service';
 
 @Component({
@@ -25,7 +25,7 @@ import { DateService } from '@services/date-service/date.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsAddAnOffenceComponent
-  extends AbstractFormParentBaseComponent
+  extends AbstractFormArrayParentBaseComponent
   implements OnInit, OnDestroy
 {
   private readonly opalFinesService = inject(OpalFines);
@@ -110,6 +110,10 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
       imposition.fm_offence_details_imposition_id = index;
     });
 
+    form.formData.fm_offence_details_impositions = this.removeIndexFromFormArrayData(
+      form.formData.fm_offence_details_impositions,
+    );
+
     const { offenceDetails } = this.finesService.finesMacState;
     const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
 
@@ -167,6 +171,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
     form.childFormData = [];
+
+    this.updateOffenceDetailsIndex(form);
 
     // Update the state with the form data
     this.finesService.finesMacState = {
