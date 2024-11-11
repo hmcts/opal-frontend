@@ -149,13 +149,11 @@ export class FinesMacPayloadService {
     const accountNotes = buildAccountAccountNotesPayload(accountCommentsNotesState);
     const offences = buildAccountOffencesPayload(offenceDetailsState, courtDetailsState);
 
-    console.log('OFF', offences);
-
     // Return our payload object
     return {
       ...initialPayload,
       defendant: defendant,
-      offences: null,
+      offences: offences,
       fp_ticket_detail: null,
       payment_terms: paymentTerms,
       account_notes: accountNotes,
