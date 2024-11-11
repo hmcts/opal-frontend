@@ -1,0 +1,24 @@
+<table class="govuk-table" data-module="moj-sortable-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      @for (column of columns; track column.key) {
+        <th scope="col" class="govuk-table__header" [attr.aria-sort]="sortKey === column.key ? sortDirection : 'none'">
+          <button type="button" (click)="onSortChange(column.key)" (keydown.enter)="onSortChange(column.key)">
+            {{ column.label }}
+          </button>
+        </th>
+      }
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    @for (row of data; track row) {
+      <tr class="govuk-table__row">
+        @for (column of columns; track column.key) {
+          <td class="govuk-table__cell">
+            {{ row[column.key] }}
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
