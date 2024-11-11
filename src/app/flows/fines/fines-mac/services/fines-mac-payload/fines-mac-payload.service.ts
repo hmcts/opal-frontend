@@ -149,7 +149,7 @@ export class FinesMacPayloadService {
     const accountNotes = buildAccountAccountNotesPayload(accountCommentsNotesState);
     const offences = buildAccountOffencesPayload(offenceDetailsState, courtDetailsState);
 
-    console.log(offences);
+    console.log('OFF', offences);
 
     // Return our payload object
     return {
@@ -202,7 +202,6 @@ export class FinesMacPayloadService {
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
-    console.log('fm', finesMacState);
     return this.buildAddReplaceAccountPayload(finesMacState, sessionUserState, true);
   }
 
