@@ -93,6 +93,13 @@ export class DateService {
     return value.toFormat(format);
   }
 
+  /**
+   * Converts a given Date object to a formatted string based on the specified format.
+   *
+   * @param value - The Date object to be formatted.
+   * @param format - The string format to apply to the Date object.
+   * @returns The formatted date string.
+   */
   public toDateStringFormat(value: Date, format: string): string {
     return DateTime.fromJSDate(value).toFormat(format);
   }

@@ -145,6 +145,11 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     }
   }
 
+  /**
+   * Retrieves the collection order date from the payment terms.
+   *
+   * @returns {Date | null} The collection order date if available, otherwise null.
+   */
   private getCollectionOrderDate(): Date | null {
     const { formData: paymentTerms } = this.finesService.finesMacState.paymentTerms;
     if (paymentTerms?.fm_payment_terms_collection_order_date) {
@@ -153,6 +158,14 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     return null;
   }
 
+  /**
+   * Checks the payment terms collection order by comparing the collection order date
+   * with the earliest date of sentence. If the collection order date is earlier than
+   * the earliest date of sentence, it sets the payment terms status to INCOMPLETE.
+   *
+   * @private
+   * @returns {void}
+   */
   private checkPaymentTermsCollectionOrder(): void {
     const collectionOrderDate = this.getCollectionOrderDate();
     const earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
