@@ -21,6 +21,7 @@ import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-a
 import { DateService } from '@services/date-service/date.service';
 import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
+import { buildAccountOffencesPayload } from './utils/fines-mac-payload-account-offences.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -131,6 +132,8 @@ export class FinesMacPayloadService {
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
 
+    const offenceDetailsState = finesMacState.offenceDetails;
+
     // Build the parts of our payload...
     const initialPayload = this.buildAccountInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
     const defendant = buildAccountDefendantPayload(
@@ -144,6 +147,9 @@ export class FinesMacPayloadService {
     );
     const paymentTerms = buildAccountPaymentTermsPayload(paymentTermsState);
     const accountNotes = buildAccountAccountNotesPayload(accountCommentsNotesState);
+    const offences = buildAccountOffencesPayload(offenceDetailsState, courtDetailsState);
+
+    console.log(offences);
 
     // Return our payload object
     return {
@@ -196,6 +202,7 @@ export class FinesMacPayloadService {
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
+    console.log('fm', finesMacState);
     return this.buildAddReplaceAccountPayload(finesMacState, sessionUserState, true);
   }
 
