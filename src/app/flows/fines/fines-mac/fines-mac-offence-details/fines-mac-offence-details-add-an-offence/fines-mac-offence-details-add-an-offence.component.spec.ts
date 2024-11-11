@@ -114,12 +114,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     expect(mockFinesService.finesMacState.offenceDetails).toContain(formSubmit);
     expect(routerSpy).not.toHaveBeenCalled();
-    expect(component.showOffenceDetailsForm).toBeFalsy();
-    setTimeout(() => {
-      expect(component.showOffenceDetailsForm).toBeTruthy();
-      expect(component.offenceIndex).toBe(1);
-      expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
-    }, 0);
+    expect(component.showOffenceDetailsForm).toBeTruthy();
+    expect(component.offenceIndex).toBe(1);
+    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
   });
 
   it('should test handleUnsavedChanges', () => {

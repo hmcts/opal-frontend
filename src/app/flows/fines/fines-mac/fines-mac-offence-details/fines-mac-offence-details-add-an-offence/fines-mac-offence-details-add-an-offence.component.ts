@@ -154,6 +154,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @returns {void}
    */
   private handleAddAnotherOffenceNestedFlow(): void {
+    this.showOffenceDetailsForm = false;
+    this.changeDetectorRef.detectChanges();
     ++this.offenceIndex;
     this.finesMacOffenceDetailsService.minorCreditorAdded = false;
     this.finesMacOffenceDetailsService.emptyOffences = false;
@@ -194,10 +196,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_code!);
 
     if (form.nestedFlow) {
-      this.showOffenceDetailsForm = false;
-      setTimeout(() => {
-        this.handleAddAnotherOffenceNestedFlow();
-      }, 0);
+      this.handleAddAnotherOffenceNestedFlow();
     } else {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
     }
