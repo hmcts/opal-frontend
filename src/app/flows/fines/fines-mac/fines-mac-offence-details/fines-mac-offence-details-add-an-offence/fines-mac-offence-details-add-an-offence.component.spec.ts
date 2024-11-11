@@ -30,7 +30,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let formSubmit: IFinesMacOffenceDetailsForm;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
