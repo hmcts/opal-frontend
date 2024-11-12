@@ -169,8 +169,12 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   private checkPaymentTermsCollectionOrder(): void {
     const collectionOrderDate = this.getCollectionOrderDate();
     const earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
+    const hasCollectionOrderEarliestDate = collectionOrderDate && earliestDateOfSentence;
+    const isCollectionOrderLessThanEarliestDate = hasCollectionOrderEarliestDate
+      ? collectionOrderDate < earliestDateOfSentence
+      : false;
 
-    if (collectionOrderDate && earliestDateOfSentence && collectionOrderDate < earliestDateOfSentence) {
+    if (hasCollectionOrderEarliestDate && isCollectionOrderLessThanEarliestDate) {
       this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.INCOMPLETE;
     }
   }
