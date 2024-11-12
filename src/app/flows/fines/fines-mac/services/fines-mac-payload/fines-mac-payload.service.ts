@@ -103,11 +103,11 @@ export class FinesMacPayloadService {
   }
 
   private buildTimelineDataPayload(
-    timelineData: IFinesMacAccountTimelineData[] = [],
     username: string,
     status: string,
     statusDate: string,
     reasonText: string | null,
+    timelineData: IFinesMacAccountTimelineData[] = [],
   ): IFinesMacAccountTimelineData[] {
     timelineData.push({
       username,
@@ -170,11 +170,11 @@ export class FinesMacPayloadService {
       : FineMacPayloadAccountAccountStatuses.resubmitted;
 
     const timeLineData = this.buildTimelineDataPayload(
-      storedTimeLineData,
       sessionUserState['name'],
       accountStatus,
       this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
       null,
+      storedTimeLineData,
     );
 
     // Build the add account payload
