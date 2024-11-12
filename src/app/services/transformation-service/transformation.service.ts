@@ -16,23 +16,22 @@ export class TransformationService {
    * @returns The transformed value, or the original value if no transformation is applied.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private applyTransformation(value: any, transformItem: ITransformItem): any | null {
+  private applyTransformation(value: any, transformItem: ITransformItem): any {
     if (!value) {
       return value;
     }
 
-    switch (transformItem.transformType) {
-      case 'date':
-        if (transformItem.dateInputFormat !== null && transformItem.dateOutputFormat !== null) {
-          const parsedDate = this.dateService.getFromFormat(value, transformItem.dateInputFormat);
-          if (this.dateService.isValidDate(parsedDate)) {
-            return this.dateService.toFormat(parsedDate, transformItem.dateOutputFormat);
-          }
+    if (transformItem.transformType === 'date') {
+      if (transformItem.dateInputFormat !== null && transformItem.dateOutputFormat !== null) {
+        const parsedDate = this.dateService.getFromFormat(value, transformItem.dateInputFormat);
+        if (this.dateService.isValidDate(parsedDate)) {
+          return this.dateService.toFormat(parsedDate, transformItem.dateOutputFormat);
         }
-        return value;
-      default:
-        return value;
+      }
+      return value;
     }
+
+    return value;
   }
 
   /**
