@@ -17,6 +17,7 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../fines-mac
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
+import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   let component: FinesMacOffenceDetailsRemoveImpositionComponent;
@@ -236,5 +237,35 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     expect(offenceDetailsArray[1].formData.fm_offence_details_imposition_position).toBe(0);
     expect(offenceDetailsArray[2].formData.fm_offence_details_imposition_position).toBe(1);
+  });
+
+  it('should return CPS default value', () => {
+    expect(component['getDefaultCreditor']('CPS')).toEqual(
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.crownProsecutionServiceDefault,
+    );
+  });
+
+  it('should return default value', () => {
+    expect(component['getDefaultCreditor']('TEST')).toEqual(
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault,
+    );
+  });
+
+  it('should return company name of minor creditor', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_minor_creditor_company_name: 'Test Company',
+          fm_offence_details_imposition_position: 1,
+          fm_offence_details_minor_creditor_creditor_type: 'company',
+        },
+      },
+    ];
+
+    component['setMinorCreditorDetails'](1);
+
+    expect(component.minorCreditor).toEqual('Test Company');
   });
 });
