@@ -1,6 +1,4 @@
-export interface ExampleData {
-  [key: string]: unknown;
-  name: string;
-  age: number;
-  occupation: string;
+export interface Column{
+    key: string;
+    label: string;
 }

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Column } from './interfaces/moj-sortable-table-interface';
 @Component({
   selector: 'app-moj-sortable-table',
   standalone: true,
@@ -6,6 +7,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojSortableTableComponent {
-  @Input() columns!: Array<{ key: string; label: string }>; // Define the columns with keys that match T properties
+  @Input() columns!: Column[]; // Define the columns with keys that match T properties
   @Input() data!: []; // The data array to be displayed
 }
