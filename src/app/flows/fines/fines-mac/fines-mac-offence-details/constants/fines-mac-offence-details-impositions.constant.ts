@@ -4,7 +4,7 @@ import { amountValidator } from '@validators/amount/amount.validator';
 
 export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlValidation[] = [
   {
-    controlName: 'fm_offence_details_result_code',
+    controlName: 'fm_offence_details_result_id',
     validators: [Validators.required],
   },
   {
@@ -28,7 +28,7 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS: IAbstractFormArrayControlVal
     validators: [],
   },
   {
-    controlName: 'fm_offence_details_major_creditor',
+    controlName: 'fm_offence_details_major_creditor_id',
     validators: [],
   },
 ];

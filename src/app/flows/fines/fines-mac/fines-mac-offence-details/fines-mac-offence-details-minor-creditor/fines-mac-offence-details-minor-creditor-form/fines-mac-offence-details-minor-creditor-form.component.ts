@@ -93,7 +93,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_pay_by_bacs: new FormControl(null),
       fm_offence_details_minor_creditor_bank_account_name: new FormControl(null),
       fm_offence_details_minor_creditor_bank_sort_code: new FormControl(null),
-      fm_offence_details_minor_creditor_account_number: new FormControl(null),
+      fm_offence_details_minor_creditor_bank_account_number: new FormControl(null),
       fm_offence_details_minor_creditor_bank_account_ref: new FormControl(null),
     });
   }
@@ -151,7 +151,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     const {
       fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
       fm_offence_details_minor_creditor_bank_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
+      fm_offence_details_minor_creditor_bank_account_number: accountNumber,
       fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
@@ -188,7 +188,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     const {
       fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
       fm_offence_details_minor_creditor_bank_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
+      fm_offence_details_minor_creditor_bank_account_number: accountNumber,
       fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
@@ -210,7 +210,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       fm_offence_details_minor_creditor_pay_by_bacs: hasPaymentDetails,
       fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
       fm_offence_details_minor_creditor_bank_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
+      fm_offence_details_minor_creditor_bank_account_number: accountNumber,
       fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 

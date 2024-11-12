@@ -41,7 +41,7 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     pay_by_bacs: payByBacs,
     bank_account_type: 1,
     bank_sort_code: childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null,
-    bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_account_number ?? null,
+    bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
     bank_account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
     bank_account_ref: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_ref ?? null,
   };
@@ -54,10 +54,10 @@ const buildAccountOffencesImpositionsPayload = (
   return impositions.map(
     ({
       fm_offence_details_imposition_id: impositionId,
-      fm_offence_details_result_code: resultId,
+      fm_offence_details_result_id: resultId,
       fm_offence_details_amount_imposed: amountImposed,
       fm_offence_details_amount_paid: amountPaid,
-      fm_offence_details_major_creditor: majorCreditorId,
+      fm_offence_details_major_creditor_id: majorCreditorId,
     }) => {
       const impositionMinorCreditor = impositionId !== null ? childFormData[impositionId] : null;
       const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor);
@@ -84,9 +84,9 @@ export const buildAccountOffencesPayload = (
       ? buildAccountOffencesImpositionsPayload(offence.formData.fm_offence_details_impositions, childFormData)
       : null;
     return {
-      date_of_sentence: offence.formData.fm_offence_details_date_of_offence ?? null,
-      imposing_court_id: courtDetailsState.fm_court_details_enforcement_court_id ?? null,
-      offence_id: offence.formData.fm_offence_details_offence_code ?? null,
+      date_of_sentence: offence.formData.fm_offence_details_date_of_sentence ?? null,
+      imposing_court_id: courtDetailsState.fm_court_details_imposing_court_id ?? null,
+      offence_id: offence.formData.fm_offence_details_offence_id ?? null,
       impositions: impositions,
     };
   });

@@ -21,7 +21,7 @@ export const FINES_MAC_COURT_DETAILS_FIELD_ERRORS: IFinesMacCourtDetailsFieldErr
       priority: 3,
     },
   },
-  fm_court_details_enforcement_court_id: {
+  fm_court_details_imposing_court_id: {
     required: {
       message: 'Enter an Enforcement court',
       priority: 1,

@@ -149,7 +149,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
       fm_offence_details_minor_creditor_pay_by_bacs: true,
       fm_offence_details_minor_creditor_bank_account_name: 'John Doe',
       fm_offence_details_minor_creditor_bank_sort_code: '123456',
-      fm_offence_details_minor_creditor_account_number: '98765432',
+      fm_offence_details_minor_creditor_bank_account_number: '98765432',
       fm_offence_details_minor_creditor_bank_account_ref: 'REF12345',
     };
 
@@ -173,7 +173,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
       fm_offence_details_minor_creditor_pay_by_bacs: false,
       fm_offence_details_minor_creditor_bank_account_name: null,
       fm_offence_details_minor_creditor_bank_sort_code: null,
-      fm_offence_details_minor_creditor_account_number: null,
+      fm_offence_details_minor_creditor_bank_account_number: null,
       fm_offence_details_minor_creditor_bank_account_ref: null,
     };
 

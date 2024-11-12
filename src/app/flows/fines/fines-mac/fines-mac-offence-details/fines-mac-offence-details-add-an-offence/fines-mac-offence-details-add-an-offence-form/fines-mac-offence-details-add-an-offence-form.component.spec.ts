@@ -101,7 +101,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const result_code = FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation;
     const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
+    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_id_${index}`];
     const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
 
     resultCodeControl.setValue(result_code);
@@ -116,7 +116,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const result_code = FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs;
     const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
+    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_id_${index}`];
     const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
 
     resultCodeControl.setValue(result_code);
@@ -146,7 +146,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const index = 0;
     const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_code_${index}`];
+    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_id_${index}`];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'creditorListener');
@@ -161,7 +161,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false', () => {
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
     component.selectedOffenceConfirmation = true;
 
@@ -172,7 +172,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
     const mockData = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK };
-    mockData.offenceDetailsDraft[0].formData.fm_offence_details_offence_code = 'TEST1234';
+    mockData.offenceDetailsDraft[0].formData.fm_offence_details_offence_id = 'TEST1234';
     component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = mockData;
 
     component['initialAddAnOffenceDetailsSetup']();
@@ -186,7 +186,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should update offenceCodeControl value with uppercased value', () => {
     const mockCjsCode = 'abc123';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     mockUtilsService.upperCaseAllLetters.and.returnValue(mockCjsCode);
 
     component['offenceCodeListener']();
@@ -198,7 +198,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', () => {
     const mockCjsCode = 'abc12345';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
 
     component['offenceCodeListener']();
@@ -209,7 +209,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjs_code length is between 7 and 8', fakeAsync(() => {
     const mockCjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'populateOffenceHint');
@@ -226,7 +226,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', fakeAsync(() => {
     const mockCjsCode = 'abc123450';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'populateOffenceHint');
@@ -243,7 +243,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjsCode length is between 7 and 8', () => {
     const cjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
 
     component['populateOffenceHint'](cjsCode);
 
@@ -256,7 +256,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     (mockOpalFinesService.getOffenceByCjsCode as jasmine.Spy).and.returnValue(of({ count: 0, refData: [] }));
 
     const cjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
 
     component['populateOffenceHint'](cjsCode);
 
@@ -347,13 +347,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should test majorCreditorValidation and add validator when add is true', () => {
     const index = 0;
     const formGroup = new FormGroup({
-      fm_offence_details_major_creditor: new FormGroup({
-        fm_offence_details_major_creditor_0: new FormControl(''),
+      fm_offence_details_major_creditor_id: new FormGroup({
+        fm_offence_details_major_creditor_id_0: new FormControl(''),
       }),
     });
     const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
       formGroup,
-      'fm_offence_details_major_creditor',
+      'fm_offence_details_major_creditor_id',
       0,
     );
 
@@ -371,13 +371,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should test majorCreditorValidation and remove validator when add is false', () => {
     const index = 0;
     const formGroup = new FormGroup({
-      fm_offence_details_major_creditor: new FormGroup({
-        fm_offence_details_major_creditor_0: new FormControl('', [Validators.required]),
+      fm_offence_details_major_creditor_id: new FormGroup({
+        fm_offence_details_major_creditor_id_0: new FormControl('', [Validators.required]),
       }),
     });
     const formArrayFormGroupControl = component.getFormArrayFormGroupControl(
       formGroup,
-      'fm_offence_details_major_creditor',
+      'fm_offence_details_major_creditor_id',
       0,
     );
 

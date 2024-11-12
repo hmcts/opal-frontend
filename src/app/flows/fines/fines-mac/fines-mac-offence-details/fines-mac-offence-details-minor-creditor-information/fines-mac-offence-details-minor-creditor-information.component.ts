@@ -145,7 +145,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
       fm_offence_details_minor_creditor_pay_by_bacs: hasPaymentDetails,
       fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
       fm_offence_details_minor_creditor_bank_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
+      fm_offence_details_minor_creditor_bank_account_number: accountNumber,
       fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.minorCreditor;
 

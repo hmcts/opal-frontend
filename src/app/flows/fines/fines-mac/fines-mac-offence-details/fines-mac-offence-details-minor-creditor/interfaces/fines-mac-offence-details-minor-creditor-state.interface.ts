@@ -12,6 +12,6 @@ export interface IFinesMacOffenceDetailsMinorCreditorState {
   fm_offence_details_minor_creditor_pay_by_bacs: boolean | null;
   fm_offence_details_minor_creditor_bank_account_name: string | null;
   fm_offence_details_minor_creditor_bank_sort_code: string | null;
-  fm_offence_details_minor_creditor_account_number: string | null;
+  fm_offence_details_minor_creditor_bank_account_number: string | null;
   fm_offence_details_minor_creditor_bank_account_ref: string | null;
 }

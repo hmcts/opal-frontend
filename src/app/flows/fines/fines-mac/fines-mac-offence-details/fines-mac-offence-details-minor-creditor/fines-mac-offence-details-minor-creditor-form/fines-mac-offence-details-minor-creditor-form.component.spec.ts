@@ -99,7 +99,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   it('should set validators for payment detail controls', () => {
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
     const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Call the method to set validators
@@ -177,7 +177,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   it('should reset and clear validators for payment detail controls', () => {
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
     const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Call the method to reset and clear validators
@@ -208,7 +208,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_pay_by_bacs'];
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
     const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods
@@ -248,7 +248,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_pay_by_bacs'];
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
     const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods

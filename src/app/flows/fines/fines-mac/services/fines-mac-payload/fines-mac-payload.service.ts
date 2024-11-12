@@ -50,7 +50,7 @@ export class FinesMacPayloadService {
       fm_court_details_originator_name: originator_name,
       fm_court_details_originator_id: originator_id,
       fm_court_details_prosecutor_case_reference: prosecutor_case_reference,
-      fm_court_details_enforcement_court_id: enforcement_court_id,
+      fm_court_details_imposing_court_id: enforcement_court_id,
     } = courtDetailsState;
 
     const {

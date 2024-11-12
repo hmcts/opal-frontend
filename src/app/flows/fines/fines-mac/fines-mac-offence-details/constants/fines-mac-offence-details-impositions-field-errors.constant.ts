@@ -4,7 +4,7 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
   const indexSuffix = `_${index}`;
 
   return {
-    [`fm_offence_details_result_code${indexSuffix}`]: {
+    [`fm_offence_details_result_id${indexSuffix}`]: {
       required: {
         message: 'Enter an imposition code',
         priority: 1,
@@ -40,7 +40,7 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         priority: 1,
       },
     },
-    [`fm_offence_details_major_creditor${indexSuffix}`]: {
+    [`fm_offence_details_major_creditor_id${indexSuffix}`]: {
       required: {
         message: 'Enter a major creditor name or code',
         priority: 1,

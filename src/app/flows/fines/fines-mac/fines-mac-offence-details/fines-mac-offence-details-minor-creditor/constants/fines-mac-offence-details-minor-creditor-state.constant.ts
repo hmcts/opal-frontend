@@ -14,6 +14,6 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE: IFinesMacOffenceDet
   fm_offence_details_minor_creditor_pay_by_bacs: null,
   fm_offence_details_minor_creditor_bank_account_name: null,
   fm_offence_details_minor_creditor_bank_sort_code: null,
-  fm_offence_details_minor_creditor_account_number: null,
+  fm_offence_details_minor_creditor_bank_account_number: null,
   fm_offence_details_minor_creditor_bank_account_ref: null,
 };

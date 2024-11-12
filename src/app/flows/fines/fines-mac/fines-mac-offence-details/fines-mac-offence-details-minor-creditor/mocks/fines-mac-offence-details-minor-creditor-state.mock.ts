@@ -14,6 +14,6 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK: IFinesMacOffen
   fm_offence_details_minor_creditor_pay_by_bacs: true,
   fm_offence_details_minor_creditor_bank_account_name: 'John Doe',
   fm_offence_details_minor_creditor_bank_sort_code: '123456',
-  fm_offence_details_minor_creditor_account_number: '12345678',
+  fm_offence_details_minor_creditor_bank_account_number: '12345678',
   fm_offence_details_minor_creditor_bank_account_ref: 'Testing',
 };

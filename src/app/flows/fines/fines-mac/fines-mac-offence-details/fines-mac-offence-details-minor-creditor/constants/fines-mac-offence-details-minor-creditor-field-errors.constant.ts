@@ -109,7 +109,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 3,
     },
   },
-  fm_offence_details_minor_creditor_account_number: {
+  fm_offence_details_minor_creditor_bank_account_number: {
     required: {
       message: 'Enter account number',
       priority: 1,

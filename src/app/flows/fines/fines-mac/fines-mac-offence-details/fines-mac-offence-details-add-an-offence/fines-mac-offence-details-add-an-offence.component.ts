@@ -162,7 +162,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
       stateChanges: true,
     };
 
-    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
+    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_id!;
 
     if (form.nestedFlow) {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
