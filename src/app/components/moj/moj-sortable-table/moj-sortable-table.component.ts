@@ -7,6 +7,6 @@ import { Column } from './interfaces/moj-sortable-table-interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojSortableTableComponent {
-  @Input() columns!: Column[]; 
+  @Input() columns!: Column[];
   @Input() data!: [];
 }
