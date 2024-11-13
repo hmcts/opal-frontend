@@ -1,13 +1,11 @@
 <table class="govuk-table {{ tableClasses }}">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <ng-content select="[header]"></ng-content>
+      <ng-content select="[head]"></ng-content>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
     <ng-content select="[body]"></ng-content>
-    <tr class="govuk-table__row govuk-light-grey-background-color">
-      <ng-content select="[results]"></ng-content>
-    </tr>
+    <ng-content select="[results]"></ng-content>
   </tbody>
 </table>
