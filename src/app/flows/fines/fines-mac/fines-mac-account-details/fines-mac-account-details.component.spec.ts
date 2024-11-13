@@ -17,7 +17,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
-    mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE };
     mockFinesService.checkMandatorySections.and.returnValue(false);
 
     await TestBed.configureTestingModule({
@@ -70,7 +70,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to be empty string', () => {
-    mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE;
+    mockFinesService.finesMacState.accountDetails.formData = {
+      ...FINES_MAC_ACCOUNT_DETAILS_STATE,
+      fm_create_account_defendant_type: '',
+    };
+    component.defendantType = '';
 
     component['setDefendantType']();
     component['setAccountType']();
@@ -80,7 +84,10 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to values', () => {
-    mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
+    mockFinesService.finesMacState.accountDetails.formData = {
+      ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+      fm_create_account_defendant_type: 'adultOrYouthOnly',
+    };
 
     component['setDefendantType']();
     component['setAccountType']();
@@ -92,7 +99,8 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
     const documentLanguage = 'CY';
     const hearingLanguage = 'EN';
-    component['finesService'].finesMacState.languagePreferences.formData = {
+    mockFinesService.finesMacState.languagePreferences.formData = {
+      ...mockFinesService.finesMacState.languagePreferences.formData,
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
@@ -110,7 +118,8 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
     const documentLanguage = 'german';
     const hearingLanguage = 'french';
-    component['finesService'].finesMacState.languagePreferences.formData = {
+    mockFinesService.finesMacState.languagePreferences.formData = {
+      ...mockFinesService.finesMacState.languagePreferences.formData,
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
