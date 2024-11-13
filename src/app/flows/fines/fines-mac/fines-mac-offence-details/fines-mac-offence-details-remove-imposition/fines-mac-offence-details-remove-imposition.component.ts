@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
@@ -29,7 +29,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 })
 export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
-  implements OnDestroy
+  implements OnInit, OnDestroy
 {
   private readonly finesService = inject(FinesService);
   private readonly opalFinesService = inject(OpalFines);
@@ -111,46 +111,32 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   }
 
   /**
-   * Retrieves the imposition to be removed based on the provided parameters.
+   * Sets the details of the major creditor based on the provided major creditor ID.
+   * If the ID is valid and a matching major creditor is found, it retrieves and sets
+   * the pretty name of the major creditor.
    *
-   * @param rowIndex - The index of the row in the form array.
-   * @param formArray - The form array containing the controls.
-   * @param formArrayControls - The array of form array controls.
+   * @param majorCreditorId - The ID of the major creditor to be set. Can be null.
    */
-  public getImpositionToBeRemoved(
-    rowIndex: number,
-    formArray: FormArray,
-    formArrayControls: IAbstractFormArrayControls[],
-  ): void {
-    const formArrayControl = formArrayControls[rowIndex];
-
-    const resultCode = this.getFormArrayControlValue(
-      formArray,
-      formArrayControl[`fm_offence_details_result_id`].controlName,
-      rowIndex,
-      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.nullDefault,
-    );
-
-    this.creditor = this.getFormArrayControlValue(
-      formArray,
-      formArrayControl[`fm_offence_details_creditor`].controlName,
-      rowIndex,
-      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault,
-    ) as string;
-
-    const majorCreditorId = this.getFormArrayControlValue(
-      formArray,
-      formArrayControl[`fm_offence_details_major_creditor_id`].controlName,
-      rowIndex,
-      null,
-    ) as number | null;
+  private setMajorCreditorDetails(majorCreditorId: number | null): void {
     if (majorCreditorId) {
       const majorCreditor = this.majorCreditors.refData.find((item) => item.major_creditor_id === majorCreditorId);
       if (majorCreditor) {
         this.majorCreditor = this.opalFinesService.getMajorCreditorPrettyName(majorCreditor);
       }
     }
+  }
 
+  /**
+   * Sets the details of a minor creditor based on the provided row index.
+   *
+   * This method searches through the offence details draft state for a minor creditor
+   * whose imposition position matches the given row index. If a matching minor creditor
+   * is found, it sets the `minorCreditor` property to the creditor's full name if the
+   * creditor type is 'individual', or to the company name if the creditor type is 'company'.
+   *
+   * @param rowIndex - The index of the row to find the minor creditor details for.
+   */
+  private setMinorCreditorDetails(rowIndex: number): void {
     const minorCreditors =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData;
     if (minorCreditors) {
@@ -164,21 +150,19 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
             : minorCreditor.formData.fm_offence_details_minor_creditor_company_name!;
       }
     }
+  }
 
-    const amountImposed = this.getFormArrayControlValue(
-      formArray,
-      formArrayControl[`fm_offence_details_amount_imposed`].controlName,
-      rowIndex,
-      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault,
-    ) as number;
-    const amountPaid = this.getFormArrayControlValue(
-      formArray,
-      formArrayControl[`fm_offence_details_amount_paid`].controlName,
-      rowIndex,
-      0,
-    ) as number;
-    const balance = amountImposed - amountPaid;
-
+  /**
+   * Sets the monetary strings for the imposed amount, paid amount, and balance.
+   * Converts the numerical values to formatted strings using `updateMonetaryString` method.
+   * If the values are not greater than zero, it sets them to a default string value.
+   *
+   * @param amountImposed - The amount imposed as a number.
+   * @param amountPaid - The amount paid as a number.
+   * @param balance - The balance amount as a number.
+   * @returns void
+   */
+  private setMonetaryStrings(amountImposed: number, amountPaid: number, balance: number): void {
     this.amountImposedString =
       amountImposed > 0
         ? this.updateMonetaryString(amountImposed)
@@ -191,6 +175,69 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       balance > 0
         ? this.updateMonetaryString(balance)
         : FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault;
+  }
+
+  /**
+   * Returns the default creditor based on the provided imposition creditor code.
+   *
+   * @param impositionCreditor - The code representing the imposition creditor.
+   * @returns The default creditor string corresponding to the provided imposition creditor code.
+   *          - 'CF' returns the central fund default.
+   *          - 'CPS' returns the crown prosecution service default.
+   *          - Any other value returns the string default.
+   */
+  private getDefaultCreditor(impositionCreditor: string): string {
+    switch (impositionCreditor) {
+      case 'CF':
+        return FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.centralFundDefault;
+      case 'CPS':
+        return FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.crownProsecutionServiceDefault;
+      default:
+        return FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
+    }
+  }
+
+  /**
+   * Retrieves the imposition to be removed based on the provided parameters.
+   *
+   * @param rowIndex - The index of the row in the form array.
+   * @param formArray - The form array containing the controls.
+   * @param formArrayControls - The array of form array controls.
+   */
+  public getImpositionToBeRemoved(
+    rowIndex: number,
+    formArray: FormArray,
+    formArrayControls: IAbstractFormArrayControls[],
+  ): void {
+    const formArrayControl = formArrayControls[rowIndex];
+
+    const getControlValue = (controlName: string, defaultValue: string | number | null) =>
+      this.getFormArrayControlValue(formArray, controlName, rowIndex, defaultValue);
+
+    const resultCode = getControlValue(
+      formArrayControl[`fm_offence_details_result_code`].controlName,
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.nullDefault,
+    );
+
+    this.creditor = getControlValue(
+      formArrayControl[`fm_offence_details_creditor`].controlName,
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault,
+    ) as string;
+
+    this.setMajorCreditorDetails(
+      getControlValue(formArrayControl[`fm_offence_details_major_creditor`].controlName, null) as number | null,
+    );
+
+    this.setMinorCreditorDetails(rowIndex);
+
+    const amountImposed = getControlValue(
+      formArrayControl[`fm_offence_details_amount_imposed`].controlName,
+      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault,
+    ) as number;
+    const amountPaid = getControlValue(formArrayControl[`fm_offence_details_amount_paid`].controlName, 0) as number;
+    const balance = amountImposed - amountPaid;
+
+    this.setMonetaryStrings(amountImposed, amountPaid, balance);
 
     if (!resultCode) {
       this.imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
@@ -200,12 +247,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     const result = this.resultCode.refData.find((item) => item.result_id === resultCode);
     if (result) {
       this.imposition = this.opalFinesService.getResultPrettyName(result);
-      this.defaultCreditor =
-        result.imposition_creditor === 'CF'
-          ? FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.centralFundDefault
-          : result.imposition_creditor === 'CPS'
-            ? FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.crownProsecutionServiceDefault
-            : FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
+      this.defaultCreditor = this.getDefaultCreditor(result.imposition_creditor);
     }
   }
 
@@ -249,5 +291,9 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
 
   public ngOnDestroy(): void {
     this.draftOffenceDetailsState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+  }
+
+  public ngOnInit(): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
   }
 }
