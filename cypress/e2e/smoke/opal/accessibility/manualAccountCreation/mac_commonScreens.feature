@@ -25,7 +25,7 @@ Feature: Manual account creation - Common screens - accessibility
     Then I see "Account details" on the page header
     Then I check accessibility
     Then I click the Sign out link
-  @only
+
   Scenario Outline: Manual account creation - Accessibility - Common screens
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
     And I navigate to Manual Account Creation
