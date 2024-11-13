@@ -9,7 +9,7 @@ Feature: PO-815 Introduce a 'Add another offence' button onto the 'Add an Offenc
     And I enter "West London" into the business unit search box
     And I select the "Fine" radio button
 
-  Scenario: AC1, AC3, AC5 & AC6 - Add offences, successful validation, check summary screen for A/Y only
+  Scenario: AC1, AC3, AC4, AC5 & AC6 - Add offences, successful validation, check summary screen for A/Y only
 
     When I select the "Adult or youth only" radio button
     And I click the "Continue" button
@@ -48,7 +48,19 @@ Feature: PO-815 Introduce a 'Add another offence' button onto the 'Add an Offenc
     And I enter "Vehicle Excise Back Duty (FVEBD)" into the "Result code" field for imposition 2
     And I enter "250" into the "Amount imposed" field for imposition 2
     And I enter "100" into the "Amount paid" field for imposition 2
+
+    And I click the "Add another offence" button
+    And I enter "TH68001B" into the "Offence code" field
+    And I enter a date 2 weeks into the past into the "Date of sentence" date field
+    And I enter "Fine (FO)" into the "Result code" field for imposition 1
+    And I enter "100" into the "Amount imposed" field for imposition 1
+    And I enter "25" into the "Amount paid" field for imposition 1
+
     And I click the "Review offence" button
+
+    Then I see the date of sentence 2 weeks ago above the date of sentence 1 weeks ago
+    And I see the offence "HY35014" above the offence "TH68001B"
+
     Then I see "Offences and impositions" on the page header
 
     And the table with offence code "HY35014" should contain the following data:
@@ -57,6 +69,11 @@ Feature: PO-815 Introduce a 'Add another offence' button onto the 'Add an Offenc
       | Vehicle Excise Back Duty | HM Courts & Tribunals Service (HMCTS) | £250.00        | £100.00     | £150.00           |
       | Totals                   |                                       | £350.00        | £125.00     | £225.00           |
 
+    And the table with offence code "TH68001B" should contain the following data:
+      | Imposition | Creditor                              | Amount imposed | Amount paid | Balance remaining |
+      | Fine       | HM Courts & Tribunals Service (HMCTS) | £100.00        | £25.00      | £75.00            |
+      | Totals     |                                       | £100.00        | £25.00      | £75.00            |
+
     And the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                              | Amount imposed | Amount paid | Balance remaining |
       | Compensation | British Transport Police (BTPO)       | £300.00        | £100.00     | £200.00           |
@@ -64,11 +81,10 @@ Feature: PO-815 Introduce a 'Add another offence' button onto the 'Add an Offenc
       | Totals       |                                       | £500.00        | £150.00     | £350.00           |
 
     And the summary list should contain the following data:
-      | Amount imposed    | £850.00 |
-      | Amount paid       | 275.00  |
-      | Balance remaining | £575.00 |
+      | Amount imposed    | £950.00 |
+      | Amount paid       | 300.00  |
+      | Balance remaining | £650.00 |
 
-  #Consider 3rd offence as well
 
   Scenario: AC2 - Error handling for A/Y only
 
