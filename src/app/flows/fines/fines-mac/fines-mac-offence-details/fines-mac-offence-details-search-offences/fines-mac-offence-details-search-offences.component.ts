@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',
@@ -13,10 +14,11 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
   templateUrl: './fines-mac-offence-details-search-offences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsSearchOffencesComponent {
+export class FinesMacOffenceDetailsSearchOffencesComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
+  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
@@ -41,5 +43,9 @@ export class FinesMacOffenceDetailsSearchOffencesComponent {
       event.preventDefault();
     }
     this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  }
+
+  public ngOnInit(): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
   }
 }

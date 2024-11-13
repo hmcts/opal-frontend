@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
@@ -28,6 +28,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   extends AbstractFormArrayParentBaseComponent
   implements OnInit, OnDestroy
 {
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
@@ -56,6 +57,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacOffenceDetailsRoutes = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   public offenceIndex!: number;
+  public showOffenceDetailsForm: boolean = true;
 
   /**
    * Creates an array of autocomplete items based on the provided response data.
@@ -146,6 +148,34 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   /**
+   * Handles the addition of another offence in the nested flow.
+   * Increments the offence index, sets the emptyOffences flag to false,
+   * shows the offence details form, and triggers change detection.
+   *
+   * @private
+   * @returns {void}
+   */
+  private handleAddAnotherOffenceNestedFlow(): void {
+    this.showOffenceDetailsForm = false;
+    this.changeDetectorRef.detectChanges();
+    ++this.offenceIndex;
+    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
+    this.finesMacOffenceDetailsService.emptyOffences = false;
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    this.showOffenceDetailsForm = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  /**
+   * Adds an offence code message to the offence details service.
+   *
+   * @param code - The offence code to be added.
+   */
+  private addOffenceCodeMessage(code: string): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = `Offence ${code} added`;
+  }
+
+  /**
    * Retrieves the collection order date from the payment terms.
    *
    * @returns {Date | null} The collection order date if available, otherwise null.
@@ -202,9 +232,10 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.checkPaymentTermsCollectionOrder();
 
     this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
+    this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_code!);
 
     if (form.nestedFlow) {
-      this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
+      this.handleAddAnotherOffenceNestedFlow();
     } else {
       this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
     }
