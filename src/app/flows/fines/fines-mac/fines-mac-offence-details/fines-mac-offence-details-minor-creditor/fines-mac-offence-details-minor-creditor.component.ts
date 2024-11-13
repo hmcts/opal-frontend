@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FinesMacOffenceDetailsMinorCreditorFormComponent } from './fines-mac-offence-details-minor-creditor-form/fines-mac-offence-details-minor-creditor-form.component';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
@@ -14,7 +14,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
   templateUrl: './fines-mac-offence-details-minor-creditor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormParentBaseComponent {
+export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormParentBaseComponent implements OnInit {
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly finesService = inject(FinesService);
 
@@ -68,5 +68,9 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.finesService.finesMacState.unsavedChanges = unsavedChanges;
     this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  public ngOnInit(): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
   }
 }

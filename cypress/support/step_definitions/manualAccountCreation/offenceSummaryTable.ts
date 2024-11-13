@@ -1,4 +1,5 @@
 import { Then, DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { formatDateString, calculateWeeksInPast } from '../../../support/utils/dateUtils';
 
 Then('row number {int} should have the following data:', (rowNumber: number, dataTable: any) => {
   const expectedValues = dataTable.raw();
@@ -92,3 +93,26 @@ Then('the summary list should contain the following data:', (dataTable: any) => 
 Then('I do not see the offence code {string} on the page', (offenceCode: string) => {
   cy.contains('app-fines-mac-offence-details-review-offence', offenceCode).should('not.exist');
 });
+
+Then('I see the offence {string} above the offence {string}', (offenceCode1: string, offenceCode2: string) => {
+  cy.get('app-fines-mac-offence-details-review-offence')
+    .contains(offenceCode2)
+    .parentsUntil('app-fines-mac-offence-details-review-offence')
+    .parent('app-fines-mac-offence-details-review-offence')
+    .prevAll('app-fines-mac-offence-details-review-offence')
+    .should('contain.text', offenceCode1);
+});
+Then(
+  'I see the date of sentence {int} weeks ago above the date of sentence {int} weeks ago',
+  (weeks1: number, weeks2: number) => {
+    const weeks1Formatted = formatDateString(calculateWeeksInPast(weeks1));
+    const weeks2Formatted = formatDateString(calculateWeeksInPast(weeks2));
+
+    cy.get('app-fines-mac-offence-details-review-summary-date-of-sentence')
+      .contains(weeks2Formatted)
+      .parentsUntil('app-fines-mac-offence-details-review-summary-date-of-sentence')
+      .parent()
+      .prevAll('app-fines-mac-offence-details-review-summary-date-of-sentence')
+      .should('contain.text', weeks1Formatted);
+  },
+);
