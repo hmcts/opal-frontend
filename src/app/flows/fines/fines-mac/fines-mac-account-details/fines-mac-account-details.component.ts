@@ -175,9 +175,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    console.log(
-      this.payloadService.buildAddAccountPayload(this.finesService.finesMacState, this.globalStateService.userState()),
-    );
     this.initialAccountDetailsSetup();
   }
 

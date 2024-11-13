@@ -78,7 +78,6 @@ export const buildAccountOffencesPayload = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
   courtDetailsState: IFinesMacCourtDetailsState,
 ): IFinesMacPayloadAccountOffences[] => {
-  console.log(offenceDetailsState);
   const offences = offenceDetailsState.map((offence) => {
     const childFormData: IFinesMacOffenceDetailsMinorCreditorForm[] = offence.childFormData?.length
       ? offence.childFormData

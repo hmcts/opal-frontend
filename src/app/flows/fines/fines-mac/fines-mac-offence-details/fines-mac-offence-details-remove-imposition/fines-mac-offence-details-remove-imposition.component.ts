@@ -215,7 +215,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       this.getFormArrayControlValue(formArray, controlName, rowIndex, defaultValue);
 
     const resultCode = getControlValue(
-      formArrayControl[`fm_offence_details_result_code`].controlName,
+      formArrayControl[`fm_offence_details_result_id`].controlName,
       FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.nullDefault,
     );
 
@@ -225,7 +225,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     ) as string;
 
     this.setMajorCreditorDetails(
-      getControlValue(formArrayControl[`fm_offence_details_major_creditor`].controlName, null) as number | null,
+      getControlValue(formArrayControl[`fm_offence_details_major_creditor_id`].controlName, null) as number | null,
     );
 
     this.setMinorCreditorDetails(rowIndex);
