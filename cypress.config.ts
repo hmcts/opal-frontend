@@ -79,7 +79,7 @@ export default defineConfig({
     specPattern: '**/*.feature',
     setupNodeEvents,
     retries: {
-      runMode: 2,
+      runMode: 1,
       openMode: 0,
     },
   },
