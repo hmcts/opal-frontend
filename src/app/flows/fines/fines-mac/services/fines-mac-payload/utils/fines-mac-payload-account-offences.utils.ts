@@ -60,7 +60,9 @@ const buildAccountOffencesImpositionsPayload = (
       fm_offence_details_major_creditor_id: majorCreditorId,
     }) => {
       const impositionMinorCreditor = impositionId !== null ? childFormData[impositionId] : null;
-      const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor);
+      const minorCreditor = impositionMinorCreditor
+        ? buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor)
+        : null;
       return {
         result_id: resultId ?? null,
         amount_imposed: amountImposed ?? null,
@@ -76,18 +78,20 @@ export const buildAccountOffencesPayload = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
   courtDetailsState: IFinesMacCourtDetailsState,
 ): IFinesMacPayloadAccountOffences[] => {
+  console.log(offenceDetailsState);
   const offences = offenceDetailsState.map((offence) => {
     const childFormData: IFinesMacOffenceDetailsMinorCreditorForm[] = offence.childFormData?.length
       ? offence.childFormData
       : [];
-    const impositions = childFormData.length
-      ? buildAccountOffencesImpositionsPayload(offence.formData.fm_offence_details_impositions, childFormData)
-      : null;
+    const impositions = buildAccountOffencesImpositionsPayload(
+      offence.formData.fm_offence_details_impositions,
+      childFormData,
+    );
     return {
       date_of_sentence: offence.formData.fm_offence_details_date_of_sentence ?? null,
       imposing_court_id: courtDetailsState.fm_court_details_imposing_court_id ?? null,
       offence_id: offence.formData.fm_offence_details_offence_id ?? null,
-      impositions: impositions,
+      impositions: impositions.length ? impositions : null,
     };
   });
 
