@@ -47,6 +47,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
       'emptyOffences',
+      'offenceCodeMessage',
     ]);
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,

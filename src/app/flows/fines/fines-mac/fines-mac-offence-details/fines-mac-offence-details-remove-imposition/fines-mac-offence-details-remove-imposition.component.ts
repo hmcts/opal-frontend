@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
@@ -40,7 +40,7 @@ import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.c
 })
 export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
-  implements OnDestroy
+  implements OnInit, OnDestroy
 {
   private readonly finesService = inject(FinesService);
   private readonly opalFinesService = inject(OpalFines);
@@ -302,5 +302,9 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
 
   public ngOnDestroy(): void {
     this.draftOffenceDetailsState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+  }
+
+  public ngOnInit(): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
   }
 }

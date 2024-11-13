@@ -1,8 +1,8 @@
 <div class="govuk-grid-column-full">
   <div class="govuk-grid-row">
-    @if (newlyAddedOffenceCode && newlyAddedOffenceCode.length > 0) {
+    @if (finesMacOffenceDetailsService.offenceCodeMessage.length > 0) {
       <div class="govuk-grid-column-full">
-        <app-moj-banner type="success" [text]="newlyAddedOffenceCode"></app-moj-banner>
+        <app-moj-banner type="success" [text]="finesMacOffenceDetailsService.offenceCodeMessage"></app-moj-banner>
       </div>
     }
   </div>

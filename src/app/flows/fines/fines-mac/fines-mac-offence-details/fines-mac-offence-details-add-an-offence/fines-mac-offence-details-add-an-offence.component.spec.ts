@@ -37,6 +37,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
       'offenceIndex',
       'addedOffenceCode',
       'finesMacOffenceDetailsDraftState',
+      'offenceCodeMessage',
     ]);
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
@@ -105,15 +106,17 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     mockFinesService.finesMacState.offenceDetails = [];
+    component.offenceIndex = 0;
 
     formSubmit.nestedFlow = true;
 
     component.handleOffenceDetailsSubmit(formSubmit);
 
     expect(mockFinesService.finesMacState.offenceDetails).toContain(formSubmit);
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
-      relativeTo: component['activatedRoute'].parent,
-    });
+    expect(routerSpy).not.toHaveBeenCalled();
+    expect(component.showOffenceDetailsForm).toBeTruthy();
+    expect(component.offenceIndex).toBe(1);
+    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
   });
 
   it('should test handleUnsavedChanges', () => {
@@ -187,5 +190,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     component['retrieveFormData']();
 
     expect(mockFinesService.finesMacState.offenceDetails).toEqual([]);
+  });
+
+  it('should set the offenceCodeMessage', () => {
+    component['addOffenceCodeMessage']('TEST');
+
+    expect(mockFinesMacOffenceDetailsService.offenceCodeMessage).toBe(`Offence TEST added`);
   });
 });
