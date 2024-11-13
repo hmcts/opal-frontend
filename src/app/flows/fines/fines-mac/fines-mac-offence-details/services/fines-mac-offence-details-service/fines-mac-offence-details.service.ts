@@ -14,6 +14,7 @@ export class FinesMacOffenceDetailsService {
   public addedOffenceCode!: string;
   public minorCreditorAdded!: boolean;
   public offenceRemoved!: boolean;
+  public offenceCodeMessage!: string;
 
   /**
    * Removes the index from the keys of the `fm_offence_details_impositions` array in each form data object.

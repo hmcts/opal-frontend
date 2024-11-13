@@ -27,10 +27,10 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'addedOffenceCode',
+      'offenceCodeMessage',
       'offenceIndex',
     ]);
-    mockFinesMacOffenceDetailsService.addedOffenceCode = 'AK123456';
+    mockFinesMacOffenceDetailsService.offenceCodeMessage = 'Offence AK123456 added';
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewSummaryComponent],
@@ -61,22 +61,6 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should set the newlyAddedOffenceCode when addedOffenceCode is not empty', () => {
-    component['getNewlyAddedOffenceCode']();
-
-    expect(component.newlyAddedOffenceCode).toBe(
-      `Offence ${component['finesMacOffenceDetailsService'].addedOffenceCode} added`,
-    );
-  });
-
-  it('should set the newlyAddedOffenceCode to an empty string when addedOffenceCode is empty', () => {
-    component['finesMacOffenceDetailsService'].addedOffenceCode = '';
-
-    component['getNewlyAddedOffenceCode']();
-
-    expect(component.newlyAddedOffenceCode).toBe('');
   });
 
   it('should return the maximum offence ID', () => {
