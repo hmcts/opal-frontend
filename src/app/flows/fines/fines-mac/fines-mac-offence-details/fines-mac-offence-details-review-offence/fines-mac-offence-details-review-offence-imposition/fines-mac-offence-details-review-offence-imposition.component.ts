@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
-import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
@@ -11,11 +10,20 @@ import {
   IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData,
 } from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
 import { FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor } from './enums/fines-mac-offence-details-review-offence-imposition-default-creditor.enum';
+import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row-data/govuk-table-body-row-data.component';
+import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
+import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
+import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
   standalone: true,
-  imports: [GovukTableComponent],
+  imports: [
+    GovukTableComponent,
+    GovukTableHeadingComponent,
+    GovukTableBodyRowComponent,
+    GovukTableBodyRowDataComponent,
+  ],
   templateUrl: './fines-mac-offence-details-review-offence-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
