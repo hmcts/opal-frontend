@@ -3954,14 +3954,14 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^3.0.0":
-  version: 3.0.2
-  resolution: "@ministryofjustice/frontend@npm:3.0.2"
+  version: 3.0.3
+  resolution: "@ministryofjustice/frontend@npm:3.0.3"
   dependencies:
     govuk-frontend: "npm:^5.0.0"
     moment: "npm:^2.27.0"
   peerDependencies:
     jquery: ^3.6.0
-  checksum: 10/3a4dab33cbdfbc71712a41852d0c9619ef83633ff3ce8751b29cb39b86e0dcb443b6aa428800a6465853fe225898a9042329fab56b85944173153585bc15997b
+  checksum: 10/d346c96cbf6abe2c44e8cbcb1fc0ebd3caff967e86b6904c696a20be3d148194f9e8b0e0c8667d45e366da3e581aeb3698117393fe1fa11ecac34c20b3e01645
   languageName: node
   linkType: hard
 
