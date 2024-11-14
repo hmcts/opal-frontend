@@ -1,14 +1,15 @@
 import { FINES_MAC_COURT_DETAILS_STATE_MOCK } from '../../../fines-mac-court-details/mocks/fines-mac-court-details-state.mock';
-import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
+
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR } from './mocks/fines-mac-payload-account-offences-with-major-creditor.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 import { buildAccountOffencesPayload } from './fines-mac-payload-account-offences.utils';
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_OFFENCE_DETAILS_STATE } from './mocks/fines-mac-payload-account-offences-offence-details-state.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_COURT_DETAILS_STATE_MOCK } from './mocks/fines-mac-payload-account-offences-court-details-state.mock';
 
 describe('buildAccountOffencesPayload', () => {
   it('should build payload with impositions with a major creditor', () => {
     const offencesMockState = [{ ...FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_OFFENCE_DETAILS_STATE }];
-    const courtDetailsState = { ...FINES_MAC_COURT_DETAILS_STATE_MOCK };
+    const courtDetailsState = { ...FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_COURT_DETAILS_STATE_MOCK };
     const results = buildAccountOffencesPayload(offencesMockState, courtDetailsState);
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR);
   });
@@ -44,9 +45,8 @@ describe('buildAccountOffencesPayload', () => {
       },
     ];
 
-    const courtDetailsState = { ...FINES_MAC_COURT_DETAILS_STATE_MOCK };
+    const courtDetailsState = { ...FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_COURT_DETAILS_STATE_MOCK };
     const results = buildAccountOffencesPayload(offencesMockState, courtDetailsState);
-
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
   });
 });
