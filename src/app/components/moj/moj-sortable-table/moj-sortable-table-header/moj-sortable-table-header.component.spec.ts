@@ -4,12 +4,15 @@ import { Component } from '@angular/core';
 import { MojSortableTableHeaderComponent } from './moj-sortable-table-header.component';
 
 @Component({
-  template: `<th app-moj-sortable-table-header sortDirection="ascending">Test Column</th>`,
+  template: `<th app-moj-sortable-table-header [sortDirection]="sortDirection">Test Column</th>`,
 })
-class TestWrapperComponent {}
+class TestWrapperComponent {
+  sortDirection: 'none' | 'ascending' | 'descending' = 'none';
+}
 
 describe('MojSortableTableHeaderComponent', () => {
   let fixture: ComponentFixture<TestWrapperComponent>;
+  let component: TestWrapperComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -18,6 +21,7 @@ describe('MojSortableTableHeaderComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestWrapperComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -31,13 +35,24 @@ describe('MojSortableTableHeaderComponent', () => {
     expect(thElement.nativeElement.classList.contains('govuk-table__header')).toBe(true);
   });
 
-  it('should have the aria-sort attribute defined', () => {
-    const thElement = fixture.debugElement.query(By.css('th'));
-    expect(thElement.attributes['aria-sort']).toBeDefined();
-  });
-
-  it('should have the aria-sort attribute set to ascending', () => {
+  it('should have aria-sort attribute set to "ascending" when sortDirection is "ascending"', () => {
+    component.sortDirection = 'ascending';
+    fixture.detectChanges();
     const thElement = fixture.debugElement.query(By.css('th'));
     expect(thElement.attributes['aria-sort']).toBe('ascending');
+  });
+
+  it('should have aria-sort attribute set to "descending" when sortDirection is "descending"', () => {
+    component.sortDirection = 'descending';
+    fixture.detectChanges();
+    const thElement = fixture.debugElement.query(By.css('th'));
+    expect(thElement.attributes['aria-sort']).toBe('descending');
+  });
+
+  it('should not have aria-sort attribute when sortDirection is "none"', () => {
+    component.sortDirection = 'none';
+    fixture.detectChanges();
+    const thElement = fixture.debugElement.query(By.css('th'));
+    expect(thElement.attributes['aria-sort']).toBeUndefined();
   });
 });
