@@ -51,7 +51,7 @@ const buildAccountOffencesImpositionsPayload = (
   impositions: IFinesMacOffenceDetailsImpositionsState[],
   childFormData: IFinesMacOffenceDetailsMinorCreditorForm[],
 ): IFinesMacPayloadAccountOffencesImposition[] => {
-  return impositions.map(
+  return [...impositions].map(
     ({
       fm_offence_details_imposition_id: impositionId,
       fm_offence_details_result_id: resultId,
@@ -78,7 +78,7 @@ export const buildAccountOffencesPayload = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
   courtDetailsState: IFinesMacCourtDetailsState,
 ): IFinesMacPayloadAccountOffences[] => {
-  const offences = offenceDetailsState.map((offence) => {
+  const offences = [...offenceDetailsState].map((offence) => {
     const childFormData: IFinesMacOffenceDetailsMinorCreditorForm[] = offence.childFormData?.length
       ? offence.childFormData
       : [];

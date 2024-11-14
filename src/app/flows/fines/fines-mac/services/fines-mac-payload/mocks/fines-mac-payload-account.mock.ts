@@ -98,7 +98,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_MOCK: IFinesMacPayloadAccount = {
       },
     },
   },
-  offences: null,
+  offences: [{ date_of_sentence: null, imposing_court_id: null, offence_id: null, impositions: null }],
   fp_ticket_detail: null,
   payment_terms: {
     payment_terms_type_code: 'B',

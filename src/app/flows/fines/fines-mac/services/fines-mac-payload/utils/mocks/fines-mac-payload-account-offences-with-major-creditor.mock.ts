@@ -4,13 +4,13 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR: IFinesMacPa
   {
     date_of_sentence: '01/09/2024',
     imposing_court_id: 'Historic Debt Database (101)',
-    offence_id: 'OFF123',
+    offence_id: 'OFF1234',
     impositions: [
       {
         result_id: 'FCC',
-        amount_imposed: 200,
-        amount_paid: 50,
-        major_creditor_id: 3856,
+        amount_imposed: 900,
+        amount_paid: 500,
+        major_creditor_id: 3999,
         minor_creditor: null,
       },
       {

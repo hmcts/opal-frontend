@@ -16,7 +16,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
@@ -356,7 +356,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should handle editing a minor creditor', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
     ];
