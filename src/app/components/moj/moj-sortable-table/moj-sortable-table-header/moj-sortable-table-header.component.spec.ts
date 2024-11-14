@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { MojSortableTableHeaderComponent } from './moj-sortable-table-header.component';
 
 @Component({
-  template: `<th app-moj-sortable-table-header>Test Column</th>`,
+  template: `<th app-moj-sortable-table-header sortDirection="ascending">Test Column</th>`,
 })
 class TestWrapperComponent {}
 
@@ -29,5 +29,15 @@ describe('MojSortableTableHeaderComponent', () => {
   it('should have the correct host class', () => {
     const thElement = fixture.debugElement.query(By.css('th'));
     expect(thElement.nativeElement.classList.contains('govuk-table__header')).toBe(true);
+  });
+
+  it('should have the aria-sort attribute defined', () => {
+    const thElement = fixture.debugElement.query(By.css('th'));
+    expect(thElement.attributes['aria-sort']).toBeDefined();
+  });
+
+  it('should have the aria-sort attribute set to ascending', () => {
+    const thElement = fixture.debugElement.query(By.css('th'));
+    expect(thElement.attributes['aria-sort']).toBe('ascending');
   });
 });
