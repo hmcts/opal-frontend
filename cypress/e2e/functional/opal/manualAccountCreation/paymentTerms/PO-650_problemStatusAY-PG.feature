@@ -49,3 +49,24 @@ Feature: PO-650 - Payment terms - There is a problem status - Adult or youth wit
     And I click the "Return to account details" button
 
     Then I see the status of "Payment terms" is "There is a problem"
+
+    When I click on the "Payment terms" link
+
+    Then I see the error message "Date cannot be before the date of sentence" at the top of the page
+    And I see the error message "Date cannot be before the date of sentence" above the "Date of collection order" date field
+
+    When I click the "Return to account details" button
+    Then I see the error message "Date cannot be before the date of sentence" at the top of the page
+    And I see the error message "Date cannot be before the date of sentence" above the "Date of collection order" date field
+
+    When I click the "Add account comments and notes" button
+    Then I see the error message "Date cannot be before the date of sentence" at the top of the page
+    And I see the error message "Date cannot be before the date of sentence" above the "Date of collection order" date field
+
+    When I enter a date 5 weeks into the past into the "Date of collection order" date field
+    And I click the "Add account comments and notes" button
+
+    Then I see "Account comments and notes" on the page header
+    And I click the "Return to account details" button
+
+    Then I see the status of "Payment terms" is "Provided"
