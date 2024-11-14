@@ -21,3 +21,9 @@ export function calculateWeeksInPast(weeks: number): string {
 
   return `${day}/${month}/${year}`;
 }
+export function formatDateString(dateString: string): string {
+  const [day, month, year] = dateString.split('/');
+  const date = new Date(`${year}-${month}-${day}`);
+  const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options);
+}

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,7 +34,7 @@ import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './fines-mac-offence-details-review-summary.component.scss',
 })
-export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
+export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnDestroy {
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
@@ -42,28 +42,13 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   public readonly finesService = inject(FinesService);
-  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  public readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   public readonly finesMacStatus = FINES_MAC_STATUS;
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
-  public newlyAddedOffenceCode!: string;
   public offencesHidden!: IFinesMacOffenceDetailsReviewSummaryDetailsHidden;
-
-  /**
-   * Retrieves the newly added offence code and sets it to the `newlyAddedOffenceCode` property.
-   */
-  private getNewlyAddedOffenceCode(): void {
-    if (
-      this.finesMacOffenceDetailsService.addedOffenceCode &&
-      this.finesMacOffenceDetailsService.addedOffenceCode.length > 0
-    ) {
-      this.newlyAddedOffenceCode = `Offence ${this.finesMacOffenceDetailsService.addedOffenceCode} added`;
-    } else {
-      this.newlyAddedOffenceCode = '';
-    }
-  }
 
   /**
    * Hides the offence details by setting the corresponding offence ID to false in the accumulator object.
@@ -162,7 +147,10 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit {
     if (this.offencesImpositions.length === 0 && !this.finesMacOffenceDetailsService.offenceRemoved) {
       this.addAnotherOffence();
     }
-    this.getNewlyAddedOffenceCode();
     this.offenceDetailsHidden();
+  }
+
+  public ngOnDestroy(): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
   }
 }

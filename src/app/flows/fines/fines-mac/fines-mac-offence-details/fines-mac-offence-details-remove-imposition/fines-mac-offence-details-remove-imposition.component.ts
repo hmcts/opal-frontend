@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
@@ -19,17 +18,29 @@ import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abst
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
+import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row-data/govuk-table-body-row-data.component';
+import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
+import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
+import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
   standalone: true,
-  imports: [CommonModule, GovukButtonComponent, GovukCancelLinkComponent, GovukTableComponent],
+  imports: [
+    CommonModule,
+    GovukButtonComponent,
+    GovukCancelLinkComponent,
+    GovukTableComponent,
+    GovukTableHeadingComponent,
+    GovukTableBodyRowComponent,
+    GovukTableBodyRowDataComponent,
+  ],
   templateUrl: './fines-mac-offence-details-remove-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
-  implements OnDestroy
+  implements OnInit, OnDestroy
 {
   private readonly finesService = inject(FinesService);
   private readonly opalFinesService = inject(OpalFines);
@@ -291,5 +302,9 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
 
   public ngOnDestroy(): void {
     this.draftOffenceDetailsState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+  }
+
+  public ngOnInit(): void {
+    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
   }
 }

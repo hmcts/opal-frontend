@@ -10,20 +10,19 @@
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">Are you sure you want to remove this imposition?</h1>
       <app-govuk-table>
-        <ng-container header>
-          <th scope="col" class="govuk-table__header">Imposition</th>
-          <th scope="col" class="govuk-table__header">Creditor</th>
-          <th scope="col" class="govuk-table__header">Amount imposed</th>
-          <th scope="col" class="govuk-table__header">Amount paid</th>
-          <th scope="col" class="govuk-table__header">Balance remaining</th>
+        <ng-container head>
+          <th app-govuk-table-heading>Imposition</th>
+          <th app-govuk-table-heading>Creditor</th>
+          <th app-govuk-table-heading>Amount imposed</th>
+          <th app-govuk-table-heading>Amount paid</th>
+          <th app-govuk-table-heading>Balance remaining</th>
         </ng-container>
         <ng-container body>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell" id="imposition">
+          <tr app-govuk-table-body-row>
+            <td app-govuk-table-body-row-data id="imposition">
               {{ imposition }}
             </td>
-
-            <td class="govuk-table__cell" id="creditor">
+            <td app-govuk-table-body-row-data id="creditor">
               @if (creditor === 'major') {
                 {{ majorCreditor }}
               } @else if (creditor === 'minor') {
@@ -32,13 +31,13 @@
                 {{ defaultCreditor }}
               }
             </td>
-            <td class="govuk-table__cell" id="amountImposed">
+            <td app-govuk-table-body-row-data id="amountImposed">
               {{ amountImposedString }}
             </td>
-            <td class="govuk-table__cell" id="amountPaid">
+            <td app-govuk-table-body-row-data id="amountPaid">
               {{ amountPaidString }}
             </td>
-            <td class="govuk-table__cell" id="balanceRemaining">
+            <td app-govuk-table-body-row-data id="balanceRemaining">
               {{ balanceString }}
             </td>
           </tr>

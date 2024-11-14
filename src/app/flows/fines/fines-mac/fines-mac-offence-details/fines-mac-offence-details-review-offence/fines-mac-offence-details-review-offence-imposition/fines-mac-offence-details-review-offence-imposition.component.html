@@ -1,26 +1,28 @@
-<app-govuk-table [results]="true">
-  <ng-container header>
-    <th scope="col" class="govuk-table__header">Imposition</th>
-    <th scope="col" class="govuk-table__header">Creditor</th>
-    <th scope="col" class="govuk-table__header">Amount imposed</th>
-    <th scope="col" class="govuk-table__header">Amount paid</th>
-    <th scope="col" class="govuk-table__header">Balance remaining</th>
+<app-govuk-table>
+  <ng-container head>
+    <th app-govuk-table-heading>Imposition</th>
+    <th app-govuk-table-heading>Creditor</th>
+    <th app-govuk-table-heading>Amount imposed</th>
+    <th app-govuk-table-heading>Amount paid</th>
+    <th app-govuk-table-heading>Balance remaining</th>
   </ng-container>
-  @for (imposition of impositionTableData; track imposition.impositionDescription) {
-    <ng-container body>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell" id="imposition">{{ imposition.impositionDescription }}</td>
-        <td class="govuk-table__cell" id="creditor">{{ imposition.creditor }}</td>
-        <td class="govuk-table__cell" id="amountImposed">{{ imposition.amountImposed }}</td>
-        <td class="govuk-table__cell" id="amountPaid">{{ imposition.amountPaid }}</td>
-        <td class="govuk-table__cell" id="balanceRemaining">{{ imposition.balanceRemaining }}</td>
+  <ng-container body>
+    @for (imposition of impositionTableData; track imposition.impositionDescription) {
+      <tr app-govuk-table-body-row>
+        <td app-govuk-table-body-row-data id="imposition">{{ imposition.impositionDescription }}</td>
+        <td app-govuk-table-body-row-data id="creditor">{{ imposition.creditor }}</td>
+        <td app-govuk-table-body-row-data id="amountImposed">{{ imposition.amountImposed }}</td>
+        <td app-govuk-table-body-row-data id="amountPaid">{{ imposition.amountPaid }}</td>
+        <td app-govuk-table-body-row-data id="balanceRemaining">{{ imposition.balanceRemaining }}</td>
       </tr>
-    </ng-container>
-  }
-  <ng-container results>
-    <th scope="row" class="govuk-table__header" colspan="2"><strong>Totals</strong></th>
-    <th scope="row" class="govuk-table__header">{{ impositionsTotalsData.totalAmountImposed }}</th>
-    <th scope="row" class="govuk-table__header">{{ impositionsTotalsData.totalAmountPaid }}</th>
-    <th scope="row" class="govuk-table__header">{{ impositionsTotalsData.totalBalanceRemaining }}</th>
+    }
+    <tr app-govuk-table-body-row bodyRowClasses="govuk-light-grey-background-color">
+      <th app-govuk-table-body-row-data colspan="2" id="totalsHeading"><strong>Totals</strong></th>
+      <th app-govuk-table-body-row-data id="totalAmountImposed">{{ impositionsTotalsData.totalAmountImposed }}</th>
+      <th app-govuk-table-body-row-data id="totalAmountPaid">{{ impositionsTotalsData.totalAmountPaid }}</th>
+      <th app-govuk-table-body-row-data id="totalBalanceRemaining">
+        {{ impositionsTotalsData.totalBalanceRemaining }}
+      </th>
+    </tr>
   </ng-container>
 </app-govuk-table>
