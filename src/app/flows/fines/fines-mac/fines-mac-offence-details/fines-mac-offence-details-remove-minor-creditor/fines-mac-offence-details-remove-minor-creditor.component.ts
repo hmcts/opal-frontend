@@ -4,9 +4,6 @@ import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-list.component';
-import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
@@ -18,9 +15,6 @@ import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../fine
     CommonModule,
     GovukButtonComponent,
     GovukCancelLinkComponent,
-    GovukSummaryCardListComponent,
-    GovukSummaryListComponent,
-    GovukSummaryListRowComponent,
     FinesMacOffenceDetailsMinorCreditorInformationComponent,
   ],
   templateUrl: './fines-mac-offence-details-remove-minor-creditor.component.html',
@@ -94,5 +88,6 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
 
   public ngOnInit(): void {
     this.getMinorCreditorData();
+    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
   }
 }
