@@ -23,7 +23,8 @@ describe('TransferStateService', () => {
     });
     service = TestBed.inject(TransferStateService);
     globalStateService = TestBed.inject(GlobalStateService);
-    service['storedServerTransferState'] = TRANSFER_STATE_MOCK;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (service as any).storedServerTransferState = TRANSFER_STATE_MOCK;
   });
 
   it('should be created', () => {

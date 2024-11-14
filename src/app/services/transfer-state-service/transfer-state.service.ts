@@ -8,7 +8,7 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 })
 export class TransferStateService {
   private readonly globalStateService = inject(GlobalStateService);
-  private storedServerTransferState!: ITransferStateServerState;
+  private readonly storedServerTransferState!: ITransferStateServerState;
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: typeof PLATFORM_ID,
