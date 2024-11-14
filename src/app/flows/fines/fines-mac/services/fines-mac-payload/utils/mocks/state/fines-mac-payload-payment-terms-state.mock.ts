@@ -1,6 +1,6 @@
-import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
+import { IFinesMacPaymentTermsState } from '../../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 
-export const FINES_MAC_PAYLOAD_ACCOUNT_PAYMENT_TERMS_IN_FULL_MOCK: IFinesMacPaymentTermsState = {
+export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_terms: 'payInFull',
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_collection_order_made: true,
@@ -15,7 +15,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_PAYMENT_TERMS_IN_FULL_MOCK: IFinesMacPaym
   fm_payment_terms_prison_and_prison_number: 'test test',
 };
 
-export const FINES_MAC_PAYLOAD_ACCOUNT_PAYMENT_TERMS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
+export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_terms: 'instalmentsOnly',
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_add_enforcement_action: true,
@@ -26,7 +26,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_PAYMENT_TERMS_INSTALMENTS_MOCK: IFinesMac
   fm_payment_terms_reason_account_is_on_noenf: 'Test',
 };
 
-export const FINES_MAC_PAYLOAD_ACCOUNT_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
+export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_terms: 'lumpSumPlusInstalments',
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_collection_order_made: true,
@@ -44,7 +44,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_M
   fm_payment_terms_prison_and_prison_number: 'Test and test',
 };
 
-export const FINES_MAC_PAYLOAD_ACCOUNT_PAYMENT_TERMS_NULL_MOCK: IFinesMacPaymentTermsState = {
+export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_NULL_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_terms: null,
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_collection_order_made: true,
