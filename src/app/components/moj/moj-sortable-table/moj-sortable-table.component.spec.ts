@@ -19,4 +19,14 @@ describe('MojSortableTableComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have default tableClasses as undefined', () => {
+    expect(component.tableClasses).toBeUndefined();
+  });
+
+  it('should accept tableClasses as input', () => {
+    component.tableClasses = 'test-class';
+    fixture.detectChanges();
+    expect(component.tableClasses).toBe('test-class');
+  });
 });

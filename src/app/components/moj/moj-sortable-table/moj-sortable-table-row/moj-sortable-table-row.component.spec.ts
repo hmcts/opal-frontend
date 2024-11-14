@@ -23,4 +23,10 @@ describe('MojSortableTableRowComponent;', () => {
     const hostElement: HTMLElement = fixture.nativeElement;
     expect(hostElement.classList.contains('govuk-table__row')).toBe(true);
   });
+
+  it('should accept tableClasses as input', () => {
+    component.bodyRowClasses = 'test-class';
+    fixture.detectChanges();
+    expect(component.bodyRowClasses).toBe('test-class');
+  });
 });
