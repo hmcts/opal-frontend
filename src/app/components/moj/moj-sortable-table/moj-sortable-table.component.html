@@ -1,22 +1,12 @@
 <table class="govuk-table" data-module="moj-sortable-table">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      @for (column of columns; track column.key) {
-        <th scope="col" class="govuk-table__header" aria-sort="none">
-          {{ column.label }}
-        </th>
-      }
+      <ng-content select="[head]]"></ng-content>
     </tr>
   </thead>
+
   <tbody class="govuk-table__body">
-    @for (row of data; track row) {
-      <tr class="govuk-table__row">
-        @for (column of columns; track column.key) {
-          <td class="govuk-table__cell">
-            {{ row[column.key] }}
-          </td>
-        }
-      </tr>
-    }
+    <ng-content select="[row]"></ng-content>
+    <ng-content select="[results]"></ng-content>
   </tbody>
 </table>
