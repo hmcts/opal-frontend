@@ -10,7 +10,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK } from '
 import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from './mocks/state/fines-mac-payload-contact-details-state.mock';
 import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from './mocks/state/fines-mac-payload-language-preferences-state.mock';
 
-fdescribe('buildAccountDefendantIndividualPayload', () => {
+describe('buildAccountDefendantIndividualPayload', () => {
   it('should build the individual defendant payload correctly', () => {
     const personalDetailsState: IFinesMacPersonalDetailsState = {
       ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
