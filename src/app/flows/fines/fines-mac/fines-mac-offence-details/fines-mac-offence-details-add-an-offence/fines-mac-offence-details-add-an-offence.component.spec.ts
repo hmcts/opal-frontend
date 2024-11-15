@@ -145,7 +145,19 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should add offence details form to the state when form does not exist', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const form = {
+      ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+      formData: {
+        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData,
+        fm_offence_details_impositions: [
+          {
+            ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_impositions[0],
+            fm_offence_details_amount_imposed: 100,
+            fm_offence_details_amount_paid: 50,
+          },
+        ],
+      },
+    };
 
     mockFinesService.finesMacState.offenceDetails = [];
 
