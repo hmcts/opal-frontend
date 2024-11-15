@@ -7,8 +7,8 @@ export const FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK: IFinesMacPersonalDet
   fm_personal_details_add_alias: true,
   fm_personal_details_aliases: [
     {
-      fm_personal_details_alias_forenames_0: 'Sarah',
-      fm_personal_details_alias_surname_0: 'Jones',
+      fm_personal_details_alias_forenames_0: 'Rebecca',
+      fm_personal_details_alias_surname_0: 'Johnson',
     },
   ],
   fm_personal_details_dob: '15/05/1985',

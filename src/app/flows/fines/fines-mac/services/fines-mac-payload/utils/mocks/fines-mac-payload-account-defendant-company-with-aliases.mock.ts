@@ -7,7 +7,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK: IFin
     ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.debtor_detail,
     aliases: [
       {
-        alias_company_name: 'Bright Innovations Ltd.',
+        alias_company_name: 'Bright Innovations Ltd',
       },
     ],
   },

@@ -47,7 +47,6 @@ describe('buildAccountDefendantParentGuardianPayload', () => {
       languagePreferencesState,
     );
 
-    console.log(result);
     expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK);
   });
 
