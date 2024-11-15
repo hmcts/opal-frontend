@@ -1,5 +1,4 @@
 import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
-import { FINES_MAC_PAYLOAD_ACCOUNT_MOCK } from './fines-mac-payload-account.mock';
 
 export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
   business_unit_id: 0,

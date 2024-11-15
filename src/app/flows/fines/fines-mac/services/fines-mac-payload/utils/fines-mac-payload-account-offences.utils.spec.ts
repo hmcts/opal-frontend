@@ -1,5 +1,3 @@
-import { FINES_MAC_COURT_DETAILS_STATE_MOCK } from '../../../fines-mac-court-details/mocks/fines-mac-court-details-state.mock';
-
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR } from './mocks/fines-mac-payload-account-offences-with-major-creditor.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 import { buildAccountOffencesPayload } from './fines-mac-payload-account-offences.utils';
