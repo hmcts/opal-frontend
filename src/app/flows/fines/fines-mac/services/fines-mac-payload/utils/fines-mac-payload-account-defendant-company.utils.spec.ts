@@ -8,7 +8,7 @@ import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from './mocks/state
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK } from './mocks/fines-mac-payload-account-defendant-company.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-account-defendant-company-with-aliases.mock';
 
-fdescribe('buildAccountDefendantCompanyPayload', () => {
+describe('buildAccountDefendantCompanyPayload', () => {
   it('should build the correct payload', () => {
     const contactDetailsState: IFinesMacContactDetailsState = {
       ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
