@@ -23,8 +23,6 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
-import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 
 @Component({
   selector: 'app-fines-mac-account-details',
