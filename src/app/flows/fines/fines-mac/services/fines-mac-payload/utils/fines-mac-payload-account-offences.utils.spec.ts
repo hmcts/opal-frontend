@@ -3,6 +3,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './mocks/
 import { buildAccountOffencesPayload } from './fines-mac-payload-account-offences.utils';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from './mocks/state/fines-mac-payload-offence-details-state.mock';
 import { FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK } from './mocks/state/fines-mac-payload-court-details-state.mock';
+import { IFinesMacOffenceDetailsForm } from '../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 
 describe('buildAccountOffencesPayload', () => {
   it('should build payload with impositions with a major creditor', () => {
@@ -13,10 +14,9 @@ describe('buildAccountOffencesPayload', () => {
   });
 
   it('should build payload with a minor creditor', () => {
-    const offencesMockState = [
+    const offencesMockState: IFinesMacOffenceDetailsForm[] = [
       {
         ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
-        fm_offence_details_major_creditor_id: null,
         childFormData: [
           {
             formData: {
@@ -46,5 +46,37 @@ describe('buildAccountOffencesPayload', () => {
     const courtDetailsState = { ...FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK };
     const results = buildAccountOffencesPayload(offencesMockState, courtDetailsState);
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+  });
+
+  it('should build payload with a minor creditor', () => {
+    const offencesMockState: IFinesMacOffenceDetailsForm[] = [
+      {
+        ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
+        formData: {
+          ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData,
+          fm_offence_details_id: 0,
+          fm_offence_details_date_of_sentence: null,
+          fm_offence_details_offence_id: null,
+          fm_offence_details_impositions: [],
+        },
+        childFormData: null,
+      },
+    ];
+
+    const courtDetailsState = {
+      fm_court_details_originator_id: null,
+      fm_court_details_originator_name: null,
+      fm_court_details_prosecutor_case_reference: null,
+      fm_court_details_imposing_court_id: null,
+    };
+    const results = buildAccountOffencesPayload(offencesMockState, courtDetailsState);
+    expect(results).toEqual([
+      {
+        date_of_sentence: null,
+        imposing_court_id: null,
+        offence_id: null,
+        impositions: null,
+      },
+    ]);
   });
 });
