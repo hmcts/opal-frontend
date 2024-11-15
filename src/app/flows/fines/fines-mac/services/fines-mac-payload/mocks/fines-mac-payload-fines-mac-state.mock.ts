@@ -1,107 +1,61 @@
 import { IFinesMacState } from '../../../interfaces/fines-mac-state.interface';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-account-details-state.mock';
+import { FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-company-details-state.mock';
+import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-contact-details-state.mock';
+import { FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-court-details-state.mock';
+import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-employer-details-state.mock';
+import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-language-preferences-state.mock';
+import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../utils/mocks/state/fines-mac-payload-offence-details-state.mock';
+import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
+import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../utils/mocks/state/fines-mac-payload-payment-terms-state.mock';
+import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-personal-details-state.mock';
 
 export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   accountDetails: {
     formData: {
-      fm_create_account_account_type: 'conditionalCaution',
-      fm_create_account_business_unit: 'Cambridgeshire',
-      fm_create_account_defendant_type: 'individual',
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
     status: 'Not provided',
   },
   employerDetails: {
     formData: {
-      fm_employer_details_employer_company_name: 'Random Corp Solutions',
-      fm_employer_details_employer_reference: 'REF12345XYZ',
-      fm_employer_details_employer_email_address: 'contact@randomcorp.com',
-      fm_employer_details_employer_telephone_number: '01987654321',
-      fm_employer_details_employer_address_line_1: '123 Random Street',
-      fm_employer_details_employer_address_line_2: 'Suite 200',
-      fm_employer_details_employer_address_line_3: 'Business Park',
-      fm_employer_details_employer_address_line_4: 'Northside',
-      fm_employer_details_employer_address_line_5: 'Metropolis',
-      fm_employer_details_employer_post_code: 'RN20 3PQ',
+      ...FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
     status: 'Not provided',
   },
   contactDetails: {
     formData: {
-      fm_contact_details_email_address_1: 'random.email1@example.com',
-      fm_contact_details_email_address_2: 'random.email2@example.com',
-      fm_contact_details_telephone_number_mobile: '07891234567',
-      fm_contact_details_telephone_number_home: '01612345678',
-      fm_contact_details_telephone_number_business: '02079461234',
+      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
     status: 'Not provided',
   },
   parentGuardianDetails: {
     formData: {
-      fm_parent_guardian_details_forenames: 'Alexandra Marie',
-      fm_parent_guardian_details_surname: 'Johnson',
-      fm_parent_guardian_details_dob: '15/08/1985',
-      fm_parent_guardian_details_add_alias: true,
-      fm_parent_guardian_details_aliases: [
-        {
-          fm_parent_guardian_details_alias_forenames_0: 'Samuel',
-          fm_parent_guardian_details_alias_surname_0: 'Green',
-        },
-      ],
-      fm_parent_guardian_details_national_insurance_number: 'QQ 98 76 54 B',
-      fm_parent_guardian_details_address_line_1: '456 Random Avenue',
-      fm_parent_guardian_details_address_line_2: 'Apartment 12B',
-      fm_parent_guardian_details_address_line_3: 'West End',
-      fm_parent_guardian_details_post_code: 'RN21 4XY',
-      fm_parent_guardian_details_vehicle_make: 'Toyota',
-      fm_parent_guardian_details_vehicle_registration_mark: 'XY987ZRT',
+      ...FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
     status: 'Not provided',
   },
   personalDetails: {
     formData: {
-      fm_personal_details_title: 'Ms',
-      fm_personal_details_forenames: 'Emily',
-      fm_personal_details_surname: 'Smith',
-      fm_personal_details_add_alias: false,
-      fm_personal_details_aliases: [],
-      fm_personal_details_dob: '15/07/1982',
-      fm_personal_details_national_insurance_number: 'CD789012E',
-      fm_personal_details_address_line_1: '789 Elm Street',
-      fm_personal_details_address_line_2: 'Downtown',
-      fm_personal_details_address_line_3: 'Hampshire',
-      fm_personal_details_post_code: 'XY45 6ZT',
-      fm_personal_details_vehicle_make: 'Honda',
-      fm_personal_details_vehicle_registration_mark: 'GH456JKL',
+      ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
     status: 'Not provided',
   },
   companyDetails: {
     formData: {
-      fm_company_details_organisation_name: 'Global Solutions Inc.',
-      fm_company_details_add_alias: true,
-      fm_company_details_aliases: [
-        {
-          fm_company_details_alias_organisation_name_0: 'Innovative Ventures Ltd.',
-        },
-      ],
-      fm_company_details_address_line_1: '456 Market Road',
-      fm_company_details_address_line_2: 'Central District',
-      fm_company_details_address_line_3: 'Lancashire',
-      fm_company_details_postcode: 'XY98 7UV',
+      ...FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
     status: 'Not provided',
   },
   courtDetails: {
     formData: {
-      fm_court_details_originator_id: null,
-      fm_court_details_originator_name: null,
-      fm_court_details_prosecutor_case_reference: null,
-      fm_court_details_imposing_court_id: null,
+      ...FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
     status: 'Provided',
@@ -116,50 +70,19 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   },
   offenceDetails: [
     {
-      formData: {
-        fm_offence_details_id: 0,
-        fm_offence_details_date_of_sentence: '12/09/2021',
-        fm_offence_details_offence_id: 'OFF123456',
-        fm_offence_details_impositions: [
-          {
-            fm_offence_details_imposition_id: 0,
-            fm_offence_details_result_id: 'FCC',
-            fm_offence_details_amount_imposed: 200,
-            fm_offence_details_amount_paid: 50,
-            fm_offence_details_balance_remaining: 150,
-            fm_offence_details_needs_creditor: true,
-            fm_offence_details_creditor: 'major',
-            fm_offence_details_major_creditor_id: 3856,
-          },
-        ],
-      },
-      nestedFlow: true,
-      status: 'Provided',
-      childFormData: [],
+      ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
     },
   ],
   paymentTerms: {
     formData: {
-      fm_payment_terms_payment_terms: 'payInFull',
-      fm_payment_terms_payment_card_request: true,
-      fm_payment_terms_collection_order_made: true,
-      fm_payment_terms_has_days_in_default: true,
-      fm_payment_terms_add_enforcement_action: true,
-      fm_payment_terms_collection_order_date: '05/11/2024',
-      fm_payment_terms_pay_by_date: '28/10/2024',
-      fm_payment_terms_suspended_committal_date: '25/10/2024',
-      fm_payment_terms_default_days_in_jail: 14,
-      fm_payment_terms_enforcement_action: 'PRIS',
-      fm_payment_terms_earliest_release_date: '05/11/2024',
-      fm_payment_terms_prison_and_prison_number: 'Greenwood Correctional, 67890',
+      ...FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK,
     },
     nestedFlow: false,
     status: 'Not provided',
   },
   languagePreferences: {
     formData: {
-      fm_language_preferences_document_language: 'welshEnglish',
-      fm_language_preferences_hearing_language: 'welshEnglish',
+      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
     },
     nestedFlow: false,
   },
