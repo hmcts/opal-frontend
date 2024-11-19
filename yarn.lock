@@ -2650,14 +2650,14 @@ __metadata:
   linkType: hard
 
 "@cucumber/messages@npm:^27.0.0":
-  version: 27.0.1
-  resolution: "@cucumber/messages@npm:27.0.1"
+  version: 27.0.2
+  resolution: "@cucumber/messages@npm:27.0.2"
   dependencies:
     "@types/uuid": "npm:10.0.0"
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
     uuid: "npm:10.0.0"
-  checksum: 10/85c1caa4cb2e49ddbe2bbf25971161c2fe4a0bd1a03ccfd52fa5ce2af41f2449265b6788d7d593da825f9981253a5f120c201eb435eba81a5f18c449f1ecb608
+  checksum: 10/d36c8cb915b2ef1b6d38a757101a352c070906f26c845a8601e501c34657868c607b020649957d2cb946ba4c54bf95c91b01e7f355b3d5b507af26ef1038f8e9
   languageName: node
   linkType: hard
 
