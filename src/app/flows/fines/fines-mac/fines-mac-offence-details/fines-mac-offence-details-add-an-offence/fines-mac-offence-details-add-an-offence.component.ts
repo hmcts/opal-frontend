@@ -116,6 +116,14 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
       form.formData.fm_offence_details_impositions,
     );
 
+    // Change the amount imposed and amount paid to numbers
+    form.formData.fm_offence_details_impositions.forEach((imposition) => {
+      imposition.fm_offence_details_amount_imposed = +imposition.fm_offence_details_amount_imposed!;
+      imposition.fm_offence_details_amount_paid = imposition.fm_offence_details_amount_paid
+        ? +imposition.fm_offence_details_amount_paid
+        : 0;
+    });
+
     const { offenceDetails } = this.finesService.finesMacState;
     const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
 
