@@ -21,3 +21,27 @@
     </li>
   </ul>
 </div>
+<app-moj-sortable-table>
+  <ng-container head>
+    <th app-moj-sortable-table-header columnKey="imposition" sortDirection="none">
+      Imposition
+    </th>
+    <th app-moj-sortable-table-header columnKey="creditor" sortDirection="none">Creditor</th>
+    <th app-moj-sortable-table-header columnKey="amountImposed" sortDirection="none">Amount imposed</th>
+    <th app-moj-sortable-table-header columnKey="amountPaid" sortDirection="none">Amount paid</th>
+    <th app-moj-sortable-table-header columnKey="balanceRemaining" sortDirection="none">Balance remaining</th>
+  </ng-container>
+  <ng-container row>
+    <tr app-moj-sortable-table-row *ngFor="let row of tableData">
+      <td app-moj-sortable-table-row-data id="imposition">{{ row.imposition }}</td>
+      <td app-moj-sortable-table-row-data id="creditor">
+        {{
+          row.creditor === 'major' ? 'Major Creditor' : row.creditor === 'minor' ? 'Minor Creditor' : 'Default Creditor'
+        }}
+      </td>
+      <td app-moj-sortable-table-row-data id="amountImposed">{{ row.amountImposed }}</td>
+      <td app-moj-sortable-table-row-data id="amountPaid">{{ row.amountPaid }}</td>
+      <td app-moj-sortable-table-row-data id="balanceRemaining">{{ row.balanceRemaining }}</td>
+    </tr>
+  </ng-container>
+</app-moj-sortable-table>

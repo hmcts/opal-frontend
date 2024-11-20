@@ -11,5 +11,6 @@ export class MojSortableTableRowComponent {
   @Input({ required: false }) public bodyRowClasses: string = '';
   @HostBinding('class') get hostClass() {
     return `govuk-table__row ${this.bodyRowClasses}`;
+  
   }
 }
