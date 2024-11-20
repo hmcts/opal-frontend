@@ -23,7 +23,7 @@
 </div>
 <app-moj-sortable-table>
   <ng-container head>
-    <th app-moj-sortable-table-header columnKey="imposition" sortDirection="none">
+    <th app-moj-sortable-table-header columnKey="imposition" sortDirection="none" (sortChange)="onSortChange($event)">
       Imposition
     </th>
     <th app-moj-sortable-table-header columnKey="creditor" sortDirection="none">Creditor</th>

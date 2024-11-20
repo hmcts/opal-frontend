@@ -7,6 +7,14 @@ import { MojSortableTableHeaderComponent } from '@components/moj/moj-sortable-ta
 import { MojSortableTableRowComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row.component';
 import { MojSortableTableRowDataComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row-data/moj-sortable-table-row-data.component';
 import { CommonModule } from '@angular/common';
+import { SortService } from '@services/sort-service/sort-service';
+interface TableData {
+  imposition: string;
+  creditor: string;
+  amountImposed: number;
+  amountPaid: number;
+  balanceRemaining: number;
+}
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -49,4 +57,19 @@ export class DashboardComponent {
       balanceRemaining: 1000,
     },
   ];
+
+  sortedData = [];
+  constructor(private readonly sortService: SortService) {}
+
+  // Handle the sorting event
+  onSortChange(event: { key: string; sortType: 'asc' | 'desc' }): void {
+    console.log('Sort Event Received:', event); // Debug log for event details
+    const { key, sortType } = event;
+
+    sortType === 'asc'
+      ? console.log(this.sortService.sortObjectsAsc(this.tableData, key))
+      : console.log(this.sortService.sortObjectsDsc(this.tableData, key));
+
+    console.log('Updated Sorted Data:', this.sortedData); // Debug log for sorted data
+  }
 }
