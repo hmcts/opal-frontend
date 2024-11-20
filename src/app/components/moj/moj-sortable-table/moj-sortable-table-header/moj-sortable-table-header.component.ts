@@ -21,8 +21,13 @@ export class MojSortableTableHeaderComponent {
 
   @Output() sortChange = new EventEmitter<{ key: string; sortType: 'asc' | 'desc' }>();
 
+  @HostBinding('class') hostClass = `govuk-table__header`;
+
   @HostBinding('attr.aria-sort') get ariaSort(): string {
     return this.sortDirection;
+  }
+  @HostBinding('scope') get hostScope() {
+    return 'col';
   }
 
   toggleSort(): void {
