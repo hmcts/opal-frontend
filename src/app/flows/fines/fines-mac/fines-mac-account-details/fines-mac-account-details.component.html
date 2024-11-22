@@ -132,7 +132,13 @@
 
 <ng-template #statusTag let-status>
   <app-govuk-tag
-    [tagClasses]="status === 'Provided' ? 'govuk-tag' : status === 'Incomplete' ? 'govuk-tag--red' : 'govuk-tag--grey'"
+    [tagClasses]="
+      status === finesMacStatus.PROVIDED
+        ? 'govuk-tag'
+        : status === finesMacStatus.INCOMPLETE
+          ? 'govuk-tag--red'
+          : 'govuk-tag--grey'
+    "
     [tagId]="status"
   >
     {{ status }}</app-govuk-tag
