@@ -214,6 +214,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 
     if (hasCollectionOrderEarliestDate && isCollectionOrderLessThanEarliestDate) {
       this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.INCOMPLETE;
+    } else if (collectionOrderDate) {
+      this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.PROVIDED;
     }
   }
 
