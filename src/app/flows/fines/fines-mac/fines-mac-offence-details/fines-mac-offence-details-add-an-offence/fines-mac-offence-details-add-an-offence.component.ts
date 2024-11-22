@@ -227,8 +227,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     form.status = FINES_MAC_STATUS.PROVIDED;
     form.childFormData = [];
 
-    this.updateOffenceDetailsIndex(form);
-
     // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
