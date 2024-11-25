@@ -69,7 +69,7 @@ describe('SortService', () => {
     });
 
     it('should handle an empty array', () => {
-      const input: any[] = [];
+      const input: [] = [];
       const result = service.sortObjectsAsc(input, 'id');
       expect(result).toEqual([]);
     });
@@ -101,7 +101,7 @@ describe('SortService', () => {
     });
 
     it('should handle an empty array', () => {
-      const input: any[] = [];
+      const input: [] = [];
       const result = service.sortObjectsDsc(input, 'id');
       expect(result).toEqual([]);
     });

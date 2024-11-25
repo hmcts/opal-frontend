@@ -32,8 +32,6 @@ export abstract class AbstractSortableTableComponent implements OnInit {
       Object.keys(tableData[0]).forEach((key) => {
         this.sortState[key] = 'none';
       });
-    } else {
-      this.sortState = this.sortState;
     }
   }
 
