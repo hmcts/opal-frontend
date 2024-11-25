@@ -239,8 +239,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.updateOffenceDetailsIndex(form);
     this.checkPaymentTermsCollectionOrder();
 
-    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
-    this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_code!);
+    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_id!;
+    this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_id!);
 
     if (form.nestedFlow) {
       this.handleAddAnotherOffenceNestedFlow();

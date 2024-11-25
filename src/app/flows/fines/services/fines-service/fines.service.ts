@@ -151,7 +151,7 @@ export class FinesService {
     return this.finesMacState.offenceDetails.reduce(
       (mostRecent, offence) => {
         const offenceDate = this.dateService.getDateFromFormat(
-          offence.formData.fm_offence_details_date_of_offence!,
+          offence.formData.fm_offence_details_date_of_sentence!,
           'dd/MM/yyyy',
         );
         return offenceDate && (!mostRecent || offenceDate < mostRecent) ? offenceDate : mostRecent;
