@@ -606,4 +606,23 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(result).toBeUndefined();
   });
+
+  it('should return one item in the array of minor creditors', () => {
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          fm_offence_details_imposition_position: 1,
+        },
+      },
+    ];
+
+    component['removeMinorCreditorData'](0);
+
+    expect(
+      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData.length,
+    ).toBe(1);
+  });
 });

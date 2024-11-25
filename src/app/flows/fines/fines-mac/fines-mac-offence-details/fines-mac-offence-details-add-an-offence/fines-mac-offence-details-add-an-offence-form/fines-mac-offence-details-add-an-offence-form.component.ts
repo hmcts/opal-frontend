@@ -258,6 +258,31 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   }
 
   /**
+   * Removes the minor creditor data at the specified index from the offence details draft state.
+   * If the offence details draft state or child form data is not available, the function returns early.
+   *
+   * @param {number} index - The index of the minor creditor data to be removed.
+   *
+   * @returns {void}
+   */
+  private removeMinorCreditorData(index: number): void {
+    const draftOffenceDetails =
+      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+    if (!draftOffenceDetails?.childFormData) {
+      return;
+    }
+
+    const minorCreditorIndex = draftOffenceDetails.childFormData.findIndex(
+      (x) => x.formData.fm_offence_details_imposition_position === index,
+    );
+
+    if (minorCreditorIndex >= 0) {
+      draftOffenceDetails.childFormData.splice(minorCreditorIndex, 1);
+      delete this.minorCreditors[index];
+    }
+  }
+
+  /**
    * Listens for changes in the result code control and updates the needs creditor control accordingly.
    * @param index - The index of the impositions form group.
    */
@@ -278,6 +303,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       'fm_offence_details_creditor',
       index,
     );
+    const majorCreditorControl = this.getFormArrayFormGroupControl(
+      impositionsFormGroup,
+      'fm_offence_details_major_creditor',
+      index,
+    );
 
     if (needsCreditorControl.value) {
       this.creditorListener(index);
@@ -296,6 +326,11 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
           this.creditorListener(index);
         } else {
           this.removeFormArrayFormGroupControlValidators(creditorControl);
+          if (majorCreditorControl) {
+            this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
+          }
+          this.changeDetector.detectChanges();
+          this.removeMinorCreditorData(index);
         }
       });
   }

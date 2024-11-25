@@ -61,18 +61,18 @@ When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
               cy.get('#idBtn_Back', { timeout: 12000 }).click();
             },
           );
-          cy.wait(500);
-          cy.get('.moj-header__navigation-item > .moj-header__navigation-link', { timeout: 12000 }).contains(
-            'Sign out',
-          );
+          cy.get('.moj-header__navigation-item > .moj-header__navigation-link', { timeout: 12000 })
+            .contains('Sign out')
+            .should('be.visible');
         }
       });
     },
     {
       validate() {
-        // Ensure that the user is already logged in by checking for the sign-out link
         cy.visit('/sign-in');
-        cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out');
+
+        // Ensure that the user is already logged in by checking for the sign-out link
+        cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out').should('be.visible');
       },
     },
   );

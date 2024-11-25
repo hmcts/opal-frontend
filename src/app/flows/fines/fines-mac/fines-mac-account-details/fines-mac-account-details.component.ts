@@ -62,6 +62,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public courtHearingLanguage!: string;
   public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
   public pageNavigation!: boolean;
+  public readonly finesMacStatus = FINES_MAC_STATUS;
 
   /**
    * Determines whether the component can be deactivated.
