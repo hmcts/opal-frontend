@@ -72,6 +72,17 @@ export class DateService {
   }
 
   /**
+   * Parses a string value into a native JavaScript Date object based on the specified format.
+   * @param value - The string value to parse.
+   * @param format - The format of the string value.
+   * @returns A Date object representing the parsed value, or null if parsing fails.
+   */
+  public getDateFromFormat(value: string, format: string): Date | null {
+    const dateTime = DateTime.fromFormat(value, format);
+    return dateTime.isValid ? dateTime.toJSDate() : null;
+  }
+
+  /**
    * Converts a DateTime value to a formatted string.
    *
    * @param value - The DateTime value to format.
@@ -80,6 +91,17 @@ export class DateService {
    */
   public toFormat(value: DateTime<true> | DateTime<false>, format: string): string {
     return value.toFormat(format);
+  }
+
+  /**
+   * Converts a given Date object to a formatted string based on the specified format.
+   *
+   * @param value - The Date object to be formatted.
+   * @param format - The string format to apply to the Date object.
+   * @returns The formatted date string.
+   */
+  public toDateStringFormat(value: Date, format: string): string {
+    return DateTime.fromJSDate(value).toFormat(format);
   }
 
   /**

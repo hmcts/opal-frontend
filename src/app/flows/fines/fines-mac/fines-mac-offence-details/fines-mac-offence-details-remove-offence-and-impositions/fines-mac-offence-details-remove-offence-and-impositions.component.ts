@@ -59,8 +59,31 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
     )[this.finesMacOffenceDetailsService.offenceIndex];
   }
 
+  /**
+   * Confirms the removal of an offence from the offence details list.
+   *
+   * This method performs the following actions:
+   * 1. Retrieves the offence details and the index of the offence to be removed.
+   * 2. Removes the offence from the offence details list.
+   * 3. Decreases the `fm_offence_details_id` of each offence that comes after the removed offence.
+   * 4. Sets the `offenceRemoved` flag to true.
+   * 5. Navigates to the review offences route.
+   *
+   * @returns {void}
+   */
   public confirmOffenceRemoval(): void {
+    const { offenceDetails } = this.finesService.finesMacState;
+    const startIndex = this.finesMacOffenceDetailsService.offenceIndex;
+
     this.finesService.finesMacState.offenceDetails.splice(this.finesMacOffenceDetailsService.offenceIndex, 1);
+
+    // decrease the fm_offence_details_id of each offence after the removed offence
+    offenceDetails.slice(startIndex).forEach((offence) => {
+      if (offence?.formData?.fm_offence_details_id !== undefined) {
+        offence.formData.fm_offence_details_id -= 1;
+      }
+    });
+
     this.finesMacOffenceDetailsService.offenceRemoved = true;
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.reviewOffences);
   }

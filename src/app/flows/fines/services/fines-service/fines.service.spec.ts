@@ -4,12 +4,18 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM } from '../../fines-mac/fines-mac-employer-details/constants/fines-mac-employer-details-form';
 import { FINES_MAC_STATUS } from '../../fines-mac/constants/fines-mac-status';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
+import { DateService } from '@services/date-service/date.service';
 
 describe('FinesService', () => {
   let service: FinesService;
+  let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    mockDateService = jasmine.createSpyObj(DateService, ['getDateFromFormat']);
+
+    TestBed.configureTestingModule({
+      providers: [{ provide: DateService, useValue: mockDateService }],
+    });
     service = TestBed.inject(FinesService);
   });
 
@@ -106,5 +112,25 @@ describe('FinesService', () => {
 
     service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
     expect(service.checkMandatorySections()).toBeFalse();
+  });
+
+  it('should retrieve the earliest date of sentence', () => {
+    service.finesMacState.offenceDetails = [
+      { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK },
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+        formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_date_of_offence: '02/09/2024' },
+      },
+    ];
+    const offenceDate = new Date('2024-09-01');
+
+    mockDateService.getDateFromFormat.and.returnValue(offenceDate);
+
+    expect(service.getEarliestDateOfSentence()).toEqual(offenceDate);
+  });
+
+  it('should return null if no offence details are present', () => {
+    service.finesMacState.offenceDetails = [];
+    expect(service.getEarliestDateOfSentence()).toBeNull();
   });
 });

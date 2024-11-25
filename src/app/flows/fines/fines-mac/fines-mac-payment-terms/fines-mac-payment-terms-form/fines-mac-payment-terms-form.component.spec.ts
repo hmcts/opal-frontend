@@ -11,6 +11,7 @@ import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session
 import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -22,7 +23,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   let formSubmit: IFinesMacPaymentTermsForm;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
     mockDateService = jasmine.createSpyObj(DateService, [
       'getPreviousDate',
       'calculateAge',
@@ -31,9 +32,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       'isDateInTheFuture',
       'getDateNow',
       'toFormat',
+      'toDateStringFormat',
     ]);
 
     mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.getEarliestDateOfSentence.and.returnValue(new Date('2024-09-01'));
     formSubmit = FINES_MAC_PAYMENT_TERMS_FORM_MOCK;
 
     await TestBed.configureTestingModule({
@@ -128,6 +131,52 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
     expect(component.today).toBeDefined();
+  });
+
+  it('should call initialPaymentTermsSetup method with offence details data', () => {
+    mockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '01/09/2024';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupPermissions');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setupPaymentTermsForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'paymentTermsListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'determineAccess');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addCollectionOrderFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addDefaultDatesFormControls');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addEnforcementFields');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setInitialErrorMessages');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'rePopulateForm');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'handleErrorMessages');
+    mockDateService.getPreviousDate.and.returnValue('30/08/2024');
+    component.accessDefaultDates = true;
+    mockDateService.toFormat.and.returnValue('31/08/2024');
+    component.accessCollectionOrder = true;
+    component.accessDefaultDates = true;
+    component['initialPaymentTermsSetup']();
+
+    expect(component['setupPermissions']).toHaveBeenCalled();
+    expect(component['setupPaymentTermsForm']).toHaveBeenCalled();
+    expect(component['paymentTermsListener']).toHaveBeenCalled();
+    expect(component['determineAccess']).toHaveBeenCalled();
+    expect(component['addCollectionOrderFormControls']).toHaveBeenCalled();
+    expect(component['addDefaultDatesFormControls']).toHaveBeenCalled();
+    expect(component['addEnforcementFields']).toHaveBeenCalled();
+    expect(component['setInitialErrorMessages']).toHaveBeenCalled();
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(
+      component['finesService'].finesMacState.paymentTerms.formData,
+    );
+    expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
+    expect(component.yesterday).toBeDefined();
+    expect(component.today).toBeDefined();
+    expect(component['handleErrorMessages']).toHaveBeenCalled();
   });
 
   it('should add controls when has days in default is true', () => {
@@ -328,6 +377,24 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
     expect(component['addControls']).toHaveBeenCalledWith(component.collectionOrderControls.true.fieldsToAdd);
     expect(component['removeControls']).toHaveBeenCalledWith(component.collectionOrderControls.true.fieldsToRemove);
+  });
+
+  it('should reset and create collection order date when has collection order value is "yes" with offence date', () => {
+    mockDateService.toDateStringFormat.and.returnValue(
+      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_offence!,
+    );
+
+    component.defendantType = 'adultOrYouthOnly';
+    component.accessCollectionOrder = true;
+    component['addCollectionOrderFormControls']();
+    const hasCollectionOrderControl = component.form.controls['fm_payment_terms_collection_order_made'];
+
+    component['hasCollectionOrderListener']();
+    hasCollectionOrderControl.setValue(true);
+
+    expect(component.form.get('fm_payment_terms_collection_order_date')!.value).toBe(
+      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_offence,
+    );
   });
 
   it('should remove collection order date and create make collection order today and collection order date when has collection order value is not "yes"', () => {

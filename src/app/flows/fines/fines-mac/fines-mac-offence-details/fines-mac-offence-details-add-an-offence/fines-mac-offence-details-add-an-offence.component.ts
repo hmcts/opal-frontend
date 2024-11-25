@@ -15,6 +15,7 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { AbstractFormArrayParentBaseComponent } from '@components/abstract/abstract-form-array-parent-base/abstract-form-array-parent-base.component';
+import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -31,6 +32,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  private readonly dateService = inject(DateService);
   public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
@@ -182,6 +184,42 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   /**
+   * Retrieves the collection order date from the payment terms.
+   *
+   * @returns {Date | null} The collection order date if available, otherwise null.
+   */
+  private getCollectionOrderDate(): Date | null {
+    const { formData: paymentTerms } = this.finesService.finesMacState.paymentTerms;
+    if (paymentTerms?.fm_payment_terms_collection_order_date) {
+      return this.dateService.getDateFromFormat(paymentTerms.fm_payment_terms_collection_order_date, 'dd/MM/yyyy');
+    }
+    return null;
+  }
+
+  /**
+   * Checks the payment terms collection order by comparing the collection order date
+   * with the earliest date of sentence. If the collection order date is earlier than
+   * the earliest date of sentence, it sets the payment terms status to INCOMPLETE.
+   *
+   * @private
+   * @returns {void}
+   */
+  private checkPaymentTermsCollectionOrder(): void {
+    const collectionOrderDate = this.getCollectionOrderDate();
+    const earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
+    const hasCollectionOrderEarliestDate = collectionOrderDate && earliestDateOfSentence;
+    const isCollectionOrderLessThanEarliestDate = hasCollectionOrderEarliestDate
+      ? collectionOrderDate < earliestDateOfSentence
+      : false;
+
+    if (hasCollectionOrderEarliestDate && isCollectionOrderLessThanEarliestDate) {
+      this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.INCOMPLETE;
+    } else if (collectionOrderDate) {
+      this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.PROVIDED;
+    }
+  }
+
+  /**
    * Handles the submission of the offence details form.
    *
    * @param form - The offence details form data.
@@ -191,14 +229,15 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     form.status = FINES_MAC_STATUS.PROVIDED;
     form.childFormData = [];
 
-    this.updateOffenceDetailsIndex(form);
-
     // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,
       unsavedChanges: false,
       stateChanges: true,
     };
+
+    this.updateOffenceDetailsIndex(form);
+    this.checkPaymentTermsCollectionOrder();
 
     this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_code!;
     this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_code!);

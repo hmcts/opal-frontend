@@ -319,4 +319,59 @@ describe('DateServiceService', () => {
     const futureDate = DateTime.now().plus({ years: 2 }).toFormat('dd/MM/yyyy');
     expect(service.isDateInTheFuture(futureDate, 3)).toBeFalse();
   });
+
+  it('should return a Date object from a valid formatted string', () => {
+    const value = '01/01/2022';
+    const format = 'dd/MM/yyyy';
+    const result = service.getDateFromFormat(value, format);
+    expect(result).toBeInstanceOf(Date);
+    expect(result?.getFullYear()).toBe(2022);
+    expect(result?.getMonth()).toBe(0); // Months are 0-indexed in JavaScript Date
+    expect(result?.getDate()).toBe(1);
+  });
+
+  it('should return null from an invalid formatted string', () => {
+    const value = 'invalid-date';
+    const format = 'dd/MM/yyyy';
+    const result = service.getDateFromFormat(value, format);
+    expect(result).toBeNull();
+  });
+
+  it('should return null from a string that does not match the format', () => {
+    const value = '2022-01-01';
+    const format = 'dd/MM/yyyy';
+    const result = service.getDateFromFormat(value, format);
+    expect(result).toBeNull();
+  });
+
+  it('should return a Date object from a valid formatted string with different format', () => {
+    const value = '2022-01-01';
+    const format = 'yyyy-MM-dd';
+    const result = service.getDateFromFormat(value, format);
+    expect(result).toBeInstanceOf(Date);
+    expect(result?.getFullYear()).toBe(2022);
+    expect(result?.getMonth()).toBe(0); // Months are 0-indexed in JavaScript Date
+    expect(result?.getDate()).toBe(1);
+  });
+
+  it('should convert a Date object to a formatted string', () => {
+    const date = new Date(2022, 0, 1); // January 1, 2022
+    const format = 'dd/MM/yyyy';
+    const result = service.toDateStringFormat(date, format);
+    expect(result).toEqual('01/01/2022');
+  });
+
+  it('should convert a Date object to a different formatted string', () => {
+    const date = new Date(2022, 0, 1); // January 1, 2022
+    const format = 'yyyy-MM-dd';
+    const result = service.toDateStringFormat(date, format);
+    expect(result).toEqual('2022-01-01');
+  });
+
+  it('should handle invalid Date object', () => {
+    const date = new Date('invalid-date');
+    const format = 'dd/MM/yyyy';
+    const result = service.toDateStringFormat(date, format);
+    expect(result).toEqual('Invalid DateTime');
+  });
 });
