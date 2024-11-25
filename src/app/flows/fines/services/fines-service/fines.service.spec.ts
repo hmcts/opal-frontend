@@ -104,7 +104,7 @@ describe('FinesService', () => {
         },
       },
     };
-
+    service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
     expect(service.checkMandatorySections()).toBeFalse();
 
     service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
