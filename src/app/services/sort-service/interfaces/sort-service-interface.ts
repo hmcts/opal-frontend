@@ -3,6 +3,6 @@ export interface ISortServiceInterface {
   sortType: 'ascending' | 'descending';
 }
 
-export interface IObjectSortableInterface {
-  [key: string]: string | number | boolean;
+export interface IObjectSortableInterface<T extends string | number | boolean> {
+  [key: string]: T;
 }

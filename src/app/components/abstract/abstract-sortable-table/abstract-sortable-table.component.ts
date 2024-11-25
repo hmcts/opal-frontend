@@ -8,7 +8,7 @@ import { ISortStateInterface } from './interfaces/abtract-sortable-table-interfa
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
-  public abstractTableData!: any;
+  public abstractTableData!: IObjectSortableInterface<string | number | boolean>[];
   public abstractExistingSortState!: any;
   @Output() abstractSortState = new EventEmitter<ISortStateInterface>();
 
@@ -27,7 +27,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     this.sortState = sortState;
   }
 
-  public createSortState(tableData: IObjectSortableInterface[]): void {
+  public createSortState(tableData: IObjectSortableInterface<string | number | boolean>[]): void {
     Object.keys(tableData[0]).forEach((key) => {
       this.sortState[key] = 'none';
     });

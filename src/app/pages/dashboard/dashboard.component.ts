@@ -5,7 +5,7 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 import { CommonModule } from '@angular/common';
 import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
 import { TableWrapComponent } from './table-wrap/table-wrap.component';
-import { ISortState } from './table-wrap/Interfaces/table-wrap-interfaces';
+import { ISortState, ITableComponentTableData } from './table-wrap/Interfaces/table-wrap-interfaces';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +20,7 @@ export class DashboardComponent {
 
   public active: string = 'nav1';
 
-  tableData: IObjectSortableInterface[] = [
+  tableData: ITableComponentTableData[] = [
     {
       imposition: 'Imposition 1',
       creditor: 'major',

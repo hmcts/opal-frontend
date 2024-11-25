@@ -6,6 +6,7 @@ import { MojSortableTableRowDataComponent } from '@components/moj/moj-sortable-t
 import { MojSortableTableRowComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row.component';
 import { MojSortableTableComponent } from '@components/moj/moj-sortable-table/moj-sortable-table.component';
 import { ITableComponentTableData, ISortState } from './Interfaces/table-wrap-interfaces';
+import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
 @Component({
   selector: 'app-table-wrap',
   standalone: true,

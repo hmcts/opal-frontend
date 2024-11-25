@@ -15,7 +15,7 @@ export class SortService {
   }
 
   private getObjects(
-    array: IObjectSortableInterface[],
+    array: IObjectSortableInterface<string | number | boolean>[],
     config: ISortServiceInterface,
   ): { [key: string]: string | number | boolean }[] {
     if (!Array.isArray(array) || !config.key) {
@@ -31,11 +31,17 @@ export class SortService {
     }
   }
 
-  public sortObjectsAsc(array: IObjectSortableInterface[], key: string): IObjectSortableInterface[] {
+  public sortObjectsAsc(
+    array: IObjectSortableInterface<string | number | boolean>[],
+    key: string,
+  ): IObjectSortableInterface<string | number | boolean>[] {
     return this.getObjects(array, { key, sortType: 'ascending' });
   }
 
-  public sortObjectsDsc(array: IObjectSortableInterface[], key: string): IObjectSortableInterface[] {
+  public sortObjectsDsc(
+    array: IObjectSortableInterface<string | number | boolean>[],
+    key: string,
+  ): IObjectSortableInterface<string | number | boolean>[] {
     return this.getObjects(array, { key, sortType: 'descending' });
   }
 }
