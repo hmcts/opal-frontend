@@ -94,4 +94,16 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     component.confirmOffenceRemoval();
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
   });
+
+  it('should remove first item in array leaving one item remaining', () => {
+    mockFinesService.finesMacState.offenceDetails = [
+      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+        formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_id: 1 },
+      },
+    ];
+    component.confirmOffenceRemoval();
+    expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
+  });
 });
