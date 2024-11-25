@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { EventEmitter } from '@angular/core';
 import { AbstractSortableTableComponent } from './abstract-sortable-table.component';
 import { SortService } from '@services/sort-service/sort-service';
-import { ISortStateInterface } from './interfaces/abtract-sortable-table-interfaces';
+import { ISortStateInterface } from './interfaces/abstract-sortable-table-interfaces';
 
 describe('AbstractSortableTableComponent', () => {
   let component: AbstractSortableTableComponent;
@@ -143,7 +143,6 @@ describe('AbstractSortableTableComponent', () => {
       { imposition: 'Imposition 2', creditor: 'minor', amountImposed: 1500, amountPaid: 500, balanceRemaining: 1000 },
     ]);
   });
-
 
   it('should call SortService for descending sort', () => {
     sortServiceMock.sortObjectsDsc.and.returnValue([

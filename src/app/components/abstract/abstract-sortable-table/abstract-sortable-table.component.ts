@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
 import { SortService } from '@services/sort-service/sort-service';
-import { ISortStateInterface } from './interfaces/abtract-sortable-table-interfaces';
+import { ISortStateInterface } from './interfaces/abstract-sortable-table-interfaces';
 
 @Component({
   standalone: true,
@@ -9,7 +9,7 @@ import { ISortStateInterface } from './interfaces/abtract-sortable-table-interfa
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
   public abstractTableData!: IObjectSortableInterface<string | number | boolean>[];
-  public abstractExistingSortState!: any;
+  public abstractExistingSortState!: ISortStateInterface | null;
   @Output() abstractSortState = new EventEmitter<ISortStateInterface>();
 
   private readonly sortService = inject(SortService);
@@ -28,14 +28,17 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   }
 
   public createSortState(tableData: IObjectSortableInterface<string | number | boolean>[]): void {
-    Object.keys(tableData[0]).forEach((key) => {
-      this.sortState[key] = 'none';
-    });
+    if (tableData.length >= 0) {
+      Object.keys(tableData[0]).forEach((key) => {
+        this.sortState[key] = 'none';
+      });
+    } else {
+      this.sortState = this.sortState;
+    }
   }
 
   public onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     const { key, sortType } = event;
-
     Object.keys(this.sortState).forEach((key) => {
       this.sortState[key] = key === event.key ? event.sortType : 'none';
     });
