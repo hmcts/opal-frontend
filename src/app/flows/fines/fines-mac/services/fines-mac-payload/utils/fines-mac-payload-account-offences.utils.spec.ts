@@ -48,37 +48,37 @@ describe('buildAccountOffencesPayload', () => {
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
   });
 
-  // it('should build payload with a null response object', () => {
-  //   const offencesMockState: IFinesMacOffenceDetailsForm[] = [
-  //     {
-  //       ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
-  //       formData: {
-  //         ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData,
-  //         fm_offence_details_id: 0,
-  //         fm_offence_details_date_of_sentence: null,
-  //         fm_offence_details_offence_id: null,
-  //         fm_offence_details_impositions: [],
-  //       },
-  //       childFormData: null,
-  //     },
-  //   ];
+  it('should build payload with a null response object', () => {
+    const offencesMockState: IFinesMacOffenceDetailsForm[] = [
+      {
+        ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
+        formData: {
+          ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData,
+          fm_offence_details_id: 0,
+          fm_offence_details_date_of_sentence: null,
+          fm_offence_details_offence_id: null,
+          fm_offence_details_impositions: [],
+        },
+        childFormData: null,
+      },
+    ];
 
-  //   const courtDetailsState = {
-  //     fm_court_details_originator_id: null,
-  //     fm_court_details_originator_name: null,
-  //     fm_court_details_prosecutor_case_reference: null,
-  //     fm_court_details_imposing_court_id: null,
-  //   };
-  //   const results = buildAccountOffencesPayload(offencesMockState, courtDetailsState);
-  //   expect(results).toEqual([
-  //     {
-  //       date_of_sentence: null,
-  //       imposing_court_id: null,
-  //       offence_id: null,
-  //       impositions: null,
-  //     },
-  //   ]);
-  // });
+    const courtDetailsState = {
+      fm_court_details_originator_id: null,
+      fm_court_details_originator_name: null,
+      fm_court_details_prosecutor_case_reference: null,
+      fm_court_details_imposing_court_id: null,
+    };
+    const results = buildAccountOffencesPayload(offencesMockState, courtDetailsState);
+    expect(results).toEqual([
+      {
+        date_of_sentence: null,
+        imposing_court_id: null,
+        offence_id: null,
+        impositions: null,
+      },
+    ]);
+  });
 
   it('should build payload with null values', () => {
     const offencesMockState: IFinesMacOffenceDetailsForm[] = [
