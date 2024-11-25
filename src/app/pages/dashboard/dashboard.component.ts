@@ -8,13 +8,8 @@ import { MojSortableTableRowComponent } from '@components/moj/moj-sortable-table
 import { MojSortableTableRowDataComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row-data/moj-sortable-table-row-data.component';
 import { CommonModule } from '@angular/common';
 import { SortService } from '@services/sort-service/sort-service';
-interface TableData {
-  imposition: string;
-  creditor: string;
-  amountImposed: number;
-  amountPaid: number;
-  balanceRemaining: number;
-}
+import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -34,7 +29,7 @@ export class DashboardComponent {
   public readonly finesRoutingPaths = FINES_ROUTING_PATHS;
 
   public active: string = 'nav1';
-  tableData = [
+  tableData: IObjectSortableInterface[] = [
     {
       imposition: 'Imposition 1',
       creditor: 'major',
@@ -58,18 +53,31 @@ export class DashboardComponent {
     },
   ];
 
+  sortState: Record<string, 'ascending' | 'descending' | 'none'> = {
+    imposition: 'none',
+    creditor: 'none',
+    amountImposed: 'none',
+    amountPaid: 'none',
+    balanceRemaining: 'none',
+  };
+
   sortedData = [];
   constructor(private readonly sortService: SortService) {}
 
-  // Handle the sorting event
-  onSortChange(event: { key: string; sortType: 'asc' | 'desc' }): void {
-    console.log('Sort Event Received:', event); // Debug log for event details
+  onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     const { key, sortType } = event;
 
-    sortType === 'asc'
-      ? console.log(this.sortService.sortObjectsAsc(this.tableData, key))
-      : console.log(this.sortService.sortObjectsDsc(this.tableData, key));
+    Object.keys(this.sortState).forEach((key) => {
+      this.sortState[key] = key === event.key ? event.sortType : 'none';
+    });
 
-    console.log('Updated Sorted Data:', this.sortedData); // Debug log for sorted data
+    if (sortType === 'ascending') {
+      this.tableData = this.sortService.sortObjectsAsc(this.tableData, key);
+    } else {
+      this.tableData = this.sortService.sortObjectsDsc(this.tableData, key);
+    }
+
+    console.log('Updated Sorted Data:', this.sortedData);
+    console.log(this.sortState);
   }
 }

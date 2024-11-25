@@ -1,4 +1,8 @@
 export interface ISortServiceInterface {
   key: string;
-  sortType: 'asc' | 'desc';
+  sortType: 'ascending' | 'descending';
+}
+
+export interface IObjectSortableInterface {
+  [key: string]: string | number;
 }

@@ -1,12 +1,4 @@
-import {
-  Component,
-  HostBinding,
-  ChangeDetectionStrategy,
-  HostListener,
-  Output,
-  EventEmitter,
-  Input,
-} from '@angular/core';
+import { Component, HostBinding, ChangeDetectionStrategy, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
   selector: 'app-moj-sortable-table-header, [app-moj-sortable-table-header]',
@@ -16,28 +8,32 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojSortableTableHeaderComponent {
-  @Input() columnKey!: string; // The key to sort by
-  @Input() sortDirection: 'none' | 'ascending' | 'descending' = 'none'; // Default sort direction
+  @Input() columnKey!: string;
+  @Input() sortDirection: 'ascending' | 'descending' | 'none' = 'none';
 
-  @Output() sortChange = new EventEmitter<{ key: string; sortType: 'asc' | 'desc' }>();
+  @Output() sortChange = new EventEmitter<{ key: string; sortType: 'ascending' | 'descending' }>();
 
-  @HostBinding('attr.aria-sort') get ariaSort(): string {
+  @HostBinding('attr.aria-sort') get ariaSort(): string | null {
     return this.sortDirection;
   }
 
-  toggleSort(): void {
-    this.sortDirection =
-      this.sortDirection === 'none' ? 'ascending' : this.sortDirection === 'ascending' ? 'descending' : 'none';
+  @HostBinding('scope') hostScope = 'col';
 
-    if (this.sortDirection !== 'none') {
-      console.log('Emitting Sort Event:', {
-        key: this.columnKey,
-        sortType: this.sortDirection === 'ascending' ? 'asc' : 'desc',
-      });
-      this.sortChange.emit({
-        key: this.columnKey,
-        sortType: this.sortDirection === 'ascending' ? 'asc' : 'desc',
-      });
-    }
+  @HostBinding('class') get hostClass(): string {
+    return 'govuk-table__header';
+  }
+
+  toggleSort(): void {
+    const newDirection = this.sortDirection === 'ascending' ? 'descending' : 'ascending';
+
+    console.log('Emitting Sort Event:', {
+      key: this.columnKey,
+      sortType: newDirection,
+    });
+
+    this.sortChange.emit({
+      key: this.columnKey,
+      sortType: newDirection,
+    });
   }
 }

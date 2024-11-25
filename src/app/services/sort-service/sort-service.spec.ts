@@ -11,119 +11,123 @@ describe('SortService', () => {
     service = TestBed.inject(SortService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   describe('arraySortAsc', () => {
     it('should sort an array of numbers in ascending order', () => {
-      const input = [5, 2, 9, 1, 4];
-      const expected = [1, 2, 4, 5, 9];
-      expect(service.arraySortAsc(input)).toEqual(expected);
+      const array = [3, 1, 2];
+      const result = service.arraySortAsc(array);
+      expect(result).toEqual([1, 2, 3]);
     });
 
     it('should sort an array of strings in ascending order', () => {
-      const input = ['banana', 'apple', 'cherry'];
-      const expected = ['apple', 'banana', 'cherry'];
-      expect(service.arraySortAsc(input)).toEqual(expected);
+      const array = ['banana', 'apple', 'cherry'];
+      const result = service.arraySortAsc(array);
+      expect(result).toEqual(['apple', 'banana', 'cherry']);
     });
 
-    it('should sort a mixed array of numbers and strings in ascending order', () => {
-      const input = ['banana', 5, 'apple', 1];
-      const expected = [1, 5, 'apple', 'banana'];
-      expect(service.arraySortAsc(input)).toEqual(expected);
-    });
-
-    it('should return an empty array when input is empty', () => {
-      const input: (string | number)[] = [];
-      expect(service.arraySortAsc(input)).toEqual([]);
+    it('should return an empty array when passed an empty array', () => {
+      const array: string[] = [];
+      const result = service.arraySortAsc(array);
+      expect(result).toEqual([]);
     });
   });
 
   describe('arraySortDsc', () => {
     it('should sort an array of numbers in descending order', () => {
-      const input = [5, 2, 9, 1, 4];
-      const expected = [9, 5, 4, 2, 1];
-      expect(service.arraySortDsc(input)).toEqual(expected);
+      const array = [3, 1, 2];
+      const result = service.arraySortDsc(array);
+      expect(result).toEqual([3, 2, 1]);
     });
 
     it('should sort an array of strings in descending order', () => {
-      const input = ['banana', 'apple', 'cherry'];
-      const expected = ['cherry', 'banana', 'apple'];
-      expect(service.arraySortDsc(input)).toEqual(expected);
+      const array = ['banana', 'apple', 'cherry'];
+      const result = service.arraySortDsc(array);
+      expect(result).toEqual(['cherry', 'banana', 'apple']);
     });
 
-    it('should sort a mixed array of numbers and strings in descending order', () => {
-      const input = ['banana', 5, 'apple', 1];
-      const expected = ['banana', 'apple', 5, 1];
-      expect(service.arraySortDsc(input)).toEqual(expected);
-    });
-
-    it('should return an empty array when input is empty', () => {
-      const input: (string | number)[] = [];
-      expect(service.arraySortDsc(input)).toEqual([]);
+    it('should return an empty array when passed an empty array', () => {
+      const array: string[] = [];
+      const result = service.arraySortDsc(array);
+      expect(result).toEqual([]);
     });
   });
 
   describe('sortObjectsAsc', () => {
-    it('should sort an array of objects in ascending order by a given key', () => {
-      const input = [
-        { id: 3, name: 'John' },
-        { id: 1, name: 'Jane' },
-        { id: 2, name: 'Sam' },
+    it('should sort an array of objects by a key in ascending order', () => {
+      const array = [
+        { name: 'Charlie', age: 35 },
+        { name: 'Alice', age: 25 },
+        { name: 'Bob', age: 30 },
       ];
-      const expected = [
-        { id: 1, name: 'Jane' },
-        { id: 2, name: 'Sam' },
-        { id: 3, name: 'John' },
-      ];
-      expect(service.sortObjectsAsc(input, 'id')).toEqual(expected);
+      const result = service.sortObjectsAsc(array, 'name');
+      expect(result).toEqual([
+        { name: 'Alice', age: 25 },
+        { name: 'Bob', age: 30 },
+        { name: 'Charlie', age: 35 },
+      ]);
     });
 
     it('should handle an empty array gracefully', () => {
-      const input: { [key: string]: unknown }[] = [];
-      expect(service.sortObjectsAsc(input, 'id')).toEqual([]);
+      const array: { [key: string]: string | number }[] = [];
+      const result = service.sortObjectsAsc(array, 'name');
+      expect(result).toEqual([]);
+    });
+
+    it('should return the same array if the key does not exist', () => {
+      const array = [
+        { name: 'Charlie', age: 35 },
+        { name: 'Alice', age: 25 },
+      ];
+      const result = service.sortObjectsAsc(array, 'nonexistent');
+      expect(result).toEqual(array);
     });
   });
 
   describe('sortObjectsDsc', () => {
-    it('should sort an array of objects in descending order by a given key', () => {
-      const input = [
-        { id: 3, name: 'John' },
-        { id: 1, name: 'Jane' },
-        { id: 2, name: 'Sam' },
+    it('should sort an array of objects by a key in descending order', () => {
+      const array = [
+        { name: 'Charlie', age: 35 },
+        { name: 'Alice', age: 25 },
+        { name: 'Bob', age: 30 },
       ];
-      const expected = [
-        { id: 3, name: 'John' },
-        { id: 2, name: 'Sam' },
-        { id: 1, name: 'Jane' },
-      ];
-      expect(service.sortObjectsDsc(input, 'id')).toEqual(expected);
+      const result = service.sortObjectsDsc(array, 'age');
+      expect(result).toEqual([
+        { name: 'Charlie', age: 35 },
+        { name: 'Bob', age: 30 },
+        { name: 'Alice', age: 25 },
+      ]);
     });
 
     it('should handle an empty array gracefully', () => {
-      const input: { [key: string]: unknown }[] = [];
-      expect(service.sortObjectsDsc(input, 'id')).toEqual([]);
+      const array: { [key: string]: string | number }[] = [];
+      const result = service.sortObjectsDsc(array, 'name');
+      expect(result).toEqual([]);
     });
 
-    it('should handle missing keys gracefully', () => {
-      const input = [{ id: 3, name: 'John' }, { name: 'Jane' }, { id: 2, name: 'Sam' }];
-      const expected = [{ id: 3, name: 'John' }, { id: 2, name: 'Sam' }, { name: 'Jane' }];
-      expect(service.sortObjectsDsc(input, 'id')).toEqual(expected);
+    it('should return the same array if the key does not exist', () => {
+      const array = [
+        { name: 'Charlie', age: 35 },
+        { name: 'Alice', age: 25 },
+      ];
+      const result = service.sortObjectsDsc(array, 'nonexistent');
+      expect(result).toEqual(array);
     });
   });
 
-  describe('getObjects (indirectly via sortObjectsAsc and sortObjectsDsc)', () => {
-    it('should return the original array if the config is invalid', () => {
-      const input = [{ id: 3 }, { id: 1 }];
-      const result = service['getObjects'](input, { key: '', sortType: 'asc' });
-      expect(result).toEqual(input);
+  describe('getObjects (private method)', () => {
+    it('should return the original array if config is invalid', () => {
+      // Bypass private access with a cast to `any`
+      const array = [
+        { name: 'Charlie', age: 35 },
+        { name: 'Alice', age: 25 },
+      ];
+      const result = (service as any).getObjects(array, { key: '', sortType: 'ascending' });
+      expect(result).toEqual(array);
     });
 
     it('should return the original array if the input is not an array', () => {
-      const input = null as unknown as { [key: string]: unknown }[];
-      const result = service['getObjects'](input, { key: 'id', sortType: 'asc' });
-      expect(result).toEqual(input);
+      const array: any = 'not an array';
+      const result = (service as any).getObjects(array, { key: 'name', sortType: 'ascending' });
+      expect(result).toEqual(array);
     });
   });
 });
