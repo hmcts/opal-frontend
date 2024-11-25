@@ -9,18 +9,12 @@ import { MojSortableTableRowDataComponent } from '@components/moj/moj-sortable-t
 import { CommonModule } from '@angular/common';
 import { SortService } from '@services/sort-service/sort-service';
 import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
+import { TableWrapComponent } from './table-wrap/table-wrap.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [
-    RouterModule,
-    MojSortableTableComponent,
-    MojSortableTableHeaderComponent,
-    MojSortableTableRowComponent,
-    MojSortableTableRowDataComponent,
-    CommonModule,
-  ],
+  imports: [RouterModule, CommonModule, TableWrapComponent],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -29,6 +23,7 @@ export class DashboardComponent {
   public readonly finesRoutingPaths = FINES_ROUTING_PATHS;
 
   public active: string = 'nav1';
+
   tableData: IObjectSortableInterface[] = [
     {
       imposition: 'Imposition 1',
@@ -53,31 +48,23 @@ export class DashboardComponent {
     },
   ];
 
-  sortState: Record<string, 'ascending' | 'descending' | 'none'> = {
-    imposition: 'none',
+  // public existingState = {
+  //   imposition: 'ascending',
+  //   creditor: 'none',
+  //   amountImposed: 'none',
+  //   amountPaid: 'none',
+  //   balanceRemaining: 'none',
+  // };
+
+  public existingState = {
+    imposition: 'ascending',
     creditor: 'none',
     amountImposed: 'none',
     amountPaid: 'none',
     balanceRemaining: 'none',
   };
 
-  sortedData = [];
-  constructor(private readonly sortService: SortService) {}
-
-  onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
-    const { key, sortType } = event;
-
-    Object.keys(this.sortState).forEach((key) => {
-      this.sortState[key] = key === event.key ? event.sortType : 'none';
-    });
-
-    if (sortType === 'ascending') {
-      this.tableData = this.sortService.sortObjectsAsc(this.tableData, key);
-    } else {
-      this.tableData = this.sortService.sortObjectsDsc(this.tableData, key);
-    }
-
-    console.log('Updated Sorted Data:', this.sortedData);
-    console.log(this.sortState);
+  public handleEmit($event: any): void {
+    console.log('Emit', $event);
   }
 }
