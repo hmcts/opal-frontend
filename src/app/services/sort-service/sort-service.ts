@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { sort } from 'fast-sort';
-import { ISortServiceInterface } from './interfaces/sort-service-interface';
-import { IObjectSortableInterface } from './interfaces/sort-service-interface';
+import { ISortServiceInterface, IObjectSortableInterface } from './interfaces/sort-service-interface';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +17,7 @@ export class SortService {
   private getObjects(
     array: IObjectSortableInterface[],
     config: ISortServiceInterface,
-  ): { [key: string]: string | number }[] {
+  ): { [key: string]: string | number | boolean }[] {
     if (!Array.isArray(array) || !config.key) {
       return array;
     }

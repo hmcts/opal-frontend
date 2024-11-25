@@ -4,5 +4,5 @@ export interface ISortServiceInterface {
 }
 
 export interface IObjectSortableInterface {
-  [key: string]: string | number;
+  [key: string]: string | number | boolean;
 }

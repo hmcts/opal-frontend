@@ -1,18 +1,19 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject, input } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
 import { SortService } from '@services/sort-service/sort-service';
+import { ISortStateInterface } from './interfaces/abtract-sortable-table-interfaces';
 
 @Component({
   standalone: true,
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
-  public abstractTableData!: IObjectSortableInterface[];
+  public abstractTableData!: any;
   public abstractExistingSortState!: any;
-  @Output() abstractSortState = new EventEmitter<Record<string, 'ascending' | 'descending' | 'none'>>();
+  @Output() abstractSortState = new EventEmitter<ISortStateInterface>();
 
   private readonly sortService = inject(SortService);
-  public sortState: Record<string, 'ascending' | 'descending' | 'none'> = {};
+  public sortState: ISortStateInterface = {};
 
   private initialiseSortState(): void {
     if (this.abstractExistingSortState) {
@@ -22,7 +23,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     }
   }
 
-  private setSortState(sortState: Record<string, 'ascending' | 'descending' | 'none'>): void {
+  private setSortState(sortState: ISortStateInterface): void {
     this.sortState = sortState;
   }
 

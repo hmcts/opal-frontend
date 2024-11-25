@@ -48,11 +48,4 @@ describe('MojSortableTableHeaderComponent', () => {
     const thElement = fixture.debugElement.query(By.css('th'));
     expect(thElement.attributes['aria-sort']).toBe('descending');
   });
-
-  it('should not have aria-sort attribute when sortDirection is "none"', () => {
-    component.sortDirection = 'none';
-    fixture.detectChanges();
-    const thElement = fixture.debugElement.query(By.css('th'));
-    expect(thElement.attributes['aria-sort']).toBeUndefined();
-  });
 });

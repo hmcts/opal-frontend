@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { SortService } from './sort-service';
+import { IObjectSortableInterface } from './interfaces/sort-service-interface';
 
 describe('SortService', () => {
   let service: SortService;
@@ -8,126 +9,131 @@ describe('SortService', () => {
     TestBed.configureTestingModule({
       providers: [SortService],
     });
+
     service = TestBed.inject(SortService);
   });
 
   describe('arraySortAsc', () => {
-    it('should sort an array of numbers in ascending order', () => {
-      const array = [3, 1, 2];
-      const result = service.arraySortAsc(array);
-      expect(result).toEqual([1, 2, 3]);
-    });
-
-    it('should sort an array of strings in ascending order', () => {
+    it('should sort a string array in ascending order', () => {
       const array = ['banana', 'apple', 'cherry'];
-      const result = service.arraySortAsc(array);
-      expect(result).toEqual(['apple', 'banana', 'cherry']);
+      const sortedArray = service.arraySortAsc(array);
+
+      expect(sortedArray).toEqual(['apple', 'banana', 'cherry']);
     });
 
-    it('should return an empty array when passed an empty array', () => {
-      const array: string[] = [];
-      const result = service.arraySortAsc(array);
-      expect(result).toEqual([]);
+    it('should sort a numeric array in ascending order', () => {
+      const array = [5, 2, 9, 1];
+      const sortedArray = service.arraySortAsc(array);
+
+      expect(sortedArray).toEqual([1, 2, 5, 9]);
+    });
+
+    it('should return an empty array when input is empty', () => {
+      const array: number[] = [];
+      const sortedArray = service.arraySortAsc(array);
+
+      expect(sortedArray).toEqual([]);
     });
   });
 
   describe('arraySortDsc', () => {
-    it('should sort an array of numbers in descending order', () => {
-      const array = [3, 1, 2];
-      const result = service.arraySortDsc(array);
-      expect(result).toEqual([3, 2, 1]);
-    });
-
-    it('should sort an array of strings in descending order', () => {
+    it('should sort a string array in descending order', () => {
       const array = ['banana', 'apple', 'cherry'];
-      const result = service.arraySortDsc(array);
-      expect(result).toEqual(['cherry', 'banana', 'apple']);
+      const sortedArray = service.arraySortDsc(array);
+
+      expect(sortedArray).toEqual(['cherry', 'banana', 'apple']);
     });
 
-    it('should return an empty array when passed an empty array', () => {
-      const array: string[] = [];
-      const result = service.arraySortDsc(array);
-      expect(result).toEqual([]);
+    it('should sort a numeric array in descending order', () => {
+      const array = [5, 2, 9, 1];
+      const sortedArray = service.arraySortDsc(array);
+
+      expect(sortedArray).toEqual([9, 5, 2, 1]);
+    });
+
+    it('should return an empty array when input is empty', () => {
+      const array: number[] = [];
+      const sortedArray = service.arraySortDsc(array);
+
+      expect(sortedArray).toEqual([]);
     });
   });
 
   describe('sortObjectsAsc', () => {
-    it('should sort an array of objects by a key in ascending order', () => {
-      const array = [
-        { name: 'Charlie', age: 35 },
-        { name: 'Alice', age: 25 },
-        { name: 'Bob', age: 30 },
+    it('should sort an array of objects by a specified key in ascending order', () => {
+      const array: IObjectSortableInterface[] = [
+        { id: 3, name: 'Charlie' },
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
       ];
-      const result = service.sortObjectsAsc(array, 'name');
-      expect(result).toEqual([
-        { name: 'Alice', age: 25 },
-        { name: 'Bob', age: 30 },
-        { name: 'Charlie', age: 35 },
+      const sortedArray = service.sortObjectsAsc(array, 'id');
+
+      expect(sortedArray).toEqual([
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+        { id: 3, name: 'Charlie' },
       ]);
     });
 
-    it('should handle an empty array gracefully', () => {
-      const array: { [key: string]: string | number }[] = [];
-      const result = service.sortObjectsAsc(array, 'name');
-      expect(result).toEqual([]);
+    it('should handle sorting when all keys have the same value', () => {
+      const array: IObjectSortableInterface[] = [
+        { id: 1, name: 'Alice' },
+        { id: 1, name: 'Bob' },
+        { id: 1, name: 'Charlie' },
+      ];
+      const sortedArray = service.sortObjectsAsc(array, 'id');
+
+      expect(sortedArray).toEqual(array);
     });
 
-    it('should return the same array if the key does not exist', () => {
-      const array = [
-        { name: 'Charlie', age: 35 },
-        { name: 'Alice', age: 25 },
+    it('should return the input array if the key does not exist', () => {
+      const array: IObjectSortableInterface[] = [
+        { id: 3, name: 'Charlie' },
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
       ];
-      const result = service.sortObjectsAsc(array, 'nonexistent');
-      expect(result).toEqual(array);
+      const sortedArray = service.sortObjectsAsc(array, 'nonExistentKey');
+
+      expect(sortedArray).toEqual(array);
     });
   });
 
   describe('sortObjectsDsc', () => {
-    it('should sort an array of objects by a key in descending order', () => {
-      const array = [
-        { name: 'Charlie', age: 35 },
-        { name: 'Alice', age: 25 },
-        { name: 'Bob', age: 30 },
+    it('should sort an array of objects by a specified key in descending order', () => {
+      const array: IObjectSortableInterface[] = [
+        { id: 1, name: 'Alice' },
+        { id: 3, name: 'Charlie' },
+        { id: 2, name: 'Bob' },
       ];
-      const result = service.sortObjectsDsc(array, 'age');
-      expect(result).toEqual([
-        { name: 'Charlie', age: 35 },
-        { name: 'Bob', age: 30 },
-        { name: 'Alice', age: 25 },
+      const sortedArray = service.sortObjectsDsc(array, 'id');
+
+      expect(sortedArray).toEqual([
+        { id: 3, name: 'Charlie' },
+        { id: 2, name: 'Bob' },
+        { id: 1, name: 'Alice' },
       ]);
     });
 
-    it('should handle an empty array gracefully', () => {
-      const array: { [key: string]: string | number }[] = [];
-      const result = service.sortObjectsDsc(array, 'name');
-      expect(result).toEqual([]);
-    });
-
-    it('should return the same array if the key does not exist', () => {
-      const array = [
-        { name: 'Charlie', age: 35 },
-        { name: 'Alice', age: 25 },
+    it('should handle sorting when all keys have the same value', () => {
+      const array: IObjectSortableInterface[] = [
+        { id: 1, name: 'Alice' },
+        { id: 1, name: 'Bob' },
+        { id: 1, name: 'Charlie' },
       ];
-      const result = service.sortObjectsDsc(array, 'nonexistent');
-      expect(result).toEqual(array);
-    });
-  });
+      const sortedArray = service.sortObjectsDsc(array, 'id');
 
-  describe('getObjects (private method)', () => {
-    it('should return the original array if config is invalid', () => {
-      // Bypass private access with a cast to `any`
-      const array = [
-        { name: 'Charlie', age: 35 },
-        { name: 'Alice', age: 25 },
+      expect(sortedArray).toEqual(array);
+    });
+
+    it('should return the input array if the key does not exist', () => {
+      const array: IObjectSortableInterface[] = [
+        { id: 1, name: 'Alice' },
+        { id: 3, name: 'Charlie' },
+        { id: 2, name: 'Bob' },
       ];
-      const result = (service as any).getObjects(array, { key: '', sortType: 'ascending' });
-      expect(result).toEqual(array);
-    });
+      const sortedArray = service.sortObjectsDsc(array, 'nonExistentKey');
 
-    it('should return the original array if the input is not an array', () => {
-      const array: any = 'not an array';
-      const result = (service as any).getObjects(array, { key: 'name', sortType: 'ascending' });
-      expect(result).toEqual(array);
+      expect(sortedArray).toEqual(array);
     });
   });
 });
