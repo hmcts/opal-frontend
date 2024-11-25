@@ -13,7 +13,7 @@ This Angular component provides a Ministry of Justice (MOJ)-styled Sortable tabl
 
 ## Usage
 
-#First you have to create a new component called wrapper for your sortable table component It should be something like this.This should be seperate from your parent component.
+First you have to create a new component called wrapper for your sortable table component It should be something like this.This should be seperate from your parent component.
 
 
 ```typescript
@@ -49,7 +49,7 @@ This Angular component provides a Ministry of Justice (MOJ)-styled Sortable tabl
     }
 
 ```
-#Then In the wrapper HTML element,  you have to create the sortable table columns and rows like this.
+Then In the wrapper HTML element,  you have to create the sortable table columns and rows like this.
 
 ```html
 
@@ -120,7 +120,7 @@ This Angular component provides a Ministry of Justice (MOJ)-styled Sortable tabl
 
 ```
 
-#These are some of the interfaces you will need to create for your component.
+These are some of the interfaces you will need to create for your component.
 ```typescript
     import { ISortStateInterface } from '@components/abstract/abstract-sortable-table/interfaces/abstract-sortable-table-interfaces';
     import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
@@ -142,7 +142,7 @@ This Angular component provides a Ministry of Justice (MOJ)-styled Sortable tabl
     }
 ```
 
-#In your parent component you need to have the data you will be passing in. Such as
+In your parent component you need to have the data you will be passing in. Such as
 
 
 ```typescript
@@ -186,7 +186,7 @@ This Angular component provides a Ministry of Justice (MOJ)-styled Sortable tabl
 
 ```
 
-#Then you need to forge them all together with the table wrapping component in the parent html.
+Then you need to forge them all together with the table wrapping component in the parent html.
 
 ```html
     <app-table-wrap
