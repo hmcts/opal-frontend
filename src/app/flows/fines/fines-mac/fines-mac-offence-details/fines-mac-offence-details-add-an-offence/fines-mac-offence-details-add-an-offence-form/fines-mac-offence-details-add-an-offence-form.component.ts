@@ -327,7 +327,10 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         } else {
           this.removeFormArrayFormGroupControlValidators(creditorControl);
           if (majorCreditorControl) {
-            this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
+            majorCreditorControl.reset({ emitEvent: false });
+            majorCreditorControl.clearValidators();
+            majorCreditorControl.setErrors([], { emitEvent: false });
+            majorCreditorControl.updateValueAndValidity({ emitEvent: false });
           }
           this.changeDetector.detectChanges();
           this.removeMinorCreditorData(index);
