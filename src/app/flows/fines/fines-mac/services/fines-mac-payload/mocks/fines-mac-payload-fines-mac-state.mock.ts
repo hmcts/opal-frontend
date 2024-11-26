@@ -1,82 +1,101 @@
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../../fines-mac-account-details/mocks/fines-mac-account-details-state.mock';
-import { FINES_MAC_COMPANY_DETAILS_STATE_MOCK } from '../../../fines-mac-company-details/mocks/fines-mac-company-details-state.mock';
-import { FINES_MAC_CONTACT_DETAILS_STATE_MOCK } from '../../../fines-mac-contact-details/mocks/fines-mac-contact-details-state.mock';
-import { FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from '../../../fines-mac-employer-details/mocks/fines-mac-employer-details-state.mock';
-import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../../../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
-import { FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../../../fines-mac-parent-guardian-details/mocks/fines-mac-parent-guardian-details-state.mock';
-import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../../fines-mac-personal-details/mocks/fines-mac-personal-details-state.mock';
 import { IFinesMacState } from '../../../interfaces/fines-mac-state.interface';
-import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-account-details-state.mock';
+import { FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-company-details-state.mock';
+import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-contact-details-state.mock';
+import { FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-court-details-state.mock';
+import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-employer-details-state.mock';
+import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-language-preferences-state.mock';
+import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../utils/mocks/state/fines-mac-payload-offence-details-state.mock';
+import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
+import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../utils/mocks/state/fines-mac-payload-payment-terms-state.mock';
+import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-personal-details-state.mock';
 
 export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
-  ...FINES_MAC_STATE_MOCK,
   accountDetails: {
-    ...FINES_MAC_STATE_MOCK.accountDetails,
     formData: {
-      ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
-      fm_create_account_defendant_type: 'individual',
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
     },
-  },
-  personalDetails: {
-    ...FINES_MAC_STATE_MOCK.personalDetails,
-    formData: {
-      ...FINES_MAC_PERSONAL_DETAILS_STATE_MOCK,
-      fm_personal_details_add_alias: false,
-      fm_personal_details_aliases: [],
-    },
-  },
-  contactDetails: {
-    ...FINES_MAC_STATE_MOCK.contactDetails,
-    formData: {
-      ...FINES_MAC_CONTACT_DETAILS_STATE_MOCK,
-    },
+    nestedFlow: false,
+    status: 'Not provided',
   },
   employerDetails: {
-    ...FINES_MAC_STATE_MOCK.employerDetails,
     formData: {
-      ...FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK,
+      ...FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
     },
+    nestedFlow: false,
+    status: 'Not provided',
   },
-  languagePreferences: {
-    ...FINES_MAC_STATE_MOCK.languagePreferences,
+  contactDetails: {
     formData: {
-      ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
+      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
     },
-  },
-  companyDetails: {
-    ...FINES_MAC_STATE_MOCK.companyDetails,
-    formData: {
-      ...FINES_MAC_COMPANY_DETAILS_STATE_MOCK,
-    },
+    nestedFlow: false,
+    status: 'Not provided',
   },
   parentGuardianDetails: {
-    ...FINES_MAC_STATE_MOCK.parentGuardianDetails,
     formData: {
-      ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+      ...FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     },
+    nestedFlow: false,
+    status: 'Not provided',
+  },
+  personalDetails: {
+    formData: {
+      ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
+    },
+    nestedFlow: false,
+    status: 'Not provided',
+  },
+  companyDetails: {
+    formData: {
+      ...FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK,
+    },
+    nestedFlow: false,
+    status: 'Not provided',
+  },
+  courtDetails: {
+    formData: {
+      ...FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK,
+    },
+    nestedFlow: false,
+    status: 'Provided',
   },
   accountCommentsNotes: {
-    ...FINES_MAC_STATE_MOCK.accountCommentsNotes,
     formData: {
-      fm_account_comments_notes_comments: 'Test comment',
-      fm_account_comments_notes_notes: 'Test note',
+      fm_account_comments_notes_comments: 'Follow-up required for next meeting',
+      fm_account_comments_notes_notes: 'Client prefers email communication over phone calls',
     },
+    nestedFlow: false,
+    status: 'Not provided',
   },
+  offenceDetails: [
+    {
+      ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
+    },
+  ],
   paymentTerms: {
-    ...FINES_MAC_STATE_MOCK.paymentTerms,
     formData: {
-      fm_payment_terms_payment_terms: 'payInFull',
-      fm_payment_terms_payment_card_request: true,
-      fm_payment_terms_collection_order_made: true,
-      fm_payment_terms_has_days_in_default: true,
-      fm_payment_terms_add_enforcement_action: true,
-      fm_payment_terms_collection_order_date: '21/10/2024',
-      fm_payment_terms_pay_by_date: '14/10/2024',
-      fm_payment_terms_suspended_committal_date: '11/10/2024',
-      fm_payment_terms_default_days_in_jail: 11,
-      fm_payment_terms_enforcement_action: 'PRIS',
-      fm_payment_terms_earliest_release_date: '21/10/2024',
-      fm_payment_terms_prison_and_prison_number: 'Test and test',
+      ...FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK,
     },
+    nestedFlow: false,
+    status: 'Not provided',
   },
+  languagePreferences: {
+    formData: {
+      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
+    },
+    nestedFlow: false,
+  },
+  businessUnit: {
+    business_unit_code: '',
+    business_unit_type: '',
+    account_number_prefix: null,
+    opal_domain: null,
+    business_unit_id: 0,
+    business_unit_name: '',
+    configurationItems: [],
+    welsh_language: false,
+  },
+  unsavedChanges: false,
+  stateChanges: false,
 };

@@ -9,9 +9,9 @@ export interface IFinesMacOffenceDetailsMinorCreditorState {
   fm_offence_details_minor_creditor_address_line_2: string | null;
   fm_offence_details_minor_creditor_address_line_3: string | null;
   fm_offence_details_minor_creditor_post_code: string | null;
-  fm_offence_details_minor_creditor_has_payment_details: boolean | null;
-  fm_offence_details_minor_creditor_name_on_account: string | null;
-  fm_offence_details_minor_creditor_sort_code: string | null;
-  fm_offence_details_minor_creditor_account_number: string | null;
-  fm_offence_details_minor_creditor_payment_reference: string | null;
+  fm_offence_details_minor_creditor_pay_by_bacs: boolean | null;
+  fm_offence_details_minor_creditor_bank_account_name: string | null;
+  fm_offence_details_minor_creditor_bank_sort_code: string | null;
+  fm_offence_details_minor_creditor_bank_account_number: string | null;
+  fm_offence_details_minor_creditor_bank_account_ref: string | null;
 }

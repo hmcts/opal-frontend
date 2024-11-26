@@ -90,11 +90,11 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
         specialCharactersValidator(),
       ]),
       fm_offence_details_minor_creditor_post_code: new FormControl(null, [Validators.maxLength(8)]),
-      fm_offence_details_minor_creditor_has_payment_details: new FormControl(null),
-      fm_offence_details_minor_creditor_name_on_account: new FormControl(null),
-      fm_offence_details_minor_creditor_sort_code: new FormControl(null),
-      fm_offence_details_minor_creditor_account_number: new FormControl(null),
-      fm_offence_details_minor_creditor_payment_reference: new FormControl(null),
+      fm_offence_details_minor_creditor_pay_by_bacs: new FormControl(null),
+      fm_offence_details_minor_creditor_bank_account_name: new FormControl(null),
+      fm_offence_details_minor_creditor_bank_sort_code: new FormControl(null),
+      fm_offence_details_minor_creditor_bank_account_number: new FormControl(null),
+      fm_offence_details_minor_creditor_bank_account_ref: new FormControl(null),
     });
   }
 
@@ -149,10 +149,10 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    */
   private setPaymentDetailValidators(): void {
     const {
-      fm_offence_details_minor_creditor_name_on_account: nameOnAccount,
-      fm_offence_details_minor_creditor_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
-      fm_offence_details_minor_creditor_payment_reference: paymentReference,
+      fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
+      fm_offence_details_minor_creditor_bank_sort_code: sortCode,
+      fm_offence_details_minor_creditor_bank_account_number: accountNumber,
+      fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
     nameOnAccount.setValidators([Validators.required, Validators.maxLength(18), alphabeticalTextValidator()]);
@@ -186,10 +186,10 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    */
   private resetPaymentDetailValidators(): void {
     const {
-      fm_offence_details_minor_creditor_name_on_account: nameOnAccount,
-      fm_offence_details_minor_creditor_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
-      fm_offence_details_minor_creditor_payment_reference: paymentReference,
+      fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
+      fm_offence_details_minor_creditor_bank_sort_code: sortCode,
+      fm_offence_details_minor_creditor_bank_account_number: accountNumber,
+      fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
     nameOnAccount.reset();
@@ -207,11 +207,11 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
    */
   private hasPaymentDetailsListener(): void {
     const {
-      fm_offence_details_minor_creditor_has_payment_details: hasPaymentDetails,
-      fm_offence_details_minor_creditor_name_on_account: nameOnAccount,
-      fm_offence_details_minor_creditor_sort_code: sortCode,
-      fm_offence_details_minor_creditor_account_number: accountNumber,
-      fm_offence_details_minor_creditor_payment_reference: paymentReference,
+      fm_offence_details_minor_creditor_pay_by_bacs: hasPaymentDetails,
+      fm_offence_details_minor_creditor_bank_account_name: nameOnAccount,
+      fm_offence_details_minor_creditor_bank_sort_code: sortCode,
+      fm_offence_details_minor_creditor_bank_account_number: accountNumber,
+      fm_offence_details_minor_creditor_bank_account_ref: paymentReference,
     } = this.form.controls;
 
     hasPaymentDetails.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe(() => {

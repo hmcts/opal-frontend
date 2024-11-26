@@ -48,7 +48,6 @@ describe('FinesMacPayloadService', () => {
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     const result = service.buildReplaceAccountPayload(finesMacState, SESSION_USER_STATE_MOCK);
-
     expect(result).toEqual(finesMacPayloadReplaceAccount);
   });
 });

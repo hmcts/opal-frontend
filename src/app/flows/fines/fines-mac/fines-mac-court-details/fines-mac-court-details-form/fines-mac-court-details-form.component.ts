@@ -65,7 +65,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
         Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z0-9 ]*$/),
       ]),
-      fm_court_details_enforcement_court_id: new FormControl(null, [Validators.required]),
+      fm_court_details_imposing_court_id: new FormControl(null, [Validators.required]),
       fm_court_details_originator_name: new FormControl(),
     });
   }

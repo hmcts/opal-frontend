@@ -60,8 +60,8 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
     );
 
     this.impositions.sort((a, b) => {
-      const impositionA = allocationOrderMap[a.fm_offence_details_result_code!];
-      const impositionB = allocationOrderMap[b.fm_offence_details_result_code!];
+      const impositionA = allocationOrderMap[a.fm_offence_details_result_id!];
+      const impositionB = allocationOrderMap[b.fm_offence_details_result_id!];
 
       if (impositionA && impositionB) {
         const allocationOrderComparison = impositionA.allocationOrder - impositionB.allocationOrder;
@@ -164,14 +164,14 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
       this.totalBalanceRemaining += balanceRemaining;
 
       const resultCodeImposition = this.impositionRefData.refData.filter(
-        (refData) => refData.result_id === imposition.fm_offence_details_result_code,
+        (refData) => refData.result_id === imposition.fm_offence_details_result_id,
       )[0];
 
       return {
         impositionDescription: resultCodeImposition.result_title,
         creditor: this.getCreditorInformation(
           imposition.fm_offence_details_creditor,
-          imposition.fm_offence_details_major_creditor,
+          imposition.fm_offence_details_major_creditor_id,
           resultCodeImposition.imposition_creditor,
           imposition.fm_offence_details_imposition_id!,
         ),

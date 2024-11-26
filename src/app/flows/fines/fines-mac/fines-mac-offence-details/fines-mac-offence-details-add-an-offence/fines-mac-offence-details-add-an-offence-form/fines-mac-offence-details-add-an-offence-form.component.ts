@@ -118,12 +118,12 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
       fm_offence_details_id: new FormControl(this.offenceIndex),
-      fm_offence_details_date_of_offence: new FormControl(null, [
+      fm_offence_details_date_of_sentence: new FormControl(null, [
         Validators.required,
         optionalValidDateValidator(),
         futureDateValidator(),
       ]),
-      fm_offence_details_offence_code: new FormControl(null, [Validators.required]),
+      fm_offence_details_offence_id: new FormControl(null, [Validators.required]),
       fm_offence_details_impositions: new FormArray([]),
     });
   }
@@ -181,7 +181,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param cjsCode - The CJS code used to retrieve the offence details.
    */
   private populateOffenceHint(cjsCode: string): void {
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_id'];
 
     if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
       this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
@@ -208,7 +208,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private offenceCodeListener(): void {
     this.selectedOffenceConfirmation = false;
 
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_id'];
 
     // Populate the offence hint if the offence code is already set
     if (offenceCodeControl.value) {
@@ -290,7 +290,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
     const resultCodeControl = this.getFormArrayFormGroupControl(
       impositionsFormGroup,
-      'fm_offence_details_result_code',
+      'fm_offence_details_result_id',
       index,
     );
     const needsCreditorControl = this.getFormArrayFormGroupControl(
@@ -368,7 +368,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private majorCreditorValidation(index: number, add: boolean, formGroup: FormGroup): void {
     const majorCreditorControl = this.getFormArrayFormGroupControl(
       formGroup,
-      'fm_offence_details_major_creditor',
+      'fm_offence_details_major_creditor_id',
       index,
     );
 
