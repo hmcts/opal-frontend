@@ -131,34 +131,37 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const index = 0;
     const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
     const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const needsCreditorControl = impositionsFormGroup.controls[`fm_offence_details_needs_creditor_${index}`];
-
-    needsCreditorControl.setValue(true);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'creditorListener');
-    component['resultCodeListener'](index);
-
-    expect(component['creditorListener']).toHaveBeenCalledWith(index);
-  });
-
-  it('should set needsCreditorControl value to true on initial call of resultCodeListener', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
-    component.ngOnInit();
-    const index = 0;
-    const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
-    const impositionsFormGroup = impositionsFormArray.controls[index] as FormGroup;
-    const resultCodeControl = impositionsFormGroup.controls[`fm_offence_details_result_id_${index}`];
+    const resultIdControl = impositionsFormGroup.controls[`fm_offence_details_result_id_${index}`] as FormControl;
+    const creditorControl = impositionsFormGroup.controls[`fm_offence_details_creditor_${index}`] as FormControl;
+    const needsCreditorControl = impositionsFormGroup.controls[
+      `fm_offence_details_needs_creditor_${index}`
+    ] as FormControl;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'creditorListener');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'addFormArrayFormGroupControlValidators');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeFormArrayFormGroupControlValidators');
 
+
+    resultIdControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
+
     component['resultCodeListener'](index);
 
-    resultCodeControl.setValue('TEST123');
+    expect(needsCreditorControl.value).toBeTrue();
+    expect(component['creditorListener']).toHaveBeenCalledWith(index);
 
-    expect(component['removeFormArrayFormGroupControlValidators']).toHaveBeenCalled();
+    creditorControl.setValue('major');
+    expect(needsCreditorControl.value).toBeTrue();
+    expect(component['creditorListener']).toHaveBeenCalledWith(index);
+    expect(component['addFormArrayFormGroupControlValidators']).toHaveBeenCalledWith(creditorControl, [
+      Validators.required,
+    ]);
+
+    resultIdControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.fineOnly);
+    expect(needsCreditorControl.value).toBeFalse();
+    expect(component['removeFormArrayFormGroupControlValidators']).toHaveBeenCalledTimes(4);
   });
 
   it('should set selectedOffenceConfirmation to false', () => {
