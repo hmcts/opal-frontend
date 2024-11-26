@@ -305,7 +305,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     );
     const majorCreditorControl = this.getFormArrayFormGroupControl(
       impositionsFormGroup,
-      'fm_offence_details_major_creditor',
+      'fm_offence_details_major_creditor_id',
       index,
     );
 
