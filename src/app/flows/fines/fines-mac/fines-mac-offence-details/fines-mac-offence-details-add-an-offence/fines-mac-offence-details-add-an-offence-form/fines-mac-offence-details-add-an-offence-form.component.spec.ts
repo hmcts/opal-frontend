@@ -144,7 +144,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeFormArrayFormGroupControlValidators');
 
-
     resultIdControl.setValue(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
 
     component['resultCodeListener'](index);
