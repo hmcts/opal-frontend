@@ -1,51 +1,144 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { Component } from '@angular/core';
 import { MojSortableTableHeaderComponent } from './moj-sortable-table-header.component';
-
-@Component({
-  template: `<th app-moj-sortable-table-header [sortDirection]="sortDirection">Test Column</th>`,
-})
-class TestWrapperComponent {
-  sortDirection: 'none' | 'ascending' | 'descending' = 'none';
-}
+import { By } from '@angular/platform-browser';
 
 describe('MojSortableTableHeaderComponent', () => {
-  let fixture: ComponentFixture<TestWrapperComponent>;
-  let component: TestWrapperComponent;
+  let component: MojSortableTableHeaderComponent;
+  let fixture: ComponentFixture<MojSortableTableHeaderComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [MojSortableTableHeaderComponent],
-      declarations: [TestWrapperComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TestWrapperComponent);
+    fixture = TestBed.createComponent(MojSortableTableHeaderComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should have the scope attribute set to "col"', () => {
-    const thElement = fixture.debugElement.query(By.css('th'));
-    expect(thElement.attributes['scope']).toBe('col');
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should have the correct host class', () => {
-    const thElement = fixture.debugElement.query(By.css('th'));
-    expect(thElement.nativeElement.classList.contains('govuk-table__header')).toBe(true);
+  describe('@Input columnKey', () => {
+    it('should set columnKey correctly', () => {
+      component.columnKey = 'test-column';
+      expect(component.columnKey).toBe('test-column');
+    });
   });
 
-  it('should have aria-sort attribute set to "ascending" when sortDirection is "ascending"', () => {
-    component.sortDirection = 'ascending';
-    fixture.detectChanges();
-    const thElement = fixture.debugElement.query(By.css('th'));
-    expect(thElement.attributes['aria-sort']).toBe('ascending');
+  describe('@Input sortDirection', () => {
+    it('should have default sortDirection as "none"', () => {
+      expect(component.sortDirection).toBe('none');
+    });
+
+    it('should allow sortDirection to be set', () => {
+      component.sortDirection = 'ascending';
+      expect(component.sortDirection).toBe('ascending');
+    });
   });
 
-  it('should have aria-sort attribute set to "descending" when sortDirection is "descending"', () => {
-    component.sortDirection = 'descending';
-    fixture.detectChanges();
-    const thElement = fixture.debugElement.query(By.css('th'));
-    expect(thElement.attributes['aria-sort']).toBe('descending');
+  describe('@Output sortChange', () => {
+    it('should emit sortChange with correct key and sortType on toggleSort', () => {
+      spyOn(component.sortChange, 'emit');
+      component.columnKey = 'test-column';
+      component.sortDirection = 'ascending';
+
+      component.toggleSort();
+
+      expect(component.sortChange.emit).toHaveBeenCalledWith({
+        key: 'test-column',
+        sortType: 'descending',
+      });
+    });
+  });
+
+  describe('MojSortableTableHeaderComponent toggleSort', () => {
+    beforeEach(() => {
+      spyOn(component.sortChange, 'emit');
+      component.columnKey = 'test-column';
+    });
+
+    it('should emit "ascending" when sortDirection is "none"', () => {
+      component.sortDirection = 'none';
+      component.toggleSort();
+
+      expect(component.sortChange.emit).toHaveBeenCalledWith({
+        key: 'test-column',
+        sortType: 'ascending',
+      });
+    });
+
+    it('should emit "descending" when sortDirection is "ascending"', () => {
+      component.sortDirection = 'ascending';
+      component.toggleSort();
+
+      expect(component.sortChange.emit).toHaveBeenCalledWith({
+        key: 'test-column',
+        sortType: 'descending',
+      });
+    });
+
+    it('should emit "ascending" when sortDirection is "descending"', () => {
+      component.sortDirection = 'descending';
+      component.toggleSort();
+
+      expect(component.sortChange.emit).toHaveBeenCalledWith({
+        key: 'test-column',
+        sortType: 'ascending',
+      });
+    });
+
+    it('should not update sortDirection directly', () => {
+      component.sortDirection = 'none';
+      component.toggleSort();
+
+      expect(component.sortDirection).toBe('none'); // Verifying that the method doesn't update the state
+    });
+  });
+
+  describe('@HostBinding ariaSort', () => {
+    it('should return the current sortDirection as aria-sort', () => {
+      component.sortDirection = 'ascending';
+      expect(component.ariaSort).toBe('ascending');
+
+      component.sortDirection = 'descending';
+      expect(component.ariaSort).toBe('descending');
+
+      component.sortDirection = 'none';
+      expect(component.ariaSort).toBe('none');
+    });
+  });
+
+  describe('@HostBinding hostScope', () => {
+    it('should bind scope to "col"', () => {
+      expect(component.hostScope).toBe('col');
+    });
+  });
+
+  describe('@HostBinding hostClass', () => {
+    it('should bind class to "govuk-table__header"', () => {
+      expect(component.hostClass).toBe('govuk-table__header');
+    });
+  });
+
+  describe('HTML Template', () => {
+    it('should render a button with ng-content', () => {
+      const button = fixture.debugElement.query(By.css('button'));
+      expect(button).toBeTruthy();
+    });
+
+    it('should call toggleSort on button click', () => {
+      spyOn(component, 'toggleSort');
+      const button = fixture.debugElement.query(By.css('button'));
+      button.nativeElement.click();
+
+      expect(component.toggleSort).toHaveBeenCalled();
+    });
+
+    it('should set title and data-index attributes on button', () => {
+      const button = fixture.debugElement.query(By.css('button'));
+      expect(button.attributes['title']).toBe('st');
+      expect(button.attributes['data-index']).toBe('2');
+    });
   });
 });

@@ -23,17 +23,12 @@ export class MojSortableTableHeaderComponent {
     return 'govuk-table__header';
   }
 
-  toggleSort(): void {
+  public toggleSort(): void {
     const newDirection = this.sortDirection === 'ascending' ? 'descending' : 'ascending';
-
-    console.log('Emitting Sort Event:', {
-      key: this.columnKey,
-      sortType: newDirection,
-    });
 
     this.sortChange.emit({
       key: this.columnKey,
       sortType: newDirection,
     });
-  }
+  } /** This method will validate the sort type ASC or DESC and emit this with the header column key*/
 }
