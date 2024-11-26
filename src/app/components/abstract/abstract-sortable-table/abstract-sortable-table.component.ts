@@ -14,28 +14,46 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   private readonly sortService = inject(SortService);
   public sortState: IAbstractSortState = {};
 
+  /**
+   * Initializes the sort state for the table component.
+   * If an existing sort state is present, it uses that; otherwise, it creates a new sort state based on the table data.
+   *
+   * @private
+   * @returns {void}
+   */
   private initialiseSortState(): void {
-    if (this.abstractExistingSortState) {
-      this.setSortState(this.abstractExistingSortState);
-    } else {
-      this.createSortState(this.abstractTableData);
-    }
-  } //** this method validates if the existing sort state exists which will set the sort state to that, if not it will create a sort state. */
-
-  private setSortState(sortState: IAbstractSortState): void {
+    const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
     this.sortState = sortState;
-  } //** This method sets the sort state to the existing state being passed in. */
+  }
 
-  public createSortState(tableData: IAbstractTableData<string | number | boolean>[]): void {
+  /**
+   * Creates an initial sort state for a table based on the provided table data.
+   *
+   * @param tableData - An array of table data objects. Each object represents a row in the table.
+   * @returns An object representing the initial sort state for each column in the table.
+   *          The keys of the object correspond to the column names, and the values are set to 'none'.
+   */
+  public createSortState(tableData: IAbstractTableData<string | number | boolean>[]): IAbstractSortState {
+    const sortState: IAbstractSortState = {};
+
     if (tableData.length > 0) {
       Object.keys(tableData[0]).forEach((key) => {
-        this.sortState[key] = 'none';
+        sortState[key] = 'none';
       });
-    } else {
-      this.sortState = {};
     }
-  } //** This method creates a new sort state and sets all values to 'none' */
 
+    return sortState;
+  }
+
+  /**
+   * Handles the change in sorting order for the table.
+   *
+   * @param event - An object containing the key to sort by and the sort type (ascending or descending).
+   * @param event.key - The key of the column to sort.
+   * @param event.sortType - The type of sorting to apply ('ascending' or 'descending').
+   *
+   * Updates the sort state for each column, sorts the table data accordingly, and emits the updated sort state.
+   */
   public onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     const { key, sortType } = event;
     Object.keys(this.sortState).forEach((key) => {
@@ -49,7 +67,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     }
 
     this.abstractSortState.emit(this.sortState);
-  } //** This method takes in the column key and the sort type and will check check each column if its got a value if not it will be set as none, then uses the sort services to sort the data according to the column keys.*/
+  }
 
   ngOnInit(): void {
     this.initialiseSortState();
