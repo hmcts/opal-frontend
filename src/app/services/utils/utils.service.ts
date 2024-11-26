@@ -43,4 +43,15 @@ export class UtilsService {
     const sortCode = value.toString();
     return `${sortCode.slice(0, 2)}-${sortCode.slice(2, 4)}-${sortCode.slice(4, 6)}`;
   }
+
+  /**
+   * Formats an address by joining non-empty lines with a specified delimiter.
+   *
+   * @param address - An array of address lines.
+   * @param delimiter - The delimiter to use for joining the address lines.
+   * @returns The formatted address as a single string.
+   */
+  public formatAddress(address: (string | null)[], delimiter: string): string {
+    return address.filter((line) => line?.trim()).join(delimiter);
+  }
 }

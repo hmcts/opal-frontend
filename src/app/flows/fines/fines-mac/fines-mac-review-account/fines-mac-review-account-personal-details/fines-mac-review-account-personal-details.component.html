@@ -1,0 +1,95 @@
+<app-govuk-summary-card-list cardTitle="Personal details">
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="personalDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsTitle"
+        summaryListRowId="title"
+      >
+        <ng-container name>Title</ng-container>
+        <ng-container value>{{ personalDetails.fm_personal_details_title }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsForenames"
+        summaryListRowId="forenames"
+      >
+        <ng-container name>First names</ng-container>
+        <ng-container value>{{ personalDetails.fm_personal_details_forenames }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsSurname"
+        summaryListRowId="surname"
+      >
+        <ng-container name>Last name</ng-container>
+        <ng-container value>{{ personalDetails.fm_personal_details_surname }}</ng-container>
+      </div>
+      @if (personalDetails.fm_personal_details_aliases.length > 0) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="personalDetailsAliases"
+          summaryListRowId="aliases"
+        >
+          <ng-container name>Aliases</ng-container>
+          <ng-container value><p class="govuk-!-margin-top-0" [innerHTML]="aliases"></p></ng-container>
+        </div>
+      }
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsDob"
+        summaryListRowId="dob"
+      >
+        <ng-container name>Date of birth</ng-container>
+        <ng-container value>{{ dob ?? defaultValues.notProvided }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsNationalInsuranceNumber"
+        summaryListRowId="nationalInsuranceNumber"
+      >
+        <ng-container name>National Insurance number</ng-container>
+        <ng-container value>{{
+          personalDetails.fm_personal_details_national_insurance_number ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsAddress"
+        summaryListRowId="address"
+      >
+        <ng-container name>Address</ng-container>
+        <ng-container value><p class="govuk-!-margin-top-0" [innerHTML]="address"></p></ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsVehicleMakeOrModel"
+        summaryListRowId="vehicleMakeOrModel"
+      >
+        <ng-container name>Vehicle make and model</ng-container>
+        <ng-container value>{{
+          personalDetails.fm_personal_details_vehicle_make ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetailsRegistrationNumber"
+        summaryListRowId="registrationNumber"
+      >
+        <ng-container name>Registration number</ng-container>
+        <ng-container value>{{
+          personalDetails.fm_personal_details_vehicle_registration_mark ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

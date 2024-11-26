@@ -1,0 +1,61 @@
+<app-govuk-summary-card-list cardTitle="Employer details">
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="employerDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="employerDetailsEmployerName"
+        summaryListRowId="employerName"
+      >
+        <ng-container name>Employer name</ng-container>
+        <ng-container value>{{
+          employerDetails.fm_employer_details_employer_company_name ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="employerDetailsEmployeeReference"
+        summaryListRowId="employeeReference"
+      >
+        <ng-container name>Employee reference</ng-container>
+        <ng-container value>{{
+          employerDetails.fm_employer_details_employer_reference ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="employerDetailsEmployerEmailAddress"
+        summaryListRowId="employerEmailAddress"
+      >
+        <ng-container name>Employer email address</ng-container>
+        <ng-container value>{{
+          employerDetails.fm_employer_details_employer_email_address ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="employerDetailsEmployerTelephoneNumber"
+        summaryListRowId="employerEmailTelephoneNumber"
+      >
+        <ng-container name>Employer telephone number</ng-container>
+        <ng-container value>{{
+          employerDetails.fm_employer_details_employer_telephone_number ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="employerDetailsEmployerTelephoneNumber"
+        summaryListRowId="employerEmailTelephoneNumber"
+      >
+        <ng-container name>Employer address</ng-container>
+        <ng-container value>{{
+          employerAddress ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

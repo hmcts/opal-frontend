@@ -6,9 +6,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
-import { GovukHeadingWithCaptionComponent } from '@components/govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
 import { GovukTaskListComponent } from '@components/govuk/govuk-task-list/govuk-task-list.component';
@@ -23,6 +21,10 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
+import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../fines-mac-court-details/mocks/fines-mac-court-details-form.mock';
+import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../fines-mac-personal-details/constants/fines-mac-personal-details-alias';
+import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
+import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from '../fines-mac-contact-details/mocks/fines-mac-contact-details-form.mock';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -36,7 +38,6 @@ import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types
     GovukButtonComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
-    GovukHeadingWithCaptionComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukBackLinkComponent,
@@ -171,6 +172,12 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.finesService.finesMacState = {
+      ...this.finesService.finesMacState,
+      courtDetails: { ...FINES_MAC_COURT_DETAILS_FORM_MOCK },
+      personalDetails: { ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK },
+      contactDetails: { ...FINES_MAC_CONTACT_DETAILS_FORM_MOCK },
+    };
     this.initialAccountDetailsSetup();
   }
 

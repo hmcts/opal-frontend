@@ -1,14 +1,40 @@
-<div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-column-full">
   <app-govuk-back-link (clickEvent)="navigateBack()"></app-govuk-back-link>
   <h1 class="govuk-heading-l">Check account details</h1>
 
+  <app-fines-mac-review-account-account-details
+    [accountDetails]="finesService.finesMacState.accountDetails.formData"
+    [businessUnit]="finesService.finesMacState.businessUnit"
+    [languagePreferences]="finesService.finesMacState.languagePreferences.formData"
+  >
+  </app-fines-mac-review-account-account-details>
+
+  @if (enforcementCourtsData$ | async) {
+    <app-fines-mac-review-account-court-details
+      [courtDetails]="finesService.finesMacState.courtDetails.formData"
+      [enforcementCourtsData]="enforcementCourtsData"
+    ></app-fines-mac-review-account-court-details>
+  }
+
+  <app-fines-mac-review-account-personal-details
+    [personalDetails]="finesService.finesMacState.personalDetails.formData"
+  ></app-fines-mac-review-account-personal-details>
+
+  <app-fines-mac-review-account-contact-details
+    [contactDetails]="finesService.finesMacState.contactDetails.formData"
+  ></app-fines-mac-review-account-contact-details>
+
+  <app-fines-mac-review-account-employer-details
+    [employerDetails]="finesService.finesMacState.employerDetails.formData"
+  ></app-fines-mac-review-account-employer-details>
+
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitAccountButton">Submit for review</app-govuk-button>
     </div>
   </div>
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
       <a
         class="govuk-link govuk-error-colour"
         (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"

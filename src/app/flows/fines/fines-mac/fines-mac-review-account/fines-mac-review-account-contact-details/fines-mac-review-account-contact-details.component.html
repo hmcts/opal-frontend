@@ -1,0 +1,61 @@
+<app-govuk-summary-card-list cardTitle="Contact details">
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="contactDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetailsPrimaryEmailAddress"
+        summaryListRowId="primaryEmailAddress"
+      >
+        <ng-container name>Primary email address</ng-container>
+        <ng-container value>{{
+          contactDetails.fm_contact_details_email_address_1 ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetailsSecondaryEmailAddress"
+        summaryListRowId="secondaryEmailAddress"
+      >
+        <ng-container name>Secondary email address</ng-container>
+        <ng-container value>{{
+          contactDetails.fm_contact_details_email_address_2 ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetailsMobileTelephoneNumber"
+        summaryListRowId="mobileTelephoneNumber"
+      >
+        <ng-container name>Mobile telephone number</ng-container>
+        <ng-container value>{{
+          contactDetails.fm_contact_details_telephone_number_mobile ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetailsHomeTelephoneNumber"
+        summaryListRowId="homeTelephoneNumber"
+      >
+        <ng-container name>Home telephone number</ng-container>
+        <ng-container value>{{
+          contactDetails.fm_contact_details_telephone_number_home ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetailsWorkTelephoneNumber"
+        summaryListRowId="workTelephoneNumber"
+      >
+        <ng-container name>Work telephone number</ng-container>
+        <ng-container value>{{
+          contactDetails.fm_contact_details_telephone_number_business ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>
