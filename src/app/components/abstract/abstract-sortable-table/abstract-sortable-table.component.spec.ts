@@ -1,40 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractSortableTableComponent } from './abstract-sortable-table.component';
 import { SortService } from '@services/sort-service/sort-service';
-
 import { IAbstractSortState } from './interfaces/abstract-sortable-table-interfaces';
-
-const MOCK_ABSTRACT_TABLE_DATA = [
-  {
-    imposition: 'Imposition 1',
-    creditor: 'major',
-    amountImposed: 1000,
-    amountPaid: 200,
-    balanceRemaining: 800,
-  },
-  {
-    imposition: 'Imposition 2',
-    creditor: 'minor',
-    amountImposed: 1500,
-    amountPaid: 500,
-    balanceRemaining: 1000,
-  },
-  {
-    imposition: 'Imposition 3',
-    creditor: 'default',
-    amountImposed: 2000,
-    amountPaid: 1000,
-    balanceRemaining: 1000,
-  },
-];
-
-const MOCK_ABSTRACT_EXISTING_SORT_STATE: IAbstractSortState = {
-  imposition: 'ascending',
-  creditor: 'none',
-  amountImposed: 'none',
-  amountPaid: 'none',
-  balanceRemaining: 'none',
-};
+import { MOCK_ABSTRACT_EXISTING_SORT_STATE } from './mocks/abstract-sortable-table-existing-sort-state-mock';
+import { MOCK_ABSTRACT_TABLE_DATA } from './mocks/abstract-sortable-table-data-mock';
 
 class TestComponent extends AbstractSortableTableComponent {
   constructor() {

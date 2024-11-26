@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { SortService } from './sort-service';
+import { SORT_OBJECT_INPUT_MOCK } from './mocks/sort-service-object-input-mock';
 
 describe('SortService', () => {
   let service: SortService;
@@ -19,7 +20,6 @@ describe('SortService', () => {
       const result = service.arraySortAsc(input);
       expect(result).toEqual([1, 3, 5, 8]);
     });
-
     it('should sort an array of strings in ascending order', () => {
       const input = ['banana', 'apple', 'cherry'];
       const result = service.arraySortAsc(input);
@@ -55,12 +55,7 @@ describe('SortService', () => {
 
   describe('sortObjectsAsc', () => {
     it('should sort an array of objects in ascending order by a specified key', () => {
-      const input = [
-        { id: 3, name: 'Charlie' },
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-      ];
-      const result = service.sortObjectsAsc(input, 'id');
+      const result = service.sortObjectsAsc(SORT_OBJECT_INPUT_MOCK, 'id');
       expect(result).toEqual([
         { id: 1, name: 'Alice' },
         { id: 2, name: 'Bob' },
@@ -75,24 +70,14 @@ describe('SortService', () => {
     });
 
     it('should handle invalid key gracefully', () => {
-      const input = [
-        { id: 3, name: 'Charlie' },
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-      ];
-      const result = service.sortObjectsAsc(input, 'age'); // 'age' doesn't exist in objects
-      expect(result).toEqual(input); // Return unsorted array
+      const result = service.sortObjectsAsc(SORT_OBJECT_INPUT_MOCK, 'age');
+      expect(result).toEqual(SORT_OBJECT_INPUT_MOCK);
     });
   });
 
   describe('sortObjectsDsc', () => {
     it('should sort an array of objects in descending order by a specified key', () => {
-      const input = [
-        { id: 3, name: 'Charlie' },
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-      ];
-      const result = service.sortObjectsDsc(input, 'id');
+      const result = service.sortObjectsDsc(SORT_OBJECT_INPUT_MOCK, 'id');
       expect(result).toEqual([
         { id: 3, name: 'Charlie' },
         { id: 2, name: 'Bob' },
@@ -107,25 +92,32 @@ describe('SortService', () => {
     });
 
     it('should handle invalid key gracefully', () => {
-      const input = [
-        { id: 3, name: 'Charlie' },
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-      ];
-      const result = service.sortObjectsDsc(input, 'age'); // 'age' doesn't exist in objects
-      expect(result).toEqual(input); // Return unsorted array
+      const result = service.sortObjectsDsc(SORT_OBJECT_INPUT_MOCK, 'age');
+      expect(result).toEqual(SORT_OBJECT_INPUT_MOCK);
     });
   });
 
   describe('getObjects (private)', () => {
+    it('should return the array if it is empty', () => {
+      const input: [] = [];
+      const result = service['getObjects'](input, { key: 'id', sortType: 'ascending' });
+      expect(result).toEqual(input);
+    });
+
+    it('should return the array if config key is not provided', () => {
+      const result = service['getObjects'](SORT_OBJECT_INPUT_MOCK, { key: '', sortType: 'ascending' });
+      expect(result).toEqual(SORT_OBJECT_INPUT_MOCK);
+    });
+
+    it('should return the array if it is not an array', () => {
+      const input = 'not an array' as any;
+      const result = service['getObjects'](input, { key: 'id', sortType: 'ascending' });
+      expect(result).toEqual(input);
+    });
+
     it('should sort objects in ascending order if sortType is "ascending"', () => {
-      const input = [
-        { id: 3, name: 'Charlie' },
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-      ];
       // Access via the public sortObjectsAsc method
-      const result = service.sortObjectsAsc(input, 'id');
+      const result = service.sortObjectsAsc(SORT_OBJECT_INPUT_MOCK, 'id');
       expect(result).toEqual([
         { id: 1, name: 'Alice' },
         { id: 2, name: 'Bob' },
@@ -134,13 +126,7 @@ describe('SortService', () => {
     });
 
     it('should sort objects in descending order if sortType is "descending"', () => {
-      const input = [
-        { id: 3, name: 'Charlie' },
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
-      ];
-      // Access via the public sortObjectsDsc method
-      const result = service.sortObjectsDsc(input, 'id');
+      const result = service.sortObjectsDsc(SORT_OBJECT_INPUT_MOCK, 'id');
       expect(result).toEqual([
         { id: 3, name: 'Charlie' },
         { id: 2, name: 'Bob' },
