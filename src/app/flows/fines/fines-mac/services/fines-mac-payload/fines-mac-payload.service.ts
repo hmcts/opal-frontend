@@ -21,6 +21,7 @@ import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-a
 import { DateService } from '@services/date-service/date.service';
 import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
+import { buildAccountOffencesPayload } from './utils/fines-mac-payload-account-offences.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +50,7 @@ export class FinesMacPayloadService {
       fm_court_details_originator_name: originator_name,
       fm_court_details_originator_id: originator_id,
       fm_court_details_prosecutor_case_reference: prosecutor_case_reference,
-      fm_court_details_enforcement_court_id: enforcement_court_id,
+      fm_court_details_imposing_court_id: enforcement_court_id,
     } = courtDetailsState;
 
     const {
@@ -131,6 +132,8 @@ export class FinesMacPayloadService {
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
 
+    const offenceDetailsState = finesMacState.offenceDetails;
+
     // Build the parts of our payload...
     const initialPayload = this.buildAccountInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
     const defendant = buildAccountDefendantPayload(
@@ -144,12 +147,13 @@ export class FinesMacPayloadService {
     );
     const paymentTerms = buildAccountPaymentTermsPayload(paymentTermsState);
     const accountNotes = buildAccountAccountNotesPayload(accountCommentsNotesState);
+    const offences = buildAccountOffencesPayload(offenceDetailsState, courtDetailsState);
 
     // Return our payload object
     return {
       ...initialPayload,
       defendant: defendant,
-      offences: null,
+      offences: offences,
       fp_ticket_detail: null,
       payment_terms: paymentTerms,
       account_notes: accountNotes,

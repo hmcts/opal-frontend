@@ -14,7 +14,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_M
         {
           alias_forenames: null,
           alias_surname: null,
-          alias_company_name: 'Boring Co.',
+          alias_company_name: 'Bright Innovations Ltd',
         },
       ],
     },

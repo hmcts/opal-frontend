@@ -13,8 +13,8 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_
       aliases: [
         {
           alias_company_name: null,
-          alias_forenames: 'Testing',
-          alias_surname: 'Test',
+          alias_forenames: 'Rebecca',
+          alias_surname: 'Johnson',
         },
       ],
     },

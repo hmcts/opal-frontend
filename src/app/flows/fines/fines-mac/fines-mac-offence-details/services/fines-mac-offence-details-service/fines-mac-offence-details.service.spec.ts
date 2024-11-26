@@ -25,18 +25,18 @@ describe('FinesMacOffenceDetailsService', () => {
       {
         formData: {
           fm_offence_details_id: 0,
-          fm_offence_details_offence_code: 'GMMET001',
-          fm_offence_details_date_of_offence: '2023-01-01',
+          fm_offence_details_offence_id: 'GMMET001',
+          fm_offence_details_date_of_sentence: '2023-01-01',
           fm_offence_details_impositions: [
             {
               fm_offence_details_imposition_id: 0,
-              fm_offence_details_result_code: 'FCC',
+              fm_offence_details_result_id: 'FCC',
               fm_offence_details_amount_imposed: 200,
               fm_offence_details_amount_paid: 50,
               fm_offence_details_balance_remaining: 150,
               fm_offence_details_needs_creditor: true,
               fm_offence_details_creditor: 'major',
-              fm_offence_details_major_creditor: 3856,
+              fm_offence_details_major_creditor_id: 3856,
             },
           ],
         },
@@ -46,18 +46,18 @@ describe('FinesMacOffenceDetailsService', () => {
       {
         formData: {
           fm_offence_details_id: 1,
-          fm_offence_details_offence_code: 'GMMET001',
-          fm_offence_details_date_of_offence: '2023-01-01',
+          fm_offence_details_offence_id: 'GMMET001',
+          fm_offence_details_date_of_sentence: '2023-01-01',
           fm_offence_details_impositions: [
             {
               fm_offence_details_imposition_id: 0,
-              fm_offence_details_result_code: 'FCC',
+              fm_offence_details_result_id: 'FCC',
               fm_offence_details_amount_imposed: 200,
               fm_offence_details_amount_paid: 50,
               fm_offence_details_balance_remaining: 150,
               fm_offence_details_needs_creditor: true,
               fm_offence_details_creditor: 'major',
-              fm_offence_details_major_creditor: 3856,
+              fm_offence_details_major_creditor_id: 3856,
             },
           ],
         },

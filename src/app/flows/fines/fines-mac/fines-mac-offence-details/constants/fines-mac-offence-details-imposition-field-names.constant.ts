@@ -8,7 +8,7 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES: IFinesMacOffenceD
     'balance_remaining',
     'creditor',
     'needs_creditor',
-    'result_code',
+    'result_id',
     'major_creditor',
   ],
 };

@@ -81,7 +81,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 1,
     },
   },
-  fm_offence_details_minor_creditor_name_on_account: {
+  fm_offence_details_minor_creditor_bank_account_name: {
     required: {
       message: 'Enter name on the account',
       priority: 1,
@@ -95,7 +95,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 3,
     },
   },
-  fm_offence_details_minor_creditor_sort_code: {
+  fm_offence_details_minor_creditor_bank_sort_code: {
     required: {
       message: 'Enter sort code',
       priority: 1,
@@ -109,7 +109,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 3,
     },
   },
-  fm_offence_details_minor_creditor_account_number: {
+  fm_offence_details_minor_creditor_bank_account_number: {
     required: {
       message: 'Enter account number',
       priority: 1,
@@ -123,7 +123,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 3,
     },
   },
-  fm_offence_details_minor_creditor_payment_reference: {
+  fm_offence_details_minor_creditor_bank_account_ref: {
     required: {
       message: 'Enter payment reference',
       priority: 1,

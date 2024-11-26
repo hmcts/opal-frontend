@@ -120,7 +120,10 @@ describe('FinesService', () => {
       { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK },
       {
         ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
-        formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_date_of_offence: '02/09/2024' },
+        formData: {
+          ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData,
+          fm_offence_details_date_of_sentence: '02/09/2024',
+        },
       },
     ];
     const offenceDate = new Date('2024-09-01');

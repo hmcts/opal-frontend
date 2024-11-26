@@ -1,7 +1,7 @@
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 
 export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
-  fm_offence_details_date_of_offence: {
+  fm_offence_details_date_of_sentence: {
     required: {
       message: 'Enter sentence date',
       priority: 1,
@@ -19,7 +19,7 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       priority: 4,
     },
   },
-  fm_offence_details_offence_code: {
+  fm_offence_details_offence_id: {
     required: {
       message: 'Enter an offence code',
       priority: 1,
