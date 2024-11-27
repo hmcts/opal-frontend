@@ -1,10 +1,15 @@
 <app-govuk-summary-card-list cardTitle="Contact details">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changeContactDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
   <ng-container content>
     <app-govuk-summary-list summaryListId="contactDetails">
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="contactDetailsPrimaryEmailAddress"
+        summaryListId="contactDetails"
         summaryListRowId="primaryEmailAddress"
       >
         <ng-container name>Primary email address</ng-container>
@@ -15,7 +20,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="contactDetailsSecondaryEmailAddress"
+        summaryListId="contactDetails"
         summaryListRowId="secondaryEmailAddress"
       >
         <ng-container name>Secondary email address</ng-container>
@@ -26,7 +31,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="contactDetailsMobileTelephoneNumber"
+        summaryListId="contactDetails"
         summaryListRowId="mobileTelephoneNumber"
       >
         <ng-container name>Mobile telephone number</ng-container>
@@ -37,7 +42,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="contactDetailsHomeTelephoneNumber"
+        summaryListId="contactDetails"
         summaryListRowId="homeTelephoneNumber"
       >
         <ng-container name>Home telephone number</ng-container>
@@ -48,7 +53,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="contactDetailsWorkTelephoneNumber"
+        summaryListId="contactDetails"
         summaryListRowId="workTelephoneNumber"
       >
         <ng-container name>Work telephone number</ng-container>

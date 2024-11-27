@@ -1,10 +1,15 @@
 <app-govuk-summary-card-list cardTitle="Personal details">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changePersonalDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
   <ng-container content>
     <app-govuk-summary-list summaryListId="personalDetails">
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsTitle"
+        summaryListId="personalDetails"
         summaryListRowId="title"
       >
         <ng-container name>Title</ng-container>
@@ -13,7 +18,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsForenames"
+        summaryListId="personalDetails"
         summaryListRowId="forenames"
       >
         <ng-container name>First names</ng-container>
@@ -22,7 +27,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsSurname"
+        summaryListId="personalDetails"
         summaryListRowId="surname"
       >
         <ng-container name>Last name</ng-container>
@@ -32,7 +37,7 @@
         <div
           app-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          summaryListId="personalDetailsAliases"
+          summaryListId="personalDetails"
           summaryListRowId="aliases"
         >
           <ng-container name>Aliases</ng-container>
@@ -42,7 +47,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsDob"
+        summaryListId="personalDetails"
         summaryListRowId="dob"
       >
         <ng-container name>Date of birth</ng-container>
@@ -51,7 +56,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsNationalInsuranceNumber"
+        summaryListId="personalDetails"
         summaryListRowId="nationalInsuranceNumber"
       >
         <ng-container name>National Insurance number</ng-container>
@@ -62,7 +67,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsAddress"
+        summaryListId="personalDetails"
         summaryListRowId="address"
       >
         <ng-container name>Address</ng-container>
@@ -71,7 +76,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsVehicleMakeOrModel"
+        summaryListId="personalDetails"
         summaryListRowId="vehicleMakeOrModel"
       >
         <ng-container name>Vehicle make and model</ng-container>
@@ -82,7 +87,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetailsRegistrationNumber"
+        summaryListId="personalDetails"
         summaryListRowId="registrationNumber"
       >
         <ng-container name>Registration number</ng-container>

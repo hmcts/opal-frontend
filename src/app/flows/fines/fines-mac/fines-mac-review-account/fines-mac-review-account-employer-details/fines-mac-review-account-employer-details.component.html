@@ -1,10 +1,15 @@
 <app-govuk-summary-card-list cardTitle="Employer details">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changeEmployerDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
   <ng-container content>
     <app-govuk-summary-list summaryListId="employerDetails">
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="employerDetailsEmployerName"
+        summaryListId="employerDetails"
         summaryListRowId="employerName"
       >
         <ng-container name>Employer name</ng-container>
@@ -15,7 +20,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="employerDetailsEmployeeReference"
+        summaryListId="employerDetails"
         summaryListRowId="employeeReference"
       >
         <ng-container name>Employee reference</ng-container>
@@ -26,7 +31,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="employerDetailsEmployerEmailAddress"
+        summaryListId="employerDetails"
         summaryListRowId="employerEmailAddress"
       >
         <ng-container name>Employer email address</ng-container>
@@ -37,7 +42,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="employerDetailsEmployerTelephoneNumber"
+        summaryListId="employerDetails"
         summaryListRowId="employerEmailTelephoneNumber"
       >
         <ng-container name>Employer telephone number</ng-container>
@@ -48,13 +53,17 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="employerDetailsEmployerTelephoneNumber"
+        summaryListId="employerDetails"
         summaryListRowId="employerEmailTelephoneNumber"
       >
         <ng-container name>Employer address</ng-container>
-        <ng-container value>{{
-          employerAddress ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (employerAddress) {
+            <p [innerHTML]="employerAddress"></p>
+          } @else {
+            {{ defaultValues.notProvided }}
+          }
+        </ng-container>
       </div>
     </app-govuk-summary-list>
   </ng-container>

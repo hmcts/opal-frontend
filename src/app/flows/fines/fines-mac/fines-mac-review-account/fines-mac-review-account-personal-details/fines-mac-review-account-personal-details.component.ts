@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-list.component';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
@@ -7,25 +7,41 @@ import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-ac
 import { IFinesMacPersonalDetailsAliasState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
+import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-personal-details',
   standalone: true,
-  imports: [GovukSummaryCardListComponent, GovukSummaryListComponent, GovukSummaryListRowComponent],
+  imports: [
+    GovukSummaryCardListComponent,
+    GovukSummaryListComponent,
+    GovukSummaryListRowComponent,
+    FinesMacReviewAccountChangeLinkComponent,
+  ],
   templateUrl: './fines-mac-review-account-personal-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   @Input({ required: true }) public personalDetails!: IFinesMacPersonalDetailsState;
+  @Output() public emitChangePersonalDetails = new EventEmitter<void>();
 
-  private dateService = inject(DateService);
-  private utilsService = inject(UtilsService);
+  private readonly dateService = inject(DateService);
+  private readonly utilsService = inject(UtilsService);
 
-  public defaultValues = FinesMacReviewAccountDefaultValues;
+  public readonly defaultValues = FinesMacReviewAccountDefaultValues;
   public aliases!: string;
   public dob!: string | null;
   public address!: string;
 
+  /**
+   * Retrieves and formats alias data from the personal details.
+   * The aliases are extracted from the `fm_personal_details_aliases` property,
+   * concatenated into a single string with forenames and surnames, and joined
+   * with HTML line breaks.
+   *
+   * @private
+   * @returns {void}
+   */
   private getAliasesData(): void {
     this.aliases = this.personalDetails.fm_personal_details_aliases
       .map((item) => {
@@ -41,6 +57,15 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
       .join('<br>');
   }
 
+  /**
+   * Retrieves and formats the date of birth data from the personal details.
+   * If the date of birth is available, it converts the date to a specific format,
+   * calculates the age, and sets the formatted date of birth along with an age category
+   * (either 'Adult' or 'Youth') to the `dob` property.
+   *
+   * @private
+   * @returns {void}
+   */
   private getDateOfBirthData(): void {
     if (this.personalDetails.fm_personal_details_dob) {
       const dob = this.dateService.getFromFormat(this.personalDetails.fm_personal_details_dob, 'dd/MM/yyyy');
@@ -49,6 +74,13 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
     }
   }
 
+  /**
+   * Retrieves and formats the address data from the personal details.
+   * The formatted address is stored in the `address` property.
+   * The address lines and post code are joined with a `<br>` separator.
+   *
+   * @private
+   */
   private getAddressData(): void {
     const {
       fm_personal_details_address_line_1,
@@ -68,10 +100,23 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
     );
   }
 
+  /**
+   * Retrieves and processes personal details data by invoking methods to get aliases, date of birth, and address data.
+   *
+   * @private
+   */
   private getPersonalDetailsData(): void {
     this.getAliasesData();
     this.getDateOfBirthData();
     this.getAddressData();
+  }
+
+  /**
+   * Emits an event to indicate that personal details needs changed.
+   * This method triggers the `emitChangePersonalDetails` event emitter.
+   */
+  public changePersonalDetails(): void {
+    this.emitChangePersonalDetails.emit();
   }
 
   public ngOnInit(): void {

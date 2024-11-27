@@ -1,0 +1,33 @@
+<app-govuk-summary-card-list cardTitle="Account comments and notes">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changeAccountCommentsAndNotesDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="accountCommentsAndNotes">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="accountCommentsAndNotes"
+        summaryListRowId="accountComment"
+      >
+        <ng-container name>Comment</ng-container>
+        <ng-container value>{{
+          accountCommentsAndNotes.fm_account_comments_notes_comments ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="accountCommentsAndNotes"
+        summaryListRowId="accountNote"
+      >
+        <ng-container name>Account note</ng-container>
+        <ng-container value>{{
+          accountCommentsAndNotes.fm_account_comments_notes_notes ?? defaultValues.notProvided
+        }}</ng-container>
+      </div>
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

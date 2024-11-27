@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { IFinesMacAccountCommentsNotesState } from '../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
 import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-list.component';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-import { IFinesMacContactDetailsState } from '../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
-import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 
 @Component({
-  selector: 'app-fines-mac-review-account-contact-details',
+  selector: 'app-fines-mac-review-account-account-comments-and-notes',
   standalone: true,
   imports: [
     GovukSummaryCardListComponent,
@@ -16,21 +15,20 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
   ],
-  templateUrl: './fines-mac-review-account-contact-details.component.html',
+  templateUrl: './fines-mac-review-account-account-comments-and-notes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacReviewAccountContactDetailsComponent {
-  @Input({ required: true }) public contactDetails!: IFinesMacContactDetailsState;
-  @Output() public emitChangeContactDetails = new EventEmitter<void>();
+export class FinesMacReviewAccountAccountCommentsAndNotesComponent {
+  @Input({ required: true }) public accountCommentsAndNotes!: IFinesMacAccountCommentsNotesState;
+  @Output() public emitChangeAccountCommentsAndNotesDetails = new EventEmitter<void>();
 
-  public readonly finesMacStatus = FINES_MAC_STATUS;
   public readonly defaultValues = FinesMacReviewAccountDefaultValues;
 
   /**
-   * Emits an event to indicate that contact details needs changed.
-   * This method triggers the `emitChangeContactDetails` event emitter.
+   * Emits an event to indicate that account comments and notes needs changed.
+   * This method triggers the `emitChangeAccountCommentsAndNotesDetails` event emitter.
    */
-  public changeContactDetails(): void {
-    this.emitChangeContactDetails.emit();
+  public changeAccountCommentsAndNotesDetails(): void {
+    this.emitChangeAccountCommentsAndNotesDetails.emit();
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { Observable, forkJoin, map } from 'rxjs';
@@ -19,6 +19,7 @@ import { IFinesMacOffenceDetailsReviewSummaryForm } from './interfaces/fines-mac
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy {
+  @Input({ required: false }) public isReadOnly = false;
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);

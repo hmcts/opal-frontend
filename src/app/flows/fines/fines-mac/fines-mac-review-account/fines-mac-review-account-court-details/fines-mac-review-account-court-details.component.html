@@ -1,10 +1,15 @@
 <app-govuk-summary-card-list cardTitle="Court details">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changeCourtDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
   <ng-container content>
     <app-govuk-summary-list summaryListId="courtDetails">
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="courtDetailsOriginatorName"
+        summaryListId="courtDetails"
         summaryListRowId="originatorName"
       >
         <ng-container name>Sending area or Local Justice Area (LJA)</ng-container>
@@ -13,7 +18,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="courtDetailsPcr"
+        summaryListId="courtDetails"
         summaryListRowId="pcr"
       >
         <ng-container name>Prosecutor Case Reference (PCR)</ng-container>
@@ -22,7 +27,7 @@
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="courtDetailsEnforcementCourt"
+        summaryListId="courtDetails"
         summaryListRowId="enforcementCourt"
       >
         <ng-container name>Enforcement court</ng-container>

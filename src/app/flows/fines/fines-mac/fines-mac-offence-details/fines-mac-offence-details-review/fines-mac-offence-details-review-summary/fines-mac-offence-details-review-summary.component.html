@@ -1,20 +1,25 @@
-<div class="govuk-grid-column-full">
-  <div class="govuk-grid-row">
-    @if (
-      finesMacOffenceDetailsService.offenceCodeMessage && finesMacOffenceDetailsService.offenceCodeMessage.length > 0
-    ) {
-      <div class="govuk-grid-column-full">
-        <app-moj-banner type="success" [text]="finesMacOffenceDetailsService.offenceCodeMessage"></app-moj-banner>
-      </div>
+@if (isReadOnly) {
+  <ng-container *ngTemplateOutlet="populatedOffences"></ng-container>
+} @else {
+  <div class="govuk-grid-column-full">
+    <div class="govuk-grid-row">
+      @if (
+        finesMacOffenceDetailsService.offenceCodeMessage && finesMacOffenceDetailsService.offenceCodeMessage.length > 0
+      ) {
+        <div class="govuk-grid-column-full">
+          <app-moj-banner type="success" [text]="finesMacOffenceDetailsService.offenceCodeMessage"></app-moj-banner>
+        </div>
+      }
+    </div>
+    <h1 class="govuk-heading-l">Offences and impositions</h1>
+
+    @if (offencesImpositions.length === 0) {
+      <ng-container *ngTemplateOutlet="emptyOffences"></ng-container>
+    } @else {
+      <ng-container *ngTemplateOutlet="populatedOffences"></ng-container>
     }
   </div>
-  <h1 class="govuk-heading-l">Offences and impositions</h1>
-  @if (offencesImpositions.length === 0) {
-    <ng-container *ngTemplateOutlet="emptyOffences"></ng-container>
-  } @else {
-    <ng-container *ngTemplateOutlet="populatedOffences"></ng-container>
-  }
-</div>
+}
 
 <ng-template #emptyOffences>
   <div class="govuk-grid-row">
@@ -47,14 +52,18 @@
           [majorCreditorRefData]="majorCreditorRefData"
           [showActions]="true"
           [showDetails]="offencesHidden[offence.formData.fm_offence_details_id]"
+          [isReadOnly]="isReadOnly"
           (actionClicked)="offenceAction($event)"
         ></app-fines-mac-offence-details-review-offence>
       }
     </div>
-    <div class="govuk-grid-column-full">
-      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
-    </div>
-    <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
+    @if (!isReadOnly) {
+      <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
+      </div>
+
+      <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
+    }
     <div class="govuk-grid-column-full">
       <div class="border-bottom">
         <h1 class="govuk-heading-m">Totals</h1>
@@ -65,12 +74,14 @@
         [offences]="offencesImpositions"
       ></app-fines-mac-offence-details-review-summary-offences-total>
     </div>
-    <ng-container *ngTemplateOutlet="returnToAccountDetails; context: { $implicit: true }"></ng-container>
-    <div class="govuk-grid-column-full">
-      <app-govuk-cancel-link
-        (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
-      ></app-govuk-cancel-link>
-    </div>
+    @if (!isReadOnly) {
+      <ng-container *ngTemplateOutlet="returnToAccountDetails; context: { $implicit: true }"></ng-container>
+      <div class="govuk-grid-column-full">
+        <app-govuk-cancel-link
+          (linkClickEvent)="handleRoute(finesMacRoutingPaths.children.accountDetails, true)"
+        ></app-govuk-cancel-link>
+      </div>
+    }
   </div>
 </ng-template>
 

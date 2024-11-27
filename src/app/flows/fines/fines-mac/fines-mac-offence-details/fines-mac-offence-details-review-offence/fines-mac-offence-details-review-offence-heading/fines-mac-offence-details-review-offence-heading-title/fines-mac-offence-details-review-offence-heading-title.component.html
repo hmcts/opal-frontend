@@ -8,24 +8,32 @@
   ></app-govuk-heading-with-caption>
   @if (showActions) {
     <app-govuk-summary-list-row-actions class="heading-actions">
-      <li
-        app-govuk-summary-list-row-action-item
-        [actionId]="showDetails ? 'hide' : 'show'"
-        [actionName]="showDetails ? 'Hide' : 'Show'"
-        (linkClick)="onActionClick($event)"
-      ></li>
-      <li
-        app-govuk-summary-list-row-action-item
-        actionId="change"
-        actionName="Change"
-        (linkClick)="onActionClick($event)"
-      ></li>
-      <li
-        app-govuk-summary-list-row-action-item
-        actionId="remove"
-        actionName="Remove"
-        (linkClick)="onActionClick($event)"
-      ></li>
+      <ng-container *ngTemplateOutlet="isReadOnly ? readOnlyActions : actions"></ng-container>
     </app-govuk-summary-list-row-actions>
   }
 </div>
+
+<ng-template #readOnlyActions>
+  <li
+    app-govuk-summary-list-row-action-item
+    [actionId]="showDetails ? 'hide' : 'show'"
+    [actionName]="showDetails ? 'Hide' : 'Show'"
+    (linkClick)="onActionClick($event)"
+  ></li>
+</ng-template>
+
+<ng-template #actions>
+  <ng-container *ngTemplateOutlet="readOnlyActions"></ng-container>
+  <li
+    app-govuk-summary-list-row-action-item
+    actionId="change"
+    actionName="Change"
+    (linkClick)="onActionClick($event)"
+  ></li>
+  <li
+    app-govuk-summary-list-row-action-item
+    actionId="remove"
+    actionName="Remove"
+    (linkClick)="onActionClick($event)"
+  ></li>
+</ng-template>
