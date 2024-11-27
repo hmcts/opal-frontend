@@ -25,27 +25,27 @@ First you have to create a new component called wrapper for your sortable table 
     import { MojSortableTableRowComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row.component';
     import { MojSortableTableComponent } from '@components/moj/moj-sortable-table/moj-sortable-table.component';
     import { ITableComponentTableData, ISortState } from './Interfaces/table-wrap-interfaces';
-    import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
+
     @Component({
-    selector: 'app-table-wrap',
-    standalone: true,
-    imports: [
+      selector: 'app-table-wrap',
+      standalone: true,
+      imports: [
         CommonModule,
         MojSortableTableComponent,
         MojSortableTableHeaderComponent,
         MojSortableTableRowComponent,
         MojSortableTableRowDataComponent,
-    ],
-    templateUrl: './table-wrap.component.html',
+      ],
+      templateUrl: './table-wrap.component.html',
     })
     export class TableWrapComponent extends AbstractSortableTableComponent implements OnInit {
-    @Input({ required: true }) set tableData(tableData: ITableComponentTableData[]) {
+      @Input({ required: true }) set tableData(tableData: ITableComponentTableData[]) {
         this.abstractTableData = tableData;
-    }
+      }
 
-    @Input({ required: true }) set existingSortState(existingSortState: ISortState | null) {
+      @Input({ required: true }) set existingSortState(existingSortState: ISortState | null) {
         this.abstractExistingSortState = existingSortState;
-    }
+      }
     }
 
 ```
@@ -122,30 +122,38 @@ Then In the wrapper HTML element,  you have to create the sortable table columns
 
 These are some of the interfaces you will need to create for your component.
 ```typescript
-    import { ISortStateInterface } from '@components/abstract/abstract-sortable-table/interfaces/abstract-sortable-table-interfaces';
-    import { IObjectSortableInterface } from '@services/sort-service/interfaces/sort-service-interface';
+    import { IAbstractSortState } from '@components/abstract/abstract-sortable-table/interfaces/abstract-sortable-table-interfaces';
+  import { IAbstractTableData } from '@components/abstract/abstract-sortable-table/interfaces/abstract-sortable-table-interfaces';
+  import { SortableValues } from '@services/sort-service/types/sort-service-type';
 
-    export interface ITableComponentTableData extends IObjectSortableInterface<string | number> {
+  export interface ITableComponentTableData extends IAbstractTableData<SortableValues> {
     imposition: string;
     creditor: string;
     amountImposed: number;
     amountPaid: number;
     balanceRemaining: number;
-    }
+  }
 
-    export interface ISortState extends ISortStateInterface {
+  export interface ISortState extends IAbstractSortState {
     imposition: 'ascending' | 'descending' | 'none';
     creditor: 'ascending' | 'descending' | 'none';
     amountImposed: 'ascending' | 'descending' | 'none';
     amountPaid: 'ascending' | 'descending' | 'none';
     balanceRemaining: 'ascending' | 'descending' | 'none';
-    }
+  }
+
 ```
 
 In your parent component you need to have the data you will be passing in. Such as
 
 
 ```typescript
+    import { TableWrapComponent } from './table-wrap/table-wrap.component';
+    import { ISortState } from './table-wrap/Interfaces/table-wrap-interfaces';
+    import { ITableComponentTableData } from './table-wrap/Interfaces/table-wrap-interfaces';
+    .......
+    Component config
+    .......
 
     tableData: ITableComponentTableData[] = [
         {
@@ -224,5 +232,3 @@ yarn test
 Feel free to submit issues or pull requests to improve this component.
 
 ---
-
-This `README.md` provides guidance on how to use and configure the `moj-primary-navigation` component to display a primary navigation bar for MOJ applications.
