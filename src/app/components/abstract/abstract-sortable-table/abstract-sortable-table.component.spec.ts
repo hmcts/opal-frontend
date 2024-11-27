@@ -80,7 +80,7 @@ describe('AbstractSortableTableComponent', () => {
 
   it('should update sort state and sort data in ascending order', () => {
     const event = { key: 'amountPaid', sortType: 'ascending' as const };
-    const sortedData = service.sortObjectsAsc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
+    const sortedData = service.sortObjectArrayAsc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
     const newSortState: IAbstractSortState = {
       ...MOCK_ABSTRACT_EXISTING_SORT_STATE,
       imposition: 'none',
@@ -97,7 +97,7 @@ describe('AbstractSortableTableComponent', () => {
 
   it('should update sort state and sort data in descending order', () => {
     const event = { key: 'amountPaid', sortType: 'descending' as const };
-    const sortedData = service.sortObjectsDsc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
+    const sortedData = service.sortObjectArrayDesc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
     const newSortState: IAbstractSortState = {
       ...MOCK_ABSTRACT_EXISTING_SORT_STATE,
       imposition: 'none',

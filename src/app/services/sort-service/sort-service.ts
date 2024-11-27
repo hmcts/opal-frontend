@@ -23,7 +23,7 @@ export class SortService {
    * @param array - The array of values to be sorted.
    * @returns The sorted array in descending order.
    */
-  public arraySortDsc(array: ISortServiceArrayValues): ISortServiceArrayValues {
+  public arraySortDesc(array: ISortServiceArrayValues): ISortServiceArrayValues {
     return sort(array).desc();
   }
 
@@ -53,10 +53,10 @@ export class SortService {
    * // ]
    * ```
    */
-  private getObjects(
-    array: ISortServiceValues<string | number | boolean>[],
+  private sortObjectArray(
+    array: ISortServiceValues<string | number | boolean>[] | null,
     config: ISortServiceConfig,
-  ): ISortServiceValues<string | number | boolean>[] {
+  ): ISortServiceValues<string | number | boolean>[] | null {
     if (!Array.isArray(array) || !config.key) {
       return array;
     }
@@ -77,11 +77,11 @@ export class SortService {
    * @param key - The key of the object property to sort by.
    * @returns The sorted array of objects.
    */
-  public sortObjectsAsc(
-    array: ISortServiceValues<string | number | boolean>[],
+  public sortObjectArrayAsc(
+    array: ISortServiceValues<string | number | boolean>[] | null,
     key: string,
-  ): ISortServiceValues<string | number | boolean>[] {
-    return this.getObjects(array, { key, sortType: 'ascending' });
+  ): ISortServiceValues<string | number | boolean>[] | null {
+    return this.sortObjectArray(array, { key, sortType: 'ascending' });
   }
 
   /**
@@ -91,10 +91,10 @@ export class SortService {
    * @param key - The key of the object property to sort by.
    * @returns The sorted array of objects in descending order.
    */
-  public sortObjectsDsc(
-    array: ISortServiceValues<string | number | boolean>[],
+  public sortObjectArrayDesc(
+    array: ISortServiceValues<string | number | boolean>[] | null,
     key: string,
-  ): ISortServiceValues<string | number | boolean>[] {
-    return this.getObjects(array, { key, sortType: 'descending' });
+  ): ISortServiceValues<string | number | boolean>[] | null {
+    return this.sortObjectArray(array, { key, sortType: 'descending' });
   }
 }

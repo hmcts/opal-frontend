@@ -7,7 +7,7 @@ import { IAbstractSortState, IAbstractTableData } from './interfaces/abstract-so
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
-  public abstractTableData!: IAbstractTableData<string | number | boolean>[];
+  public abstractTableData!: IAbstractTableData<string | number | boolean>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
@@ -33,10 +33,10 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    * @returns An object representing the initial sort state for each column in the table.
    *          The keys of the object correspond to the column names, and the values are set to 'none'.
    */
-  public createSortState(tableData: IAbstractTableData<string | number | boolean>[]): IAbstractSortState {
+  public createSortState(tableData: IAbstractTableData<string | number | boolean>[] | null): IAbstractSortState {
     const sortState: IAbstractSortState = {};
 
-    if (tableData.length > 0) {
+    if (tableData && tableData.length > 0) {
       Object.keys(tableData[0]).forEach((key) => {
         sortState[key] = 'none';
       });
@@ -61,9 +61,9 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     });
 
     if (sortType === 'ascending') {
-      this.abstractTableData = this.sortService.sortObjectsAsc(this.abstractTableData, key);
+      this.abstractTableData = this.sortService.sortObjectArrayAsc(this.abstractTableData, key);
     } else {
-      this.abstractTableData = this.sortService.sortObjectsDsc(this.abstractTableData, key);
+      this.abstractTableData = this.sortService.sortObjectArrayDesc(this.abstractTableData, key);
     }
 
     this.abstractSortState.emit(this.sortState);
