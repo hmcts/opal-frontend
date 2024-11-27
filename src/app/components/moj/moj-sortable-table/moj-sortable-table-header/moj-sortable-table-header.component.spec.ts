@@ -13,6 +13,8 @@ describe('MojSortableTableHeaderComponent', () => {
 
     fixture = TestBed.createComponent(MojSortableTableHeaderComponent);
     component = fixture.componentInstance;
+    spyOn(component.sortChange, 'emit');
+    component.columnKey = 'test-column';
   });
 
   it('should create the component', () => {
@@ -44,7 +46,6 @@ describe('MojSortableTableHeaderComponent', () => {
   });
 
   it('should emit sortChange with correct key and sortType on toggleSort', () => {
-    spyOn(component.sortChange, 'emit');
     component.columnKey = 'test-column';
     component.sortDirection = 'ascending';
 
@@ -56,48 +57,41 @@ describe('MojSortableTableHeaderComponent', () => {
     });
   });
 
-  describe('MojSortableTableHeaderComponent toggleSort', () => {
-    beforeEach(() => {
-      spyOn(component.sortChange, 'emit');
-      component.columnKey = 'test-column';
+  it('should emit "ascending" when sortDirection is "none"', () => {
+    component.sortDirection = 'none';
+    component.toggleSort();
+
+    expect(component.sortChange.emit).toHaveBeenCalledWith({
+      key: 'test-column',
+      sortType: 'ascending',
     });
+  });
 
-    it('should emit "ascending" when sortDirection is "none"', () => {
-      component.sortDirection = 'none';
-      component.toggleSort();
+  it('should emit "descending" when sortDirection is "ascending"', () => {
+    component.sortDirection = 'ascending';
+    component.toggleSort();
 
-      expect(component.sortChange.emit).toHaveBeenCalledWith({
-        key: 'test-column',
-        sortType: 'ascending',
-      });
+    expect(component.sortChange.emit).toHaveBeenCalledWith({
+      key: 'test-column',
+      sortType: 'descending',
     });
+  });
 
-    it('should emit "descending" when sortDirection is "ascending"', () => {
-      component.sortDirection = 'ascending';
-      component.toggleSort();
+  it('should emit "ascending" when sortDirection is "descending"', () => {
+    component.sortDirection = 'descending';
+    component.toggleSort();
 
-      expect(component.sortChange.emit).toHaveBeenCalledWith({
-        key: 'test-column',
-        sortType: 'descending',
-      });
+    expect(component.sortChange.emit).toHaveBeenCalledWith({
+      key: 'test-column',
+      sortType: 'ascending',
     });
+  });
 
-    it('should emit "ascending" when sortDirection is "descending"', () => {
-      component.sortDirection = 'descending';
-      component.toggleSort();
+  it('should not update sortDirection directly', () => {
+    component.sortDirection = 'none';
+    component.toggleSort();
 
-      expect(component.sortChange.emit).toHaveBeenCalledWith({
-        key: 'test-column',
-        sortType: 'ascending',
-      });
-    });
-
-    it('should not update sortDirection directly', () => {
-      component.sortDirection = 'none';
-      component.toggleSort();
-
-      expect(component.sortDirection).toBe('none'); // Verifying that the method doesn't update the state
-    });
+    expect(component.sortDirection).toBe('none'); // Verifying that the method doesn't update the state
   });
 
   it('should return the current sortDirection as aria-sort', () => {
