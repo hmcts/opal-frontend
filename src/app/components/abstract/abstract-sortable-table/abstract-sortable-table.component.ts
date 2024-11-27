@@ -70,7 +70,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     this.abstractSortState.emit(this.sortState);
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initialiseSortState();
   }
 }
