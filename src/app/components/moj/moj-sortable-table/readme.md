@@ -221,8 +221,6 @@ Then you need to forge them all together with the table wrapping component in th
 
 ## Testing
 
-Unit tests for this component can be found in the `moj-primary-navigation.component.spec.ts` file. To run the tests, use:
-
 ```bash
 yarn test
 ```
