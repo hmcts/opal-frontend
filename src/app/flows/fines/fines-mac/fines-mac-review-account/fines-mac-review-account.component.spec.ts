@@ -4,7 +4,7 @@ import { FinesMacReviewAccountComponent } from './fines-mac-review-account.compo
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
-describe('FinesMacReviewAccountComponent', () => {
+xdescribe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
 

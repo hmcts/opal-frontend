@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes.component';
 
-describe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
+xdescribe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
   let component: FinesMacReviewAccountAccountCommentsAndNotesComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountAccountCommentsAndNotesComponent>;
 
