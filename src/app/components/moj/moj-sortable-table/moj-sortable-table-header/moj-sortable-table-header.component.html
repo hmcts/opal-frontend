@@ -1,1 +1,3 @@
-<button title="st" (click)="toggleSort()" data-index="2"><ng-content></ng-content></button>
+<button title="{{ titleInput }}" [attr.data-index]="dataIndex" (click)="toggleSort()">
+  <ng-content></ng-content>
+</button>

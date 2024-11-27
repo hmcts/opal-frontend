@@ -11,7 +11,8 @@ class TestComponent extends AbstractSortableTableComponent {
     this.abstractTableData = MOCK_ABSTRACT_TABLE_DATA;
     this.abstractExistingSortState = null;
   }
-  public testOnSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
+
+  testOnSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     this.onSortChange(event);
   }
 }

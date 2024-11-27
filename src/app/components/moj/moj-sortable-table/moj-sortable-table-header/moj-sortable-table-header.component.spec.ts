@@ -26,6 +26,20 @@ describe('MojSortableTableHeaderComponent', () => {
     });
   });
 
+  describe('@Input titleInput', () => {
+    it('should set titleInput correctly', () => {
+      component.titleInput = 'test-title';
+      expect(component.titleInput).toBe('test-title');
+    });
+  });
+
+  describe('@Input dataIndex', () => {
+    it('should set dataIndex correctly', () => {
+      component.dataIndex = 2;
+      expect(component.dataIndex).toBe(2);
+    });
+  });
+
   describe('@Input sortDirection', () => {
     it('should have default sortDirection as "none"', () => {
       expect(component.sortDirection).toBe('none');
@@ -136,8 +150,11 @@ describe('MojSortableTableHeaderComponent', () => {
     });
 
     it('should set title and data-index attributes on button', () => {
+      component.titleInput = 'button';
+      component.dataIndex = 2;
+      fixture.detectChanges();
       const button = fixture.debugElement.query(By.css('button'));
-      expect(button.attributes['title']).toBe('st');
+      expect(button.attributes['title']).toBe('button');
       expect(button.attributes['data-index']).toBe('2');
     });
   });
