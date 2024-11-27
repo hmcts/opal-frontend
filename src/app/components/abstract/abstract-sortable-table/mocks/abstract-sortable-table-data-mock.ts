@@ -1,4 +1,6 @@
-export const MOCK_ABSTRACT_TABLE_DATA = [
+import { IAbstractTableData } from '../interfaces/abstract-sortable-table-interfaces';
+
+export const MOCK_ABSTRACT_TABLE_DATA: IAbstractTableData<string | number | boolean>[] = [
   {
     imposition: 'Imposition 1',
     creditor: 'major',

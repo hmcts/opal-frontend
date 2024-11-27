@@ -1,6 +1,6 @@
 import { IAbstractSortState } from '../interfaces/abstract-sortable-table-interfaces';
 
-export const MOCK_ABSTRACT_EXISTING_SORT_STATE: IAbstractSortState = {
+export const ABSTRACT_EXISTING_SORT_STATE_MOCK: IAbstractSortState = {
   imposition: 'ascending',
   creditor: 'none',
   amountImposed: 'none',

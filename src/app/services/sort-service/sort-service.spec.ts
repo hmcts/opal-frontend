@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SortService } from './sort-service';
 import { SORT_OBJECT_INPUT_MOCK } from './mocks/sort-service-object-input-mock';
 import { ISortServiceValues } from './interfaces/sort-service-values';
+import { SortableValues } from './types/sort-service-type';
 
 describe('SortService', () => {
   let service: SortService;
@@ -112,7 +113,7 @@ describe('SortService', () => {
 
     it('should return the array if it is not an array', () => {
       const input = null;
-      const result = service['sortObjectArray'](input as ISortServiceValues<string | number | boolean>[] | null, {
+      const result = service['sortObjectArray'](input as ISortServiceValues<SortableValues>[] | null, {
         key: 'id',
         sortType: 'ascending',
       });

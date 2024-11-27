@@ -1,13 +1,14 @@
 import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { SortService } from '@services/sort-service/sort-service';
 import { IAbstractSortState, IAbstractTableData } from './interfaces/abstract-sortable-table-interfaces';
+import { SortableValues } from '@services/sort-service/types/sort-service-type';
 
 @Component({
   standalone: true,
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
-  public abstractTableData!: IAbstractTableData<string | number | boolean>[] | null;
+  public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
@@ -33,7 +34,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    * @returns An object representing the initial sort state for each column in the table.
    *          The keys of the object correspond to the column names, and the values are set to 'none'.
    */
-  public createSortState(tableData: IAbstractTableData<string | number | boolean>[] | null): IAbstractSortState {
+  private createSortState(tableData: IAbstractTableData<SortableValues>[] | null): IAbstractSortState {
     const sortState: IAbstractSortState = {};
 
     if (tableData && tableData.length > 0) {
@@ -54,7 +55,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    *
    * Updates the sort state for each column, sorts the table data accordingly, and emits the updated sort state.
    */
-  public onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
+  protected onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     const { key, sortType } = event;
     Object.keys(this.sortState).forEach((key) => {
       this.sortState[key] = key === event.key ? event.sortType : 'none';

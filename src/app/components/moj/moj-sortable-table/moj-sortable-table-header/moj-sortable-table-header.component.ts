@@ -23,6 +23,13 @@ export class MojSortableTableHeaderComponent {
     return 'govuk-table__header';
   }
 
+  /**
+   * Toggles the sort direction between 'ascending' and 'descending' for the table column.
+   * Emits a sortChange event with the column key and the new sort direction.
+   *
+   * @public
+   * @returns {void}
+   */
   public toggleSort(): void {
     const newDirection = this.sortDirection === 'ascending' ? 'descending' : 'ascending';
 
@@ -30,5 +37,5 @@ export class MojSortableTableHeaderComponent {
       key: this.columnKey,
       sortType: newDirection,
     });
-  } /** This method will validate the sort type ASC or DESC and emit this with the header column key*/
+  }
 }

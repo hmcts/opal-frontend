@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { sort } from 'fast-sort';
 import { ISortServiceConfig } from './interfaces/sort-service-interface';
 import { ISortServiceValues, ISortServiceArrayValues } from './interfaces/sort-service-values';
+import { SortableValues } from './types/sort-service-type';
 
 @Injectable({
   providedIn: 'root',
@@ -54,9 +55,9 @@ export class SortService {
    * ```
    */
   private sortObjectArray(
-    array: ISortServiceValues<string | number | boolean>[] | null,
+    array: ISortServiceValues<SortableValues>[] | null,
     config: ISortServiceConfig,
-  ): ISortServiceValues<string | number | boolean>[] | null {
+  ): ISortServiceValues<SortableValues>[] | null {
     if (!Array.isArray(array) || !config.key) {
       return array;
     }
@@ -78,9 +79,9 @@ export class SortService {
    * @returns The sorted array of objects.
    */
   public sortObjectArrayAsc(
-    array: ISortServiceValues<string | number | boolean>[] | null,
+    array: ISortServiceValues<SortableValues>[] | null,
     key: string,
-  ): ISortServiceValues<string | number | boolean>[] | null {
+  ): ISortServiceValues<SortableValues>[] | null {
     return this.sortObjectArray(array, { key, sortType: 'ascending' });
   }
 
@@ -92,9 +93,9 @@ export class SortService {
    * @returns The sorted array of objects in descending order.
    */
   public sortObjectArrayDesc(
-    array: ISortServiceValues<string | number | boolean>[] | null,
+    array: ISortServiceValues<SortableValues>[] | null,
     key: string,
-  ): ISortServiceValues<string | number | boolean>[] | null {
+  ): ISortServiceValues<SortableValues>[] | null {
     return this.sortObjectArray(array, { key, sortType: 'descending' });
   }
 }
