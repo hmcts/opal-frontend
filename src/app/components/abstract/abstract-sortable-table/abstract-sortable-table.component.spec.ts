@@ -11,10 +11,6 @@ class TestComponent extends AbstractSortableTableComponent {
     this.abstractTableData = MOCK_ABSTRACT_TABLE_DATA;
     this.abstractExistingSortState = null;
   }
-
-  testOnSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
-    this.onSortChange(event);
-  }
 }
 
 describe('AbstractSortableTableComponent', () => {
@@ -92,7 +88,7 @@ describe('AbstractSortableTableComponent', () => {
     };
     spyOn(component.abstractSortState, 'emit');
 
-    component.testOnSortChange(event);
+    component['onSortChange'](event);
 
     expect(component.sortState).toEqual(newSortState);
     expect(component.abstractTableData).toEqual(sortedData);
@@ -109,7 +105,7 @@ describe('AbstractSortableTableComponent', () => {
     };
     spyOn(component.abstractSortState, 'emit');
 
-    component.testOnSortChange(event);
+    component['onSortChange'](event);
 
     expect(component.sortState).toEqual(newSortState);
     expect(component.abstractTableData).toEqual(sortedData);
