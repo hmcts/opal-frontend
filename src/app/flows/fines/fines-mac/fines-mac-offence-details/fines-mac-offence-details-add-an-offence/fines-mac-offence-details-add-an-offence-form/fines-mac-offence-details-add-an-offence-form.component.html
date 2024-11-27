@@ -12,24 +12,24 @@
     <app-moj-date-picker
       labelText="Date of sentence"
       labelClasses="govuk-label--s"
-      inputId="fm_offence_details_date_of_offence"
-      inputName="fm_offence_details_date_of_offence"
+      inputId="fm_offence_details_date_of_sentence"
+      inputName="fm_offence_details_date_of_sentence"
       inputClasses="govuk-input--width-10"
       hintText="For example, 31/01/2023"
       [maxDate]="today"
-      [control]="form.controls['fm_offence_details_date_of_offence']"
-      [errors]="formControlErrorMessages['fm_offence_details_date_of_offence']"
-      (dateChange)="setInputValue($event, 'fm_offence_details_date_of_offence')"
+      [control]="form.controls['fm_offence_details_date_of_sentence']"
+      [errors]="formControlErrorMessages['fm_offence_details_date_of_sentence']"
+      (dateChange)="setInputValue($event, 'fm_offence_details_date_of_sentence')"
     ></app-moj-date-picker>
     <app-govuk-text-input
       labelText="Offence code"
       labelClasses="govuk-fieldset__legend--s"
-      inputId="fm_offence_details_offence_code"
-      inputName="fm_offence_details_offence_code"
+      inputId="fm_offence_details_offence_id"
+      inputName="fm_offence_details_offence_id"
       inputClasses="govuk-input--width-10"
       [hintHtml]="true"
-      [errors]="formControlErrorMessages['fm_offence_details_offence_code']"
-      [control]="form.controls['fm_offence_details_offence_code']"
+      [errors]="formControlErrorMessages['fm_offence_details_offence_id']"
+      [control]="form.controls['fm_offence_details_offence_id']"
     >
       For example, HY35014. If you don't know the offence code, you can
       <a
@@ -68,15 +68,15 @@
                 form.get([
                   'fm_offence_details_impositions',
                   rowIndex,
-                  formArrayControl['fm_offence_details_result_code'].controlName,
+                  formArrayControl['fm_offence_details_result_id'].controlName,
                 ])
               "
               labelText="Result code"
               labelClasses="govuk-fieldset__legend--s"
-              [inputId]="formArrayControl['fm_offence_details_result_code'].inputId"
-              [inputName]="formArrayControl['fm_offence_details_result_code'].inputName"
+              [inputId]="formArrayControl['fm_offence_details_result_id'].inputId"
+              [inputName]="formArrayControl['fm_offence_details_result_id'].inputName"
               [autoCompleteItems]="resultCodeItems"
-              [errors]="formControlErrorMessages[formArrayControl['fm_offence_details_result_code'].controlName]"
+              [errors]="formControlErrorMessages[formArrayControl['fm_offence_details_result_id'].controlName]"
               [showAllValues]="true"
             >
             </app-alphagov-accessible-autocomplete>
@@ -175,18 +175,18 @@
                               form.get([
                                 'fm_offence_details_impositions',
                                 rowIndex,
-                                formArrayControl['fm_offence_details_major_creditor'].controlName,
+                                formArrayControl['fm_offence_details_major_creditor_id'].controlName,
                               ])
                             "
                             labelText="Search using name or code"
                             labelClasses="govuk-fieldset__legend--s"
-                            [inputId]="formArrayControl['fm_offence_details_major_creditor'].inputId"
-                            [inputName]="formArrayControl['fm_offence_details_major_creditor'].inputName"
+                            [inputId]="formArrayControl['fm_offence_details_major_creditor_id'].inputId"
+                            [inputName]="formArrayControl['fm_offence_details_major_creditor_id'].inputName"
                             inputClasses="govuk-!-width-one-half"
                             [autoCompleteItems]="majorCreditorItems"
                             [errors]="
                               formControlErrorMessages[
-                                formArrayControl['fm_offence_details_major_creditor'].controlName
+                                formArrayControl['fm_offence_details_major_creditor_id'].controlName
                               ]
                             "
                           >

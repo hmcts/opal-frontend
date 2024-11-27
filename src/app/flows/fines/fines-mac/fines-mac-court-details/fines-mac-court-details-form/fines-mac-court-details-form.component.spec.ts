@@ -80,7 +80,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   });
 
   it('should get originator name based on originator ID', () => {
-    const originatorName = component['getOriginatorName']('3865');
+    const originatorName = component['getOriginatorName']('9985');
     expect(originatorName).toBe('Asylum & Immigration Tribunal');
   });
 
@@ -91,7 +91,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
 
   it('should set originator name based on sending court details', () => {
     component['setupCourtDetailsForm']();
-    component.form.get('fm_court_details_originator_id')?.setValue('3865');
+    component.form.get('fm_court_details_originator_id')?.setValue('9985');
     component['setOriginatorName']();
     expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
   });

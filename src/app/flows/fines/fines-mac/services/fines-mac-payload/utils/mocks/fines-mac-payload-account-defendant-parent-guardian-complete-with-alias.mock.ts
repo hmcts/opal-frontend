@@ -18,8 +18,8 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_A
         aliases: [
           {
             alias_company_name: null,
-            alias_forenames: 'Testing',
-            alias_surname: 'Test',
+            alias_forenames: 'Rebecca',
+            alias_surname: 'Johnson',
           },
         ],
       },

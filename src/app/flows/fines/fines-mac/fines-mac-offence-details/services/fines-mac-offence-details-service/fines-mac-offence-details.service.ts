@@ -26,7 +26,7 @@ export class FinesMacOffenceDetailsService {
   ): IFinesMacOffenceDetailsReviewSummaryForm[] {
     const uniqueDates = new Set<string>(); // Track unique dates of offence
     return forms.map((form) => {
-      const dateOfOffence = form.formData.fm_offence_details_date_of_offence;
+      const dateOfOffence = form.formData.fm_offence_details_date_of_sentence;
 
       let show_date_of_sentence = false;
       if (dateOfOffence && !uniqueDates.has(dateOfOffence)) {

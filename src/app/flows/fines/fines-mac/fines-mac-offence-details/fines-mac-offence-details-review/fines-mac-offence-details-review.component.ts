@@ -42,11 +42,11 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
   private sortOffencesByDate(): void {
     this.offencesImpositions.sort((a, b) => {
       const dateOfOffenceA = this.dateService.getFromFormat(
-        a.formData.fm_offence_details_date_of_offence!,
+        a.formData.fm_offence_details_date_of_sentence!,
         'dd/MM/yyyy',
       );
       const dateOfOffenceB = this.dateService.getFromFormat(
-        b.formData.fm_offence_details_date_of_offence!,
+        b.formData.fm_offence_details_date_of_sentence!,
         'dd/MM/yyyy',
       );
 

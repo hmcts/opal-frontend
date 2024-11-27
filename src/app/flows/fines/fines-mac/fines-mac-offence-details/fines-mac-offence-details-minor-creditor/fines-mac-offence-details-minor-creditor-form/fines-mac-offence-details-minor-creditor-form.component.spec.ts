@@ -16,7 +16,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
@@ -97,10 +97,10 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set validators for payment detail controls', () => {
-    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_name_on_account'];
-    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
-    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_payment_reference'];
+    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
+    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Call the method to set validators
     component['setPaymentDetailValidators']();
@@ -175,10 +175,10 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and clear validators for payment detail controls', () => {
-    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_name_on_account'];
-    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
-    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_payment_reference'];
+    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
+    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Call the method to reset and clear validators
     component['resetPaymentDetailValidators']();
@@ -205,11 +205,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and set validators based on hasPaymentDetails true value', () => {
-    const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_has_payment_details'];
-    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_name_on_account'];
-    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
-    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_payment_reference'];
+    const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_pay_by_bacs'];
+    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
+    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods
 
@@ -245,11 +245,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and set validators based on hasPaymentDetails false value', () => {
-    const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_has_payment_details'];
-    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_name_on_account'];
-    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_sort_code'];
-    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_account_number'];
-    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_payment_reference'];
+    const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_pay_by_bacs'];
+    const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
+    const paymentReferenceControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_ref'];
 
     // Spy on resetPaymentDetailValidators and setPaymentDetailValidators methods
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -356,7 +356,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should handle editing a minor creditor', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
     ];

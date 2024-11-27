@@ -40,9 +40,9 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       @for (offence of offencesImpositions; track offence.formData.fm_offence_details_id) {
-        @if (offence.formData.fm_offence_details_date_of_offence && offence.formData.show_date_of_sentence) {
+        @if (offence.formData.fm_offence_details_date_of_sentence && offence.formData.show_date_of_sentence) {
           <app-fines-mac-offence-details-review-summary-date-of-sentence
-            [dateOfSentence]="offence.formData.fm_offence_details_date_of_offence"
+            [dateOfSentence]="offence.formData.fm_offence_details_date_of_sentence"
           ></app-fines-mac-offence-details-review-summary-date-of-sentence>
         }
 

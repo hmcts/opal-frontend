@@ -8,8 +8,8 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_WITH_ALIAS_MOCK: IFi
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK.debtor_detail,
       aliases: [
         {
-          alias_forenames: 'Testing',
-          alias_surname: 'Test',
+          alias_forenames: 'Rebecca',
+          alias_surname: 'Johnson',
         },
       ],
     },

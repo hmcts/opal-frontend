@@ -38,7 +38,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    */
   private getEnforcementCourt(): void {
     const court = this.enforcementCourtsData.find(
-      (court: IOpalFinesCourt) => court.court_id === +this.courtDetails.fm_court_details_enforcement_court_id!,
+      (court: IOpalFinesCourt) => court.court_id === +this.courtDetails.fm_court_details_imposing_court_id!,
     )!;
 
     this.enforcementCourt = this.opalFinesService.getCourtPrettyName(court);

@@ -381,7 +381,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should reset and create collection order date when has collection order value is "yes" with offence date', () => {
     mockDateService.toDateStringFormat.and.returnValue(
-      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_offence!,
+      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_sentence!,
     );
 
     component.defendantType = 'adultOrYouthOnly';
@@ -393,7 +393,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     hasCollectionOrderControl.setValue(true);
 
     expect(component.form.get('fm_payment_terms_collection_order_date')!.value).toBe(
-      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_offence,
+      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_sentence,
     );
   });
 

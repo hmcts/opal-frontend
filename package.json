@@ -90,11 +90,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.0.6",
-    "@angular-eslint/builder": "18.4.1",
-    "@angular-eslint/eslint-plugin": "18.4.1",
-    "@angular-eslint/eslint-plugin-template": "18.4.1",
-    "@angular-eslint/schematics": "18.4.1",
-    "@angular-eslint/template-parser": "18.4.1",
+    "@angular-eslint/builder": "18.4.2",
+    "@angular-eslint/eslint-plugin": "18.4.2",
+    "@angular-eslint/eslint-plugin-template": "18.4.2",
+    "@angular-eslint/schematics": "18.4.2",
+    "@angular-eslint/template-parser": "18.4.2",
     "@angular/cli": "^18.0.6",
     "@angular/compiler-cli": "^18.0.5",
     "@types/config": "^3.3.3",
@@ -125,7 +125,7 @@
     "mocha-junit-reporter": "^2.2.1",
     "typescript": "~5.5.0"
   },
-  "packageManager": "yarn@4.5.1",
+  "packageManager": "yarn@4.5.3",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },

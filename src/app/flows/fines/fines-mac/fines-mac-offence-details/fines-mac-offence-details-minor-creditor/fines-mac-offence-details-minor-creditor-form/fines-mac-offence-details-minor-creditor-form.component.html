@@ -113,44 +113,44 @@
       <div
         app-govuk-checkboxes-item
         labelText="I have BACS payment details"
-        inputId="fm_offence_details_minor_creditor_has_payment_details"
-        inputName="fm_offence_details_minor_creditor_has_payment_details"
-        [control]="form.get('fm_offence_details_minor_creditor_has_payment_details')"
+        inputId="fm_offence_details_minor_creditor_pay_by_bacs"
+        inputName="fm_offence_details_minor_creditor_pay_by_bacs"
+        [control]="form.get('fm_offence_details_minor_creditor_pay_by_bacs')"
       ></div>
     </app-govuk-checkboxes>
-    @if (form.get('fm_offence_details_minor_creditor_has_payment_details')?.value === true) {
-      <div app-govuk-checkboxes-conditional conditionalId="fm_offence_details_minor_creditor_has_payment_details">
+    @if (form.get('fm_offence_details_minor_creditor_pay_by_bacs')?.value === true) {
+      <div app-govuk-checkboxes-conditional conditionalId="fm_offence_details_minor_creditor_pay_by_bacs">
         <app-govuk-text-input
           labelText="Name on the account"
-          inputId="fm_offence_details_minor_creditor_name_on_account"
-          inputName="fm_offence_details_minor_creditor_name_on_account"
+          inputId="fm_offence_details_minor_creditor_bank_account_name"
+          inputName="fm_offence_details_minor_creditor_bank_account_name"
           inputClasses="govuk-!-width-two-thirds"
-          [control]="form.controls['fm_offence_details_minor_creditor_name_on_account']"
-          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_name_on_account']"
+          [control]="form.controls['fm_offence_details_minor_creditor_bank_account_name']"
+          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_name']"
         ></app-govuk-text-input>
         <app-govuk-text-input
           labelText="Sort code"
-          inputId="fm_offence_details_minor_creditor_sort_code"
-          inputName="fm_offence_details_minor_creditor_sort_code"
+          inputId="fm_offence_details_minor_creditor_bank_sort_code"
+          inputName="fm_offence_details_minor_creditor_bank_sort_code"
           inputClasses="govuk-!-width-one-third"
-          [control]="form.controls['fm_offence_details_minor_creditor_sort_code']"
-          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_sort_code']"
+          [control]="form.controls['fm_offence_details_minor_creditor_bank_sort_code']"
+          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_sort_code']"
         ></app-govuk-text-input>
         <app-govuk-text-input
           labelText="Account number"
-          inputId="fm_offence_details_minor_creditor_account_number"
-          inputName="fm_offence_details_minor_creditor_account_number"
+          inputId="fm_offence_details_minor_creditor_bank_account_number"
+          inputName="fm_offence_details_minor_creditor_bank_account_number"
           inputClasses="govuk-!-width-one-third"
-          [control]="form.controls['fm_offence_details_minor_creditor_account_number']"
-          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_account_number']"
+          [control]="form.controls['fm_offence_details_minor_creditor_bank_account_number']"
+          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_number']"
         ></app-govuk-text-input>
         <app-govuk-text-input
           labelText="Payment reference"
-          inputId="fm_offence_details_minor_creditor_payment_reference"
-          inputName="fm_offence_details_minor_creditor_payment_reference"
+          inputId="fm_offence_details_minor_creditor_bank_account_ref"
+          inputName="fm_offence_details_minor_creditor_bank_account_ref"
           inputClasses="govuk-!-width-two-thirds"
-          [control]="form.controls['fm_offence_details_minor_creditor_payment_reference']"
-          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_payment_reference']"
+          [control]="form.controls['fm_offence_details_minor_creditor_bank_account_ref']"
+          [errors]="formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_ref']"
         ></app-govuk-text-input>
       </div>
     }

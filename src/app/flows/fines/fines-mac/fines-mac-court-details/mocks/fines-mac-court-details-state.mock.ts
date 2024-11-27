@@ -4,5 +4,5 @@ export const FINES_MAC_COURT_DETAILS_STATE_MOCK: IFinesMacCourtDetailsState = {
   fm_court_details_originator_id: '9985',
   fm_court_details_originator_name: 'Asylum & Immigration Tribunal',
   fm_court_details_prosecutor_case_reference: 'O1AT204003',
-  fm_court_details_enforcement_court_id: '1865',
+  fm_court_details_imposing_court_id: '1865',
 };

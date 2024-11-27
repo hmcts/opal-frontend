@@ -118,12 +118,12 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private setupAddAnOffenceForm(): void {
     this.form = new FormGroup({
       fm_offence_details_id: new FormControl(this.offenceIndex),
-      fm_offence_details_date_of_offence: new FormControl(null, [
+      fm_offence_details_date_of_sentence: new FormControl(null, [
         Validators.required,
         optionalValidDateValidator(),
         futureDateValidator(),
       ]),
-      fm_offence_details_offence_code: new FormControl(null, [Validators.required]),
+      fm_offence_details_offence_id: new FormControl(null, [Validators.required]),
       fm_offence_details_impositions: new FormArray([]),
     });
   }
@@ -181,7 +181,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param cjsCode - The CJS code used to retrieve the offence details.
    */
   private populateOffenceHint(cjsCode: string): void {
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_id'];
 
     if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
       this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
@@ -208,7 +208,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private offenceCodeListener(): void {
     this.selectedOffenceConfirmation = false;
 
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_code'];
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_id'];
 
     // Populate the offence hint if the offence code is already set
     if (offenceCodeControl.value) {
@@ -266,6 +266,17 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @returns {void}
    */
   private removeMinorCreditorData(index: number): void {
+    this.removeMinorCreditorFromDraftState(index);
+    this.removeMinorCreditorFromState(index);
+  }
+
+  /**
+   * Removes a minor creditor from the draft state based on the provided index.
+   *
+   * @param {number} index - The index of the minor creditor to be removed.
+   * @returns {void}
+   */
+  private removeMinorCreditorFromDraftState(index: number): void {
     const draftOffenceDetails =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
     if (!draftOffenceDetails?.childFormData) {
@@ -278,6 +289,18 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
 
     if (minorCreditorIndex >= 0) {
       draftOffenceDetails.childFormData.splice(minorCreditorIndex, 1);
+    }
+  }
+
+  /**
+   * Removes a minor creditor from the state at the specified index.
+   * If the minor creditor exists at the given index, it will be deleted.
+   *
+   * @param {number} index - The index of the minor creditor to be removed.
+   * @returns {void}
+   */
+  private removeMinorCreditorFromState(index: number): void {
+    if (this.minorCreditors[index]) {
       delete this.minorCreditors[index];
     }
   }
@@ -290,7 +313,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const impositionsFormGroup = this.getFormArrayFormGroup(index, 'fm_offence_details_impositions');
     const resultCodeControl = this.getFormArrayFormGroupControl(
       impositionsFormGroup,
-      'fm_offence_details_result_code',
+      'fm_offence_details_result_id',
       index,
     );
     const needsCreditorControl = this.getFormArrayFormGroupControl(
@@ -305,7 +328,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     );
     const majorCreditorControl = this.getFormArrayFormGroupControl(
       impositionsFormGroup,
-      'fm_offence_details_major_creditor',
+      'fm_offence_details_major_creditor_id',
       index,
     );
 
@@ -316,11 +339,12 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     resultCodeControl.valueChanges
       .pipe(distinctUntilChanged(), takeUntil(this['ngUnsubscribe']))
       .subscribe((result_code: string) => {
+        creditorControl.reset();
         const needsCreditor =
           result_code &&
           (result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
             result_code === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs);
-        needsCreditorControl.setValue(needsCreditor);
+        needsCreditorControl.setValue(needsCreditor, { emitEvent: false });
         if (needsCreditor) {
           this.addFormArrayFormGroupControlValidators(creditorControl, [Validators.required]);
           this.creditorListener(index);
@@ -329,7 +353,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
           if (majorCreditorControl) {
             this.removeFormArrayFormGroupControlValidators(majorCreditorControl);
           }
-          this.changeDetector.detectChanges();
           this.removeMinorCreditorData(index);
         }
       });
@@ -368,7 +391,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private majorCreditorValidation(index: number, add: boolean, formGroup: FormGroup): void {
     const majorCreditorControl = this.getFormArrayFormGroupControl(
       formGroup,
-      'fm_offence_details_major_creditor',
+      'fm_offence_details_major_creditor_id',
       index,
     );
 
@@ -425,7 +448,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
       const amountImposed: number = this.getControlValueOrDefault(amountImposedControl, 0);
       const amountPaid: number = this.getControlValueOrDefault(amountPaidControl, 0);
 
-      balanceRemainingControl?.setValue(amountImposed - amountPaid);
+      balanceRemainingControl?.setValue(amountImposed - amountPaid, { emitEvent: false });
     });
   }
 
