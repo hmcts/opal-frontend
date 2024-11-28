@@ -10,7 +10,7 @@ import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-pa
 
 import {
   buildAccountDefendantPayload,
-  convertAccountDefendantPayload,
+  mapAccountDefendantPayloadToFinesMacState,
 } from './utils/fines-mac-payload-account-defendant.utils';
 import { buildAccountPaymentTermsPayload } from './utils/fines-mac-payload-account-payment-terms.utils';
 import { buildAccountAccountNotesPayload } from './utils/fines-mac-payload-account-account-notes.utils';
@@ -217,7 +217,10 @@ export class FinesMacPayloadService {
 
   // ***** //
 
-  private convertInitialPayload(finesMacState: IFinesMacState, payload: IFinesMacAddAccountPayload): IFinesMacState {
+  private mapInitialPayloadToFinesMacState(
+    finesMacState: IFinesMacState,
+    payload: IFinesMacAddAccountPayload,
+  ): IFinesMacState {
     const payloadAccount = payload.account;
 
     finesMacState.accountDetails.formData = {
@@ -246,11 +249,9 @@ export class FinesMacPayloadService {
   }
 
   public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT) {
-    console.log('C', payload);
     let finesMacState: IFinesMacState = FINES_MAC_STATE;
-    finesMacState = this.convertInitialPayload(finesMacState, payload);
-    finesMacState = convertAccountDefendantPayload(finesMacState, payload);
-    console.log(finesMacState);
+    finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, payload);
+    finesMacState = mapAccountDefendantPayloadToFinesMacState(finesMacState, payload);
     return finesMacState;
   }
 }

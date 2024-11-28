@@ -145,7 +145,7 @@ export const buildAccountDefendantIndividualPayload = (
   };
 };
 
-const convertIndividualDefendantDebtorDetails = (
+const mapAccountDefendantIndividualPayloadDebtorDetailsToFinesMacState = (
   finesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
@@ -191,7 +191,7 @@ const convertIndividualDefendantDebtorDetails = (
   return finesMacState;
 };
 
-export const convertAccountDefendantIndividualPayload = (
+export const mapAccountDefendantIndividualPayloadToFinesMacState = (
   finesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
@@ -219,5 +219,5 @@ export const convertAccountDefendantIndividualPayload = (
     fm_contact_details_email_address_2: payloadAccountDefendant.email_address_2,
   };
 
-  return convertIndividualDefendantDebtorDetails(finesMacState, payload);
+  return mapAccountDefendantIndividualPayloadDebtorDetailsToFinesMacState(finesMacState, payload);
 };

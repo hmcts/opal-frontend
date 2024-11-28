@@ -15,10 +15,13 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from './int
 import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from './interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 import { IFinesMacPayloadAccountDefendantParentGuardian } from './interfaces/fines-mac-payload-account-defendant-parent-guardian.interface';
 import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-account-individual-defendant.interface';
-import { buildAccountDefendantCompanyPayload } from './fines-mac-payload-account-defendant-company.utils';
+import {
+  buildAccountDefendantCompanyPayload,
+  mapAccountDefendantCompanyPayloadToFinesMacState,
+} from './fines-mac-payload-account-defendant-company.utils';
 import {
   buildAccountDefendantIndividualPayload,
-  convertAccountDefendantIndividualPayload,
+  mapAccountDefendantIndividualPayloadToFinesMacState,
 } from './fines-mac-payload-account-defendant-individual.utils';
 import { buildAccountDefendantParentGuardianPayload } from './fines-mac-payload-account-defendant-parent-guardian.utils';
 import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
@@ -145,7 +148,7 @@ export const buildAccountDefendantPayload = (
   }
 };
 
-export const convertAccountDefendantPayload = (
+export const mapAccountDefendantPayloadToFinesMacState = (
   finesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
@@ -154,7 +157,8 @@ export const convertAccountDefendantPayload = (
   switch (defendantType) {
     case 'parentOrGuardianToPay':
     case 'company':
+      return mapAccountDefendantCompanyPayloadToFinesMacState(finesMacState, payload);
     default:
-      return convertAccountDefendantIndividualPayload(finesMacState, payload);
+      return mapAccountDefendantIndividualPayloadToFinesMacState(finesMacState, payload);
   }
 };
