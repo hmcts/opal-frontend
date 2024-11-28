@@ -16,8 +16,13 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from './interfac
 import { IFinesMacPayloadAccountDefendantParentGuardian } from './interfaces/fines-mac-payload-account-defendant-parent-guardian.interface';
 import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-account-individual-defendant.interface';
 import { buildAccountDefendantCompanyPayload } from './fines-mac-payload-account-defendant-company.utils';
-import { buildAccountDefendantIndividualPayload } from './fines-mac-payload-account-defendant-individual.utils';
+import {
+  buildAccountDefendantIndividualPayload,
+  convertAccountDefendantIndividualPayload,
+} from './fines-mac-payload-account-defendant-individual.utils';
 import { buildAccountDefendantParentGuardianPayload } from './fines-mac-payload-account-defendant-parent-guardian.utils';
+import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacState } from '../../../interfaces/fines-mac-state.interface';
 
 /**
  * Applies base payloads to an individual or company defendant.
@@ -137,5 +142,19 @@ export const buildAccountDefendantPayload = (
           languageDetailsState,
         ),
       );
+  }
+};
+
+export const convertAccountDefendantPayload = (
+  finesMacState: IFinesMacState,
+  payload: IFinesMacAddAccountPayload,
+): IFinesMacState => {
+  const defendantType = payload.account.defendant_type;
+
+  switch (defendantType) {
+    case 'parentOrGuardianToPay':
+    case 'company':
+    default:
+      return convertAccountDefendantIndividualPayload(finesMacState, payload);
   }
 };

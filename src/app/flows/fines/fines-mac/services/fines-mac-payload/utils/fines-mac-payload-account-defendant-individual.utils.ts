@@ -3,6 +3,8 @@ import { IFinesMacEmployerDetailsState } from '../../../fines-mac-employer-detai
 import { IFinesMacLanguagePreferencesState } from '../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { IFinesMacPersonalDetailsAliasState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { IFinesMacPersonalDetailsState } from '../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
+import { IFinesMacState } from '../../../interfaces/fines-mac-state.interface';
+import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
 import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './interfaces/fines-mac-payload-account-defendant-individual-debtor-details-alias.interface';
 import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from './interfaces/fines-mac-payload-account-defendant-individual-debtor-details.interface';
 import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-account-individual-defendant.interface';
@@ -141,4 +143,81 @@ export const buildAccountDefendantIndividualPayload = (
       languagePreferencesState,
     ),
   };
+};
+
+const convertIndividualDefendantDebtorDetails = (
+  finesMacState: IFinesMacState,
+  payload: IFinesMacAddAccountPayload,
+): IFinesMacState => {
+  const payloadAccountDefendantDebtorDetails = payload.account.defendant.debtor_detail;
+  const aliases = payloadAccountDefendantDebtorDetails?.aliases
+    ? payloadAccountDefendantDebtorDetails.aliases.map((alias, index) => {
+        return {
+          [`fm_personal_details_alias_forenames_${index}`]: alias.alias_forenames,
+          [`fm_personal_details_alias_surname_${index}`]: alias.alias_surname,
+        };
+      })
+    : finesMacState.personalDetails.formData.fm_personal_details_aliases;
+
+  finesMacState.personalDetails.formData = {
+    ...finesMacState.personalDetails.formData,
+    fm_personal_details_vehicle_make: payloadAccountDefendantDebtorDetails?.vehicle_make ?? null,
+    fm_personal_details_vehicle_registration_mark:
+      payloadAccountDefendantDebtorDetails?.vehicle_registration_mark ?? null,
+    fm_personal_details_aliases: aliases,
+  };
+
+  finesMacState.employerDetails.formData = {
+    ...finesMacState.employerDetails.formData,
+    fm_employer_details_employer_reference: payloadAccountDefendantDebtorDetails?.employee_reference ?? null,
+    fm_employer_details_employer_company_name: payloadAccountDefendantDebtorDetails?.employer_company_name ?? null,
+    fm_employer_details_employer_address_line_1: payloadAccountDefendantDebtorDetails?.employer_address_line_1 ?? null,
+    fm_employer_details_employer_address_line_2: payloadAccountDefendantDebtorDetails?.employer_address_line_2 ?? null,
+    fm_employer_details_employer_address_line_3: payloadAccountDefendantDebtorDetails?.employer_address_line_3 ?? null,
+    fm_employer_details_employer_address_line_4: payloadAccountDefendantDebtorDetails?.employer_address_line_4 ?? null,
+    fm_employer_details_employer_address_line_5: payloadAccountDefendantDebtorDetails?.employer_address_line_5 ?? null,
+    fm_employer_details_employer_post_code: payloadAccountDefendantDebtorDetails?.employer_post_code ?? null,
+    fm_employer_details_employer_telephone_number:
+      payloadAccountDefendantDebtorDetails?.employer_telephone_number ?? null,
+    fm_employer_details_employer_email_address: payloadAccountDefendantDebtorDetails?.employer_email_address ?? null,
+  };
+
+  finesMacState.languagePreferences.formData = {
+    ...finesMacState.languagePreferences.formData,
+    fm_language_preferences_document_language: payloadAccountDefendantDebtorDetails?.document_language ?? null,
+    fm_language_preferences_hearing_language: payloadAccountDefendantDebtorDetails?.hearing_language ?? null,
+  };
+
+  return finesMacState;
+};
+
+export const convertAccountDefendantIndividualPayload = (
+  finesMacState: IFinesMacState,
+  payload: IFinesMacAddAccountPayload,
+): IFinesMacState => {
+  const payloadAccountDefendant = payload.account.defendant;
+
+  finesMacState.personalDetails.formData = {
+    ...finesMacState.personalDetails.formData,
+    fm_personal_details_title: payloadAccountDefendant.title,
+    fm_personal_details_surname: payloadAccountDefendant.surname,
+    fm_personal_details_forenames: payloadAccountDefendant.forenames,
+    fm_personal_details_dob: payloadAccountDefendant.dob,
+    fm_personal_details_address_line_1: payloadAccountDefendant.address_line_1,
+    fm_personal_details_address_line_2: payloadAccountDefendant.address_line_2,
+    fm_personal_details_address_line_3: payloadAccountDefendant.address_line_3,
+    fm_personal_details_post_code: payloadAccountDefendant.post_code,
+    fm_personal_details_national_insurance_number: payloadAccountDefendant.national_insurance_number,
+  };
+
+  finesMacState.contactDetails.formData = {
+    ...finesMacState.contactDetails.formData,
+    fm_contact_details_telephone_number_home: payloadAccountDefendant.telephone_number_home,
+    fm_contact_details_telephone_number_business: payloadAccountDefendant.telephone_number_business,
+    fm_contact_details_telephone_number_mobile: payloadAccountDefendant.telephone_number_mobile,
+    fm_contact_details_email_address_1: payloadAccountDefendant.email_address_1,
+    fm_contact_details_email_address_2: payloadAccountDefendant.email_address_2,
+  };
+
+  return convertIndividualDefendantDebtorDetails(finesMacState, payload);
 };

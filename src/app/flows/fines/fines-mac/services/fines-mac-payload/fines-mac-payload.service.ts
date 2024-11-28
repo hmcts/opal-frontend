@@ -8,7 +8,10 @@ import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interf
 import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-payload-account-initial.interface';
 
-import { buildAccountDefendantPayload } from './utils/fines-mac-payload-account-defendant.utils';
+import {
+  buildAccountDefendantPayload,
+  convertAccountDefendantPayload,
+} from './utils/fines-mac-payload-account-defendant.utils';
 import { buildAccountPaymentTermsPayload } from './utils/fines-mac-payload-account-payment-terms.utils';
 import { buildAccountAccountNotesPayload } from './utils/fines-mac-payload-account-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
@@ -22,6 +25,8 @@ import { DateService } from '@services/date-service/date.service';
 import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
 import { buildAccountOffencesPayload } from './utils/fines-mac-payload-account-offences.utils';
+import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -208,5 +213,44 @@ export class FinesMacPayloadService {
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
     return this.buildAddReplaceAccountPayload(finesMacState, sessionUserState, false);
+  }
+
+  // ***** //
+
+  private convertInitialPayload(finesMacState: IFinesMacState, payload: IFinesMacAddAccountPayload): IFinesMacState {
+    const payloadAccount = payload.account;
+
+    finesMacState.accountDetails.formData = {
+      ...finesMacState.accountDetails.formData,
+      fm_create_account_account_type: payloadAccount.account_type,
+      fm_create_account_defendant_type: payloadAccount.defendant_type,
+      fm_create_account_business_unit: null,
+    };
+    finesMacState.courtDetails.formData = {
+      ...finesMacState.courtDetails.formData,
+      fm_court_details_originator_name: payloadAccount.originator_name,
+      fm_court_details_originator_id: payloadAccount.originator_id,
+      fm_court_details_prosecutor_case_reference: payloadAccount.prosecutor_case_reference,
+      fm_court_details_imposing_court_id: payloadAccount.enforcement_court_id,
+    };
+    finesMacState.paymentTerms.formData = {
+      ...finesMacState.paymentTerms.formData,
+      fm_payment_terms_collection_order_made: payloadAccount.collection_order_made,
+      fm_payment_terms_collection_order_made_today: payloadAccount.collection_order_made_today,
+      fm_payment_terms_collection_order_date: payloadAccount.collection_order_date,
+      fm_payment_terms_suspended_committal_date: payloadAccount.suspended_committal_date,
+      fm_payment_terms_payment_card_request: payloadAccount.payment_card_request,
+    };
+
+    return finesMacState;
+  }
+
+  public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT) {
+    console.log('C', payload);
+    let finesMacState: IFinesMacState = FINES_MAC_STATE;
+    finesMacState = this.convertInitialPayload(finesMacState, payload);
+    finesMacState = convertAccountDefendantPayload(finesMacState, payload);
+    console.log(finesMacState);
+    return finesMacState;
   }
 }
