@@ -3,6 +3,8 @@ import { FinesMacOffenceDetailsReviewComponent } from '../../fines-mac-offence-d
 import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-list.component';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
+import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
+import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-offence-details',
