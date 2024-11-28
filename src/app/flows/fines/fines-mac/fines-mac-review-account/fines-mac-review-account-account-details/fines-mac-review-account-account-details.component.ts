@@ -49,7 +49,7 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
   }
 
   private getHearingLanguage(): void {
-    this.documentLanguage =
+    this.courtHearingLanguage =
       FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[
         this.languagePreferences.fm_language_preferences_hearing_language! as keyof IFinesMacLanguagePreferencesOptions
       ];

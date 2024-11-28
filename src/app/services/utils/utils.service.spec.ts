@@ -48,4 +48,32 @@ describe('UtilsService', () => {
     const result = service.formatSortCode(value);
     expect(result).toEqual('12-34-56');
   });
+
+  it('should format the address correctly with a comma delimiter', () => {
+    const address = ['123 Main St', 'Apt 4B', 'New York', 'NY', '10001'];
+    const delimiter = ', ';
+    const result = service.formatAddress(address, delimiter);
+    expect(result).toEqual('123 Main St, Apt 4B, New York, NY, 10001');
+  });
+
+  it('should format the address correctly with a newline delimiter', () => {
+    const address = ['123 Main St', 'Apt 4B', 'New York', 'NY', '10001'];
+    const delimiter = '\n';
+    const result = service.formatAddress(address, delimiter);
+    expect(result).toEqual('123 Main St\nApt 4B\nNew York\nNY\n10001');
+  });
+
+  it('should skip null or empty address lines', () => {
+    const address = ['123 Main St', null, 'New York', '', '10001'];
+    const delimiter = ', ';
+    const result = service.formatAddress(address, delimiter);
+    expect(result).toEqual('123 Main St, New York, 10001');
+  });
+
+  it('should return an empty string if all address lines are null or empty', () => {
+    const address = [null, '', '   '];
+    const delimiter = ', ';
+    const result = service.formatAddress(address, delimiter);
+    expect(result).toEqual('');
+  });
 });

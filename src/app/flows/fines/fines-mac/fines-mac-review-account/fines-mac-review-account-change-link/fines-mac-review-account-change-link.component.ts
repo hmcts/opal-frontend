@@ -15,7 +15,7 @@ export class FinesMacReviewAccountChangeLinkComponent {
    * Emits a change event to notify listeners that the data has changed.
    * This method triggers the `emitChange` event emitter.
    */
-  public changeData() {
+  public changeData(): void {
     this.emitChange.emit();
   }
 }

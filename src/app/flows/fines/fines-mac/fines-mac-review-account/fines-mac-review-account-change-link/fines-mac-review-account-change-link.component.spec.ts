@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacReviewAccountChangeLinkComponent } from './fines-mac-review-account-change-link.component';
 
-xdescribe('FinesMacReviewAccountChangeLinkComponent', () => {
+describe('FinesMacReviewAccountChangeLinkComponent', () => {
   let component: FinesMacReviewAccountChangeLinkComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountChangeLinkComponent>;
 
@@ -18,5 +18,13 @@ xdescribe('FinesMacReviewAccountChangeLinkComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should emit change link event', () => {
+    spyOn(component.emitChange, 'emit');
+
+    component.changeData();
+
+    expect(component.emitChange.emit).toHaveBeenCalled();
   });
 });

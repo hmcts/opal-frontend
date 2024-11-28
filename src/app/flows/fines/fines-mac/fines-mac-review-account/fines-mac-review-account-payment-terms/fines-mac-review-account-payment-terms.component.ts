@@ -110,11 +110,11 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    */
   private getPayByDate(): void {
     if (this.paymentTermsState.fm_payment_terms_pay_by_date) {
-      const payByDate = this.dateService.getFromFormat(
+      this.payByDate = this.dateService.getFromFormatToFormat(
         this.paymentTermsState.fm_payment_terms_pay_by_date,
         'dd/MM/yyyy',
+        'dd MMMM yyyy',
       );
-      this.payByDate = this.dateService.toFormat(payByDate, 'dd MMMM yyyy');
     }
   }
 
@@ -129,11 +129,11 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    */
   private getDaysInDefaultDate(): void {
     if (this.paymentTermsState.fm_payment_terms_suspended_committal_date) {
-      const daysInDefaultDate = this.dateService.getFromFormat(
+      this.daysInDefaultDate = this.dateService.getFromFormatToFormat(
         this.paymentTermsState.fm_payment_terms_suspended_committal_date,
         'dd/MM/yyyy',
+        'dd MMMM yyyy',
       );
-      this.daysInDefaultDate = this.dateService.toFormat(daysInDefaultDate, 'dd MMMM yyyy');
     }
   }
 
@@ -166,11 +166,11 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    */
   private getEarliestReleaseDate(): void {
     if (this.paymentTermsState.fm_payment_terms_earliest_release_date) {
-      const earliestReleaseDate = this.dateService.getFromFormat(
+      this.earliestReleaseDate = this.dateService.getFromFormatToFormat(
         this.paymentTermsState.fm_payment_terms_earliest_release_date,
         'dd/MM/yyyy',
+        'dd MMMM yyyy',
       );
-      this.earliestReleaseDate = this.dateService.toFormat(earliestReleaseDate, 'dd MMMM yyyy');
     }
   }
 
@@ -197,11 +197,11 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    */
   private getStartDate(): void {
     if (this.paymentTermsState.fm_payment_terms_start_date) {
-      const startDate = this.dateService.getFromFormat(
+      this.startDate = this.dateService.getFromFormatToFormat(
         this.paymentTermsState.fm_payment_terms_start_date,
         'dd/MM/yyyy',
+        'dd MMMM yyyy',
       );
-      this.startDate = this.dateService.toFormat(startDate, 'dd MMMM yyyy');
     }
   }
 
@@ -216,11 +216,11 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    */
   private getCollectionOrderDate(): void {
     if (this.paymentTermsState.fm_payment_terms_collection_order_date) {
-      const collectionOrderDate = this.dateService.getFromFormat(
+      this.collectionOrderDate = this.dateService.getFromFormatToFormat(
         this.paymentTermsState.fm_payment_terms_collection_order_date,
         'dd/MM/yyyy',
+        'dd MMMM yyyy',
       );
-      this.collectionOrderDate = this.dateService.toFormat(collectionOrderDate, 'dd MMMM yyyy');
     }
   }
 

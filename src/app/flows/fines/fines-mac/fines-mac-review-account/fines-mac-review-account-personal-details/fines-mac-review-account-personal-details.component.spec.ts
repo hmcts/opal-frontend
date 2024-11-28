@@ -13,8 +13,8 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj('DateService', ['getFromFormat', 'calculateAge', 'toFormat']);
-    mockUtilsService = jasmine.createSpyObj('UtilsService', ['formatAddress', 'upperCaseFirstLetter']);
+    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat', 'calculateAge', 'toFormat']);
+    mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountPersonalDetailsComponent],
@@ -44,7 +44,9 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
       { fm_personal_details_alias_forenames_3: 'Oliver', fm_personal_details_alias_surname_4: 'Brown' },
       { fm_personal_details_alias_forenames_4: 'Sophia', fm_personal_details_alias_surname_4: 'Taylor' },
     ];
+
     component['getAliasesData']();
+
     expect(component.aliases).toBe('Testing Test<br>James Smith<br>Emily Johnston<br>Oliver Brown<br>Sophia Taylor');
   });
 
@@ -55,6 +57,7 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
     mockDateService.toFormat.and.returnValue('01 January 1990');
 
     component['getDateOfBirthData']();
+
     expect(component.dob).toBe('01 January 1990 (Adult)');
   });
 
@@ -71,27 +74,42 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
     mockDateService.toFormat.and.returnValue(mockDob.toFormat('dd MMMM yyyy'));
 
     component['getDateOfBirthData']();
+
     expect(component.dob).toBe(`${mockDob.toFormat('dd MMMM yyyy')} (Youth)`);
   });
 
   it('should format address correctly', () => {
-    mockUtilsService.formatAddress.and.returnValue('123 Main St<br>Apt 4B<br>Springfield<br>12345');
+    const formattedAddress = '123 Main St<br>Apt 4B<br>Springfield<br>12345';
+    mockUtilsService.formatAddress.and.returnValue(formattedAddress);
 
     component['getAddressData']();
-    expect(component.address).toBe('123 Main St<br>Apt 4B<br>Springfield<br>12345');
+    
+    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith(
+      [
+        component.personalDetails.fm_personal_details_address_line_1,
+        component.personalDetails.fm_personal_details_address_line_2,
+        component.personalDetails.fm_personal_details_address_line_3,
+        component.personalDetails.fm_personal_details_post_code,
+      ],
+      '<br>',
+    );
+    expect(component.address).toBe(formattedAddress);
   });
 
   it('should emit change personal details event', () => {
     spyOn(component.emitChangePersonalDetails, 'emit');
 
     component.changePersonalDetails();
+
     expect(component.emitChangePersonalDetails.emit).toHaveBeenCalled();
   });
 
   it('should call getPersonalDetailsData on init', () => {
-    spyOn(component as any, 'getPersonalDetailsData');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getPersonalDetailsData');
 
     component.ngOnInit();
+
     expect(component['getPersonalDetailsData']).toHaveBeenCalled();
   });
 });

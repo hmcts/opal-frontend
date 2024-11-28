@@ -374,4 +374,20 @@ describe('DateServiceService', () => {
     const result = service.toDateStringFormat(date, format);
     expect(result).toEqual('Invalid DateTime');
   });
+
+  it('should convert date from one format to another', () => {
+    const date = '01/01/2022';
+    const fromFormat = 'dd/MM/yyyy';
+    const toFormat = 'yyyy-MM-dd';
+    const result = service.getFromFormatToFormat(date, fromFormat, toFormat);
+    expect(result).toEqual('2022-01-01');
+  });
+
+  it('should convert date from one format to another with different formats', () => {
+    const date = '2022-01-01';
+    const fromFormat = 'yyyy-MM-dd';
+    const toFormat = 'dd/MM/yyyy';
+    const result = service.getFromFormatToFormat(date, fromFormat, toFormat);
+    expect(result).toEqual('01/01/2022');
+  });
 });
