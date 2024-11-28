@@ -72,6 +72,7 @@
     "domino-ext": "^2.1.4",
     "express": "^4.15.2",
     "express-session": "^1.17.3",
+    "fast-sort": "^3.4.1",
     "govuk-frontend": "^5.0.0",
     "helmet": "^8.0.0",
     "http-proxy-middleware": "^3.0.0",
