@@ -21,7 +21,7 @@ describe('SortService', () => {
     const result = service.arraySortAsc(input);
     expect(result).toEqual([1, 3, 5, 8]);
   });
-  
+
   it('should sort an array of strings in ascending order', () => {
     const input = ['banana', 'apple', 'cherry'];
     const result = service.arraySortAsc(input);
