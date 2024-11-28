@@ -83,7 +83,7 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
     mockUtilsService.formatAddress.and.returnValue(formattedAddress);
 
     component['getAddressData']();
-    
+
     expect(mockUtilsService.formatAddress).toHaveBeenCalledWith(
       [
         component.personalDetails.fm_personal_details_address_line_1,
