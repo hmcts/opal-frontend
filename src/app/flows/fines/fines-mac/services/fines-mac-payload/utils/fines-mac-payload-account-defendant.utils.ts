@@ -15,17 +15,9 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from './int
 import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from './interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 import { IFinesMacPayloadAccountDefendantParentGuardian } from './interfaces/fines-mac-payload-account-defendant-parent-guardian.interface';
 import { IFinesMacPayloadAccountDefendantIndividual } from './interfaces/fines-mac-payload-account-individual-defendant.interface';
-import {
-  buildAccountDefendantCompanyPayload,
-  mapAccountDefendantCompanyPayloadToFinesMacState,
-} from './fines-mac-payload-account-defendant-company.utils';
-import {
-  buildAccountDefendantIndividualPayload,
-  mapAccountDefendantIndividualPayloadToFinesMacState,
-} from './fines-mac-payload-account-defendant-individual.utils';
+import { buildAccountDefendantCompanyPayload } from './fines-mac-payload-account-defendant-company.utils';
+import { buildAccountDefendantIndividualPayload } from './fines-mac-payload-account-defendant-individual.utils';
 import { buildAccountDefendantParentGuardianPayload } from './fines-mac-payload-account-defendant-parent-guardian.utils';
-import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
-import { IFinesMacState } from '../../../interfaces/fines-mac-state.interface';
 
 /**
  * Applies base payloads to an individual or company defendant.
@@ -145,20 +137,5 @@ export const buildAccountDefendantPayload = (
           languageDetailsState,
         ),
       );
-  }
-};
-
-export const mapAccountDefendantPayloadToFinesMacState = (
-  finesMacState: IFinesMacState,
-  payload: IFinesMacAddAccountPayload,
-): IFinesMacState => {
-  const defendantType = payload.account.defendant_type;
-
-  switch (defendantType) {
-    case 'parentOrGuardianToPay':
-    case 'company':
-      return mapAccountDefendantCompanyPayloadToFinesMacState(finesMacState, payload);
-    default:
-      return mapAccountDefendantIndividualPayloadToFinesMacState(finesMacState, payload);
   }
 };
