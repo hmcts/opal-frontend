@@ -6,14 +6,16 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../in
 /**
  * Maps an array of defendant debtor detail aliases to an array of personal details alias states.
  *
- * @param payloadAccountDefendantDebtorDetailsAliases - An array of complete debtor detail aliases or null.
+ * @param payloadAccountDefendantIndividualDebtorDetailsAliases - An array of complete debtor detail aliases or null.
  * @returns An array of personal details alias states. If the input is null, returns an empty array.
  */
 const mapAccountDefendantIndividualDebtorDetailsAliases = (
-  payloadAccountDefendantDebtorDetailsAliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null,
+  payloadAccountDefendantIndividualDebtorDetailsAliases:
+    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
+    | null,
 ): IFinesMacPersonalDetailsAliasState[] => {
-  return payloadAccountDefendantDebtorDetailsAliases
-    ? payloadAccountDefendantDebtorDetailsAliases.map((alias, index) => {
+  return payloadAccountDefendantIndividualDebtorDetailsAliases
+    ? payloadAccountDefendantIndividualDebtorDetailsAliases.map((alias, index) => {
         return {
           [`fm_personal_details_alias_forenames_${index}`]: alias.alias_forenames,
           [`fm_personal_details_alias_surname_${index}`]: alias.alias_surname,
