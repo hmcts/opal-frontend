@@ -1,0 +1,45 @@
+<app-govuk-summary-card-list cardTitle="Company details">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changeCompanyDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="companyDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="companyDetails"
+        summaryListRowId="companyName"
+      >
+        <ng-container name>Company name</ng-container>
+        <ng-container value>{{ companyDetails.fm_company_details_organisation_name }}</ng-container>
+      </div>
+
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="companyDetails"
+        summaryListRowId="aliases"
+      >
+        <ng-container name>Aliases</ng-container>
+        <ng-container value>
+          @if (aliases.length > 0) {
+            <p class="govuk-!-margin-top-0" [innerHTML]="aliases"></p>
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="companyDetails"
+        summaryListRowId="address"
+      >
+        <ng-container name>Address</ng-container>
+        <ng-container value><p class="govuk-!-margin-top-0" [innerHTML]="address"></p></ng-container>
+      </div>
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

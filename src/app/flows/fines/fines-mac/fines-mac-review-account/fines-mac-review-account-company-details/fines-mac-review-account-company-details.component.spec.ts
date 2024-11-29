@@ -1,0 +1,82 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details.component';
+import { UtilsService } from '@services/utils/utils.service';
+import { FINES_MAC_COMPANY_DETAILS_STATE_MOCK } from '../../fines-mac-company-details/mocks/fines-mac-company-details-state.mock';
+
+describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
+  let component: FinesMacReviewAccountCompanyDetailsComponent;
+  let fixture: ComponentFixture<FinesMacReviewAccountCompanyDetailsComponent>;
+  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+
+  beforeEach(async () => {
+    mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
+
+    await TestBed.configureTestingModule({
+      imports: [FinesMacReviewAccountCompanyDetailsComponent],
+      providers: [{ provide: UtilsService, useValue: mockUtilsService }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FinesMacReviewAccountCompanyDetailsComponent);
+    component = fixture.componentInstance;
+
+    component.companyDetails = { ...FINES_MAC_COMPANY_DETAILS_STATE_MOCK };
+
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should format aliases correctly', () => {
+    component.companyDetails.fm_company_details_aliases = [
+      ...component.companyDetails.fm_company_details_aliases,
+      { fm_company_details_alias_organisation_name_1: 'Alpha Solutions Ltd' },
+      { fm_company_details_alias_organisation_name_2: 'Beta Innovations Corp' },
+      { fm_company_details_alias_organisation_name_3: 'Gamma Enterprises Inc' },
+      { fm_company_details_alias_organisation_name_4: 'Delta Systems Group' },
+    ];
+
+    component['getAliasesData']();
+
+    expect(component.aliases).toBe(
+      'Boring Co.<br>Alpha Solutions Ltd<br>Beta Innovations Corp<br>Gamma Enterprises Inc<br>Delta Systems Group',
+    );
+  });
+
+  it('should format address correctly', () => {
+    const formattedAddress = '123 Main St<br>Apt 4B<br>Springfield<br>12345';
+    mockUtilsService.formatAddress.and.returnValue(formattedAddress);
+
+    component['getAddressData']();
+
+    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith(
+      [
+        component.companyDetails.fm_company_details_address_line_1,
+        component.companyDetails.fm_company_details_address_line_2,
+        component.companyDetails.fm_company_details_address_line_3,
+        component.companyDetails.fm_company_details_postcode,
+      ],
+      '<br>',
+    );
+    expect(component.address).toBe(formattedAddress);
+  });
+
+  it('should emit change company details event', () => {
+    spyOn(component.emitChangeCompanyDetails, 'emit');
+
+    component.changeCompanyDetails();
+
+    expect(component.emitChangeCompanyDetails.emit).toHaveBeenCalled();
+  });
+
+  it('should call getCompanyData on init', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getCompanyData');
+
+    component.ngOnInit();
+
+    expect(component['getCompanyData']).toHaveBeenCalled();
+  });
+});
