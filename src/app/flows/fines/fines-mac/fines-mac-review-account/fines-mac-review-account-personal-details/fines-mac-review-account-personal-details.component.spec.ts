@@ -13,7 +13,7 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat', 'calculateAge', 'toFormat']);
+    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
 
     await TestBed.configureTestingModule({
@@ -51,10 +51,8 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should format date of birth correctly - adult', () => {
-    const mockDob = DateTime.fromISO('1990-01-01');
-    mockDateService.getFromFormat.and.returnValue(mockDob);
     mockDateService.calculateAge.and.returnValue(34);
-    mockDateService.toFormat.and.returnValue('01 January 1990');
+    mockDateService.getFromFormatToFormat.and.returnValue('01 January 1990');
 
     component['getDateOfBirthData']();
 
@@ -69,9 +67,8 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
       fm_personal_details_dob: mockDob.toFormat('dd/MM/yyyy'),
     };
 
-    mockDateService.getFromFormat.and.returnValue(mockDob);
     mockDateService.calculateAge.and.returnValue(10);
-    mockDateService.toFormat.and.returnValue(mockDob.toFormat('dd MMMM yyyy'));
+    mockDateService.getFromFormatToFormat.and.returnValue(mockDob.toFormat('dd MMMM yyyy'));
 
     component['getDateOfBirthData']();
 
