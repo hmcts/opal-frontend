@@ -71,9 +71,9 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
    */
   private getDateOfBirthData(): void {
     if (this.personalDetails.fm_personal_details_dob) {
-      const dob = this.dateService.getFromFormat(this.personalDetails.fm_personal_details_dob, 'dd/MM/yyyy');
+      const dob = this.personalDetails.fm_personal_details_dob;
       const age = this.dateService.calculateAge(dob);
-      this.dob = `${this.dateService.toFormat(dob, 'dd MMMM yyyy')} (${age >= 18 ? 'Adult' : 'Youth'})`;
+      this.dob = `${this.dateService.getFromFormatToFormat(dob, 'dd/MM/yyyy', 'dd MMMM yyyy')} (${age >= 18 ? 'Adult' : 'Youth'})`;
     }
   }
 
