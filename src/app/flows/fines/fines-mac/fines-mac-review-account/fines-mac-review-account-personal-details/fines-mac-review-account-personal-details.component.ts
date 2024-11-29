@@ -25,6 +25,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 })
 export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   @Input({ required: true }) public personalDetails!: IFinesMacPersonalDetailsState;
+  @Input({ required: false }) public showVehicleDetails: boolean = true;
   @Output() public emitChangePersonalDetails = new EventEmitter<void>();
 
   private readonly dateService = inject(DateService);
