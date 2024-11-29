@@ -136,8 +136,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   ): IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData | null {
     if (
       this.finesService.finesMacState.offenceDetails.length === 0 ||
-      !this.finesService.finesMacState.offenceDetails[this.offenceIndex] ||
-      !this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData
+      !this.finesService.finesMacState.offenceDetails[this.offenceIndex]?.childFormData
     )
       return null;
     const minorCreditor = this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
