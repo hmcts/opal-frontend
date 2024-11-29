@@ -37,7 +37,14 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
     ];
 
-    mockUtilsService = jasmine.createSpyObj(UtilsService, ['convertToMonetaryString']);
+    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+      'convertToMonetaryString',
+      'formatAddress',
+      'formatSortCode',
+    ]);
+
+    mockUtilsService.formatAddress.and.returnValue('Test Address');
+    mockUtilsService.formatSortCode.and.returnValue('12-34-56');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent],
@@ -58,6 +65,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
     component.offenceIndex = 0;
+    component.isReadOnly = false;
 
     fixture.detectChanges();
   });
@@ -93,11 +101,21 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     mockUtilsService.convertToMonetaryString.and.returnValue(expectedTotal);
     const expectedImpositionTableData = [
       {
+        impositionId: 0,
         impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
           (result) =>
             result.result_id === FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0].fm_offence_details_result_id!,
         )!.result_title,
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
+        minorCreditor: {
+          address: 'Test Address',
+          paymentMethod: 'Pay by BACS',
+          nameOnAccount: 'John Doe',
+          sortCode: '12-34-56',
+          accountNumber: '12345678',
+          paymentReference: 'Testing',
+        },
+        showMinorCreditorData: false,
         amountImposed: expectedTotal,
         amountPaid: expectedTotal,
         balanceRemaining: expectedTotal,
@@ -210,5 +228,47 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     component['sortImpositionsByAllocationOrder']();
 
     expect(component.impositions).toEqual(expected);
+  });
+
+  it('should invert showMinorCreditorData', () => {
+    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component['getImpositionData']();
+    const impositionId = component.impositionTableData[0].impositionId;
+
+    component.invertShowMinorCreditorData(impositionId);
+
+    expect(component.impositionTableData[0].showMinorCreditorData).toBe(true);
+
+    component.invertShowMinorCreditorData(impositionId);
+
+    expect(component.impositionTableData[0].showMinorCreditorData).toBe(false);
+  });
+
+  it('should return null for address and payment method for minor creditor', () => {
+    mockFinesService.finesMacState.offenceDetails[0].childFormData![0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
+      formData: {
+        ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
+        fm_offence_details_minor_creditor_pay_by_bacs: false,
+        fm_offence_details_minor_creditor_bank_sort_code: null,
+        fm_offence_details_minor_creditor_address_line_1: null,
+        fm_offence_details_minor_creditor_address_line_2: null,
+        fm_offence_details_minor_creditor_address_line_3: null,
+        fm_offence_details_minor_creditor_post_code: null,
+      },
+    };
+
+    mockUtilsService.formatAddress.and.returnValue('');
+
+    const minorCreditorData = component['getMinorCreditorData'](0);
+
+    expect(minorCreditorData).toBeDefined();
+    expect(minorCreditorData!.address).toBeNull();
+    expect(minorCreditorData!.paymentMethod).toBeNull();
+    expect(minorCreditorData!.sortCode).toBeNull();
+  });
+
+  it('should return null as no minor creditor exists', () => {
+    expect(component['getMinorCreditorData'](99)).toBeNull();
   });
 });
