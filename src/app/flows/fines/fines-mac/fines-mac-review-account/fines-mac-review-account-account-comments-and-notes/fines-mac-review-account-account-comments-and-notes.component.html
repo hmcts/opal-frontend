@@ -13,9 +13,13 @@
         summaryListRowId="accountComment"
       >
         <ng-container name>Comment</ng-container>
-        <ng-container value>{{
-          accountCommentsAndNotes.fm_account_comments_notes_comments ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (accountCommentsAndNotes.fm_account_comments_notes_comments) {
+            {{ accountCommentsAndNotes.fm_account_comments_notes_comments }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -24,9 +28,13 @@
         summaryListRowId="accountNote"
       >
         <ng-container name>Account note</ng-container>
-        <ng-container value>{{
-          accountCommentsAndNotes.fm_account_comments_notes_notes ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (accountCommentsAndNotes.fm_account_comments_notes_notes) {
+            {{ accountCommentsAndNotes.fm_account_comments_notes_notes }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
     </app-govuk-summary-list>
   </ng-container>

@@ -13,9 +13,13 @@
         summaryListRowId="employerName"
       >
         <ng-container name>Employer name</ng-container>
-        <ng-container value>{{
-          employerDetails.fm_employer_details_employer_company_name ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (employerDetails.fm_employer_details_employer_company_name) {
+            {{ employerDetails.fm_employer_details_employer_company_name }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -24,9 +28,13 @@
         summaryListRowId="employeeReference"
       >
         <ng-container name>Employee reference</ng-container>
-        <ng-container value>{{
-          employerDetails.fm_employer_details_employer_reference ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (employerDetails.fm_employer_details_employer_reference) {
+            {{ employerDetails.fm_employer_details_employer_reference }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -35,9 +43,13 @@
         summaryListRowId="employerEmailAddress"
       >
         <ng-container name>Employer email address</ng-container>
-        <ng-container value>{{
-          employerDetails.fm_employer_details_employer_email_address ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (employerDetails.fm_employer_details_employer_email_address) {
+            {{ employerDetails.fm_employer_details_employer_email_address }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -46,9 +58,13 @@
         summaryListRowId="employerEmailTelephoneNumber"
       >
         <ng-container name>Employer telephone number</ng-container>
-        <ng-container value>{{
-          employerDetails.fm_employer_details_employer_telephone_number ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (employerDetails.fm_employer_details_employer_telephone_number) {
+            {{ employerDetails.fm_employer_details_employer_telephone_number }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -59,9 +75,9 @@
         <ng-container name>Employer address</ng-container>
         <ng-container value>
           @if (employerAddress) {
-            <p [innerHTML]="employerAddress"></p>
+            <p class="govuk-!-margin-0" [innerHTML]="employerAddress"></p>
           } @else {
-            {{ defaultValues.notProvided }}
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
           }
         </ng-container>
       </div>

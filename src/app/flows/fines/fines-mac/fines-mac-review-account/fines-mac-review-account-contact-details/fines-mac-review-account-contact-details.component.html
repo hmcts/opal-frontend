@@ -13,9 +13,13 @@
         summaryListRowId="primaryEmailAddress"
       >
         <ng-container name>Primary email address</ng-container>
-        <ng-container value>{{
-          contactDetails.fm_contact_details_email_address_1 ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_email_address_1) {
+            {{ contactDetails.fm_contact_details_email_address_1 }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -24,9 +28,13 @@
         summaryListRowId="secondaryEmailAddress"
       >
         <ng-container name>Secondary email address</ng-container>
-        <ng-container value>{{
-          contactDetails.fm_contact_details_email_address_2 ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_email_address_2) {
+            {{ contactDetails.fm_contact_details_email_address_2 }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -35,9 +43,13 @@
         summaryListRowId="mobileTelephoneNumber"
       >
         <ng-container name>Mobile telephone number</ng-container>
-        <ng-container value>{{
-          contactDetails.fm_contact_details_telephone_number_mobile ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_telephone_number_mobile) {
+            {{ contactDetails.fm_contact_details_telephone_number_mobile }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -46,9 +58,13 @@
         summaryListRowId="homeTelephoneNumber"
       >
         <ng-container name>Home telephone number</ng-container>
-        <ng-container value>{{
-          contactDetails.fm_contact_details_telephone_number_home ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_telephone_number_home) {
+            {{ contactDetails.fm_contact_details_telephone_number_home }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -57,9 +73,13 @@
         summaryListRowId="workTelephoneNumber"
       >
         <ng-container name>Work telephone number</ng-container>
-        <ng-container value>{{
-          contactDetails.fm_contact_details_telephone_number_business ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_telephone_number_business) {
+            {{ contactDetails.fm_contact_details_telephone_number_business }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
     </app-govuk-summary-list>
   </ng-container>

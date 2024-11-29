@@ -6,6 +6,7 @@ import { IFinesMacEmployerDetailsState } from '../../fines-mac-employer-details/
 import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
+import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-employer-details',
@@ -15,6 +16,7 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
+    FinesMacReviewAccountNotProvidedComponent,
   ],
   templateUrl: './fines-mac-review-account-employer-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

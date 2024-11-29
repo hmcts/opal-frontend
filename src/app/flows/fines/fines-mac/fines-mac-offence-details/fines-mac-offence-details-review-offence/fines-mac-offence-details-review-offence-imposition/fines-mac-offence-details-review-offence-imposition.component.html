@@ -64,9 +64,9 @@
         <ng-container name>Address</ng-container>
         <ng-container value>
           @if (minorCreditor.address) {
-            <p [innerHTML]="minorCreditor.address"></p>
+            <p class="govuk-!-margin-0" [innerHTML]="minorCreditor.address"></p>
           } @else {
-            {{ defaultValues.defaultNotProvided }}
+            <p class="govuk-!-margin-0" [innerHTML]="defaultValues.defaultNotProvided" aria-label="Not provided"></p>
           }
         </ng-container>
       </div>
@@ -77,7 +77,13 @@
         summaryListRowId="paymentMethod"
       >
         <ng-container name>Payment method</ng-container>
-        <ng-container value>{{ minorCreditor.paymentMethod ?? defaultValues.defaultNotProvided }}</ng-container>
+        <ng-container value>
+          @if (minorCreditor.paymentMethod) {
+            {{ minorCreditor.paymentMethod }}
+          } @else {
+            <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+          }
+        </ng-container>
       </div>
       @if (minorCreditor.paymentMethod) {
         <div
@@ -87,7 +93,13 @@
           summaryListRowId="nameOnAccount"
         >
           <ng-container name>Name on account</ng-container>
-          <ng-container value>{{ minorCreditor.nameOnAccount ?? defaultValues.defaultNotProvided }}</ng-container>
+          <ng-container value>
+            @if (minorCreditor.nameOnAccount) {
+              {{ minorCreditor.nameOnAccount }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
         </div>
         <div
           app-govuk-summary-list-row
@@ -96,7 +108,13 @@
           summaryListRowId="sortCode"
         >
           <ng-container name>Sort code</ng-container>
-          <ng-container value>{{ minorCreditor.sortCode ?? defaultValues.defaultNotProvided }}</ng-container>
+          <ng-container value>
+            @if (minorCreditor.sortCode) {
+              {{ minorCreditor.sortCode }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
         </div>
         <div
           app-govuk-summary-list-row
@@ -105,7 +123,13 @@
           summaryListRowId="accountNumber"
         >
           <ng-container name>Account number</ng-container>
-          <ng-container value>{{ minorCreditor.accountNumber ?? defaultValues.defaultNotProvided }}</ng-container>
+          <ng-container value>
+            @if (minorCreditor.accountNumber) {
+              {{ minorCreditor.accountNumber }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
         </div>
         <div
           app-govuk-summary-list-row
@@ -114,9 +138,19 @@
           summaryListRowId="paymentReference"
         >
           <ng-container name>Payment reference</ng-container>
-          <ng-container value>{{ minorCreditor.paymentReference ?? defaultValues.defaultNotProvided }}</ng-container>
+          <ng-container value>
+            @if (minorCreditor.paymentReference) {
+              {{ minorCreditor.paymentReference }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
         </div>
       }
     </app-govuk-summary-list>
   }
+</ng-template>
+
+<ng-template #notProvided>
+  <p class="govuk-!-margin-0" [innerHTML]="defaultValues.defaultNotProvided" aria-label="Not provided"></p>
 </ng-template>

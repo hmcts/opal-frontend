@@ -19,6 +19,7 @@ import { IFinesMacPaymentTermsPermissions } from '../../fines-mac-payment-terms/
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
+import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
@@ -29,6 +30,7 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
+    FinesMacReviewAccountNotProvidedComponent,
   ],
   templateUrl: './fines-mac-review-account-payment-terms.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -48,7 +48,7 @@
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
         summaryListId="paymentTerms"
-        summaryListRowId="paymentTerms"
+        summaryListRowId="selectedPaymentTerms"
       >
         <ng-container name>Payment terms</ng-container>
         <ng-container value>{{ paymentTerms }}</ng-container>
@@ -188,9 +188,13 @@
           summaryListRowId="prisonAndPrisonNumber"
         >
           <ng-container name>Prison and prison number</ng-container>
-          <ng-container value>{{
-            paymentTermsState.fm_payment_terms_prison_and_prison_number ?? defaultValues.notProvided
-          }}</ng-container>
+          <ng-container value>
+            @if (paymentTermsState.fm_payment_terms_prison_and_prison_number) {
+              {{ paymentTermsState.fm_payment_terms_prison_and_prison_number }}
+            } @else {
+              <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            }
+          </ng-container>
         </div>
       }
     </app-govuk-summary-list>

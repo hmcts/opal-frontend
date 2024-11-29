@@ -33,17 +33,21 @@
         <ng-container name>Last name</ng-container>
         <ng-container value>{{ personalDetails.fm_personal_details_surname }}</ng-container>
       </div>
-      @if (personalDetails.fm_personal_details_aliases.length > 0) {
-        <div
-          app-govuk-summary-list-row
-          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-          summaryListId="personalDetails"
-          summaryListRowId="aliases"
-        >
-          <ng-container name>Aliases</ng-container>
-          <ng-container value><p class="govuk-!-margin-top-0" [innerHTML]="aliases"></p></ng-container>
-        </div>
-      }
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="aliases"
+      >
+        <ng-container name>Aliases</ng-container>
+        <ng-container value>
+          @if (aliases.length > 0) {
+            <p class="govuk-!-margin-top-0" [innerHTML]="aliases"></p>
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row govuk-summary-list__row--no-actions"
@@ -51,7 +55,13 @@
         summaryListRowId="dob"
       >
         <ng-container name>Date of birth</ng-container>
-        <ng-container value>{{ dob ?? defaultValues.notProvided }}</ng-container>
+        <ng-container value>
+          @if (dob) {
+            {{ dob }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -60,9 +70,13 @@
         summaryListRowId="nationalInsuranceNumber"
       >
         <ng-container name>National Insurance number</ng-container>
-        <ng-container value>{{
-          personalDetails.fm_personal_details_national_insurance_number ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (personalDetails.fm_personal_details_national_insurance_number) {
+            {{ personalDetails.fm_personal_details_national_insurance_number }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -80,9 +94,13 @@
         summaryListRowId="vehicleMakeOrModel"
       >
         <ng-container name>Vehicle make and model</ng-container>
-        <ng-container value>{{
-          personalDetails.fm_personal_details_vehicle_make ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (personalDetails.fm_personal_details_vehicle_make) {
+            {{ personalDetails.fm_personal_details_vehicle_make }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
       <div
         app-govuk-summary-list-row
@@ -91,9 +109,13 @@
         summaryListRowId="registrationNumber"
       >
         <ng-container name>Registration number</ng-container>
-        <ng-container value>{{
-          personalDetails.fm_personal_details_vehicle_registration_mark ?? defaultValues.notProvided
-        }}</ng-container>
+        <ng-container value>
+          @if (personalDetails.fm_personal_details_vehicle_registration_mark) {
+            {{ personalDetails.fm_personal_details_vehicle_registration_mark }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
       </div>
     </app-govuk-summary-list>
   </ng-container>

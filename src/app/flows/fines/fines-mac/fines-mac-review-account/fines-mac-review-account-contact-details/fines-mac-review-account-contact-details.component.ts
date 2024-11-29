@@ -6,6 +6,7 @@ import { IFinesMacContactDetailsState } from '../../fines-mac-contact-details/in
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
+import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 
 @Component({
   selector: 'app-fines-mac-review-account-contact-details',
@@ -15,6 +16,7 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesMacReviewAccountChangeLinkComponent,
+    FinesMacReviewAccountNotProvidedComponent,
   ],
   templateUrl: './fines-mac-review-account-contact-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,3 +1,4 @@
 export enum FinesMacReviewAccountDefaultValues {
-  notProvided = 'Not provided',
+  notProvidedLabel = '-',
+  notProvidedAriaLabel = 'Not provided',
 }

@@ -145,7 +145,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
     );
 
     if (!minorCreditor) return null;
-    
+
     const {
       fm_offence_details_minor_creditor_address_line_1: addressLine1,
       fm_offence_details_minor_creditor_address_line_2: addressLine2,
