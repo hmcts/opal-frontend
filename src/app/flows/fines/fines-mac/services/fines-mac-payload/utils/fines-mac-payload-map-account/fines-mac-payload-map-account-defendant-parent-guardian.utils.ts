@@ -1,31 +1,43 @@
+import { IFinesMacParentGuardianDetailsAliasState } from '../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
 
-const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacState = (
-  finesMacState: IFinesMacState,
-  payload: IFinesMacAddAccountPayload,
-): IFinesMacState => {
-  const payloadAccountDefendantParentGuardianDebtorDetails = payload.account.defendant.parent_guardian?.debtor_detail;
-
-  const aliases = payloadAccountDefendantParentGuardianDebtorDetails?.aliases
-    ? payloadAccountDefendantParentGuardianDebtorDetails.aliases.map((alias, index) => {
+const mapAccountDefendantParentGuardianDebtorDetailsAliases = (
+  payloadAccountDefendantParentGuardianDebtorDetails:
+    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
+    | null,
+): IFinesMacParentGuardianDetailsAliasState[] => {
+  return payloadAccountDefendantParentGuardianDebtorDetails
+    ? payloadAccountDefendantParentGuardianDebtorDetails.map((alias, index) => {
         return {
           [`fm_parent_guardian_details_alias_forenames_${index}`]: alias.alias_forenames,
           [`fm_parent_guardian_details_alias_surname_${index}`]: alias.alias_surname,
         };
       })
-    : finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases;
+    : [];
+};
 
-  finesMacState.parentGuardianDetails.formData = {
-    ...finesMacState.parentGuardianDetails.formData,
+const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacState = (
+  mappedFinesMacState: IFinesMacState,
+  payload: IFinesMacAddAccountPayload,
+): IFinesMacState => {
+  const payloadAccountDefendantParentGuardianDebtorDetails = payload.account.defendant.parent_guardian?.debtor_detail;
+
+  const aliases = payloadAccountDefendantParentGuardianDebtorDetails?.aliases
+    ? mapAccountDefendantParentGuardianDebtorDetailsAliases(payloadAccountDefendantParentGuardianDebtorDetails?.aliases)
+    : mappedFinesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases;
+
+  mappedFinesMacState.parentGuardianDetails.formData = {
+    ...mappedFinesMacState.parentGuardianDetails.formData,
     fm_parent_guardian_details_vehicle_make: payloadAccountDefendantParentGuardianDebtorDetails?.vehicle_make ?? null,
     fm_parent_guardian_details_vehicle_registration_mark:
       payloadAccountDefendantParentGuardianDebtorDetails?.vehicle_registration_mark ?? null,
     fm_parent_guardian_details_aliases: aliases,
   };
 
-  finesMacState.employerDetails.formData = {
-    ...finesMacState.employerDetails.formData,
+  mappedFinesMacState.employerDetails.formData = {
+    ...mappedFinesMacState.employerDetails.formData,
     fm_employer_details_employer_reference:
       payloadAccountDefendantParentGuardianDebtorDetails?.employee_reference ?? null,
     fm_employer_details_employer_company_name:
@@ -48,25 +60,25 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
       payloadAccountDefendantParentGuardianDebtorDetails?.employer_email_address ?? null,
   };
 
-  finesMacState.languagePreferences.formData = {
-    ...finesMacState.languagePreferences.formData,
+  mappedFinesMacState.languagePreferences.formData = {
+    ...mappedFinesMacState.languagePreferences.formData,
     fm_language_preferences_document_language:
       payloadAccountDefendantParentGuardianDebtorDetails?.document_language ?? null,
     fm_language_preferences_hearing_language:
       payloadAccountDefendantParentGuardianDebtorDetails?.hearing_language ?? null,
   };
 
-  return finesMacState;
+  return mappedFinesMacState;
 };
 
 const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
-  finesMacState: IFinesMacState,
+  mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendantParentGuardian = payload.account.defendant.parent_guardian;
 
-  finesMacState.parentGuardianDetails.formData = {
-    ...finesMacState.parentGuardianDetails.formData,
+  mappedFinesMacState.parentGuardianDetails.formData = {
+    ...mappedFinesMacState.parentGuardianDetails.formData,
     fm_parent_guardian_details_surname: payloadAccountDefendantParentGuardian?.surname ?? null,
     fm_parent_guardian_details_forenames: payloadAccountDefendantParentGuardian?.forenames ?? null,
     fm_parent_guardian_details_dob: payloadAccountDefendantParentGuardian?.dob ?? null,
@@ -78,8 +90,8 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
     fm_parent_guardian_details_post_code: payloadAccountDefendantParentGuardian?.post_code ?? null,
   };
 
-  finesMacState.contactDetails.formData = {
-    ...finesMacState.contactDetails.formData,
+  mappedFinesMacState.contactDetails.formData = {
+    ...mappedFinesMacState.contactDetails.formData,
     fm_contact_details_telephone_number_home: payloadAccountDefendantParentGuardian?.telephone_number_home ?? null,
     fm_contact_details_telephone_number_business:
       payloadAccountDefendantParentGuardian?.telephone_number_business ?? null,
@@ -88,7 +100,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
     fm_contact_details_email_address_2: payloadAccountDefendantParentGuardian?.email_address_2 ?? null,
   };
 
-  return mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacState(finesMacState, payload);
+  return mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacState(mappedFinesMacState, payload);
 };
 
 export const mapAccountDefendantParentGuardianPayload = (
@@ -96,9 +108,10 @@ export const mapAccountDefendantParentGuardianPayload = (
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendant = payload.account.defendant;
+  const mappedFinesMacState = { ...finesMacState };
 
-  finesMacState.personalDetails.formData = {
-    ...finesMacState.personalDetails.formData,
+  mappedFinesMacState.personalDetails.formData = {
+    ...mappedFinesMacState.personalDetails.formData,
     fm_personal_details_title: payloadAccountDefendant.title,
     fm_personal_details_surname: payloadAccountDefendant.surname,
     fm_personal_details_forenames: payloadAccountDefendant.forenames,
@@ -110,5 +123,5 @@ export const mapAccountDefendantParentGuardianPayload = (
     fm_personal_details_national_insurance_number: payloadAccountDefendant.national_insurance_number,
   };
 
-  return mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState(finesMacState, payload);
+  return mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState(mappedFinesMacState, payload);
 };

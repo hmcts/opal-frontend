@@ -32,24 +32,24 @@ const mapAccountDefendantIndividualDebtorDetailsAliases = (
  * @returns {IFinesMacState} - The updated finesMacState with the mapped defendant individual debtor details.
  */
 const mapAccountDefendantIndividualDebtorDetails = (
-  finesMacState: IFinesMacState,
+  mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendantDebtorDetails = payload.account.defendant.debtor_detail;
   const aliases = payloadAccountDefendantDebtorDetails?.aliases
     ? mapAccountDefendantIndividualDebtorDetailsAliases(payloadAccountDefendantDebtorDetails?.aliases)
-    : finesMacState.personalDetails.formData.fm_personal_details_aliases;
+    : mappedFinesMacState.personalDetails.formData.fm_personal_details_aliases;
 
-  finesMacState.personalDetails.formData = {
-    ...finesMacState.personalDetails.formData,
+  mappedFinesMacState.personalDetails.formData = {
+    ...mappedFinesMacState.personalDetails.formData,
     fm_personal_details_vehicle_make: payloadAccountDefendantDebtorDetails?.vehicle_make ?? null,
     fm_personal_details_vehicle_registration_mark:
       payloadAccountDefendantDebtorDetails?.vehicle_registration_mark ?? null,
     fm_personal_details_aliases: aliases,
   };
 
-  finesMacState.employerDetails.formData = {
-    ...finesMacState.employerDetails.formData,
+  mappedFinesMacState.employerDetails.formData = {
+    ...mappedFinesMacState.employerDetails.formData,
     fm_employer_details_employer_reference: payloadAccountDefendantDebtorDetails?.employee_reference ?? null,
     fm_employer_details_employer_company_name: payloadAccountDefendantDebtorDetails?.employer_company_name ?? null,
     fm_employer_details_employer_address_line_1: payloadAccountDefendantDebtorDetails?.employer_address_line_1 ?? null,
@@ -63,13 +63,13 @@ const mapAccountDefendantIndividualDebtorDetails = (
     fm_employer_details_employer_email_address: payloadAccountDefendantDebtorDetails?.employer_email_address ?? null,
   };
 
-  finesMacState.languagePreferences.formData = {
-    ...finesMacState.languagePreferences.formData,
+  mappedFinesMacState.languagePreferences.formData = {
+    ...mappedFinesMacState.languagePreferences.formData,
     fm_language_preferences_document_language: payloadAccountDefendantDebtorDetails?.document_language ?? null,
     fm_language_preferences_hearing_language: payloadAccountDefendantDebtorDetails?.hearing_language ?? null,
   };
 
-  return finesMacState;
+  return mappedFinesMacState;
 };
 
 /**
@@ -84,9 +84,10 @@ export const mapAccountDefendantIndividualPayload = (
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendant = payload.account.defendant;
+  const mappedFinesMacState = { ...finesMacState };
 
-  finesMacState.personalDetails.formData = {
-    ...finesMacState.personalDetails.formData,
+  mappedFinesMacState.personalDetails.formData = {
+    ...mappedFinesMacState.personalDetails.formData,
     fm_personal_details_title: payloadAccountDefendant.title,
     fm_personal_details_surname: payloadAccountDefendant.surname,
     fm_personal_details_forenames: payloadAccountDefendant.forenames,
@@ -98,8 +99,8 @@ export const mapAccountDefendantIndividualPayload = (
     fm_personal_details_national_insurance_number: payloadAccountDefendant.national_insurance_number,
   };
 
-  finesMacState.contactDetails.formData = {
-    ...finesMacState.contactDetails.formData,
+  mappedFinesMacState.contactDetails.formData = {
+    ...mappedFinesMacState.contactDetails.formData,
     fm_contact_details_telephone_number_home: payloadAccountDefendant.telephone_number_home,
     fm_contact_details_telephone_number_business: payloadAccountDefendant.telephone_number_business,
     fm_contact_details_telephone_number_mobile: payloadAccountDefendant.telephone_number_mobile,
@@ -107,5 +108,5 @@ export const mapAccountDefendantIndividualPayload = (
     fm_contact_details_email_address_2: payloadAccountDefendant.email_address_2,
   };
 
-  return mapAccountDefendantIndividualDebtorDetails(finesMacState, payload);
+  return mapAccountDefendantIndividualDebtorDetails(mappedFinesMacState, payload);
 };

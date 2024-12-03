@@ -18,27 +18,27 @@ const mapAccountDefendantCompanyDebtorDetailsAliases = (
 };
 
 const mapAccountDefendantCompanyDebtorDetails = (
-  finesMacState: IFinesMacState,
+  mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendantDebtorDetails = payload.account.defendant.debtor_detail;
 
   const aliases = payloadAccountDefendantDebtorDetails?.aliases
     ? mapAccountDefendantCompanyDebtorDetailsAliases(payloadAccountDefendantDebtorDetails?.aliases)
-    : finesMacState.companyDetails.formData.fm_company_details_aliases;
+    : mappedFinesMacState.companyDetails.formData.fm_company_details_aliases;
 
-  finesMacState.companyDetails.formData = {
-    ...finesMacState.companyDetails.formData,
+  mappedFinesMacState.companyDetails.formData = {
+    ...mappedFinesMacState.companyDetails.formData,
     fm_company_details_aliases: aliases,
   };
 
-  finesMacState.languagePreferences.formData = {
-    ...finesMacState.languagePreferences.formData,
+  mappedFinesMacState.languagePreferences.formData = {
+    ...mappedFinesMacState.languagePreferences.formData,
     fm_language_preferences_document_language: payloadAccountDefendantDebtorDetails?.document_language ?? null,
     fm_language_preferences_hearing_language: payloadAccountDefendantDebtorDetails?.hearing_language ?? null,
   };
 
-  return finesMacState;
+  return mappedFinesMacState;
 };
 
 export const mapAccountDefendantCompanyPayload = (
@@ -46,9 +46,10 @@ export const mapAccountDefendantCompanyPayload = (
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendant = payload.account.defendant;
+  const mappedFinesMacState = { ...finesMacState };
 
-  finesMacState.companyDetails.formData = {
-    ...finesMacState.companyDetails.formData,
+  mappedFinesMacState.companyDetails.formData = {
+    ...mappedFinesMacState.companyDetails.formData,
     fm_company_details_organisation_name: payloadAccountDefendant.organisation_name,
     fm_company_details_address_line_1: payloadAccountDefendant.address_line_1,
     fm_company_details_address_line_2: payloadAccountDefendant.address_line_2,
@@ -56,8 +57,8 @@ export const mapAccountDefendantCompanyPayload = (
     fm_company_details_postcode: payloadAccountDefendant.post_code,
   };
 
-  finesMacState.contactDetails.formData = {
-    ...finesMacState.contactDetails.formData,
+  mappedFinesMacState.contactDetails.formData = {
+    ...mappedFinesMacState.contactDetails.formData,
     fm_contact_details_telephone_number_home: payloadAccountDefendant.telephone_number_home,
     fm_contact_details_telephone_number_business: payloadAccountDefendant.telephone_number_business,
     fm_contact_details_telephone_number_mobile: payloadAccountDefendant.telephone_number_mobile,
@@ -65,5 +66,5 @@ export const mapAccountDefendantCompanyPayload = (
     fm_contact_details_email_address_2: payloadAccountDefendant.email_address_2,
   };
 
-  return mapAccountDefendantCompanyDebtorDetails(finesMacState, payload);
+  return mapAccountDefendantCompanyDebtorDetails(mappedFinesMacState, payload);
 };
