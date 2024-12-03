@@ -33,6 +33,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
     fm_parent_guardian_details_vehicle_make: payloadAccountDefendantParentGuardianDebtorDetails?.vehicle_make ?? null,
     fm_parent_guardian_details_vehicle_registration_mark:
       payloadAccountDefendantParentGuardianDebtorDetails?.vehicle_registration_mark ?? null,
+    fm_parent_guardian_details_add_alias: aliases.length > 0,
     fm_parent_guardian_details_aliases: aliases,
   };
 
@@ -104,11 +105,10 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
 };
 
 export const mapAccountDefendantParentGuardianPayload = (
-  finesMacState: IFinesMacState,
+  mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendant = payload.account.defendant;
-  const mappedFinesMacState = { ...finesMacState };
 
   mappedFinesMacState.personalDetails.formData = {
     ...mappedFinesMacState.personalDetails.formData,

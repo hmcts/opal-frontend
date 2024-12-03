@@ -25,6 +25,8 @@ import { buildAccountOffencesPayload } from './utils/fines-mac-payload-account-o
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
 import { mapAccountDefendantPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-defendant.utils';
+import { mapAccountPaymentTermsPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-payment-terms.utils';
+import { mapAccountAccountNotesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-account-notes.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -203,39 +205,39 @@ export class FinesMacPayloadService {
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(finesMacState, sessionUserState, true);
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, true);
   }
 
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(finesMacState, sessionUserState, false);
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, false);
   }
 
   // ***** //
 
   private mapInitialPayloadToFinesMacState(
-    finesMacState: IFinesMacState,
+    mappedFinesMacState: IFinesMacState,
     payload: IFinesMacAddAccountPayload,
   ): IFinesMacState {
     const payloadAccount = payload.account;
 
-    finesMacState.accountDetails.formData = {
-      ...finesMacState.accountDetails.formData,
+    mappedFinesMacState.accountDetails.formData = {
+      ...mappedFinesMacState.accountDetails.formData,
       fm_create_account_account_type: payloadAccount.account_type,
       fm_create_account_defendant_type: payloadAccount.defendant_type,
       fm_create_account_business_unit: null,
     };
-    finesMacState.courtDetails.formData = {
-      ...finesMacState.courtDetails.formData,
+    mappedFinesMacState.courtDetails.formData = {
+      ...mappedFinesMacState.courtDetails.formData,
       fm_court_details_originator_name: payloadAccount.originator_name,
       fm_court_details_originator_id: payloadAccount.originator_id,
       fm_court_details_prosecutor_case_reference: payloadAccount.prosecutor_case_reference,
       fm_court_details_imposing_court_id: payloadAccount.enforcement_court_id,
     };
-    finesMacState.paymentTerms.formData = {
-      ...finesMacState.paymentTerms.formData,
+    mappedFinesMacState.paymentTerms.formData = {
+      ...mappedFinesMacState.paymentTerms.formData,
       fm_payment_terms_collection_order_made: payloadAccount.collection_order_made,
       fm_payment_terms_collection_order_made_today: payloadAccount.collection_order_made_today,
       fm_payment_terms_collection_order_date: payloadAccount.collection_order_date,
@@ -243,13 +245,15 @@ export class FinesMacPayloadService {
       fm_payment_terms_payment_card_request: payloadAccount.payment_card_request,
     };
 
-    return finesMacState;
+    return mappedFinesMacState;
   }
 
   public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT) {
-    let finesMacState: IFinesMacState = FINES_MAC_STATE;
+    let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, payload);
     finesMacState = mapAccountDefendantPayload(finesMacState, payload);
+    finesMacState = mapAccountPaymentTermsPayload(finesMacState, payload);
+    finesMacState = mapAccountAccountNotesPayload(finesMacState, payload);
     return finesMacState;
   }
 }

@@ -13,17 +13,16 @@ import { mapAccountDefendantParentGuardianPayload } from './fines-mac-payload-ma
  * @returns The updated fines MAC state after mapping the defendant payload.
  */
 export const mapAccountDefendantPayload = (
-  finesMacState: IFinesMacState,
+  mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const { defendant_type: defendantType } = payload.account;
-
   switch (defendantType) {
     case 'parentOrGuardianToPay':
-      return mapAccountDefendantParentGuardianPayload(finesMacState, payload);
+      return mapAccountDefendantParentGuardianPayload(mappedFinesMacState, payload);
     case 'company':
-      return mapAccountDefendantCompanyPayload(finesMacState, payload);
+      return mapAccountDefendantCompanyPayload(mappedFinesMacState, payload);
     default:
-      return mapAccountDefendantIndividualPayload(finesMacState, payload);
+      return mapAccountDefendantIndividualPayload(mappedFinesMacState, payload);
   }
 };

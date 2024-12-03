@@ -2,13 +2,6 @@ import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface
 import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
 import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
 
-/**
- * Maps enforcement actions to the fines MAC state.
- *
- * @param {IFinesMacState} mappedFinesMacState - The current state of the fines MAC.
- * @param {IFinesMacPayloadAccountPaymentTermsEnforcement[] | null} enforcements - The list of enforcement actions to be mapped.
- * @returns {IFinesMacState} - The updated fines MAC state with mapped enforcement actions.
- */
 const mapEnforcementActions = (
   mappedFinesMacState: IFinesMacState,
   enforcements: IFinesMacPayloadAccountPaymentTermsEnforcement[] | null,
@@ -37,49 +30,26 @@ const mapEnforcementActions = (
   return mappedFinesMacState;
 };
 
-/**
- * Determines the payment terms type based on the provided payment terms type code and lump sum amount.
- *
- * @param paymentTermsTypeCode - The code representing the type of payment terms.
- *                               If 'B', it indicates payment in full.
- * @param lumpSumAmount - The lump sum amount. If provided and not null, it indicates a combination of lump sum and instalments.
- *
- * @returns A string representing the payment terms type:
- *          - 'payInFull' if the payment terms type code is 'B'.
- *          - 'lumpSumPlusInstalments' if a lump sum amount is provided.
- *          - 'instalmentsOnly' if neither of the above conditions are met.
- */
-const getPaymentTermsType = (paymentTermsTypeCode: string | null, lumpSumAmount: number | null): string => {
+const getPaymentTermsType = (
+  paymentTermsTypeCode: string | null,
+  lumpSumAmount: number | null,
+  installmentAmount: number | null,
+): string | null => {
   if (paymentTermsTypeCode === 'B') {
     return 'payInFull';
-  }
-
-  if (lumpSumAmount) {
+  } else if (lumpSumAmount) {
     return 'lumpSumPlusInstalments';
+  } else if (installmentAmount) {
+    return 'instalmentsOnly';
   }
 
-  return 'instalmentsOnly';
+  return null;
 };
 
-/**
- * Maps the account defendant payload to the fines MAC state.
- *
- * @param {IFinesMacState} finesMacState - The current state of the fines MAC.
- * @param {IFinesMacAddAccountPayload} payload - The payload containing account information to be mapped.
- * @returns {IFinesMacState} - The updated fines MAC state with the mapped account information.
- *
- * The function performs the following operations:
- * - Creates a copy of the current fines MAC state.
- * - Extracts payment terms and other relevant account information from the payload.
- * - Determines the payment terms type and sets the appropriate dates based on the type.
- * - Updates the fines MAC state's payment terms form data with the extracted and computed values.
- * - Calls `mapEnforcementActions` to map enforcement actions and returns the updated state.
- */
-export const mapAccountDefendantPayload = (
-  finesMacState: IFinesMacState,
+export const mapAccountPaymentTermsPayload = (
+  mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
-  const mappedFinesMacState = { ...finesMacState };
   const payloadAccountPaymentTerms = payload.account.payment_terms;
 
   const {
@@ -92,6 +62,7 @@ export const mapAccountDefendantPayload = (
   const paymentTermsType = getPaymentTermsType(
     payloadAccountPaymentTerms.payment_terms_type_code,
     payloadAccountPaymentTerms.lump_sum_amount,
+    payloadAccountPaymentTerms.instalment_amount,
   );
   const payByDate = paymentTermsType === 'payInFull' ? payloadAccountPaymentTerms.effective_date : null;
   const startDate = paymentTermsType !== 'payInFull' ? payloadAccountPaymentTerms.effective_date : null;

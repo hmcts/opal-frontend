@@ -29,6 +29,7 @@ const mapAccountDefendantCompanyDebtorDetails = (
 
   mappedFinesMacState.companyDetails.formData = {
     ...mappedFinesMacState.companyDetails.formData,
+    fm_company_details_add_alias: aliases.length > 0,
     fm_company_details_aliases: aliases,
   };
 
@@ -42,11 +43,10 @@ const mapAccountDefendantCompanyDebtorDetails = (
 };
 
 export const mapAccountDefendantCompanyPayload = (
-  finesMacState: IFinesMacState,
+  mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {
   const payloadAccountDefendant = payload.account.defendant;
-  const mappedFinesMacState = { ...finesMacState };
 
   mappedFinesMacState.companyDetails.formData = {
     ...mappedFinesMacState.companyDetails.formData,
