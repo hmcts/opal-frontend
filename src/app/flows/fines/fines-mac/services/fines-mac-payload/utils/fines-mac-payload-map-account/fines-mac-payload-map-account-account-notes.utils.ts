@@ -16,7 +16,7 @@ export const mapAccountAccountNotesPayload = (
         break;
       case 'AA':
         if (accountNoteSerial === 2) {
-          mappedFinesMacState.accountCommentsNotes.formData.fm_account_comments_notes_comments = accountNoteText;
+          mappedFinesMacState.accountCommentsNotes.formData.fm_account_comments_notes_notes = accountNoteText;
         }
         break;
     }
