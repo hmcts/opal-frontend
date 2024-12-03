@@ -1,9 +1,9 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
-import { mapAccountDefendantParentGuardianPayload } from './fines-mac-payload-map-account-defendant-company.utils';
+import { mapAccountDefendantCompanyPayload } from './fines-mac-payload-map-account-defendant-company.utils';
 
 import { mapAccountDefendantIndividualPayload } from './fines-mac-payload-map-account-defendant-individual.utils';
-import { mapAccountDefendantCompanyPayload } from './fines-mac-payload-map-account-defendant-parent-guardian.utils';
+import { mapAccountDefendantParentGuardianPayload } from './fines-mac-payload-map-account-defendant-parent-guardian.utils';
 
 /**
  * Maps the account defendant payload to the fines MAC state based on the defendant type.
