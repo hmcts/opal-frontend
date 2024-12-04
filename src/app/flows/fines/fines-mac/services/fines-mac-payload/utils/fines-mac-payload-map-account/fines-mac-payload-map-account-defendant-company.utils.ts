@@ -9,33 +9,40 @@ const mapAccountDefendantCompanyDebtorDetailsAliases = (
     | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacCompanyDetailsAliasState[] => {
-  return payloadAccountDefendantCompanyDebtorDetailsAliases
-    ? payloadAccountDefendantCompanyDebtorDetailsAliases.map((alias, index) => {
-        return {
-          [`fm_company_details_alias_organisation_name_${index}`]: alias.alias_company_name,
-        };
-      })
-    : [];
+  if (!payloadAccountDefendantCompanyDebtorDetailsAliases) {
+    return [];
+  }
+
+  return payloadAccountDefendantCompanyDebtorDetailsAliases.map((alias, index) => ({
+    [`fm_company_details_alias_organisation_name_${index}`]: alias.alias_company_name,
+  }));
 };
 
 const mapAccountDefendantCompanyDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
-  const aliases = payload?.aliases
-    ? mapAccountDefendantCompanyDebtorDetailsAliases(payload?.aliases)
+  if (!payload) {
+    return mappedFinesMacState;
+  }
+
+  // Map aliases
+  const aliases = payload.aliases
+    ? mapAccountDefendantCompanyDebtorDetailsAliases(payload.aliases)
     : mappedFinesMacState.companyDetails.formData.fm_company_details_aliases;
 
+  // Update company details
   mappedFinesMacState.companyDetails.formData = {
     ...mappedFinesMacState.companyDetails.formData,
     fm_company_details_add_alias: aliases.length > 0,
     fm_company_details_aliases: aliases,
   };
 
+  // Update language preferences
   mappedFinesMacState.languagePreferences.formData = {
     ...mappedFinesMacState.languagePreferences.formData,
-    fm_language_preferences_document_language: payload?.document_language ?? null,
-    fm_language_preferences_hearing_language: payload?.hearing_language ?? null,
+    fm_language_preferences_document_language: payload.document_language ?? null,
+    fm_language_preferences_hearing_language: payload.hearing_language ?? null,
   };
 
   return mappedFinesMacState;
@@ -45,27 +52,44 @@ export const mapAccountDefendantCompanyPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantComplete,
 ): IFinesMacState => {
+  const {
+    organisation_name,
+    address_line_1,
+    address_line_2,
+    address_line_3,
+    post_code,
+    telephone_number_home,
+    telephone_number_business,
+    telephone_number_mobile,
+    email_address_1,
+    email_address_2,
+    debtor_detail,
+  } = payload;
+
+  // Update company details
   mappedFinesMacState.companyDetails.formData = {
     ...mappedFinesMacState.companyDetails.formData,
-    fm_company_details_organisation_name: payload.organisation_name,
-    fm_company_details_address_line_1: payload.address_line_1,
-    fm_company_details_address_line_2: payload.address_line_2,
-    fm_company_details_address_line_3: payload.address_line_3,
-    fm_company_details_postcode: payload.post_code,
+    fm_company_details_organisation_name: organisation_name,
+    fm_company_details_address_line_1: address_line_1,
+    fm_company_details_address_line_2: address_line_2,
+    fm_company_details_address_line_3: address_line_3,
+    fm_company_details_postcode: post_code,
   };
 
+  // Update contact details
   mappedFinesMacState.contactDetails.formData = {
     ...mappedFinesMacState.contactDetails.formData,
-    fm_contact_details_telephone_number_home: payload.telephone_number_home,
-    fm_contact_details_telephone_number_business: payload.telephone_number_business,
-    fm_contact_details_telephone_number_mobile: payload.telephone_number_mobile,
-    fm_contact_details_email_address_1: payload.email_address_1,
-    fm_contact_details_email_address_2: payload.email_address_2,
+    fm_contact_details_telephone_number_home: telephone_number_home,
+    fm_contact_details_telephone_number_business: telephone_number_business,
+    fm_contact_details_telephone_number_mobile: telephone_number_mobile,
+    fm_contact_details_email_address_1: email_address_1,
+    fm_contact_details_email_address_2: email_address_2,
   };
 
-  if (payload.debtor_detail) {
-    return mapAccountDefendantCompanyDebtorDetails(mappedFinesMacState, payload.debtor_detail);
-  } else {
-    return mappedFinesMacState;
+  // Handle debtor detail if available
+  if (debtor_detail) {
+    return mapAccountDefendantCompanyDebtorDetails(mappedFinesMacState, debtor_detail);
   }
+
+  return mappedFinesMacState;
 };
