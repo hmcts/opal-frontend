@@ -15,7 +15,7 @@ import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.
 import { TransformationService } from '@services/transformation-service/transformation.service';
 import {
   FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
-  FINES_MAC_TRANSFORM_ITEMS_CONFIG,
+  FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG,
 } from './constants/fines-mac-transform-items-config.constant';
 import { ITransformItem } from '@services/transformation-service/interfaces/transform-item.interface';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
@@ -88,7 +88,7 @@ export class FinesMacPayloadService {
 
   /**
    * Transforms the given finesMacPayload object by applying the transformations
-   * defined in the FINES_MAC_TRANSFORM_ITEMS_CONFIG.
+   * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
    *
    * @param finesMacPayload - The payload object to be transformed.
    * @returns The transformed payload object.
@@ -202,7 +202,7 @@ export class FinesMacPayloadService {
     };
 
     // Transform the payload, format the dates to the correct format
-    return this.transformPayload(addAccountPayload, FINES_MAC_TRANSFORM_ITEMS_CONFIG);
+    return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 
   public buildAddAccountPayload(

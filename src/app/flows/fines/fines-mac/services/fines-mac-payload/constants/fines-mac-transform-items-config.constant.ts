@@ -14,7 +14,7 @@ const MAP_PAYLOAD_FORMAT = {
 };
 
 // Forward transformation configuration
-export const FINES_MAC_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
+export const FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG: ITransformItem[] = [
   { key: 'dob', ...BUILD_PAYLOAD_FORMAT },
   { key: 'effective_date', ...BUILD_PAYLOAD_FORMAT },
   { key: 'collection_order_date', ...BUILD_PAYLOAD_FORMAT },
