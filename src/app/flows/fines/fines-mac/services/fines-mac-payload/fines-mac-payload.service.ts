@@ -225,14 +225,17 @@ export class FinesMacPayloadService {
     mappedFinesMacState: IFinesMacState,
     payload: IFinesMacAddAccountPayload,
   ): IFinesMacState {
-    const payloadAccount = payload.account;
+    const { account: payloadAccount, business_unit_id } = payload;
 
+    // Update account details
     mappedFinesMacState.accountDetails.formData = {
       ...mappedFinesMacState.accountDetails.formData,
       fm_create_account_account_type: payloadAccount.account_type,
       fm_create_account_defendant_type: payloadAccount.defendant_type,
-      fm_create_account_business_unit: payload.business_unit_id.toString(), // Should be a string?
+      fm_create_account_business_unit: business_unit_id.toString(), // Convert to string
     };
+
+    // Update court details
     mappedFinesMacState.courtDetails.formData = {
       ...mappedFinesMacState.courtDetails.formData,
       fm_court_details_originator_name: payloadAccount.originator_name,
@@ -240,6 +243,8 @@ export class FinesMacPayloadService {
       fm_court_details_prosecutor_case_reference: payloadAccount.prosecutor_case_reference,
       fm_court_details_imposing_court_id: payloadAccount.enforcement_court_id,
     };
+
+    // Update payment terms
     mappedFinesMacState.paymentTerms.formData = {
       ...mappedFinesMacState.paymentTerms.formData,
       fm_payment_terms_collection_order_made: payloadAccount.collection_order_made,
@@ -255,6 +260,8 @@ export class FinesMacPayloadService {
   public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
+
+    // Build the state object...
     let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, transformedPayload);
     finesMacState = mapAccountDefendantPayload(finesMacState, transformedPayload.account);
