@@ -13,7 +13,10 @@ import { buildAccountPaymentTermsPayload } from './utils/fines-mac-payload-accou
 import { buildAccountAccountNotesPayload } from './utils/fines-mac-payload-account-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
 import { TransformationService } from '@services/transformation-service/transformation.service';
-import { FINES_MAC_TRANSFORM_ITEMS_CONFIG } from './constants/fines-mac-transform-items-config.constant';
+import {
+  FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG,
+  FINES_MAC_TRANSFORM_ITEMS_CONFIG,
+} from './constants/fines-mac-transform-items-config.constant';
 import { ITransformItem } from '@services/transformation-service/interfaces/transform-item.interface';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 
@@ -250,12 +253,14 @@ export class FinesMacPayloadService {
   }
 
   public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT) {
+    // Convert the values back to the original format
+    const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
     let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
-    finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, payload);
-    finesMacState = mapAccountDefendantPayload(finesMacState, payload.account);
-    finesMacState = mapAccountPaymentTermsPayload(finesMacState, payload.account);
-    finesMacState = mapAccountAccountNotesPayload(finesMacState, payload.account.account_notes);
-    finesMacState = mapAccountOffencesPayload(finesMacState, payload);
+    finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, transformedPayload);
+    finesMacState = mapAccountDefendantPayload(finesMacState, transformedPayload.account);
+    finesMacState = mapAccountPaymentTermsPayload(finesMacState, transformedPayload.account);
+    finesMacState = mapAccountAccountNotesPayload(finesMacState, transformedPayload.account.account_notes);
+    finesMacState = mapAccountOffencesPayload(finesMacState, transformedPayload);
     return finesMacState;
   }
 }
