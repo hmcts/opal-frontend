@@ -1,5 +1,6 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
+
 import { mapAccountDefendantCompanyPayload } from './fines-mac-payload-map-account-defendant-company.utils';
 
 import { mapAccountDefendantIndividualPayload } from './fines-mac-payload-map-account-defendant-individual.utils';
@@ -14,15 +15,15 @@ import { mapAccountDefendantParentGuardianPayload } from './fines-mac-payload-ma
  */
 export const mapAccountDefendantPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacAddAccountPayload,
+  payload: IFinesMacPayloadAccount,
 ): IFinesMacState => {
-  const { defendant_type: defendantType } = payload.account;
+  const { defendant_type: defendantType, defendant } = payload;
   switch (defendantType) {
     case 'parentOrGuardianToPay':
-      return mapAccountDefendantParentGuardianPayload(mappedFinesMacState, payload);
+      return mapAccountDefendantParentGuardianPayload(mappedFinesMacState, defendant);
     case 'company':
-      return mapAccountDefendantCompanyPayload(mappedFinesMacState, payload);
+      return mapAccountDefendantCompanyPayload(mappedFinesMacState, defendant);
     default:
-      return mapAccountDefendantIndividualPayload(mappedFinesMacState, payload);
+      return mapAccountDefendantIndividualPayload(mappedFinesMacState, defendant);
   }
 };

@@ -1,4 +1,5 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
+import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
 import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
 import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
 
@@ -48,16 +49,16 @@ const getPaymentTermsType = (
 
 export const mapAccountPaymentTermsPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacAddAccountPayload,
+  payload: IFinesMacPayloadAccount,
 ): IFinesMacState => {
-  const payloadAccountPaymentTerms = payload.account.payment_terms;
+  const payloadAccountPaymentTerms = payload.payment_terms;
 
   const {
     payment_card_request: paymentCardRequest,
     suspended_committal_date: suspendedCommittalDate,
     collection_order_made: collectionOrderMade,
     collection_order_made_today: collectionOrderMadeToday,
-  } = payload.account;
+  } = payload;
 
   const paymentTermsType = getPaymentTermsType(
     payloadAccountPaymentTerms.payment_terms_type_code,
