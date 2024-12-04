@@ -5,6 +5,13 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../in
 import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 import { IFinesMacPayloadAccountDefendantParentGuardianComplete } from '../interfaces/fines-mac-payload-account-defendant-parent-guardian-complete.interface';
 
+/**
+ * Maps the details of aliases for a defendant's parent or guardian debtor from the payload
+ * to a state object format.
+ *
+ * @param payloadAccountDefendantParentGuardianDebtorDetails - An array of alias details or null.
+ * @returns An array of objects representing the mapped alias details for the defendant's parent or guardian.
+ */
 const mapAccountDefendantParentGuardianDebtorDetailsAliases = (
   payloadAccountDefendantParentGuardianDebtorDetails:
     | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
@@ -20,6 +27,14 @@ const mapAccountDefendantParentGuardianDebtorDetailsAliases = (
   }));
 };
 
+/**
+ * Maps the payload details of a defendant's parent or guardian to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing the defendant's parent or guardian details.
+ * @returns The updated fines MAC state with the mapped details.
+ *
+ */
 const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacState = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
@@ -78,6 +93,14 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
   return mappedFinesMacState;
 };
 
+/**
+ * Maps the account defendant parent/guardian details payload to the Fines Mac state.
+ *
+ * @param mappedFinesMacState - The current state of the Fines Mac.
+ * @param payload - The payload containing the account defendant parent/guardian details.
+ * @returns The updated Fines Mac state with the mapped parent/guardian details and contact details.
+ *
+ */
 const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantParentGuardianComplete,
@@ -130,6 +153,13 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
   return mappedFinesMacState;
 };
 
+/**
+ * Maps the account defendant parent/guardian payload to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing the account defendant complete details.
+ * @returns The updated fines MAC state with the mapped personal details and parent/guardian details if present.
+ */
 export const mapAccountDefendantParentGuardianPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantComplete,

@@ -1,8 +1,14 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
-import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
 import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
 
+/**
+ * Maps enforcement actions to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param enforcements - An array of enforcement actions or null.
+ * @returns The updated fines MAC state with mapped enforcement actions.
+ */
 const mapEnforcementActions = (
   mappedFinesMacState: IFinesMacState,
   enforcements: IFinesMacPayloadAccountPaymentTermsEnforcement[] | null,
@@ -24,6 +30,15 @@ const mapEnforcementActions = (
   return mappedFinesMacState;
 };
 
+/**
+ * Determines the payment terms type based on the provided payment terms type code,
+ * lump sum amount, and instalment amount.
+ *
+ * @param paymentTermsTypeCode - The code representing the type of payment terms.
+ * @param lumpSumAmount - The amount for a lump sum payment.
+ * @param instalmentAmount - The amount for instalment payments.
+ * @returns A string representing the payment terms type, or null if no valid type is determined.
+ */
 const getPaymentTermsType = (
   paymentTermsTypeCode: string | null,
   lumpSumAmount: number | null,
@@ -43,6 +58,14 @@ const getPaymentTermsType = (
   return null;
 };
 
+/**
+ * Maps the account payment terms payload to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing the account payment terms data.
+ * @returns The updated fines MAC state with the mapped payment terms data.
+ *
+ */
 export const mapAccountPaymentTermsPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccount,
@@ -65,7 +88,8 @@ export const mapAccountPaymentTermsPayload = (
   const payByDate = isPayInFull ? paymentTerms.effective_date : null;
   const startDate = !isPayInFull ? paymentTerms.effective_date : null;
 
-  const formDataUpdates = {
+  mappedFinesMacState.paymentTerms.formData = {
+    ...mappedFinesMacState.paymentTerms.formData,
     fm_payment_terms_payment_terms: paymentTermsType,
     fm_payment_terms_pay_by_date: payByDate,
     fm_payment_terms_start_date: startDate,
@@ -78,11 +102,6 @@ export const mapAccountPaymentTermsPayload = (
     fm_payment_terms_suspended_committal_date: suspendedCommittalDate ?? null,
     fm_payment_terms_collection_order_made: collectionOrderMade,
     fm_payment_terms_collection_order_made_today: collectionOrderMadeToday,
-  };
-
-  mappedFinesMacState.paymentTerms.formData = {
-    ...mappedFinesMacState.paymentTerms.formData,
-    ...formDataUpdates,
   };
 
   return mapEnforcementActions(mappedFinesMacState, paymentTerms.enforcements);

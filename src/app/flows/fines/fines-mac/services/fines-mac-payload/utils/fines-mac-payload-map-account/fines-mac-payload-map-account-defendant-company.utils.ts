@@ -4,6 +4,14 @@ import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-ma
 import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
 import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 
+/**
+ * Maps an array of `IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete` objects to an array of `IFinesMacCompanyDetailsAliasState` objects.
+ * Each alias in the input array is transformed into an object with a key in the format `fm_company_details_alias_organisation_name_<index>`.
+ * If the input array is null, an empty array is returned.
+ *
+ * @param payloadAccountDefendantCompanyDebtorDetailsAliases - The array of `IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete` objects or null.
+ * @returns An array of `IFinesMacCompanyDetailsAliasState` objects.
+ */
 const mapAccountDefendantCompanyDebtorDetailsAliases = (
   payloadAccountDefendantCompanyDebtorDetailsAliases:
     | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
@@ -18,6 +26,13 @@ const mapAccountDefendantCompanyDebtorDetailsAliases = (
   }));
 };
 
+/**
+ * Maps the defendant company debtor details from the payload to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing the defendant company debtor details.
+ * @returns The updated fines MAC state with the mapped defendant company debtor details.
+ */
 const mapAccountDefendantCompanyDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
@@ -48,6 +63,14 @@ const mapAccountDefendantCompanyDebtorDetails = (
   return mappedFinesMacState;
 };
 
+/**
+ * Maps the payload data of a defendant company to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing the defendant company details.
+ * @returns The updated fines MAC state with the mapped defendant company details.
+ *
+ */
 export const mapAccountDefendantCompanyPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantComplete,

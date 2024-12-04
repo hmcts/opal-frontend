@@ -2,6 +2,13 @@ import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface
 
 import { IFinesMacPayloadAccountAccountNote } from '../interfaces/fines-mac-payload-account-account-note.interface';
 
+/**
+ * Maps the account notes payload to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing account notes to be mapped. Can be null.
+ * @returns The updated fines MAC state with the mapped account notes.
+ */
 export const mapAccountAccountNotesPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountAccountNote[] | null,

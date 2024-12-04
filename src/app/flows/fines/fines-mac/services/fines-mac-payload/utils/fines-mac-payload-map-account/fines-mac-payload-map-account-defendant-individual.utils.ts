@@ -4,6 +4,12 @@ import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-ma
 import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
 import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 
+/**
+ * Maps an array of defendant debtor detail aliases to an array of personal details alias states.
+ *
+ * @param payloadAccountDefendantIndividualDebtorDetailsAliases - An array of complete debtor detail aliases or null.
+ * @returns An array of personal details alias states. If the input is null, returns an empty array.
+ */
 const mapAccountDefendantIndividualDebtorDetailsAliases = (
   payloadAccountDefendantIndividualDebtorDetailsAliases:
     | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
@@ -19,6 +25,14 @@ const mapAccountDefendantIndividualDebtorDetailsAliases = (
   }));
 };
 
+/**
+ * Maps the defendant individual debtor details from the payload to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing the defendant individual debtor details.
+ * @returns The updated fines MAC state with the mapped defendant individual debtor details.
+ *
+ */
 const mapAccountDefendantIndividualDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
@@ -66,6 +80,14 @@ const mapAccountDefendantIndividualDebtorDetails = (
   return mappedFinesMacState;
 };
 
+/**
+ * Maps the payload data of an individual defendant to the fines MAC state.
+ *
+ * @param mappedFinesMacState - The current state of the fines MAC.
+ * @param payload - The payload containing the individual defendant's account details.
+ * @returns The updated fines MAC state with the individual defendant's details.
+ *
+ */
 export const mapAccountDefendantIndividualPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantComplete,
