@@ -227,7 +227,7 @@ export class FinesMacPayloadService {
       ...mappedFinesMacState.accountDetails.formData,
       fm_create_account_account_type: payloadAccount.account_type,
       fm_create_account_defendant_type: payloadAccount.defendant_type,
-      fm_create_account_business_unit: null,
+      fm_create_account_business_unit: payload.business_unit_id.toString(), // Should be a string?
     };
     mappedFinesMacState.courtDetails.formData = {
       ...mappedFinesMacState.courtDetails.formData,
