@@ -1,7 +1,7 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-add-account.interfaces';
 
-export const mapAccountOffencesPayload = (
+export const finesMacPayloadMapAccountOffences = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
 ): IFinesMacState => {

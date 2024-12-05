@@ -71,7 +71,7 @@ const mapAccountDefendantCompanyDebtorDetails = (
  * @returns The updated fines MAC state with the mapped defendant company details.
  *
  */
-export const mapAccountDefendantCompanyPayload = (
+export const finesMacPayloadMapAccountDefendantCompanyPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadBuildAccountDefendantComplete,
 ): IFinesMacState => {

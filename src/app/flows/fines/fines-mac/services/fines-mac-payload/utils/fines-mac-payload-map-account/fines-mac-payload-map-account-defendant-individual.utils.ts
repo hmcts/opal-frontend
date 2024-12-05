@@ -88,7 +88,7 @@ const mapAccountDefendantIndividualDebtorDetails = (
  * @returns The updated fines MAC state with the individual defendant's details.
  *
  */
-export const mapAccountDefendantIndividualPayload = (
+export const finesMacPayloadMapAccountDefendantIndividualPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadBuildAccountDefendantComplete,
 ): IFinesMacState => {

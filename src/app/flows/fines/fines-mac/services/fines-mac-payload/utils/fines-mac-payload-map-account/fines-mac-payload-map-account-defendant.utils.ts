@@ -1,10 +1,10 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
 
-import { mapAccountDefendantCompanyPayload } from './fines-mac-payload-map-account-defendant-company.utils';
+import { finesMacPayloadMapAccountDefendantCompanyPayload } from './fines-mac-payload-map-account-defendant-company.utils';
 
-import { mapAccountDefendantIndividualPayload } from './fines-mac-payload-map-account-defendant-individual.utils';
-import { mapAccountDefendantParentGuardianPayload } from './fines-mac-payload-map-account-defendant-parent-guardian.utils';
+import { finesMacPayloadMapAccountDefendantIndividualPayload } from './fines-mac-payload-map-account-defendant-individual.utils';
+import { finesMacPayloadMapAccountDefendantParentGuardianPayload } from './fines-mac-payload-map-account-defendant-parent-guardian.utils';
 
 /**
  * Maps the account defendant payload to the fines MAC state based on the defendant type.
@@ -13,17 +13,17 @@ import { mapAccountDefendantParentGuardianPayload } from './fines-mac-payload-ma
  * @param payload - The payload containing the account information and defendant type.
  * @returns The updated fines MAC state after mapping the defendant payload.
  */
-export const mapAccountDefendantPayload = (
+export const finesMacPayloadMapAccountDefendant = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccount,
 ): IFinesMacState => {
   const { defendant_type: defendantType, defendant } = payload;
   switch (defendantType) {
     case 'parentOrGuardianToPay':
-      return mapAccountDefendantParentGuardianPayload(mappedFinesMacState, defendant);
+      return finesMacPayloadMapAccountDefendantParentGuardianPayload(mappedFinesMacState, defendant);
     case 'company':
-      return mapAccountDefendantCompanyPayload(mappedFinesMacState, defendant);
+      return finesMacPayloadMapAccountDefendantCompanyPayload(mappedFinesMacState, defendant);
     default:
-      return mapAccountDefendantIndividualPayload(mappedFinesMacState, defendant);
+      return finesMacPayloadMapAccountDefendantIndividualPayload(mappedFinesMacState, defendant);
   }
 };

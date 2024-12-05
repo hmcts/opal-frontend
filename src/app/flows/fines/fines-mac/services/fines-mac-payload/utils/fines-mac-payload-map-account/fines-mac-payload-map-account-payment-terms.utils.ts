@@ -66,7 +66,7 @@ const getPaymentTermsType = (
  * @returns The updated fines MAC state with the mapped payment terms data.
  *
  */
-export const mapAccountPaymentTermsPayload = (
+export const finesMacPayloadMapAccountPaymentTerms = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccount,
 ): IFinesMacState => {

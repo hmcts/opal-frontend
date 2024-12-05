@@ -160,7 +160,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
  * @param payload - The payload containing the account defendant complete details.
  * @returns The updated fines MAC state with the mapped personal details and parent/guardian details if present.
  */
-export const mapAccountDefendantParentGuardianPayload = (
+export const finesMacPayloadMapAccountDefendantParentGuardianPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadBuildAccountDefendantComplete,
 ): IFinesMacState => {

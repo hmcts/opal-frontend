@@ -1,1 +1,1 @@
-// describe('mapAccountPaymentTermsPayload', () => {});
+// describe('finesMacPayloadMapAccountPaymentTerms', () => {});

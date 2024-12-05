@@ -26,10 +26,10 @@ import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-
 import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
-import { mapAccountDefendantPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-defendant.utils';
-import { mapAccountPaymentTermsPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-payment-terms.utils';
-import { mapAccountAccountNotesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-account-notes.utils';
-import { mapAccountOffencesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-offences.utils';
+import { finesMacPayloadMapAccountDefendant } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-defendant.utils';
+import { finesMacPayloadMapAccountPaymentTerms } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-payment-terms.utils';
+import { finesMacPayloadMapAccountAccountNotesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-account-notes.utils';
+import { finesMacPayloadMapAccountOffences } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-offences.utils';
 import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
 
 @Injectable({
@@ -264,10 +264,13 @@ export class FinesMacPayloadService {
     // Build the state object...
     let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, transformedPayload);
-    finesMacState = mapAccountDefendantPayload(finesMacState, transformedPayload.account);
-    finesMacState = mapAccountPaymentTermsPayload(finesMacState, transformedPayload.account);
-    finesMacState = mapAccountAccountNotesPayload(finesMacState, transformedPayload.account.account_notes);
-    finesMacState = mapAccountOffencesPayload(finesMacState, transformedPayload);
+    finesMacState = finesMacPayloadMapAccountDefendant(finesMacState, transformedPayload.account);
+    finesMacState = finesMacPayloadMapAccountPaymentTerms(finesMacState, transformedPayload.account);
+    finesMacState = finesMacPayloadMapAccountAccountNotesPayload(
+      finesMacState,
+      transformedPayload.account.account_notes,
+    );
+    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
     return finesMacState;
   }
 }

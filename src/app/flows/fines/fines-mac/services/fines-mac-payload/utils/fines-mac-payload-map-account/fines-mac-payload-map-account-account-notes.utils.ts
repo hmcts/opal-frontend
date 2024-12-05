@@ -9,7 +9,7 @@ import { IFinesMacPayloadBuildAccountAccountNote } from '../fines-mac-payload-bu
  * @param payload - The payload containing account notes to be mapped. Can be null.
  * @returns The updated fines MAC state with the mapped account notes.
  */
-export const mapAccountAccountNotesPayload = (
+export const finesMacPayloadMapAccountAccountNotesPayload = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadBuildAccountAccountNote[] | null,
 ): IFinesMacState => {
