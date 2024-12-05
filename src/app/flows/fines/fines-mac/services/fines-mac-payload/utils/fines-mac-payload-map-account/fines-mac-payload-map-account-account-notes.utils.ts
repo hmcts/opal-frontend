@@ -1,6 +1,6 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 
-import { IFinesMacPayloadAccountAccountNote } from '../interfaces/fines-mac-payload-account-account-note.interface';
+import { IFinesMacPayloadAccountAccountNote } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-account-note.interface';
 
 /**
  * Maps the account notes payload to the fines MAC state.

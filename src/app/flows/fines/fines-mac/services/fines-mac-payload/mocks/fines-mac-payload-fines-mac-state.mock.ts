@@ -1,14 +1,14 @@
 import { IFinesMacState } from '../../../interfaces/fines-mac-state.interface';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-account-details-state.mock';
-import { FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-company-details-state.mock';
-import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-contact-details-state.mock';
-import { FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-court-details-state.mock';
-import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-employer-details-state.mock';
-import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-language-preferences-state.mock';
-import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../utils/mocks/state/fines-mac-payload-offence-details-state.mock';
-import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
-import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../utils/mocks/state/fines-mac-payload-payment-terms-state.mock';
-import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../utils/mocks/state/fines-mac-payload-personal-details-state.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-account-details-state.mock';
+import { FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-company-details-state.mock';
+import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-contact-details-state.mock';
+import { FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-court-details-state.mock';
+import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-employer-details-state.mock';
+import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-language-preferences-state.mock';
+import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-offence-details-state.mock';
+import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
+import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-payment-terms-state.mock';
+import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-personal-details-state.mock';
 
 export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   accountDetails: {

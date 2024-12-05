@@ -1,9 +1,9 @@
 import { IFinesMacParentGuardianDetailsAliasState } from '../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
-import { IFinesMacPayloadAccountDefendantParentGuardianComplete } from '../interfaces/fines-mac-payload-account-defendant-parent-guardian-complete.interface';
+import { IFinesMacPayloadAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardianComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-parent-guardian-complete.interface';
 
 /**
  * Maps the details of aliases for a defendant's parent or guardian debtor from the payload

@@ -8,9 +8,8 @@ import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interf
 import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-payload-account-initial.interface';
 
-import { buildAccountDefendantPayload } from './utils/fines-mac-payload-account-defendant.utils';
-import { buildAccountPaymentTermsPayload } from './utils/fines-mac-payload-account-payment-terms.utils';
-import { buildAccountAccountNotesPayload } from './utils/fines-mac-payload-account-account-notes.utils';
+import { finesMacPayloadBuildAccountPaymentTerms } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-payment-terms.utils';
+import { finesMacPayloadBuildAccountAccountNotes } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
 import { TransformationService } from '@services/transformation-service/transformation.service';
 import {
@@ -24,13 +23,14 @@ import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-a
 import { DateService } from '@services/date-service/date.service';
 import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
 import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
-import { buildAccountOffencesPayload } from './utils/fines-mac-payload-account-offences.utils';
+import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
 import { mapAccountDefendantPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-defendant.utils';
 import { mapAccountPaymentTermsPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-payment-terms.utils';
 import { mapAccountAccountNotesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-account-notes.utils';
 import { mapAccountOffencesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-offences.utils';
+import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -145,7 +145,7 @@ export class FinesMacPayloadService {
 
     // Build the parts of our payload...
     const initialPayload = this.buildAccountInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
-    const defendant = buildAccountDefendantPayload(
+    const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
       personalDetailsState,
       contactDetailsState,
@@ -154,9 +154,9 @@ export class FinesMacPayloadService {
       companyDetailsState,
       parentGuardianDetailsState,
     );
-    const paymentTerms = buildAccountPaymentTermsPayload(paymentTermsState);
-    const accountNotes = buildAccountAccountNotesPayload(accountCommentsNotesState);
-    const offences = buildAccountOffencesPayload(offenceDetailsState, courtDetailsState);
+    const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
+    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsState, courtDetailsState);
 
     // Return our payload object
     return {

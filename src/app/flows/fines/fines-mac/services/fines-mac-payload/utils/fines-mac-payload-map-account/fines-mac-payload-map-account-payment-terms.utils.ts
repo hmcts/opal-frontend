@@ -1,6 +1,6 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
-import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
+import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
 
 /**
  * Maps enforcement actions to the fines MAC state.
