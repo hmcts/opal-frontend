@@ -42,6 +42,8 @@ export const finesMacPayloadBuildAccountAccountNotes = (
 
   addNote(3, comments, 'AC');
   addNote(2, notes, 'AA');
+
+  // https://tools.hmcts.net/jira/browse/PO-651
   // addNote(1, systemNotes, 'AA');
 
   return accountNotes.length ? accountNotes : null;

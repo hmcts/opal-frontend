@@ -51,8 +51,8 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
 
-  // private payloadService = inject(FinesMacPayloadService);
-  // private globalStateService = inject(GlobalStateService);
+  private payloadService = inject(FinesMacPayloadService);
+  private globalStateService = inject(GlobalStateService);
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
@@ -177,12 +177,12 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.initialAccountDetailsSetup();
-    // const payload = this.payloadService.buildAddAccountPayload(
-    //   this.finesService.finesMacState,
-    //   this.globalStateService.userState(),
-    // );
-    // console.log('P', payload);
-    // console.log('FM', this.payloadService.convertPayloadToFinesMacState(payload));
+    const payload = this.payloadService.buildAddAccountPayload(
+      this.finesService.finesMacState,
+      this.globalStateService.userState(),
+    );
+    console.log('P', payload);
+    console.log('FM', this.payloadService.convertPayloadToFinesMacState(payload));
   }
 
   public ngOnDestroy(): void {
