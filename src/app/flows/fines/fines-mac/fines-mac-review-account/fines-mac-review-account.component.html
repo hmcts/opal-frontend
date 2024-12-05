@@ -67,15 +67,19 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-button buttonId="submitAccountButton">Submit for review</app-govuk-button>
+      <app-govuk-button
+        buttonId="submitAccountButton"
+        (buttonClickEvent)="handleRoute(finesMacRoutes.children.submitConfirmation)"
+        >Submit for review</app-govuk-button
+      >
     </div>
   </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <a
         class="govuk-link govuk-error-colour"
-        (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
-        (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+        (click)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+        (keyup.enter)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
         tabindex="0"
         >Delete account</a
       >

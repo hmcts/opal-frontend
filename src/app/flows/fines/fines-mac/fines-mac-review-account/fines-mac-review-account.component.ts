@@ -53,7 +53,7 @@ export class FinesMacReviewAccountComponent {
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
 
-  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
 
   protected readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
@@ -68,7 +68,7 @@ export class FinesMacReviewAccountComponent {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    this.handleRoute(this.fineMacRoutes.children.accountDetails);
+    this.handleRoute(this.finesMacRoutes.children.accountDetails);
   }
 
   /**
@@ -83,7 +83,7 @@ export class FinesMacReviewAccountComponent {
     if (nonRelative) {
       this.router.navigate([route]);
     } else {
-      if (route === this.fineMacRoutes.children.deleteAccountConfirmation) {
+      if (route === this.finesMacRoutes.children.deleteAccountConfirmation) {
         this.finesService.finesMacState.deleteFromCheckAccount = true;
       }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });

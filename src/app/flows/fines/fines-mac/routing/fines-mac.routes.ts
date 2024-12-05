@@ -139,4 +139,12 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: FINES_MAC_ROUTING_PATHS.children.submitConfirmation,
+    loadComponent: () =>
+      import('../fines-mac-submit-confirmation/fines-mac-submit-confirmation.component').then(
+        (c) => c.FinesMacSubmitConfirmationComponent,
+      ),
+    canActivate: [authGuard],
+  },
 ];
