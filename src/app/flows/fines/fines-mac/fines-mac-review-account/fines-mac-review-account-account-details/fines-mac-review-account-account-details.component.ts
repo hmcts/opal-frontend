@@ -29,6 +29,13 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
   public documentLanguage!: string;
   public courtHearingLanguage!: string;
 
+  /**
+   * Retrieves the account type based on the account details and assigns it to the `accountType` property.
+   * The account type is determined by looking up the `fm_create_account_account_type` field in the
+   * `FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES` object.
+   *
+   * @private
+   */
   private getAccountType(): void {
     this.accountType =
       FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_TYPES[
@@ -36,11 +43,25 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
       ];
   }
 
+  /**
+   * Retrieves the defendant type based on the account details and assigns it to the `defendantType` property.
+   * The defendant type is determined by looking up the `fm_create_account_defendant_type` value in the
+   * `FINES_MAC_DEFENDANT_TYPES` object.
+   *
+   * @private
+   */
   private getDefendantType(): void {
     this.defendantType =
       FINES_MAC_DEFENDANT_TYPES[this.accountDetails.fm_create_account_defendant_type! as keyof IFinesMacDefendantTypes];
   }
 
+  /**
+   * Retrieves the document language based on the user's language preferences.
+   * The language preference is fetched from the `FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS`
+   * using the `fm_language_preferences_document_language` key.
+   *
+   * @private
+   */
   private getDocumentLanguage(): void {
     this.documentLanguage =
       FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[
@@ -48,6 +69,14 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
       ];
   }
 
+  /**
+   * Retrieves the court hearing language preference based on the user's language preferences.
+   * The language preference is fetched from the `FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS` object
+   * using the `fm_language_preferences_hearing_language` property from the `languagePreferences` object.
+   * The result is then assigned to the `courtHearingLanguage` property.
+   *
+   * @private
+   */
   private getHearingLanguage(): void {
     this.courtHearingLanguage =
       FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS[
@@ -55,6 +84,12 @@ export class FinesMacReviewAccountAccountDetailsComponent implements OnInit {
       ];
   }
 
+  /**
+   * Retrieves and sets various account details data including account type, defendant type,
+   * document language, and hearing language.
+   *
+   * @private
+   */
   private getAccountDetailsData(): void {
     this.getAccountType();
     this.getDefendantType();
