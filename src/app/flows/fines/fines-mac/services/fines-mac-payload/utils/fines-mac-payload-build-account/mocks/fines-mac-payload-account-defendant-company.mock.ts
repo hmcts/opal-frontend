@@ -1,6 +1,6 @@
-import { IFinesMacPayloadAccountDefendantCompany } from '../interfaces/fines-mac-payload-account-defendant-company.interface';
+import { IFinesMacPayloadBuildAccountDefendantCompany } from '../interfaces/fines-mac-payload-build-account-defendant-company.interface';
 
-export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadAccountDefendantCompany = {
+export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadBuildAccountDefendantCompany = {
   company_flag: true,
   organisation_name: 'NexGen Solutions Ltd.',
   address_line_1: '789 Innovation Drive',

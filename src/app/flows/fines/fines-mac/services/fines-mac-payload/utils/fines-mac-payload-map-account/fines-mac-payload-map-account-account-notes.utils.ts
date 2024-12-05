@@ -1,6 +1,6 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 
-import { IFinesMacPayloadAccountAccountNote } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-account-note.interface';
+import { IFinesMacPayloadBuildAccountAccountNote } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-account-note.interface';
 
 /**
  * Maps the account notes payload to the fines MAC state.
@@ -11,7 +11,7 @@ import { IFinesMacPayloadAccountAccountNote } from '../fines-mac-payload-build-a
  */
 export const mapAccountAccountNotesPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountAccountNote[] | null,
+  payload: IFinesMacPayloadBuildAccountAccountNote[] | null,
 ): IFinesMacState => {
   if (!payload) {
     return mappedFinesMacState;

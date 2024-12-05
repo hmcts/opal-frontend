@@ -1,4 +1,4 @@
-export interface IFinesMacPayloadAccountOffencesMinorCreditor {
+export interface IFinesMacPayloadBuildAccountOffencesMinorCreditor {
   company_flag: boolean | null;
   title: string | null;
   company_name: string | null;
@@ -25,7 +25,7 @@ export interface IFinesMacPayloadAccountOffencesImposition {
   amount_imposed: number | null;
   amount_paid: number | null;
   major_creditor_id: number | null;
-  minor_creditor: IFinesMacPayloadAccountOffencesMinorCreditor | null;
+  minor_creditor: IFinesMacPayloadBuildAccountOffencesMinorCreditor | null;
 }
 
 export interface IFinesMacPayloadAccountOffences {

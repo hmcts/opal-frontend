@@ -1,20 +1,20 @@
 import { IFinesMacCompanyDetailsAliasState } from '../../../../fines-mac-company-details/interfaces/fines-mac-company-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-complete.interface';
 
 /**
- * Maps an array of `IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete` objects to an array of `IFinesMacCompanyDetailsAliasState` objects.
+ * Maps an array of `IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete` objects to an array of `IFinesMacCompanyDetailsAliasState` objects.
  * Each alias in the input array is transformed into an object with a key in the format `fm_company_details_alias_organisation_name_<index>`.
  * If the input array is null, an empty array is returned.
  *
- * @param payloadAccountDefendantCompanyDebtorDetailsAliases - The array of `IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete` objects or null.
+ * @param payloadAccountDefendantCompanyDebtorDetailsAliases - The array of `IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete` objects or null.
  * @returns An array of `IFinesMacCompanyDetailsAliasState` objects.
  */
 const mapAccountDefendantCompanyDebtorDetailsAliases = (
   payloadAccountDefendantCompanyDebtorDetailsAliases:
-    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
+    | IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacCompanyDetailsAliasState[] => {
   if (!payloadAccountDefendantCompanyDebtorDetailsAliases) {
@@ -35,7 +35,7 @@ const mapAccountDefendantCompanyDebtorDetailsAliases = (
  */
 const mapAccountDefendantCompanyDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
+  payload: IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
   if (!payload) {
     return mappedFinesMacState;
@@ -73,7 +73,7 @@ const mapAccountDefendantCompanyDebtorDetails = (
  */
 export const mapAccountDefendantCompanyPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountDefendantComplete,
+  payload: IFinesMacPayloadBuildAccountDefendantComplete,
 ): IFinesMacState => {
   const {
     organisation_name,

@@ -1,10 +1,10 @@
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS } from '../../../constants/fines-mac-payload-account-defendant-debtor-details.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from '../../../constants/fines-mac-payload-account-defendant-parent-guardian.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../../../constants/fines-mac-payload-account-defendant.constant';
-import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantComplete } from '../interfaces/fines-mac-payload-build-account-defendant-complete.interface';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK } from './fines-mac-payload-account-defendant-parent-guardian-with-alias.mock';
 
-export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK: IFinesMacPayloadAccountDefendantComplete =
+export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK: IFinesMacPayloadBuildAccountDefendantComplete =
   {
     ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
     ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_WITH_ALIAS_MOCK,

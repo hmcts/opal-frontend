@@ -5,8 +5,8 @@ import { IFinesMacOffenceDetailsImpositionsState } from '../../../../fines-mac-o
 import {
   IFinesMacPayloadAccountOffences,
   IFinesMacPayloadAccountOffencesImposition,
-  IFinesMacPayloadAccountOffencesMinorCreditor,
-} from './interfaces/fines-mac-payload-account-offences.interface';
+  IFinesMacPayloadBuildAccountOffencesMinorCreditor,
+} from './interfaces/fines-mac-payload-build-account-offences.interface';
 
 /**
  * Determines if the payout is on hold based on the payment method.
@@ -32,17 +32,17 @@ const getCompanyFlag = (creditorType: string | null): boolean => {
  * Builds the payload for account offences impositions for a minor creditor.
  *
  * @param {IFinesMacOffenceDetailsMinorCreditorForm | null} childFormData - The form data containing details of the minor creditor offence.
- * @returns {IFinesMacPayloadAccountOffencesMinorCreditor} The payload for account offences impositions for a minor creditor.
+ * @returns {IFinesMacPayloadBuildAccountOffencesMinorCreditor} The payload for account offences impositions for a minor creditor.
  *
  * @remarks
  * This function extracts various fields from the provided form data and constructs an object
- * conforming to the `IFinesMacPayloadAccountOffencesMinorCreditor` interface. It handles null
+ * conforming to the `IFinesMacPayloadBuildAccountOffencesMinorCreditor` interface. It handles null
  * values and provides default values where necessary.
  *
  */
 const buildAccountOffencesImpositionsMinorCreditorPayload = (
   childFormData: IFinesMacOffenceDetailsMinorCreditorForm | null,
-): IFinesMacPayloadAccountOffencesMinorCreditor => {
+): IFinesMacPayloadBuildAccountOffencesMinorCreditor => {
   const payByBacs = childFormData?.formData?.fm_offence_details_minor_creditor_pay_by_bacs ?? null;
   const payoutOnHold = getPayoutOnHold(payByBacs);
   const creditorType = childFormData?.formData?.fm_offence_details_minor_creditor_creditor_type ?? null;

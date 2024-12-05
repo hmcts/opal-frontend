@@ -1,6 +1,6 @@
-import { IFinesMacPayloadAccountDefendantIndividual } from '../interfaces/fines-mac-payload-account-individual-defendant.interface';
+import { IFinesMacPayloadBuildAccountDefendantIndividual } from '../interfaces/fines-mac-payload-build-account-individual-defendant.interface';
 
-export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK: IFinesMacPayloadAccountDefendantIndividual = {
+export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK: IFinesMacPayloadBuildAccountDefendantIndividual = {
   company_flag: false,
   title: 'Dr',
   surname: 'Williams',

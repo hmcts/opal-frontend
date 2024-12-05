@@ -1,4 +1,4 @@
-import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload-account-offences.interface';
+import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload-build-account-offences.interface';
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR: IFinesMacPayloadAccountOffences[] = [
   {

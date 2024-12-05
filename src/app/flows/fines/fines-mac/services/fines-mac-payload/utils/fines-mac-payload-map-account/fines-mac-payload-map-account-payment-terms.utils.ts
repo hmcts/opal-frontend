@@ -1,6 +1,6 @@
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
-import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
+import { IFinesMacPayloadBuildAccountPaymentTermsEnforcement } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-payment-terms-enforcement.interface';
 
 /**
  * Maps enforcement actions to the fines MAC state.
@@ -11,7 +11,7 @@ import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../fines-mac-pay
  */
 const mapEnforcementActions = (
   mappedFinesMacState: IFinesMacState,
-  enforcements: IFinesMacPayloadAccountPaymentTermsEnforcement[] | null,
+  enforcements: IFinesMacPayloadBuildAccountPaymentTermsEnforcement[] | null,
 ): IFinesMacState => {
   enforcements?.forEach(({ enforcement_result_responses: responses }) => {
     responses?.forEach(({ parameter_name, response }) => {

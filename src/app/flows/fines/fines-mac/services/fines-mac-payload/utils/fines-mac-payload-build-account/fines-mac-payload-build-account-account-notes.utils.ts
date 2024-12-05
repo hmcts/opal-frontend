@@ -1,5 +1,5 @@
 import { IFinesMacAccountCommentsNotesState } from '../../../../fines-mac-account-comments-notes/interfaces/fines-mac-account-comments-notes-state.interface';
-import { IFinesMacPayloadAccountAccountNote } from './interfaces/fines-mac-payload-account-account-note.interface';
+import { IFinesMacPayloadBuildAccountAccountNote } from './interfaces/fines-mac-payload-build-account-account-note.interface';
 
 /**
  * Builds an account note object for fines management.
@@ -13,7 +13,7 @@ const buildAccountNote = (
   noteSerial: number,
   accountNoteText: string | null,
   noteType: string,
-): IFinesMacPayloadAccountAccountNote => {
+): IFinesMacPayloadBuildAccountAccountNote => {
   return {
     account_note_serial: noteSerial,
     account_note_text: accountNoteText,
@@ -29,8 +29,8 @@ const buildAccountNote = (
  */
 export const finesMacPayloadBuildAccountAccountNotes = (
   accountCommentsNotesState: IFinesMacAccountCommentsNotesState,
-): IFinesMacPayloadAccountAccountNote[] | null => {
-  const accountNotes: IFinesMacPayloadAccountAccountNote[] = [];
+): IFinesMacPayloadBuildAccountAccountNote[] | null => {
+  const accountNotes: IFinesMacPayloadBuildAccountAccountNote[] = [];
   const { fm_account_comments_notes_comments: comments, fm_account_comments_notes_notes: notes } =
     accountCommentsNotesState;
 

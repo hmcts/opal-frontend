@@ -1,8 +1,8 @@
 import { IFinesMacPersonalDetailsAliasState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-complete.interface';
 
 /**
  * Maps an array of defendant debtor detail aliases to an array of personal details alias states.
@@ -12,7 +12,7 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../fines-m
  */
 const mapAccountDefendantIndividualDebtorDetailsAliases = (
   payloadAccountDefendantIndividualDebtorDetailsAliases:
-    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
+    | IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacPersonalDetailsAliasState[] => {
   if (!payloadAccountDefendantIndividualDebtorDetailsAliases) {
@@ -35,7 +35,7 @@ const mapAccountDefendantIndividualDebtorDetailsAliases = (
  */
 const mapAccountDefendantIndividualDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
+  payload: IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
   if (!payload) {
     return mappedFinesMacState;
@@ -90,7 +90,7 @@ const mapAccountDefendantIndividualDebtorDetails = (
  */
 export const mapAccountDefendantIndividualPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountDefendantComplete,
+  payload: IFinesMacPayloadBuildAccountDefendantComplete,
 ): IFinesMacState => {
   const {
     title,

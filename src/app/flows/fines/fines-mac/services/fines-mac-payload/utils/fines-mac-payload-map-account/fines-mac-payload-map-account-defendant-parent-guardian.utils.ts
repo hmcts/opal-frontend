@@ -1,9 +1,9 @@
 import { IFinesMacParentGuardianDetailsAliasState } from '../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
-import { IFinesMacPayloadAccountDefendantParentGuardianComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-account-defendant-parent-guardian-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadBuildAccountDefendantParentGuardianComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-parent-guardian-complete.interface';
 
 /**
  * Maps the details of aliases for a defendant's parent or guardian debtor from the payload
@@ -14,7 +14,7 @@ import { IFinesMacPayloadAccountDefendantParentGuardianComplete } from '../fines
  */
 const mapAccountDefendantParentGuardianDebtorDetailsAliases = (
   payloadAccountDefendantParentGuardianDebtorDetails:
-    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
+    | IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacParentGuardianDetailsAliasState[] => {
   if (!payloadAccountDefendantParentGuardianDebtorDetails) {
@@ -37,7 +37,7 @@ const mapAccountDefendantParentGuardianDebtorDetailsAliases = (
  */
 const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacState = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
+  payload: IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
   // Map aliases
   const aliases = payload?.aliases
@@ -103,7 +103,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
  */
 const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountDefendantParentGuardianComplete,
+  payload: IFinesMacPayloadBuildAccountDefendantParentGuardianComplete,
 ): IFinesMacState => {
   const {
     surname,
@@ -162,7 +162,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
  */
 export const mapAccountDefendantParentGuardianPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadAccountDefendantComplete,
+  payload: IFinesMacPayloadBuildAccountDefendantComplete,
 ): IFinesMacState => {
   const {
     title,
