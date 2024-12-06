@@ -110,7 +110,7 @@ export const routing: Routes = [
       import('../fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component').then(
         (c) => c.FinesMacDeleteAccountConfirmationComponent,
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.languagePreferences,
@@ -137,6 +137,6 @@ export const routing: Routes = [
       import('../fines-mac-review-account/fines-mac-review-account.component').then(
         (c) => c.FinesMacReviewAccountComponent,
       ),
-    canActivate: [authGuard],
+    canActivate: [authGuard, finesMacFlowStateGuard],
   },
 ];
