@@ -25,7 +25,10 @@
         <ng-container name>Aliases</ng-container>
         <ng-container value>
           @if (aliases.length > 0) {
-            <p class="govuk-!-margin-top-0" [innerHTML]="aliases"></p>
+            @for (alias of aliases; track alias) {
+              {{ alias }}
+              <br />
+            }
           } @else {
             <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
           }
@@ -38,7 +41,12 @@
         summaryListRowId="address"
       >
         <ng-container name>Address</ng-container>
-        <ng-container value><p class="govuk-!-margin-top-0" [innerHTML]="address"></p></ng-container>
+        <ng-container value>
+          @for (addressLine of address; track addressLine) {
+            {{ addressLine }}
+            <br />
+          }
+        </ng-container>
       </div>
     </app-govuk-summary-list>
   </ng-container>
