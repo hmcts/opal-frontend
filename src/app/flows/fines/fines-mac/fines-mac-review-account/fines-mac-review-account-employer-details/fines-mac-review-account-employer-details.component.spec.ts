@@ -30,22 +30,19 @@ describe('FinesMacReviewAccountEmployerDetailsComponent', () => {
   });
 
   it('should format employer address on initialization', () => {
-    const formattedAddress = 'Line 1<br>Line 2<br>Line 3<br>Line 4<br>Line 5<br>Post Code';
+    const formattedAddress = ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5', 'Post Code'];
     mockUtilsService.formatAddress.and.returnValue(formattedAddress);
 
     component['getEmployerAddressData']();
 
-    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith(
-      [
-        component.employerDetails.fm_employer_details_employer_address_line_1,
-        component.employerDetails.fm_employer_details_employer_address_line_2,
-        component.employerDetails.fm_employer_details_employer_address_line_3,
-        component.employerDetails.fm_employer_details_employer_address_line_4,
-        component.employerDetails.fm_employer_details_employer_address_line_5,
-        component.employerDetails.fm_employer_details_employer_post_code,
-      ],
-      '<br>',
-    );
+    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith([
+      component.employerDetails.fm_employer_details_employer_address_line_1,
+      component.employerDetails.fm_employer_details_employer_address_line_2,
+      component.employerDetails.fm_employer_details_employer_address_line_3,
+      component.employerDetails.fm_employer_details_employer_address_line_4,
+      component.employerDetails.fm_employer_details_employer_address_line_5,
+      component.employerDetails.fm_employer_details_employer_post_code,
+    ]);
     expect(component.employerAddress).toBe(formattedAddress);
   });
 

@@ -40,26 +40,27 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
 
     component['getAliasesData']();
 
-    expect(component.aliases).toBe(
-      'Boring Co.<br>Alpha Solutions Ltd<br>Beta Innovations Corp<br>Gamma Enterprises Inc<br>Delta Systems Group',
-    );
+    expect(component.aliases).toEqual([
+      'Boring Co.',
+      'Alpha Solutions Ltd',
+      'Beta Innovations Corp',
+      'Gamma Enterprises Inc',
+      'Delta Systems Group',
+    ]);
   });
 
   it('should format address correctly', () => {
-    const formattedAddress = '123 Main St<br>Apt 4B<br>Springfield<br>12345';
+    const formattedAddress = ['123 Main St', 'Apt 4B', 'Springfield', '12345'];
     mockUtilsService.formatAddress.and.returnValue(formattedAddress);
 
     component['getAddressData']();
 
-    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith(
-      [
-        component.companyDetails.fm_company_details_address_line_1,
-        component.companyDetails.fm_company_details_address_line_2,
-        component.companyDetails.fm_company_details_address_line_3,
-        component.companyDetails.fm_company_details_postcode,
-      ],
-      '<br>',
-    );
+    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith([
+      component.companyDetails.fm_company_details_address_line_1,
+      component.companyDetails.fm_company_details_address_line_2,
+      component.companyDetails.fm_company_details_address_line_3,
+      component.companyDetails.fm_company_details_postcode,
+    ]);
     expect(component.address).toBe(formattedAddress);
   });
 
