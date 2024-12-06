@@ -28,12 +28,11 @@ export class FinesMacReviewAccountEmployerDetailsComponent implements OnInit {
   private readonly utilsService = inject(UtilsService);
 
   public readonly defaultValues = FinesMacReviewAccountDefaultValues;
-  public employerAddress!: string | null;
+  public employerAddress!: string[];
 
   /**
    * Retrieves the employer address data from the employer details and formats it.
    * The formatted address is stored in the `employerAddress` property.
-   * The address lines and post code are joined with a `<br>` separator.
    *
    * @private
    * @returns {void}
@@ -48,17 +47,14 @@ export class FinesMacReviewAccountEmployerDetailsComponent implements OnInit {
       fm_employer_details_employer_post_code,
     } = this.employerDetails;
 
-    this.employerAddress = this.utilsService.formatAddress(
-      [
-        fm_employer_details_employer_address_line_1,
-        fm_employer_details_employer_address_line_2,
-        fm_employer_details_employer_address_line_3,
-        fm_employer_details_employer_address_line_4,
-        fm_employer_details_employer_address_line_5,
-        fm_employer_details_employer_post_code,
-      ],
-      '<br>',
-    );
+    this.employerAddress = this.utilsService.formatAddress([
+      fm_employer_details_employer_address_line_1,
+      fm_employer_details_employer_address_line_2,
+      fm_employer_details_employer_address_line_3,
+      fm_employer_details_employer_address_line_4,
+      fm_employer_details_employer_address_line_5,
+      fm_employer_details_employer_post_code,
+    ]);
   }
 
   /**

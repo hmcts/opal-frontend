@@ -43,7 +43,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       'formatSortCode',
     ]);
 
-    mockUtilsService.formatAddress.and.returnValue('Test Address');
+    mockUtilsService.formatAddress.and.returnValue(['Test Address']);
     mockUtilsService.formatSortCode.and.returnValue('12-34-56');
 
     await TestBed.configureTestingModule({
@@ -108,7 +108,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
         )!.result_title,
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
         minorCreditor: {
-          address: 'Test Address',
+          address: ['Test Address'],
           paymentMethod: 'Pay by BACS',
           nameOnAccount: 'John Doe',
           sortCode: '12-34-56',
@@ -258,12 +258,12 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     };
 
-    mockUtilsService.formatAddress.and.returnValue('');
+    mockUtilsService.formatAddress.and.returnValue([]);
 
     const minorCreditorData = component['getMinorCreditorData'](0);
 
     expect(minorCreditorData).toBeDefined();
-    expect(minorCreditorData!.address).toBeNull();
+    expect(minorCreditorData!.address).toEqual([]);
     expect(minorCreditorData!.paymentMethod).toBeNull();
     expect(minorCreditorData!.sortCode).toBeNull();
   });
