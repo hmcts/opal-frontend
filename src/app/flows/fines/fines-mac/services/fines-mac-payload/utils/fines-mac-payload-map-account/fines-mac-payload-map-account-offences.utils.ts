@@ -1,4 +1,7 @@
+import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-creditor-options.constant';
+import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/constants/fines-mac-offence-details-minor-creditor-creditor-type.constant';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/constants/fines-mac-offence-details-minor-creditor-state.constant';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../../../../fines-mac-offence-details/fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
@@ -16,11 +19,13 @@ import {
  * Determines the creditor type based on the provided company flag.
  *
  * @param companyFlag - A boolean or null value indicating whether the creditor is a company.
- *                      If true, the creditor is a 'Company'. If false or null, the creditor is an 'Individual'.
- * @returns 'Company' if the companyFlag is true, otherwise 'Individual'.
+ *                      If true, the function returns the second minor creditor type.
+ *                      If false or null, the function returns the first minor creditor type.
+ * @returns The creditor type as a string.
  */
-const getCreditorType = (companyFlag: boolean | null): 'Company' | 'Individual' => {
-  return companyFlag ? 'Company' : 'Individual';
+const getCreditorType = (companyFlag: boolean | null): string => {
+  const minorCreditorTypes = Object.keys(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE);
+  return companyFlag ? minorCreditorTypes[1] : minorCreditorTypes[0];
 };
 
 /**
@@ -66,13 +71,16 @@ const mapAccountOffencesMinorCreditorState = (
 const getCreditor = (
   majorCreditorId: number | null,
   minorCreditor: IFinesMacPayloadBuildAccountOffencesMinorCreditor | null,
-): 'minor' | 'major' | null => {
+): string | null => {
+  const majorCreditorValue = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS[0].key;
+  const minorCreditorValue = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS[1].key;
+
   if (majorCreditorId) {
-    return 'minor';
+    return majorCreditorValue;
   }
 
   if (minorCreditor?.surname) {
-    return 'major';
+    return minorCreditorValue;
   }
 
   return null;
@@ -85,7 +93,10 @@ const getCreditor = (
  * @returns `true` if the imposition result ID is 'FCOMP' or 'FCOST', otherwise `false`.
  */
 const getNeedsCreditor = (impositionResultId: string | null): boolean => {
-  return impositionResultId === 'FCOMP' || impositionResultId === 'FCOST';
+  return (
+    impositionResultId === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation ||
+    impositionResultId === FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs
+  );
 };
 
 /**
