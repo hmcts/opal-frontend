@@ -1,3 +1,4 @@
+import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
 import { IFinesMacPayloadBuildAccountPaymentTermsEnforcement } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-payment-terms-enforcement.interface';
@@ -44,15 +45,16 @@ const getPaymentTermsType = (
   lumpSumAmount: number | null,
   instalmentAmount: number | null,
 ): string | null => {
+  const paymentTermOptions = Object.keys(FINES_MAC_PAYMENT_TERMS_OPTIONS);
   if (paymentTermsTypeCode === 'B') {
-    return 'payInFull';
+    return paymentTermOptions[0];
   }
   if (lumpSumAmount) {
-    return 'lumpSumPlusInstalments';
+    return paymentTermOptions[2];
   }
 
   if (instalmentAmount) {
-    return 'instalmentsOnly';
+    return paymentTermOptions[1];
   }
 
   return null;
@@ -70,6 +72,7 @@ export const finesMacPayloadMapAccountPaymentTerms = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccount,
 ): IFinesMacState => {
+  const paymentTermOptions = Object.keys(FINES_MAC_PAYMENT_TERMS_OPTIONS);
   const {
     payment_terms: paymentTerms,
     payment_card_request: paymentCardRequest,
@@ -84,7 +87,7 @@ export const finesMacPayloadMapAccountPaymentTerms = (
     paymentTerms.instalment_amount,
   );
 
-  const isPayInFull = paymentTermsType === 'payInFull';
+  const isPayInFull = paymentTermsType === paymentTermOptions[0];
   const payByDate = isPayInFull ? paymentTerms.effective_date : null;
   const startDate = !isPayInFull ? paymentTerms.effective_date : null;
 
