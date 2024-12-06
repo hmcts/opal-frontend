@@ -189,7 +189,10 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
-    mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    mockFinesService.finesMacState.personalDetails = {
+      ...FINES_MAC_STATE.personalDetails,
+      status: FINES_MAC_STATUS.NOT_PROVIDED,
+    };
     component.defendantType = 'parentOrGuardianToPay';
     component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
     const result = component['canAccessPaymentTerms']();
@@ -197,7 +200,10 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
-    mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    mockFinesService.finesMacState.personalDetails = {
+      ...FINES_MAC_STATE.personalDetails,
+      status: FINES_MAC_STATUS.NOT_PROVIDED,
+    };
     component.defendantType = 'test';
     component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
     const result = component['canAccessPaymentTerms']();

@@ -38,7 +38,7 @@ describe('hasFlowStateGuard', () => {
       return urlTree;
     });
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE };
 
     TestBed.configureTestingModule({
       providers: [
@@ -58,7 +58,7 @@ describe('hasFlowStateGuard', () => {
   });
 
   beforeEach(() => {
-    mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE };
   });
 
   it('should return true if AccountType and DefendantType are populated', fakeAsync(async () => {

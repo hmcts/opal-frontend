@@ -8,6 +8,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukSummaryCardListComponent {
-  @Input({ required: true }) cardTitle!: string;
+  @Input({ required: false }) cardTitle!: string;
   @Input({ required: false }) contentHidden!: boolean;
 }

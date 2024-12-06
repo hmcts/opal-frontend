@@ -19,8 +19,8 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    formSubmit = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesComponent],
@@ -50,7 +50,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK;
+    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
     formSubmit.nestedFlow = false;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
@@ -64,7 +64,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK;
+    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
     formSubmit.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
@@ -79,7 +79,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     const form = formSubmit;
-    form.formData = FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE;
+    form.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE };
     form.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(form);

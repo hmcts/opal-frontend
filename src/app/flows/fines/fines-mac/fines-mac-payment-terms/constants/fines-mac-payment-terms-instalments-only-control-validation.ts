@@ -9,7 +9,7 @@ export const FINES_MAC_PAYMENT_TERMS_INSTALMENTS_ONLY_CONTROL_VALIDATION: IAbstr
     validators: [Validators.required, twoDecimalPlacesValidator()],
   },
   {
-    controlName: 'fm_payment_instalment_period',
+    controlName: 'fm_payment_terms_instalment_period',
     validators: [Validators.required],
   },
   {

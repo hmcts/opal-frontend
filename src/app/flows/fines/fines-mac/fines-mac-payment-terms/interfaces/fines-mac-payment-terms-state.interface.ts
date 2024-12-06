@@ -6,7 +6,7 @@ export interface IFinesMacPaymentTermsState {
   fm_payment_terms_pay_by_date?: string | null;
   fm_payment_terms_lump_sum_amount?: number | null;
   fm_payment_terms_instalment_amount?: number | null;
-  fm_payment_instalment_period?: string | null;
+  fm_payment_terms_instalment_period?: string | null;
   fm_payment_terms_start_date?: string | null;
   fm_payment_terms_payment_card_request?: boolean | null;
   fm_payment_terms_has_days_in_default?: boolean | null;

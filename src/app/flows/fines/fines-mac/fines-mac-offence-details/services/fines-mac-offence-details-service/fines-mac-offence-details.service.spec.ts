@@ -16,7 +16,7 @@ describe('FinesMacOffenceDetailsService', () => {
   });
 
   it('should store offence details draft state', () => {
-    service.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    service.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
     expect(service.finesMacOffenceDetailsDraftState).toEqual(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE);
   });
 

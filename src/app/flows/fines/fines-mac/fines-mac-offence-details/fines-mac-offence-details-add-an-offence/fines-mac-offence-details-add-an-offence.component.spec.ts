@@ -36,7 +36,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'offenceIndex',
@@ -60,7 +60,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
-    formSubmit = FINES_MAC_OFFENCE_DETAILS_FORM[0];
+    formSubmit = { ...FINES_MAC_OFFENCE_DETAILS_FORM[0] };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceComponent],
@@ -140,7 +140,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     const existingForm = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
 
     mockFinesService.finesMacState.offenceDetails = [{ ...existingForm }];
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = null;
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      childFormData: null,
+    };
 
     component['updateOffenceDetailsIndex'](form);
 

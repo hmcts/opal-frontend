@@ -43,4 +43,14 @@ export class UtilsService {
     const sortCode = value.toString();
     return `${sortCode.slice(0, 2)}-${sortCode.slice(2, 4)}-${sortCode.slice(4, 6)}`;
   }
+
+  /**
+   * Filters out null or empty strings from an array of address lines.
+   *
+   * @param address - An array of address lines which may contain strings or null values.
+   * @returns A new array containing only non-empty strings from the input array.
+   */
+  public formatAddress(address: (string | null)[]): string[] {
+    return address.filter((line): line is string => !!line?.trim());
+  }
 }

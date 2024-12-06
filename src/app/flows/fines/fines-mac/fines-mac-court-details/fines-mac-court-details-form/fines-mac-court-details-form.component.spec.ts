@@ -19,8 +19,8 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_COURT_DETAILS_FORM_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    formSubmit = { ...FINES_MAC_COURT_DETAILS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCourtDetailsFormComponent],
@@ -80,7 +80,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   });
 
   it('should get originator name based on originator ID', () => {
-    const originatorName = component['getOriginatorName']('3865');
+    const originatorName = component['getOriginatorName']('9985');
     expect(originatorName).toBe('Asylum & Immigration Tribunal');
   });
 
@@ -91,7 +91,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
 
   it('should set originator name based on sending court details', () => {
     component['setupCourtDetailsForm']();
-    component.form.get('fm_court_details_originator_id')?.setValue('3865');
+    component.form.get('fm_court_details_originator_id')?.setValue('9985');
     component['setOriginatorName']();
     expect(component.form.get('fm_court_details_originator_name')?.value).toBe('Asylum & Immigration Tribunal');
   });
