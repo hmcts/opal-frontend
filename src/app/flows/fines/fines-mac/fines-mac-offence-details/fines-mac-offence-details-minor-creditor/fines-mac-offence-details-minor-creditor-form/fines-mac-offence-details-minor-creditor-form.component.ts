@@ -262,4 +262,9 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     this.initialMinorCreditorSetup();
     super.ngOnInit();
   }
+
+  public override ngOnDestroy(): void {
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = null;
+    super.ngOnDestroy();
+  }
 }
