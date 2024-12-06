@@ -1,5 +1,5 @@
 export interface IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData {
-  address: string | null;
+  address: string[];
   paymentMethod: string | null;
   nameOnAccount: string | null;
   sortCode: string | null;

@@ -32,32 +32,29 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   private readonly utilsService = inject(UtilsService);
 
   public readonly defaultValues = FinesMacReviewAccountDefaultValues;
-  public aliases!: string;
+  public aliases!: string[];
   public dob!: string | null;
-  public address!: string;
+  public address!: string[];
 
   /**
    * Retrieves and formats alias data from the personal details.
    * The aliases are extracted from the `fm_personal_details_aliases` property,
-   * concatenated into a single string with forenames and surnames, and joined
-   * with HTML line breaks.
+   * concatenated into a single string with forenames and surnames
    *
    * @private
    * @returns {void}
    */
   private getAliasesData(): void {
-    this.aliases = this.personalDetails.fm_personal_details_aliases
-      .map((item) => {
-        const forenameKey = Object.keys(item).find((key) =>
-          key.includes('forenames'),
-        ) as keyof IFinesMacPersonalDetailsAliasState;
-        const surnameKey = Object.keys(item).find((key) =>
-          key.includes('surname'),
-        ) as keyof IFinesMacPersonalDetailsAliasState;
+    this.aliases = this.personalDetails.fm_personal_details_aliases.map((item) => {
+      const forenameKey = Object.keys(item).find((key) =>
+        key.includes('forenames'),
+      ) as keyof IFinesMacPersonalDetailsAliasState;
+      const surnameKey = Object.keys(item).find((key) =>
+        key.includes('surname'),
+      ) as keyof IFinesMacPersonalDetailsAliasState;
 
-        return `${item[forenameKey]} ${item[surnameKey]}`.trim();
-      })
-      .join('<br>');
+      return `${item[forenameKey]} ${item[surnameKey]}`.trim();
+    });
   }
 
   /**
@@ -80,7 +77,6 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   /**
    * Retrieves and formats the address data from the personal details.
    * The formatted address is stored in the `address` property.
-   * The address lines and post code are joined with a `<br>` separator.
    *
    * @private
    */
@@ -92,15 +88,12 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
       fm_personal_details_post_code,
     } = this.personalDetails;
 
-    this.address = this.utilsService.formatAddress(
-      [
-        fm_personal_details_address_line_1,
-        fm_personal_details_address_line_2,
-        fm_personal_details_address_line_3,
-        fm_personal_details_post_code,
-      ],
-      '<br>',
-    );
+    this.address = this.utilsService.formatAddress([
+      fm_personal_details_address_line_1,
+      fm_personal_details_address_line_2,
+      fm_personal_details_address_line_3,
+      fm_personal_details_post_code,
+    ]);
   }
 
   /**
