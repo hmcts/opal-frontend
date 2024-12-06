@@ -54,6 +54,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
     expect(mockOpalFinesService.getCourtPrettyName).toHaveBeenCalled();
     expect(component.enforcementCourt).toBe(OPAL_FINES_COURT_PRETTY_NAME_MOCK);
+    expect(component.sendingCourt).toBe(OPAL_FINES_COURT_PRETTY_NAME_MOCK);
   });
 
   it('should emit change court details event', () => {

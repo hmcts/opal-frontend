@@ -26,6 +26,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
 
   private readonly opalFinesService = inject(OpalFines);
   public enforcementCourt!: string;
+  public sendingCourt!: string;
 
   /**
    * Retrieves the enforcement court details based on the court ID from the court details.
@@ -45,6 +46,22 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
+   * Retrieves the court details from the enforcement courts data based on the court ID
+   * and sets the sending court's pretty name.
+   *
+   * @private
+   * @method
+   * @returns {void}
+   */
+  private getSendingCourt(): void {
+    const court = this.enforcementCourtsData.find(
+      (court: IOpalFinesCourt) => court.court_id === +this.courtDetails.fm_court_details_originator_id!,
+    )!;
+
+    this.sendingCourt = this.opalFinesService.getCourtPrettyName(court);
+  }
+
+  /**
    * Retrieves and processes the court details data.
    * This method calls the `getEnforcementCourt` function to fetch the necessary court information.
    *
@@ -52,6 +69,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    */
   private getCourtDetailsData(): void {
     this.getEnforcementCourt();
+    this.getSendingCourt();
   }
 
   /**
