@@ -157,13 +157,10 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
       fm_offence_details_minor_creditor_bank_account_ref: bankAccountRef,
     } = minorCreditor.formData;
 
-    const formattedAddress = this.utilsService.formatAddress(
-      [addressLine1, addressLine2, addressLine3, postCode],
-      '<br>',
-    );
+    const formattedAddress = this.utilsService.formatAddress([addressLine1, addressLine2, addressLine3, postCode]);
 
     return {
-      address: formattedAddress.length > 0 ? formattedAddress : null,
+      address: formattedAddress.length > 0 ? formattedAddress : [],
       paymentMethod: payByBacs
         ? FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor.defaultPaymentMethod
         : null,

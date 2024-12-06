@@ -74,8 +74,11 @@
       >
         <ng-container name>Employer address</ng-container>
         <ng-container value>
-          @if (employerAddress) {
-            <p class="govuk-!-margin-0" [innerHTML]="employerAddress"></p>
+          @if (employerAddress && employerAddress.length > 0) {
+            @for (address of employerAddress; track address) {
+              {{ address }}
+              <br />
+            }
           } @else {
             <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
           }

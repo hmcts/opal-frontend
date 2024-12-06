@@ -31,32 +31,29 @@ export class FinesMacReviewAccountParentGuardianDetailsComponent implements OnIn
   private readonly utilsService = inject(UtilsService);
 
   public readonly defaultValues = FinesMacReviewAccountDefaultValues;
-  public aliases!: string;
+  public aliases!: string[];
   public dob!: string | null;
-  public address!: string;
+  public address!: string[];
 
   /**
    * Retrieves and formats alias data from the parent or guardian details.
    * The aliases are extracted from the `fm_parent_guardian_details_aliases` property,
-   * concatenated into a single string with forenames and surnames, and joined
-   * with HTML line breaks.
+   * concatenated into a single string with forenames and surnames
    *
    * @private
    * @returns {void}
    */
   private getAliasesData(): void {
-    this.aliases = this.parentGuardianDetails.fm_parent_guardian_details_aliases
-      .map((item) => {
-        const forenameKey = Object.keys(item).find((key) =>
-          key.includes('forenames'),
-        ) as keyof IFinesMacParentGuardianDetailsAliasState;
-        const surnameKey = Object.keys(item).find((key) =>
-          key.includes('surname'),
-        ) as keyof IFinesMacParentGuardianDetailsAliasState;
+    this.aliases = this.parentGuardianDetails.fm_parent_guardian_details_aliases.map((item) => {
+      const forenameKey = Object.keys(item).find((key) =>
+        key.includes('forenames'),
+      ) as keyof IFinesMacParentGuardianDetailsAliasState;
+      const surnameKey = Object.keys(item).find((key) =>
+        key.includes('surname'),
+      ) as keyof IFinesMacParentGuardianDetailsAliasState;
 
-        return `${item[forenameKey]} ${item[surnameKey]}`.trim();
-      })
-      .join('<br>');
+      return `${item[forenameKey]} ${item[surnameKey]}`.trim();
+    });
   }
 
   /**
@@ -78,7 +75,6 @@ export class FinesMacReviewAccountParentGuardianDetailsComponent implements OnIn
   /**
    * Retrieves and formats the address data from the parent or guardian details.
    * The formatted address is stored in the `address` property.
-   * The address lines and post code are joined with a `<br>` separator.
    *
    * @private
    */
@@ -90,15 +86,12 @@ export class FinesMacReviewAccountParentGuardianDetailsComponent implements OnIn
       fm_parent_guardian_details_post_code,
     } = this.parentGuardianDetails;
 
-    this.address = this.utilsService.formatAddress(
-      [
-        fm_parent_guardian_details_address_line_1,
-        fm_parent_guardian_details_address_line_2,
-        fm_parent_guardian_details_address_line_3,
-        fm_parent_guardian_details_post_code,
-      ],
-      '<br>',
-    );
+    this.address = this.utilsService.formatAddress([
+      fm_parent_guardian_details_address_line_1,
+      fm_parent_guardian_details_address_line_2,
+      fm_parent_guardian_details_address_line_3,
+      fm_parent_guardian_details_post_code,
+    ]);
   }
 
   /**

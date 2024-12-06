@@ -27,34 +27,30 @@ export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
 
   private readonly utilsService = inject(UtilsService);
 
-  public aliases!: string;
-  public address!: string;
+  public aliases!: string[];
+  public address!: string[];
 
   /**
    * Retrieves and formats alias data from the company details.
    * The aliases are extracted from the `fm_company_details_aliases` property,
-   * concatenated into a single string with forenames and surnames, and joined
-   * with HTML line breaks.
+   * concatenated into a single string with forenames and surnames
    *
    * @private
    * @returns {void}
    */
   private getAliasesData(): void {
-    this.aliases = this.companyDetails.fm_company_details_aliases
-      .map((item) => {
-        const organisationNameKey = Object.keys(item).find((key) =>
-          key.includes('organisation_name'),
-        ) as keyof IFinesMacCompanyDetailsAliasState;
+    this.aliases = this.companyDetails.fm_company_details_aliases.map((item) => {
+      const organisationNameKey = Object.keys(item).find((key) =>
+        key.includes('organisation_name'),
+      ) as keyof IFinesMacCompanyDetailsAliasState;
 
-        return `${item[organisationNameKey]}`.trim();
-      })
-      .join('<br>');
+      return `${item[organisationNameKey]}`.trim();
+    });
   }
 
   /**
    * Retrieves and formats the address data from the company details.
    * The formatted address is stored in the `address` property.
-   * The address lines and post code are joined with a `<br>` separator.
    *
    * @private
    */
@@ -66,15 +62,12 @@ export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
       fm_company_details_postcode,
     } = this.companyDetails;
 
-    this.address = this.utilsService.formatAddress(
-      [
-        fm_company_details_address_line_1,
-        fm_company_details_address_line_2,
-        fm_company_details_address_line_3,
-        fm_company_details_postcode,
-      ],
-      '<br>',
-    );
+    this.address = this.utilsService.formatAddress([
+      fm_company_details_address_line_1,
+      fm_company_details_address_line_2,
+      fm_company_details_address_line_3,
+      fm_company_details_postcode,
+    ]);
   }
 
   /**

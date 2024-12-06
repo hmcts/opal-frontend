@@ -46,7 +46,13 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
 
     component['getAliasesData']();
 
-    expect(component.aliases).toBe('Testing Test<br>James Smith<br>Emily Johnston<br>Oliver Brown<br>Sophia Taylor');
+    expect(component.aliases).toEqual([
+      'Testing Test',
+      'James Smith',
+      'Emily Johnston',
+      'Oliver Brown',
+      'Sophia Taylor',
+    ]);
   });
 
   it('should format date of birth correctly - adult', () => {
@@ -58,20 +64,17 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
   });
 
   it('should format address correctly', () => {
-    const formattedAddress = '123 Main St<br>Apt 4B<br>Springfield<br>12345';
+    const formattedAddress = ['123 Main St', 'Apt 4B', 'Springfield', '12345'];
     mockUtilsService.formatAddress.and.returnValue(formattedAddress);
 
     component['getAddressData']();
 
-    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith(
-      [
-        component.parentGuardianDetails.fm_parent_guardian_details_address_line_1,
-        component.parentGuardianDetails.fm_parent_guardian_details_address_line_2,
-        component.parentGuardianDetails.fm_parent_guardian_details_address_line_3,
-        component.parentGuardianDetails.fm_parent_guardian_details_post_code,
-      ],
-      '<br>',
-    );
+    expect(mockUtilsService.formatAddress).toHaveBeenCalledWith([
+      component.parentGuardianDetails.fm_parent_guardian_details_address_line_1,
+      component.parentGuardianDetails.fm_parent_guardian_details_address_line_2,
+      component.parentGuardianDetails.fm_parent_guardian_details_address_line_3,
+      component.parentGuardianDetails.fm_parent_guardian_details_post_code,
+    ]);
     expect(component.address).toBe(formattedAddress);
   });
 
