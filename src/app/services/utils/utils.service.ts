@@ -45,13 +45,12 @@ export class UtilsService {
   }
 
   /**
-   * Formats an address by joining non-empty lines with a specified delimiter.
+   * Filters out null or empty strings from an array of address lines.
    *
-   * @param address - An array of address lines.
-   * @param delimiter - The delimiter to use for joining the address lines.
-   * @returns The formatted address as a single string.
+   * @param address - An array of address lines which may contain strings or null values.
+   * @returns A new array containing only non-empty strings from the input array.
    */
-  public formatAddress(address: (string | null)[], delimiter: string): string {
-    return address.filter((line) => line?.trim()).join(delimiter);
+  public formatAddress(address: (string | null)[]): string[] {
+    return address.filter((line): line is string => !!line?.trim());
   }
 }

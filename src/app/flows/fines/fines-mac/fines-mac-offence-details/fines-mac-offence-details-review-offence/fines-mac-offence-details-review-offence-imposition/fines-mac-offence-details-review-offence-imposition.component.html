@@ -63,8 +63,11 @@
       >
         <ng-container name>Address</ng-container>
         <ng-container value>
-          @if (minorCreditor.address) {
-            <p class="govuk-!-margin-0" [innerHTML]="minorCreditor.address"></p>
+          @if (minorCreditor.address.length > 0) {
+            @for (addressLine of minorCreditor.address; track addressLine) {
+              {{ addressLine }}
+              <br />
+            }
           } @else {
             <p class="govuk-!-margin-0" [innerHTML]="defaultValues.defaultNotProvided" aria-label="Not provided"></p>
           }
