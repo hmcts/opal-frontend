@@ -20,6 +20,7 @@ import { FinesMacReviewAccountEmployerDetailsComponent } from './fines-mac-revie
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms/fines-mac-review-account-payment-terms.component';
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes/fines-mac-review-account-account-comments-and-notes.component';
 import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review-account-offence-details/fines-mac-review-account-offence-details.component';
+import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -36,6 +37,7 @@ import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review
     FinesMacReviewAccountPaymentTermsComponent,
     FinesMacReviewAccountAccountCommentsAndNotesComponent,
     FinesMacReviewAccountOffenceDetailsComponent,
+    FinesMacReviewAccountParentGuardianDetailsComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

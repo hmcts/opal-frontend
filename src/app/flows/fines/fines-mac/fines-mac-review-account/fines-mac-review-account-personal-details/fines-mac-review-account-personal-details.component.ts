@@ -25,6 +25,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 })
 export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   @Input({ required: true }) public personalDetails!: IFinesMacPersonalDetailsState;
+  @Input({ required: false }) public showVehicleDetails: boolean = true;
   @Output() public emitChangePersonalDetails = new EventEmitter<void>();
 
   private readonly dateService = inject(DateService);
@@ -38,8 +39,7 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   /**
    * Retrieves and formats alias data from the personal details.
    * The aliases are extracted from the `fm_personal_details_aliases` property,
-   * concatenated into a single string with forenames and surnames, and joined
-   * with HTML line breaks.
+   * concatenated into a single string with forenames and surnames
    *
    * @private
    * @returns {void}
@@ -77,7 +77,6 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   /**
    * Retrieves and formats the address data from the personal details.
    * The formatted address is stored in the `address` property.
-   * The address lines and post code are joined with a `<br>` separator.
    *
    * @private
    */
