@@ -9,12 +9,20 @@ import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-a
 import {
   IFinesMacPayloadAccountOffences,
   IFinesMacPayloadAccountOffencesImposition,
+  IFinesMacPayloadBuildAccountOffencesMinorCreditor,
 } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-offences.interface';
 
+const getCreditorType = (companyFlag: boolean | null): string => {
+  return companyFlag ? 'Company' : 'Individual';
+};
+
 const mapAccountOffencesMinorCreditorState = (imposition: IFinesMacPayloadAccountOffencesImposition, index: number) => {
+  const creditorType =
+    imposition && imposition.minor_creditor ? getCreditorType(imposition.minor_creditor.company_flag) : null;
+
   return {
     fm_offence_details_imposition_position: index,
-    fm_offence_details_minor_creditor_creditor_type: 'BASED ON COMPANY FLAG',
+    fm_offence_details_minor_creditor_creditor_type: creditorType,
     fm_offence_details_minor_creditor_title: imposition.minor_creditor?.title ?? null,
     fm_offence_details_minor_creditor_forenames: imposition.minor_creditor?.forenames ?? null,
     fm_offence_details_minor_creditor_surname: imposition.minor_creditor?.surname ?? null,
@@ -31,15 +39,42 @@ const mapAccountOffencesMinorCreditorState = (imposition: IFinesMacPayloadAccoun
   };
 };
 
+const getCreditor = (
+  majorCreditorId: number | null,
+  minorCreditor: IFinesMacPayloadBuildAccountOffencesMinorCreditor | null,
+) => {
+  if (majorCreditorId) {
+    return 'minor';
+  }
+
+  if (minorCreditor?.surname) {
+    return 'major';
+  }
+
+  return null;
+};
+
+const getNeedsCreditor = (impositionResultId: string | null): boolean => {
+  return impositionResultId === 'FCOMP' || impositionResultId === 'FCOST' ? true : false;
+};
+
+const getBalanceRemaining = (amountImposed: number | null, amountPaid: number | null): number => {
+  return (amountImposed || 0) - (amountPaid || 0);
+};
+
 const mapAccountOffencesImpositionsState = (imposition: IFinesMacPayloadAccountOffencesImposition, index: number) => {
+  const creditor = getCreditor(imposition.major_creditor_id, imposition.minor_creditor);
+  const needsCreditor = getNeedsCreditor(imposition.result_id);
+  const balanceRemaining = getBalanceRemaining(imposition.amount_imposed, imposition.amount_paid);
+
   return {
     fm_offence_details_imposition_id: index,
     fm_offence_details_result_id: imposition.result_id,
     fm_offence_details_amount_imposed: imposition.amount_imposed,
     fm_offence_details_amount_paid: imposition.amount_paid,
-    fm_offence_details_balance_remaining: 0, // 'TODO: Calculate balance remaining'
-    fm_offence_details_needs_creditor: false, // 'IF FCOMP OR FCOST '
-    fm_offence_details_creditor: 'IF MAJOR CREDITOR ID  = MAJOR OR MINOR CREDIT = MINOR ELSE NULL',
+    fm_offence_details_balance_remaining: balanceRemaining, // 'TODO: Calculate balance remaining'
+    fm_offence_details_needs_creditor: needsCreditor,
+    fm_offence_details_creditor: creditor,
     fm_offence_details_major_creditor_id: imposition.major_creditor_id,
   };
 };
@@ -110,7 +145,7 @@ const mapAccountOffencesPayload = (
 ) => {
   if (offences) {
     // Loop over the offences
-    offences?.forEach((offence, index) => {
+    offences.forEach((offence, index) => {
       const offenceDetailsFormState: IFinesMacOffenceDetailsForm = buildDefaultOffenceDetailsFormState();
 
       let mappedOffenceDetailsImpositionsState: IFinesMacOffenceDetailsImpositionsState[] = [];
