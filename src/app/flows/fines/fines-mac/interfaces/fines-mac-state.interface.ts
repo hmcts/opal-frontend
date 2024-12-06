@@ -26,4 +26,5 @@ export interface IFinesMacState {
   businessUnit: IOpalFinesBusinessUnit;
   unsavedChanges: boolean;
   stateChanges: boolean;
+  deleteFromCheckAccount: boolean;
 }

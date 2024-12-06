@@ -73,6 +73,17 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 
+  it('should navigate on handleRoute to delete account', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.handleRoute(component['fineMacRoutes'].children.deleteAccountConfirmation);
+
+    expect(routerSpy).toHaveBeenCalledWith([component['fineMacRoutes'].children.deleteAccountConfirmation], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+    expect(mockFinesService.finesMacState.deleteFromCheckAccount).toBeTrue();
+  });
+
   it('should navigate on handleRoute with relative to', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 

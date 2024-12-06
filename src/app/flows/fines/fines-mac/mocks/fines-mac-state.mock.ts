@@ -35,4 +35,5 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
   unsavedChanges: false,
   stateChanges: false,
+  deleteFromCheckAccount: false,
 };
