@@ -10,7 +10,7 @@ import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import { Observable, tap } from 'rxjs';
+import { forkJoin, Observable, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
@@ -20,6 +20,10 @@ import { FinesMacReviewAccountEmployerDetailsComponent } from './fines-mac-revie
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms/fines-mac-review-account-payment-terms.component';
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes/fines-mac-review-account-account-comments-and-notes.component';
 import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review-account-offence-details/fines-mac-review-account-offence-details.component';
+import {
+  IOpalFinesLocalJusticeArea,
+  IOpalFinesLocalJusticeAreaRefData,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 
@@ -52,16 +56,30 @@ export class FinesMacReviewAccountComponent {
   protected readonly finesService = inject(FinesService);
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
+  protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
 
-  protected readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
+  private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
     .pipe(
       tap((response: IOpalFinesCourtRefData) => {
         this.enforcementCourtsData = response.refData;
       }),
     );
+
+  private readonly localJusticeAreasData$: Observable<IOpalFinesLocalJusticeAreaRefData> = this.opalFinesService
+    .getLocalJusticeAreas()
+    .pipe(
+      tap((response: IOpalFinesLocalJusticeAreaRefData) => {
+        this.localJusticeAreasData = response.refData;
+      }),
+    );
+
+  protected groupLjaAndCourtData$ = forkJoin({
+    enforcementCourtsData: this.enforcementCourtsData$,
+    localJusticeAreasData: this.localJusticeAreasData$,
+  });
 
   /**
    * Navigates back to the previous page
