@@ -188,6 +188,7 @@ export const finesMacPayloadMapAccountDefendantParentGuardianPayload = (
     fm_personal_details_address_line_3: address_line_3,
     fm_personal_details_post_code: post_code,
     fm_personal_details_national_insurance_number: national_insurance_number,
+    fm_personal_details_add_alias: false,
   };
 
   if (parent_guardian) {

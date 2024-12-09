@@ -55,6 +55,7 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK;
 
     const result = finesMacPayloadMapAccountDefendantIndividualPayload(initialState, payload);
+    expect(result.personalDetails.formData.fm_personal_details_add_alias).toBe(true);
     expect(result.personalDetails.formData.fm_personal_details_aliases.length).toBeGreaterThan(0);
   });
 });
