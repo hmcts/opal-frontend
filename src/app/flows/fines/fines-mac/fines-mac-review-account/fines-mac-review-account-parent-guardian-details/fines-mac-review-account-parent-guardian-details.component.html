@@ -1,0 +1,121 @@
+<app-govuk-summary-card-list cardTitle="Parent or guardian details" summaryCardListId="parent-guardian-details">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changeParentGuardianDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="parentGuardianDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="forenames"
+      >
+        <ng-container name>Forenames</ng-container>
+        <ng-container value>{{ parentGuardianDetails.fm_parent_guardian_details_forenames }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="surname"
+      >
+        <ng-container name>Surname</ng-container>
+        <ng-container value>{{ parentGuardianDetails.fm_parent_guardian_details_surname }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="aliases"
+      >
+        <ng-container name>Aliases</ng-container>
+        <ng-container value>
+          @if (aliases.length > 0) {
+            @for (alias of aliases; track alias) {
+              {{ alias }}
+              <br />
+            }
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="dob"
+      >
+        <ng-container name>Date of birth</ng-container>
+        <ng-container value>
+          @if (dob) {
+            {{ dob }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="nationalInsuranceNumber"
+      >
+        <ng-container name>National Insurance number</ng-container>
+        <ng-container value>
+          @if (parentGuardianDetails.fm_parent_guardian_details_national_insurance_number) {
+            {{ parentGuardianDetails.fm_parent_guardian_details_national_insurance_number }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="address"
+      >
+        <ng-container name>Address</ng-container>
+        <ng-container value>
+          @for (addressLine of address; track addressLine) {
+            {{ addressLine }}
+            <br />
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="vehicleMakeOrModel"
+      >
+        <ng-container name>Vehicle make and model</ng-container>
+        <ng-container value>
+          @if (parentGuardianDetails.fm_parent_guardian_details_vehicle_make) {
+            {{ parentGuardianDetails.fm_parent_guardian_details_vehicle_make }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="parentGuardianDetails"
+        summaryListRowId="registrationNumber"
+      >
+        <ng-container name>Registration number</ng-container>
+        <ng-container value>
+          @if (parentGuardianDetails.fm_parent_guardian_details_vehicle_registration_mark) {
+            {{ parentGuardianDetails.fm_parent_guardian_details_vehicle_registration_mark }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

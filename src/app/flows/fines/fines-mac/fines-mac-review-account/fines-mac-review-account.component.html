@@ -18,15 +18,24 @@
     ></app-fines-mac-review-account-court-details>
   }
 
-  <app-fines-mac-review-account-personal-details
-    [personalDetails]="finesService.finesMacState.personalDetails.formData"
-    (emitChangePersonalDetails)="navigateBack()"
-  ></app-fines-mac-review-account-personal-details>
+  @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly') {
+    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+  } @else if (
+    finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'parentOrGuardianToPay'
+  ) {
+    <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
+  }
 
   <app-fines-mac-review-account-contact-details
     [contactDetails]="finesService.finesMacState.contactDetails.formData"
     (emitChangeContactDetails)="navigateBack()"
   ></app-fines-mac-review-account-contact-details>
+
+  @if (
+    finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'parentOrGuardianToPay'
+  ) {
+    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+  }
 
   <app-fines-mac-review-account-employer-details
     [employerDetails]="finesService.finesMacState.employerDetails.formData"
@@ -65,3 +74,20 @@
     </div>
   </div>
 </div>
+
+<ng-template #parentGuardianDetails>
+  <app-fines-mac-review-account-parent-guardian-details
+    [parentGuardianDetails]="finesService.finesMacState.parentGuardianDetails.formData"
+    (emitChangeParentGuardianDetails)="navigateBack()"
+  ></app-fines-mac-review-account-parent-guardian-details>
+</ng-template>
+
+<ng-template #personalDetails>
+  <app-fines-mac-review-account-personal-details
+    [personalDetails]="finesService.finesMacState.personalDetails.formData"
+    [showVehicleDetails]="
+      finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
+    "
+    (emitChangePersonalDetails)="navigateBack()"
+  ></app-fines-mac-review-account-personal-details>
+</ng-template>
