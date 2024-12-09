@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
@@ -12,7 +12,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
   templateUrl: './fines-mac-delete-account-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacDeleteAccountConfirmationComponent {
+export class FinesMacDeleteAccountConfirmationComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
@@ -29,5 +29,9 @@ export class FinesMacDeleteAccountConfirmationComponent {
       event.preventDefault();
     }
     this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  }
+
+  public ngOnDestroy(): void {
+    this.finesService.finesMacState.deleteFromCheckAccount = false;
   }
 }
