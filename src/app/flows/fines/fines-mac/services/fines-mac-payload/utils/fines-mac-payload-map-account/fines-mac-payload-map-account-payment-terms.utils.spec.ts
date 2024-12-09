@@ -3,7 +3,7 @@ import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 
-fdescribe('finesMacPayloadMapAccountPaymentTerms', () => {
+describe('finesMacPayloadMapAccountPaymentTerms', () => {
   let mappedFinesMacState: IFinesMacState;
   let payload: IFinesMacPayloadAccount;
 

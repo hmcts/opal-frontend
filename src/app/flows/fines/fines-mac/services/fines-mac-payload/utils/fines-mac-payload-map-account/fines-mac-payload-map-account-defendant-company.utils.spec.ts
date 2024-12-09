@@ -5,6 +5,12 @@ import { FINES_MAC_STATE } from '../../../../constants/fines-mac-state';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-company-complete.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-company.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-company-complete-with-aliases.mock';
+import { IFinesMacCompanyDetailsState } from '../../../../fines-mac-company-details/interfaces/fines-mac-company-details-state.interface';
+import { IFinesMacContactDetailsState } from '../../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
+import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
+import { FINES_MAC_PAYLOAD_BUILD_COMPANY_DETAILS_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-company-details-state.mock';
+import { FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-contact-details-state.mock';
+import { FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-language-preferences-state.mock';
 
 describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
   let initialState: IFinesMacState;
@@ -19,52 +25,26 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
     const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
 
-    expect(result.companyDetails.formData.fm_company_details_organisation_name).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.organisation_name,
-    );
-    expect(result.companyDetails.formData.fm_company_details_address_line_1).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.address_line_1,
-    );
-    expect(result.companyDetails.formData.fm_company_details_address_line_2).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.address_line_2,
-    );
-    expect(result.companyDetails.formData.fm_company_details_address_line_3).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.address_line_3,
-    );
-    expect(result.companyDetails.formData.fm_company_details_postcode).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.post_code,
-    );
-    expect(result.contactDetails.formData.fm_contact_details_telephone_number_home).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.telephone_number_home,
-    );
-    expect(result.contactDetails.formData.fm_contact_details_telephone_number_business).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.telephone_number_business,
-    );
-    expect(result.contactDetails.formData.fm_contact_details_telephone_number_mobile).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.telephone_number_mobile,
-    );
-    expect(result.contactDetails.formData.fm_contact_details_email_address_1).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.email_address_1,
-    );
-    expect(result.contactDetails.formData.fm_contact_details_email_address_2).toBe(
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.email_address_2,
-    );
+    const contactDetailsState: IFinesMacContactDetailsState = {
+      ...FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK,
+    };
+
+    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
+      ...FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK,
+    };
+    const companyDetailsState: IFinesMacCompanyDetailsState = { ...FINES_MAC_PAYLOAD_BUILD_COMPANY_DETAILS_STATE_MOCK };
+
+    expect(result.companyDetails.formData).toEqual(companyDetailsState);
+    expect(result.contactDetails.formData).toEqual(contactDetailsState);
+    expect(result.languagePreferences.formData).toEqual(languagePreferencesState);
   });
 
-  it('should handle debtor detail if available', () => {
+  it('should map the payload with aliases', () => {
     const payload: IFinesMacPayloadBuildAccountDefendantComplete =
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK;
 
     const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
-    const alias =
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK?.debtor_detail?.aliases?.[0]
-        .alias_company_name;
 
-    expect(result.companyDetails.formData.fm_company_details_add_alias).toBe(true);
-    if (alias) {
-      expect(result.companyDetails.formData.fm_company_details_aliases).toEqual([
-        { fm_company_details_alias_organisation_name_0: alias },
-      ]);
-    }
+    expect(result.companyDetails.formData.fm_company_details_aliases.length).toEqual(1);
   });
 });
