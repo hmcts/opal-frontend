@@ -69,7 +69,7 @@ export const FINES_MAC_PAYMENT_TERMS_FIELD_ERRORS: IFinesMacPaymentTermsFieldErr
       priority: 2,
     },
   },
-  fm_payment_instalment_period: {
+  fm_payment_terms_instalment_period: {
     required: {
       message: `Select frequency of payment`,
       priority: 1,

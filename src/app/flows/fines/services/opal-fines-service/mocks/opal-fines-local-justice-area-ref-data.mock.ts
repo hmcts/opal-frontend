@@ -7,7 +7,7 @@ export const OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK: IOpalFinesLocalJustice
       name: 'Asylum & Immigration Tribunal',
       postcode: 'LE1 6ZX',
       address_line_1: 'Arnhem Support Centre',
-      local_justice_area_id: 3865,
+      local_justice_area_id: 9985,
       lja_code: '9985',
     },
     {

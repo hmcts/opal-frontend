@@ -48,8 +48,8 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     mockFinesMacOffenceDetailsService.offenceIndex = 0;
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent],

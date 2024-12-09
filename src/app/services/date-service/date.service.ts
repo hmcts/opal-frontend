@@ -186,4 +186,16 @@ export class DateService {
 
     return dateValue > now;
   }
+
+  /**
+   * Converts a date string from one format to another.
+   *
+   * @param date - The date string to be converted.
+   * @param fromFormat - The format of the input date string.
+   * @param toFormat - The desired format of the output date string.
+   * @returns The date string in the desired format.
+   */
+  public getFromFormatToFormat(date: string, fromFormat: string, toFormat: string): string {
+    return this.getFromFormat(date, fromFormat).toFormat(toFormat);
+  }
 }

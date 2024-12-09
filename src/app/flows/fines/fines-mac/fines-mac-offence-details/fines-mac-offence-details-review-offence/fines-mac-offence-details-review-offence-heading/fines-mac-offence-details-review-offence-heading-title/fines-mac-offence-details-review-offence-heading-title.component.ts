@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GovukHeadingWithCaptionComponent } from '@components/govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
 import { GovukSummaryListRowActionItemComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row-actions/govuk-summary-list-row-action-item/govuk-summary-list-row-action-item.component';
@@ -8,6 +9,7 @@ import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/in
   selector: 'app-fines-mac-offence-details-review-offence-heading-title',
   standalone: true,
   imports: [
+    CommonModule,
     GovukHeadingWithCaptionComponent,
     GovukSummaryListRowActionsComponent,
     GovukSummaryListRowActionItemComponent,
@@ -21,6 +23,7 @@ export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent implements
   @Input({ required: true }) public offenceRefData!: IOpalFinesOffencesRefData;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: false }) public showDetails: boolean = true;
+  @Input({ required: false }) public isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<string>();
 
   public offenceTitle!: string;

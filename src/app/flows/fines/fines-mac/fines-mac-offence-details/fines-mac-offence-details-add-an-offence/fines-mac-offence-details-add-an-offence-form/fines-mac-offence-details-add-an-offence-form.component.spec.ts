@@ -175,7 +175,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
     const mockData = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK };
-    mockData.offenceDetailsDraft[0].formData.fm_offence_details_offence_id = 'TEST1234';
+    mockData.offenceDetailsDraft[0] = {
+      ...mockData.offenceDetailsDraft[0],
+      formData: {
+        ...mockData.offenceDetailsDraft[0].formData,
+        fm_offence_details_offence_id: 'TEST1234',
+      },
+    };
     component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = mockData;
 
     component['initialAddAnOffenceDetailsSetup']();

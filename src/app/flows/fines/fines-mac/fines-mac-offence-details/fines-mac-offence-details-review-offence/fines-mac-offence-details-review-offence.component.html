@@ -3,6 +3,7 @@
   [offenceCode]="offence.formData.fm_offence_details_offence_id!"
   [showActions]="showActions"
   [showDetails]="showDetails"
+  [isReadOnly]="isReadOnly"
   (actionClicked)="emitAction($event)"
 ></app-fines-mac-offence-details-review-offence-heading>
 
@@ -12,6 +13,7 @@
     [majorCreditorRefData]="majorCreditorRefData"
     [impositions]="offence.formData.fm_offence_details_impositions"
     [offenceIndex]="offence.formData.fm_offence_details_id"
+    [isReadOnly]="isReadOnly"
   >
   </app-fines-mac-offence-details-review-offence-imposition>
 }

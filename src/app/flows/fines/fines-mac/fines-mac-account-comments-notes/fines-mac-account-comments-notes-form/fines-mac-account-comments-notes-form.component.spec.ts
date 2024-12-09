@@ -19,8 +19,8 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    formSubmit = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesFormComponent],
@@ -75,12 +75,27 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it('should return true if all mandatory sections have been provided', () => {
-    mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
-    mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.PROVIDED;
+    mockFinesService.finesMacState.courtDetails = {
+      ...mockFinesService.finesMacState.courtDetails,
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.personalDetails = {
+      ...mockFinesService.finesMacState.personalDetails,
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.employerDetails = {
+      ...mockFinesService.finesMacState.employerDetails,
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.paymentTerms = {
+      ...mockFinesService.finesMacState.paymentTerms,
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
 
     const result = component['checkMandatorySections']();
 
@@ -88,12 +103,27 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it('should return false if any mandatory section is missing', () => {
-    mockFinesService.finesMacState.courtDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.employerDetails.status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.offenceDetails = FINES_MAC_OFFENCE_DETAILS_FORM;
-    mockFinesService.finesMacState.offenceDetails[0].status = FINES_MAC_STATUS.PROVIDED;
-    mockFinesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    mockFinesService.finesMacState.courtDetails = {
+      ...mockFinesService.finesMacState.courtDetails,
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.personalDetails = {
+      ...mockFinesService.finesMacState.personalDetails,
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.employerDetails = {
+      ...mockFinesService.finesMacState.employerDetails,
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
+    mockFinesService.finesMacState.offenceDetails[0] = {
+      ...mockFinesService.finesMacState.offenceDetails[0],
+      status: FINES_MAC_STATUS.PROVIDED,
+    };
+    mockFinesService.finesMacState.paymentTerms = {
+      ...mockFinesService.finesMacState.paymentTerms,
+      status: FINES_MAC_STATUS.NOT_PROVIDED,
+    };
 
     const result = component['checkMandatorySections']();
 
