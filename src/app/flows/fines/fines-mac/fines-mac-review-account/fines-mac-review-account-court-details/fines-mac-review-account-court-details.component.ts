@@ -6,6 +6,7 @@ import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interf
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
+import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
@@ -22,6 +23,7 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
 export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   @Input({ required: true }) public courtDetails!: IFinesMacCourtDetailsState;
   @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourt[];
+  @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
   @Output() public emitChangeCourtDetails = new EventEmitter<void>();
 
   private readonly opalFinesService = inject(OpalFines);
@@ -46,19 +48,20 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Retrieves the court details from the enforcement courts data based on the court ID
-   * and sets the sending court's pretty name.
+   * Retrieves the sending court details based on the originator ID from the court details.
+   * It finds the corresponding local justice area from the localJusticeAreasData array
+   * and sets the sendingCourt property with a pretty name obtained from the opalFinesService.
    *
    * @private
-   * @method
    * @returns {void}
    */
   private getSendingCourt(): void {
-    const court = this.enforcementCourtsData.find(
-      (court: IOpalFinesCourt) => court.court_id === +this.courtDetails.fm_court_details_originator_id!,
+    const lja = this.localJusticeAreasData.find(
+      (lja: IOpalFinesLocalJusticeArea) =>
+        lja.local_justice_area_id === +this.courtDetails.fm_court_details_originator_id!,
     )!;
 
-    this.sendingCourt = this.opalFinesService.getCourtPrettyName(court);
+    this.sendingCourt = this.opalFinesService.getLocalJusticeAreaPrettyName(lja);
   }
 
   /**

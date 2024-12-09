@@ -9,10 +9,11 @@
   >
   </app-fines-mac-review-account-account-details>
 
-  @if (enforcementCourtsData$ | async) {
+  @if (groupLjaAndCourtData$ | async; as data) {
     <app-fines-mac-review-account-court-details
       [courtDetails]="finesService.finesMacState.courtDetails.formData"
-      [enforcementCourtsData]="enforcementCourtsData"
+      [enforcementCourtsData]="data.enforcementCourtsData.refData"
+      [localJusticeAreasData]="data.localJusticeAreasData.refData"
       (emitChangeCourtDetails)="navigateBack()"
     ></app-fines-mac-review-account-court-details>
   }
