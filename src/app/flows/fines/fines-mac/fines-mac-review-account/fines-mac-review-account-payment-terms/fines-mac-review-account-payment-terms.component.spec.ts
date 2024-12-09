@@ -29,6 +29,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
     component.paymentTermsState = { ...FINES_MAC_PAYMENT_TERMS_STATE_MOCK };
     component.businessUnit = { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0] };
+    component.defendantType = 'adultOrYouthOnly';
 
     fixture.detectChanges();
   });

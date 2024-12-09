@@ -25,6 +25,7 @@ import {
   IOpalFinesLocalJusticeAreaRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
+import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -42,6 +43,7 @@ import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac
     FinesMacReviewAccountAccountCommentsAndNotesComponent,
     FinesMacReviewAccountOffenceDetailsComponent,
     FinesMacReviewAccountParentGuardianDetailsComponent,
+    FinesMacReviewAccountCompanyDetailsComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
