@@ -2,7 +2,7 @@ import { finesMacPayloadMapAccountAccountNotesPayload } from './fines-mac-payloa
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadBuildAccountAccountNote } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-account-note.interface';
 
-fdescribe('finesMacPayloadMapAccountAccountNotesPayload', () => {
+describe('finesMacPayloadMapAccountAccountNotesPayload', () => {
   let initialState: IFinesMacState;
 
   beforeEach(() => {
