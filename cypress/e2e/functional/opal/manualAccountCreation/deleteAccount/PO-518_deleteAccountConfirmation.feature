@@ -23,7 +23,7 @@ Feature: PO-518 delete account confirmation screen
     Then I click on the "Delete account" link
     Then I see "Are you sure you want to delete this account?" on the page header
 
-    When I click on the "Cancel" link
+    When I click on the "No - cancel" link
     Then I see the status of "Contact details" is "Provided"
 
     When I click on the "Delete account" link
