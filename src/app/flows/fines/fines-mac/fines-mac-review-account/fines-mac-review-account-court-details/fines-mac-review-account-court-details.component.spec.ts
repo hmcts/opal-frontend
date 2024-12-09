@@ -9,6 +9,8 @@ import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_COURT_DETAILS_STATE_MOCK } from '../../fines-mac-court-details/mocks/fines-mac-court-details-state.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
+import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 
 describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   let component: FinesMacReviewAccountCourtDetailsComponent;
@@ -18,6 +20,9 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   beforeEach(async () => {
     mockOpalFinesService = {
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
+      getLocalJusticeAreaPrettyName: jasmine
+        .createSpy('getLocalJusticeAreaPrettyName')
+        .and.returnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
     };
 
     await TestBed.configureTestingModule({
@@ -41,6 +46,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
     component.courtDetails = { ...FINES_MAC_COURT_DETAILS_STATE_MOCK };
     component.enforcementCourtsData = OPAL_FINES_COURT_REF_DATA_MOCK.refData;
+    component.localJusticeAreasData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData;
 
     fixture.detectChanges();
   });
@@ -54,7 +60,13 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
     expect(mockOpalFinesService.getCourtPrettyName).toHaveBeenCalled();
     expect(component.enforcementCourt).toBe(OPAL_FINES_COURT_PRETTY_NAME_MOCK);
-    expect(component.sendingCourt).toBe(OPAL_FINES_COURT_PRETTY_NAME_MOCK);
+  });
+
+  it('should retrieve and set sending court details on init', () => {
+    component['getSendingCourt']();
+
+    expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).toHaveBeenCalled();
+    expect(component.sendingCourt).toBe(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK);
   });
 
   it('should emit change court details event', () => {
