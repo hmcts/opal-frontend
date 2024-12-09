@@ -1,4 +1,7 @@
-<app-govuk-summary-card-list [cardTitle]="showVehicleDetails ? 'Personal details' : 'Defendant details'">
+<app-govuk-summary-card-list
+  [cardTitle]="showVehicleDetails ? 'Personal details' : 'Defendant details'"
+  [summaryCardListId]="showVehicleDetails ? 'personal-details' : 'defendant-details'"
+>
   <ng-container actions>
     <app-fines-mac-review-account-change-link
       (emitChange)="changePersonalDetails()"
