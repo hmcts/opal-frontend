@@ -1,4 +1,4 @@
-Feature: PO-560 - Check account details - Adult or Youth only
+Feature: PO-662 - Check account details - Adult or youth with parent or guardian to pay
 
   Background:
     Given I am on the OPAL Frontend
@@ -10,18 +10,18 @@ Feature: PO-560 - Check account details - Adult or Youth only
 
     And I see "Business unit and defendant type" on the page header
     And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
+    And I select the "Adult or youth with parent or guardian to pay" radio button
     And I click the "Continue" button
     And I see "Account details" on the page header
-
-    ###
 
   Scenario: AC1,2,3,4,5 - Check account details - Company
     ### Check the button is not displayed when no data has been entered
     Given I see "Account details" on the page header
     And I see the status of "Court details" is "Not provided"
-    And I see the status of "Company details" is "Not provided"
+    And I see the status of "Personal details" is "Not provided"
+    And I see the status of "Parent or guardian details" is "Not provided"
     And I see the status of "Contact details" is "Not provided"
+    And I see the status of "Employer details" is "Not provided"
     And I see the status of "Offence details" is "Not provided"
     And I see the status of "Payment terms" is "Not provided"
     And I see the status of "Account comments and notes" is "Not provided"
@@ -42,15 +42,30 @@ Feature: PO-560 - Check account details - Adult or Youth only
     And I see "Check that all required fields have been entered before you submit for review" text on the page
     And the button with text "Review account" should not be present
 
-    ### Company Details
-    When I click on the "Company details" link
-    And I see "Company details" on the page header
-    And I enter "CNAME" into the "Company name" field
+    ### Personal Details
+    When I click on the "Personal details" link
+    And I see "Personal details" on the page header
+    And I select "Mr" from the "Title" dropdown
+    And I enter "FNAME" into the "First name" field
+    And I enter "LNAME" into the "Last name" field
     And I enter "ADDR1" into the "Address line 1" field
 
     When I click the "Return to account details" button
     Then I see "Account details" on the page header
-    And I see the status of "Company details" is "Provided"
+    And I see the status of "Personal details" is "Provided"
+    And I see "Check that all required fields have been entered before you submit for review" text on the page
+    And the button with text "Review account" should not be present
+
+    ### Parent or Guardian Details
+    When I click on the "Parent or guardian details" link
+    And I see "Parent or guardian details" on the page header
+    And I enter "P-FNAME" into the "First name" field
+    And I enter "P-LNAME" into the "Last name" field
+    And I enter "P-ADDR1" into the "Address line 1" field
+
+    When I click the "Return to account details" button
+    Then I see "Account details" on the page header
+    And I see the status of "Parent or guardian details" is "Provided"
     And I see "Check that all required fields have been entered before you submit for review" text on the page
     And the button with text "Review account" should not be present
 
@@ -77,6 +92,8 @@ Feature: PO-560 - Check account details - Adult or Youth only
     ### Payment Terms
     When I click on the "Payment terms" link
     And I see "Payment terms" on the page header
+    And I select the "No" radio button
+    And I select the "Make collection order today" checkbox
     And I select the "Pay in full" radio button
     And I enter a date 28 weeks into the future into the "Enter pay by date" date field
 
@@ -94,21 +111,33 @@ Feature: PO-560 - Check account details - Adult or Youth only
     ### Account details table
     Then I see the "Business unit" is "Gwent" in the account details table
     And I see the "Account type" is "Fine" in the account details table
-    And I see the "Defendant type" is "Company" in the account details table
+    And I see the "Defendant type" is "Adult or youth with parent or guardian to pay" in the account details table
     And I see the "Document language" is "Welsh and English" in the account details table
     And I see the "Court hearing language" is "Welsh and English" in the account details table
 
     ### Court details table
     Then I see the following in the "Court details" table:
-      # | Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
-      | Prosecutor Case Reference (PCR) | AC123NMJT   |
-      | Enforcement court               | ACTON (820) |
+      | Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
+      | Prosecutor Case Reference (PCR)          | AC123NMJT                                |
+      | Enforcement court                        | ACTON (820)                              |
 
-    ### Company details table
-    Then I see the following in the "Company details" table:
-      | Company name | CNAME |
-      | Aliases      | —     |
-      | Address      | ADDR1 |
+    ### Defendant (personal) details table
+    Then I see the following in the "Defendant details" table:
+      | Title          | Mr    |
+      | First name     | FNAME |
+      | Last name      | LNAME |
+      | Address line 1 | ADDR1 |
+
+    ### Parent or guardian details table
+    Then I see the following in the "Parent or guardian details" table:
+      | Forenames                 | P-FNAME |
+      | Surname                   | P-LNAME |
+      | Aliases                   | —       |
+      | Date of birth             | —       |
+      | National Insurance number | —       |
+      | Address                   | P-ADDR1 |
+      | Vehicle make and model    | —       |
+      | Registration number       | —       |
 
     ### Contact details table
     Then I see the following in the "Contact details" table:
@@ -124,9 +153,13 @@ Feature: PO-560 - Check account details - Adult or Youth only
 
     ### Payment terms table
     Then I see the following in the "Payment terms" table:
-      | Payment terms      | Pay in full |
-      | Pay by date        | 28 weeks    |
-      | Enforcement action | No          |
+      | Has a collection order been made? | No          |
+      | Make collection order today       | Yes         |
+      | Payment terms                     | Pay in full |
+      | Pay by date                       | 28 weeks    |
+      | Request payment card              | No          |
+      | There are days in default         | No          |
+      | Enforcement action                | No          |
 
     ### Account comments and notes table
     Then I see the following in the "Account comments and notes" table:
@@ -135,7 +168,7 @@ Feature: PO-560 - Check account details - Adult or Youth only
 
 
     And I do not see the "Personal details" table
-    And I do not see the "Parent or guardian details" table
+    And I do not see the "Company details" table
     And I do not see the "Employer details" table
 
     ### Change link

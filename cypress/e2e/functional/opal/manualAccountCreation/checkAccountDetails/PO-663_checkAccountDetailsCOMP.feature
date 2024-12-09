@@ -1,4 +1,4 @@
-Feature: PO-560 - Check account details - Adult or Youth only
+Feature: PO-663 - Check account details - Company
 
   Background:
     Given I am on the OPAL Frontend
@@ -10,11 +10,9 @@ Feature: PO-560 - Check account details - Adult or Youth only
 
     And I see "Business unit and defendant type" on the page header
     And I select the "Fine" radio button
-    And I select the "Adult or youth only" radio button
+    And I select the "Company" radio button
     And I click the "Continue" button
     And I see "Account details" on the page header
-
-    ###
 
   Scenario: AC1,2,3,4,5 - Check account details - Company
     ### Check the button is not displayed when no data has been entered
@@ -100,9 +98,9 @@ Feature: PO-560 - Check account details - Adult or Youth only
 
     ### Court details table
     Then I see the following in the "Court details" table:
-      # | Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
-      | Prosecutor Case Reference (PCR) | AC123NMJT   |
-      | Enforcement court               | ACTON (820) |
+      | Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
+      | Prosecutor Case Reference (PCR)          | AC123NMJT                                |
+      | Enforcement court                        | ACTON (820)                              |
 
     ### Company details table
     Then I see the following in the "Company details" table:
@@ -155,9 +153,9 @@ Feature: PO-560 - Check account details - Adult or Youth only
     When I click on the "No - cancel" link
     Then I see "Check account details" on the page header
     And I see the following in the "Court details" table:
-      #| Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
-      | Prosecutor Case Reference (PCR) | AC123NMJT   |
-      | Enforcement court               | ACTON (820) |
+      | Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
+      | Prosecutor Case Reference (PCR)          | AC123NMJT                                |
+      | Enforcement court                        | ACTON (820)                              |
 
     When I click on the "Delete account" link
     Then I see "Are you sure you want to delete this account?" on the page header
