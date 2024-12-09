@@ -1,4 +1,8 @@
-<app-govuk-summary-card-list [cardTitle]="name" [contentHidden]="isDetailsHidden">
+<app-govuk-summary-card-list
+  [cardTitle]="name"
+  [contentHidden]="isDetailsHidden"
+  summaryCardListId="minor-creditor-information"
+>
   @if (showActions) {
     <ng-container actions>
       <li
