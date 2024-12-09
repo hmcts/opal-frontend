@@ -4,7 +4,7 @@ import { GovukSummaryCardListComponent } from './govuk-summary-card-list.compone
 import { Component } from '@angular/core';
 
 @Component({
-  template: `<app-govuk-summary-card-list cardTitle="Testing Summary Card List"
+  template: `<app-govuk-summary-card-list summaryCardListId="test" cardTitle="Testing Summary Card List"
     ><li actions>Test</li>
     <p content>Hello World</p></app-govuk-summary-card-list
   >`,
@@ -45,5 +45,9 @@ describe('GovukSummaryCardListComponent', () => {
     // Check the content
     const content = element.querySelector('.govuk-summary-card__content p').innerText;
     expect(content).toBe('Hello World');
+
+    // Check the id
+    const id = element.querySelector('#test-summary-card-list');
+    expect(id).toBeTruthy();
   });
 });
