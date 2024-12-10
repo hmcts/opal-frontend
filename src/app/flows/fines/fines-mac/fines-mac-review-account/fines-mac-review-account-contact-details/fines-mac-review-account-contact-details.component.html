@@ -1,0 +1,86 @@
+<app-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact-details">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changeContactDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="contactDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetails"
+        summaryListRowId="primaryEmailAddress"
+      >
+        <ng-container name>Primary email address</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_email_address_1) {
+            {{ contactDetails.fm_contact_details_email_address_1 }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetails"
+        summaryListRowId="secondaryEmailAddress"
+      >
+        <ng-container name>Secondary email address</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_email_address_2) {
+            {{ contactDetails.fm_contact_details_email_address_2 }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetails"
+        summaryListRowId="mobileTelephoneNumber"
+      >
+        <ng-container name>Mobile telephone number</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_telephone_number_mobile) {
+            {{ contactDetails.fm_contact_details_telephone_number_mobile }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetails"
+        summaryListRowId="homeTelephoneNumber"
+      >
+        <ng-container name>Home telephone number</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_telephone_number_home) {
+            {{ contactDetails.fm_contact_details_telephone_number_home }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="contactDetails"
+        summaryListRowId="workTelephoneNumber"
+      >
+        <ng-container name>Work telephone number</ng-container>
+        <ng-container value>
+          @if (contactDetails.fm_contact_details_telephone_number_business) {
+            {{ contactDetails.fm_contact_details_telephone_number_business }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

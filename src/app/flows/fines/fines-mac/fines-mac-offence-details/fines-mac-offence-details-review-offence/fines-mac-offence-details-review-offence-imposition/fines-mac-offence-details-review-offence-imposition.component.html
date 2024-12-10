@@ -7,10 +7,27 @@
     <th app-govuk-table-heading>Balance remaining</th>
   </ng-container>
   <ng-container body>
-    @for (imposition of impositionTableData; track imposition.impositionDescription) {
+    @for (imposition of impositionTableData; track imposition.impositionId) {
       <tr app-govuk-table-body-row>
         <td app-govuk-table-body-row-data id="imposition">{{ imposition.impositionDescription }}</td>
-        <td app-govuk-table-body-row-data id="creditor">{{ imposition.creditor }}</td>
+        <td app-govuk-table-body-row-data id="creditor">
+          @if (imposition.minorCreditor) {
+            {{ imposition.creditor }}
+            <br />
+            <ng-container
+              *ngTemplateOutlet="
+                minorCreditor;
+                context: {
+                  impositionId: imposition.impositionId,
+                  show: imposition.showMinorCreditorData,
+                  minorCreditor: imposition.minorCreditor,
+                }
+              "
+            ></ng-container>
+          } @else {
+            {{ imposition.creditor }}
+          }
+        </td>
         <td app-govuk-table-body-row-data id="amountImposed">{{ imposition.amountImposed }}</td>
         <td app-govuk-table-body-row-data id="amountPaid">{{ imposition.amountPaid }}</td>
         <td app-govuk-table-body-row-data id="balanceRemaining">{{ imposition.balanceRemaining }}</td>
@@ -26,3 +43,117 @@
     </tr>
   </ng-container>
 </app-govuk-table>
+
+<ng-template #minorCreditor let-impositionId="impositionId" let-show="show" let-minorCreditor="minorCreditor">
+  @let linkLabel = show ? 'Hide details' : 'Show details';
+  <a
+    class="govuk-link govuk-link--no-visited-state"
+    (click)="invertShowMinorCreditorData(impositionId)"
+    (keyup.enter)="invertShowMinorCreditorData(impositionId)"
+    tabindex="0"
+    >{{ linkLabel }}</a
+  >
+  @if (show) {
+    <app-govuk-summary-list classes="govuk-summary-list--no-border" summaryListId="minorCreditorDataTable">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="minorCreditorDataTable"
+        summaryListRowId="address"
+      >
+        <ng-container name>Address</ng-container>
+        <ng-container value>
+          @if (minorCreditor.address.length > 0) {
+            @for (addressLine of minorCreditor.address; track addressLine) {
+              {{ addressLine }}
+              <br />
+            }
+          } @else {
+            <p class="govuk-!-margin-0" [innerHTML]="defaultValues.defaultNotProvided" aria-label="Not provided"></p>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="minorCreditorDataTable"
+        summaryListRowId="paymentMethod"
+      >
+        <ng-container name>Payment method</ng-container>
+        <ng-container value>
+          @if (minorCreditor.paymentMethod) {
+            {{ minorCreditor.paymentMethod }}
+          } @else {
+            <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+          }
+        </ng-container>
+      </div>
+      @if (minorCreditor.paymentMethod) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorDataTable"
+          summaryListRowId="nameOnAccount"
+        >
+          <ng-container name>Name on account</ng-container>
+          <ng-container value>
+            @if (minorCreditor.nameOnAccount) {
+              {{ minorCreditor.nameOnAccount }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorDataTable"
+          summaryListRowId="sortCode"
+        >
+          <ng-container name>Sort code</ng-container>
+          <ng-container value>
+            @if (minorCreditor.sortCode) {
+              {{ minorCreditor.sortCode }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorDataTable"
+          summaryListRowId="accountNumber"
+        >
+          <ng-container name>Account number</ng-container>
+          <ng-container value>
+            @if (minorCreditor.accountNumber) {
+              {{ minorCreditor.accountNumber }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="minorCreditorDataTable"
+          summaryListRowId="paymentReference"
+        >
+          <ng-container name>Payment reference</ng-container>
+          <ng-container value>
+            @if (minorCreditor.paymentReference) {
+              {{ minorCreditor.paymentReference }}
+            } @else {
+              <ng-container *ngTemplateOutlet="notProvided"></ng-container>
+            }
+          </ng-container>
+        </div>
+      }
+    </app-govuk-summary-list>
+  }
+</ng-template>
+
+<ng-template #notProvided>
+  <p class="govuk-!-margin-0" [innerHTML]="defaultValues.defaultNotProvided" aria-label="Not provided"></p>
+</ng-template>

@@ -19,7 +19,7 @@ describe('FinesComponent', () => {
     component = fixture.componentInstance;
 
     mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockGlobalStateService = TestBed.inject(GlobalStateService);
 
     fixture.detectChanges();

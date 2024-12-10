@@ -1,0 +1,206 @@
+<app-govuk-summary-card-list cardTitle="Payment terms" summaryCardListId="payment-terms">
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changePaymentTerms()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="paymentTerms">
+      @if (paymentTermsState.fm_payment_terms_collection_order_date) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="hasCollectionOrder"
+        >
+          <ng-container name>Has a collection order been made?</ng-container>
+          <ng-container value>{{
+            paymentTermsState.fm_payment_terms_collection_order_made ? 'Yes' : 'No'
+          }}</ng-container>
+        </div>
+        @if (paymentTermsState.fm_payment_terms_collection_order_made) {
+          <div
+            app-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="paymentTerms"
+            summaryListRowId="collectionOrderDate"
+          >
+            <ng-container name>Date of collection order</ng-container>
+            <ng-container value>{{ collectionOrderDate }}</ng-container>
+          </div>
+        } @else {
+          @if (permissions[permissionsMap.collectionOrder] !== false) {
+            <div
+              app-govuk-summary-list-row
+              class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+              summaryListId="paymentTerms"
+              summaryListRowId="makeCollectionOrderToday"
+            >
+              <ng-container name>Make collection order today</ng-container>
+              <ng-container value>{{
+                paymentTermsState.fm_payment_terms_collection_order_made_today ? 'Yes' : 'No'
+              }}</ng-container>
+            </div>
+          }
+        }
+      }
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="paymentTerms"
+        summaryListRowId="selectedPaymentTerms"
+      >
+        <ng-container name>Payment terms</ng-container>
+        <ng-container value>{{ paymentTerms }}</ng-container>
+      </div>
+      @if (paymentTerms === paymentTermsOptions.payInFull) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="payByDate"
+        >
+          <ng-container name>Pay by date</ng-container>
+          <ng-container value>{{ payByDate }}</ng-container>
+        </div>
+      } @else {
+        @if (paymentTerms === paymentTermsOptions.lumpSumPlusInstalments) {
+          <div
+            app-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="paymentTerms"
+            summaryListRowId="lumpSum"
+          >
+            <ng-container name>Lump sum</ng-container>
+            <ng-container value>£{{ paymentTermsState.fm_payment_terms_lump_sum_amount }}</ng-container>
+          </div>
+        }
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="instalment"
+        >
+          <ng-container name>Instalment</ng-container>
+          <ng-container value>£{{ paymentTermsState.fm_payment_terms_instalment_amount }}</ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="frequency"
+        >
+          <ng-container name>Frequency</ng-container>
+          <ng-container value>{{ frequency }}</ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="startDate"
+        >
+          <ng-container name>Start date</ng-container>
+          <ng-container value>{{ startDate }}</ng-container>
+        </div>
+      }
+      @if (defendantType !== 'company') {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="requestPaymentCard"
+        >
+          <ng-container name>Request payment card</ng-container>
+          <ng-container value>{{
+            paymentTermsState.fm_payment_terms_payment_card_request ? 'Yes' : 'No'
+          }}</ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="hasDaysInDefault"
+        >
+          <ng-container name>There are days in default</ng-container>
+          <ng-container value>{{ paymentTermsState.fm_payment_terms_has_days_in_default ? 'Yes' : 'No' }}</ng-container>
+        </div>
+        @if (paymentTermsState.fm_payment_terms_has_days_in_default) {
+          <div
+            app-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="paymentTerms"
+            summaryListRowId="daysInDefaultDate"
+          >
+            <ng-container name>Date days in default were imposed</ng-container>
+            <ng-container value>{{ daysInDefaultDate }}</ng-container>
+          </div>
+          <div
+            app-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="paymentTerms"
+            summaryListRowId="daysInDefault"
+          >
+            <ng-container name>Days in default</ng-container>
+            <ng-container value>
+              @let daysText = paymentTermsState.fm_payment_terms_default_days_in_jail === 1 ? 'day' : 'days';
+              {{ paymentTermsState.fm_payment_terms_default_days_in_jail }} {{ daysText }}</ng-container
+            >
+          </div>
+        }
+      }
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="paymentTerms"
+        summaryListRowId="hasEnforcementActions"
+      >
+        <ng-container name>Enforcement action</ng-container>
+        <ng-container value>{{
+          paymentTermsState.fm_payment_terms_add_enforcement_action
+            ? enforcementAction
+            : paymentTermsState.fm_payment_terms_hold_enforcement_on_account
+              ? enforcementActions.NOENF
+              : 'No'
+        }}</ng-container>
+      </div>
+      @if (
+        enforcementAction === enforcementActions.NOENF || paymentTermsState.fm_payment_terms_hold_enforcement_on_account
+      ) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="noEnf"
+        >
+          <ng-container name>Reason account is on NOENF</ng-container>
+          <ng-container value>{{ paymentTermsState.fm_payment_terms_reason_account_is_on_noenf }}</ng-container>
+        </div>
+      } @else if (enforcementAction === enforcementActions.PRIS) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="earliestReleaseDate"
+        >
+          <ng-container name>Earliest release date (EDR)</ng-container>
+          <ng-container value>{{ earliestReleaseDate }}</ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="paymentTerms"
+          summaryListRowId="prisonAndPrisonNumber"
+        >
+          <ng-container name>Prison and prison number</ng-container>
+          <ng-container value>
+            @if (paymentTermsState.fm_payment_terms_prison_and_prison_number) {
+              {{ paymentTermsState.fm_payment_terms_prison_and_prison_number }}
+            } @else {
+              <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            }
+          </ng-container>
+        </div>
+      }
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>
