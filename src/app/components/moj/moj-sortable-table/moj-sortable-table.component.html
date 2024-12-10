@@ -1,0 +1,11 @@
+<table class="govuk-table {{ tableClasses }}" data-module="moj-sortable-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <ng-content select="[head]"></ng-content>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <ng-content select="[row]"></ng-content>
+    <ng-content select="[results]"></ng-content>
+  </tbody>
+</table>

@@ -6,9 +6,7 @@ import { FINES_MAC_ACCOUNT_DETAILS_DEFENDANT_TYPES } from './constants/fines-mac
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
-import { GovukHeadingWithCaptionComponent } from '@components/govuk/govuk-heading-with-caption/govuk-heading-with-caption.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
-
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
 import { GovukTaskListComponent } from '@components/govuk/govuk-task-list/govuk-task-list.component';
@@ -38,7 +36,6 @@ import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types
     GovukButtonComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
-    GovukHeadingWithCaptionComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukBackLinkComponent,

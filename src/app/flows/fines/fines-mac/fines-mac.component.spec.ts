@@ -19,7 +19,7 @@ describe('FinesMacComponent', () => {
     component = fixture.componentInstance;
 
     mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockGlobalStateService = TestBed.inject(GlobalStateService);
 
     fixture.detectChanges();
@@ -56,7 +56,7 @@ describe('FinesMacComponent', () => {
 
   it('should call canDeactivate ', () => {
     // Empty state, should return true
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     expect(component.canDeactivate()).toBeTruthy();
 
     mockFinesService.finesMacState.stateChanges = true;

@@ -1,0 +1,135 @@
+<app-govuk-summary-card-list
+  [cardTitle]="showVehicleDetails ? 'Personal details' : 'Defendant details'"
+  [summaryCardListId]="showVehicleDetails ? 'personal-details' : 'defendant-details'"
+>
+  <ng-container actions>
+    <app-fines-mac-review-account-change-link
+      (emitChange)="changePersonalDetails()"
+    ></app-fines-mac-review-account-change-link>
+  </ng-container>
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="personalDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="title"
+      >
+        <ng-container name>Title</ng-container>
+        <ng-container value>{{ personalDetails.fm_personal_details_title }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="forenames"
+      >
+        <ng-container name>First names</ng-container>
+        <ng-container value>{{ personalDetails.fm_personal_details_forenames }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="surname"
+      >
+        <ng-container name>Last name</ng-container>
+        <ng-container value>{{ personalDetails.fm_personal_details_surname }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="aliases"
+      >
+        <ng-container name>Aliases</ng-container>
+        <ng-container value>
+          @if (aliases.length > 0) {
+            @for (alias of aliases; track alias) {
+              {{ alias }}
+              <br />
+            }
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="dob"
+      >
+        <ng-container name>Date of birth</ng-container>
+        <ng-container value>
+          @if (dob) {
+            {{ dob }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="nationalInsuranceNumber"
+      >
+        <ng-container name>National Insurance number</ng-container>
+        <ng-container value>
+          @if (personalDetails.fm_personal_details_national_insurance_number) {
+            {{ personalDetails.fm_personal_details_national_insurance_number }}
+          } @else {
+            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+          }
+        </ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="personalDetails"
+        summaryListRowId="address"
+      >
+        <ng-container name>Address</ng-container>
+        <ng-container value>
+          @for (addressLine of address; track addressLine) {
+            {{ addressLine }}
+            <br />
+          }
+        </ng-container>
+      </div>
+      @if (showVehicleDetails) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="personalDetails"
+          summaryListRowId="vehicleMakeOrModel"
+        >
+          <ng-container name>Vehicle make and model</ng-container>
+          <ng-container value>
+            @if (personalDetails.fm_personal_details_vehicle_make) {
+              {{ personalDetails.fm_personal_details_vehicle_make }}
+            } @else {
+              <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            }
+          </ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="personalDetails"
+          summaryListRowId="registrationNumber"
+        >
+          <ng-container name>Registration number</ng-container>
+          <ng-container value>
+            @if (personalDetails.fm_personal_details_vehicle_registration_mark) {
+              {{ personalDetails.fm_personal_details_vehicle_registration_mark }}
+            } @else {
+              <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            }
+          </ng-container>
+        </div>
+      }
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

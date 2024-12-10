@@ -20,8 +20,8 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockDateService = jasmine.createSpyObj(DateService, ['getPreviousDate']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    formSubmit = { ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacParentGuardianDetailsFormComponent],
@@ -36,7 +36,10 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     mockDateService.getPreviousDate.and.returnValue('19/08/2024');
-    mockFinesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    mockFinesService.finesMacState.accountDetails.formData = {
+      ...mockFinesService.finesMacState.accountDetails.formData,
+      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+    };
 
     fixture.detectChanges();
   });

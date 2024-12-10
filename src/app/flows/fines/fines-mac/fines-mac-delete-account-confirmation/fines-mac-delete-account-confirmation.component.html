@@ -14,7 +14,14 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <app-govuk-cancel-link
-        (linkClickEvent)="handleRoute(finesMacRoutes.children.accountDetails)"
+        cancelLinkText="No - cancel"
+        (linkClickEvent)="
+          handleRoute(
+            finesService.finesMacState.deleteFromCheckAccount
+              ? finesMacRoutes.children.reviewAccount
+              : finesMacRoutes.children.accountDetails
+          )
+        "
       ></app-govuk-cancel-link>
     </div>
   </div>

@@ -89,7 +89,7 @@ export const finesMacPayloadBuildAccountPaymentTerms = (
     fm_payment_terms_payment_terms,
     fm_payment_terms_pay_by_date,
     fm_payment_terms_start_date,
-    fm_payment_instalment_period,
+    fm_payment_terms_instalment_period,
     fm_payment_terms_lump_sum_amount,
     fm_payment_terms_instalment_amount,
     fm_payment_terms_default_days_in_jail,
@@ -106,7 +106,7 @@ export const finesMacPayloadBuildAccountPaymentTerms = (
   return {
     payment_terms_type_code: paymentTermsTypeCode,
     effective_date: effectiveDate ?? null,
-    instalment_period: fm_payment_instalment_period ?? null,
+    instalment_period: fm_payment_terms_instalment_period ?? null,
     lump_sum_amount: fm_payment_terms_lump_sum_amount ?? null,
     instalment_amount: fm_payment_terms_instalment_amount ?? null,
     default_days_in_jail: fm_payment_terms_default_days_in_jail ?? null,
