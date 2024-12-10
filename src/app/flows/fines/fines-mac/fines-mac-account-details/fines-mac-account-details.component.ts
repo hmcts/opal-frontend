@@ -23,8 +23,8 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
-import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
+// import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+// import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -51,8 +51,8 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
 
-  private payloadService = inject(FinesMacPayloadService);
-  private globalStateService = inject(GlobalStateService);
+  // private payloadService = inject(FinesMacPayloadService);
+  // private globalStateService = inject(GlobalStateService);
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
@@ -178,12 +178,13 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.initialAccountDetailsSetup();
 
-    const payload = this.payloadService.buildAddAccountPayload(
-      this.finesService.finesMacState,
-      this.globalStateService.userState(),
-    );
-    console.log('P', payload);
-    console.log('FM', this.payloadService.convertPayloadToFinesMacState(payload));
+    // const payload = this.payloadService.buildAddAccountPayload(
+    //   this.finesService.finesMacState,
+    //   this.globalStateService.userState(),
+    // );
+    // console.log(this.finesService.finesMacState);
+    // console.log('P', payload);
+    // console.log('FM', this.payloadService.convertPayloadToFinesMacState(payload));
   }
 
   public ngOnDestroy(): void {

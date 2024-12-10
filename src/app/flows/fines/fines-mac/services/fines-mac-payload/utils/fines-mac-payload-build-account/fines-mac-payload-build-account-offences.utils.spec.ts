@@ -5,6 +5,7 @@ import { FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE } from './mocks/state/fin
 import { FINES_MAC_PAYLOAD_BUILD_COURT_DETAILS_STATE_MOCK } from './mocks/state/fines-mac-payload-build-court-details-state.mock';
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { finesMacPayloadBuildAccountOffences } from './fines-mac-payload-build-account-offences.utils';
+import { FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './mocks/state/fines-mac-payload-build-offence-details-minor-creditor-state.mock';
 
 describe('finesMacPayloadBuildAccountOffences', () => {
   it('should build payload with impositions with a major creditor', () => {
@@ -15,37 +16,16 @@ describe('finesMacPayloadBuildAccountOffences', () => {
   });
 
   it('should build payload with a minor creditor', () => {
+    // TOD: Make minor creditor state
     const offencesMockState: IFinesMacOffenceDetailsForm[] = [
       {
-        ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE,
-        childFormData: [
-          {
-            formData: {
-              fm_offence_details_minor_creditor_creditor_type: 'individual',
-              fm_offence_details_minor_creditor_title: 'Mr',
-              fm_offence_details_minor_creditor_forenames: 'Test',
-              fm_offence_details_minor_creditor_surname: 'Test',
-              fm_offence_details_minor_creditor_company_name: null,
-              fm_offence_details_minor_creditor_address_line_1: 'Test',
-              fm_offence_details_minor_creditor_address_line_2: 'Test2',
-              fm_offence_details_minor_creditor_address_line_3: null,
-              fm_offence_details_minor_creditor_post_code: 'SN254ED',
-              fm_offence_details_minor_creditor_pay_by_bacs: null,
-              fm_offence_details_minor_creditor_bank_account_name: null,
-              fm_offence_details_minor_creditor_bank_sort_code: null,
-              fm_offence_details_minor_creditor_bank_account_number: null,
-              fm_offence_details_minor_creditor_bank_account_ref: null,
-              fm_offence_details_imposition_position: 0,
-            },
-            nestedFlow: false,
-            status: 'Provided',
-          },
-        ],
+        ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE,
       },
     ];
 
     const courtDetailsState = { ...FINES_MAC_PAYLOAD_BUILD_COURT_DETAILS_STATE_MOCK };
     const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
+
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
   });
 

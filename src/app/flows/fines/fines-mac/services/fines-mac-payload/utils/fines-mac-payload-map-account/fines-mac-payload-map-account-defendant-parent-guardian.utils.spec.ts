@@ -19,38 +19,40 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
   let initialState: IFinesMacState;
 
   beforeEach(() => {
-    initialState = FINES_MAC_STATE;
+    initialState = structuredClone(FINES_MAC_STATE);
   });
 
   it('should map personal details from payload to state', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete =
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK;
+    const payload: IFinesMacPayloadBuildAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK,
+    );
 
     const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
-    const personalDetailsState: IFinesMacPersonalDetailsState = {
-      ...FINES_MAC_PAYLOAD_BUILD_PERSONAL_DETAILS_STATE_MOCK,
-      fm_personal_details_add_alias: false,
-      fm_personal_details_aliases: [],
-      fm_personal_details_vehicle_make: null,
-      fm_personal_details_vehicle_registration_mark: null,
-    };
+    const personalDetailsState: IFinesMacPersonalDetailsState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_PERSONAL_DETAILS_STATE_MOCK,
+    );
+    (personalDetailsState.fm_personal_details_add_alias = false),
+      (personalDetailsState.fm_personal_details_aliases = []);
+    personalDetailsState.fm_personal_details_vehicle_make = null;
+    personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
 
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK,
-    };
-    const employerDetailsState: IFinesMacEmployerDetailsState = {
-      ...FINES_MAC_PAYLOAD_BUILD_EMPLOYER_DETAILS_STATE_MOCK,
-    };
+    const contactDetailsState: IFinesMacContactDetailsState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK,
+    );
 
-    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
-      ...FINES_MAC_PAYLOAD_BUILD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-      fm_parent_guardian_details_add_alias: false,
-      fm_parent_guardian_details_aliases: [],
-    };
+    const employerDetailsState: IFinesMacEmployerDetailsState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_EMPLOYER_DETAILS_STATE_MOCK,
+    );
 
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
+    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+    );
+    parentGuardianDetailsState.fm_parent_guardian_details_add_alias = false;
+    parentGuardianDetailsState.fm_parent_guardian_details_aliases = [];
+
+    const languagePreferencesState: IFinesMacLanguagePreferencesState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK,
+    );
 
     expect(result.personalDetails.formData).toEqual(personalDetailsState);
     expect(result.contactDetails.formData).toEqual(contactDetailsState);
@@ -60,8 +62,9 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
   });
 
   it('should map parent/guardian details if present in payload', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete =
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK;
+    const payload: IFinesMacPayloadBuildAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK,
+    );
 
     const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias).toBe(true);

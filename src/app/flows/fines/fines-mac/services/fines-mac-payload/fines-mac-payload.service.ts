@@ -271,6 +271,8 @@ export class FinesMacPayloadService {
       transformedPayload.account.account_notes,
     );
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+
+    //TODO: Update fine mac states status types to 'provided' if they have data....
     return finesMacState;
   }
 }

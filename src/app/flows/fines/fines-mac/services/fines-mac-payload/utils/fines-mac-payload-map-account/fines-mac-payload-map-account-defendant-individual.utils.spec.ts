@@ -17,30 +17,31 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
   let initialState: IFinesMacState;
 
   beforeEach(() => {
-    initialState = FINES_MAC_STATE;
+    initialState = structuredClone(FINES_MAC_STATE);
   });
 
   it('should map personal details from payload to state', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete =
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK;
+    const payload: IFinesMacPayloadBuildAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK,
+    );
 
-    const personalDetailsState: IFinesMacPersonalDetailsState = {
-      ...FINES_MAC_PAYLOAD_BUILD_PERSONAL_DETAILS_STATE_MOCK,
-      fm_personal_details_add_alias: false,
-      fm_personal_details_aliases: [],
-    };
+    const personalDetailsState: IFinesMacPersonalDetailsState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_PERSONAL_DETAILS_STATE_MOCK,
+    );
+    personalDetailsState.fm_personal_details_add_alias = false;
+    personalDetailsState.fm_personal_details_aliases = [];
 
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK,
-    };
+    const contactDetailsState: IFinesMacContactDetailsState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK,
+    );
 
-    const employerDetailsState: IFinesMacEmployerDetailsState = {
-      ...FINES_MAC_PAYLOAD_BUILD_EMPLOYER_DETAILS_STATE_MOCK,
-    };
+    const employerDetailsState: IFinesMacEmployerDetailsState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_EMPLOYER_DETAILS_STATE_MOCK,
+    );
 
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
+    const languagePreferencesState: IFinesMacLanguagePreferencesState = structuredClone(
+      FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK,
+    );
 
     const result = finesMacPayloadMapAccountDefendantIndividualPayload(initialState, payload);
 
@@ -51,8 +52,9 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
   });
 
   it('should map personal details with aliases from payload to state', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete =
-      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK;
+    const payload: IFinesMacPayloadBuildAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK,
+    );
 
     const result = finesMacPayloadMapAccountDefendantIndividualPayload(initialState, payload);
     expect(result.personalDetails.formData.fm_personal_details_add_alias).toBe(true);
