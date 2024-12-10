@@ -12,7 +12,7 @@ export const FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE: IFinesMacOffenceDeta
         fm_offence_details_amount_imposed: 900,
         fm_offence_details_amount_paid: 500,
         fm_offence_details_balance_remaining: 400,
-        fm_offence_details_needs_creditor: false,
+        fm_offence_details_needs_creditor: true,
         fm_offence_details_creditor: 'major',
         fm_offence_details_major_creditor_id: 3999,
       },
