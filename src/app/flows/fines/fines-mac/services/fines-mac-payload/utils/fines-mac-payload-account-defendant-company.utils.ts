@@ -62,7 +62,7 @@ export const buildAccountDefendantCompanyPayload = (
   languagePreferencesState: IFinesMacLanguagePreferencesState,
 ): IFinesMacPayloadAccountDefendantCompany => {
   const {
-    fm_company_details_organisation_name: organisation_name,
+    fm_company_details_organisation_name: company_name,
     fm_company_details_address_line_1: address_line_1,
     fm_company_details_address_line_2: address_line_2,
     fm_company_details_address_line_3: address_line_3,
@@ -79,7 +79,7 @@ export const buildAccountDefendantCompanyPayload = (
 
   return {
     company_flag: true,
-    organisation_name,
+    company_name,
     address_line_1,
     address_line_2,
     address_line_3,

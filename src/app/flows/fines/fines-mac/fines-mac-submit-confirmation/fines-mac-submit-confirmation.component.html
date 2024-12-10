@@ -1,19 +1,33 @@
 <div class="govuk-grid-column-two-thirds">
-  <app-govuk-panel panelTitle="You've submitted this account for review"></app-govuk-panel>
-  <h2 class="govuk-heading-l">Next steps</h2>
-  <ul class="govuk-list">
-    <li>
-      <a
-        id="createNewAccount"
-        class="govuk-link"
-        (click)="createNewAccount()"
-        (keyup.enter)="createNewAccount()"
-        tabindex="0"
-        >Create a new account</a
-      >
-    </li>
-    <li>
-      <a id="accountsInReview" class="govuk-link">See all accounts in review</a>
-    </li>
-  </ul>
+  @if (!globalStateService.error().message) {
+    @if (draftAddAccountPayload$ | async; as draftAddAccountPayload) {
+      <app-govuk-panel panelTitle="You've submitted this account for review"></app-govuk-panel>
+      <h2 class="govuk-heading-l">Next steps</h2>
+      <ul class="govuk-list">
+        <li>
+          <a
+            id="createNewAccount"
+            class="govuk-link"
+            (click)="createNewAccount()"
+            (keyup.enter)="createNewAccount()"
+            tabindex="0"
+            >Create a new account</a
+          >
+        </li>
+        <li>
+          <a
+            id="accountsInReview"
+            class="govuk-link"
+            (click)="seeAllAccounts()"
+            (keyup.enter)="seeAllAccounts()"
+            tabindex="0"
+            >See all accounts in review</a
+          >
+        </li>
+      </ul>
+    }
+  } @else if (!globalStateService.error().message) {
+    <h2 class="govuk-heading-l">Error</h2>
+    <p>{{ globalStateService.error().message }}</p>
+  }
 </div>
