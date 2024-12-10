@@ -1,5 +1,5 @@
 import { DataTable, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { formatDateString, calculateWeeksInFuture } from '../../../support/utils/dateUtils';
+import { formatDateString, calculateWeeksInFuture, calculateWeeksInPast } from '../../../support/utils/dateUtils';
 
 Then('I see the business unit is {string}', (businessUnit: string) => {
   cy.get('#accountDetailsBusinessUnitValue').should('contain.text', businessUnit);
@@ -59,6 +59,12 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
         .find('app-fines-mac-offence-details-review-offence-heading-title')
         .find('span')
         .should('have.text', value);
+    } else if (tableName === 'Payment terms' && key === 'Date of collection order') {
+      const weeksInPast: number = parseInt(value.split(' ')[0], 10);
+      tableSelector
+        .contains('dt', key)
+        .next()
+        .should('have.text', formatDateString(calculateWeeksInPast(weeksInPast)));
     } else if (tableName === 'Payment terms' && key === 'Pay by date') {
       const weeksInFuture: number = parseInt(value.split(' ')[0], 10);
       tableSelector
@@ -77,10 +83,12 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
   });
 });
 Then('I do not see the {string} table', (tableName: string) => {
-  cy.get('app-govuk-summary-card-list[cardtitle="' + tableName + '"]').should('not.exist');
+  cy.get(`h2.govuk-summary-card__title`).contains(tableName).should('not.exist');
 });
 Then('I click on the {string} link in the {string} table', (linkName: string, tableName: string) => {
-  cy.get('app-govuk-summary-card-list[cardtitle="' + tableName + '"]')
+  cy.get(`h2.govuk-summary-card__title`)
+    .contains(tableName)
+    .parentsUntil('app-govuk-summary-card-list')
     .contains('a', linkName)
     .click();
 });
