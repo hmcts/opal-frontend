@@ -16,8 +16,8 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    formSubmit = { ...FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsFormComponent],
@@ -87,8 +87,6 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
 
     expect(component['setupEmployerDetailsForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(
-      component['finesService'].finesMacState.employerDetails.formData,
-    );
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.employerDetails.formData);
   });
 });

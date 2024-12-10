@@ -38,6 +38,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public offencesImpositions!: IFinesMacOffenceDetailsReviewSummaryForm[];
+  @Input({ required: false }) public isReadOnly = false;
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);

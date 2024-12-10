@@ -18,8 +18,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    formSubmit = FINES_MAC_PAYMENT_TERMS_FORM_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    formSubmit = { ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsComponent],

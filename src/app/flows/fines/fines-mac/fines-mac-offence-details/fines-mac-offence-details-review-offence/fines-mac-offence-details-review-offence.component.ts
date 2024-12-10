@@ -21,6 +21,7 @@ export class FinesMacOffenceDetailsReviewOffenceComponent {
   @Input({ required: true }) majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: false }) showActions!: boolean;
   @Input({ required: false }) showDetails: boolean = true;
+  @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();
 
   /**

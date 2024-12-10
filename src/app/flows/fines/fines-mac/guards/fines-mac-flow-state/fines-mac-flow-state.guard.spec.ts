@@ -27,7 +27,7 @@ describe('finesMacFlowStateGuard', () => {
       return urlTree;
     });
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE };
 
     TestBed.configureTestingModule({
       providers: [
