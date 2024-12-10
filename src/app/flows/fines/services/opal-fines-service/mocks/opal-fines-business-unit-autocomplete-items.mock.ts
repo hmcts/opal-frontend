@@ -2,31 +2,31 @@ import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphag
 
 export const OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK: IAlphagovAccessibleAutocompleteItem[] = [
   {
-    value: 'Historical Debt',
+    value: 61,
     name: 'Historical Debt',
   },
   {
-    value: 'London Central & South East',
+    value: 67,
     name: 'London Central & South East',
   },
   {
-    value: 'London Confiscation Orders',
+    value: 68,
     name: 'London Confiscation Orders',
   },
   {
-    value: 'London North East',
+    value: 69,
     name: 'London North East',
   },
   {
-    value: 'London North West',
+    value: 70,
     name: 'London North West',
   },
   {
-    value: 'London South West',
+    value: 71,
     name: 'London South West',
   },
   {
-    value: 'MBEC London',
+    value: 73,
     name: 'MBEC London',
   },
 ];

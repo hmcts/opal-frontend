@@ -3,18 +3,18 @@
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)">
   @if (autoCompleteItems.length === 1) {
-    <p>The account will be created in {{ form.get('fm_create_account_business_unit')?.value }}</p>
+    <p>The account will be created in {{ autoCompleteItems[0].name }}</p>
   } @else {
     <app-alphagov-accessible-autocomplete
-      [control]="form.controls['fm_create_account_business_unit']"
+      [control]="form.controls['fm_create_account_business_unit_id']"
       labelText="Business unit"
       labelClasses="govuk-fieldset__legend--m"
-      inputId="fm_create_account_business_unit"
-      inputName="fm_create_account_business_unit"
+      inputId="fm_create_account_business_unit_id"
+      inputName="fm_create_account_business_unit_id"
       label="Search for a user"
       hintText="Enter area where the account is to be created"
       [autoCompleteItems]="autoCompleteItems"
-      [errors]="formControlErrorMessages['fm_create_account_business_unit']"
+      [errors]="formControlErrorMessages['fm_create_account_business_unit_id']"
     ></app-alphagov-accessible-autocomplete>
   }
 

@@ -54,25 +54,25 @@ When('I select cancel on the pop up window', () => {
 });
 
 Then('I see the business unit heading is {string}', (businessUnitHeading: string) => {
-  cy.get('#fm_create_account_business_unit-hint').prev().should('contains.text', businessUnitHeading);
+  cy.get('#fm_create_account_business_unit_id-hint').prev().should('contains.text', businessUnitHeading);
 });
 Then('I see the business unit help text is {string}', (businessUnitHelpText: string) => {
-  cy.get('#fm_create_account_business_unit-hint').should('contains.text', businessUnitHelpText);
+  cy.get('#fm_create_account_business_unit_id-hint').should('contains.text', businessUnitHelpText);
 });
 Then('I see the search box below the business unit help text', () => {
-  cy.get('#fm_create_account_business_unit-hint')
+  cy.get('#fm_create_account_business_unit_id-hint')
     .next()
     .children()
     .children('input')
-    .should('have.attr', 'id', 'fm_create_account_business_unit-autocomplete');
+    .should('have.attr', 'id', 'fm_create_account_business_unit_id-autocomplete');
 });
 Then('I enter {string} into the business unit search box', (businessUnit: string) => {
-  cy.get('#fm_create_account_business_unit-autocomplete').type(businessUnit);
-  cy.get('#fm_create_account_business_unit-autocomplete').should('not.contain', 'No results found');
-  cy.get('#fm_create_account_business_unit-autocomplete').type('{downArrow}{enter}');
+  cy.get('#fm_create_account_business_unit_id-autocomplete').type(businessUnit);
+  cy.get('#fm_create_account_business_unit_id-autocomplete').should('not.contain', 'No results found');
+  cy.get('#fm_create_account_business_unit_id-autocomplete').type('{downArrow}{enter}');
 });
 Then('I see the value {string} in the business unit search box', (businessUnit: string) => {
-  cy.get('#fm_create_account_business_unit-autocomplete').should('have.value', businessUnit);
+  cy.get('#fm_create_account_business_unit_id-autocomplete').should('have.value', businessUnit);
 });
 Then('I see the defendant type heading is {string}', (businessUnitHeading: string) => {
   cy.get('#defendantTypeHint').prev().should('contains.text', businessUnitHeading);
