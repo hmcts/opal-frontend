@@ -14,7 +14,7 @@ Feature: PO-662 - Check account details - Adult or youth with parent or guardian
     And I click the "Continue" button
     And I see "Account details" on the page header
 
-  Scenario: AC1,2,3,4,5 - Check account details - Company
+  Scenario: AC1,2,3,4,5 - Check account details - Adult or Youth with parent or guardian to pay
     ### Check the button is not displayed when no data has been entered
     Given I see "Account details" on the page header
     And I see the status of "Court details" is "Not provided"
@@ -121,13 +121,6 @@ Feature: PO-662 - Check account details - Adult or youth with parent or guardian
       | Prosecutor Case Reference (PCR)          | AC123NMJT                                |
       | Enforcement court                        | ACTON (820)                              |
 
-    ### Defendant (personal) details table
-    Then I see the following in the "Defendant details" table:
-      | Title          | Mr    |
-      | First name     | FNAME |
-      | Last name      | LNAME |
-      | Address line 1 | ADDR1 |
-
     ### Parent or guardian details table
     Then I see the following in the "Parent or guardian details" table:
       | Forenames                 | P-FNAME |
@@ -138,6 +131,21 @@ Feature: PO-662 - Check account details - Adult or youth with parent or guardian
       | Address                   | P-ADDR1 |
       | Vehicle make and model    | —       |
       | Registration number       | —       |
+
+    ### Defendant (personal) details table
+    Then I see the following in the "Defendant details" table:
+      | Title      | Mr    |
+      | First name | FNAME |
+      | Last name  | LNAME |
+      | Address    | ADDR1 |
+
+    ### Employer details table
+    Then I see the following in the "Employer details" table:
+      | Employer name             | — |
+      | Employee reference        | — |
+      | Employer email address    | — |
+      | Employer telephone number | — |
+      | Employer address          | — |
 
     ### Contact details table
     Then I see the following in the "Contact details" table:
@@ -169,10 +177,9 @@ Feature: PO-662 - Check account details - Adult or youth with parent or guardian
 
     And I do not see the "Personal details" table
     And I do not see the "Company details" table
-    And I do not see the "Employer details" table
 
     ### Change link
-    When I click on the "Change" link in the "Company details" table
+    When I click on the "Change" link in the "Parent or guardian details" table
     Then I see "Account details" on the page header
     Then I click the "Review account" button
 
@@ -188,9 +195,9 @@ Feature: PO-662 - Check account details - Adult or youth with parent or guardian
     When I click on the "No - cancel" link
     Then I see "Check account details" on the page header
     And I see the following in the "Court details" table:
-      #| Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
-      | Prosecutor Case Reference (PCR) | AC123NMJT   |
-      | Enforcement court               | ACTON (820) |
+      | Sending area or Local Justice Area (LJA) | Central London Magistrates' Court (2570) |
+      | Prosecutor Case Reference (PCR)          | AC123NMJT                                |
+      | Enforcement court                        | ACTON (820)                              |
 
     When I click on the "Delete account" link
     Then I see "Are you sure you want to delete this account?" on the page header
