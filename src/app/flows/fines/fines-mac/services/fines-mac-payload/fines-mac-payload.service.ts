@@ -257,7 +257,7 @@ export class FinesMacPayloadService {
     return mappedFinesMacState;
   }
 
-  public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT) {
+  public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
