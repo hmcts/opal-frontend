@@ -1,0 +1,34 @@
+<nav class="moj-pagination" aria-label="Pagination navigation">
+  <ul class="moj-pagination__list">
+    <li class="moj-pagination__item moj-pagination__item--prev">
+      @if (currentPage > 1) {
+        <a class="moj-pagination__link" href="#" (click)="changePageEvent($event, currentPage - 1)"
+          >Previous<span class="govuk-visually-hidden"> page</span></a
+        >
+      }
+    </li>
+    @for (page of pages; track page) {
+      <li class="moj-pagination__item" [class.moj-pagination__item--active]="page === currentPage">
+        <a class="moj-pagination__link" href="#" (click)="changePageEvent($event, +page)">
+          @if (page !== '...') {
+            {{ page }}
+          }
+        </a>
+        @if (page === '...') {
+          <span>…</span>
+        }
+      </li>
+    }
+
+    <li class="moj-pagination__item moj-pagination__item--next">
+      @if (currentPage < totalPages) {
+        <a class="moj-pagination__link" href="#" (click)="changePageEvent($event, currentPage + 1)"
+          >Next<span class="govuk-visually-hidden"> page</span></a
+        >
+      }
+    </li>
+  </ul>
+  <p class="moj-pagination__results">
+    Showing <b>{{ startItem }}</b> to <b>{{ endItem }}</b> of <b>{{ totalItems }}</b> results
+  </p>
+</nav>
