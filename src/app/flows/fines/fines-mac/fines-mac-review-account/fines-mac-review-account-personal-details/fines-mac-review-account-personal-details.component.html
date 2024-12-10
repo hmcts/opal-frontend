@@ -1,4 +1,7 @@
-<app-govuk-summary-card-list cardTitle="Personal details">
+<app-govuk-summary-card-list
+  [cardTitle]="showVehicleDetails ? 'Personal details' : 'Defendant details'"
+  [summaryCardListId]="showVehicleDetails ? 'personal-details' : 'defendant-details'"
+>
   <ng-container actions>
     <app-fines-mac-review-account-change-link
       (emitChange)="changePersonalDetails()"
@@ -95,36 +98,38 @@
           }
         </ng-container>
       </div>
-      <div
-        app-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetails"
-        summaryListRowId="vehicleMakeOrModel"
-      >
-        <ng-container name>Vehicle make and model</ng-container>
-        <ng-container value>
-          @if (personalDetails.fm_personal_details_vehicle_make) {
-            {{ personalDetails.fm_personal_details_vehicle_make }}
-          } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
-          }
-        </ng-container>
-      </div>
-      <div
-        app-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="personalDetails"
-        summaryListRowId="registrationNumber"
-      >
-        <ng-container name>Registration number</ng-container>
-        <ng-container value>
-          @if (personalDetails.fm_personal_details_vehicle_registration_mark) {
-            {{ personalDetails.fm_personal_details_vehicle_registration_mark }}
-          } @else {
-            <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
-          }
-        </ng-container>
-      </div>
+      @if (showVehicleDetails) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="personalDetails"
+          summaryListRowId="vehicleMakeOrModel"
+        >
+          <ng-container name>Vehicle make and model</ng-container>
+          <ng-container value>
+            @if (personalDetails.fm_personal_details_vehicle_make) {
+              {{ personalDetails.fm_personal_details_vehicle_make }}
+            } @else {
+              <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            }
+          </ng-container>
+        </div>
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="personalDetails"
+          summaryListRowId="registrationNumber"
+        >
+          <ng-container name>Registration number</ng-container>
+          <ng-container value>
+            @if (personalDetails.fm_personal_details_vehicle_registration_mark) {
+              {{ personalDetails.fm_personal_details_vehicle_registration_mark }}
+            } @else {
+              <app-fines-mac-review-account-not-provided></app-fines-mac-review-account-not-provided>
+            }
+          </ng-container>
+        </div>
+      }
     </app-govuk-summary-list>
   </ng-container>
 </app-govuk-summary-card-list>

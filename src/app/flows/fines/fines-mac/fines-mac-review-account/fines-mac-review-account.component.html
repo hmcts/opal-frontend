@@ -18,20 +18,37 @@
     ></app-fines-mac-review-account-court-details>
   }
 
-  <app-fines-mac-review-account-personal-details
-    [personalDetails]="finesService.finesMacState.personalDetails.formData"
-    (emitChangePersonalDetails)="navigateBack()"
-  ></app-fines-mac-review-account-personal-details>
+  @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly') {
+    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+  } @else if (
+    finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'parentOrGuardianToPay'
+  ) {
+    <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
+  } @else {
+    <app-fines-mac-review-account-company-details
+      [companyDetails]="finesService.finesMacState.companyDetails.formData"
+      (emitChangeCompanyDetails)="navigateBack()"
+    >
+    </app-fines-mac-review-account-company-details>
+  }
 
   <app-fines-mac-review-account-contact-details
     [contactDetails]="finesService.finesMacState.contactDetails.formData"
     (emitChangeContactDetails)="navigateBack()"
   ></app-fines-mac-review-account-contact-details>
 
-  <app-fines-mac-review-account-employer-details
-    [employerDetails]="finesService.finesMacState.employerDetails.formData"
-    (emitChangeEmployerDetails)="navigateBack()"
-  ></app-fines-mac-review-account-employer-details>
+  @if (
+    finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'parentOrGuardianToPay'
+  ) {
+    <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
+  }
+
+  @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type !== 'company') {
+    <app-fines-mac-review-account-employer-details
+      [employerDetails]="finesService.finesMacState.employerDetails.formData"
+      (emitChangeEmployerDetails)="navigateBack()"
+    ></app-fines-mac-review-account-employer-details>
+  }
 
   <app-fines-mac-review-account-offence-details
     (emitChangeOffenceDetails)="navigateBack()"
@@ -40,6 +57,7 @@
   <app-fines-mac-review-account-payment-terms
     [paymentTermsState]="finesService.finesMacState.paymentTerms.formData"
     [businessUnit]="finesService.finesMacState.businessUnit"
+    [defendantType]="finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!"
     (emitChangePaymentTerms)="navigateBack()"
   ></app-fines-mac-review-account-payment-terms>
 
@@ -65,3 +83,20 @@
     </div>
   </div>
 </div>
+
+<ng-template #parentGuardianDetails>
+  <app-fines-mac-review-account-parent-guardian-details
+    [parentGuardianDetails]="finesService.finesMacState.parentGuardianDetails.formData"
+    (emitChangeParentGuardianDetails)="navigateBack()"
+  ></app-fines-mac-review-account-parent-guardian-details>
+</ng-template>
+
+<ng-template #personalDetails>
+  <app-fines-mac-review-account-personal-details
+    [personalDetails]="finesService.finesMacState.personalDetails.formData"
+    [showVehicleDetails]="
+      finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
+    "
+    (emitChangePersonalDetails)="navigateBack()"
+  ></app-fines-mac-review-account-personal-details>
+</ng-template>

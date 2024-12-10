@@ -1,4 +1,4 @@
-<app-govuk-summary-card-list cardTitle="Payment terms">
+<app-govuk-summary-card-list cardTitle="Payment terms" summaryCardListId="payment-terms">
   <ng-container actions>
     <app-fines-mac-review-account-change-link
       (emitChange)="changePaymentTerms()"
@@ -103,46 +103,50 @@
           <ng-container value>{{ startDate }}</ng-container>
         </div>
       }
-      <div
-        app-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="paymentTerms"
-        summaryListRowId="requestPaymentCard"
-      >
-        <ng-container name>Request payment card</ng-container>
-        <ng-container value>{{ paymentTermsState.fm_payment_terms_payment_card_request ? 'Yes' : 'No' }}</ng-container>
-      </div>
-      <div
-        app-govuk-summary-list-row
-        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-        summaryListId="paymentTerms"
-        summaryListRowId="hasDaysInDefault"
-      >
-        <ng-container name>There are days in default</ng-container>
-        <ng-container value>{{ paymentTermsState.fm_payment_terms_has_days_in_default ? 'Yes' : 'No' }}</ng-container>
-      </div>
-      @if (paymentTermsState.fm_payment_terms_has_days_in_default) {
+      @if (defendantType !== 'company') {
         <div
           app-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
-          summaryListRowId="daysInDefaultDate"
+          summaryListRowId="requestPaymentCard"
         >
-          <ng-container name>Date days in default were imposed</ng-container>
-          <ng-container value>{{ daysInDefaultDate }}</ng-container>
+          <ng-container name>Request payment card</ng-container>
+          <ng-container value>{{
+            paymentTermsState.fm_payment_terms_payment_card_request ? 'Yes' : 'No'
+          }}</ng-container>
         </div>
         <div
           app-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"
           summaryListId="paymentTerms"
-          summaryListRowId="daysInDefault"
+          summaryListRowId="hasDaysInDefault"
         >
-          <ng-container name>Days in default</ng-container>
-          <ng-container value>
-            @let daysText = paymentTermsState.fm_payment_terms_default_days_in_jail === 1 ? 'day' : 'days';
-            {{ paymentTermsState.fm_payment_terms_default_days_in_jail }} {{ daysText }}</ng-container
+          <ng-container name>There are days in default</ng-container>
+          <ng-container value>{{ paymentTermsState.fm_payment_terms_has_days_in_default ? 'Yes' : 'No' }}</ng-container>
+        </div>
+        @if (paymentTermsState.fm_payment_terms_has_days_in_default) {
+          <div
+            app-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="paymentTerms"
+            summaryListRowId="daysInDefaultDate"
           >
-        </div>
+            <ng-container name>Date days in default were imposed</ng-container>
+            <ng-container value>{{ daysInDefaultDate }}</ng-container>
+          </div>
+          <div
+            app-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="paymentTerms"
+            summaryListRowId="daysInDefault"
+          >
+            <ng-container name>Days in default</ng-container>
+            <ng-container value>
+              @let daysText = paymentTermsState.fm_payment_terms_default_days_in_jail === 1 ? 'day' : 'days';
+              {{ paymentTermsState.fm_payment_terms_default_days_in_jail }} {{ daysText }}</ng-container
+            >
+          </div>
+        }
       }
       <div
         app-govuk-summary-list-row
