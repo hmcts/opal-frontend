@@ -101,6 +101,9 @@ export class FinesMacReviewAccountComponent {
     if (nonRelative) {
       this.router.navigate([route]);
     } else {
+      if (route === this.fineMacRoutes.children.deleteAccountConfirmation) {
+        this.finesService.finesMacState.deleteFromCheckAccount = true;
+      }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
   }
