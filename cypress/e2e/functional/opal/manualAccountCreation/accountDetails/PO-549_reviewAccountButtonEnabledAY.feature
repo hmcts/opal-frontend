@@ -1,4 +1,4 @@
-Feature: PO-549 - Enabling the review account button - Adult or Youth only
+Feature: PO-549 - Enabling the Check account button - Adult or Youth only
 ###Descoped by PO-560 - functionality is covered in the check account details feature
 
 # Background:
@@ -26,9 +26,9 @@ Feature: PO-549 - Enabling the review account button - Adult or Youth only
 #   And I see the status of "Offence details" is "Not provided"
 #   And I see the status of "Payment terms" is "Cannot start yet"
 #   And I see the status of "Account comments and notes" is "Not provided"
-#   And I see the "Check and submit for review" section heading
-#   And I see "Check that all required fields have been entered before you submit for review" text on the page
-#   And the button with text "Review account" should not be present
+#   And I see the "Check and submit" section heading
+#   And I see "You cannot proceed until all required sections have been completed." text on the page
+#   And the button with text "Check account" should not be present
 
 #   ### Court Details
 #   When I click on the "Court details" link
@@ -40,8 +40,8 @@ Feature: PO-549 - Enabling the review account button - Adult or Youth only
 #   When I click the "Return to account details" button
 #   Then I see "Account details" on the page header
 #   And I see the status of "Court details" is "Provided"
-#   And I see "Check that all required fields have been entered before you submit for review" text on the page
-#   And the button with text "Review account" should not be present
+#   And I see "You cannot proceed until all required sections have been completed." text on the page
+#   And the button with text "Check account" should not be present
 
 #   ### Personal Details
 #   When I click on the "Personal details" link
@@ -54,8 +54,8 @@ Feature: PO-549 - Enabling the review account button - Adult or Youth only
 #   When I click the "Return to account details" button
 #   Then I see "Account details" on the page header
 #   And I see the status of "Personal details" is "Provided"
-#   And I see "Check that all required fields have been entered before you submit for review" text on the page
-#   And the button with text "Review account" should not be present
+#   And I see "You cannot proceed until all required sections have been completed." text on the page
+#   And the button with text "Check account" should not be present
 
 #   ### Offence Details
 #   When I click on the "Offence details" link
@@ -75,7 +75,7 @@ Feature: PO-549 - Enabling the review account button - Adult or Youth only
 #   And I see "Account details" on the page header
 #   And I see the status of "Offence details" is "Provided"
 #   And I see the status of "Payment terms" is "Not provided"
-#   And the button with text "Review account" should not be present
+#   And the button with text "Check account" should not be present
 
 #   ### Payment Terms
 #   When I click on the "Payment terms" link
@@ -89,9 +89,9 @@ Feature: PO-549 - Enabling the review account button - Adult or Youth only
 #   When I click the "Return to account details" button
 #   Then I see "Account details" on the page header
 #   And I see the status of "Payment terms" is "Provided"
-#   And I see the "Review account" button
-#   And I do not see "Check that all required fields have been entered before you submit for review" text on the page
+#   And I see the "Check account" button
+#   And I do not see "You cannot proceed until all required sections have been completed." text on the page
 
 #   ### Click the button
-#   When I click the "Review account" button
+#   When I click the "Check account" button
 #   Then I see "Check account details" on the page header
