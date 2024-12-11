@@ -66,9 +66,9 @@ Feature: PO-367 create the account details for adult or youth with parent or gua
 #   When "Payment terms" is clicked, nothing happens
 #   Then I see "Account details" on the page header
 
-# Scenario: AC7-positive: verify Check and submit for review Review account
-#   When I see "Check and submit for review" on the section heading
-#   #When I check text under Check and submit for review "Check that all required fields have been entered before you publish"
-#   When "Review account" button is clicked, nothing happens
+# Scenario: AC7-positive: verify Check and submit Check account
+#   When I see "Check and submit" on the section heading
+#   #When I check text under Check and submit "Check that all required fields have been entered before you publish"
+#   When "Check account" button is clicked, nothing happens
 #   When "Cancel account creation" link is clicked, nothing happens
 

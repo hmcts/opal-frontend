@@ -52,8 +52,8 @@ Feature: PO-366 updating the account details page to manage the account creation
 #   When "Offence details" is clicked, nothing happens
 #   When "Payment terms" is clicked, nothing happens
 
-# Scenario: AC6-positive: verify Check and submit for review Review account
-#   When I see "Check and submit for review" on the section heading
-#   #When I check text under Check and submit for review "Check that all required fields have been entered before you publish"
-#   When "Review account" button is clicked, nothing happens
+# Scenario: AC6-positive: verify Check and submit Check account
+#   When I see "Check and submit" on the section heading
+#   #When I check text under Check and submit "Check that all required fields have been entered before you publish"
+#   When "Check account" button is clicked, nothing happens
 #   When "Cancel account creation" link is clicked, nothing happens
