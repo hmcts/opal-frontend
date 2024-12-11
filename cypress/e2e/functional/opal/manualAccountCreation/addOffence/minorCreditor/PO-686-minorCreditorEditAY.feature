@@ -183,3 +183,20 @@ Feature: PO-686 - Minor Creditor Edit - Adult or Youth
       | Sort code           | 65-43-21                   |
       | Account number      | 87654321                   |
       | Payment reference   | Company Ref                |
+
+
+    ### below is to test for issue found in development - no assosicated ticket
+    When I click the "Add another imposition" button
+    And I enter "Compensation (FCOMP){downArrow}{ENTER}" into the "Result code" field for imposition 2
+    And I select the "Minor creditor" radio button for imposition 2
+    And I click on the "Add minor creditor details" link for imposition 2
+    Then I see "Minor creditor details" on the page header
+
+    Then I validate the "Individual" radio button is not selected
+    And I validate the "Company" radio button is not selected
+
+    And I see "" in the "Address line 1" field
+    And I validate the "I have BACS payment details" checkbox is not checked
+
+    When I click on the "Cancel" link
+    Then I see the "Add minor creditor details" link for imposition 2

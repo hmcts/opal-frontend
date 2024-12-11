@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FinesMacOffenceDetailsMinorCreditorFormComponent } from './fines-mac-offence-details-minor-creditor-form/fines-mac-offence-details-minor-creditor-form.component';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
@@ -14,7 +14,10 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
   templateUrl: './fines-mac-offence-details-minor-creditor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormParentBaseComponent implements OnInit {
+export class FinesMacOffenceDetailsMinorCreditorComponent
+  extends AbstractFormParentBaseComponent
+  implements OnInit, OnDestroy
+{
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly finesService = inject(FinesService);
 
@@ -31,9 +34,7 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
     // Update the imposition position in the form data
     const { removeImposition, removeMinorCreditor } =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
-    form.formData.fm_offence_details_imposition_position = removeImposition
-      ? removeImposition.rowIndex
-      : removeMinorCreditor;
+    form.formData.fm_offence_details_imposition_position = removeMinorCreditor ?? removeImposition!.rowIndex;
 
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
@@ -72,5 +73,9 @@ export class FinesMacOffenceDetailsMinorCreditorComponent extends AbstractFormPa
 
   public ngOnInit(): void {
     this.finesMacOffenceDetailsService.offenceCodeMessage = '';
+  }
+
+  public ngOnDestroy(): void {
+    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = null;
   }
 }
