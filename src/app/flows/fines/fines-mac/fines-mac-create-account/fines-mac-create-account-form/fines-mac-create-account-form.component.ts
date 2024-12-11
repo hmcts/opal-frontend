@@ -89,7 +89,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    */
   private setupCreateAccountForm(): void {
     this.form = new FormGroup({
-      fm_create_account_business_unit: new FormControl(null, [Validators.required]),
+      fm_create_account_business_unit_id: new FormControl(null, [Validators.required]),
       fm_create_account_account_type: new FormControl(null, [Validators.required]),
       fm_create_account_defendant_type: new FormControl(null),
     });
