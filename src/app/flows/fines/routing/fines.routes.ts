@@ -4,6 +4,7 @@ import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard'
 import { routePermissionsGuard } from '@guards/route-permissions/route-permissions.guard';
 import { userStateResolver } from '@resolvers/user-state/user-state.resolver';
 import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
+import { routing as cavRouting } from '../fines-cav/routing/fines-cav.routes';
 import { RoutingPaths } from '@routing/enums/routing-paths';
 
 import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
@@ -29,6 +30,13 @@ export const finesRouting: Routes = [
         children: macRouting,
         canActivate: [authGuard, routePermissionsGuard],
         canDeactivate: [canDeactivateGuard],
+        data: { routePermissionId: macRootPermissionId },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.cav.root,
+        loadComponent: () => import('../fines-cav/fines-cav.component').then((c) => c.FinesCavComponent),
+        children: cavRouting,
+        canActivate: [authGuard, routePermissionsGuard],
         data: { routePermissionId: macRootPermissionId },
       },
     ],

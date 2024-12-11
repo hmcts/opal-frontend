@@ -84,9 +84,9 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should navigate on handleRoute to delete account', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    component.handleRoute(component['fineMacRoutes'].children.deleteAccountConfirmation);
+    component.handleRoute(component['finesMacRoutes'].children.deleteAccountConfirmation);
 
-    expect(routerSpy).toHaveBeenCalledWith([component['fineMacRoutes'].children.deleteAccountConfirmation], {
+    expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
       relativeTo: component['activatedRoute'].parent,
     });
     expect(mockFinesService.finesMacState.deleteFromCheckAccount).toBeTrue();
@@ -115,7 +115,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
     component.navigateBack();
 
-    expect(routerSpy).toHaveBeenCalledWith([component['fineMacRoutes'].children.accountDetails], {
+    expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
   });
