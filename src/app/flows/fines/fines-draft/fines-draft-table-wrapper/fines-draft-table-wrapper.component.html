@@ -1,0 +1,70 @@
+<app-moj-sortable-table>
+  <ng-container head>
+    @if (isApprovedTab) {
+      <th
+        app-moj-sortable-table-header
+        columnKey="account"
+        [sortDirection]="sortState['account']"
+        (sortChange)="onSortChange($event)"
+      >
+        Account
+      </th>
+    }
+    <th
+      app-moj-sortable-table-header
+      columnKey="defendant"
+      [sortDirection]="sortState['defendant']"
+      (sortChange)="onSortChange($event)"
+    >
+      Defendant
+    </th>
+    <th
+      app-moj-sortable-table-header
+      columnKey="dob"
+      [sortDirection]="sortState['dob']"
+      (sortChange)="onSortChange($event)"
+    >
+      Date of birth
+    </th>
+    <th
+      app-moj-sortable-table-header
+      columnKey="created"
+      [sortDirection]="sortState['created']"
+      (sortChange)="onSortChange($event)"
+    >
+      Created
+    </th>
+    <th
+      app-moj-sortable-table-header
+      columnKey="accountType"
+      [sortDirection]="sortState['accountType']"
+      (sortChange)="onSortChange($event)"
+    >
+      Account type
+    </th>
+    <th
+      app-moj-sortable-table-header
+      columnKey="businessUnit"
+      [sortDirection]="sortState['businessUnit']"
+      (sortChange)="onSortChange($event)"
+    >
+      Business unit
+    </th>
+  </ng-container>
+  <ng-container row>
+    @for (row of abstractTableData; track row.defendantId) {
+      <tr app-moj-sortable-table-row>
+        @if (isApprovedTab) {
+          <td app-moj-sortable-table-row-data id="account">{{ row.account }}</td>
+        }
+        <td app-moj-sortable-table-row-data id="defendant">
+          <a class="govuk-link govuk-link--no-visited-state">{{ row.defendant }}</a>
+        </td>
+        <td app-moj-sortable-table-row-data id="dob">{{ row.dob && row.dob.length ? row.dob : '—' }}</td>
+        <td app-moj-sortable-table-row-data id="created">{{ row.created }}</td>
+        <td app-moj-sortable-table-row-data id="accountType">{{ row.accountType }}</td>
+        <td app-moj-sortable-table-row-data id="businessUnit">{{ row.businessUnit }}</td>
+      </tr>
+    }
+  </ng-container>
+</app-moj-sortable-table>

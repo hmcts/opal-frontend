@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
@@ -31,6 +31,8 @@ import {
   IOpalFinesMajorCreditor,
   IOpalFinesMajorCreditorRefData,
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
+import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
+import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -43,6 +45,28 @@ export class OpalFines {
   private resultsCache$!: Observable<IOpalFinesResultsRefData>;
   private offenceCodesCache$: { [key: string]: Observable<IOpalFinesOffencesRefData> } = {};
   private majorCreditorsCache$: { [key: string]: Observable<IOpalFinesMajorCreditorRefData> } = {};
+
+  private readonly PARAM_BUSINESS_UNIT = 'business_unit';
+  private readonly PARAM_STATUS = 'status';
+  private readonly PARAM_SUBMITTED_BY = 'submitted_by';
+  private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
+
+  /**
+   * Appends an array of values to the given HttpParams object under the specified key.
+   *
+   * @param params - The HttpParams object to which the values will be appended.
+   * @param key - The key under which the values will be appended.
+   * @param values - An optional array of string or number values to be appended.
+   * @returns The updated HttpParams object with the appended values.
+   */
+  private appendArrayParams(params: HttpParams, key: string, values?: (string | number)[]): HttpParams {
+    if (values) {
+      values.forEach((value) => {
+        params = params.append(key, value.toString());
+      });
+    }
+    return params;
+  }
 
   /**
    * Searches for courts based on the provided search criteria.
@@ -261,5 +285,38 @@ export class OpalFines {
    */
   public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
     return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
+  }
+
+  /**
+   * Retrieves draft accounts based on the provided filters.
+   *
+   * @param filters - An object containing the filter parameters for the draft accounts.
+   * @returns An Observable that emits the response containing the draft accounts.
+   *
+   * The filters object can contain the following properties:
+   * - businessUnitIds: An array of business unit IDs to filter by.
+   * - statuses: An array of statuses to filter by.
+   * - submittedBy: An array of user IDs who submitted the accounts.
+   * - notSubmittedBy: An array of user IDs who did not submit the accounts.
+   */
+  public getDraftAccounts(filters: IOpalFinesDraftAccountParams): Observable<IOpalFinesDraftAccountsResponse> {
+    let params = new HttpParams();
+
+    const filterMapping = {
+      [this.PARAM_BUSINESS_UNIT]: filters.businessUnitIds?.filter((id) => id != null),
+      [this.PARAM_STATUS]: filters.statuses,
+      [this.PARAM_SUBMITTED_BY]: filters.submittedBy,
+      [this.PARAM_NOT_SUBMITTED_BY]: filters.notSubmittedBy,
+    };
+
+    Object.entries(filterMapping).forEach(([key, values]) => {
+      params = this.appendArrayParams(
+        params,
+        key,
+        values?.filter((value) => value != null),
+      );
+    });
+
+    return this.http.get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params });
   }
 }

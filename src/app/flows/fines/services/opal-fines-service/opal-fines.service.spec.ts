@@ -39,6 +39,8 @@ import {
   IOpalFinesMajorCreditorRefData,
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-major-creditor-ref-data.mock';
+import { OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK } from './mocks/opal-fines-draft-account-params.mock';
+import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/opal-fines-draft-accounts.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -433,5 +435,40 @@ describe('OpalFines', () => {
     const result = service.getMajorCreditorPrettyName(majorCreditor);
 
     expect(result).toEqual(`${majorCreditor.name} (${majorCreditor.major_creditor_code})`);
+  });
+
+  it('should send a GET request to draft accounts API with correct query parameters', () => {
+    const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
+
+    const expectedResponse = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
+
+    service.getDraftAccounts(filters).subscribe((response) => {
+      expect(response).toEqual(expectedResponse);
+    });
+
+    const req = httpMock.expectOne((request) => {
+      // Validate the URL and query parameters
+      const url = request.urlWithParams;
+
+      return (
+        url.includes(OPAL_FINES_PATHS.draftAccounts) &&
+        url.includes(`business_unit=${filters.businessUnitIds![0]}`) &&
+        url.includes(`business_unit=${filters.businessUnitIds![1]}`) &&
+        url.includes(`status=${filters.statuses![0]}`) &&
+        url.includes(`status=${filters.statuses![1]}`) &&
+        url.includes(`submitted_by=${filters.submittedBy![0]}`) &&
+        url.includes(`submitted_by=${filters.submittedBy![1]}`) &&
+        url.includes(`not_submitted_by=${filters.notSubmittedBy![0]}`) &&
+        url.includes(`not_submitted_by=${filters.notSubmittedBy![1]}`)
+      );
+    });
+
+    expect(req.request.method).toBe('GET');
+    expect(req.request.params.getAll('business_unit')).toEqual(['1', '2']);
+    expect(req.request.params.getAll('status')).toEqual(['Submitted', 'Resubmitted']);
+    expect(req.request.params.getAll('submitted_by')).toEqual(['user1', 'user2']);
+    expect(req.request.params.getAll('not_submitted_by')).toEqual(['user3', 'user4']);
+
+    req.flush(expectedResponse);
   });
 });
