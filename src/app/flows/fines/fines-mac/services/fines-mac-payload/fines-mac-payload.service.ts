@@ -31,6 +31,8 @@ import { finesMacPayloadMapAccountPaymentTerms } from './utils/fines-mac-payload
 import { finesMacPayloadMapAccountAccountNotesPayload } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-account-notes.utils';
 import { finesMacPayloadMapAccountOffences } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-offences.utils';
 import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
+import { IAbstractFormBaseForm } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-form.interface';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 
 @Injectable({
   providedIn: 'root',
@@ -100,7 +102,10 @@ export class FinesMacPayloadService {
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
-  private getBusinessUnitBusinessUserId(businessUnitId: number, sessionUserState: ISessionUserState): string | null {
+  private getBusinessUnitBusinessUserId(
+    businessUnitId: number | null,
+    sessionUserState: ISessionUserState,
+  ): string | null {
     const businessUnitUserId = sessionUserState.business_unit_user.find(
       (businessUnit) => businessUnit.business_unit_id === businessUnitId,
     );
@@ -192,8 +197,11 @@ export class FinesMacPayloadService {
 
     // Build the add account payload
     const addAccountPayload: IFinesMacAddAccountPayload = {
-      business_unit_id: businessUnit['business_unit_id'],
-      submitted_by: this.getBusinessUnitBusinessUserId(businessUnit['business_unit_id'], sessionUserState),
+      business_unit_id: accountDetailsState['fm_create_account_business_unit_id'],
+      submitted_by: this.getBusinessUnitBusinessUserId(
+        accountDetailsState['fm_create_account_business_unit_id'],
+        sessionUserState,
+      ),
       submitted_by_name: sessionUserState['name'],
       account: accountPayload,
       account_type: accountDetailsState['fm_create_account_account_type'],
@@ -219,7 +227,51 @@ export class FinesMacPayloadService {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, false);
   }
 
-  // ***** //
+  private getUpdatedStatus<T extends object>(formData: T): string {
+    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
+    Object.keys(formData).forEach((key) => {
+      let hasValue =
+        formData[key as keyof T] &&
+        formData[key as keyof T] !== null &&
+        formData[key as keyof T] !== '' &&
+        formData[key as keyof T] !== undefined;
+      if (Array.isArray(formData[key as keyof T])) {
+        hasValue = (formData[key as keyof T] as unknown[]).length > 0;
+      }
+
+      if (hasValue) {
+        if (newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
+          newStatus = FINES_MAC_STATUS.PROVIDED;
+        }
+      }
+    });
+    return newStatus;
+  }
+
+  private mapFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
+    const updateStatus = <T extends object>(formData: T) => this.getUpdatedStatus(formData);
+
+    mappedFinesMacState.accountCommentsNotes.status = updateStatus(mappedFinesMacState.accountCommentsNotes.formData);
+    mappedFinesMacState.accountDetails.status = updateStatus(mappedFinesMacState.accountDetails.formData);
+    mappedFinesMacState.companyDetails.status = updateStatus(mappedFinesMacState.companyDetails.formData);
+    mappedFinesMacState.contactDetails.status = updateStatus(mappedFinesMacState.contactDetails.formData);
+    mappedFinesMacState.courtDetails.status = updateStatus(mappedFinesMacState.courtDetails.formData);
+    mappedFinesMacState.employerDetails.status = updateStatus(mappedFinesMacState.employerDetails.formData);
+    mappedFinesMacState.parentGuardianDetails.status = updateStatus(mappedFinesMacState.parentGuardianDetails.formData);
+    mappedFinesMacState.paymentTerms.status = updateStatus(mappedFinesMacState.paymentTerms.formData);
+    mappedFinesMacState.personalDetails.status = updateStatus(mappedFinesMacState.personalDetails.formData);
+
+    mappedFinesMacState.offenceDetails.forEach((offence) => {
+      offence.status = updateStatus(offence.formData);
+      if (offence.childFormData) {
+        offence.childFormData.forEach((childOffence) => {
+          childOffence.status = updateStatus(childOffence.formData);
+        });
+      }
+    });
+
+    return mappedFinesMacState;
+  }
 
   private mapInitialPayloadToFinesMacState(
     mappedFinesMacState: IFinesMacState,
@@ -232,7 +284,7 @@ export class FinesMacPayloadService {
       ...mappedFinesMacState.accountDetails.formData,
       fm_create_account_account_type: payloadAccount.account_type,
       fm_create_account_defendant_type: payloadAccount.defendant_type,
-      fm_create_account_business_unit: business_unit_id.toString(), // Convert to string
+      fm_create_account_business_unit_id: business_unit_id,
     };
 
     // Update court details
@@ -271,8 +323,10 @@ export class FinesMacPayloadService {
       transformedPayload.account.account_notes,
     );
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+    finesMacState = this.mapFinesMacStateStatuses(finesMacState);
 
     //TODO: Update fine mac states status types to 'provided' if they have data....
+    // this.updateStatusesToProvided(finesMacState);
     return finesMacState;
   }
 }

@@ -96,7 +96,7 @@ export const finesMacPayloadMapAccountPaymentTerms = (
     fm_payment_terms_payment_terms: paymentTermsType,
     fm_payment_terms_pay_by_date: payByDate,
     fm_payment_terms_start_date: startDate,
-    fm_payment_instalment_period: paymentTerms.instalment_period ?? null,
+    fm_payment_terms_instalment_period: paymentTerms.instalment_period ?? null,
     fm_payment_terms_lump_sum_amount: paymentTerms.lump_sum_amount ?? null,
     fm_payment_terms_instalment_amount: paymentTerms.instalment_amount ?? null,
     fm_payment_terms_has_days_in_default: !!paymentTerms.default_days_in_jail,

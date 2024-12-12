@@ -4,7 +4,7 @@ import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-individual.mock';
 
 export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
-  business_unit_id: 0,
+  business_unit_id: 61,
   submitted_by: null,
   submitted_by_name: 'Timmy Test',
   account: {
