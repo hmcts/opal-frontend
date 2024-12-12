@@ -19,7 +19,7 @@ export const FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS: IFinesMacCreateAccountFieldE
       priority: 1,
     },
   },
-  fm_create_account_business_unit: {
+  fm_create_account_business_unit_id: {
     required: {
       message: 'Enter a business unit',
       priority: 1,
