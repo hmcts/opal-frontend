@@ -48,6 +48,7 @@ const buildPaymentTermEnforcements = (
     fm_payment_terms_earliest_release_date: earliestReleaseDate,
     fm_payment_terms_prison_and_prison_number: prisonAndPrisonNumber,
     fm_payment_terms_reason_account_is_on_noenf: reasonAccountIsOnNoenf,
+    fm_payment_terms_hold_enforcement_on_account: holdEnforcementOnAccount,
   } = paymentTermsState;
 
   const enforcements = [];
@@ -56,7 +57,9 @@ const buildPaymentTermEnforcements = (
     enforcements.push(buildEnforcement('COLLO', null));
   }
 
-  switch (enforcementAction) {
+  const enforcementActionType = holdEnforcementOnAccount ? 'NOENF' : enforcementAction;
+
+  switch (enforcementActionType) {
     case 'PRIS':
       enforcements.push(
         buildEnforcement('PRIS', [

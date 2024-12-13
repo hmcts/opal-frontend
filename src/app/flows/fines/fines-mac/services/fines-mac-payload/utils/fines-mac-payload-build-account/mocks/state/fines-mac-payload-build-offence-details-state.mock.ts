@@ -20,5 +20,5 @@ export const FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE: IFinesMacOffenceDeta
   },
   nestedFlow: false,
   status: 'Provided',
-  childFormData: null,
+  childFormData: [],
 };

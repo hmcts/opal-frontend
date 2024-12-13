@@ -49,6 +49,7 @@ export class FinesMacPayloadService {
    * @param paymentTermsState - The state object containing payment terms.
    * @returns The initial payload for fines MAC.
    */
+  //TODO: Move to utils
   private buildAccountInitialPayload(
     accountDetailsState: IFinesMacAccountDetailsState,
     courtDetailsState: IFinesMacCourtDetailsState,
@@ -180,7 +181,6 @@ export class FinesMacPayloadService {
     addAccount: boolean,
   ): IFinesMacAddAccountPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
-    const { businessUnit } = finesMacState;
     const accountPayload = this.buildAccountPayload(finesMacState);
     const storedTimeLineData: IFinesMacAccountTimelineData[] = []; // Replace with stored timeline data when we have it...awaiting edit mode.
     const accountStatus = addAccount
@@ -227,45 +227,53 @@ export class FinesMacPayloadService {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, false);
   }
 
-  private getUpdatedStatus<T extends object>(formData: T): string {
-    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
-    Object.keys(formData).forEach((key) => {
-      let hasValue =
-        formData[key as keyof T] &&
-        formData[key as keyof T] !== null &&
-        formData[key as keyof T] !== '' &&
-        formData[key as keyof T] !== undefined;
-      if (Array.isArray(formData[key as keyof T])) {
-        hasValue = (formData[key as keyof T] as unknown[]).length > 0;
-      }
+  //TODO: Move to utils
+  private hasNonEmptyValue(value: unknown): boolean {
+    // If it's an array, check if it has any elements
+    // This is for the aliases
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return value !== null;
+  }
 
-      if (hasValue) {
-        if (newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
-          newStatus = FINES_MAC_STATUS.PROVIDED;
-        }
+  //TODO: Move to utils
+  private getFinesMacStateFormStatus<T extends object>(formData: T): string {
+    let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
+
+    // Check if any of the values are not empty
+    Object.entries(formData).forEach(([, value]) => {
+      const hasValue = this.hasNonEmptyValue(value);
+      // If we have a value and the status is not provided, set it to provided
+      if (hasValue && newStatus === FINES_MAC_STATUS.NOT_PROVIDED) {
+        newStatus = FINES_MAC_STATUS.PROVIDED;
       }
     });
+
     return newStatus;
   }
 
   private mapFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
-    const updateStatus = <T extends object>(formData: T) => this.getUpdatedStatus(formData);
+    const getFormStatus = <T extends object>(formData: T) => this.getFinesMacStateFormStatus(formData);
 
-    mappedFinesMacState.accountCommentsNotes.status = updateStatus(mappedFinesMacState.accountCommentsNotes.formData);
-    mappedFinesMacState.accountDetails.status = updateStatus(mappedFinesMacState.accountDetails.formData);
-    mappedFinesMacState.companyDetails.status = updateStatus(mappedFinesMacState.companyDetails.formData);
-    mappedFinesMacState.contactDetails.status = updateStatus(mappedFinesMacState.contactDetails.formData);
-    mappedFinesMacState.courtDetails.status = updateStatus(mappedFinesMacState.courtDetails.formData);
-    mappedFinesMacState.employerDetails.status = updateStatus(mappedFinesMacState.employerDetails.formData);
-    mappedFinesMacState.parentGuardianDetails.status = updateStatus(mappedFinesMacState.parentGuardianDetails.formData);
-    mappedFinesMacState.paymentTerms.status = updateStatus(mappedFinesMacState.paymentTerms.formData);
-    mappedFinesMacState.personalDetails.status = updateStatus(mappedFinesMacState.personalDetails.formData);
+    mappedFinesMacState.accountCommentsNotes.status = getFormStatus(mappedFinesMacState.accountCommentsNotes.formData);
+    mappedFinesMacState.accountDetails.status = getFormStatus(mappedFinesMacState.accountDetails.formData);
+    mappedFinesMacState.companyDetails.status = getFormStatus(mappedFinesMacState.companyDetails.formData);
+    mappedFinesMacState.contactDetails.status = getFormStatus(mappedFinesMacState.contactDetails.formData);
+    mappedFinesMacState.courtDetails.status = getFormStatus(mappedFinesMacState.courtDetails.formData);
+    mappedFinesMacState.employerDetails.status = getFormStatus(mappedFinesMacState.employerDetails.formData);
+    mappedFinesMacState.parentGuardianDetails.status = getFormStatus(
+      mappedFinesMacState.parentGuardianDetails.formData,
+    );
+    mappedFinesMacState.paymentTerms.status = getFormStatus(mappedFinesMacState.paymentTerms.formData);
+    mappedFinesMacState.personalDetails.status = getFormStatus(mappedFinesMacState.personalDetails.formData);
 
+    // Loop over the nested offence details forms, and the child forms if they exist
     mappedFinesMacState.offenceDetails.forEach((offence) => {
-      offence.status = updateStatus(offence.formData);
+      offence.status = getFormStatus(offence.formData);
       if (offence.childFormData) {
         offence.childFormData.forEach((childOffence) => {
-          childOffence.status = updateStatus(childOffence.formData);
+          childOffence.status = getFormStatus(childOffence.formData);
         });
       }
     });
@@ -273,6 +281,7 @@ export class FinesMacPayloadService {
     return mappedFinesMacState;
   }
 
+  // TODO: Move to utils
   private mapInitialPayloadToFinesMacState(
     mappedFinesMacState: IFinesMacState,
     payload: IFinesMacAddAccountPayload,
@@ -323,10 +332,11 @@ export class FinesMacPayloadService {
       transformedPayload.account.account_notes,
     );
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+
+    // Update the form statuses
+    //TODO: Move to utils?
     finesMacState = this.mapFinesMacStateStatuses(finesMacState);
 
-    //TODO: Update fine mac states status types to 'provided' if they have data....
-    // this.updateStatusesToProvided(finesMacState);
     return finesMacState;
   }
 }
