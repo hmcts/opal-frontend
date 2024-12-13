@@ -1,5 +1,3 @@
-import { FINES_MAC_STATUS } from '../../../../constants/fines-mac-status';
-
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 
 import { IFinesMacPayloadBuildAccountAccountNote } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-account-note.interface';

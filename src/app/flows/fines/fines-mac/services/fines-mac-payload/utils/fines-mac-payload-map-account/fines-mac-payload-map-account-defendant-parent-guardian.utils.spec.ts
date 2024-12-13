@@ -31,8 +31,8 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     const personalDetailsState: IFinesMacPersonalDetailsState = structuredClone(
       FINES_MAC_PAYLOAD_BUILD_PERSONAL_DETAILS_STATE_MOCK,
     );
-    (personalDetailsState.fm_personal_details_add_alias = false),
-      (personalDetailsState.fm_personal_details_aliases = []);
+    personalDetailsState.fm_personal_details_add_alias = false;
+    personalDetailsState.fm_personal_details_aliases = [];
     personalDetailsState.fm_personal_details_vehicle_make = null;
     personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
 
