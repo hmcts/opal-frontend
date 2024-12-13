@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FinesCavComponent } from './fines-cav.component';
+import { FinesDraftCamComponent } from './fines-draft-cam.component';
 
-describe('FinesCavComponent', () => {
-  let component: FinesCavComponent;
-  let fixture: ComponentFixture<FinesCavComponent>;
+describe('FinesDraftCamComponent', () => {
+  let component: FinesDraftCamComponent;
+  let fixture: ComponentFixture<FinesDraftCamComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesCavComponent],
+      imports: [FinesDraftCamComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesCavComponent);
+    fixture = TestBed.createComponent(FinesDraftCamComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

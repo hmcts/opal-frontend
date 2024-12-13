@@ -13,6 +13,9 @@ import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 
 describe('FinesMacSubmitConfirmationComponent', () => {
   let component: FinesMacSubmitConfirmationComponent;
@@ -66,16 +69,12 @@ describe('FinesMacSubmitConfirmationComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have state and populate draftAddAccountPayload$', () => {
-    expect(component['draftAddAccountPayload$']).not.toBeUndefined();
-  });
-
   it('should navigate to create account on createNewAccount', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.createNewAccount();
 
-    expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.createAccount], {
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.createAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
   });
@@ -86,7 +85,7 @@ describe('FinesMacSubmitConfirmationComponent', () => {
     component.seeAllAccounts();
 
     expect(routerSpy).toHaveBeenCalledWith([
-      `${component['finesRoutes'].root}/${component['finesCavRoutes'].root}/${component['finesCavRoutes'].children.accounts}`,
+      `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter}`,
     ]);
   });
 });

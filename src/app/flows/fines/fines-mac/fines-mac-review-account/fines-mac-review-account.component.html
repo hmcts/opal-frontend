@@ -68,9 +68,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <app-govuk-button
-        buttonId="submitAccountButton"
-        (buttonClickEvent)="handleRoute(finesMacRoutes.children.submitConfirmation)"
+      <app-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
         >Submit for review</app-govuk-button
       >
     </div>

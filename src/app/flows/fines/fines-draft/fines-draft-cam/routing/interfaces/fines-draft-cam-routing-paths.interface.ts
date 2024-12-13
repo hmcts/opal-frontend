@@ -1,7 +1,7 @@
 import { IChildRoutingPaths } from '@routing/flows/interfaces/child-routing-paths.interface';
 
-export interface IFinesCavRoutingPaths extends IChildRoutingPaths {
+export interface IFinesDraftCamRoutingPaths extends IChildRoutingPaths {
   children: {
-    accounts: string;
+    inputter: string;
   };
 }

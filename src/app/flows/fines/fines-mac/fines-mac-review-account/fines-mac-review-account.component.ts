@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
@@ -10,7 +10,7 @@ import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import { forkJoin, Observable, tap } from 'rxjs';
+import { forkJoin, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
@@ -26,6 +26,8 @@ import {
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
+import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -48,12 +50,16 @@ import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacReviewAccountComponent {
+export class FinesMacReviewAccountComponent implements OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
+  protected readonly globalStateService = inject(GlobalStateService);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
+  private readonly userState = this.globalStateService.userState();
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
@@ -82,11 +88,51 @@ export class FinesMacReviewAccountComponent {
   });
 
   /**
+   * Submits the payload for adding a fines MAC account.
+   *
+   * This method builds the payload using the `finesMacPayloadService` and the current state of `finesService` and `userState`.
+   * It then posts the payload using `opalFinesService`. If the response is successful, it navigates to the submit confirmation route.
+   * Otherwise, it logs an error message.
+   *
+   * @private
+   * @returns {void}
+   */
+  private submitPayload(): void {
+    const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
+      this.finesService.finesMacState,
+      this.userState,
+    );
+    this.opalFinesService
+      .postDraftAddAccountPayload(finesMacAddAccountPayload)
+      .pipe(
+        tap(() => {
+          if (!this.globalStateService.error().error) {
+            this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
+          } else {
+            // TODO: Show friendly error to user
+            console.error('Failed to submit fines MAC account');
+            console.error(this.globalStateService.error().message);
+          }
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
+  }
+
+  /**
    * Navigates back to the previous page
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
     this.handleRoute(this.finesMacRoutes.children.accountDetails);
+  }
+
+  /**
+   * Submits the current payload for review.
+   * This method triggers the submission process by calling the `submitPayload` method.
+   */
+  public submitForReview(): void {
+    this.submitPayload();
   }
 
   /**
@@ -106,5 +152,10 @@ export class FinesMacReviewAccountComponent {
       }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

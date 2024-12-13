@@ -1,5 +1,6 @@
-// TODO: Add interface to this mock
-export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK = {
+import { IOpalFinesAddDraftAccountResponse } from '../interfaces/opal-fines-add-draft-account-response.interface';
+
+export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IOpalFinesAddDraftAccountResponse = {
   draft_account_id: 2,
   business_unit_id: 77,
   created_at: '2024-12-06T14:24:55.717962377Z',
@@ -9,9 +10,9 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK = {
     account_type: 'fine',
     defendant_type: 'adultOrYouthOnly',
     originator_name: 'Asylum & Immigration Tribunal',
-    originator_id: 3865,
+    originator_id: '3865',
     prosecutor_case_reference: 'a',
-    enforcement_court_id: 6246,
+    enforcement_court_id: '6246',
     collection_order_made: false,
     collection_order_made_today: null,
     collection_order_date: null,
@@ -106,7 +107,7 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK = {
     offences: [
       {
         date_of_sentence: '01/12/2024',
-        imposing_court_id: 6246,
+        imposing_court_id: '6246',
         offence_id: 'HY35014',
         impositions: [
           {
