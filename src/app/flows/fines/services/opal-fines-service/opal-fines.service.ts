@@ -32,7 +32,6 @@ import {
   IOpalFinesMajorCreditorRefData,
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
-import { IOpalFinesAddDraftAccountResponse } from './interfaces/opal-fines-add-draft-account-response.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -271,7 +270,7 @@ export class OpalFines {
    * @param body - The payload containing the account details to be added.
    * @returns An Observable of the added account payload.
    */
-  public postDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IOpalFinesAddDraftAccountResponse> {
-    return this.http.post<IOpalFinesAddDraftAccountResponse>(OPAL_FINES_PATHS.draftAccounts, body);
+  public postDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+    return this.http.post<IFinesMacAddAccountPayload>(OPAL_FINES_PATHS.draftAccounts, body);
   }
 }

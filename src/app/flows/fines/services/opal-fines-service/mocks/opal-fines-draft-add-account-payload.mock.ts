@@ -1,6 +1,6 @@
-import { IOpalFinesAddDraftAccountResponse } from '../interfaces/opal-fines-add-draft-account-response.interface';
+import { IFinesMacAddAccountPayload } from '../../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
-export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IOpalFinesAddDraftAccountResponse = {
+export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IFinesMacAddAccountPayload = {
   draft_account_id: 2,
   business_unit_id: 77,
   created_at: '2024-12-06T14:24:55.717962377Z',
