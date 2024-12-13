@@ -81,9 +81,6 @@ describe('FinesMacPayloadService', () => {
     finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
     finesMacState.companyDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
 
-    console.log('R', result);
-    // console.log(result);
-    // console.log('S', finesMacState);
     expect(result).toEqual(finesMacState);
   });
 });

@@ -79,7 +79,6 @@ export const finesMacPayloadMapAccountPaymentTerms = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccount,
 ): IFinesMacState => {
-  console.log('payload', payload);
   const paymentTermOptions = Object.keys(FINES_MAC_PAYMENT_TERMS_OPTIONS);
   const {
     payment_terms: paymentTerms,
@@ -114,6 +113,6 @@ export const finesMacPayloadMapAccountPaymentTerms = (
     fm_payment_terms_collection_order_made: collectionOrderMade,
     fm_payment_terms_collection_order_made_today: collectionOrderMadeToday,
   };
-  console.log('A', paymentTerms.enforcements);
+
   return mapEnforcementActions(mappedFinesMacState, paymentTerms.enforcements);
 };
