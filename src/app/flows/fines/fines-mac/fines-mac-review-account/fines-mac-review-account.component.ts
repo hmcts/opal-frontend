@@ -10,7 +10,7 @@ import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import { forkJoin, Observable, Subject, takeUntil, tap } from 'rxjs';
+import { catchError, forkJoin, Observable, of, Subject, takeUntil, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
@@ -28,6 +28,7 @@ import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
+import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -59,6 +60,7 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
+  private readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStateService.userState();
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
@@ -106,13 +108,11 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
       .postDraftAddAccountPayload(finesMacAddAccountPayload)
       .pipe(
         tap(() => {
-          if (!this.globalStateService.error().error) {
-            this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
-          } else {
-            // TODO: Show friendly error to user
-            console.error('Failed to submit fines MAC account');
-            console.error(this.globalStateService.error().message);
-          }
+          this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
+        }),
+        catchError(() => {
+          this.utilsService.scrollToTop();
+          return of(null);
         }),
         takeUntil(this.ngUnsubscribe),
       )

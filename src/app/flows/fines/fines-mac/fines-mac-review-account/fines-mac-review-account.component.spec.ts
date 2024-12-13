@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacReviewAccountComponent } from './fines-mac-review-account.component';
 import { provideRouter, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
@@ -20,6 +20,7 @@ import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
+import { UtilsService } from '@services/utils/utils.service';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
@@ -28,11 +29,20 @@ describe('FinesMacReviewAccountComponent', () => {
   let mockOpalFinesService: Partial<OpalFines>;
   let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
   let mockGlobalStateService: GlobalStateService;
+  let mockUtilService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
     mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+
+    mockUtilService = jasmine.createSpyObj(UtilsService, [
+      'scrollToTop',
+      'upperCaseFirstLetter',
+      'formatSortCode',
+      'formatAddress',
+      'convertToMonetaryString',
+    ]);
+
     mockOpalFinesService = {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
@@ -63,6 +73,7 @@ describe('FinesMacReviewAccountComponent', () => {
         { provide: FinesService, useValue: mockFinesService },
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
+        { provide: UtilsService, useValue: mockUtilService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -163,10 +174,8 @@ describe('FinesMacReviewAccountComponent', () => {
     });
     mockOpalFinesService.postDraftAddAccountPayload = jasmine
       .createSpy('postDraftAddAccountPayload')
-      .and.returnValue(of(null));
-    const consoleErrorSpy = spyOn(console, 'error');
+      .and.returnValue(throwError(() => new Error('Something went wrong')));
     component['submitPayload']();
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to submit fines MAC account');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Something went wrong');
+    expect(mockUtilService.scrollToTop).toHaveBeenCalled();
   });
 });
