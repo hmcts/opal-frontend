@@ -16,7 +16,8 @@ const buildCompanyDefendantDebtorDetailsAliases = (
   aliases: IFinesMacCompanyDetailsAliasState[],
 ): IFinesMacPayloadBuildAccountDefendantCompanyDebtorDetailsAlias[] | null => {
   const mappedAliases = aliases.map((alias, index) => {
-    const companyNameKey = `fm_company_details_alias_company_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
+    const companyNameKey =
+      `fm_company_details_alias_organisation_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
     return {
       alias_company_name: alias[companyNameKey] ?? null,
     };
@@ -61,7 +62,7 @@ export const finesMacPayloadBuildAccountDefendantCompany = (
   languagePreferencesState: IFinesMacLanguagePreferencesState,
 ): IFinesMacPayloadBuildAccountDefendantCompany => {
   const {
-    fm_company_details_company_name: company_name,
+    fm_company_details_organisation_name: organisation_name,
     fm_company_details_address_line_1: address_line_1,
     fm_company_details_address_line_2: address_line_2,
     fm_company_details_address_line_3: address_line_3,
@@ -78,7 +79,7 @@ export const finesMacPayloadBuildAccountDefendantCompany = (
 
   return {
     company_flag: true,
-    company_name,
+    organisation_name,
     address_line_1,
     address_line_2,
     address_line_3,

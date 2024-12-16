@@ -13,7 +13,7 @@ export class FinesService {
   private readonly dateService = inject(DateService);
 
   // Non reactive state
-  public finesMacState: IFinesMacState = { ...FINES_MAC_STATE };
+  public finesMacState: IFinesMacState = FINES_MAC_STATE;
 
   /**
    * Checks if the employer details status is valid.

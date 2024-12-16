@@ -17,11 +17,10 @@ describe('finesMacPayloadMapAccountOffences', () => {
   it('should map offences with impositions that have major creditors to the state correctly', () => {
     const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     const result = finesMacPayloadMapAccountOffences(initialState, payload);
-    const offencesMockState: IFinesMacOffenceDetailsForm[] = result.offenceDetails;
+    const offencesMockState: IFinesMacOffenceDetailsForm[] = [];
     offencesMockState.push(structuredClone(FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE));
 
     expect(result.offenceDetails[0].formData).toEqual(offencesMockState[0].formData);
-    expect(result.offenceDetails[1].formData).toEqual(offencesMockState[1].formData);
   });
 
   it('should map offences with impositions that have minor creditors to the state correctly', () => {

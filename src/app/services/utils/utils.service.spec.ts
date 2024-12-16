@@ -66,10 +66,4 @@ describe('UtilsService', () => {
     const result = service.formatAddress(address);
     expect(result).toEqual([]);
   });
-
-  it('should scroll to the top of the page', () => {
-    const viewportScrollerSpy = spyOn(service['viewportScroller'], 'scrollToPosition');
-    service.scrollToTop();
-    expect(viewportScrollerSpy).toHaveBeenCalledWith([0, 0]);
-  });
 });

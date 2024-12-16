@@ -3,11 +3,11 @@
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <app-govuk-text-input
     labelText="Company name"
-    inputId="fm_company_details_company_name"
-    inputName="fm_company_details_company_name"
+    inputId="fm_company_details_organisation_name"
+    inputName="fm_company_details_organisation_name"
     labelClasses="govuk-label--s"
-    [control]="form.controls['fm_company_details_company_name']"
-    [errors]="formControlErrorMessages['fm_company_details_company_name']"
+    [control]="form.controls['fm_company_details_organisation_name']"
+    [errors]="formControlErrorMessages['fm_company_details_organisation_name']"
   ></app-govuk-text-input>
   <app-govuk-checkboxes fieldSetId="addAliasCheckbox" checkboxClasses="" legendText="">
     <div
@@ -29,17 +29,19 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Alias {{ rowIndex + 1 }}</legend>
           <app-govuk-text-input
             labelText="Company name"
-            [inputId]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputId"
-            [inputName]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputName"
+            [inputId]="aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].inputId"
+            [inputName]="aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].inputName"
             [control]="
               form.get([
                 'fm_company_details_aliases',
                 rowIndex,
-                aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName,
+                aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].controlName,
               ])
             "
             [errors]="
-              formControlErrorMessages[aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName]
+              formControlErrorMessages[
+                aliasControls[rowIndex]['fm_company_details_alias_organisation_name'].controlName
+              ]
             "
           ></app-govuk-text-input>
         </fieldset>

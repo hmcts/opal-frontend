@@ -41,7 +41,7 @@ export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
   private getAliasesData(): void {
     this.aliases = this.companyDetails.fm_company_details_aliases.map((item) => {
       const organisationNameKey = Object.keys(item).find((key) =>
-        key.includes('company_name'),
+        key.includes('organisation_name'),
       ) as keyof IFinesMacCompanyDetailsAliasState;
 
       return `${item[organisationNameKey]}`.trim();

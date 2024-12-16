@@ -1,12 +1,9 @@
-import { ViewportScroller } from '@angular/common';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilsService {
-  private readonly viewportScroller = inject(ViewportScroller);
-
   /**
    * Converts the first letter of a string to uppercase.
    * @param str - The input string.
@@ -55,13 +52,5 @@ export class UtilsService {
    */
   public formatAddress(address: (string | null)[]): string[] {
     return address.filter((line): line is string => !!line?.trim());
-  }
-
-  /**
-   * Scrolls the viewport to the top of the page.
-   * Utilizes the `viewportScroller` service to scroll to the position [0, 0].
-   */
-  public scrollToTop(): void {
-    this.viewportScroller.scrollToPosition([0, 0]);
   }
 }
