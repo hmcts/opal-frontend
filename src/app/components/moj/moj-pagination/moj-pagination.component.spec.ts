@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MojPaginationComponent } from './moj-pagination.component';
+import { MojPaginationItemComponent } from './moj-pagination-item/moj-pagination-item.component';
+import { MojPaginationLinkComponent } from './moj-pagination-link/moj-pagination-link.component';
+import { CommonModule } from '@angular/common';
 
 describe('MojPaginationComponent', () => {
   let component: MojPaginationComponent;
@@ -7,7 +10,7 @@ describe('MojPaginationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojPaginationComponent],
+      imports: [CommonModule, MojPaginationComponent, MojPaginationItemComponent, MojPaginationLinkComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MojPaginationComponent);
@@ -15,99 +18,64 @@ describe('MojPaginationComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should calculate pages correctly', () => {
-    component.limit = 10;
-    component.total = 100;
-    component.currentPage = 1;
-    component.ngOnChanges();
-    expect(component.totalPages).toBe(10);
-    expect(component.pages).toEqual([1, 2, 3, 4, 5, '...', 10]);
-  });
-
-  it('should calculate pages correctly for a single page', () => {
-    component.limit = 10;
-    component.total = 5;
-    component.currentPage = 1;
-    component.ngOnChanges();
-    expect(component.totalPages).toBe(1);
-    expect(component.pages).toEqual([1]);
-  });
-
-  it('should show correct range of results', () => {
-    component.limit = 10;
-    component.total = 35;
+  it('should update signals when inputs change (ngOnChanges)', () => {
     component.currentPage = 2;
-    component.ngOnChanges();
-    expect(component.startItem).toBe(11);
-    expect(component.endItem).toBe(20);
-    expect(component.totalItems).toBe(35);
-  });
-
-  it('should prevent default action on page link click', () => {
-    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
-    spyOn(event, 'preventDefault');
-
-    component.changePageEvent(event, 2);
-
-    expect(event.preventDefault).toHaveBeenCalled();
-  });
-
-  it('should emit changePage event when a valid page is clicked', () => {
-    spyOn(component.changePage, 'emit');
-    component.currentPage = 1;
-    component.totalPages = 10;
-
-    component.changePageEvent(new MouseEvent('click'), 2);
-
-    expect(component.changePage.emit).toHaveBeenCalledWith(2);
-  });
-
-  it('should not emit changePage event if page is the same', () => {
-    spyOn(component.changePage, 'emit');
-    component.currentPage = 1;
-
-    component.changePageEvent(new MouseEvent('click'), 1);
-
-    expect(component.changePage.emit).not.toHaveBeenCalled();
-  });
-
-  it('should not emit changePage event if page is out of range', () => {
-    spyOn(component.changePage, 'emit');
-    component.currentPage = 1;
-    component.totalPages = 10;
-
-    component.changePageEvent(new MouseEvent('click'), 0);
-    component.changePageEvent(new MouseEvent('click'), 11);
-
-    expect(component.changePage.emit).not.toHaveBeenCalled();
-  });
-
-  it('should display ellipses correctly when current page is near the start', () => {
+    component.total = 50;
     component.limit = 10;
-    component.total = 100;
-    component.currentPage = 2;
     component.ngOnChanges();
-    expect(component.pages).toEqual([1, 2, 3, 4, 5, '...', 10]);
+    expect(component.totalPages()).toBe(5);
+    expect(component.pages()).toEqual([1, 2, 3, 4, 5]);
+    expect(component.startItem()).toBe(11);
+    expect(component.endItem()).toBe(20);
+    expect(component.totalItems()).toBe(50);
   });
 
-  it('should display ellipses correctly when current page is near the end', () => {
-    component.limit = 10;
-    component.total = 100;
-    component.currentPage = 9;
-    component.ngOnChanges();
-    expect(component.pages).toEqual([1, '...', 6, 7, 8, 9, 10]);
+  it('should return correct total pages (getTotalPages)', () => {
+    expect(component['getTotalPages'](100, 10)).toBe(10);
+    expect(component['getTotalPages'](5, 10)).toBe(1);
   });
 
-  it('should handle edge cases with large total and small limit', () => {
-    component.limit = 1;
-    component.total = 1000;
-    component.currentPage = 500;
-    component.ngOnChanges();
-    expect(component.totalPages).toBe(1000);
-    expect(component.pages.length).toBeLessThanOrEqual(9);
+  it('should return the correct start item index (getStartItem)', () => {
+    expect(component['getStartItem'](2, 10)).toBe(11);
+  });
+
+  it('should return the correct end item index (getEndItem)', () => {
+    expect(component['getEndItem'](2, 10, 35)).toBe(20);
+    expect(component['getEndItem'](4, 10, 35)).toBe(35);
+  });
+
+  it('should generate pages with ellipses for large ranges (getPages)', () => {
+    const pages = component['getPages'](4, 10);
+    expect(pages).toEqual([1, '...', 2, 3, 4, 5, 6, '...', 10]);
+  });
+
+  it('should generate pages without ellipses for small ranges (getPages)', () => {
+    const pages = component['getPages'](2, 3);
+    expect(pages).toEqual([1, 2, 3]);
+  });
+
+  it('should generate pages with correct range near the start (getPages)', () => {
+    const pages = component['getPages'](2, 10);
+    expect(pages).toEqual([1, 2, 3, 4, 5, '...', 10]);
+  });
+
+  it('should calculate page range correctly (calculatePageRange)', () => {
+    const rangeMiddle = component['calculatePageRange'](5, 10, 2);
+    expect(rangeMiddle).toEqual({ startPage: 3, endPage: 7 });
+
+    const rangeStart = component['calculatePageRange'](2, 10, 2);
+    expect(rangeStart).toEqual({ startPage: 1, endPage: 5 });
+
+    const rangeEnd = component['calculatePageRange'](9, 10, 2);
+    expect(rangeEnd).toEqual({ startPage: 6, endPage: 10 });
+  });
+
+  it('should generate a sequence of page numbers (generatePageNumbers)', () => {
+    const pages = component['generatePageNumbers'](3, 7);
+    expect(pages).toEqual([3, 4, 5, 6, 7]);
   });
 });

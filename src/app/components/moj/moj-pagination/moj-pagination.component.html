@@ -1,34 +1,49 @@
 <nav class="moj-pagination" aria-label="Pagination navigation">
-  <ul class="moj-pagination__list">
-    <li class="moj-pagination__item moj-pagination__item--prev">
+  <app-moj-pagination-list>
+    <app-moj-pagination-item extraClasses="moj-pagination__item--prev">
       @if (currentPage > 1) {
-        <a class="moj-pagination__link" href="#" (click)="changePageEvent($event, currentPage - 1)"
-          >Previous<span class="govuk-visually-hidden"> page</span></a
+        <app-moj-pagination-link
+          [changePage]="changePage"
+          [page]="currentPage - 1"
+          [currentPage]="currentPage"
+          [totalPages]="totalPages()"
+        >
+          Previous<span class="govuk-visually-hidden"> page </span></app-moj-pagination-link
         >
       }
-    </li>
-    @for (page of pages; track page) {
-      <li class="moj-pagination__item" [class.moj-pagination__item--active]="page === currentPage">
-        <a class="moj-pagination__link" href="#" (click)="changePageEvent($event, +page)">
+    </app-moj-pagination-item>
+    @for (page of pages(); track page) {
+      <app-moj-pagination-item [isActive]="page === currentPage">
+        <app-moj-pagination-link
+          [changePage]="changePage"
+          [page]="+page"
+          [currentPage]="currentPage"
+          [totalPages]="totalPages()"
+        >
           @if (page !== '...') {
             {{ page }}
           }
-        </a>
+        </app-moj-pagination-link>
         @if (page === '...') {
           <span>…</span>
         }
-      </li>
+      </app-moj-pagination-item>
     }
 
-    <li class="moj-pagination__item moj-pagination__item--next">
-      @if (currentPage < totalPages) {
-        <a class="moj-pagination__link" href="#" (click)="changePageEvent($event, currentPage + 1)"
-          >Next<span class="govuk-visually-hidden"> page</span></a
+    <app-moj-pagination-item extraClasses="moj-pagination__item--next">
+      @if (currentPage < totalPages()) {
+        <app-moj-pagination-link
+          [changePage]="changePage"
+          [page]="currentPage + 1"
+          [currentPage]="currentPage"
+          [totalPages]="totalPages()"
+        >
+          >Next<span class="govuk-visually-hidden"> page</span></app-moj-pagination-link
         >
       }
-    </li>
-  </ul>
+    </app-moj-pagination-item>
+  </app-moj-pagination-list>
   <p class="moj-pagination__results">
-    Showing <b>{{ startItem }}</b> to <b>{{ endItem }}</b> of <b>{{ totalItems }}</b> results
+    Showing <b>{{ startItem() }}</b> to <b>{{ endItem() }}</b> of <b>{{ totalItems() }}</b> results
   </p>
 </nav>
