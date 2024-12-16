@@ -1,10 +1,10 @@
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from '../constants/fines-mac-payload-account-defendant-parent-guardian.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
 import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/mocks/fines-mac-payload-account-defendant-individual.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-individual.mock';
 
 export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
-  business_unit_id: 0,
+  business_unit_id: 61,
   submitted_by: null,
   submitted_by_name: 'Timmy Test',
   account: {
@@ -45,17 +45,10 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
         offence_id: 'OFF1234',
         impositions: [
           {
-            result_id: 'FCC',
+            result_id: 'FCOST',
             amount_imposed: 900,
             amount_paid: 500,
             major_creditor_id: 3999,
-            minor_creditor: null,
-          },
-          {
-            result_id: 'FO',
-            amount_imposed: 0,
-            amount_paid: 0,
-            major_creditor_id: null,
             minor_creditor: null,
           },
         ],
