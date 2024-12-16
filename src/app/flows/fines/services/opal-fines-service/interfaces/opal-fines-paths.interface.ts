@@ -10,5 +10,4 @@ export interface IOpalFinesPaths {
   offencesRefData: string;
   resultsRefData: string;
   majorCreditorRefData: string;
-  draftAccounts: string;
 }

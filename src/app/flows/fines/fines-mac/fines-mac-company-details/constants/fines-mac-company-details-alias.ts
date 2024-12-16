@@ -4,7 +4,7 @@ import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabe
 
 export const FINES_MAC_COMPANY_DETAILS_ALIAS: IAbstractFormArrayControlValidation[] = [
   {
-    controlName: 'fm_company_details_alias_company_name',
+    controlName: 'fm_company_details_alias_organisation_name',
     validators: [Validators.required, Validators.maxLength(30), alphabeticalTextValidator()],
   },
 ];

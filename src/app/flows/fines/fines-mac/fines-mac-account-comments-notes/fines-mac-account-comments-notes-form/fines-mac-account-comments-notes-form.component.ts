@@ -17,19 +17,12 @@ import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-accou
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { CommonModule } from '@angular/common';
+import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    GovukButtonComponent,
-    GovukCancelLinkComponent,
-    GovukTextAreaComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, GovukButtonComponent, GovukCancelLinkComponent, GovukTextAreaComponent],
   templateUrl: './fines-mac-account-comments-notes-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -59,6 +52,21 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
     const { formData } = this.finesService.finesMacState.accountCommentsNotes;
     this.setupAccountCommentsNotesForm();
     this.rePopulateForm(formData);
+  }
+
+  /**
+   * Checks if all mandatory sections have been provided.
+   *
+   * @returns {boolean} Returns true if all mandatory sections have been provided, otherwise false.
+   */
+  protected checkMandatorySections(): boolean {
+    const { courtDetails, personalDetails, employerDetails, offenceDetails, paymentTerms } =
+      this.finesService.finesMacState;
+    const details = [courtDetails, personalDetails, employerDetails, paymentTerms];
+    const offences = offenceDetails.map((offence) => offence.status === FINES_MAC_STATUS.PROVIDED);
+    return (
+      details.every((detail) => detail.status === FINES_MAC_STATUS.PROVIDED) && offences.every((offence) => offence)
+    );
   }
 
   public override ngOnInit(): void {

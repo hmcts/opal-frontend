@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-panel',
@@ -9,6 +9,4 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular
 })
 export class GovukPanelComponent {
   @Input({ required: false }) panelTitle!: string;
-
-  @HostBinding('class') classes = 'govuk-panel__body';
 }

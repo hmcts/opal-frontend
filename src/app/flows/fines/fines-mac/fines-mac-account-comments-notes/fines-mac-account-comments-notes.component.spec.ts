@@ -17,7 +17,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   let formSubmit: IFinesMacAccountCommentsNotesForm;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
     mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     formSubmit = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK };

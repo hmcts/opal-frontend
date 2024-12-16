@@ -32,10 +32,10 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
   it('should format aliases correctly', () => {
     component.companyDetails.fm_company_details_aliases = [
       ...component.companyDetails.fm_company_details_aliases,
-      { fm_company_details_alias_company_name_1: 'Alpha Solutions Ltd' },
-      { fm_company_details_alias_company_name_2: 'Beta Innovations Corp' },
-      { fm_company_details_alias_company_name_3: 'Gamma Enterprises Inc' },
-      { fm_company_details_alias_company_name_4: 'Delta Systems Group' },
+      { fm_company_details_alias_organisation_name_1: 'Alpha Solutions Ltd' },
+      { fm_company_details_alias_organisation_name_2: 'Beta Innovations Corp' },
+      { fm_company_details_alias_organisation_name_3: 'Gamma Enterprises Inc' },
+      { fm_company_details_alias_organisation_name_4: 'Delta Systems Group' },
     ];
 
     component['getAliasesData']();

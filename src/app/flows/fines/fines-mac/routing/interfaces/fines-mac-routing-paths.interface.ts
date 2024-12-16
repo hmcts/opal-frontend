@@ -18,6 +18,5 @@ export interface IFinesMacRoutingPaths extends IChildRoutingPaths {
     reviewAccount: string;
     searchOffences: string;
     addOffence: string;
-    submitConfirmation: string;
   };
 }

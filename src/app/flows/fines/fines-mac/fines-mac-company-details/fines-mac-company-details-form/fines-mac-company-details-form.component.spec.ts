@@ -83,7 +83,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   it('should set up the company details form', () => {
     component['setupCompanyDetailsForm']();
     expect(component.form).toBeTruthy();
-    expect(component.form.get('fm_company_details_company_name')).toBeTruthy();
+    expect(component.form.get('fm_company_details_organisation_name')).toBeTruthy();
     expect(component.form.get('fm_company_details_add_alias')).toBeTruthy();
     expect(component.form.get('fm_company_details_aliases')).toBeTruthy();
     expect(component.form.get('fm_company_details_address_line_1')).toBeTruthy();

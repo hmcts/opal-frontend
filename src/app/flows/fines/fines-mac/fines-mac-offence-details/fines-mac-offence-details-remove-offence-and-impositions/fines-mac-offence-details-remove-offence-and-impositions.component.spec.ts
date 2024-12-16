@@ -97,7 +97,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   it('should remove first item in array leaving one item remaining', () => {
     mockFinesService.finesMacState.offenceDetails = [
-      { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK },
+      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
       {
         ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
         formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_id: 1 },
