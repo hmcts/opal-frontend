@@ -3,7 +3,7 @@ import { IFinesMacPayloadAccount } from './fines-mac-payload-account.interface';
 import { IFinesMacPayloadAccountSnapshot } from './fines-mac-payload-account-snapshot.interface';
 
 export interface IFinesMacAddAccountPayload {
-  business_unit_id: number;
+  business_unit_id: number | null;
   submitted_by: string | null;
   submitted_by_name: string;
   account: IFinesMacPayloadAccount; // Replace 'any' with the actual type of accountPayload if known
