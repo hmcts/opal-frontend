@@ -15,7 +15,12 @@ export class MojPaginationLinkComponent {
 
   public changePageEvent(event: MouseEvent, page: number): void {
     event.preventDefault();
-    if (page !== this.currentPage && page > 0 && page <= this.totalPages) {
+
+    const pageIsNotCurrentPage = page !== this.currentPage;
+    const pageIsNotNegative = page > 0;
+    const pageIsNotGreaterThanTotalPages = page <= this.totalPages;
+
+    if (pageIsNotCurrentPage && pageIsNotNegative && pageIsNotGreaterThanTotalPages) {
       this.changePage.emit(page);
     }
   }

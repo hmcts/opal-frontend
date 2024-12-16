@@ -51,15 +51,18 @@ The `MojPaginationComponent` is a reusable Angular component that provides pagin
 
 Here’s how you can use the component in your parent component:
 
+ps. The inputs are optional for configuration as these values already have default values( excl currentPage and changePage).
+
 ### **Parent Component Template**
 
 ```html
-<moj-pagination
+<app-moj-pagination
   [limit]="10"
+  [maxPagesToShow]="2"
   [total]="100"
   [currentPage]="currentPage"
   (changePage)="onPageChange($event)"
-></moj-pagination>
+></app-moj-pagination>
 ```
 
 ### **Parent Component Class**

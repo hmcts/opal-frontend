@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class MojPaginationComponent implements OnChanges {
   @Input() currentPage = 1;
   @Input() total = 0;
+  @Input() maxPagesToShow = 5;
   @Input() limit = 100;
   @Output() changePage = new EventEmitter<number>();
 
@@ -91,20 +92,20 @@ export class MojPaginationComponent implements OnChanges {
    * If the end page is less than the total pages, it adds an ellipsis and the last page at the end.
    */
   private getPages(currentPage: number, totalPages: number): (number | string)[] {
-    const maxPagesToShow = 5;
-    const halfPagesToShow = Math.floor(maxPagesToShow / 2);
+    const halfPagesToShow = Math.floor(this.maxPagesToShow / 2);
+    const eclipses = '...';
 
     const { startPage, endPage } = this.calculatePageRange(currentPage, totalPages, halfPagesToShow);
 
     const pages = this.generatePageNumbers(startPage, endPage);
 
     if (startPage > 1) {
-      pages.unshift('...');
+      pages.unshift(eclipses);
       pages.unshift(1);
     }
 
     if (endPage < totalPages) {
-      pages.push('...');
+      pages.push(eclipses);
       pages.push(totalPages);
     }
 
