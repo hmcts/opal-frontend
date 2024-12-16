@@ -1,40 +1,75 @@
 <h2 class="govuk-heading-l">Create accounts</h2>
 <app-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
-  @for (tabOption of tabOptions; track tabOption.id) {
-    <app-moj-sub-navigation-item
-      [subNavItemId]="tabOption.id"
-      [activeSubNavItemFragment]="tabOption.activeFragment"
-      [subNavItemFragment]="tabOption.fragment"
-      [subNavItemText]="tabOption.text"
-    ></app-moj-sub-navigation-item>
-  }
+  <app-moj-sub-navigation-item
+    subNavItemId="inputter-in-review-tab"
+    [activeSubNavItemFragment]="activeTab"
+    subNavItemFragment="review"
+    subNavItemText="In review"
+  ></app-moj-sub-navigation-item>
+  <app-moj-sub-navigation-item
+    subNavItemId="inputter-rejected-tab"
+    [activeSubNavItemFragment]="activeTab"
+    subNavItemFragment="rejected"
+    subNavItemText="Rejected"
+  ></app-moj-sub-navigation-item>
+  <app-moj-sub-navigation-item
+    subNavItemId="inputter-approved-tab"
+    [activeSubNavItemFragment]="activeTab"
+    subNavItemFragment="approved"
+    subNavItemText="Approved"
+  ></app-moj-sub-navigation-item>
+  <app-moj-sub-navigation-item
+    subNavItemId="inputter-deleted-tab"
+    [activeSubNavItemFragment]="activeTab"
+    subNavItemFragment="deleted"
+    subNavItemText="Deleted"
+  ></app-moj-sub-navigation-item>
 </app-moj-sub-navigation>
-<h3 class="govuk-heading-m">{{ activeTabOption.text }}</h3>
-@if (draftAccounts$ | async; as draftAccounts) {
-  @if (draftAccounts.length) {
-    <app-fines-draft-table-wrapper
-      [tableData]="draftAccounts"
-      [existingSortState]="tableSort"
-      [isApprovedTab]="false"
-    ></app-fines-draft-table-wrapper>
-  } @else {
-    @switch (activeTabOption.fragment) {
-      @case ('review') {
-        <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
-      }
-      @case ('rejected') {
-        <ng-container *ngTemplateOutlet="rejectedNoData"></ng-container>
-      }
-      @case ('approved') {
-        <ng-container *ngTemplateOutlet="approvedNoData"></ng-container>
-      }
-      @case ('deleted') {
-        <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
-      }
-    }
+@switch (activeTab) {
+  @case ('review') {
+    <h3 class="govuk-heading-m">In review</h3>
+    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+  }
+  @case ('rejected') {
+    <h3 class="govuk-heading-m">Rejected</h3>
+    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+  }
+  @case ('approved') {
+    <h3 class="govuk-heading-m">Approved</h3>
+    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+  }
+  @case ('deleted') {
+    <h3 class="govuk-heading-m">Deleted</h3>
+    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
   }
 }
 
+<ng-template #tableWrapper>
+  @if (draftAccounts$ | async; as draftAccounts) {
+    @if (draftAccounts.length) {
+      <app-fines-draft-table-wrapper
+        [tableData]="draftAccounts"
+        [existingSortState]="tableSort"
+        [isApprovedTab]="false"
+      ></app-fines-draft-table-wrapper>
+    } @else {
+      @switch (activeTab) {
+        @case ('review') {
+          <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
+        }
+        @case ('rejected') {
+          <ng-container *ngTemplateOutlet="rejectedNoData"></ng-container>
+        }
+        @case ('approved') {
+          <ng-container *ngTemplateOutlet="approvedNoData"></ng-container>
+        }
+        @case ('deleted') {
+          <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
+        }
+      }
+    }
+  }
+</ng-template>
 <ng-template #reviewNoData>
   <p>You have no accounts in review.</p>
 </ng-template>

@@ -8,7 +8,6 @@ import { DateService } from '@services/date-service/date.service';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_DRAFT_TAB_OPTIONS } from '../../constants/fines-draft-tab-options.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 
 describe('FinesDraftCamInputterComponent', () => {
@@ -32,7 +31,7 @@ describe('FinesDraftCamInputterComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            fragment: of('#review'),
+            fragment: of('review'),
           },
         },
       ],
@@ -55,31 +54,11 @@ describe('FinesDraftCamInputterComponent', () => {
     expect(component['draftAccounts$']).not.toBeUndefined();
   });
 
-  it('should initialize with the correct tab options', () => {
-    expect(component.tabOptions).toEqual(FINES_DRAFT_TAB_OPTIONS.filter((option) => option.inputter === true));
-  });
-
-  it('should set the active tab option to the first tab option', () => {
-    expect(component.activeTabOption).toEqual(component.tabOptions[0]);
-  });
-
-  it('should fetch draft accounts data on initialization', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component as any, 'getDraftAccountsData');
-    component.ngOnInit();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).getDraftAccountsData).toHaveBeenCalled();
-    expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
-    expect(mockDateService.getFromFormatToFormat).toHaveBeenCalled();
-    expect(mockDateService.getDaysAgoString).toHaveBeenCalled();
-  });
-
   it('should switch tab and fetch draft accounts data', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn(component as any, 'getDraftAccountsData');
-    const fragment = component.tabOptions[1].fragment;
-    component.handleTabSwitch(fragment);
-    expect(component.activeTabOption.fragment).toEqual(fragment);
+    component.handleTabSwitch(FINES_DRAFT_TAB_STATUSES[1].tab);
+    expect(component.activeTab).toEqual(FINES_DRAFT_TAB_STATUSES[1].tab);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((component as any).getDraftAccountsData).toHaveBeenCalled();
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalled();
@@ -95,8 +74,9 @@ describe('FinesDraftCamInputterComponent', () => {
   });
 
   it('should call getDraftAccounts with correct parameters', () => {
-    const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === component.activeTabOption?.fragment)?.statuses;
+    const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === 'review')?.statuses;
     const params = { businessUnitIds: component['businessUnitIds'], statuses };
+    component.activeTab = 'review';
     component['getDraftAccountsData']();
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith(params);
   });

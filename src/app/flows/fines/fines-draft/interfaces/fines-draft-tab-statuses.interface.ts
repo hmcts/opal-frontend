@@ -1,4 +1,4 @@
-export interface IFinesDraftTabStatues {
+export interface IFinesDraftTabStatuses {
   tab: string;
   statuses: string[];
 }

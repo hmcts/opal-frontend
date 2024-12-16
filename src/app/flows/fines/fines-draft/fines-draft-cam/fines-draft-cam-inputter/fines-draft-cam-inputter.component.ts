@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MojSubNavigationComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation.component';
 import { MojSubNavigationItemComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
-import { FINES_DRAFT_TAB_OPTIONS } from '../../constants/fines-draft-tab-options.constant';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
@@ -21,7 +20,7 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCamInputterComponent implements OnInit {
+export class FinesDraftCamInputterComponent {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStateService = inject(GlobalStateService);
   private readonly dateService = inject(DateService);
@@ -29,15 +28,13 @@ export class FinesDraftCamInputterComponent implements OnInit {
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
 
-  public readonly tabOptions = FINES_DRAFT_TAB_OPTIONS.filter((option) => option.inputter === true);
-  public activeTabOption = this.tabOptions[0];
-
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
   public draftAccounts$!: Observable<IFinesDraftTableWrapperTableData[]>;
 
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
+  public activeTab!: string;
 
   /**
    * Fetches draft accounts data based on the active tab option and business unit IDs.
@@ -49,7 +46,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
    * @returns {void}
    */
   private getDraftAccountsData(): void {
-    const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === this.activeTabOption?.fragment)?.statuses;
+    const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === this.activeTab)?.statuses;
     const params = { businessUnitIds: this.businessUnitIds, statuses };
 
     if (statuses) {
@@ -92,21 +89,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
    * @private
    */
   private switchTab(fragment: string): void {
-    const activeTab = this.tabOptions.find((option) => option.fragment === fragment);
-    if (activeTab) {
-      this.activeTabOption = activeTab;
-      this.getDraftAccountsData();
-    }
-  }
-
-  /**
-   * Initializes the initial tab by fetching draft accounts data.
-   * This method is called to set up the initial state of the component.
-   *
-   * @private
-   * @returns {void}
-   */
-  private setupInitialTab(): void {
+    this.activeTab = fragment;
     this.getDraftAccountsData();
   }
 
@@ -117,9 +100,5 @@ export class FinesDraftCamInputterComponent implements OnInit {
    */
   public handleTabSwitch(event: string) {
     this.switchTab(event);
-  }
-
-  public ngOnInit(): void {
-    this.setupInitialTab();
   }
 }
