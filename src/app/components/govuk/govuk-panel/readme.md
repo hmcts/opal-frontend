@@ -26,7 +26,7 @@ You can use the panel component in your template as follows:
 
 ```html
 <app-govuk-panel [panelTitle]="'Success'">
-  <p>Your registration was successful.</p>
+  <div>Your registration was successful.</div>
 </app-govuk-panel>
 ```
 

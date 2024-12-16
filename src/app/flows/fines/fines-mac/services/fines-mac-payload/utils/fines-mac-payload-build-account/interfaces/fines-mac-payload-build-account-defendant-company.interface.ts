@@ -2,7 +2,7 @@ import { IFinesMacPayloadBuildAccountDefendantCompanyDebtorDetails } from './fin
 
 export interface IFinesMacPayloadBuildAccountDefendantCompany {
   company_flag: boolean | null;
-  organisation_name: string | null;
+  company_name: string | null;
   address_line_1: string | null;
   address_line_2: string | null;
   address_line_3: string | null;

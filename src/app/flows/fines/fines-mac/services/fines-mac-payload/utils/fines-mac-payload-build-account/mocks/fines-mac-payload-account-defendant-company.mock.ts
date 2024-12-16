@@ -2,7 +2,7 @@ import { IFinesMacPayloadBuildAccountDefendantCompany } from '../interfaces/fine
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadBuildAccountDefendantCompany = {
   company_flag: true,
-  organisation_name: 'NexGen Solutions Ltd.',
+  company_name: 'NexGen Solutions Ltd.',
   address_line_1: '789 Innovation Drive',
   address_line_2: 'Tech Park',
   address_line_3: 'Westshire',
