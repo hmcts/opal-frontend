@@ -8,7 +8,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
   created_at: null,
   account_snapshot: null,
   account_status_date: null,
-  business_unit_id: 0,
+  business_unit_id: 61,
   submitted_by: null,
   submitted_by_name: 'Timmy Test',
   account: {
