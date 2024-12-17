@@ -1,9 +1,9 @@
 import { finesMacPayloadMapAccountDefendantCompanyPayload } from './fines-mac-payload-map-account-defendant-company.utils';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
+import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
 import { FINES_MAC_STATE } from '../../../../constants/fines-mac-state';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-company-complete.mock';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-company-complete-with-aliases.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK } from '../mocks/fines-mac-payload-account-defendant-company-complete.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK } from '../mocks/fines-mac-payload-account-defendant-company-complete-with-aliases.mock';
 import { IFinesMacCompanyDetailsState } from '../../../../fines-mac-company-details/interfaces/fines-mac-company-details-state.interface';
 import { IFinesMacContactDetailsState } from '../../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
 import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
@@ -19,7 +19,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
   });
 
   it('should map payload to fines MAC state', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete = structuredClone(
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK,
     );
 
@@ -45,7 +45,7 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
   });
 
   it('should map the payload with aliases', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete =
+    const payload: IFinesMacPayloadAccountDefendantComplete =
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK;
 
     const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);

@@ -4,8 +4,8 @@ import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-languag
 import { FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-company-details-state.mock';
 import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-contact-details-state.mock';
 import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/state/fines-mac-payload-language-preferences-state.mock';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK } from './mocks/fines-mac-payload-account-defendant-company.mock';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from './mocks/fines-mac-payload-account-defendant-company-with-aliases.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK } from '../mocks/fines-mac-payload-account-defendant-company.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from '../mocks/fines-mac-payload-account-defendant-company-with-aliases.mock';
 import { finesMacPayloadBuildAccountDefendantCompany } from './fines-mac-payload-build-account-defendant-company.utils';
 
 describe('finesMacPayloadBuildAccountDefendantCompany', () => {

@@ -6,7 +6,7 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../mocks/fines-mac-payload-add
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../mocks/state/fines-mac-payload-offence-details-state.mock';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
-import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from '../mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 
 describe('finesMacPayloadMapAccountOffences', () => {
   let initialState: IFinesMacState;

@@ -1,13 +1,13 @@
 import { finesMacPayloadMapAccountDefendantIndividualPayload } from './fines-mac-payload-map-account-defendant-individual.utils';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
+import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
 import { FINES_MAC_STATE } from '../../../../constants/fines-mac-state';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-individual-complete.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK } from '../mocks/fines-mac-payload-account-defendant-individual-complete.mock';
 import { IFinesMacPersonalDetailsState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-personal-details-state.mock';
 import { IFinesMacContactDetailsState } from '../../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
 import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-contact-details-state.mock';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-individual-complete-with-alias.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK } from '../mocks/fines-mac-payload-account-defendant-individual-complete-with-alias.mock';
 import { IFinesMacEmployerDetailsState } from '../../../../fines-mac-employer-details/interfaces/fines-mac-employer-details-state.interface';
 import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-employer-details-state.mock';
@@ -21,7 +21,7 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
   });
 
   it('should map personal details from payload to state', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete = structuredClone(
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK,
     );
 
@@ -52,7 +52,7 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
   });
 
   it('should map personal details with aliases from payload to state', () => {
-    const payload: IFinesMacPayloadBuildAccountDefendantComplete = structuredClone(
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK,
     );
 
