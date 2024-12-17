@@ -95,7 +95,8 @@ export class MojPaginationComponent implements OnChanges {
     const halfPagesToShow = Math.floor(this.maxPagesToShow / 2);
     const eclipses = '...';
 
-    const { startPage, endPage } = this.calculatePageRange(currentPage, totalPages, halfPagesToShow);
+    const startPage = this.calculateStartPage(currentPage, totalPages, halfPagesToShow);
+    const endPage = this.calculateEndPage(currentPage, totalPages, halfPagesToShow);
 
     const pages = this.generatePageNumbers(startPage, endPage);
 
@@ -120,21 +121,28 @@ export class MojPaginationComponent implements OnChanges {
    * @param halfPagesToShow - The number of pages to show on either side of the current page.
    * @returns An object containing the start and end pages for the pagination range.
    */
-  private calculatePageRange(
-    currentPage: number,
-    totalPages: number,
-    halfPagesToShow: number,
-  ): { startPage: number; endPage: number } {
+  private calculateStartPage(currentPage: number, totalPages: number, halfPagesToShow: number): number {
     let startPage = Math.max(1, currentPage - halfPagesToShow);
+
+    if (currentPage - halfPagesToShow <= 0) {
+      startPage = 1;
+    } else if (currentPage + halfPagesToShow > totalPages) {
+      startPage = Math.max(1, startPage - (currentPage + halfPagesToShow - totalPages));
+    }
+
+    return startPage;
+  }
+
+  private calculateEndPage(currentPage: number, totalPages: number, halfPagesToShow: number): number {
     let endPage = Math.min(totalPages, currentPage + halfPagesToShow);
 
     if (currentPage - halfPagesToShow <= 0) {
       endPage = Math.min(totalPages, endPage + (halfPagesToShow - currentPage + 1));
     } else if (currentPage + halfPagesToShow > totalPages) {
-      startPage = Math.max(1, startPage - (currentPage + halfPagesToShow - totalPages));
+      endPage = totalPages;
     }
 
-    return { startPage, endPage };
+    return endPage;
   }
 
   /**

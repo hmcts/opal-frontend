@@ -63,15 +63,34 @@ describe('MojPaginationComponent', () => {
     expect(pages).toEqual([1, 2, 3, 4, 5, '...', 10]);
   });
 
-  it('should calculate page range correctly (calculatePageRange)', () => {
-    const rangeMiddle = component['calculatePageRange'](5, 10, 2);
-    expect(rangeMiddle).toEqual({ startPage: 3, endPage: 7 });
+  it('should calculate page range correctly (calculateStartPage)', () => {
+    const rangeMiddle = component['calculateStartPage'](5, 10, 2);
+    expect(rangeMiddle).toEqual(3);
+  });
 
-    const rangeStart = component['calculatePageRange'](2, 10, 2);
-    expect(rangeStart).toEqual({ startPage: 1, endPage: 5 });
+  it('should calculate page range correctly (calculateEndPage)', () => {
+    const rangeMiddle = component['calculateEndPage'](5, 10, 2);
+    expect(rangeMiddle).toEqual(7);
+  });
 
-    const rangeEnd = component['calculatePageRange'](9, 10, 2);
-    expect(rangeEnd).toEqual({ startPage: 6, endPage: 10 });
+  it('should calculate page range correctly (calculateStartPage)', () => {
+    const rangeMiddle = component['calculateStartPage'](2, 10, 2);
+    expect(rangeMiddle).toEqual(1);
+  });
+
+  it('should calculate page range correctly (calculateEndPage)', () => {
+    const rangeMiddle = component['calculateEndPage'](2, 10, 2);
+    expect(rangeMiddle).toEqual(5);
+  });
+
+  it('should calculate page range correctly (calculateStartPage)', () => {
+    const rangeMiddle = component['calculateStartPage'](9, 10, 2);
+    expect(rangeMiddle).toEqual(6);
+  });
+
+  it('should calculate page range correctly (calculateEndPage)', () => {
+    const rangeMiddle = component['calculateEndPage'](9, 10, 2);
+    expect(rangeMiddle).toEqual(10);
   });
 
   it('should generate a sequence of page numbers (generatePageNumbers)', () => {
