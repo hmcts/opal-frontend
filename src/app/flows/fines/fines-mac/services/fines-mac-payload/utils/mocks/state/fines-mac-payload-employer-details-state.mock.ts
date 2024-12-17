@@ -1,6 +1,6 @@
-import { IFinesMacEmployerDetailsState } from '../../../../../../fines-mac-employer-details/interfaces/fines-mac-employer-details-state.interface';
+import { IFinesMacEmployerDetailsState } from '../../../../../fines-mac-employer-details/interfaces/fines-mac-employer-details-state.interface';
 
-export const FINES_MAC_PAYLOAD_BUILD_EMPLOYER_DETAILS_STATE_MOCK: IFinesMacEmployerDetailsState = {
+export const FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK: IFinesMacEmployerDetailsState = {
   fm_employer_details_employer_company_name: 'Bright Future Ltd.',
   fm_employer_details_employer_reference: 'REF987654',
   fm_employer_details_employer_email_address: 'contact@brightfuture.com',

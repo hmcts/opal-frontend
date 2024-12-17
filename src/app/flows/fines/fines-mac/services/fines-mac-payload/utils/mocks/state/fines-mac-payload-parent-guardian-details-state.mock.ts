@@ -1,6 +1,6 @@
-import { IFinesMacParentGuardianDetailsState } from '../../../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
+import { IFinesMacParentGuardianDetailsState } from '../../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 
-export const FINES_MAC_PAYLOAD_BUILD_PARENT_GUARDIAN_DETAILS_STATE_MOCK: IFinesMacParentGuardianDetailsState = {
+export const FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK: IFinesMacParentGuardianDetailsState = {
   fm_parent_guardian_details_forenames: 'Michael James',
   fm_parent_guardian_details_surname: 'Anderson',
   fm_parent_guardian_details_dob: '12/03/1978',

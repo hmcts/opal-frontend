@@ -1,6 +1,6 @@
-import { IFinesMacPaymentTermsState } from '../../../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
+import { IFinesMacPaymentTermsState } from '../../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 
-export const FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_IN_FULL_MOCK: IFinesMacPaymentTermsState = {
+export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_terms: 'payInFull',
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_collection_order_made: true,
@@ -22,7 +22,7 @@ export const FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_IN_FULL_MOCK: IFinesMacPaymen
   fm_payment_terms_collection_order_made_today: null,
 };
 
-export const FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
+export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_terms: 'instalmentsOnly',
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_add_enforcement_action: true,
@@ -43,7 +43,7 @@ export const FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_INSTALMENTS_MOCK: IFinesMacPa
   fm_payment_terms_collection_order_made_today: null,
 };
 
-export const FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
+export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {
   fm_payment_terms_payment_terms: 'lumpSumPlusInstalments',
   fm_payment_terms_payment_card_request: true,
   fm_payment_terms_collection_order_made: true,

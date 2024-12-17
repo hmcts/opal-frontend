@@ -8,11 +8,11 @@ import { IFinesMacEmployerDetailsState } from '../../../../fines-mac-employer-de
 import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
 import { IFinesMacParentGuardianDetailsState } from '../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-state.interface';
 import { IFinesMacPersonalDetailsState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
-import { FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-contact-details-state.mock';
-import { FINES_MAC_PAYLOAD_BUILD_EMPLOYER_DETAILS_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-employer-details-state.mock';
-import { FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-language-preferences-state.mock';
-import { FINES_MAC_PAYLOAD_BUILD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-parent-guardian-details-state.mock';
-import { FINES_MAC_PAYLOAD_BUILD_PERSONAL_DETAILS_STATE_MOCK } from '../fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-personal-details-state.mock';
+import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-contact-details-state.mock';
+import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-employer-details-state.mock';
+import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/state/fines-mac-payload-language-preferences-state.mock';
+import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-parent-guardian-details-state.mock';
+import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-personal-details-state.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK } from '../fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-parent-guardian-complete-with-alias.mock';
 
 describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
@@ -29,7 +29,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
 
     const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
     const personalDetailsState: IFinesMacPersonalDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_BUILD_PERSONAL_DETAILS_STATE_MOCK,
+      FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
     );
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
@@ -37,21 +37,21 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
 
     const contactDetailsState: IFinesMacContactDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_BUILD_CONTACT_DETAILS_STATE_MOCK,
+      FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
     );
 
     const employerDetailsState: IFinesMacEmployerDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_BUILD_EMPLOYER_DETAILS_STATE_MOCK,
+      FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
     );
 
     const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_BUILD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
+      FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     );
     parentGuardianDetailsState.fm_parent_guardian_details_add_alias = false;
     parentGuardianDetailsState.fm_parent_guardian_details_aliases = [];
 
     const languagePreferencesState: IFinesMacLanguagePreferencesState = structuredClone(
-      FINES_MAC_PAYLOAD_BUILD_LANGUAGE_PREFERENCES_STATE_MOCK,
+      FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
     );
 
     expect(result.personalDetails.formData).toEqual(personalDetailsState);

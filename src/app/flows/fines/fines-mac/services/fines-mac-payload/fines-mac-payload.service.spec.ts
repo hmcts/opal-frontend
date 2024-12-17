@@ -9,7 +9,7 @@ import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
 import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
-import { FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './utils/fines-mac-payload-build-account/mocks/state/fines-mac-payload-build-offence-details-minor-creditor-state.mock';
+import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './utils/mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './utils/fines-mac-payload-build-account/mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
@@ -38,9 +38,7 @@ describe('FinesMacPayloadService', () => {
 
   it('should create an add account payload with minor creditor', () => {
     const finesMacState: IFinesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
-    finesMacState.offenceDetails = structuredClone([
-      { ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE },
-    ]);
+    finesMacState.offenceDetails = structuredClone([{ ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE }]);
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, SESSION_USER_STATE_MOCK);
     const payload = structuredClone({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT });
@@ -74,7 +72,7 @@ describe('FinesMacPayloadService', () => {
   });
 
   it('should convertPayloadToFinesMacState', () => {
-    const result = service.convertPayloadToFinesMacState(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    const result = service.convertPayloadToFinesMacState(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
     finesMacState.parentGuardianDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
