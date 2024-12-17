@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractSortableTableComponent } from '@components/abstract/abstract-sortable-table/abstract-sortable-table.component';
 import { MojSortableTableHeaderComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-header/moj-sortable-table-header.component';
 import { MojSortableTableRowDataComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row-data/moj-sortable-table-row-data.component';
@@ -31,4 +31,16 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTableCompon
     this.abstractExistingSortState = existingSortState;
   }
   @Input({ required: true }) public isApprovedTab: boolean = false;
+  @Output() public linkClicked = new EventEmitter<number>();
+
+  /**
+   * Handles the click event on a defendant.
+   * Emits the clicked defendant's ID.
+   *
+   * @param {number} id - The ID of the clicked defendant.
+   * @returns {void}
+   */
+  public onDefendantClick(id: number): void {
+    this.linkClicked.emit(id);
+  }
 }

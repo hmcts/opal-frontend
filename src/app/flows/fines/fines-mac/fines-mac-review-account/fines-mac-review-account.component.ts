@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
@@ -26,6 +26,15 @@ import {
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { UtilsService } from '@services/utils/utils.service';
+import { GovukTagComponent } from '../../../../components/govuk/govuk-tag/govuk-tag.component';
+import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/moj-timeline.component';
+import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
+import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
+import { DateService } from '@services/date-service/date.service';
+import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -44,21 +53,28 @@ import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review
     FinesMacReviewAccountOffenceDetailsComponent,
     FinesMacReviewAccountParentGuardianDetailsComponent,
     FinesMacReviewAccountCompanyDetailsComponent,
+    GovukTagComponent,
+    MojTimelineComponent,
+    MojTimelineItemComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacReviewAccountComponent {
+export class FinesMacReviewAccountComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  protected readonly utilsService = inject(UtilsService);
+  protected readonly dateService = inject(DateService);
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
 
+  protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
@@ -81,12 +97,37 @@ export class FinesMacReviewAccountComponent {
     localJusticeAreasData: this.localJusticeAreasData$,
   });
 
+  private businessUnit: IOpalFinesBusinessUnit | null = null;
+  public isReadOnly!: boolean;
+  public status = FINES_DRAFT_TAB_STATUSES.find((status) =>
+    status.statuses.includes(this.finesService.finesDraftState.account_status!),
+  )?.prettyName;
+
+  private getBusinessUnit(): void {
+    if (this.activatedRoute.snapshot) {
+      this.businessUnit = this.activatedRoute.snapshot.data['businessUnit'];
+      if (this.businessUnit) {
+        this.finesService.finesMacState.businessUnit = this.businessUnit;
+        this.isReadOnly = true;
+      }
+    }
+  }
+
   /**
    * Navigates back to the previous page
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    this.handleRoute(this.fineMacRoutes.children.accountDetails);
+    if (this.isReadOnly) {
+      this.handleRoute(
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+        false,
+        undefined,
+        'review',
+      );
+    } else {
+      this.handleRoute(this.fineMacRoutes.children.accountDetails);
+    }
   }
 
   /**
@@ -94,17 +135,23 @@ export class FinesMacReviewAccountComponent {
    *
    * @param route - The route to navigate to.
    */
-  public handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
+  public handleRoute(route: string, nonRelative: boolean = false, event?: Event, fragment?: string): void {
     if (event) {
       event.preventDefault();
     }
     if (nonRelative) {
       this.router.navigate([route]);
+    } else if (fragment) {
+      this.router.navigate([route], { fragment });
     } else {
       if (route === this.fineMacRoutes.children.deleteAccountConfirmation) {
         this.finesService.finesMacState.deleteFromCheckAccount = true;
       }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
+  }
+
+  public ngOnInit(): void {
+    this.getBusinessUnit();
   }
 }

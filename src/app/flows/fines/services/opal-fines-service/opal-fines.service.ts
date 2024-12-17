@@ -33,6 +33,7 @@ import {
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 @Injectable({
   providedIn: 'root',
 })
@@ -318,5 +319,25 @@ export class OpalFines {
     });
 
     return this.http.get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params });
+  }
+
+  /**
+   * Retrieves a draft account summary by its ID.
+   *
+   * @param draftAccountId - The ID of the draft account to retrieve.
+   * @returns An Observable that emits the draft account summary.
+   */
+  public getDraftAccountById(draftAccountId: number): Observable<IFinesMacAddAccountPayload> {
+    return this.http.get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`);
+  }
+
+  /**
+   * Retrieves a business unit by its ID.
+   *
+   * @param businessUnitId - The ID of the business unit to retrieve.
+   * @returns An Observable that emits the business unit data.
+   */
+  public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnit> {
+    return this.http.get<IOpalFinesBusinessUnit>(`${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`);
   }
 }

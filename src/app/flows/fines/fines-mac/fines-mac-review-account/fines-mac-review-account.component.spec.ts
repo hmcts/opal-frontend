@@ -15,17 +15,24 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
+import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { UtilsService } from '@services/utils/utils.service';
+import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
+  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'finesDraftState']);
     mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesDraftState = { ...FINES_DRAFT_STATE };
+
     mockOpalFinesService = {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
@@ -43,11 +50,22 @@ describe('FinesMacReviewAccountComponent', () => {
         .createSpy('getOffenceByCjsCode')
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
+
+    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
+    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+      'upperCaseAllLetters',
+      'upperCaseFirstLetter',
+      'formatAddress',
+      'convertToMonetaryString',
+    ]);
+
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
         { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: UtilsService, useValue: mockUtilsService },
+        { provide: DateService, useValue: mockDateService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -100,6 +118,14 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 
+  it('should navigate on handleRoute with fragment', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.handleRoute('test', false, undefined, 'review');
+
+    expect(routerSpy).toHaveBeenCalledWith(['test'], { fragment: 'review' });
+  });
+
   it('should navigate on handleRoute with event', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj(Event, ['preventDefault']);
@@ -118,5 +144,43 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([component['fineMacRoutes'].children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
+  });
+
+  it('should navigate back on navigateBack', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.isReadOnly = true;
+    component.navigateBack();
+
+    expect(routerSpy).toHaveBeenCalledWith(
+      [
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+      ],
+      {
+        fragment: 'review',
+      },
+    );
+  });
+
+  it('should set business unit and isReadOnly on getBusinessUnit', () => {
+    component['activatedRoute'].snapshot = {
+      data: {
+        businessUnit: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
+      },
+    } as any;
+
+    component['getBusinessUnit']();
+
+    expect(component['businessUnit']).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    expect(component.isReadOnly).toBeTrue();
+  });
+
+  it('should call getBusinessUnit on ngOnInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getBusinessUnitSpy = spyOn<any>(component, 'getBusinessUnit').and.callThrough();
+
+    component.ngOnInit();
+
+    expect(getBusinessUnitSpy).toHaveBeenCalled();
   });
 });

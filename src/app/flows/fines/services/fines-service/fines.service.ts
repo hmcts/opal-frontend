@@ -5,6 +5,8 @@ import { FINES_MAC_STATUS } from '../../fines-mac/constants/fines-mac-status';
 import { IFinesMacOffenceDetailsForm } from '../../fines-mac/fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { IFinesMacEmployerDetailsForm } from '../../fines-mac/fines-mac-employer-details/interfaces/fines-mac-employer-details-form.interface';
 import { DateService } from '@services/date-service/date.service';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +16,7 @@ export class FinesService {
 
   // Non reactive state
   public finesMacState: IFinesMacState = FINES_MAC_STATE;
+  public finesDraftState: IFinesMacAddAccountPayload = FINES_DRAFT_STATE;
 
   /**
    * Checks if the employer details status is valid.

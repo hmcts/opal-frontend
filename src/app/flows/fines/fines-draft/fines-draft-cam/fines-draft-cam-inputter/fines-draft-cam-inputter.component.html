@@ -51,6 +51,7 @@
         [tableData]="draftAccounts"
         [existingSortState]="tableSort"
         [isApprovedTab]="false"
+        (linkClicked)="onDefendantClick($event)"
       ></app-fines-draft-table-wrapper>
     } @else {
       @switch (activeTab) {

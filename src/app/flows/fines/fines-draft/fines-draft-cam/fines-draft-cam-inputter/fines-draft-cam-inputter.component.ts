@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MojSubNavigationComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation.component';
 import { MojSubNavigationItemComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
@@ -12,6 +12,10 @@ import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
+import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { Router } from '@angular/router';
+import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -20,10 +24,13 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCamInputterComponent {
+export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStateService = inject(GlobalStateService);
   private readonly dateService = inject(DateService);
+  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
+  private readonly finesService = inject(FinesService);
+  private readonly router = inject(Router);
   private readonly businessUnitIds = this.globalStateService
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
@@ -80,6 +87,22 @@ export class FinesDraftCamInputterComponent {
     });
   }
 
+  public onDefendantClick(id: number): void {
+    this.opalFinesService.getDraftAccountById(id).subscribe((response) => {
+      this.finesService.finesDraftState = response;
+
+      // Convert the payload to fines mac state
+      this.finesService.finesMacState = this.finesMacPayloadService.convertPayloadToFinesMacState(response);
+
+      // Get business unit id
+      const { fm_create_account_business_unit_id: businessUnitId } =
+        this.finesService.finesMacState.accountDetails.formData;
+
+      // Navigate to the review account page with business unit id
+      this.router.navigate(['/fines/manual-account-creation/review-account', businessUnitId]);
+    });
+  }
+
   /**
    * Switches the active tab based on the provided fragment.
    * If a matching tab option is found, it sets it as the active tab
@@ -100,5 +123,9 @@ export class FinesDraftCamInputterComponent {
    */
   public handleTabSwitch(event: string) {
     this.switchTab(event);
+  }
+
+  public ngOnInit(): void {
+    this.finesService.finesDraftState = FINES_DRAFT_STATE;
   }
 }

@@ -58,7 +58,13 @@
           <td app-moj-sortable-table-row-data id="account">{{ row.account }}</td>
         }
         <td app-moj-sortable-table-row-data id="defendant">
-          <a class="govuk-link govuk-link--no-visited-state">{{ row.defendant }}</a>
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            (click)="onDefendantClick(row.defendantId)"
+            (keydown.enter)="onDefendantClick(row.defendantId)"
+            tabindex="0"
+            >{{ row.defendant }}</a
+          >
         </td>
         <td app-moj-sortable-table-row-data id="dob">{{ row.dob && row.dob.length ? row.dob : '—' }}</td>
         <td app-moj-sortable-table-row-data id="created">{{ row.created }}</td>
