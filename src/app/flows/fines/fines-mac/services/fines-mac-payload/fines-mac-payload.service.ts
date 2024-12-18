@@ -33,7 +33,8 @@ import { finesMacPayloadMapAccountOffences } from './utils/fines-mac-payload-map
 import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
 
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
-import { buildAccountInitialPayload } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-initial.utils';
+import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
+import { finesMacPayloadBuildTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-timeline-data';
 
 @Injectable({
   providedIn: 'root',
@@ -71,23 +72,6 @@ export class FinesMacPayloadService {
     return null;
   }
 
-  private buildTimelineDataPayload(
-    username: string,
-    status: string,
-    statusDate: string,
-    reasonText: string | null,
-    timelineData: IFinesMacAccountTimelineData[] = [],
-  ): IFinesMacAccountTimelineData[] {
-    timelineData.push({
-      username,
-      status,
-      status_date: statusDate,
-      reason_text: reasonText,
-    });
-
-    return timelineData;
-  }
-
   private buildAccountPayload(finesMacState: IFinesMacState): IFinesMacPayloadAccount {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { formData: courtDetailsState } = finesMacState.courtDetails;
@@ -104,7 +88,7 @@ export class FinesMacPayloadService {
     const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
 
     // Build the parts of our payload...
-    const initialPayload = buildAccountInitialPayload(
+    const initialPayload = finesMacPayloadBuildAccountBase(
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -146,7 +130,7 @@ export class FinesMacPayloadService {
       ? FineMacPayloadAccountAccountStatuses.submitted
       : FineMacPayloadAccountAccountStatuses.resubmitted;
 
-    const timeLineData = this.buildTimelineDataPayload(
+    const timeLineData = finesMacPayloadBuildTimelineData(
       sessionUserState['name'],
       accountStatus,
       this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),

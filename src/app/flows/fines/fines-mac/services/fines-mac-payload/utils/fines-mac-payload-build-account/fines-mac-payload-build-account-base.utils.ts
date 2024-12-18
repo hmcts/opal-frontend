@@ -41,7 +41,7 @@ const sortOffenceDetailsByDate = (
  * @param paymentTermsState - The state object containing payment terms.
  * @returns The initial payload for fines MAC.
  */
-export const buildAccountInitialPayload = (
+export const finesMacPayloadBuildAccountBase = (
   accountDetailsState: IFinesMacAccountDetailsState,
   courtDetailsState: IFinesMacCourtDetailsState,
   paymentTermsState: IFinesMacPaymentTermsState,

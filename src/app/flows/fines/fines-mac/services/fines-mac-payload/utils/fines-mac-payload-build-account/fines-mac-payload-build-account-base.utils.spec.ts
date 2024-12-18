@@ -1,4 +1,4 @@
-import { buildAccountInitialPayload } from './fines-mac-payload-build-initial.utils';
+import { finesMacPayloadBuildAccountBase } from './fines-mac-payload-build-account-base.utils';
 import { IFinesMacAccountDetailsState } from '../../../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
@@ -24,7 +24,7 @@ const EXPECTED_PAYLOAD: IFinesMacPayloadAccountAccountInitial = {
   account_sentence_date: '01/09/2024',
 };
 
-describe('buildAccountInitialPayload', () => {
+describe('finesMacPayloadBuildAccountBase', () => {
   it('should build the initial payload correctly', () => {
     const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
@@ -34,7 +34,7 @@ describe('buildAccountInitialPayload', () => {
     const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
     const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
 
-    const result = buildAccountInitialPayload(
+    const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
@@ -73,7 +73,7 @@ describe('buildAccountInitialPayload', () => {
     const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
     expectedPayload.account_sentence_date = '01/07/2024';
 
-    const result = buildAccountInitialPayload(
+    const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
       courtDetailsState,
       paymentTermsState,
