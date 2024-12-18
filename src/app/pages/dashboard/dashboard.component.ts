@@ -15,7 +15,7 @@ import { DashboardPermissions } from './enums/dashboard-permissions.enum';
 export class DashboardComponent {
   public readonly globalStateService = inject(GlobalStateService);
   private readonly permissionService = inject(PermissionsService);
-  public permissionIds = this.permissionService.getUniquePermissions(this.globalStateService.userState());
+  public readonly permissionIds = this.permissionService.getUniquePermissions(this.globalStateService.userState());
   public readonly permissionsMap = DashboardPermissions;
   public readonly finesRoutingPaths = FINES_ROUTING_PATHS;
 
