@@ -7,7 +7,7 @@ import { SortableValues } from '@services/sort-service/types/sort-service-type';
   standalone: true,
   template: '',
 })
-export abstract class AbstractSortableTableComponent implements OnInit {
+export abstract class AbstractSortableTableComponent {
   public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
@@ -22,7 +22,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    * @private
    * @returns {void}
    */
-  private initialiseSortState(): void {
+  public initialiseSortState(): void {
     const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
     this.sortState = sortState;
   }
@@ -66,11 +66,8 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     } else {
       this.abstractTableData = this.sortService.sortObjectArrayDesc(this.abstractTableData, key);
     }
+    console.log(this.abstractTableData);
 
     this.abstractSortState.emit(this.sortState);
-  }
-
-  public ngOnInit(): void {
-    this.initialiseSortState();
   }
 }

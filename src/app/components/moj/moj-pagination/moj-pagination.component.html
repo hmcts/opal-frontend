@@ -38,12 +38,12 @@
           [currentPage]="currentPage"
           [totalPages]="totalPages()"
         >
-          >Next<span class="govuk-visually-hidden"> page</span></app-moj-pagination-link
+          Next<span class="govuk-visually-hidden"> page</span></app-moj-pagination-link
         >
       }
     </app-moj-pagination-item>
   </app-moj-pagination-list>
   <p class="moj-pagination__results">
-    Showing <b>{{ startItem() }}</b> to <b>{{ endItem() }}</b> of <b>{{ totalItems() }}</b> results
+    Showing <b>{{ startItem() - 1 }}</b> to <b>{{ endItem() }}</b> of <b>{{ totalItems() }}</b> results
   </p>
 </nav>
