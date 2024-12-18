@@ -14,7 +14,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './utils/
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 
-fdescribe('FinesMacPayloadService', () => {
+describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService;
   let dateService: DateService;
 
