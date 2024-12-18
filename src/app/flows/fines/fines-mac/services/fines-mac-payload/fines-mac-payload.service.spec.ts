@@ -63,14 +63,6 @@ describe('FinesMacPayloadService', () => {
     expect(result).toEqual(finesMacPayloadReplaceAccount);
   });
 
-  it('should map initial payload to fines mac state', () => {
-    const finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
-    const finesMacPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    const result = service['mapInitialPayloadToFinesMacState'](finesMacState, finesMacPayload);
-
-    expect(result.accountDetails.formData).toEqual(FINES_MAC_PAYLOAD_FINES_MAC_STATE.accountDetails.formData);
-  });
-
   it('should convertPayloadToFinesMacState', () => {
     const result = service.convertPayloadToFinesMacState(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);

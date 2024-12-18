@@ -1,7 +1,7 @@
 import { IFinesMacAccountTimelineData } from '../../interfaces/fines-mac-payload-account-timeline-data.interface';
-import { finesMacPayloadBuildTimelineData } from './fines-mac-payload-build-timeline-data';
+import { finesMacPayloadBuildAccountTimelineData } from './fines-mac-payload-build-account-timeline-data.utils';
 
-describe('finesMacPayloadBuildTimelineData', () => {
+describe('finesMacPayloadBuildAccountTimelineData', () => {
   it('should add a new timeline entry to an empty array', () => {
     const username = 'testUser';
     const status = 'active';
@@ -9,7 +9,7 @@ describe('finesMacPayloadBuildTimelineData', () => {
     const reasonText = 'Initial status';
     const timelineData: IFinesMacAccountTimelineData[] = [];
 
-    const result = finesMacPayloadBuildTimelineData(username, status, statusDate, reasonText, timelineData);
+    const result = finesMacPayloadBuildAccountTimelineData(username, status, statusDate, reasonText, timelineData);
 
     expect(result).toBe(timelineData);
   });
@@ -28,7 +28,7 @@ describe('finesMacPayloadBuildTimelineData', () => {
       },
     ];
 
-    const result = finesMacPayloadBuildTimelineData(username, status, statusDate, reasonText, timelineData);
+    const result = finesMacPayloadBuildAccountTimelineData(username, status, statusDate, reasonText, timelineData);
 
     expect(result).toBe(timelineData);
   });
@@ -40,7 +40,7 @@ describe('finesMacPayloadBuildTimelineData', () => {
     const reasonText = null;
     const timelineData: IFinesMacAccountTimelineData[] = [];
 
-    const result = finesMacPayloadBuildTimelineData(username, status, statusDate, reasonText, timelineData);
+    const result = finesMacPayloadBuildAccountTimelineData(username, status, statusDate, reasonText, timelineData);
 
     expect(result).toBe(timelineData);
   });

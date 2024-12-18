@@ -34,7 +34,8 @@ import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-
 
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
-import { finesMacPayloadBuildTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-timeline-data';
+import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
+import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -57,6 +58,13 @@ export class FinesMacPayloadService {
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
+  /**
+   * Retrieves the business unit user ID associated with a given business unit ID.
+   *
+   * @param businessUnitId - The ID of the business unit to search for. Can be null.
+   * @param sessionUserState - The current session user state containing business unit user information.
+   * @returns The business unit user ID if found, otherwise null.
+   */
   private getBusinessUnitBusinessUserId(
     businessUnitId: number | null,
     sessionUserState: ISessionUserState,
@@ -130,7 +138,7 @@ export class FinesMacPayloadService {
       ? FineMacPayloadAccountAccountStatuses.submitted
       : FineMacPayloadAccountAccountStatuses.resubmitted;
 
-    const timeLineData = finesMacPayloadBuildTimelineData(
+    const timeLineData = finesMacPayloadBuildAccountTimelineData(
       sessionUserState['name'],
       accountStatus,
       this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
@@ -224,50 +232,13 @@ export class FinesMacPayloadService {
     return mappedFinesMacState;
   }
 
-  // TODO: Move to utils
-  private mapInitialPayloadToFinesMacState(
-    mappedFinesMacState: IFinesMacState,
-    payload: IFinesMacAddAccountPayload,
-  ): IFinesMacState {
-    const { account: payloadAccount, business_unit_id } = payload;
-
-    // Update account details
-    mappedFinesMacState.accountDetails.formData = {
-      ...mappedFinesMacState.accountDetails.formData,
-      fm_create_account_account_type: payloadAccount.account_type,
-      fm_create_account_defendant_type: payloadAccount.defendant_type,
-      fm_create_account_business_unit_id: business_unit_id,
-    };
-
-    // Update court details
-    mappedFinesMacState.courtDetails.formData = {
-      ...mappedFinesMacState.courtDetails.formData,
-      fm_court_details_originator_name: payloadAccount.originator_name,
-      fm_court_details_originator_id: payloadAccount.originator_id,
-      fm_court_details_prosecutor_case_reference: payloadAccount.prosecutor_case_reference,
-      fm_court_details_imposing_court_id: payloadAccount.enforcement_court_id,
-    };
-
-    // Update payment terms
-    mappedFinesMacState.paymentTerms.formData = {
-      ...mappedFinesMacState.paymentTerms.formData,
-      fm_payment_terms_collection_order_made: payloadAccount.collection_order_made,
-      fm_payment_terms_collection_order_made_today: payloadAccount.collection_order_made_today,
-      fm_payment_terms_collection_order_date: payloadAccount.collection_order_date,
-      fm_payment_terms_suspended_committal_date: payloadAccount.suspended_committal_date,
-      fm_payment_terms_payment_card_request: payloadAccount.payment_card_request,
-    };
-
-    return mappedFinesMacState;
-  }
-
   public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
     // Build the state object...
     let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
-    finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, transformedPayload);
+    finesMacState = finesMacPayloadMapAccountBase(finesMacState, transformedPayload);
     finesMacState = finesMacPayloadMapAccountDefendant(finesMacState, transformedPayload.account);
     finesMacState = finesMacPayloadMapAccountPaymentTerms(finesMacState, transformedPayload.account);
     finesMacState = finesMacPayloadMapAccountAccountNotesPayload(

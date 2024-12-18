@@ -10,7 +10,7 @@ import { IFinesMacAccountTimelineData } from '../../interfaces/fines-mac-payload
  * @param timelineData - The array of timeline data entries to which the new entry will be appended. Defaults to an empty array.
  * @returns The updated array of timeline data entries.
  */
-export const finesMacPayloadBuildTimelineData = (
+export const finesMacPayloadBuildAccountTimelineData = (
   username: string,
   status: string,
   statusDate: string,
