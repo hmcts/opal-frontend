@@ -19,7 +19,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
     collection_order_date: '2024-10-22',
     suspended_committal_date: '2024-10-12',
     payment_card_request: true,
-    account_sentence_date: null,
+    account_sentence_date: '2024-09-01',
     defendant: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK,

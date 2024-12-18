@@ -3,7 +3,7 @@ import { IFinesMacOffenceDetailsForm } from '../../../../../fines-mac-offence-de
 export const FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE: IFinesMacOffenceDetailsForm = {
   formData: {
     fm_offence_details_id: 0,
-    fm_offence_details_date_of_sentence: '10/12/2024',
+    fm_offence_details_date_of_sentence: '01/09/2024',
     fm_offence_details_offence_id: 'HY35014',
     fm_offence_details_impositions: [
       {
