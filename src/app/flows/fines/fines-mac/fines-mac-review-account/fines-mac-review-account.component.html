@@ -5,7 +5,7 @@
   } @else {
     <h1 class="govuk-heading-l">
       @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'company') {
-        {{ finesService.finesMacState.companyDetails.formData.fm_company_details_organisation_name }}
+        {{ finesService.finesMacState.companyDetails.formData.fm_company_details_company_name }}
       } @else {
         {{
           finesService.finesMacState.personalDetails.formData.fm_personal_details_title +
