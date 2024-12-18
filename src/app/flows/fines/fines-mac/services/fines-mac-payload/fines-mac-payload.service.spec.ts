@@ -14,7 +14,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './utils/
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 
-describe('FinesMacPayloadService', () => {
+fdescribe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService;
   let dateService: DateService;
 
@@ -72,5 +72,65 @@ describe('FinesMacPayloadService', () => {
     finesMacState.companyDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
 
     expect(result).toEqual(finesMacState);
+  });
+
+  it('should check if an array has an array of values', () => {
+    const array = [1, 2, 3];
+    expect(service['hasNonEmptyValue'](array)).toBeTrue();
+  });
+
+  it('should check if an array does not have an array of values', () => {
+    expect(service['hasNonEmptyValue']([])).toBeFalse();
+  });
+
+  it('should check if we have a value ', () => {
+    expect(service['hasNonEmptyValue']('test')).toBeTrue();
+  });
+  it('should check if we have a null value ', () => {
+    expect(service['hasNonEmptyValue'](null)).toBeFalse();
+  });
+
+  it('should get the status of provided if we have values', () => {
+    const finesMacState: IFinesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    expect(service['getFinesMacStateFormStatus'](finesMacState.accountDetails.formData)).toEqual(
+      FINES_MAC_STATUS.PROVIDED,
+    );
+  });
+
+  it('should get the status of not provided if we dont have values', () => {
+    const finesMacState: IFinesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.accountDetails.formData = {
+      fm_create_account_account_type: null,
+      fm_create_account_business_unit_id: null,
+      fm_create_account_defendant_type: null,
+    };
+    expect(service['getFinesMacStateFormStatus'](finesMacState.accountDetails.formData)).toEqual(
+      FINES_MAC_STATUS.NOT_PROVIDED,
+    );
+  });
+
+  it('should set the statuses of the states', () => {
+    const finesMacState: IFinesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    const result = service['setFinesMacStateStatuses'](finesMacState);
+
+    expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
+    expect(result.parentGuardianDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
+    expect(result.companyDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
+    expect(result.courtDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
+    expect(result.accountCommentsNotes.status).toEqual(FINES_MAC_STATUS.PROVIDED);
+    expect(result.offenceDetails[0].status).toEqual(FINES_MAC_STATUS.PROVIDED);
+    expect(result.paymentTerms.status).toEqual(FINES_MAC_STATUS.PROVIDED);
+  });
+
+  it('should set the statuses of the states to not provided', () => {
+    const finesMacState: IFinesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.accountDetails.formData = {
+      fm_create_account_account_type: null,
+      fm_create_account_business_unit_id: null,
+      fm_create_account_defendant_type: null,
+    };
+
+    const result = service['setFinesMacStateStatuses'](finesMacState);
+    expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.NOT_PROVIDED);
   });
 });
