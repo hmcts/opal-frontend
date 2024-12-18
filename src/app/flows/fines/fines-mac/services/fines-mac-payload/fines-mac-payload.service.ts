@@ -1,13 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
 
-import { IFinesMacAccountDetailsState } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
-
-import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
-
-import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
-import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-payload-account-initial.interface';
-
 import { finesMacPayloadBuildAccountPaymentTerms } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-payment-terms.utils';
 import { finesMacPayloadBuildAccountAccountNotes } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
@@ -245,6 +238,7 @@ export class FinesMacPayloadService {
       finesMacState,
       transformedPayload.account.account_notes,
     );
+
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
 
     // Update the form statuses
