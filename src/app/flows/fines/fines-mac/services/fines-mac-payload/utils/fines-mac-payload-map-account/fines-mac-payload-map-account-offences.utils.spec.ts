@@ -22,7 +22,6 @@ describe('finesMacPayloadMapAccountOffences', () => {
 
     expect(result.offenceDetails[0].formData).toEqual(offencesMockState[0].formData);
     expect(result.offenceDetails[0].formData).toEqual(offencesMockState[1].formData);
-    
   });
 
   it('should map offences with impositions that have minor creditors to the state correctly', () => {
