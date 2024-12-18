@@ -7,13 +7,17 @@ import { SortableValues } from '@services/sort-service/types/sort-service-type';
   standalone: true,
   template: '',
 })
-export abstract class AbstractSortableTableComponent {
+export abstract class AbstractSortableTableComponent implements OnInit {
   public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
   private readonly sortService = inject(SortService);
   public sortState: IAbstractSortState = {};
+
+  ngOnInit(): void {
+    this.initialiseSortState();
+  }
 
   /**
    * Initializes the sort state for the table component.

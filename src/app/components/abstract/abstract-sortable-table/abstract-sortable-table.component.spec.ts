@@ -47,6 +47,7 @@ describe('AbstractSortableTableComponent', () => {
 
   it('should not init with an existing sort state', () => {
     const newSortState: IAbstractSortState = { ...ABSTRACT_EXISTING_SORT_STATE_MOCK, imposition: 'none' };
+    component.ngOnInit();
     fixture.detectChanges();
 
     expect(component.sortState).toEqual(newSortState);
@@ -64,6 +65,7 @@ describe('AbstractSortableTableComponent', () => {
   it('should init with a new sort state', () => {
     const newSortState: IAbstractSortState = { ...ABSTRACT_EXISTING_SORT_STATE_MOCK };
     component.abstractExistingSortState = newSortState;
+    component.ngOnInit();
     fixture.detectChanges();
 
     expect(component.sortState).toEqual(newSortState);
