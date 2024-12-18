@@ -76,9 +76,9 @@ describe('FinesMacPayloadService', () => {
   it('should convertPayloadToFinesMacState', () => {
     const result = service.convertPayloadToFinesMacState(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
-    finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
+    finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.parentGuardianDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
-    finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
+    finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
     finesMacState.companyDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
 
     expect(result).toEqual(finesMacState);
