@@ -73,6 +73,12 @@ export class FinesMacPayloadService {
     return null;
   }
 
+  /**
+   * Builds the account payload for the fines MAC service.
+   *
+   * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
+   * @returns {IFinesMacPayloadAccount} The constructed payload object for the account.
+   */
   private buildAccountPayload(finesMacState: IFinesMacState): IFinesMacPayloadAccount {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { formData: courtDetailsState } = finesMacState.courtDetails;
@@ -119,6 +125,14 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds the payload for adding or replacing an account in the fines MAC system.
+   *
+   * @param finesMacState - The current state of the fines MAC.
+   * @param sessionUserState - The current state of the session user.
+   * @param addAccount - A boolean indicating whether to add a new account (true) or replace an existing account (false).
+   * @returns The payload for adding or replacing an account.
+   */
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
@@ -157,6 +171,13 @@ export class FinesMacPayloadService {
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 
+  /**
+   * Builds the payload for adding an account in the fines MAC (Management and Control) system.
+   *
+   * @param finesMacState - The current state of the fines MAC.
+   * @param sessionUserState - The current state of the session user.
+   * @returns The payload required to add an account in the fines MAC system.
+   */
   public buildAddAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
@@ -164,6 +185,13 @@ export class FinesMacPayloadService {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, true);
   }
 
+  /**
+   * Builds the payload for replacing an account in the fines MAC state.
+   *
+   * @param finesMacState - The current state of the fines MAC.
+   * @param sessionUserState - The current state of the session user.
+   * @returns The payload required to add or replace an account in the fines MAC state.
+   */
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
@@ -171,7 +199,16 @@ export class FinesMacPayloadService {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, false);
   }
 
-  //TODO: Move to utils
+  /**
+   * Checks if the given value is non-empty.
+   *
+   * This method determines if the provided value is non-empty by:
+   * - Checking if the value is an array and has any elements.
+   * - Checking if the value is not null.
+   *
+   * @param value - The value to check.
+   * @returns `true` if the value is non-empty, `false` otherwise.
+   */
   private hasNonEmptyValue(value: unknown): boolean {
     // If it's an array, check if it has any elements
     // This is for the aliases
@@ -181,7 +218,13 @@ export class FinesMacPayloadService {
     return value !== null;
   }
 
-  //TODO: Move to utils
+  /**
+   * Determines the status of the fines MAC state form based on the provided form data.
+   *
+   * @template T - The type of the form data object.
+   * @param {T} formData - The form data object to evaluate.
+   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
+   */
   private getFinesMacStateFormStatus<T extends object>(formData: T): string {
     let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
 
@@ -197,7 +240,28 @@ export class FinesMacPayloadService {
     return newStatus;
   }
 
-  private mapFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
+  /**
+   * Updates the status of various sections within the provided `mappedFinesMacState` object.
+   *
+   * @param mappedFinesMacState - The state object containing various sections of fines MAC data.
+   *
+   * This method iterates over the sections of the `mappedFinesMacState` object and updates their status
+   * by calling the `getFinesMacStateFormStatus` method with the respective form data. It handles the following sections:
+   * - accountCommentsNotes
+   * - accountDetails
+   * - companyDetails
+   * - contactDetails
+   * - courtDetails
+   * - employerDetails
+   * - parentGuardianDetails
+   * - paymentTerms
+   * - personalDetails
+   *
+   * Additionally, it processes nested `offenceDetails` forms and their child forms if they exist, updating their status as well.
+   *
+   * @returns The updated `mappedFinesMacState` object with updated statuses for each section.
+   */
+  private setFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
     const getFormStatus = <T extends object>(formData: T) => this.getFinesMacStateFormStatus(formData);
 
     mappedFinesMacState.accountCommentsNotes.status = getFormStatus(mappedFinesMacState.accountCommentsNotes.formData);
@@ -225,7 +289,13 @@ export class FinesMacPayloadService {
     return mappedFinesMacState;
   }
 
-  public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload) {
+  /**
+   * Maps the provided account payload to the fines MAC state.
+   *
+   * @param payload - The payload containing account information to be mapped.
+   * @returns The updated fines MAC state after mapping the account information.
+   */
+  public mapAccountPayload(payload: IFinesMacAddAccountPayload) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
@@ -240,10 +310,7 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
-
-    // Update the form statuses
-    //TODO: Move to utils?
-    finesMacState = this.mapFinesMacStateStatuses(finesMacState);
+    finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;
   }

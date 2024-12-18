@@ -63,8 +63,8 @@ describe('FinesMacPayloadService', () => {
     expect(result).toEqual(finesMacPayloadReplaceAccount);
   });
 
-  it('should convertPayloadToFinesMacState', () => {
-    const result = service.convertPayloadToFinesMacState(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+  it('should mapAccountPayload', () => {
+    const result = service.mapAccountPayload(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.parentGuardianDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
