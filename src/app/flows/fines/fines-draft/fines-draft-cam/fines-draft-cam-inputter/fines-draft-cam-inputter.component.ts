@@ -17,6 +17,8 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { Router } from '@angular/router';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { IFinesMacAddAccountPayload } from '../../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -115,7 +117,10 @@ export class FinesDraftCamInputterComponent implements OnInit {
    */
   private navigateToReviewAccount(): void {
     const businessUnitId = this.finesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id;
-    this.router.navigate(['/fines/manual-account-creation/review-account', businessUnitId]);
+    this.router.navigate([
+      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
+      businessUnitId,
+    ]);
   }
 
   /**

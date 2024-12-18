@@ -103,6 +103,12 @@ export class FinesMacReviewAccountComponent implements OnInit {
     status.statuses.includes(this.finesService.finesDraftState.account_status!),
   )?.prettyName;
 
+  /**
+   * Retrieves the business unit from the activated route's snapshot data and assigns it to the component's businessUnit property.
+   * If a business unit is found, it updates the finesMacState's businessUnit in the finesService and sets the component to read-only mode.
+   *
+   * @private
+   */
   private getBusinessUnit(): void {
     if (this.activatedRoute.snapshot) {
       this.businessUnit = this.activatedRoute.snapshot.data['businessUnit'];
