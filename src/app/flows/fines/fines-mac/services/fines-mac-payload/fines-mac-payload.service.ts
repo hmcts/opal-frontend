@@ -33,6 +33,7 @@ import { finesMacPayloadMapAccountOffences } from './utils/fines-mac-payload-map
 import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
 
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
+import { buildAccountInitialPayload } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-initial.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -40,54 +41,6 @@ import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 export class FinesMacPayloadService {
   private readonly transformationService = inject(TransformationService);
   private readonly dateService = inject(DateService);
-
-  /**
-   * Builds the initial payload for fines MAC based on the provided state objects.
-   *
-   * @param accountDetailsState - The state object containing account details.
-   * @param courtDetailsState - The state object containing court details.
-   * @param paymentTermsState - The state object containing payment terms.
-   * @returns The initial payload for fines MAC.
-   */
-  //TODO: Move to utils
-  private buildAccountInitialPayload(
-    accountDetailsState: IFinesMacAccountDetailsState,
-    courtDetailsState: IFinesMacCourtDetailsState,
-    paymentTermsState: IFinesMacPaymentTermsState,
-  ): IFinesMacPayloadAccountAccountInitial {
-    const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
-      accountDetailsState;
-
-    const {
-      fm_court_details_originator_name: originator_name,
-      fm_court_details_originator_id: originator_id,
-      fm_court_details_prosecutor_case_reference: prosecutor_case_reference,
-      fm_court_details_imposing_court_id: enforcement_court_id,
-    } = courtDetailsState;
-
-    const {
-      fm_payment_terms_collection_order_made: collection_order_made,
-      fm_payment_terms_collection_order_made_today: collection_order_made_today,
-      fm_payment_terms_collection_order_date: collection_order_date,
-      fm_payment_terms_suspended_committal_date: suspended_committal_date,
-      fm_payment_terms_payment_card_request: payment_card_request,
-    } = paymentTermsState;
-
-    return {
-      account_type,
-      defendant_type,
-      originator_name,
-      originator_id,
-      prosecutor_case_reference,
-      enforcement_court_id,
-      collection_order_made: collection_order_made ?? null,
-      collection_order_made_today: collection_order_made_today ?? null,
-      collection_order_date: collection_order_date ?? null,
-      suspended_committal_date: suspended_committal_date ?? null,
-      payment_card_request: payment_card_request ?? null,
-      account_sentence_date: null, // Derived from the earliest of all offence sentence dates
-    };
-  }
 
   /**
    * Transforms the given finesMacPayload object by applying the transformations
@@ -147,10 +100,16 @@ export class FinesMacPayloadService {
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
 
-    const offenceDetailsState = finesMacState.offenceDetails;
+    const offenceDetailsForms = finesMacState.offenceDetails;
+    const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
 
     // Build the parts of our payload...
-    const initialPayload = this.buildAccountInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
+    const initialPayload = buildAccountInitialPayload(
+      accountDetailsState,
+      courtDetailsState,
+      paymentTermsState,
+      offenceDetailsState,
+    );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
       personalDetailsState,
@@ -162,7 +121,7 @@ export class FinesMacPayloadService {
     );
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsState, courtDetailsState);
+    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, courtDetailsState);
 
     // Return our payload object
     return {
