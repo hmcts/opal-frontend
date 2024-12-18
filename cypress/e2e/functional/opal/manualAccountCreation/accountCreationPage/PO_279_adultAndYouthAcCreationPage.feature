@@ -42,8 +42,8 @@
 #     And I click the Sign out link
 
 
-#   Scenario: Review account and delete account elements are not configured (do nothing)
-#     When The button "Review account" is clicked, nothing happens
+#   Scenario: Check account and delete account elements are not configured (do nothing)
+#     When The button "Check account" is clicked, nothing happens
 #     #new feature implementing on PO-366 so deactivating this step
 #     #When "Delete account" is clicked, nothing happens
 #     Then "Cancel account creation" is clicked

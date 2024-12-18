@@ -70,11 +70,11 @@ Feature: PO-443  Reordering of Account Details (task list) for Adult or Youth wi
 
 
 ##DESCOPED by PO-549
-# Scenario: AC7 - Check and submit for review, cancel
+# Scenario: AC7 - Check and submit, cancel
 
-#   When I see the "Check and submit for review" section heading
-#   And I see the "Check that all required fields have been entered before you publish" text under the "Check and submit for review" section
-#Review account button currently does nothing
+#   When I see the "Check and submit" section heading
+#   And I see the "Check that all required fields have been entered before you publish" text under the "Check and submit" section
+#Check account button currently does nothing
 
 #Steps below need working on to pass
 
