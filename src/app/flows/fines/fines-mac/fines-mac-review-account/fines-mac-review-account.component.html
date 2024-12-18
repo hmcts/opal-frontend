@@ -88,10 +88,12 @@
     ></app-fines-mac-review-account-employer-details>
   }
 
-  <app-fines-mac-review-account-offence-details
-    (emitChangeOffenceDetails)="navigateBack()"
-    [isReadOnly]="isReadOnly"
-  ></app-fines-mac-review-account-offence-details>
+  @if (finesService.finesMacState.businessUnit) {
+    <app-fines-mac-review-account-offence-details
+      (emitChangeOffenceDetails)="navigateBack()"
+      [isReadOnly]="isReadOnly"
+    ></app-fines-mac-review-account-offence-details>
+  }
 
   <app-fines-mac-review-account-payment-terms
     [paymentTermsState]="finesService.finesMacState.paymentTerms.formData"
