@@ -1,80 +1,52 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
 import { MojTimelineItemComponent } from './moj-timeline-item.component';
+import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
-
 @Component({
-  template: `
-    <app-moj-timeline-item>
-      <span title>Timeline Title</span>
-      <span user>John Doe</span>
-      <span date>2024-10-31</span>
-      <span #description>Description of the event</span>
-    </app-moj-timeline-item>
-  `,
+  template: `<app-moj-timeline-item>
+    <ng-content title>Test</ng-content>
+    <ng-content user>Test User</ng-content>
+    <ng-content date>23/07/2024</ng-content>
+    <ng-content description><p>Hello world!</p></ng-content>
+  </app-moj-timeline-item>`,
 })
 class TestHostComponent {}
 
-@Component({
-  template: `
-    <app-moj-timeline-item>
-      <span title>Timeline Title</span>
-      <span user>John Doe</span>
-      <span date>2024-10-31</span>
-    </app-moj-timeline-item>
-  `,
-})
-class TestHostComponentWithoutDescriptionComponent {}
-
 describe('MojTimelineItemComponent', () => {
+  let component: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
-  let component: MojTimelineItemComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MojTimelineItemComponent],
-      declarations: [TestHostComponent, TestHostComponentWithoutDescriptionComponent],
+      declarations: [TestHostComponent],
     }).compileComponents();
+    fixture = TestBed.createComponent(TestHostComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  describe('with description', () => {
-    beforeEach(async () => {
-      fixture = TestBed.createComponent(TestHostComponent);
-      fixture.detectChanges();
-      fixture.detectChanges();
-
-      component = fixture.debugElement.query(By.directive(MojTimelineItemComponent)).componentInstance;
-    });
-
-    it('should detect the description element', () => {
-      expect(component.hasDescriptionElement).toBeTrue();
-    });
-
-    it('should render the description content', async () => {
-      const descriptionElement = fixture.debugElement.query(By.css('.moj-timeline__description'));
-      expect(descriptionElement).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  describe('without description', () => {
-    let fixtureWithoutDescription: ComponentFixture<TestHostComponentWithoutDescriptionComponent>;
+  it('should render timeline title - Test', () => {
+    const element = fixture.debugElement.query(By.css('.moj-timeline__title'));
+    expect(element.nativeElement.textContent).toContain('Test');
+  });
 
-    beforeEach(async () => {
-      fixtureWithoutDescription = TestBed.createComponent(TestHostComponentWithoutDescriptionComponent);
-      fixtureWithoutDescription.detectChanges();
+  it('should render timeline user - Test User', () => {
+    const element = fixture.debugElement.query(By.css('.moj-timeline__byline'));
+    expect(element.nativeElement.textContent).toContain('Test User');
+  });
 
-      component = fixtureWithoutDescription.debugElement.query(
-        By.directive(MojTimelineItemComponent),
-      ).componentInstance;
-    });
+  it('should render timeline date - 23/07/2024', () => {
+    const element = fixture.debugElement.query(By.css('.moj-timeline__date'));
+    expect(element.nativeElement.textContent).toContain('23/07/2024');
+  });
 
-    it('should not detect a description element', () => {
-      expect(component.hasDescriptionElement).toBeFalse();
-    });
-
-    it('should not render the description content', () => {
-      const descriptionElement = fixtureWithoutDescription.debugElement.query(By.css('.moj-timeline__description'));
-      expect(descriptionElement).toBeNull();
-    });
+  it('should render timeline description - Hello world!', () => {
+    const element = fixture.debugElement.query(By.css('.moj-timeline__description'));
+    expect(element.nativeElement.textContent).toContain('Hello world!');
   });
 });
