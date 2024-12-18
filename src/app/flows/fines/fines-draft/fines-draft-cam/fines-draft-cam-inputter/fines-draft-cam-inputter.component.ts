@@ -16,6 +16,7 @@ import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-pa
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { Router } from '@angular/router';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
+import { IFinesMacAddAccountPayload } from '../../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -87,19 +88,49 @@ export class FinesDraftCamInputterComponent implements OnInit {
     });
   }
 
+  /**
+   * Updates the fines state with the given response.
+   *
+   * @param response - The response object containing the new fines state.
+   *
+   * This method updates the `finesDraftState` and `finesMacState` properties
+   * of the `finesService` using the provided response. The `finesMacState` is
+   * derived by converting the response payload using the `convertPayloadToFinesMacState`
+   * method of the `finesMacPayloadService`.
+   */
+  private updateFinesState(response: IFinesMacAddAccountPayload): void {
+    this.finesService.finesDraftState = response;
+    this.finesService.finesMacState = this.finesMacPayloadService.convertPayloadToFinesMacState(response);
+  }
+
+  /**
+   * Navigates to the review account page for manual account creation.
+   *
+   * This method retrieves the business unit ID from the fines service's
+   * state and uses the Angular router to navigate to the review account
+   * page, appending the business unit ID to the route.
+   *
+   * @private
+   * @returns {void}
+   */
+  private navigateToReviewAccount(): void {
+    const businessUnitId = this.finesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id;
+    this.router.navigate(['/fines/manual-account-creation/review-account', businessUnitId]);
+  }
+
+  /**
+   * Handles the click event on a defendant.
+   *
+   * @param {number} id - The ID of the defendant.
+   * @returns {void}
+   *
+   * This method retrieves the draft account details for the given defendant ID,
+   * updates the fines state with the response, and navigates to the review account page.
+   */
   public onDefendantClick(id: number): void {
     this.opalFinesService.getDraftAccountById(id).subscribe((response) => {
-      this.finesService.finesDraftState = response;
-
-      // Convert the payload to fines mac state
-      this.finesService.finesMacState = this.finesMacPayloadService.convertPayloadToFinesMacState(response);
-
-      // Get business unit id
-      const { fm_create_account_business_unit_id: businessUnitId } =
-        this.finesService.finesMacState.accountDetails.formData;
-
-      // Navigate to the review account page with business unit id
-      this.router.navigate(['/fines/manual-account-creation/review-account', businessUnitId]);
+      this.updateFinesState(response);
+      this.navigateToReviewAccount();
     });
   }
 

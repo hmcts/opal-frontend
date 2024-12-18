@@ -167,6 +167,7 @@ describe('FinesMacReviewAccountComponent', () => {
       data: {
         businessUnit: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
     component['getBusinessUnit']();

@@ -24,7 +24,7 @@ class TestHostComponent {}
     </app-moj-timeline-item>
   `,
 })
-class TestHostComponentWithoutDescription {}
+class TestHostComponentWithoutDescriptionComponent {}
 
 describe('MojTimelineItemComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
@@ -33,7 +33,7 @@ describe('MojTimelineItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MojTimelineItemComponent],
-      declarations: [TestHostComponent, TestHostComponentWithoutDescription],
+      declarations: [TestHostComponent, TestHostComponentWithoutDescriptionComponent],
     }).compileComponents();
   });
 
@@ -57,10 +57,10 @@ describe('MojTimelineItemComponent', () => {
   });
 
   describe('without description', () => {
-    let fixtureWithoutDescription: ComponentFixture<TestHostComponentWithoutDescription>;
+    let fixtureWithoutDescription: ComponentFixture<TestHostComponentWithoutDescriptionComponent>;
 
     beforeEach(async () => {
-      fixtureWithoutDescription = TestBed.createComponent(TestHostComponentWithoutDescription);
+      fixtureWithoutDescription = TestBed.createComponent(TestHostComponentWithoutDescriptionComponent);
       fixtureWithoutDescription.detectChanges();
 
       component = fixtureWithoutDescription.debugElement.query(
