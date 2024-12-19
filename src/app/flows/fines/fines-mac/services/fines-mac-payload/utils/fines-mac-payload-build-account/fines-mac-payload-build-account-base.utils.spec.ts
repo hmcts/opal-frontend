@@ -24,7 +24,7 @@ const EXPECTED_PAYLOAD: IFinesMacPayloadAccountAccountInitial = {
   account_sentence_date: '01/09/2024',
 };
 
-fdescribe('finesMacPayloadBuildAccountBase', () => {
+describe('finesMacPayloadBuildAccountBase', () => {
   it('should build the initial payload correctly', () => {
     const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
