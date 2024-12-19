@@ -13,9 +13,15 @@ import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/stat
 
 describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
   let initialState: IFinesMacState;
+  let contactDetailsState: IFinesMacContactDetailsState;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState;
+  let companyDetailsState: IFinesMacCompanyDetailsState;
 
   beforeEach(() => {
     initialState = structuredClone(FINES_MAC_STATE);
+    contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
+    languagePreferencesState = structuredClone(FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK);
+    companyDetailsState = structuredClone(FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK);
   });
 
   it('should map payload to fines MAC state', () => {
@@ -25,17 +31,6 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
 
     const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
 
-    const contactDetailsState: IFinesMacContactDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    );
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = structuredClone(
-      FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    );
-
-    const companyDetailsState: IFinesMacCompanyDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK,
-    );
     companyDetailsState.fm_company_details_add_alias = false;
     companyDetailsState.fm_company_details_aliases = [];
 
