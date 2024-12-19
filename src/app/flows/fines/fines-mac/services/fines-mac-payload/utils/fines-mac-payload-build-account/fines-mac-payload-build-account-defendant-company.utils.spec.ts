@@ -9,16 +9,17 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_WITH_ALIASES_MOCK } from '.
 import { finesMacPayloadBuildAccountDefendantCompany } from './fines-mac-payload-build-account-defendant-company.utils';
 
 describe('finesMacPayloadBuildAccountDefendantCompany', () => {
+  let contactDetailsState: IFinesMacContactDetailsState;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState;
+  let companyDetailsState: IFinesMacCompanyDetailsState;
+
+  beforeEach(() => {
+    contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
+    languagePreferencesState = structuredClone(FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK);
+    companyDetailsState = structuredClone(FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK);
+  });
+
   it('should build the correct payload', () => {
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    };
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
-    const companyDetailsState: IFinesMacCompanyDetailsState = { ...FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK };
-
     const result = finesMacPayloadBuildAccountDefendantCompany(
       companyDetailsState,
       contactDetailsState,
@@ -29,18 +30,8 @@ describe('finesMacPayloadBuildAccountDefendantCompany', () => {
   });
 
   it('should handle empty alias array', () => {
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    };
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
-    const companyDetailsState: IFinesMacCompanyDetailsState = {
-      ...FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK,
-      fm_company_details_add_alias: false,
-      fm_company_details_aliases: [],
-    };
+    companyDetailsState.fm_company_details_add_alias = false;
+    companyDetailsState.fm_company_details_aliases = [];
 
     const result = finesMacPayloadBuildAccountDefendantCompany(
       companyDetailsState,
