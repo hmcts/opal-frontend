@@ -17,9 +17,19 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS
 
 describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
   let initialState: IFinesMacState;
+  let personalDetailsState: IFinesMacPersonalDetailsState;
+  let contactDetailsState: IFinesMacContactDetailsState;
+  let employerDetailsState: IFinesMacEmployerDetailsState;
+  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState;
 
   beforeEach(() => {
     initialState = structuredClone(FINES_MAC_STATE);
+    personalDetailsState = structuredClone(FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK);
+    contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
+    employerDetailsState = structuredClone(FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK);
+    parentGuardianDetailsState = structuredClone(FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK);
+    languagePreferencesState = structuredClone(FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK);
   });
 
   it('should map personal details from payload to state', () => {
@@ -28,31 +38,14 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     );
 
     const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
-    const personalDetailsState: IFinesMacPersonalDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
-    );
+
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
     personalDetailsState.fm_personal_details_vehicle_make = null;
     personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
 
-    const contactDetailsState: IFinesMacContactDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    );
-
-    const employerDetailsState: IFinesMacEmployerDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
-    );
-
-    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-    );
     parentGuardianDetailsState.fm_parent_guardian_details_add_alias = false;
     parentGuardianDetailsState.fm_parent_guardian_details_aliases = [];
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = structuredClone(
-      FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    );
 
     expect(result.personalDetails.formData).toEqual(personalDetailsState);
     expect(result.contactDetails.formData).toEqual(contactDetailsState);
