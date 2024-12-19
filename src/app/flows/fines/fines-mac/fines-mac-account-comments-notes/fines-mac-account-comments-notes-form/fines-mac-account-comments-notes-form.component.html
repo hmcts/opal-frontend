@@ -25,7 +25,11 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <app-govuk-button buttonId="submitForm" type="submit">Return to account details</app-govuk-button>
-      @if (checkMandatorySections() && defendantType && finesMacNestedRoutes[defendantType].accountCommentsNotes) {
+      @if (
+        finesService.checkMandatorySections() &&
+        defendantType &&
+        finesMacNestedRoutes[defendantType].accountCommentsNotes
+      ) {
         <app-govuk-button
           buttonId="submitForm"
           type="submit"
