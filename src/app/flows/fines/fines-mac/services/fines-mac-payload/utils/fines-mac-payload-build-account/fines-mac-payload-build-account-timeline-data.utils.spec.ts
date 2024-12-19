@@ -11,7 +11,14 @@ describe('finesMacPayloadBuildAccountTimelineData', () => {
 
     const result = finesMacPayloadBuildAccountTimelineData(username, status, statusDate, reasonText, timelineData);
 
-    expect(result).toBe(timelineData);
+    expect(result).toEqual([
+      {
+        username: 'testUser',
+        status: 'active',
+        status_date: '2023-10-01',
+        reason_text: 'Initial status',
+      },
+    ]);
   });
 
   it('should add a new timeline entry to an existing array', () => {
@@ -43,5 +50,23 @@ describe('finesMacPayloadBuildAccountTimelineData', () => {
     const result = finesMacPayloadBuildAccountTimelineData(username, status, statusDate, reasonText, timelineData);
 
     expect(result).toBe(timelineData);
+  });
+
+  it('should handle null empty timeline data ', () => {
+    const username = 'testUser';
+    const status = 'active';
+    const statusDate = '2023-10-01';
+    const reasonText = 'Initial status';
+
+    const result = finesMacPayloadBuildAccountTimelineData(username, status, statusDate, reasonText, undefined);
+
+    expect(result).toEqual([
+      {
+        username: 'testUser',
+        status: 'active',
+        status_date: '2023-10-01',
+        reason_text: 'Initial status',
+      },
+    ]);
   });
 });
