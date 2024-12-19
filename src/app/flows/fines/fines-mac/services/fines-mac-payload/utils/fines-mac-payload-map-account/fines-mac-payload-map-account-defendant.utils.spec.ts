@@ -16,9 +16,14 @@ import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fi
 
 describe('finesMacPayloadMapAccountDefendant', () => {
   let mappedFinesMacState: IFinesMacState;
-
+  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState;
+  let companyDetailsState: IFinesMacCompanyDetailsState;
+  let personalDetailsState: IFinesMacPersonalDetailsState;
   beforeEach(() => {
     mappedFinesMacState = structuredClone(FINES_MAC_STATE);
+    parentGuardianDetailsState = structuredClone(FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK);
+    companyDetailsState = structuredClone(FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK);
+    personalDetailsState = structuredClone(FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK);
   });
 
   it('should map parentOrGuardianToPay defendant type correctly', () => {
@@ -28,9 +33,6 @@ describe('finesMacPayloadMapAccountDefendant', () => {
 
     const result = finesMacPayloadMapAccountDefendant(mappedFinesMacState, payload);
 
-    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-    );
     parentGuardianDetailsState.fm_parent_guardian_details_add_alias = false;
     parentGuardianDetailsState.fm_parent_guardian_details_aliases = [];
 
@@ -43,9 +45,6 @@ describe('finesMacPayloadMapAccountDefendant', () => {
     payload.defendant = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK;
     const result = finesMacPayloadMapAccountDefendant(mappedFinesMacState, payload);
 
-    const companyDetailsState: IFinesMacCompanyDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK,
-    );
     companyDetailsState.fm_company_details_add_alias = false;
     companyDetailsState.fm_company_details_aliases = [];
 
@@ -59,9 +58,6 @@ describe('finesMacPayloadMapAccountDefendant', () => {
 
     const result = finesMacPayloadMapAccountDefendant(mappedFinesMacState, payload);
 
-    const personalDetailsState: IFinesMacPersonalDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
-    );
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
 
