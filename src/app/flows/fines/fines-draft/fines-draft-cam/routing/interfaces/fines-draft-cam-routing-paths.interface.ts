@@ -3,5 +3,6 @@ import { IChildRoutingPaths } from '@routing/flows/interfaces/child-routing-path
 export interface IFinesDraftCamRoutingPaths extends IChildRoutingPaths {
   children: {
     inputter: string;
+    viewAllRejected: string;
   };
 }

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FinesDraftCamComponent } from './fines-draft-cam.component';
+import { FinesDraftCamComponent } from '../fines-draft-cam/fines-draft-cam.component';
 
 describe('FinesDraftCamComponent', () => {
   let component: FinesDraftCamComponent;

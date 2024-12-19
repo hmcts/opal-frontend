@@ -14,11 +14,13 @@ import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { IFinesMacAddAccountPayload } from '../../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
+import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
+import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -34,6 +36,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   private readonly finesService = inject(FinesService);
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly businessUnitIds = this.globalStateService
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
@@ -44,10 +47,13 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
+  protected readonly finesDraftCamRoutingPaths = FINES_DRAFT_CAM_ROUTING_PATHS;
+
   public draftAccounts$!: Observable<IFinesDraftTableWrapperTableData[]>;
 
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
   public activeTab!: string;
+  public rejectedCount$!: Observable<string>;
 
   /**
    * Fetches draft accounts data based on the active tab option and business unit IDs.
@@ -67,6 +73,30 @@ export class FinesDraftCamInputterComponent implements OnInit {
         .getDraftAccounts(params)
         .pipe(map((response) => this.populateTableData(response)));
     }
+  }
+
+  /**
+   * Retrieves the count of rejected draft accounts and assigns it to `rejectedCount$`.
+   *
+   * This method constructs the parameters required to fetch the rejected draft accounts,
+   * including the business unit IDs and the status set to rejected. It then calls the
+   * `getDraftAccounts` method of `opalFinesService` with these parameters and maps the
+   * response to extract the count of rejected accounts.
+   *
+   * @private
+   * @returns {void}
+   */
+  private getRejectedCount(): void {
+    const params = { businessUnitIds: this.businessUnitIds, statuses: [OpalFinesDraftAccountStatuses.rejected] };
+
+    this.rejectedCount$ = this.opalFinesService.getDraftAccounts(params).pipe(
+      map((response) => {
+        if (response.count > 99) {
+          return '99+';
+        }
+        return response.count.toString();
+      }),
+    );
   }
 
   /**
@@ -105,6 +135,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
    */
   private updateFinesState(response: IFinesMacAddAccountPayload): void {
     this.finesService.finesDraftState = response;
+    this.finesService.finesDraftFragment.set(this.activeTab);
     this.finesService.finesMacState = this.finesMacPayloadService.convertPayloadToFinesMacState(response);
   }
 
@@ -127,6 +158,19 @@ export class FinesDraftCamInputterComponent implements OnInit {
   }
 
   /**
+   * Switches the active tab based on the provided fragment.
+   * If a matching tab option is found, it sets it as the active tab
+   * and retrieves the draft accounts data.
+   *
+   * @param {string} fragment - The fragment identifier for the tab to switch to.
+   * @private
+   */
+  private switchTab(fragment: string): void {
+    this.activeTab = fragment;
+    this.getDraftAccountsData();
+  }
+
+  /**
    * Handles the click event on a defendant.
    *
    * @param {number} id - The ID of the defendant.
@@ -143,19 +187,6 @@ export class FinesDraftCamInputterComponent implements OnInit {
   }
 
   /**
-   * Switches the active tab based on the provided fragment.
-   * If a matching tab option is found, it sets it as the active tab
-   * and retrieves the draft accounts data.
-   *
-   * @param {string} fragment - The fragment identifier for the tab to switch to.
-   * @private
-   */
-  private switchTab(fragment: string): void {
-    this.activeTab = fragment;
-    this.getDraftAccountsData();
-  }
-
-  /**
    * Handles the tab switch event by invoking the switchTab method with the provided event string.
    *
    * @param event - The event string that indicates which tab to switch to.
@@ -164,7 +195,19 @@ export class FinesDraftCamInputterComponent implements OnInit {
     this.switchTab(event);
   }
 
+  /**
+   * Navigates to the specified route relative to the parent route.
+   *
+   * @param route - The route to navigate to.
+   */
+  public handleRoute(route: string): void {
+    this.finesService.finesDraftFragment.set(this.activeTab);
+    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  }
+
   public ngOnInit(): void {
+    this.getRejectedCount();
     this.finesService.finesDraftState = FINES_DRAFT_STATE;
+    this.finesService.finesDraftFragment.set('');
   }
 }
