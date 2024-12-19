@@ -7,6 +7,7 @@ import { MojSortableTableRowComponent } from '@components/moj/moj-sortable-table
 import { MojSortableTableComponent } from '@components/moj/moj-sortable-table/moj-sortable-table.component';
 import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
+import { GovukPaginationComponent } from '../../../../components/govuk/govuk-pagination/govuk-pagination.component';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -17,6 +18,7 @@ import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table
     MojSortableTableHeaderComponent,
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
+    GovukPaginationComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
