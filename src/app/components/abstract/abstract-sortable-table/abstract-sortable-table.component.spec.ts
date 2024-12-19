@@ -125,6 +125,19 @@ describe('AbstractSortableTableComponent', () => {
     expect(component.paginatedTableData).toEqual(MOCK_ABSTRACT_TABLE_DATA.slice(0, 1));
   });
 
+  it('should update paginated table data when null', () => {
+    component.currentPage.set(1);
+    component.pageLimit.set(1);
+    component.abstractTableData = null;
+    fixture.detectChanges();
+
+    component['updatePaginatedTableData']();
+
+    expect(component.startItem()).toBe(1);
+    expect(component.endItem()).toBe(0);
+    expect(component.paginatedTableData).toEqual(null);
+  });
+
   it('should handle page change correctly', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'updatePaginatedTableData');
