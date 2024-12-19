@@ -16,7 +16,6 @@ import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
 import { FinesMacReviewAccountContactDetailsComponent } from './fines-mac-review-account-contact-details/fines-mac-review-account-contact-details.component';
 import { FinesMacReviewAccountEmployerDetailsComponent } from './fines-mac-review-account-employer-details/fines-mac-review-account-employer-details.component';
-
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms/fines-mac-review-account-payment-terms.component';
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes/fines-mac-review-account-account-comments-and-notes.component';
 import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review-account-offence-details/fines-mac-review-account-offence-details.component';
@@ -28,13 +27,13 @@ import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { UtilsService } from '@services/utils/utils.service';
-import { GovukTagComponent } from '../../../../components/govuk/govuk-tag/govuk-tag.component';
-import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/moj-timeline.component';
-import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
+import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
+import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -129,7 +128,7 @@ export class FinesMacReviewAccountComponent implements OnInit {
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
         false,
         undefined,
-        'review',
+        this.finesService.finesDraftFragment(),
       );
     } else {
       this.handleRoute(this.fineMacRoutes.children.accountDetails);
