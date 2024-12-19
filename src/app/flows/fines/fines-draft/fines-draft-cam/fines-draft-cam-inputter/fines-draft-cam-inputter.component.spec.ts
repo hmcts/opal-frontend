@@ -91,7 +91,11 @@ describe('FinesDraftCamInputterComponent', () => {
 
   it('should call getDraftAccounts with correct parameters', () => {
     const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === 'review')?.statuses;
-    const params = { businessUnitIds: component['businessUnitIds'], statuses };
+    const params = {
+      businessUnitIds: component['businessUnitIds'],
+      statuses,
+      submittedBy: component['businessUnitUserIds'],
+    };
     component.activeTab = 'review';
     component['getDraftAccountsData']();
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith(params);

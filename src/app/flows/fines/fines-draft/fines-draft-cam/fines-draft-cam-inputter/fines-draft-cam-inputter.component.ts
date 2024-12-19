@@ -37,6 +37,9 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly businessUnitIds = this.globalStateService
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
+  private readonly businessUnitUserIds = this.globalStateService
+    .userState()
+    .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_user_id);
 
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
@@ -57,7 +60,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
    */
   private getDraftAccountsData(): void {
     const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === this.activeTab)?.statuses;
-    const params = { businessUnitIds: this.businessUnitIds, statuses };
+    const params = { businessUnitIds: this.businessUnitIds, statuses, submittedBy: this.businessUnitUserIds };
 
     if (statuses) {
       this.draftAccounts$ = this.opalFinesService
