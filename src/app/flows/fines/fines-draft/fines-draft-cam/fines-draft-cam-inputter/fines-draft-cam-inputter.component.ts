@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MojSubNavigationComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation.component';
 import { MojSubNavigationItemComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
@@ -12,6 +12,13 @@ import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
+import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
+import { FinesService } from '@services/fines/fines-service/fines.service';
+import { Router } from '@angular/router';
+import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
+import { IFinesMacAddAccountPayload } from '../../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -20,13 +27,19 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCamInputterComponent {
+export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStateService = inject(GlobalStateService);
   private readonly dateService = inject(DateService);
+  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
+  private readonly finesService = inject(FinesService);
+  private readonly router = inject(Router);
   private readonly businessUnitIds = this.globalStateService
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
+  private readonly businessUnitUserIds = this.globalStateService
+    .userState()
+    .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_user_id);
 
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
@@ -47,7 +60,7 @@ export class FinesDraftCamInputterComponent {
    */
   private getDraftAccountsData(): void {
     const statuses = FINES_DRAFT_TAB_STATUSES.find((tab) => tab.tab === this.activeTab)?.statuses;
-    const params = { businessUnitIds: this.businessUnitIds, statuses };
+    const params = { businessUnitIds: this.businessUnitIds, statuses, submittedBy: this.businessUnitUserIds };
 
     if (statuses) {
       this.draftAccounts$ = this.opalFinesService
@@ -81,6 +94,55 @@ export class FinesDraftCamInputterComponent {
   }
 
   /**
+   * Updates the fines state with the given response.
+   *
+   * @param response - The response object containing the new fines state.
+   *
+   * This method updates the `finesDraftState` and `finesMacState` properties
+   * of the `finesService` using the provided response. The `finesMacState` is
+   * derived by converting the response payload using the `convertPayloadToFinesMacState`
+   * method of the `finesMacPayloadService`.
+   */
+  private updateFinesState(response: IFinesMacAddAccountPayload): void {
+    this.finesService.finesDraftState = response;
+    this.finesService.finesMacState = this.finesMacPayloadService.convertPayloadToFinesMacState(response);
+  }
+
+  /**
+   * Navigates to the review account page for manual account creation.
+   *
+   * This method retrieves the business unit ID from the fines service's
+   * state and uses the Angular router to navigate to the review account
+   * page, appending the business unit ID to the route.
+   *
+   * @private
+   * @returns {void}
+   */
+  private navigateToReviewAccount(): void {
+    const businessUnitId = this.finesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id;
+    this.router.navigate([
+      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
+      businessUnitId,
+    ]);
+  }
+
+  /**
+   * Handles the click event on a defendant.
+   *
+   * @param {number} id - The ID of the defendant.
+   * @returns {void}
+   *
+   * This method retrieves the draft account details for the given defendant ID,
+   * updates the fines state with the response, and navigates to the review account page.
+   */
+  public onDefendantClick(id: number): void {
+    this.opalFinesService.getDraftAccountById(id).subscribe((response) => {
+      this.updateFinesState(response);
+      this.navigateToReviewAccount();
+    });
+  }
+
+  /**
    * Switches the active tab based on the provided fragment.
    * If a matching tab option is found, it sets it as the active tab
    * and retrieves the draft accounts data.
@@ -100,5 +162,9 @@ export class FinesDraftCamInputterComponent {
    */
   public handleTabSwitch(event: string) {
     this.switchTab(event);
+  }
+
+  public ngOnInit(): void {
+    this.finesService.finesDraftState = FINES_DRAFT_STATE;
   }
 }

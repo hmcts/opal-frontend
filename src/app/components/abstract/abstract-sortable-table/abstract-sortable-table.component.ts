@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject, signal } from '@angular/core';
 import { SortService } from '@services/sort-service/sort-service';
 import { IAbstractSortState, IAbstractTableData } from './interfaces/abstract-sortable-table-interfaces';
 import { SortableValues } from '@services/sort-service/types/sort-service-type';
@@ -14,6 +14,12 @@ export abstract class AbstractSortableTableComponent implements OnInit {
 
   private readonly sortService = inject(SortService);
   public sortState: IAbstractSortState = {};
+
+  public currentPage = signal(1);
+  public pageLimit = signal(25);
+  public startItem = signal(1);
+  public endItem = signal(25);
+  public paginatedTableData!: IAbstractTableData<SortableValues>[] | null;
 
   /**
    * Initializes the sort state for the table component.
@@ -47,6 +53,25 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   }
 
   /**
+   * Updates the paginated data for the table.
+   *
+   * This method calculates the start and end indices for the current page based on the current page number and page limit.
+   * It then sets the start and end item indices and slices the abstract table data to get the data for the current page.
+   *
+   * @private
+   */
+  private updatePaginatedTableData(): void {
+    const startIndex = (this.currentPage() - 1) * this.pageLimit();
+    const endIndex = startIndex + this.pageLimit();
+    const dataLength = this.abstractTableData?.length ?? 0;
+
+    this.startItem.set(startIndex + 1);
+    this.endItem.set(Math.min(endIndex, dataLength));
+
+    this.paginatedTableData = this.abstractTableData?.slice(startIndex, endIndex) ?? this.abstractTableData;
+  }
+
+  /**
    * Handles the change in sorting order for the table.
    *
    * @param event - An object containing the key to sort by and the sort type (ascending or descending).
@@ -70,7 +95,19 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     this.abstractSortState.emit(this.sortState);
   }
 
+  /**
+   * Handles the event when the page number is changed.
+   *
+   * @param newPageNumber - The new page number to set.
+   * @returns void
+   */
+  public handlePageChanged(newPageNumber: number): void {
+    this.currentPage.set(newPageNumber);
+    this.updatePaginatedTableData();
+  }
+
   public ngOnInit(): void {
     this.initialiseSortState();
+    this.updatePaginatedTableData();
   }
 }

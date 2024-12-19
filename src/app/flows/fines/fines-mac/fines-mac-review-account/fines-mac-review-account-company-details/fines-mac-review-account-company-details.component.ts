@@ -23,6 +23,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 })
 export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
   @Input({ required: true }) public companyDetails!: IFinesMacCompanyDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeCompanyDetails = new EventEmitter<void>();
 
   private readonly utilsService = inject(UtilsService);
@@ -41,7 +42,7 @@ export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
   private getAliasesData(): void {
     this.aliases = this.companyDetails.fm_company_details_aliases.map((item) => {
       const organisationNameKey = Object.keys(item).find((key) =>
-        key.includes('organisation_name'),
+        key.includes('company_name'),
       ) as keyof IFinesMacCompanyDetailsAliasState;
 
       return `${item[organisationNameKey]}`.trim();
