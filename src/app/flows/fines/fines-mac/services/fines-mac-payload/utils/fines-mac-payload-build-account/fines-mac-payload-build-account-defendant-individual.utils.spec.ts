@@ -11,24 +11,21 @@ import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/stat
 import { finesMacPayloadBuildAccountDefendantIndividual } from './fines-mac-payload-build-account-defendant-individual.utils';
 
 describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
+  let contactDetailsState: IFinesMacContactDetailsState;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState;
+  let personalDetailsState: IFinesMacPersonalDetailsState;
+  let employerDetailsState: IFinesMacEmployerDetailsState;
+
+  beforeEach(() => {
+    contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
+    languagePreferencesState = structuredClone(FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK);
+    personalDetailsState = structuredClone(FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK);
+    employerDetailsState = structuredClone(FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK);
+  });
+
   it('should build the individual defendant payload correctly', () => {
-    const personalDetailsState: IFinesMacPersonalDetailsState = {
-      ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
-      fm_personal_details_add_alias: false,
-      fm_personal_details_aliases: [],
-    };
-
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    };
-
-    const employerDetailsState: IFinesMacEmployerDetailsState = {
-      ...FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
-    };
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
+    personalDetailsState.fm_personal_details_add_alias = false;
+    personalDetailsState.fm_personal_details_aliases = [];
 
     const result = finesMacPayloadBuildAccountDefendantIndividual(
       personalDetailsState,
@@ -41,22 +38,6 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
   });
 
   it('should build the individual defendant payload correctly with aliases', () => {
-    const personalDetailsState: IFinesMacPersonalDetailsState = {
-      ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
-    };
-
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    };
-
-    const employerDetailsState: IFinesMacEmployerDetailsState = {
-      ...FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
-    };
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
-
     const result = finesMacPayloadBuildAccountDefendantIndividual(
       personalDetailsState,
       contactDetailsState,

@@ -14,31 +14,28 @@ import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../mocks/s
 import { finesMacPayloadBuildAccountDefendantParentGuardian } from './fines-mac-payload-build-account-defendant-parent-guardian.utils';
 
 describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
+  let contactDetailsState: IFinesMacContactDetailsState;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState;
+  let personalDetailsState: IFinesMacPersonalDetailsState;
+  let employerDetailsState: IFinesMacEmployerDetailsState;
+  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState;
+
+  beforeEach(() => {
+    contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
+    languagePreferencesState = structuredClone(FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK);
+    personalDetailsState = structuredClone(FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK);
+    employerDetailsState = structuredClone(FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK);
+    parentGuardianDetailsState = structuredClone(FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK);
+  });
+
   it('should build the correct payload', () => {
-    const personalDetailsState: IFinesMacPersonalDetailsState = {
-      ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
-      fm_personal_details_add_alias: false,
-      fm_personal_details_aliases: [],
-      fm_personal_details_vehicle_make: null,
-      fm_personal_details_vehicle_registration_mark: null,
-    };
+    personalDetailsState.fm_personal_details_vehicle_make = null;
+    personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
+    personalDetailsState.fm_personal_details_aliases = [];
+    personalDetailsState.fm_personal_details_add_alias = false;
 
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    };
-    const employerDetailsState: IFinesMacEmployerDetailsState = {
-      ...FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
-    };
-
-    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
-      ...FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-      fm_parent_guardian_details_add_alias: false,
-      fm_parent_guardian_details_aliases: [],
-    };
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
+    parentGuardianDetailsState.fm_parent_guardian_details_add_alias = false;
+    parentGuardianDetailsState.fm_parent_guardian_details_aliases = [];
 
     const result = finesMacPayloadBuildAccountDefendantParentGuardian(
       personalDetailsState,
@@ -52,35 +49,18 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
   });
 
   it('should build the correct payload with aliases', () => {
-    const personalDetailsState: IFinesMacPersonalDetailsState = {
-      ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
-      fm_personal_details_add_alias: false,
-      fm_personal_details_aliases: [],
-      fm_personal_details_vehicle_make: null,
-      fm_personal_details_vehicle_registration_mark: null,
-    };
+    personalDetailsState.fm_personal_details_add_alias = false;
+    personalDetailsState.fm_personal_details_aliases = [];
+    personalDetailsState.fm_personal_details_vehicle_make = null;
+    personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
 
-    const contactDetailsState: IFinesMacContactDetailsState = {
-      ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
-    };
-    const employerDetailsState: IFinesMacEmployerDetailsState = {
-      ...FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
-    };
-
-    const parentGuardianDetailsState: IFinesMacParentGuardianDetailsState = {
-      ...FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
-      fm_parent_guardian_details_add_alias: true,
-      fm_parent_guardian_details_aliases: [
-        {
-          fm_parent_guardian_details_alias_forenames_0: 'Testing',
-          fm_parent_guardian_details_alias_surname_0: 'Test',
-        },
-      ],
-    };
-
-    const languagePreferencesState: IFinesMacLanguagePreferencesState = {
-      ...FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK,
-    };
+    parentGuardianDetailsState.fm_parent_guardian_details_add_alias = true;
+    parentGuardianDetailsState.fm_parent_guardian_details_aliases = [
+      {
+        fm_parent_guardian_details_alias_forenames_0: 'Testing',
+        fm_parent_guardian_details_alias_surname_0: 'Test',
+      },
+    ];
 
     const result = finesMacPayloadBuildAccountDefendantParentGuardian(
       personalDetailsState,
