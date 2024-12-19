@@ -124,23 +124,23 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
 
   mappedFinesMacState.parentGuardianDetails.formData = {
     ...mappedFinesMacState.parentGuardianDetails.formData,
-    fm_parent_guardian_details_surname: surname ?? null,
-    fm_parent_guardian_details_forenames: forenames ?? null,
-    fm_parent_guardian_details_dob: dob ?? null,
-    fm_parent_guardian_details_national_insurance_number: nationalInsuranceNumber ?? null,
-    fm_parent_guardian_details_address_line_1: addressLine1 ?? null,
-    fm_parent_guardian_details_address_line_2: addressLine2 ?? null,
-    fm_parent_guardian_details_address_line_3: addressLine3 ?? null,
-    fm_parent_guardian_details_post_code: postCode ?? null,
+    fm_parent_guardian_details_surname: surname,
+    fm_parent_guardian_details_forenames: forenames,
+    fm_parent_guardian_details_dob: dob,
+    fm_parent_guardian_details_national_insurance_number: nationalInsuranceNumber,
+    fm_parent_guardian_details_address_line_1: addressLine1,
+    fm_parent_guardian_details_address_line_2: addressLine2,
+    fm_parent_guardian_details_address_line_3: addressLine3,
+    fm_parent_guardian_details_post_code: postCode,
   };
 
   mappedFinesMacState.contactDetails.formData = {
     ...mappedFinesMacState.contactDetails.formData,
-    fm_contact_details_telephone_number_home: telephoneNumberHome ?? null,
-    fm_contact_details_telephone_number_business: telephoneNumberBusiness ?? null,
-    fm_contact_details_telephone_number_mobile: telephoneNumberMobile ?? null,
-    fm_contact_details_email_address_1: emailAddress1 ?? null,
-    fm_contact_details_email_address_2: emailAddress2 ?? null,
+    fm_contact_details_telephone_number_home: telephoneNumberHome,
+    fm_contact_details_telephone_number_business: telephoneNumberBusiness,
+    fm_contact_details_telephone_number_mobile: telephoneNumberMobile,
+    fm_contact_details_email_address_1: emailAddress1,
+    fm_contact_details_email_address_2: emailAddress2,
   };
 
   if (debtorDetail) {

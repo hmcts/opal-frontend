@@ -61,6 +61,30 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     expect(result.languagePreferences.formData).toEqual(languagePreferencesState);
   });
 
+  it('should not map debtor details from payload to state if parent_guardian is null', () => {
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone({
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK,
+      parent_guardian: null,
+    });
+
+    const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
+
+    expect(result.parentGuardianDetails.formData).toEqual({
+      fm_parent_guardian_details_forenames: null,
+      fm_parent_guardian_details_surname: null,
+      fm_parent_guardian_details_add_alias: null,
+      fm_parent_guardian_details_aliases: [],
+      fm_parent_guardian_details_dob: null,
+      fm_parent_guardian_details_national_insurance_number: null,
+      fm_parent_guardian_details_address_line_1: null,
+      fm_parent_guardian_details_address_line_2: null,
+      fm_parent_guardian_details_address_line_3: null,
+      fm_parent_guardian_details_post_code: null,
+      fm_parent_guardian_details_vehicle_make: null,
+      fm_parent_guardian_details_vehicle_registration_mark: null,
+    });
+  });
+
   it('should map parent/guardian details if present in payload', () => {
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK,

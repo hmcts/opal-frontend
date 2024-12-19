@@ -56,8 +56,8 @@ const mapAccountDefendantCompanyDebtorDetails = (
   // Update language preferences
   mappedFinesMacState.languagePreferences.formData = {
     ...mappedFinesMacState.languagePreferences.formData,
-    fm_language_preferences_document_language: payload.document_language ?? null,
-    fm_language_preferences_hearing_language: payload.hearing_language ?? null,
+    fm_language_preferences_document_language: payload.document_language,
+    fm_language_preferences_hearing_language: payload.hearing_language,
   };
 
   return mappedFinesMacState;

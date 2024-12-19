@@ -44,6 +44,23 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
     expect(result.languagePreferences.formData).toEqual(languagePreferencesState);
   });
 
+  it('should not map debtor details from payload to state if debtor detail is null', () => {
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone({
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK,
+      debtor_detail: null,
+    });
+
+    const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
+
+    expect(result.companyDetails.formData.fm_company_details_add_alias).toBe(null);
+    expect(result.companyDetails.formData.fm_company_details_aliases).toEqual([]);
+
+    expect(result.languagePreferences.formData).toEqual({
+      fm_language_preferences_document_language: null,
+      fm_language_preferences_hearing_language: null,
+    });
+  });
+
   it('should map the payload with aliases', () => {
     const payload: IFinesMacPayloadAccountDefendantComplete =
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK;
