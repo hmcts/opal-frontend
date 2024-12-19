@@ -18,15 +18,23 @@ import { IFinesMacPayloadAccountAccountInitial } from '../../interfaces/fines-ma
 const sortOffenceDetailsByDate = (
   offenceDetailsState: IFinesMacOffenceDetailsState[],
 ): IFinesMacOffenceDetailsState[] => {
-  return offenceDetailsState.sort((a, b) => {
+  return structuredClone(offenceDetailsState).sort((offenceDetailsStateA, offenceDetailsStateB) => {
     // Validate dates
-    const dateA = a.fm_offence_details_date_of_sentence ? new Date(a.fm_offence_details_date_of_sentence) : null;
-    const dateB = b.fm_offence_details_date_of_sentence ? new Date(b.fm_offence_details_date_of_sentence) : null;
+    const dateA = offenceDetailsStateA.fm_offence_details_date_of_sentence
+      ? new Date(offenceDetailsStateA.fm_offence_details_date_of_sentence)
+      : null;
+    const dateB = offenceDetailsStateB.fm_offence_details_date_of_sentence
+      ? new Date(offenceDetailsStateB.fm_offence_details_date_of_sentence)
+      : null;
+
+    // Check if the dates are valid
+    const isDateAInvalid = !dateA || isNaN(dateA.getTime());
+    const isDateBInvalid = !dateB || isNaN(dateB.getTime());
 
     // Handle missing or invalid dates
-    if (!dateA && !dateB) return 0; // Both dates are invalid, maintain current order
-    if (!dateA) return 1; // Move `a` to the end if its date is invalid
-    if (!dateB) return -1; // Move `b` to the end if its date is invalid
+    if (isDateAInvalid && isDateBInvalid) return 0; // Both dates are invalid, maintain current order
+    if (isDateAInvalid) return 1; // Move `a` to the end if its date is invalid
+    if (isDateBInvalid) return -1; // Move `b` to the end if its date is invalid
 
     // Compare valid dates
     return dateA.getTime() - dateB.getTime();
@@ -48,6 +56,7 @@ export const finesMacPayloadBuildAccountBase = (
   offenceDetailsState: IFinesMacOffenceDetailsState[],
 ): IFinesMacPayloadAccountAccountInitial => {
   const earliestDateOfSentence = sortOffenceDetailsByDate(offenceDetailsState)[0].fm_offence_details_date_of_sentence;
+
   const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
     accountDetailsState;
 
