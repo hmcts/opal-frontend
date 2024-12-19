@@ -8,6 +8,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../mocks/state/fin
 import { FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-court-details-state.mock';
 import { FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK } from '../mocks/state/fines-mac-payload-payment-terms-state.mock';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../mocks/state/fines-mac-payload-offence-details-state.mock';
+import { IFinesMacOffenceDetailsState } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-state.interface';
 
 const EXPECTED_PAYLOAD: IFinesMacPayloadAccountAccountInitial = {
   account_type: 'conditionalCaution',
@@ -24,16 +25,40 @@ const EXPECTED_PAYLOAD: IFinesMacPayloadAccountAccountInitial = {
   account_sentence_date: '01/09/2024',
 };
 
+const OFFENCE_MOCK: IFinesMacOffenceDetailsState = {
+  fm_offence_details_id: 0,
+  fm_offence_details_date_of_sentence: null,
+  fm_offence_details_offence_id: 'OFF1234',
+  fm_offence_details_impositions: [
+    {
+      fm_offence_details_imposition_id: 1,
+      fm_offence_details_result_id: 'FCOST',
+      fm_offence_details_amount_imposed: 300,
+      fm_offence_details_amount_paid: 500,
+      fm_offence_details_balance_remaining: 400,
+      fm_offence_details_needs_creditor: true,
+      fm_offence_details_creditor: 'major',
+      fm_offence_details_major_creditor_id: 9999,
+    },
+  ],
+};
+
 describe('finesMacPayloadBuildAccountBase', () => {
+  let expectedPayload: IFinesMacPayloadAccountAccountInitial;
+  let offenceMock: IFinesMacOffenceDetailsState;
+  let courtDetailsState: IFinesMacCourtDetailsState;
+  let accountDetailsState: IFinesMacAccountDetailsState;
+  let paymentTermsState: IFinesMacPaymentTermsState;
+  let offenceDetailsState: IFinesMacOffenceDetailsState[];
+  beforeEach(() => {
+    expectedPayload = structuredClone(EXPECTED_PAYLOAD);
+    offenceMock = structuredClone(OFFENCE_MOCK);
+    courtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
+    accountDetailsState = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK);
+    paymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
+    offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
+  });
   it('should build the initial payload correctly', () => {
-    const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
-    );
-
-    const courtDetailsState: IFinesMacCourtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
-    const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
-    const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
-
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
       courtDetailsState,
@@ -41,36 +66,13 @@ describe('finesMacPayloadBuildAccountBase', () => {
       offenceDetailsState,
     );
 
-    expect(result).toEqual(EXPECTED_PAYLOAD);
+    expect(result).toEqual(expectedPayload);
   });
 
   it('should build the initial payload correctly with the most recent offence as account_sentence_date', () => {
-    const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
-    );
+    offenceMock.fm_offence_details_date_of_sentence = '01/07/2024';
+    offenceDetailsState.push(structuredClone(offenceMock));
 
-    const courtDetailsState: IFinesMacCourtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
-    const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
-    const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
-    offenceDetailsState.push({
-      fm_offence_details_id: 0,
-      fm_offence_details_date_of_sentence: '01/07/2024',
-      fm_offence_details_offence_id: 'OFF1234',
-      fm_offence_details_impositions: [
-        {
-          fm_offence_details_imposition_id: 1,
-          fm_offence_details_result_id: 'FCOST',
-          fm_offence_details_amount_imposed: 300,
-          fm_offence_details_amount_paid: 500,
-          fm_offence_details_balance_remaining: 400,
-          fm_offence_details_needs_creditor: true,
-          fm_offence_details_creditor: 'major',
-          fm_offence_details_major_creditor_id: 9999,
-        },
-      ],
-    });
-
-    const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
     expectedPayload.account_sentence_date = '01/07/2024';
 
     const result = finesMacPayloadBuildAccountBase(
@@ -84,33 +86,11 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if both dates are invalid it should not change position', () => {
-    const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
-    );
+    offenceMock.fm_offence_details_date_of_sentence = 'Hello World';
+    offenceDetailsState.push(structuredClone(offenceMock));
 
-    const courtDetailsState: IFinesMacCourtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
-    const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
-    const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
     offenceDetailsState[0].fm_offence_details_date_of_sentence = 'Hello World';
-    offenceDetailsState.push({
-      fm_offence_details_id: 0,
-      fm_offence_details_date_of_sentence: 'Hello Worldddd',
-      fm_offence_details_offence_id: 'OFF1234',
-      fm_offence_details_impositions: [
-        {
-          fm_offence_details_imposition_id: 1,
-          fm_offence_details_result_id: 'FCOST',
-          fm_offence_details_amount_imposed: 300,
-          fm_offence_details_amount_paid: 500,
-          fm_offence_details_balance_remaining: 400,
-          fm_offence_details_needs_creditor: true,
-          fm_offence_details_creditor: 'major',
-          fm_offence_details_major_creditor_id: 9999,
-        },
-      ],
-    });
 
-    const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
     expectedPayload.account_sentence_date = 'Hello World';
 
     const result = finesMacPayloadBuildAccountBase(
@@ -124,33 +104,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if one date if start date is valid it should move to front of array', () => {
-    const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
-    );
-
-    const courtDetailsState: IFinesMacCourtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
-    const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
-    const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
-
-    offenceDetailsState.push({
-      fm_offence_details_id: 0,
-      fm_offence_details_date_of_sentence: null,
-      fm_offence_details_offence_id: 'OFF1234',
-      fm_offence_details_impositions: [
-        {
-          fm_offence_details_imposition_id: 1,
-          fm_offence_details_result_id: 'FCOST',
-          fm_offence_details_amount_imposed: 300,
-          fm_offence_details_amount_paid: 500,
-          fm_offence_details_balance_remaining: 400,
-          fm_offence_details_needs_creditor: true,
-          fm_offence_details_creditor: 'major',
-          fm_offence_details_major_creditor_id: 9999,
-        },
-      ],
-    });
-
-    const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
+    offenceDetailsState.push(offenceMock);
 
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
@@ -163,34 +117,12 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if if start date invalid it should move to bottom of array', () => {
-    const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
-    );
-
-    const courtDetailsState: IFinesMacCourtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
-    const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
-    const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
     offenceDetailsState[0].fm_offence_details_date_of_sentence = null;
 
-    offenceDetailsState.push({
-      fm_offence_details_id: 0,
-      fm_offence_details_date_of_sentence: '01/07/2024',
-      fm_offence_details_offence_id: 'OFF1234',
-      fm_offence_details_impositions: [
-        {
-          fm_offence_details_imposition_id: 1,
-          fm_offence_details_result_id: 'FCOST',
-          fm_offence_details_amount_imposed: 300,
-          fm_offence_details_amount_paid: 500,
-          fm_offence_details_balance_remaining: 400,
-          fm_offence_details_needs_creditor: true,
-          fm_offence_details_creditor: 'major',
-          fm_offence_details_major_creditor_id: 9999,
-        },
-      ],
-    });
+    offenceMock.fm_offence_details_date_of_sentence = '01/07/2024';
+    offenceDetailsState.push(offenceMock);
 
-    const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
+    // const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
     expectedPayload.account_sentence_date = '01/07/2024';
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
@@ -203,34 +135,12 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if start date is invalid it should move to bottom of array', () => {
-    const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
-    );
-
-    const courtDetailsState: IFinesMacCourtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
-    const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
-    const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
     offenceDetailsState[0].fm_offence_details_date_of_sentence = 'Hello';
 
-    offenceDetailsState.push({
-      fm_offence_details_id: 0,
-      fm_offence_details_date_of_sentence: '01/07/2024',
-      fm_offence_details_offence_id: 'OFF1234',
-      fm_offence_details_impositions: [
-        {
-          fm_offence_details_imposition_id: 1,
-          fm_offence_details_result_id: 'FCOST',
-          fm_offence_details_amount_imposed: 300,
-          fm_offence_details_amount_paid: 500,
-          fm_offence_details_balance_remaining: 400,
-          fm_offence_details_needs_creditor: true,
-          fm_offence_details_creditor: 'major',
-          fm_offence_details_major_creditor_id: 9999,
-        },
-      ],
-    });
+    offenceMock.fm_offence_details_date_of_sentence = '01/07/2024';
+    offenceDetailsState.push(offenceMock);
 
-    const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
+    // const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
     expectedPayload.account_sentence_date = '01/07/2024';
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
@@ -243,33 +153,8 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if one date if end date invalid it should move to bottom of array', () => {
-    const accountDetailsState: IFinesMacAccountDetailsState = structuredClone(
-      FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
-    );
-
-    const courtDetailsState: IFinesMacCourtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
-    const paymentTermsState: IFinesMacPaymentTermsState = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
-    const offenceDetailsState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData]);
-
-    offenceDetailsState.push({
-      fm_offence_details_id: 0,
-      fm_offence_details_date_of_sentence: 'Hello',
-      fm_offence_details_offence_id: 'OFF1234',
-      fm_offence_details_impositions: [
-        {
-          fm_offence_details_imposition_id: 1,
-          fm_offence_details_result_id: 'FCOST',
-          fm_offence_details_amount_imposed: 300,
-          fm_offence_details_amount_paid: 500,
-          fm_offence_details_balance_remaining: 400,
-          fm_offence_details_needs_creditor: true,
-          fm_offence_details_creditor: 'major',
-          fm_offence_details_major_creditor_id: 9999,
-        },
-      ],
-    });
-
-    const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
+    offenceMock.fm_offence_details_date_of_sentence = 'Hello';
+    offenceDetailsState.push(offenceMock);
 
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
@@ -277,6 +162,29 @@ describe('finesMacPayloadBuildAccountBase', () => {
       paymentTermsState,
       offenceDetailsState,
     );
+
+    expect(result).toEqual(expectedPayload);
+  });
+
+  it('should build the initial payload and handle undefined values', () => {
+    paymentTermsState.fm_payment_terms_collection_order_made = undefined;
+    paymentTermsState.fm_payment_terms_collection_order_made_today = undefined;
+    paymentTermsState.fm_payment_terms_collection_order_date = undefined;
+    paymentTermsState.fm_payment_terms_suspended_committal_date = undefined;
+    paymentTermsState.fm_payment_terms_payment_card_request = undefined;
+
+    const result = finesMacPayloadBuildAccountBase(
+      accountDetailsState,
+      courtDetailsState,
+      paymentTermsState,
+      offenceDetailsState,
+    );
+
+    expectedPayload.collection_order_made = null;
+    expectedPayload.collection_order_made_today = null;
+    expectedPayload.collection_order_date = null;
+    expectedPayload.suspended_committal_date = null;
+    expectedPayload.payment_card_request = null;
 
     expect(result).toEqual(expectedPayload);
   });
