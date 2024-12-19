@@ -17,7 +17,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
     mockFinesService.checkMandatorySections.and.returnValue(false);
 
     await TestBed.configureTestingModule({
@@ -118,6 +118,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
     const documentLanguage = 'german';
     const hearingLanguage = 'french';
+
     mockFinesService.finesMacState.languagePreferences.formData = {
       ...mockFinesService.finesMacState.languagePreferences.formData,
       fm_language_preferences_document_language: documentLanguage,
