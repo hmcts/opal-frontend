@@ -1,7 +1,7 @@
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
-import { IFinesMacPayloadBuildAccountPaymentTermsEnforcement } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-payment-terms-enforcement.interface';
+import { IFinesMacPayloadAccountPaymentTermsEnforcement } from '../interfaces/fines-mac-payload-account-payment-terms-enforcement.interface';
 
 /**
  * Maps enforcement actions to the fines MAC state.
@@ -12,7 +12,7 @@ import { IFinesMacPayloadBuildAccountPaymentTermsEnforcement } from '../fines-ma
  */
 const mapEnforcementActions = (
   mappedFinesMacState: IFinesMacState,
-  enforcements: IFinesMacPayloadBuildAccountPaymentTermsEnforcement[] | null,
+  enforcements: IFinesMacPayloadAccountPaymentTermsEnforcement[] | null,
 ): IFinesMacState => {
   enforcements?.forEach(({ enforcement_result_responses: responses, result_id: resultId }) => {
     if (resultId !== 'COLLO') {

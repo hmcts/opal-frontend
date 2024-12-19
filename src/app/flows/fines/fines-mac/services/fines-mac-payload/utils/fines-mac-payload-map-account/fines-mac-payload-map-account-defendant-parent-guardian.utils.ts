@@ -1,9 +1,9 @@
 import { IFinesMacParentGuardianDetailsAliasState } from '../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
-import { IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-complete.interface';
-import { IFinesMacPayloadBuildAccountDefendantParentGuardianComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-parent-guardian-complete.interface';
+import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadAccountDefendantParentGuardianComplete } from '../interfaces/fines-mac-payload-account-defendant-parent-guardian-complete.interface';
 
 /**
  * Maps the details of aliases for a defendant's parent or guardian debtor from the payload
@@ -14,7 +14,7 @@ import { IFinesMacPayloadBuildAccountDefendantParentGuardianComplete } from '../
  */
 const mapAccountDefendantParentGuardianDebtorDetailsAliases = (
   payloadAccountDefendantParentGuardianDebtorDetails:
-    | IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete[]
+    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacParentGuardianDetailsAliasState[] => {
   if (!payloadAccountDefendantParentGuardianDebtorDetails) {
@@ -37,7 +37,7 @@ const mapAccountDefendantParentGuardianDebtorDetailsAliases = (
  */
 const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacState = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete,
+  payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
   // Map aliases
   const aliases = payload?.aliases
@@ -103,7 +103,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
  */
 const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadBuildAccountDefendantParentGuardianComplete,
+  payload: IFinesMacPayloadAccountDefendantParentGuardianComplete,
 ): IFinesMacState => {
   const {
     surname,
@@ -124,23 +124,23 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
 
   mappedFinesMacState.parentGuardianDetails.formData = {
     ...mappedFinesMacState.parentGuardianDetails.formData,
-    fm_parent_guardian_details_surname: surname ?? null,
-    fm_parent_guardian_details_forenames: forenames ?? null,
-    fm_parent_guardian_details_dob: dob ?? null,
-    fm_parent_guardian_details_national_insurance_number: nationalInsuranceNumber ?? null,
-    fm_parent_guardian_details_address_line_1: addressLine1 ?? null,
-    fm_parent_guardian_details_address_line_2: addressLine2 ?? null,
-    fm_parent_guardian_details_address_line_3: addressLine3 ?? null,
-    fm_parent_guardian_details_post_code: postCode ?? null,
+    fm_parent_guardian_details_surname: surname,
+    fm_parent_guardian_details_forenames: forenames,
+    fm_parent_guardian_details_dob: dob,
+    fm_parent_guardian_details_national_insurance_number: nationalInsuranceNumber,
+    fm_parent_guardian_details_address_line_1: addressLine1,
+    fm_parent_guardian_details_address_line_2: addressLine2,
+    fm_parent_guardian_details_address_line_3: addressLine3,
+    fm_parent_guardian_details_post_code: postCode,
   };
 
   mappedFinesMacState.contactDetails.formData = {
     ...mappedFinesMacState.contactDetails.formData,
-    fm_contact_details_telephone_number_home: telephoneNumberHome ?? null,
-    fm_contact_details_telephone_number_business: telephoneNumberBusiness ?? null,
-    fm_contact_details_telephone_number_mobile: telephoneNumberMobile ?? null,
-    fm_contact_details_email_address_1: emailAddress1 ?? null,
-    fm_contact_details_email_address_2: emailAddress2 ?? null,
+    fm_contact_details_telephone_number_home: telephoneNumberHome,
+    fm_contact_details_telephone_number_business: telephoneNumberBusiness,
+    fm_contact_details_telephone_number_mobile: telephoneNumberMobile,
+    fm_contact_details_email_address_1: emailAddress1,
+    fm_contact_details_email_address_2: emailAddress2,
   };
 
   if (debtorDetail) {
@@ -162,7 +162,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
  */
 export const finesMacPayloadMapAccountDefendantParentGuardianPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadBuildAccountDefendantComplete,
+  payload: IFinesMacPayloadAccountDefendantComplete,
 ): IFinesMacState => {
   const {
     title,
