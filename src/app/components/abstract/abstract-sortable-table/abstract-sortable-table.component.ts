@@ -15,6 +15,10 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   private readonly sortService = inject(SortService);
   public sortState: IAbstractSortState = {};
 
+  ngOnInit(): void {
+    this.initialiseSortState();
+  }
+
   /**
    * Initializes the sort state for the table component.
    * If an existing sort state is present, it uses that; otherwise, it creates a new sort state based on the table data.
@@ -22,7 +26,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    * @private
    * @returns {void}
    */
-  private initialiseSortState(): void {
+  public initialiseSortState(): void {
     const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
     this.sortState = sortState;
   }
@@ -66,11 +70,8 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     } else {
       this.abstractTableData = this.sortService.sortObjectArrayDesc(this.abstractTableData, key);
     }
+    console.log(this.abstractTableData);
 
     this.abstractSortState.emit(this.sortState);
-  }
-
-  public ngOnInit(): void {
-    this.initialiseSortState();
   }
 }
