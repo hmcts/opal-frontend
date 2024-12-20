@@ -23,7 +23,7 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
     employerDetailsState = structuredClone(FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK);
   });
 
-  afterEach(() => {
+  afterAll(() => {
     contactDetailsState = null;
     languagePreferencesState = null;
     personalDetailsState = null;

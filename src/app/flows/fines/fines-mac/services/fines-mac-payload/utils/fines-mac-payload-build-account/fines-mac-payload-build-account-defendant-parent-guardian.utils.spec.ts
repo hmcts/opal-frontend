@@ -28,7 +28,7 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
     parentGuardianDetailsState = structuredClone(FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK);
   });
 
-  afterEach(() => {
+  afterAll(() => {
     contactDetailsState = null;
     languagePreferencesState = null;
     personalDetailsState = null;

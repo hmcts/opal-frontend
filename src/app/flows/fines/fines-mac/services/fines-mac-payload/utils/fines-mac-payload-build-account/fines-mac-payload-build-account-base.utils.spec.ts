@@ -44,7 +44,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
     });
   });
 
-  afterEach(() => {
+  afterAll(() => {
     expectedPayload = null;
     courtDetailsState = null;
     accountDetailsState = null;
