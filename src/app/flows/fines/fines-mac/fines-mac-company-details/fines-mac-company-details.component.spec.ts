@@ -7,18 +7,19 @@ import { FINES_MAC_COMPANY_DETAILS_FORM_MOCK } from './mocks/fines-mac-company-d
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 
 describe('FinesMacCompanyDetailsComponent', () => {
-  let component: FinesMacCompanyDetailsComponent;
-  let fixture: ComponentFixture<FinesMacCompanyDetailsComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let formSubmit: IFinesMacCompanyDetailsForm;
+  let component: FinesMacCompanyDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacCompanyDetailsComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let formSubmit: IFinesMacCompanyDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_COMPANY_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_COMPANY_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCompanyDetailsComponent],
@@ -41,11 +42,24 @@ describe('FinesMacCompanyDetailsComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    formSubmit = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should handle form submission and navigate to account details', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
@@ -59,6 +73,11 @@ describe('FinesMacCompanyDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate next route', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
@@ -72,6 +91,11 @@ describe('FinesMacCompanyDetailsComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.handleUnsavedChanges(true);
     expect(component['finesService'].finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
