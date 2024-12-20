@@ -12,10 +12,10 @@ import { FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK } from '../mocks/state/fin
 import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/state/fines-mac-payload-language-preferences-state.mock';
 
 describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
-  let initialState: IFinesMacState;
-  let contactDetailsState: IFinesMacContactDetailsState;
-  let languagePreferencesState: IFinesMacLanguagePreferencesState;
-  let companyDetailsState: IFinesMacCompanyDetailsState;
+  let initialState: IFinesMacState | null;
+  let contactDetailsState: IFinesMacContactDetailsState | null;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState | null;
+  let companyDetailsState: IFinesMacCompanyDetailsState | null;
 
   beforeEach(() => {
     initialState = structuredClone(FINES_MAC_STATE);
@@ -24,7 +24,19 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
     companyDetailsState = structuredClone(FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK);
   });
 
+  afterAll(() => {
+    initialState = null;
+    contactDetailsState = null;
+    languagePreferencesState = null;
+    companyDetailsState = null;
+  });
+
   it('should map payload to fines MAC state', () => {
+    if (!initialState || !contactDetailsState || !languagePreferencesState || !companyDetailsState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK,
     );
@@ -40,6 +52,11 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
   });
 
   it('should not map debtor details from payload to state if debtor detail is null', () => {
+    if (!initialState || !contactDetailsState || !languagePreferencesState || !companyDetailsState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone({
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK,
       debtor_detail: null,
@@ -57,6 +74,11 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
   });
 
   it('should map the payload with aliases', () => {
+    if (!initialState || !contactDetailsState || !languagePreferencesState || !companyDetailsState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete =
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_WITH_ALIASES_MOCK;
 
