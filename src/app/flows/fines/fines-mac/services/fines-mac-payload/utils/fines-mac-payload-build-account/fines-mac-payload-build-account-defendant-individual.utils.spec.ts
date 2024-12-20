@@ -11,10 +11,10 @@ import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/stat
 import { finesMacPayloadBuildAccountDefendantIndividual } from './fines-mac-payload-build-account-defendant-individual.utils';
 
 describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
-  let contactDetailsState: IFinesMacContactDetailsState;
-  let languagePreferencesState: IFinesMacLanguagePreferencesState;
-  let personalDetailsState: IFinesMacPersonalDetailsState;
-  let employerDetailsState: IFinesMacEmployerDetailsState;
+  let contactDetailsState: IFinesMacContactDetailsState | null;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState | null;
+  let personalDetailsState: IFinesMacPersonalDetailsState | null;
+  let employerDetailsState: IFinesMacEmployerDetailsState | null;
 
   beforeEach(() => {
     contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
@@ -23,7 +23,19 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
     employerDetailsState = structuredClone(FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK);
   });
 
+  afterEach(() => {
+    contactDetailsState = null;
+    languagePreferencesState = null;
+    personalDetailsState = null;
+    employerDetailsState = null;
+  });
+
   it('should build the individual defendant payload correctly', () => {
+    if (!personalDetailsState || !contactDetailsState || !employerDetailsState || !languagePreferencesState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
 
@@ -38,6 +50,11 @@ describe('finesMacPayloadBuildAccountDefendantIndividual', () => {
   });
 
   it('should build the individual defendant payload correctly with aliases', () => {
+    if (!personalDetailsState || !contactDetailsState || !employerDetailsState || !languagePreferencesState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const result = finesMacPayloadBuildAccountDefendantIndividual(
       personalDetailsState,
       contactDetailsState,
