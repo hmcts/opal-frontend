@@ -1,7 +1,7 @@
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from '../constants/fines-mac-payload-account-defendant-parent-guardian.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../constants/fines-mac-payload-account-defendant.constant';
 import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-account.interfaces';
-import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/fines-mac-payload-build-account/mocks/fines-mac-payload-account-defendant-individual.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/mocks/fines-mac-payload-account-defendant-individual.mock';
 
 export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
   draft_account_id: null,
@@ -23,7 +23,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
     collection_order_date: '2024-10-22',
     suspended_committal_date: '2024-10-12',
     payment_card_request: true,
-    account_sentence_date: null,
+    account_sentence_date: '2024-09-01',
     defendant: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK,
