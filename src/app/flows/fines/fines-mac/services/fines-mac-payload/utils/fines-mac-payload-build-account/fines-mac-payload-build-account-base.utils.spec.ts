@@ -12,12 +12,13 @@ import { IFinesMacOffenceDetailsState } from '../../../../fines-mac-offence-deta
 import { FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK } from '../mocks/fines-mac-payload-account-account-initial.mock';
 
 describe('finesMacPayloadBuildAccountBase', () => {
-  let expectedPayload: IFinesMacPayloadAccountAccountInitial;
-  let offenceMock: IFinesMacOffenceDetailsState;
-  let courtDetailsState: IFinesMacCourtDetailsState;
-  let accountDetailsState: IFinesMacAccountDetailsState;
-  let paymentTermsState: IFinesMacPaymentTermsState;
-  let offenceDetailsState: IFinesMacOffenceDetailsState[];
+  let expectedPayload: IFinesMacPayloadAccountAccountInitial | null;
+  let offenceMock: IFinesMacOffenceDetailsState | null;
+  let courtDetailsState: IFinesMacCourtDetailsState | null;
+  let accountDetailsState: IFinesMacAccountDetailsState | null;
+  let paymentTermsState: IFinesMacPaymentTermsState | null;
+  let offenceDetailsState: IFinesMacOffenceDetailsState[] | null;
+
   beforeEach(() => {
     expectedPayload = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_ACCOUNT_INITIAL_MOCK);
     courtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
@@ -42,7 +43,22 @@ describe('finesMacPayloadBuildAccountBase', () => {
       ],
     });
   });
+
+  afterEach(() => {
+    expectedPayload = null;
+    courtDetailsState = null;
+    accountDetailsState = null;
+    paymentTermsState = null;
+    offenceDetailsState = null;
+    offenceMock = null;
+  });
+
   it('should build the initial payload correctly', () => {
+    if (!offenceDetailsState || !expectedPayload || !accountDetailsState || !courtDetailsState || !paymentTermsState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
       courtDetailsState,
@@ -54,10 +70,22 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload correctly with the most recent offence as account_sentence_date', () => {
-    offenceMock.fm_offence_details_date_of_sentence = '01/07/2024';
-    offenceDetailsState.push(structuredClone(offenceMock));
+    if (
+      !offenceMock ||
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
 
-    expectedPayload.account_sentence_date = '01/07/2024';
+    const mostRecentOffenceDate = '01/07/2024';
+    offenceMock.fm_offence_details_date_of_sentence = mostRecentOffenceDate;
+    offenceDetailsState.push(structuredClone(offenceMock));
+    expectedPayload.account_sentence_date = mostRecentOffenceDate;
 
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
@@ -70,6 +98,18 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if both dates are invalid it should not change position', () => {
+    if (
+      !offenceMock ||
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     offenceMock.fm_offence_details_date_of_sentence = 'Hello World';
     offenceDetailsState.push(structuredClone(offenceMock));
 
@@ -88,6 +128,18 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if one date if start date is valid it should move to front of array', () => {
+    if (
+      !offenceMock ||
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     offenceDetailsState.push(offenceMock);
 
     const result = finesMacPayloadBuildAccountBase(
@@ -101,12 +153,23 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if if start date invalid it should move to bottom of array', () => {
+    if (
+      !offenceMock ||
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     offenceDetailsState[0].fm_offence_details_date_of_sentence = null;
 
     offenceMock.fm_offence_details_date_of_sentence = '01/07/2024';
     offenceDetailsState.push(offenceMock);
 
-    // const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
     expectedPayload.account_sentence_date = '01/07/2024';
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
@@ -119,12 +182,23 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if start date is invalid it should move to bottom of array', () => {
+    if (
+      !offenceMock ||
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     offenceDetailsState[0].fm_offence_details_date_of_sentence = 'Hello';
 
     offenceMock.fm_offence_details_date_of_sentence = '01/07/2024';
     offenceDetailsState.push(offenceMock);
 
-    // const expectedPayload: IFinesMacPayloadAccountAccountInitial = structuredClone(EXPECTED_PAYLOAD);
     expectedPayload.account_sentence_date = '01/07/2024';
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,
@@ -137,6 +211,18 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and if one date if end date invalid it should move to bottom of array', () => {
+    if (
+      !offenceMock ||
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     offenceMock.fm_offence_details_date_of_sentence = 'Hello';
     offenceDetailsState.push(offenceMock);
 
@@ -151,6 +237,18 @@ describe('finesMacPayloadBuildAccountBase', () => {
   });
 
   it('should build the initial payload and handle undefined values', () => {
+    if (
+      !offenceMock ||
+      !offenceDetailsState ||
+      !expectedPayload ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     paymentTermsState.fm_payment_terms_collection_order_made = undefined;
     paymentTermsState.fm_payment_terms_collection_order_made_today = undefined;
     paymentTermsState.fm_payment_terms_collection_order_date = undefined;
