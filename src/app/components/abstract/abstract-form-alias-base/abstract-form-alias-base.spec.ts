@@ -18,8 +18,8 @@ class TestAbstractFormAliasBaseComponent extends AbstractFormAliasBaseComponent 
 }
 
 describe('AbstractFormAliasBaseComponent', () => {
-  let component: TestAbstractFormAliasBaseComponent;
-  let fixture: ComponentFixture<TestAbstractFormAliasBaseComponent>;
+  let component: TestAbstractFormAliasBaseComponent | null;
+  let fixture: ComponentFixture<TestAbstractFormAliasBaseComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,13 +34,27 @@ describe('AbstractFormAliasBaseComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   beforeEach(() => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
     component.aliasControls = [];
     component.aliasControlsValidation = [];
     component.aliasFields = [];
   });
 
   afterEach(() => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
     component.ngOnDestroy();
   });
 
@@ -49,6 +63,10 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should add controls to a form group', () => {
+    if (!component || !fixture) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
     const formGroup = new FormGroup({});
     const controls: IAbstractFormArrayControlValidation[] = [
       { controlName: 'firstName', validators: [] },
@@ -65,6 +83,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove the form array control at the specified index', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 1;
     const formArrayControls: IAbstractFormArrayControls[] = [
       {
@@ -113,6 +136,10 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create form controls based on the given fields and index', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
     const fields = ['field1', 'field2', 'field3'];
     const index = 0;
 
@@ -138,6 +165,10 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should build form array controls with the given form control count, form array name, field names, and control validation', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
     const formControlCount = [0, 1, 2];
     const formArrayName = 'aliases';
     const fieldNames = ['field1', 'field2', 'field3'];
@@ -205,6 +236,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove all form array controls and clear error messages', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     // Arrange
     const formArrayName = 'aliases';
     const fieldNames = ['firstNames', 'lastName'];
@@ -264,6 +300,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove field errors for the specified form array control', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 0;
     const formArrayControls: IAbstractFormArrayControls[] = [
       {
@@ -293,6 +334,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should not remove field errors if the form array control does not exist', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 1;
     const formArrayControls: IAbstractFormArrayControls[] = [
       {
@@ -322,6 +368,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should add form array controls to the form group', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 0;
     const formArrayName = 'aliases';
     const fieldNames = ['field1', 'field2'];
@@ -343,6 +394,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove the form array control at the specified index', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 1;
     const formArrayName = 'aliases';
     const formArrayControls: IAbstractFormArrayControls[] = [
@@ -390,6 +446,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should update alias controls based on the value of the checkbox', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const addAliasControl = component.form.get('addAlias');
 
     // Call the setUpAliasCheckboxListener method
@@ -409,6 +470,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should add an alias to the aliasControls form array', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 0;
 
     expect(component.aliasControls.length).toBe(0);
@@ -419,6 +485,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove an alias from the aliasControls form array', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 0;
 
     component.addAlias(index, 'aliases');
@@ -429,6 +500,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should set up the aliases for the company details form', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const aliases = [
       {
         companyName_0: 'Test',
@@ -441,6 +517,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should unsubscribe from addAliasListener on ngOnDestroy', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const addAliasControl = component.form.get('addAlias');
 
     addAliasControl?.setValue(true);
@@ -457,6 +538,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should return if addAlias control is not found', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     spyOn(component.form, 'get').and.returnValue(null);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setUpAliasCheckboxListener').and.callThrough();
@@ -477,6 +563,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove field errors for the specified form array control', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 0;
     const formArrayControls: IAbstractFormArrayControls[] = [
       {
@@ -506,6 +597,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should not remove field errors if the form array control does not exist', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 1;
     const formArrayControls: IAbstractFormArrayControls[] = [
       {
@@ -535,6 +631,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should add form array controls to the form group', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 0;
     const formArrayName = 'aliases';
     const fieldNames = ['field1', 'field2'];
@@ -556,6 +657,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove the form array control at the specified index', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 1;
     const formArrayName = 'aliases';
     const formArrayControls: IAbstractFormArrayControls[] = [
@@ -603,6 +709,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should remove the form array control at the specified index', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const index = 1;
     const formArrayControls: IAbstractFormArrayControls[] = [
       {
@@ -651,6 +762,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create form controls based on the given fields and index', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const fields = ['field1', 'field2', 'field3'];
     const index = 0;
 
@@ -676,6 +792,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should build form array controls with the given form control count, form array name, field names, and control validation', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const formControlCount = [0, 1, 2];
     const formArrayName = 'aliases';
     const fieldNames = ['field1', 'field2', 'field3'];
@@ -743,6 +864,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create a new FormArray with validators and controls', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const validators = [Validators.required];
     const controls = [new FormControl('value1'), new FormControl('value2'), new FormControl('value3')];
 
@@ -757,6 +883,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create a new FormArray with validators and no controls', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const validators = [Validators.required];
 
     const formArray = component['createFormAlias'](validators);
@@ -767,6 +898,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create a new FormArray without validators and controls', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const formArray = component['createFormAlias']([]);
 
     expect(formArray instanceof FormArray).toBe(true);
@@ -775,6 +911,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create a form array with validators and controls', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const validators: ValidatorFn[] = [Validators.required];
     const controls: FormControl[] = [new FormControl('test')];
 
@@ -785,6 +926,11 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create a form array with validators and no controls', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
+
     const validators: ValidatorFn[] = [Validators.required];
 
     const formArray = component['createFormAlias'](validators);
@@ -794,6 +940,10 @@ describe('AbstractFormAliasBaseComponent', () => {
   });
 
   it('should create a form array with no validators and controls', () => {
+    if (!component) {
+      fail('TestBed.createComponent returned null');
+      return;
+    }
     const controls: FormControl[] = [new FormControl('test')];
 
     const formArray = component['createFormAlias']([], controls);
