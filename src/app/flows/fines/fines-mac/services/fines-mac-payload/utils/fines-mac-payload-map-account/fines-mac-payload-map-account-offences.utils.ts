@@ -12,8 +12,8 @@ import { IFinesMacAddAccountPayload } from '../../interfaces/fines-mac-payload-a
 import {
   IFinesMacPayloadAccountOffences,
   IFinesMacPayloadAccountOffencesImposition,
-  IFinesMacPayloadBuildAccountOffencesMinorCreditor,
-} from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-offences.interface';
+  IFinesMacPayloadAccountOffencesMinorCreditor,
+} from '../interfaces/fines-mac-payload-account-offences.interface';
 
 /**
  * Determines the creditor type based on the provided company flag.
@@ -70,7 +70,7 @@ const mapAccountOffencesMinorCreditorState = (
  */
 const getCreditor = (
   majorCreditorId: number | null,
-  minorCreditor: IFinesMacPayloadBuildAccountOffencesMinorCreditor | null,
+  minorCreditor: IFinesMacPayloadAccountOffencesMinorCreditor | null,
 ): string | null => {
   const majorCreditorValue = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS[0].key;
   const minorCreditorValue = FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS[1].key;

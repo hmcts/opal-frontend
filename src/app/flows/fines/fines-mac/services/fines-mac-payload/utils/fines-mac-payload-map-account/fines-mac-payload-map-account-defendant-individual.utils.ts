@@ -1,8 +1,8 @@
 import { IFinesMacPersonalDetailsAliasState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
-import { IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 
 /**
  * Maps an array of defendant debtor detail aliases to an array of personal details alias states.
@@ -12,7 +12,7 @@ import { IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete } from '../fi
  */
 const mapAccountDefendantIndividualDebtorDetailsAliases = (
   payloadAccountDefendantIndividualDebtorDetailsAliases:
-    | IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete[]
+    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacPersonalDetailsAliasState[] => {
   if (!payloadAccountDefendantIndividualDebtorDetailsAliases) {
@@ -35,7 +35,7 @@ const mapAccountDefendantIndividualDebtorDetailsAliases = (
  */
 const mapAccountDefendantIndividualDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete,
+  payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
   if (!payload) {
     return mappedFinesMacState;
@@ -49,8 +49,8 @@ const mapAccountDefendantIndividualDebtorDetails = (
   // Update personal details
   mappedFinesMacState.personalDetails.formData = {
     ...mappedFinesMacState.personalDetails.formData,
-    fm_personal_details_vehicle_make: payload.vehicle_make ?? null,
-    fm_personal_details_vehicle_registration_mark: payload.vehicle_registration_mark ?? null,
+    fm_personal_details_vehicle_make: payload.vehicle_make,
+    fm_personal_details_vehicle_registration_mark: payload.vehicle_registration_mark,
     fm_personal_details_add_alias: aliases.length > 0,
     fm_personal_details_aliases: aliases,
   };
@@ -58,23 +58,23 @@ const mapAccountDefendantIndividualDebtorDetails = (
   // Update employer details
   mappedFinesMacState.employerDetails.formData = {
     ...mappedFinesMacState.employerDetails.formData,
-    fm_employer_details_employer_reference: payload.employee_reference ?? null,
-    fm_employer_details_employer_company_name: payload.employer_company_name ?? null,
-    fm_employer_details_employer_address_line_1: payload.employer_address_line_1 ?? null,
-    fm_employer_details_employer_address_line_2: payload.employer_address_line_2 ?? null,
-    fm_employer_details_employer_address_line_3: payload.employer_address_line_3 ?? null,
-    fm_employer_details_employer_address_line_4: payload.employer_address_line_4 ?? null,
-    fm_employer_details_employer_address_line_5: payload.employer_address_line_5 ?? null,
-    fm_employer_details_employer_post_code: payload.employer_post_code ?? null,
-    fm_employer_details_employer_telephone_number: payload.employer_telephone_number ?? null,
-    fm_employer_details_employer_email_address: payload.employer_email_address ?? null,
+    fm_employer_details_employer_reference: payload.employee_reference,
+    fm_employer_details_employer_company_name: payload.employer_company_name,
+    fm_employer_details_employer_address_line_1: payload.employer_address_line_1,
+    fm_employer_details_employer_address_line_2: payload.employer_address_line_2,
+    fm_employer_details_employer_address_line_3: payload.employer_address_line_3,
+    fm_employer_details_employer_address_line_4: payload.employer_address_line_4,
+    fm_employer_details_employer_address_line_5: payload.employer_address_line_5,
+    fm_employer_details_employer_post_code: payload.employer_post_code,
+    fm_employer_details_employer_telephone_number: payload.employer_telephone_number,
+    fm_employer_details_employer_email_address: payload.employer_email_address,
   };
 
   // Update language preferences
   mappedFinesMacState.languagePreferences.formData = {
     ...mappedFinesMacState.languagePreferences.formData,
-    fm_language_preferences_document_language: payload.document_language ?? null,
-    fm_language_preferences_hearing_language: payload.hearing_language ?? null,
+    fm_language_preferences_document_language: payload.document_language,
+    fm_language_preferences_hearing_language: payload.hearing_language,
   };
 
   return mappedFinesMacState;
@@ -90,7 +90,7 @@ const mapAccountDefendantIndividualDebtorDetails = (
  */
 export const finesMacPayloadMapAccountDefendantIndividualPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadBuildAccountDefendantComplete,
+  payload: IFinesMacPayloadAccountDefendantComplete,
 ): IFinesMacState => {
   const {
     title,
