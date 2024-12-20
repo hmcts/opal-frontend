@@ -2,9 +2,9 @@ import { IFinesMacCompanyDetailsAliasState } from '../../../../fines-mac-company
 import { IFinesMacCompanyDetailsState } from '../../../../fines-mac-company-details/interfaces/fines-mac-company-details-state.interface';
 import { IFinesMacContactDetailsState } from '../../../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
 import { IFinesMacLanguagePreferencesState } from '../../../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-state.interface';
-import { IFinesMacPayloadBuildAccountDefendantCompanyDebtorDetailsAlias } from './interfaces/fines-mac-payload-build-account-defendant-company-debtor-details-alias.interface';
-import { IFinesMacPayloadBuildAccountDefendantCompanyDebtorDetails } from './interfaces/fines-mac-payload-build-account-defendant-company-debtor-details.interface';
-import { IFinesMacPayloadBuildAccountDefendantCompany } from './interfaces/fines-mac-payload-build-account-defendant-company.interface';
+import { IFinesMacPayloadAccountDefendantCompanyDebtorDetailsAlias } from '../interfaces/fines-mac-payload-account-defendant-company-debtor-details-alias.interface';
+import { IFinesMacPayloadAccountDefendantCompanyDebtorDetails } from '../interfaces/fines-mac-payload-account-defendant-company-debtor-details.interface';
+import { IFinesMacPayloadAccountDefendantCompany } from '../interfaces/fines-mac-payload-account-defendant-company.interface';
 
 /**
  * Builds an array of company defendant debtor details aliases from the provided aliases state.
@@ -14,7 +14,7 @@ import { IFinesMacPayloadBuildAccountDefendantCompany } from './interfaces/fines
  */
 const buildCompanyDefendantDebtorDetailsAliases = (
   aliases: IFinesMacCompanyDetailsAliasState[],
-): IFinesMacPayloadBuildAccountDefendantCompanyDebtorDetailsAlias[] | null => {
+): IFinesMacPayloadAccountDefendantCompanyDebtorDetailsAlias[] | null => {
   const mappedAliases = aliases.map((alias, index) => {
     const companyNameKey = `fm_company_details_alias_company_name_${index}` as keyof IFinesMacCompanyDetailsAliasState;
     return {
@@ -35,7 +35,7 @@ const buildCompanyDefendantDebtorDetailsAliases = (
 const buildCompanyDefendantDebtorDetails = (
   companyDetailsState: IFinesMacCompanyDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,
-): IFinesMacPayloadBuildAccountDefendantCompanyDebtorDetails => {
+): IFinesMacPayloadAccountDefendantCompanyDebtorDetails => {
   const { fm_language_preferences_document_language, fm_language_preferences_hearing_language } =
     languagePreferencesState;
   const { fm_company_details_aliases } = companyDetailsState;
@@ -59,7 +59,7 @@ export const finesMacPayloadBuildAccountDefendantCompany = (
   companyDetailsState: IFinesMacCompanyDetailsState,
   contactDetailsState: IFinesMacContactDetailsState,
   languagePreferencesState: IFinesMacLanguagePreferencesState,
-): IFinesMacPayloadBuildAccountDefendantCompany => {
+): IFinesMacPayloadAccountDefendantCompany => {
   const {
     fm_company_details_company_name: company_name,
     fm_company_details_address_line_1: address_line_1,

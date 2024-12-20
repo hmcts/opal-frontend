@@ -1,20 +1,20 @@
 import { IFinesMacCompanyDetailsAliasState } from '../../../../fines-mac-company-details/interfaces/fines-mac-company-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
-import { IFinesMacPayloadBuildAccountDefendantComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-complete.interface';
-import { IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-alias-complete.interface';
-import { IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete } from '../fines-mac-payload-build-account/interfaces/fines-mac-payload-build-account-defendant-debtor-detail-complete.interface';
+import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
+import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 
 /**
  * Maps an array of `IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete` objects to an array of `IFinesMacCompanyDetailsAliasState` objects.
  * Each alias in the input array is transformed into an object with a key in the format `fm_company_details_alias_company_name_<index>`.
  * If the input array is null, an empty array is returned.
  *
- * @param payloadAccountDefendantCompanyDebtorDetailsAliases - The array of `IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete` objects or null.
+ * @param payloadAccountDefendantCompanyDebtorDetailsAliases - The array of `IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete` objects or null.
  * @returns An array of `IFinesMacCompanyDetailsAliasState` objects.
  */
 const mapAccountDefendantCompanyDebtorDetailsAliases = (
   payloadAccountDefendantCompanyDebtorDetailsAliases:
-    | IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete[]
+    | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacCompanyDetailsAliasState[] => {
   if (!payloadAccountDefendantCompanyDebtorDetailsAliases) {
@@ -35,7 +35,7 @@ const mapAccountDefendantCompanyDebtorDetailsAliases = (
  */
 const mapAccountDefendantCompanyDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadBuildAccountDefendantDebtorDetailComplete,
+  payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
   if (!payload) {
     return mappedFinesMacState;
@@ -56,8 +56,8 @@ const mapAccountDefendantCompanyDebtorDetails = (
   // Update language preferences
   mappedFinesMacState.languagePreferences.formData = {
     ...mappedFinesMacState.languagePreferences.formData,
-    fm_language_preferences_document_language: payload.document_language ?? null,
-    fm_language_preferences_hearing_language: payload.hearing_language ?? null,
+    fm_language_preferences_document_language: payload.document_language,
+    fm_language_preferences_hearing_language: payload.hearing_language,
   };
 
   return mappedFinesMacState;
@@ -73,7 +73,7 @@ const mapAccountDefendantCompanyDebtorDetails = (
  */
 export const finesMacPayloadMapAccountDefendantCompanyPayload = (
   mappedFinesMacState: IFinesMacState,
-  payload: IFinesMacPayloadBuildAccountDefendantComplete,
+  payload: IFinesMacPayloadAccountDefendantComplete,
 ): IFinesMacState => {
   const {
     company_name,
