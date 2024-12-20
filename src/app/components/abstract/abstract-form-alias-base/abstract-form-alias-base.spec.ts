@@ -34,15 +34,9 @@ describe('AbstractFormAliasBaseComponent', () => {
     fixture.detectChanges();
   });
 
-  afterAll(() => {
-    component = null;
-    fixture = null;
-    TestBed.resetTestingModule();
-  });
-
   beforeEach(() => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
     component.aliasControls = [];
@@ -52,10 +46,16 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   afterEach(() => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
     component.ngOnDestroy();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -64,7 +64,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should add controls to a form group', () => {
     if (!component || !fixture) {
-      fail('TestBed.createComponent returned null');
+      fail('component or fixture returned null');
       return;
     }
     const formGroup = new FormGroup({});
@@ -84,7 +84,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove the form array control at the specified index', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -137,7 +137,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create form controls based on the given fields and index', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
     const fields = ['field1', 'field2', 'field3'];
@@ -166,7 +166,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should build form array controls with the given form control count, form array name, field names, and control validation', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
     const formControlCount = [0, 1, 2];
@@ -237,7 +237,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove all form array controls and clear error messages', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -301,7 +301,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove field errors for the specified form array control', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -335,7 +335,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should not remove field errors if the form array control does not exist', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -369,7 +369,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should add form array controls to the form group', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -395,7 +395,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove the form array control at the specified index', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -447,7 +447,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should update alias controls based on the value of the checkbox', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -471,7 +471,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should add an alias to the aliasControls form array', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -486,7 +486,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove an alias from the aliasControls form array', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -501,7 +501,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should set up the aliases for the company details form', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -518,7 +518,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should unsubscribe from addAliasListener on ngOnDestroy', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -539,7 +539,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should return if addAlias control is not found', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -564,7 +564,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove field errors for the specified form array control', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -598,7 +598,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should not remove field errors if the form array control does not exist', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -632,7 +632,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should add form array controls to the form group', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -658,7 +658,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove the form array control at the specified index', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -710,7 +710,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should remove the form array control at the specified index', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -763,7 +763,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create form controls based on the given fields and index', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -793,7 +793,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should build form array controls with the given form control count, form array name, field names, and control validation', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -865,7 +865,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create a new FormArray with validators and controls', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -884,7 +884,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create a new FormArray with validators and no controls', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -899,7 +899,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create a new FormArray without validators and controls', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -912,7 +912,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create a form array with validators and controls', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -927,7 +927,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create a form array with validators and no controls', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
 
@@ -941,7 +941,7 @@ describe('AbstractFormAliasBaseComponent', () => {
 
   it('should create a form array with no validators and controls', () => {
     if (!component) {
-      fail('TestBed.createComponent returned null');
+      fail('component returned null');
       return;
     }
     const controls: FormControl[] = [new FormControl('test')];
