@@ -1,24 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacEmployerDetailsComponent } from './fines-mac-employer-details.component';
 import { IFinesMacEmployerDetailsForm } from './interfaces/fines-mac-employer-details-form.interface';
-import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK } from './mocks/fines-mac-employer-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 
 describe('FinesMacEmployerDetailsComponent', () => {
-  let component: FinesMacEmployerDetailsComponent;
-  let fixture: ComponentFixture<FinesMacEmployerDetailsComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let formSubmit: IFinesMacEmployerDetailsForm;
+  let component: FinesMacEmployerDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacEmployerDetailsComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let formSubmit: IFinesMacEmployerDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsComponent],
@@ -41,11 +41,24 @@ describe('FinesMacEmployerDetailsComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    formSubmit = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should handle form submission and navigate to account details', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
@@ -59,6 +72,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to offence details - adult or youth only', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
@@ -72,6 +90,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to personal details - parent or guardian to pay', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component.defendantType = 'parentOrGuardianToPay';
     formSubmit.nestedFlow = true;
@@ -85,6 +108,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.handleUnsavedChanges(true);
     expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();

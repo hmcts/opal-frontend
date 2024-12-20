@@ -5,8 +5,8 @@ import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 describe('FinesMacDeleteAccountConfirmationComponent', () => {
-  let component: FinesMacDeleteAccountConfirmationComponent;
-  let fixture: ComponentFixture<FinesMacDeleteAccountConfirmationComponent>;
+  let component: FinesMacDeleteAccountConfirmationComponent | null;
+  let fixture: ComponentFixture<FinesMacDeleteAccountConfirmationComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -27,11 +27,22 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should navigate on handleRoute', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleRoute('test');
@@ -40,6 +51,11 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should navigate on handleRoute with event', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj(Event, ['preventDefault']);
 
