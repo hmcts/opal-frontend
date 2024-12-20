@@ -1,13 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
 
-import { IFinesMacAccountDetailsState } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-state.interface';
-
-import { IFinesMacPaymentTermsState } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
-
-import { IFinesMacCourtDetailsState } from '../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
-import { IFinesMacPayloadAccountAccountInitial } from './interfaces/fines-mac-payload-account-initial.interface';
-
 import { finesMacPayloadBuildAccountPaymentTerms } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-payment-terms.utils';
 import { finesMacPayloadBuildAccountAccountNotes } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-account-notes.utils';
 import { IFinesMacPayloadAccount } from './interfaces/fines-mac-payload-account.interface';
@@ -33,6 +26,9 @@ import { finesMacPayloadMapAccountOffences } from './utils/fines-mac-payload-map
 import { finesMacPayloadBuildAccountDefendant } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-defendant.utils';
 
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
+import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
+import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
+import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -40,54 +36,6 @@ import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 export class FinesMacPayloadService {
   private readonly transformationService = inject(TransformationService);
   private readonly dateService = inject(DateService);
-
-  /**
-   * Builds the initial payload for fines MAC based on the provided state objects.
-   *
-   * @param accountDetailsState - The state object containing account details.
-   * @param courtDetailsState - The state object containing court details.
-   * @param paymentTermsState - The state object containing payment terms.
-   * @returns The initial payload for fines MAC.
-   */
-  //TODO: Move to utils
-  private buildAccountInitialPayload(
-    accountDetailsState: IFinesMacAccountDetailsState,
-    courtDetailsState: IFinesMacCourtDetailsState,
-    paymentTermsState: IFinesMacPaymentTermsState,
-  ): IFinesMacPayloadAccountAccountInitial {
-    const { fm_create_account_account_type: account_type, fm_create_account_defendant_type: defendant_type } =
-      accountDetailsState;
-
-    const {
-      fm_court_details_originator_name: originator_name,
-      fm_court_details_originator_id: originator_id,
-      fm_court_details_prosecutor_case_reference: prosecutor_case_reference,
-      fm_court_details_imposing_court_id: enforcement_court_id,
-    } = courtDetailsState;
-
-    const {
-      fm_payment_terms_collection_order_made: collection_order_made,
-      fm_payment_terms_collection_order_made_today: collection_order_made_today,
-      fm_payment_terms_collection_order_date: collection_order_date,
-      fm_payment_terms_suspended_committal_date: suspended_committal_date,
-      fm_payment_terms_payment_card_request: payment_card_request,
-    } = paymentTermsState;
-
-    return {
-      account_type,
-      defendant_type,
-      originator_name,
-      originator_id,
-      prosecutor_case_reference,
-      enforcement_court_id,
-      collection_order_made: collection_order_made ?? null,
-      collection_order_made_today: collection_order_made_today ?? null,
-      collection_order_date: collection_order_date ?? null,
-      suspended_committal_date: suspended_committal_date ?? null,
-      payment_card_request: payment_card_request ?? null,
-      account_sentence_date: null, // Derived from the earliest of all offence sentence dates
-    };
-  }
 
   /**
    * Transforms the given finesMacPayload object by applying the transformations
@@ -103,6 +51,13 @@ export class FinesMacPayloadService {
     return this.transformationService.transformObjectValues(finesMacPayload, transformItemsConfig);
   }
 
+  /**
+   * Retrieves the business unit user ID associated with a given business unit ID.
+   *
+   * @param businessUnitId - The ID of the business unit to search for. Can be null.
+   * @param sessionUserState - The current session user state containing business unit user information.
+   * @returns The business unit user ID if found, otherwise null.
+   */
   private getBusinessUnitBusinessUserId(
     businessUnitId: number | null,
     sessionUserState: ISessionUserState,
@@ -118,23 +73,12 @@ export class FinesMacPayloadService {
     return null;
   }
 
-  private buildTimelineDataPayload(
-    username: string,
-    status: string,
-    statusDate: string,
-    reasonText: string | null,
-    timelineData: IFinesMacAccountTimelineData[] = [],
-  ): IFinesMacAccountTimelineData[] {
-    timelineData.push({
-      username,
-      status,
-      status_date: statusDate,
-      reason_text: reasonText,
-    });
-
-    return timelineData;
-  }
-
+  /**
+   * Builds the account payload for the fines MAC service.
+   *
+   * @param {IFinesMacState} finesMacState - The state object containing all the form data for the fines MAC process.
+   * @returns {IFinesMacPayloadAccount} The constructed payload object for the account.
+   */
   private buildAccountPayload(finesMacState: IFinesMacState): IFinesMacPayloadAccount {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const { formData: courtDetailsState } = finesMacState.courtDetails;
@@ -147,10 +91,16 @@ export class FinesMacPayloadService {
     const { formData: parentGuardianDetailsState } = finesMacState.parentGuardianDetails;
     const { formData: accountCommentsNotesState } = finesMacState.accountCommentsNotes;
 
-    const offenceDetailsState = finesMacState.offenceDetails;
+    const offenceDetailsForms = finesMacState.offenceDetails;
+    const offenceDetailsState = offenceDetailsForms.map((offence) => offence.formData);
 
     // Build the parts of our payload...
-    const initialPayload = this.buildAccountInitialPayload(accountDetailsState, courtDetailsState, paymentTermsState);
+    const initialPayload = finesMacPayloadBuildAccountBase(
+      accountDetailsState,
+      courtDetailsState,
+      paymentTermsState,
+      offenceDetailsState,
+    );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
       personalDetailsState,
@@ -162,7 +112,7 @@ export class FinesMacPayloadService {
     );
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsState, courtDetailsState);
+    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, courtDetailsState);
 
     // Return our payload object
     return {
@@ -175,6 +125,14 @@ export class FinesMacPayloadService {
     };
   }
 
+  /**
+   * Builds the payload for adding or replacing an account in the fines MAC system.
+   *
+   * @param finesMacState - The current state of the fines MAC.
+   * @param sessionUserState - The current state of the session user.
+   * @param addAccount - A boolean indicating whether to add a new account (true) or replace an existing account (false).
+   * @returns The payload for adding or replacing an account.
+   */
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
@@ -187,7 +145,7 @@ export class FinesMacPayloadService {
       ? FineMacPayloadAccountAccountStatuses.submitted
       : FineMacPayloadAccountAccountStatuses.resubmitted;
 
-    const timeLineData = this.buildTimelineDataPayload(
+    const timeLineData = finesMacPayloadBuildAccountTimelineData(
       sessionUserState['name'],
       accountStatus,
       this.dateService.toFormat(this.dateService.getDateNow(), 'yyyy-MM-dd'),
@@ -217,6 +175,13 @@ export class FinesMacPayloadService {
     return this.transformPayload(addAccountPayload, FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG);
   }
 
+  /**
+   * Builds the payload for adding an account in the fines MAC (Management and Control) system.
+   *
+   * @param finesMacState - The current state of the fines MAC.
+   * @param sessionUserState - The current state of the session user.
+   * @returns The payload required to add an account in the fines MAC system.
+   */
   public buildAddAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
@@ -224,6 +189,13 @@ export class FinesMacPayloadService {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, true);
   }
 
+  /**
+   * Builds the payload for replacing an account in the fines MAC state.
+   *
+   * @param finesMacState - The current state of the fines MAC.
+   * @param sessionUserState - The current state of the session user.
+   * @returns The payload required to add or replace an account in the fines MAC state.
+   */
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
@@ -231,7 +203,16 @@ export class FinesMacPayloadService {
     return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, false);
   }
 
-  //TODO: Move to utils
+  /**
+   * Checks if the given value is non-empty.
+   *
+   * This method determines if the provided value is non-empty by:
+   * - Checking if the value is an array and has any elements.
+   * - Checking if the value is not null.
+   *
+   * @param value - The value to check.
+   * @returns `true` if the value is non-empty, `false` otherwise.
+   */
   private hasNonEmptyValue(value: unknown): boolean {
     // If it's an array, check if it has any elements
     // This is for the aliases
@@ -241,7 +222,13 @@ export class FinesMacPayloadService {
     return value !== null;
   }
 
-  //TODO: Move to utils
+  /**
+   * Determines the status of the fines MAC state form based on the provided form data.
+   *
+   * @template T - The type of the form data object.
+   * @param {T} formData - The form data object to evaluate.
+   * @returns {string} - The status of the form, either `FINES_MAC_STATUS.NOT_PROVIDED` or `FINES_MAC_STATUS.PROVIDED`.
+   */
   private getFinesMacStateFormStatus<T extends object>(formData: T): string {
     let newStatus = FINES_MAC_STATUS.NOT_PROVIDED;
 
@@ -257,7 +244,28 @@ export class FinesMacPayloadService {
     return newStatus;
   }
 
-  private mapFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
+  /**
+   * Updates the status of various sections within the provided `mappedFinesMacState` object.
+   *
+   * @param mappedFinesMacState - The state object containing various sections of fines MAC data.
+   *
+   * This method iterates over the sections of the `mappedFinesMacState` object and updates their status
+   * by calling the `getFinesMacStateFormStatus` method with the respective form data. It handles the following sections:
+   * - accountCommentsNotes
+   * - accountDetails
+   * - companyDetails
+   * - contactDetails
+   * - courtDetails
+   * - employerDetails
+   * - parentGuardianDetails
+   * - paymentTerms
+   * - personalDetails
+   *
+   * Additionally, it processes nested `offenceDetails` forms and their child forms if they exist, updating their status as well.
+   *
+   * @returns The updated `mappedFinesMacState` object with updated statuses for each section.
+   */
+  private setFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
     const getFormStatus = <T extends object>(formData: T) => this.getFinesMacStateFormStatus(formData);
 
     mappedFinesMacState.accountCommentsNotes.status = getFormStatus(mappedFinesMacState.accountCommentsNotes.formData);
@@ -285,61 +293,28 @@ export class FinesMacPayloadService {
     return mappedFinesMacState;
   }
 
-  // TODO: Move to utils
-  private mapInitialPayloadToFinesMacState(
-    mappedFinesMacState: IFinesMacState,
-    payload: IFinesMacAddAccountPayload,
-  ): IFinesMacState {
-    const { account: payloadAccount, business_unit_id } = payload;
-
-    // Update account details
-    mappedFinesMacState.accountDetails.formData = {
-      ...mappedFinesMacState.accountDetails.formData,
-      fm_create_account_account_type: payloadAccount.account_type,
-      fm_create_account_defendant_type: payloadAccount.defendant_type,
-      fm_create_account_business_unit_id: business_unit_id,
-    };
-
-    // Update court details
-    mappedFinesMacState.courtDetails.formData = {
-      ...mappedFinesMacState.courtDetails.formData,
-      fm_court_details_originator_name: payloadAccount.originator_name,
-      fm_court_details_originator_id: payloadAccount.originator_id,
-      fm_court_details_prosecutor_case_reference: payloadAccount.prosecutor_case_reference,
-      fm_court_details_imposing_court_id: payloadAccount.enforcement_court_id,
-    };
-
-    // Update payment terms
-    mappedFinesMacState.paymentTerms.formData = {
-      ...mappedFinesMacState.paymentTerms.formData,
-      fm_payment_terms_collection_order_made: payloadAccount.collection_order_made,
-      fm_payment_terms_collection_order_made_today: payloadAccount.collection_order_made_today,
-      fm_payment_terms_collection_order_date: payloadAccount.collection_order_date,
-      fm_payment_terms_suspended_committal_date: payloadAccount.suspended_committal_date,
-      fm_payment_terms_payment_card_request: payloadAccount.payment_card_request,
-    };
-
-    return mappedFinesMacState;
-  }
-
-  public convertPayloadToFinesMacState(payload: IFinesMacAddAccountPayload) {
+  /**
+   * Maps the provided account payload to the fines MAC state.
+   *
+   * @param payload - The payload containing account information to be mapped.
+   * @returns The updated fines MAC state after mapping the account information.
+   */
+  public mapAccountPayload(payload: IFinesMacAddAccountPayload) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
     // Build the state object...
     let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
-    finesMacState = this.mapInitialPayloadToFinesMacState(finesMacState, transformedPayload);
+    finesMacState = finesMacPayloadMapAccountBase(finesMacState, transformedPayload);
     finesMacState = finesMacPayloadMapAccountDefendant(finesMacState, transformedPayload.account);
     finesMacState = finesMacPayloadMapAccountPaymentTerms(finesMacState, transformedPayload.account);
     finesMacState = finesMacPayloadMapAccountAccountNotesPayload(
       finesMacState,
       transformedPayload.account.account_notes,
     );
-    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
 
-    // Update the form statuses
-    //TODO: Move to utils?
-    finesMacState = this.mapFinesMacStateStatuses(finesMacState);
+    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+    finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;
   }

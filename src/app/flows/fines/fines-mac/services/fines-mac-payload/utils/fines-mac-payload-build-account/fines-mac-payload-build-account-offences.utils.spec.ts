@@ -1,40 +1,41 @@
-import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR } from './mocks/fines-mac-payload-account-offences-with-major-creditor.mock';
-import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR } from '../mocks/fines-mac-payload-account-offences-with-major-creditor.mock';
+import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from '../mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 
-import { FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE } from './mocks/state/fines-mac-payload-build-offence-details-state.mock';
-import { FINES_MAC_PAYLOAD_BUILD_COURT_DETAILS_STATE_MOCK } from './mocks/state/fines-mac-payload-build-court-details-state.mock';
+import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE } from '../mocks/state/fines-mac-payload-offence-details-state.mock';
+import { FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-court-details-state.mock';
 import { IFinesMacOffenceDetailsForm } from '../../../../fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
 import { finesMacPayloadBuildAccountOffences } from './fines-mac-payload-build-account-offences.utils';
-import { FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './mocks/state/fines-mac-payload-build-offence-details-minor-creditor-state.mock';
+import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
+import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 
 describe('finesMacPayloadBuildAccountOffences', () => {
+  let offencesMockState: IFinesMacOffenceDetailsForm[];
+  let offencesMockStateMinorCreditor: IFinesMacOffenceDetailsForm[];
+  let courtDetailsState: IFinesMacCourtDetailsState;
+
+  beforeEach(() => {
+    offencesMockState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE]);
+    courtDetailsState = structuredClone(FINES_MAC_PAYLOAD_COURT_DETAILS_STATE_MOCK);
+    offencesMockStateMinorCreditor = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
+  });
+
   it('should build payload with impositions with a major creditor', () => {
-    const offencesMockState = [{ ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE }];
-    const courtDetailsState = { ...FINES_MAC_PAYLOAD_BUILD_COURT_DETAILS_STATE_MOCK };
     const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR);
   });
 
   it('should build payload with a minor creditor', () => {
-    // TOD: Make minor creditor state
-    const offencesMockState: IFinesMacOffenceDetailsForm[] = [
-      {
-        ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE,
-      },
-    ];
-
-    const courtDetailsState = { ...FINES_MAC_PAYLOAD_BUILD_COURT_DETAILS_STATE_MOCK };
-    const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
+    const results = finesMacPayloadBuildAccountOffences(offencesMockStateMinorCreditor, courtDetailsState);
 
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
   });
 
   it('should build payload with a null response object', () => {
-    const offencesMockState: IFinesMacOffenceDetailsForm[] = [
+    offencesMockState = [
       {
-        ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE,
+        ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
         formData: {
-          ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE.formData,
+          ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData,
           fm_offence_details_id: 0,
           fm_offence_details_date_of_sentence: null,
           fm_offence_details_offence_id: null,
@@ -62,11 +63,11 @@ describe('finesMacPayloadBuildAccountOffences', () => {
   });
 
   it('should build payload with null values', () => {
-    const offencesMockState: IFinesMacOffenceDetailsForm[] = [
+    offencesMockState = [
       {
-        ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE,
+        ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
         formData: {
-          ...FINES_MAC_PAYLOAD_BUILD_OFFENCE_DETAILS_STATE.formData,
+          ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData,
           fm_offence_details_id: 0,
           fm_offence_details_date_of_sentence: null,
           fm_offence_details_offence_id: null,
