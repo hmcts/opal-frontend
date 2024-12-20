@@ -16,8 +16,8 @@ import { provideRouter } from '@angular/router';
 class TestHostComponent {}
 
 describe('GovukHeaderComponent', () => {
-  let component: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
+  let component: TestHostComponent | null;
+  let fixture: ComponentFixture<TestHostComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,21 +31,42 @@ describe('GovukHeaderComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should render into organisationName ng-content', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.nativeElement.querySelector('.govuk-header__logotype-text');
     expect(element.innerText).toBe('Test Organisation');
   });
 
   it('should render into serviceName ng-content', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.nativeElement.querySelector('.govuk-header__service-name');
     expect(element.innerText).toBe('Test Service');
   });
 
   it('should render into linkText ng-content', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.nativeElement.querySelector('app-govuk-header-navigation-item');
     expect(element.innerText).toBe('Test Link');
   });
