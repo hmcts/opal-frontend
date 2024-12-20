@@ -36,6 +36,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   afterAll(() => {
     component = null;
     fixture = null;
+    TestBed.resetTestingModule();
   });
 
   it('should show error summary if form is invalid', () => {

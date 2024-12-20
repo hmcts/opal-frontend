@@ -68,6 +68,7 @@ describe('FinesMacCreateAccountComponent', () => {
     mockFinesService = null;
     mockOpalFinesService = null;
     formSubmit = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {

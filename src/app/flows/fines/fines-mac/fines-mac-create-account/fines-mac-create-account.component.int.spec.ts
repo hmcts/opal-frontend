@@ -54,6 +54,7 @@ describe('FinesMacCreateAccountComponent', () => {
     component = null;
     fixture = null;
     mockOpalFinesService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should render the child form component', async () => {

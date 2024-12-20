@@ -47,6 +47,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     fixture = null;
     mockFinesService = null;
     formSubmit = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
