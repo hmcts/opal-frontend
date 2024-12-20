@@ -60,7 +60,7 @@ describe('GovukTextInputPrefixSuffixComponent', () => {
   });
 
   it('should have extra input classes', () => {
-    if (!component || !fixture) {
+    if (!component) {
       fail('component or fixture returned null');
       return;
     }
@@ -78,7 +78,7 @@ describe('GovukTextInputPrefixSuffixComponent', () => {
   });
 
   it('should have a prefix and suffix attached to the input', () => {
-    if (!component || !fixture) {
+    if (!component) {
       fail('component or fixture returned null');
       return;
     }
@@ -98,7 +98,7 @@ describe('GovukTextInputPrefixSuffixComponent', () => {
   });
 
   it('should format value to two decimal places on blur', () => {
-    if (!component || !fixture) {
+    if (!component) {
       fail('component or fixture returned null');
       return;
     }
@@ -115,7 +115,7 @@ describe('GovukTextInputPrefixSuffixComponent', () => {
   });
 
   it('should not format value if it is already formatted to two decimal places on blur', () => {
-    if (!component || !fixture) {
+    if (!component) {
       fail('component or fixture returned null');
       return;
     }
@@ -132,8 +132,8 @@ describe('GovukTextInputPrefixSuffixComponent', () => {
   });
 
   it('should not format value if it is not a number on blur', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 

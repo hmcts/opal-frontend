@@ -38,8 +38,8 @@ describe('GovukTextAreaComponent', () => {
   });
 
   it('should set the control correctly', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -49,8 +49,8 @@ describe('GovukTextAreaComponent', () => {
   });
 
   it('should calculate the remaining character count correctly', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -60,8 +60,8 @@ describe('GovukTextAreaComponent', () => {
   });
 
   it('should return the remaining character count when value is undefined', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
     const control: AbstractControl = new FormControl(undefined);
