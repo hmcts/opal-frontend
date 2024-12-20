@@ -7,8 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 describe('FinesMacCreateAccountFormComponent', () => {
-  let component: FinesMacCreateAccountFormComponent;
-  let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
+  let component: FinesMacCreateAccountFormComponent | null;
+  let fixture: ComponentFixture<FinesMacCreateAccountFormComponent> | null;
 
   beforeEach(async () => {
     // Setting up the TestBed to configure the testing environment for the component,
@@ -33,7 +33,17 @@ describe('FinesMacCreateAccountFormComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+  });
+
   it('should show error summary if form is invalid', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Sets up the form in an invalid state to test the visibility of the error summary.
     component.form.controls['fm_create_account_business_unit_id'].setValue('');
     component.form.controls['fm_create_account_account_type'].setValue(null);
@@ -44,6 +54,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should render appropriate template for single autocomplete item', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Initializes the autoCompleteItems property to simulate data input for the test.
     component.autoCompleteItems = [{ value: 1, name: 'Business Unit A' }];
     fixture.detectChanges();
@@ -54,6 +69,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should emit formSubmit event on form submission', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // The spy is used to monitor and verify the emission of the formSubmit event.
     const emitSpy = spyOn(component['formSubmit'], 'emit');
 

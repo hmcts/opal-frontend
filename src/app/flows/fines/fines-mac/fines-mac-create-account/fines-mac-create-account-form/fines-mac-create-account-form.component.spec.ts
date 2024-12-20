@@ -7,25 +7,30 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks/fines-mac-create-account-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
+import { of } from 'rxjs';
 
 describe('FinesMacCreateAccountFormComponent', () => {
-  let component: FinesMacCreateAccountFormComponent;
-  let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
-  let formSubmit: IFinesMacAccountDetailsForm;
+  let component: FinesMacCreateAccountFormComponent | null;
+  let fixture: ComponentFixture<FinesMacCreateAccountFormComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let formSubmit: IFinesMacAccountDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
@@ -37,11 +42,23 @@ describe('FinesMacCreateAccountFormComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    formSubmit = null;
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should setup account type listener', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'handleAccountTypeChange');
 
@@ -52,6 +69,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should call handleAccountTypeChange when accountType value changes', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'handleAccountTypeChange');
 
@@ -62,6 +84,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
 
@@ -78,6 +105,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component['accountTypeSubject'], 'next');
     spyOn(component['accountTypeSubject'], 'complete');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,6 +123,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - fine', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const accountType = 'fine';
     const fieldName = 'fm_create_account_fine_defendant_type';
     const validators = [Validators.required];
@@ -104,12 +141,22 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
     fieldsToRemove.forEach((field) => {
+      if (!component || !formSubmit || !mockFinesService || !fixture) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(component['removeControl']).toHaveBeenCalledWith(field);
     });
     expect(component['createControl']).toHaveBeenCalledWith(fieldName, validators);
   });
 
   it('should handle account type change - fixed penalty', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const accountType = 'fixedPenalty';
     const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
     const validators = [Validators.required];
@@ -123,12 +170,22 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
     fieldsToRemove.forEach((field) => {
+      if (!component || !formSubmit || !mockFinesService || !fixture) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(component['removeControl']).toHaveBeenCalledWith(field);
     });
     expect(component['createControl']).toHaveBeenCalledWith(fieldName, validators);
   });
 
   it('should handle account type change - conditional caution', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const accountType = 'conditionalCaution';
     const fieldsToRemove = ['fm_create_account_fine_defendant_type', 'fm_create_account_fixed_penalty_defendant_type'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -140,12 +197,22 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
     fieldsToRemove.forEach((field) => {
+      if (!component || !formSubmit || !mockFinesService || !fixture) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(component['removeControl']).toHaveBeenCalledWith(field);
     });
     expect(component['createControl']).not.toHaveBeenCalled();
   });
 
   it('should set defendant type based on account type - fixed penalty', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const accountType = 'fixedPenalty';
     const fieldName = 'fm_create_account_fixed_penalty_defendant_type';
     const fieldValue = 'adultOrYouthOnly';
@@ -159,6 +226,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type based on account type - fine', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const accountType = 'fine';
     const fieldName = 'fm_create_account_fine_defendant_type';
     const fieldValue = 'adultOrYouthOnly';
@@ -172,6 +244,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type to default for conditional caution account type', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const accountType = 'conditionalCaution';
     const defaultDefendantType = component.conditionalCautionPenaltyDefendantTypes[0].key;
 
@@ -183,6 +260,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should not do anything as the account, fieldName, and fieldValue are not real', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const accountType = 'test';
     const fieldName = 'test';
     const fieldValue = 'test';
@@ -196,6 +278,11 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should call initialCreateAccountSetup method', () => {
+    if (!component || !formSubmit || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupCreateAccountForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

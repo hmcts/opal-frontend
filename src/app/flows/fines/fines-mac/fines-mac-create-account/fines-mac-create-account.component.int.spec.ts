@@ -13,9 +13,9 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 
 describe('FinesMacCreateAccountComponent', () => {
-  let component: FinesMacCreateAccountComponent;
-  let fixture: ComponentFixture<FinesMacCreateAccountComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
+  let component: FinesMacCreateAccountComponent | null;
+  let fixture: ComponentFixture<FinesMacCreateAccountComponent> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
 
   beforeEach(async () => {
     // Mocking the OpalFinesService to return predefined data for tests.
@@ -50,7 +50,18 @@ describe('FinesMacCreateAccountComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockOpalFinesService = null;
+  });
+
   it('should render the child form component', async () => {
+    if (!component || !mockOpalFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     fixture.detectChanges();
     await fixture.whenStable(); // Ensures all asynchronous tasks are complete before proceeding.
 
@@ -60,6 +71,11 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should pass data to the form component', async () => {
+    if (!component || !mockOpalFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Mocking the service to emit valid data.
     (mockOpalFinesService.getBusinessUnits as jasmine.Spy).and.returnValue(
       of(structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
@@ -77,6 +93,11 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should handle form submission', async () => {
+    if (!component || !mockOpalFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component, 'handleAccountDetailsSubmit'); // Spying on the form submission handler.
 
     // Mocking the service to ensure the child component renders.
@@ -97,6 +118,11 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should transform refData to autoCompleteItems correctly', () => {
+    if (!component || !mockOpalFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockResponse = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
     // Validates the transformation logic for autoCompleteItems.
     const result = component['createAutoCompleteItems'](mockResponse);
