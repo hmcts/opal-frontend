@@ -1,17 +1,29 @@
 import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { finesMacPayloadBuildAccountPaymentTerms } from './fines-mac-payload-build-account-payment-terms.utils';
-import { IFinesMacPayloadBuildAccountPaymentTerms } from './interfaces/fines-mac-payload-build-account-payment-terms.interface';
+import { IFinesMacPayloadAccountPaymentTerms } from '../interfaces/fines-mac-payload-account-payment-terms.interface';
 import {
-  FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_IN_FULL_MOCK,
-  FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_INSTALMENTS_MOCK,
-  FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK,
+  FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK,
+  FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK,
+  FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK,
   FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_NULL_MOCK,
-} from './mocks/state/fines-mac-payload-build-payment-terms-state.mock';
+} from '../mocks/state/fines-mac-payload-payment-terms-state.mock';
 
 describe('finesMacPayloadBuildAccountPaymentTerms', () => {
+  let paymentTermsStateInFull: IFinesMacPaymentTermsState;
+  let paymentTermsStateInstallments: IFinesMacPaymentTermsState;
+  let paymentTermsStateLumpSumPlusInstallments: IFinesMacPaymentTermsState;
+  let paymentTermsStateNull: IFinesMacPaymentTermsState;
+  beforeEach(() => {
+    paymentTermsStateInFull = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK);
+    paymentTermsStateInstallments = structuredClone(FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK);
+    paymentTermsStateLumpSumPlusInstallments = structuredClone(
+      FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK,
+    );
+    paymentTermsStateNull = structuredClone(FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_NULL_MOCK);
+  });
+
   it('should build payment terms payload for payInFull, collection order made, payment card request, default days in jail, PRIS Enforcement', () => {
-    const paymentTermsState: IFinesMacPaymentTermsState = FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_IN_FULL_MOCK;
-    const expectedPayload: IFinesMacPayloadBuildAccountPaymentTerms = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'B',
       effective_date: '15/10/2024',
       instalment_period: null,
@@ -35,13 +47,12 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       ],
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateInFull);
     expect(result).toEqual(expectedPayload);
   });
 
   it('should build payment terms payload for instalments, card request, hold enforcement on account', () => {
-    const paymentTermsState: IFinesMacPaymentTermsState = FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_INSTALMENTS_MOCK;
-    const expectedPayload: IFinesMacPayloadBuildAccountPaymentTerms = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'I',
       effective_date: '11/10/2019',
       instalment_period: 'W',
@@ -60,14 +71,12 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
         },
       ],
     };
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateInstallments);
     expect(result).toEqual(expectedPayload);
   });
 
   it('should build payment terms payload for lump sum plus instalments, collection order made, requested payment card, days in default, enforcement action', () => {
-    const paymentTermsState: IFinesMacPaymentTermsState =
-      FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK;
-    const expectedPayload: IFinesMacPayloadBuildAccountPaymentTerms = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: 'I',
       effective_date: '18/10/2024',
       instalment_period: 'W',
@@ -91,13 +100,12 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       ],
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateLumpSumPlusInstallments);
     expect(result).toEqual(expectedPayload);
   });
 
   it('should build payment terms payload but the response payload should be null', () => {
-    const paymentTermsState: IFinesMacPaymentTermsState = FINES_MAC_PAYLOAD_BUILD_PAYMENT_TERMS_NULL_MOCK;
-    const expectedPayload: IFinesMacPayloadBuildAccountPaymentTerms = {
+    const expectedPayload: IFinesMacPayloadAccountPaymentTerms = {
       payment_terms_type_code: null,
       effective_date: null,
       instalment_period: null,
@@ -107,7 +115,7 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
       enforcements: null,
     };
 
-    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState);
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateNull);
     expect(result).toEqual(expectedPayload);
   });
 });
