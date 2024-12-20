@@ -9,8 +9,8 @@ import { Component } from '@angular/core';
 class TestHostComponent {}
 
 describe('GovukInsetTextComponent', () => {
-  let component: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
+  let component: TestHostComponent | null;
+  let fixture: ComponentFixture<TestHostComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,11 +23,22 @@ describe('GovukInsetTextComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should render into inset-text', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.nativeElement.querySelector('#test');
     expect(element.innerText).toBe('Hello World');
   });

@@ -4,8 +4,8 @@ import { By } from '@angular/platform-browser';
 import { GovukPaginationComponent } from './govuk-pagination.component';
 
 describe('GovukPaginationComponent', () => {
-  let component: GovukPaginationComponent;
-  let fixture: ComponentFixture<GovukPaginationComponent>;
+  let component: GovukPaginationComponent | null;
+  let fixture: ComponentFixture<GovukPaginationComponent> | null;
 
   const currentPageElipseMap = new Map<number, (string | number)[]>([
     [1, [1, 2, '...', 100]],
@@ -28,21 +28,39 @@ describe('GovukPaginationComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should ellipsis skipped pages based on current page', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.limit = 10;
     component.total = 1000;
     currentPageElipseMap.forEach((value: (string | number)[], key: number) => {
-      component.currentPage = key;
-      component.ngOnChanges();
-      expect(component.elipsedPages()).toEqual(value);
+      if (component) {
+        component.currentPage = key;
+        component.ngOnChanges();
+        expect(component.elipsedPages()).toEqual(value);
+      }
     });
   });
 
   it('should emit pageChange event on click', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     spyOn(component.changePage, 'emit');
     component.limit = 10;
     component.total = 1000;
