@@ -31,9 +31,8 @@ describe('FinesMacCreateAccountComponent', () => {
       getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
     };
 
-    mockFinesService = jasmine.createSpyObj('FinesService', [], {
-      finesMacState: structuredClone(FINES_MAC_STATE),
-    });
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
 
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
@@ -88,15 +87,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    mockFinesService = jasmine.createSpyObj('FinesService', [], {
-      finesMacState: structuredClone({
-        ...FINES_MAC_STATE,
-        accountDetails: {
-          ...FINES_MAC_STATE.accountDetails,
-          formData: structuredClone(FINES_MAC_CREATE_ACCOUNT_STATE_MOCK),
-        },
-      }),
-    });
+    mockFinesService.finesMacState.accountDetails.formData = structuredClone(FINES_MAC_CREATE_ACCOUNT_STATE_MOCK);
 
     if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
       fail('Required properties not properly initialised');
@@ -148,18 +139,7 @@ describe('FinesMacCreateAccountComponent', () => {
       return;
     }
 
-    mockFinesService = jasmine.createSpyObj('FinesService', [], {
-      finesMacState: {
-        ...FINES_MAC_STATE,
-        accountDetails: {
-          ...FINES_MAC_STATE.accountDetails,
-          formData: {
-            ...FINES_MAC_STATE.accountDetails.formData,
-            fm_create_account_business_unit_id: null,
-          },
-        },
-      },
-    });
+    mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id = null;
 
     if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
       fail('Required properties not properly initialised');

@@ -16,9 +16,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
   let formSubmit: IFinesMacAccountDetailsForm | null;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj('FinesService', [], {
-      finesMacState: structuredClone(FINES_MAC_STATE),
-    });
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
 
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 

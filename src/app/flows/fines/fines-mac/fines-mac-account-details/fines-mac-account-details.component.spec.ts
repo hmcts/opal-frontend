@@ -11,14 +11,14 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks/fines-mac-account-details-state.mock';
 
 describe('FinesMacAccountDetailsComponent', () => {
-  let component: FinesMacAccountDetailsComponent;
-  let fixture: ComponentFixture<FinesMacAccountDetailsComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
+  let component: FinesMacAccountDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacAccountDetailsComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
-    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
-    mockFinesService.checkMandatorySections.and.returnValue(false);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
+    mockFinesService?.checkMandatorySections.and.returnValue(false);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
@@ -39,11 +39,23 @@ describe('FinesMacAccountDetailsComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should navigate on handleRoute', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleRoute('test');
@@ -52,6 +64,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate on handleRoute with relative to', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleRoute('test', true);
@@ -60,6 +77,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate on handleRoute with event', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj(Event, ['preventDefault']);
 
@@ -70,6 +92,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to be empty string', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.accountDetails.formData = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
       fm_create_account_defendant_type: '',
@@ -84,6 +111,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to values', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.accountDetails.formData = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
@@ -97,6 +129,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const documentLanguage = 'CY';
     const hearingLanguage = 'EN';
     mockFinesService.finesMacState.languagePreferences.formData = {
@@ -116,6 +153,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const documentLanguage = 'german';
     const hearingLanguage = 'french';
 
@@ -132,6 +174,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -150,6 +197,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate back on navigateBack', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component.pageNavigation = true;
 
@@ -162,6 +214,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set pageNavigation to true if URL does not include createAccount', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['routerListener']();
     component.navigateBack();
 
@@ -169,6 +226,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set pageNavigation to false if URL includes createAccount', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['routerListener']();
     component.handleRoute(FINES_MAC_ROUTING_PATHS.children.courtDetails);
 
@@ -176,6 +238,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should call canDeactivate ', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['pageNavigation'] = true;
     expect(component.canDeactivate()).toBeTruthy();
 
@@ -184,12 +251,22 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return true if personalDetails is true', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
     const result = component['canAccessPaymentTerms']();
     expect(result).toBe(true);
   });
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.personalDetails = {
       ...FINES_MAC_STATE.personalDetails,
       status: FINES_MAC_STATUS.NOT_PROVIDED,
@@ -201,6 +278,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
+    if (!component || !mockFinesService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.personalDetails = {
       ...FINES_MAC_STATE.personalDetails,
       status: FINES_MAC_STATUS.NOT_PROVIDED,
