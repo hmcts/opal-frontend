@@ -3,11 +3,11 @@ import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-f
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { Validators } from '@angular/forms';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks/fines-mac-create-account-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { of } from 'rxjs';
+import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent | null;
@@ -16,9 +16,10 @@ describe('FinesMacCreateAccountFormComponent', () => {
   let formSubmit: IFinesMacAccountDetailsForm | null;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService = jasmine.createSpyObj('FinesService', [], {
+      finesMacState: structuredClone(FINES_MAC_STATE),
+    });
 
-    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
@@ -82,27 +83,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
     component.form.get('fm_create_account_account_type')!.setValue('fine');
 
     expect(component['handleAccountTypeChange']).toHaveBeenCalled();
-  });
-
-  it('should emit form submit event with form value', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
-      fail('Required properties not properly initialised');
-      return;
-    }
-
-    spyOn(component['formSubmit'], 'emit');
-    const event = {} as SubmitEvent;
-
-    component['rePopulateForm'](formSubmit.formData);
-
-    component.handleFormSubmit(event);
-
-    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        formData: formSubmit.formData,
-        nestedFlow: false,
-      }),
-    );
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {

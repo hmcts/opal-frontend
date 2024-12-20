@@ -105,13 +105,22 @@ describe('FinesService', () => {
       },
     };
 
-    service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+    service.finesMacState.accountDetails.formData = {
+      ...service.finesMacState.accountDetails.formData,
+      fm_create_account_defendant_type: 'adultOrYouthOnly',
+    };
     expect(service.checkMandatorySections()).toBeFalse();
 
-    service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+    service.finesMacState.accountDetails.formData = {
+      ...service.finesMacState.accountDetails.formData,
+      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+    };
     expect(service.checkMandatorySections()).toBeFalse();
 
-    service.finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+    service.finesMacState.accountDetails.formData = {
+      ...service.finesMacState.accountDetails.formData,
+      fm_create_account_defendant_type: 'company',
+    };
     expect(service.checkMandatorySections()).toBeFalse();
   });
 
