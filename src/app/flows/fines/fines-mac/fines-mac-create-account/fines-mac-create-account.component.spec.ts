@@ -148,6 +148,24 @@ describe('FinesMacCreateAccountComponent', () => {
       return;
     }
 
+    mockFinesService = jasmine.createSpyObj('FinesService', [], {
+      finesMacState: {
+        ...FINES_MAC_STATE,
+        accountDetails: {
+          ...FINES_MAC_STATE.accountDetails,
+          formData: {
+            ...FINES_MAC_STATE.accountDetails.formData,
+            fm_create_account_business_unit_id: null,
+          },
+        },
+      },
+    });
+
+    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const response = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
 
     component['setBusinessUnit'](response);
