@@ -16,16 +16,16 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/
 import { OPAL_FINES_COURT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-pretty-name.mock';
 
 describe('FinesMacCourtDetailsComponent', () => {
-  let component: FinesMacCourtDetailsComponent;
-  let fixture: ComponentFixture<FinesMacCourtDetailsComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockOpalFinesService: Partial<OpalFines>;
-  let formSubmit: IFinesMacCourtDetailsForm;
+  let component: FinesMacCourtDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacCourtDetailsComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
+  let formSubmit: IFinesMacCourtDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockOpalFinesService = {
       getLocalJusticeAreas: jasmine
         .createSpy('getLocalJusticeAreas')
@@ -36,7 +36,8 @@ describe('FinesMacCourtDetailsComponent', () => {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
     };
-    formSubmit = { ...FINES_MAC_COURT_DETAILS_FORM_MOCK };
+
+    formSubmit = structuredClone(FINES_MAC_COURT_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCourtDetailsComponent],
@@ -63,17 +64,36 @@ describe('FinesMacCourtDetailsComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    formSubmit = null;
+    mockOpalFinesService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have state and populate data$', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(component['sendingCourtData$']).not.toBeUndefined();
     expect(component['enforcementCourtData$']).not.toBeUndefined();
     expect(component['groupLjaAndCourtData$']).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate to account details', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     formSubmit.nestedFlow = false;
@@ -87,6 +107,11 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to personal details', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     formSubmit.nestedFlow = true;
@@ -100,6 +125,11 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.handleUnsavedChanges(true);
     expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
