@@ -18,8 +18,8 @@ describe('FinesMacCreateAccountFormComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
@@ -32,7 +32,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     fixture = TestBed.createComponent(FinesMacCreateAccountFormComponent);
     component = fixture.componentInstance;
 
-    component.autoCompleteItems = OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
+    component.autoCompleteItems = structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
 
     fixture.detectChanges();
   });

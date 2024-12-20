@@ -31,8 +31,8 @@ describe('FinesMacCreateAccountComponent', () => {
     };
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountComponent],
@@ -54,10 +54,10 @@ describe('FinesMacCreateAccountComponent', () => {
     fixture = TestBed.createComponent(FinesMacCreateAccountComponent);
     component = fixture.componentInstance;
 
-    mockFinesService.finesMacState.accountDetails.formData = {
-      ...mockFinesService.finesMacState.accountDetails.formData,
-      fm_create_account_business_unit_id: null,
-    };
+    mockFinesService.finesMacState.accountDetails.formData = structuredClone(
+      mockFinesService.finesMacState.accountDetails.formData,
+    );
+    mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id = null;
 
     fixture.detectChanges();
   });
@@ -93,7 +93,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should set the business unit for account details when there is only one business unit available and the current business unit is null', () => {
-    const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+    const response = { count: 1, refData: [structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0])] };
 
     component['setBusinessUnit'](response);
 
@@ -103,7 +103,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
-    const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
+    const response = { count: 1, refData: [structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0])] };
 
     mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id =
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_id;
@@ -118,7 +118,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should not set the business unit for account details when there are multiple business units available', () => {
-    const response = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
+    const response = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
 
     mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id = null;
 
@@ -128,9 +128,10 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should create an array of autocomplete items from the response', () => {
-    const response: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
-    const expectedAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] =
-      OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
+    const response: IOpalFinesBusinessUnitRefData = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
+    const expectedAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = structuredClone(
+      OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK,
+    );
 
     const autoCompleteItems = component['createAutoCompleteItems'](response);
 
