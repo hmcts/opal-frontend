@@ -5,25 +5,30 @@ import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-det
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-contact-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('FinesMacContactDetailsFormComponent', () => {
-  let component: FinesMacContactDetailsFormComponent;
-  let fixture: ComponentFixture<FinesMacContactDetailsFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
-  let formSubmit: IFinesMacContactDetailsForm;
+  let component: FinesMacContactDetailsFormComponent | null;
+  let fixture: ComponentFixture<FinesMacContactDetailsFormComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let formSubmit: IFinesMacContactDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_CONTACT_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_CONTACT_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacContactDetailsFormComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
@@ -37,6 +42,11 @@ describe('FinesMacContactDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
@@ -54,6 +64,11 @@ describe('FinesMacContactDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component || !mockFinesService || !fixture || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     component.defendantType = 'adultOrYouthOnly';
