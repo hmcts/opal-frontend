@@ -62,7 +62,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
-    formSubmit = { ...FINES_MAC_OFFENCE_DETAILS_FORM[0] };
+    formSubmit = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM[0]);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceComponent],

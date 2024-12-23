@@ -166,7 +166,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
     component.confirmRemoval(rowIndex, formArray);
 
@@ -177,7 +177,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
     expect(component['removeMinorCreditorAndUpdateIds']).toHaveBeenCalledWith(
-      [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
+      [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
       0,
     );
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
@@ -235,7 +235,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     // Setup mock offenceDetailsArray and formArray
     const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
       {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
@@ -270,7 +270,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     }
 
     const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
       {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {

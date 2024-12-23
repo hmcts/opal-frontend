@@ -63,7 +63,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
 
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = false;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
@@ -82,7 +82,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
 
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
@@ -102,7 +102,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     const form = formSubmit;
-    form.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE };
+    form.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE);
     form.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(form);

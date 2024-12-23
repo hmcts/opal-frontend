@@ -130,7 +130,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
       { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) },
       {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
-        formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_id: 1 },
+        formData: { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData), fm_offence_details_id: 1 },
       },
     ];
     component.confirmOffenceRemoval();

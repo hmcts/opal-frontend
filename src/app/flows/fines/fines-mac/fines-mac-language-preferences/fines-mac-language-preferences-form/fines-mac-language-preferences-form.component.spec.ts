@@ -17,7 +17,7 @@ describe('FinesMacLanguagePreferencesFormComponent', () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
 
-    formSubmit = { ...FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacLanguagePreferencesFormComponent],

@@ -29,7 +29,7 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
       offenceDetailsDraft: [
         {
           ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
-          childFormData: [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) }],
+          childFormData: [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)],
         },
       ],
     };

@@ -17,7 +17,7 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
 
-    formSubmit = { ...FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsFormComponent],

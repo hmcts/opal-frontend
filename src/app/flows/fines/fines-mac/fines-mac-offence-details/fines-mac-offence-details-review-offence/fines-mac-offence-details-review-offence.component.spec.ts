@@ -55,7 +55,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       formData: {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
-        fm_offence_details_impositions: [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]) }],
+        fm_offence_details_impositions: [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])],
       },
     };
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
