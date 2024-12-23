@@ -145,4 +145,45 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(radios[1].nativeElement.textContent).toContain(FINES_MAC_ACCOUNT_TYPES.fixedPenalty);
     expect(radios[2].nativeElement.textContent).toContain(FINES_MAC_ACCOUNT_TYPES.conditionalCaution);
   });
+
+  it('should initialise with default values', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    expect(component.form.valid).toBeFalse(); // The form should be invalid initially
+  });
+
+  it('should validate business unit ID as required', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    const control = component.form.controls['fm_create_account_business_unit_id'];
+    control.setValue('');
+    expect(control.valid).toBeFalse(); // Should be invalid if empty
+    control.setValue(123);
+    expect(control.valid).toBeTrue(); // Should be valid if a number is provided
+  });
+
+  it('should not emit formSubmit event if form is invalid', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    const emitSpy = spyOn(component['formSubmit'], 'emit');
+
+    component.form.controls['fm_create_account_business_unit_id'].setValue('');
+    component.form.controls['fm_create_account_account_type'].setValue(null);
+
+    fixture!.detectChanges();
+
+    const form = fixture!.debugElement.query(By.css('form'));
+    form.triggerEventHandler('submit', { preventDefault: () => {} });
+
+    expect(emitSpy).not.toHaveBeenCalled(); // Should not emit if form is invalid
+  });
 });

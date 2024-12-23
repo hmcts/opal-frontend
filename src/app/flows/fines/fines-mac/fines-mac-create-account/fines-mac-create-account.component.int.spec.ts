@@ -179,4 +179,20 @@ describe('FinesMacCreateAccountComponent', () => {
 
     expect(component.handleUnsavedChanges).toHaveBeenCalledWith(true);
   });
+
+  it('should propagate formSubmit event from child to parent', async () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    spyOn(component, 'handleAccountDetailsSubmit');
+
+    const formComponent = fixture.debugElement.query(
+      By.directive(FinesMacCreateAccountFormComponent),
+    ).componentInstance;
+    formComponent.formSubmit.emit(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
+
+    expect(component.handleAccountDetailsSubmit).toHaveBeenCalledWith(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
+  });
 });
