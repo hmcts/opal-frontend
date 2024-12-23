@@ -105,7 +105,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
    */
   private updateFinesState(response: IFinesMacAddAccountPayload): void {
     this.finesService.finesDraftState = response;
-    this.finesService.finesMacState = this.finesMacPayloadService.convertPayloadToFinesMacState(response);
+    this.finesService.finesMacState = this.finesMacPayloadService.mapAccountPayload(response);
   }
 
   /**

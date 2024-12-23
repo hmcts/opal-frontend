@@ -26,7 +26,7 @@ describe('FinesDraftCamInputterComponent', () => {
     'finesDraftState',
   ]);
   const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
-    jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['convertPayloadToFinesMacState']);
+    jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
   const mockOpalFinesService: Partial<OpalFines> = {
     getDraftAccounts: jasmine.createSpy('getDraftAccounts').and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)),
     getDraftAccountById: jasmine.createSpy('getDraftAccountById').and.returnValue(of(FINES_MAC_PAYLOAD_ADD_ACCOUNT)),
@@ -105,7 +105,7 @@ describe('FinesDraftCamInputterComponent', () => {
     const response = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
     component['updateFinesState'](response);
     expect(mockFinesService.finesDraftState).toEqual(response);
-    expect(mockFinesService.finesMacState).toEqual(mockFinesMacPayloadService.convertPayloadToFinesMacState(response));
+    expect(mockFinesService.finesMacState).toEqual(mockFinesMacPayloadService.mapAccountPayload(response));
   });
 
   it('should navigate to review account', () => {
