@@ -19,7 +19,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    
+
     formSubmit = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
 
     await TestBed.configureTestingModule({

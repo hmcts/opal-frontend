@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacReviewAccountComponent } from './fines-mac-review-account.component';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -17,15 +16,15 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opa
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
 
 describe('FinesMacReviewAccountComponent', () => {
-  let component: FinesMacReviewAccountComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockOpalFinesService: Partial<OpalFines>;
+  let component: FinesMacReviewAccountComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockOpalFinesService = {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
@@ -43,6 +42,7 @@ describe('FinesMacReviewAccountComponent', () => {
         .createSpy('getOffenceByCjsCode')
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
+
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountComponent],
       providers: [
@@ -65,15 +65,33 @@ describe('FinesMacReviewAccountComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockOpalFinesService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have state and populate data$', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(component['enforcementCourtsData$']).not.toBeUndefined();
   });
 
   it('should navigate on handleRoute', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleRoute('test');
@@ -82,6 +100,11 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should navigate on handleRoute to delete account', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleRoute(component['fineMacRoutes'].children.deleteAccountConfirmation);
@@ -93,6 +116,11 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should navigate on handleRoute with relative to', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.handleRoute('test', true);
@@ -101,6 +129,11 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should navigate on handleRoute with event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj(Event, ['preventDefault']);
 
@@ -111,6 +144,11 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should navigate back on navigateBack', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.navigateBack();

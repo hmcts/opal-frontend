@@ -5,10 +5,10 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from './mocks/fines-mac-state.mock';
 
 describe('FinesMacComponent', () => {
-  let component: FinesMacComponent;
-  let fixture: ComponentFixture<FinesMacComponent>;
-  let mockFinesService: FinesService;
-  let mockGlobalStateService: GlobalStateService;
+  let component: FinesMacComponent | null;
+  let fixture: ComponentFixture<FinesMacComponent> | null;
+  let mockFinesService: FinesService | null;
+  let mockGlobalStateService: GlobalStateService | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -19,10 +19,18 @@ describe('FinesMacComponent', () => {
     component = fixture.componentInstance;
 
     mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     mockGlobalStateService = TestBed.inject(GlobalStateService);
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockGlobalStateService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -30,6 +38,11 @@ describe('FinesMacComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
+    if (!component || !mockFinesService || !fixture || !mockGlobalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const destroy = spyOn(component, 'ngOnDestroy');
 
     component.ngOnDestroy();
@@ -41,6 +54,11 @@ describe('FinesMacComponent', () => {
   });
 
   it('should call handleBeforeUnload ', () => {
+    if (!component || !mockFinesService || !mockGlobalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.stateChanges = true;
     mockFinesService.finesMacState.unsavedChanges = false;
     expect(component.handleBeforeUnload()).toBeFalsy();
@@ -55,8 +73,13 @@ describe('FinesMacComponent', () => {
   });
 
   it('should call canDeactivate ', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Empty state, should return true
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     expect(component.canDeactivate()).toBeTruthy();
 
     mockFinesService.finesMacState.stateChanges = true;

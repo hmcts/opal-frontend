@@ -4,8 +4,8 @@ import { FinesMacReviewAccountContactDetailsComponent } from './fines-mac-review
 import { FINES_MAC_CONTACT_DETAILS_STATE_MOCK } from '../../fines-mac-contact-details/mocks/fines-mac-contact-details-state.mock';
 
 describe('FinesMacReviewAccountContactDetailsComponent', () => {
-  let component: FinesMacReviewAccountContactDetailsComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountContactDetailsComponent>;
+  let component: FinesMacReviewAccountContactDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountContactDetailsComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,9 +15,15 @@ describe('FinesMacReviewAccountContactDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountContactDetailsComponent);
     component = fixture.componentInstance;
 
-    component.contactDetails = { ...FINES_MAC_CONTACT_DETAILS_STATE_MOCK };
+    component.contactDetails = structuredClone(FINES_MAC_CONTACT_DETAILS_STATE_MOCK);
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -25,6 +31,11 @@ describe('FinesMacReviewAccountContactDetailsComponent', () => {
   });
 
   it('should emit change contact details event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component.emitChangeContactDetails, 'emit');
 
     component.changeContactDetails();

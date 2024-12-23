@@ -5,9 +5,9 @@ import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK } from '../../fines-mac-employer-details/mocks/fines-mac-employer-details-state.mock';
 
 describe('FinesMacReviewAccountEmployerDetailsComponent', () => {
-  let component: FinesMacReviewAccountEmployerDetailsComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountEmployerDetailsComponent>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let component: FinesMacReviewAccountEmployerDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountEmployerDetailsComponent> | null;
+  let mockUtilsService: jasmine.SpyObj<UtilsService> | null;
 
   beforeEach(async () => {
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatAddress', 'upperCaseFirstLetter']);
@@ -20,9 +20,16 @@ describe('FinesMacReviewAccountEmployerDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountEmployerDetailsComponent);
     component = fixture.componentInstance;
 
-    component.employerDetails = { ...FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK };
+    component.employerDetails = structuredClone(FINES_MAC_EMPLOYER_DETAILS_STATE_MOCK);
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockUtilsService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -30,6 +37,11 @@ describe('FinesMacReviewAccountEmployerDetailsComponent', () => {
   });
 
   it('should format employer address on initialization', () => {
+    if (!component || !mockUtilsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formattedAddress = ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5', 'Post Code'];
     mockUtilsService.formatAddress.and.returnValue(formattedAddress);
 
@@ -47,6 +59,11 @@ describe('FinesMacReviewAccountEmployerDetailsComponent', () => {
   });
 
   it('should emit change employer details event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component.emitChangeEmployerDetails, 'emit');
 
     component.changeEmployerDetails();
@@ -55,6 +72,11 @@ describe('FinesMacReviewAccountEmployerDetailsComponent', () => {
   });
 
   it('should call getEmployerDetailsData on init', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getEmployerDetailsData');
 

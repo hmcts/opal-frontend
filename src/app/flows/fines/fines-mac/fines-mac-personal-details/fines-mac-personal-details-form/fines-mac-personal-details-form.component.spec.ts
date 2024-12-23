@@ -8,28 +8,34 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-persona
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
+import { of } from 'rxjs';
 
 describe('FinesMacPersonalDetailsFormComponent', () => {
-  let component: FinesMacPersonalDetailsFormComponent;
-  let fixture: ComponentFixture<FinesMacPersonalDetailsFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
-  let formSubmit: IFinesMacPersonalDetailsForm;
+  let component: FinesMacPersonalDetailsFormComponent | null;
+  let fixture: ComponentFixture<FinesMacPersonalDetailsFormComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockDateService: jasmine.SpyObj<DateService> | null;
+  let formSubmit: IFinesMacPersonalDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+
     mockDateService = jasmine.createSpyObj(DateService, ['isValidDate', 'calculateAge', 'getPreviousDate']);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPersonalDetailsFormComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
         { provide: DateService, useValue: mockDateService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
@@ -41,12 +47,13 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     fixture.detectChanges();
   });
 
-  beforeEach(() => {
-    component.form.reset();
-  });
-
-  afterEach(() => {
-    component.ngOnDestroy();
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    formSubmit = null;
+    mockDateService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -54,6 +61,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
@@ -70,6 +82,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');
@@ -86,6 +103,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should set up the personal details form', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['setupPersonalDetailsForm']();
     expect(component.form).toBeTruthy();
     expect(component.form.get('fm_personal_details_title')).toBeTruthy();
@@ -102,12 +124,22 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should set up the alias configuration for the personal details form', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['setupAliasConfiguration']();
     expect(component.aliasFields).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS.map((item) => item.controlName));
     expect(component.aliasControlsValidation).toEqual(FINES_MAC_PERSONAL_DETAILS_ALIAS);
   });
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
+    if (!component || !mockDateService || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const dateOfBirth = '01/01/1990';
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(34);
@@ -125,6 +157,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should call dateOfBirthListener on DOB value changes Youth', () => {
+    if (!component || !mockDateService || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const dateOfBirth = '01/01/2014';
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.calculateAge.and.returnValue(10);
@@ -141,6 +178,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should call dateOfBirthListener on DOB value changes Adult', () => {
+    if (!component || !mockDateService || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const dateOfBirth = '01/01/1990';
     component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
     mockDateService.isValidDate.and.returnValue(true);
@@ -157,6 +199,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should call the necessary setup methods', () => {
+    if (!component || !mockDateService || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPersonalDetailsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -196,6 +243,11 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should call the necessary setup methods - parent/guardian', () => {
+    if (!component || !mockDateService || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPersonalDetailsForm');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -236,9 +288,19 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should add vehicle details controls', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['addVehicleDetailsControls']();
 
     FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
+      if (!component) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(component.form.get(control.controlName)).toBeTruthy();
     });
   });
