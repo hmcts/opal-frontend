@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { IFinesMacState } from '../../fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_MAC_STATE } from '../../fines-mac/constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../fines-mac/constants/fines-mac-status';
@@ -17,6 +17,7 @@ export class FinesService {
   // Non reactive state
   public finesMacState: IFinesMacState = { ...FINES_MAC_STATE };
   public finesDraftState: IFinesMacAddAccountPayload = { ...FINES_DRAFT_STATE };
+  public readonly finesDraftFragment = signal<string>('');
 
   /**
    * Checks if the employer details status is valid.

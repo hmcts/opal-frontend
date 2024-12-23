@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MojNotificationBadgeComponent } from '../../moj-notification-badge/moj-notification-badge.component';
 
 @Component({
   selector: 'app-moj-sub-navigation-item',
   standalone: true,
-  imports: [],
+  imports: [MojNotificationBadgeComponent],
   templateUrl: './moj-sub-navigation-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -16,6 +17,7 @@ export class MojSubNavigationItemComponent {
   @Input({ required: true }) public subNavItemFragment!: string;
   @Input({ required: true }) public subNavItemText!: string;
   @Input({ required: true }) public activeSubNavItemFragment!: string;
+  @Input({ required: false }) public count!: string;
 
   /**
    * Handles the click event of a sub-navigation item.

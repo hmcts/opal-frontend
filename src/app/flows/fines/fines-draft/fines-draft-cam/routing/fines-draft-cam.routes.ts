@@ -16,4 +16,12 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: FINES_DRAFT_CAM_ROUTING_PATHS.children.viewAllRejected,
+    loadComponent: () =>
+      import('../fines-draft-cam-view-all-rejected/fines-draft-cam-view-all-rejected.component').then(
+        (c) => c.FinesDraftCamViewAllRejectedComponent,
+      ),
+    canActivate: [authGuard],
+  },
 ];

@@ -29,9 +29,10 @@ describe('FinesMacReviewAccountComponent', () => {
   let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'finesDraftState']);
+    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'finesDraftState', 'finesDraftFragment']);
     mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockFinesService.finesDraftState = { ...FINES_DRAFT_STATE };
+    mockFinesService.finesDraftFragment.and.returnValue('review');
 
     mockOpalFinesService = {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),

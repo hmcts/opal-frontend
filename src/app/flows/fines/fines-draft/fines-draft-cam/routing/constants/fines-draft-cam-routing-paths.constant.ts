@@ -4,5 +4,6 @@ export const FINES_DRAFT_CAM_ROUTING_PATHS: IFinesDraftCamRoutingPaths = {
   root: 'create-and-manage',
   children: {
     inputter: 'inputter-accounts',
+    viewAllRejected: 'view-all-rejected',
   },
 };
