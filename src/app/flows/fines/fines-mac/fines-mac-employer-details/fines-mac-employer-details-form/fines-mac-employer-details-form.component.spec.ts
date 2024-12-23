@@ -74,7 +74,7 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    if (!component|| !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }

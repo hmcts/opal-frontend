@@ -128,6 +128,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     ];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getMinorCreditorData').and.returnValue(expectedImpositionTableData[0].minorCreditor);
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.impositions[0].fm_offence_details_imposition_id = 0;
