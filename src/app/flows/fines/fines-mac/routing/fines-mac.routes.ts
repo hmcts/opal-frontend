@@ -149,4 +149,14 @@ export const routing: Routes = [
     canActivate: [authGuard, finesMacFlowStateGuard],
     resolve: { businessUnit: businessUnitResolver },
   },
+  {
+    path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:businessUnitId`,
+    loadComponent: () =>
+      import('../fines-mac-account-details/fines-mac-account-details.component').then(
+        (c) => c.FinesMacAccountDetailsComponent,
+      ),
+    canActivate: [authGuard, finesMacFlowStateGuard],
+    canDeactivate: [canDeactivateGuard],
+    resolve: { businessUnit: businessUnitResolver },
+  },
 ];

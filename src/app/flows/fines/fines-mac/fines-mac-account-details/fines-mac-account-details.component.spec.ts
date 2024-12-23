@@ -9,21 +9,47 @@ import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks/fines-mac-account-details-state.mock';
+import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@services/utils/utils.service';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { signal } from '@angular/core';
+import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
   let fixture: ComponentFixture<FinesMacAccountDetailsComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
+  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
+    const mockFinesDraftAmend = signal<boolean>(false);
+    mockFinesService = jasmine.createSpyObj(
+      'FinesService',
+      ['finesMacState', 'checkMandatorySections', 'finesDraftFragment', 'finesDraftAmend'],
+      {
+        finesDraftAmend: mockFinesDraftAmend,
+      },
+    );
     mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
+    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Rejected' };
     mockFinesService.checkMandatorySections.and.returnValue(false);
+    mockFinesService.finesDraftFragment.and.returnValue('rejected');
+
+    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
+    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+      'upperCaseAllLetters',
+      'upperCaseFirstLetter',
+      'formatAddress',
+      'convertToMonetaryString',
+    ]);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
+        { provide: UtilsService, useValue: mockUtilsService },
+        { provide: DateService, useValue: mockDateService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -59,6 +85,14 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 
+  it('should navigate on handleRoute with fragment', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    component.handleRoute('test', false, undefined, 'rejected');
+
+    expect(routerSpy).toHaveBeenCalledWith(['test'], { fragment: 'rejected' });
+  });
+
   it('should navigate on handleRoute with event', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj(Event, ['preventDefault']);
@@ -67,6 +101,22 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     expect(routerSpy).toHaveBeenCalledWith(['test']);
     expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should navigate back on navigateBack', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    mockFinesService.finesDraftAmend.set(true);
+    component.navigateBack();
+
+    expect(routerSpy).toHaveBeenCalledWith(
+      [
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+      ],
+      {
+        fragment: 'rejected',
+      },
+    );
   });
 
   it('should set defendantType and accountType to be empty string', () => {
@@ -209,5 +259,30 @@ describe('FinesMacAccountDetailsComponent', () => {
     component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
     const result = component['canAccessPaymentTerms']();
     expect(result).toBe(false);
+  });
+
+  it('should set business unit and isReadOnly on getBusinessUnit', () => {
+    component['activatedRoute'].snapshot = {
+      data: {
+        businessUnit: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    component['getBusinessUnit']();
+
+    expect(component['businessUnit']).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+  });
+
+  it('should call getBusinessUnit on ngOnInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getBusinessUnitSpy = spyOn<any>(component, 'getBusinessUnit').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const initialAccountDetailsSetupSpy = spyOn<any>(component, 'initialAccountDetailsSetup');
+
+    component.ngOnInit();
+
+    expect(getBusinessUnitSpy).toHaveBeenCalled();
+    expect(initialAccountDetailsSetupSpy).toHaveBeenCalled();
   });
 });

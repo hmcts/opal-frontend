@@ -1,6 +1,40 @@
 <div class="govuk-grid-column-two-thirds">
   <app-govuk-back-link (clickEvent)="navigateBack()"></app-govuk-back-link>
-  <h1 class="govuk-heading-l">Account details</h1>
+  @if (finesService.finesDraftAmend()) {
+    <h1 class="govuk-heading-l">
+      @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'company') {
+        {{ finesService.finesMacState.companyDetails.formData.fm_company_details_company_name }}
+      } @else {
+        {{
+          finesService.finesMacState.personalDetails.formData.fm_personal_details_title +
+            ' ' +
+            finesService.finesMacState.personalDetails.formData.fm_personal_details_forenames +
+            ' ' +
+            utilsService.upperCaseAllLetters(
+              finesService.finesMacState.personalDetails.formData.fm_personal_details_surname!
+            )
+        }}
+      }
+    </h1>
+    <app-govuk-tag tagClasses="govuk-tag govuk-tag--red" tagId="status">{{ status }}</app-govuk-tag>
+    <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>
+    <app-moj-timeline>
+      @for (timelineItem of finesService.finesDraftState.timeline_data; track timelineItem.status_date) {
+        <app-moj-timeline-item>
+          <span title>{{ timelineItem.status }}</span>
+          <span user>{{ timelineItem.username }}</span>
+          <span date>{{
+            dateService.getFromFormatToFormat(timelineItem.status_date, 'yyyy-MM-dd', 'dd MMMM yyyy')
+          }}</span>
+          @if (timelineItem.reason_text) {
+            <span description>{{ timelineItem.reason_text }}</span>
+          }
+        </app-moj-timeline-item>
+      }
+    </app-moj-timeline>
+  } @else {
+    <h1 class="govuk-heading-l">Account details</h1>
+  }
   <app-govuk-summary-list summaryListId="accountDetails">
     <div
       app-govuk-summary-list-row
