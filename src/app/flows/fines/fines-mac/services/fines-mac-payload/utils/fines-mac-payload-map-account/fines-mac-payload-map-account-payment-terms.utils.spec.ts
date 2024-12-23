@@ -4,8 +4,8 @@ import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-acco
 import { FINES_MAC_PAYMENT_TERMS_OPTIONS } from '../../../../fines-mac-payment-terms/constants/fines-mac-payment-terms-options';
 
 describe('finesMacPayloadMapAccountPaymentTerms', () => {
-  let mappedFinesMacState: IFinesMacState;
-  let payload: IFinesMacPayloadAccount;
+  let mappedFinesMacState: IFinesMacState | null;
+  let payload: IFinesMacPayloadAccount | null;
 
   beforeEach(() => {
     mappedFinesMacState = {
@@ -31,7 +31,17 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     } as IFinesMacPayloadAccount;
   });
 
+  afterAll(() => {
+    mappedFinesMacState = null;
+    payload = null;
+  });
+
   it('should map payment terms type correctly', () => {
+    if (!payload || !mappedFinesMacState) {
+      fail('Payload is not properly initialised');
+      return;
+    }
+
     payload.payment_terms.payment_terms_type_code = 'B';
     const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
     expect(result.paymentTerms.formData.fm_payment_terms_payment_terms).toBe(
@@ -40,18 +50,33 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   });
 
   it('should map lump sum amount correctly', () => {
+    if (!payload || !mappedFinesMacState) {
+      fail('Payload is not properly initialised');
+      return;
+    }
+
     payload.payment_terms.lump_sum_amount = 1000;
     const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
     expect(result.paymentTerms.formData.fm_payment_terms_lump_sum_amount).toBe(1000);
   });
 
   it('should map instalment amount correctly', () => {
+    if (!payload || !mappedFinesMacState) {
+      fail('Payload is not properly initialised');
+      return;
+    }
+
     payload.payment_terms.instalment_amount = 100;
     const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
     expect(result.paymentTerms.formData.fm_payment_terms_instalment_amount).toBe(100);
   });
 
   it('should map effective date correctly for pay in full', () => {
+    if (!payload || !mappedFinesMacState) {
+      fail('Payload is not properly initialised');
+      return;
+    }
+
     payload.payment_terms.payment_terms_type_code = 'B';
     payload.payment_terms.effective_date = '2023-01-01';
     const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
@@ -60,6 +85,11 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   });
 
   it('should map effective date correctly for instalment', () => {
+    if (!payload || !mappedFinesMacState) {
+      fail('Payload is not properly initialised');
+      return;
+    }
+
     payload.payment_terms.instalment_amount = 100;
     payload.payment_terms.effective_date = '2023-01-01';
     const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
@@ -68,6 +98,11 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   });
 
   it('should map enforcement actions correctly', () => {
+    if (!payload || !mappedFinesMacState) {
+      fail('Payload is not properly initialised');
+      return;
+    }
+
     payload.payment_terms.enforcements = [
       {
         result_id: '123',
