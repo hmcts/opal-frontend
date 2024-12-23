@@ -56,7 +56,7 @@ import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/int
 })
 export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
-  @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
+  @Input({ required: true }) public autoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [];
 
   protected readonly finesService = inject(FinesService);
   private readonly accountTypeSubject = new Subject<void>();

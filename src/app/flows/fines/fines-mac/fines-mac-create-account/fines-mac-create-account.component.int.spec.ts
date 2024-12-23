@@ -129,4 +129,54 @@ describe('FinesMacCreateAccountComponent', () => {
     const result = component['createAutoCompleteItems'](mockResponse);
     expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
   });
+
+  it('should pass autoCompleteItems to the form component', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    component.data$ = of(structuredClone(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK));
+    fixture.detectChanges();
+
+    const formComponent = fixture.debugElement.query(
+      By.directive(FinesMacCreateAccountFormComponent),
+    ).componentInstance;
+
+    expect(formComponent.autoCompleteItems).toEqual(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
+  });
+
+  it('should handle form submission and call handleAccountDetailsSubmit', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    spyOn(component, 'handleAccountDetailsSubmit');
+    const formComponent = fixture.debugElement.query(
+      By.directive(FinesMacCreateAccountFormComponent),
+    ).componentInstance;
+
+    formComponent.formSubmit.emit(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
+    fixture.detectChanges();
+
+    expect(component.handleAccountDetailsSubmit).toHaveBeenCalledWith(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
+  });
+
+  it('should handle unsaved changes correctly', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    spyOn(component, 'handleUnsavedChanges');
+    const formComponent = fixture.debugElement.query(
+      By.directive(FinesMacCreateAccountFormComponent),
+    ).componentInstance;
+
+    formComponent.unsavedChanges.emit(true);
+    fixture.detectChanges();
+
+    expect(component.handleUnsavedChanges).toHaveBeenCalledWith(true);
+  });
 });

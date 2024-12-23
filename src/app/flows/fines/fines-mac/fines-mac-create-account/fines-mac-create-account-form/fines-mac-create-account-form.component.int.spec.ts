@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { FINES_MAC_ACCOUNT_TYPES } from '../../constants/fines-mac-account-types';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent | null;
@@ -113,5 +114,35 @@ describe('FinesMacCreateAccountFormComponent', () => {
         nestedFlow: true, // Expect nestedFlow to be true due to className
       }),
     );
+  });
+
+  it('should display error messages when form controls are invalid', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    component.form.controls['fm_create_account_business_unit_id'].setErrors({ required: true });
+    component.form.controls['fm_create_account_account_type'].setErrors({ required: true });
+    fixture.detectChanges();
+
+    const errorSummary = fixture.debugElement.query(By.css('app-govuk-error-summary'));
+    expect(errorSummary).toBeTruthy();
+  });
+
+  it('should render the correct defendant types based on account type', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    component.form.controls['fm_create_account_account_type'].setValue('fine');
+    fixture.detectChanges();
+
+    const radios = fixture.debugElement.queryAll(By.css('[app-govuk-radios-item]'));
+    expect(radios.length).toBe(3);
+    expect(radios[0].nativeElement.textContent).toContain(FINES_MAC_ACCOUNT_TYPES.fine);
+    expect(radios[1].nativeElement.textContent).toContain(FINES_MAC_ACCOUNT_TYPES.fixedPenalty);
+    expect(radios[2].nativeElement.textContent).toContain(FINES_MAC_ACCOUNT_TYPES.conditionalCaution);
   });
 });
