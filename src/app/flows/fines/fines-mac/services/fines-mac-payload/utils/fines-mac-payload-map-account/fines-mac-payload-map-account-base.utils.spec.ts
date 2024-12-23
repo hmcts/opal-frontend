@@ -5,12 +5,21 @@ import { FINES_MAC_STATE } from '../../../../constants/fines-mac-state';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../mocks/fines-mac-payload-add-account.mock';
 
 describe('finesMacPayloadMapAccountBase', () => {
-  let initialState: IFinesMacState;
+  let initialState: IFinesMacState | null;
   beforeEach(() => {
     initialState = structuredClone(FINES_MAC_STATE);
   });
 
+  afterAll(() => {
+    initialState = null;
+  });
+
   it('should map account details correctly', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     const result = finesMacPayloadMapAccountBase(initialState, payload);
 
