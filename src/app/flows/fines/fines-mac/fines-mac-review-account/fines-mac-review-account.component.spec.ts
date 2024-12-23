@@ -31,7 +31,7 @@ describe('FinesMacReviewAccountComponent', () => {
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'finesDraftState', 'finesDraftFragment']);
     mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.finesDraftState = { ...FINES_DRAFT_STATE };
+    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Submitted' };
     mockFinesService.finesDraftFragment.and.returnValue('review');
 
     mockOpalFinesService = {

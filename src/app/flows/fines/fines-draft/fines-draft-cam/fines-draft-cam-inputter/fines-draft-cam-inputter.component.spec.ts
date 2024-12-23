@@ -16,18 +16,22 @@ import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { FINES_MAC_STATE_MOCK } from '../../../fines-mac/mocks/fines-mac-state.mock';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
+import { signal } from '@angular/core';
 
 describe('FinesDraftCamInputterComponent', () => {
   let component: FinesDraftCamInputterComponent;
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
   let mockGlobalStateService: GlobalStateService;
+  const mockFinesDraftAmend = signal<boolean>(false);
   const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>(
     'FinesService',
-    ['finesMacState', 'finesDraftState', 'finesDraftFragment'],
+    ['finesMacState', 'finesDraftState', 'finesDraftFragment', 'finesDraftAmend'],
     {
       finesDraftFragment: jasmine.createSpyObj('finesDraftFragment', ['set']),
+      finesDraftAmend: mockFinesDraftAmend,
     },
   );
+
   const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
     jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
   const mockOpalFinesService: Partial<OpalFines> = {
@@ -113,10 +117,25 @@ describe('FinesDraftCamInputterComponent', () => {
 
   it('should navigate to review account', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    component['finesService'].finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    component.activeTab = 'review';
+    mockFinesService.finesDraftAmend.set(false);
     component['navigateToReviewAccount']();
     expect(routerSpy).toHaveBeenCalledWith([
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
+      FINES_MAC_STATE_MOCK.accountDetails.formData.fm_create_account_business_unit_id,
+    ]);
+    expect(mockFinesService.finesDraftAmend()).toBeFalse();
+  });
+
+  it('should navigate to review account when rejected', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    component.activeTab = 'rejected';
+    mockFinesService.finesDraftAmend.set(true);
+    component['navigateToReviewAccount']();
+    expect(routerSpy).toHaveBeenCalledWith([
+      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
       FINES_MAC_STATE_MOCK.accountDetails.formData.fm_create_account_business_unit_id,
     ]);
   });

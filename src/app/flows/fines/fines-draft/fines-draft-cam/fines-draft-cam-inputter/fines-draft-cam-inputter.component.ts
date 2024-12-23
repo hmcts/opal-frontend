@@ -136,6 +136,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private updateFinesState(response: IFinesMacAddAccountPayload): void {
     this.finesService.finesDraftState = response;
     this.finesService.finesDraftFragment.set(this.activeTab);
+    this.finesService.finesDraftAmend.set(this.activeTab === 'rejected');
     this.finesService.finesMacState = this.finesMacPayloadService.mapAccountPayload(response);
   }
 
@@ -151,10 +152,17 @@ export class FinesDraftCamInputterComponent implements OnInit {
    */
   private navigateToReviewAccount(): void {
     const businessUnitId = this.finesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id;
-    this.router.navigate([
-      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
-      businessUnitId,
-    ]);
+    if (this.finesService.finesDraftAmend()) {
+      this.router.navigate([
+        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
+        businessUnitId,
+      ]);
+    } else {
+      this.router.navigate([
+        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
+        businessUnitId,
+      ]);
+    }
   }
 
   /**
@@ -209,5 +217,6 @@ export class FinesDraftCamInputterComponent implements OnInit {
     this.getRejectedCount();
     this.finesService.finesDraftState = FINES_DRAFT_STATE;
     this.finesService.finesDraftFragment.set('');
+    this.finesService.finesDraftAmend.set(false);
   }
 }

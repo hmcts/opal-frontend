@@ -21,6 +21,14 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
+import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/moj-timeline.component';
+import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
+import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -37,6 +45,8 @@ import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukBackLinkComponent,
+    MojTimelineComponent,
+    MojTimelineItemComponent,
   ],
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,8 +55,9 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
+  protected readonly utilsService = inject(UtilsService);
+  protected readonly dateService = inject(DateService);
 
-  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
   private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
 
@@ -61,12 +72,38 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public pageNavigation!: boolean;
   public readonly finesMacStatus = FINES_MAC_STATUS;
 
+  protected readonly finesRoutes = FINES_ROUTING_PATHS;
+  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+
+  private businessUnit: IOpalFinesBusinessUnit | null = null;
+  public status = FINES_DRAFT_TAB_STATUSES.find(
+    (status) =>
+      this.finesService.finesDraftState.account_status &&
+      status.statuses.includes(this.finesService.finesDraftState.account_status),
+  )?.prettyName;
+
   /**
    * Determines whether the component can be deactivated.
    * @returns A CanDeactivateTypes object representing the navigation status.
    */
   canDeactivate(): CanDeactivateTypes {
     return this.pageNavigation;
+  }
+
+  /**
+   * Retrieves the business unit from the activated route's snapshot data and assigns it to the component's businessUnit property.
+   * If a business unit is found, it updates the finesMacState's businessUnit in the finesService and sets the component to read-only mode.
+   *
+   * @private
+   */
+  private getBusinessUnit(): void {
+    if (this.activatedRoute.snapshot) {
+      this.businessUnit = this.activatedRoute.snapshot.data['businessUnit'];
+      if (this.businessUnit) {
+        this.finesService.finesMacState.businessUnit = this.businessUnit;
+      }
+    }
   }
 
   /**
@@ -147,8 +184,17 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    this.pageNavigation = false;
-    this.handleRoute(this.fineMacRoutes.children.createAccount);
+    if (this.finesService.finesDraftAmend()) {
+      this.handleRoute(
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+        false,
+        undefined,
+        this.finesService.finesDraftFragment(),
+      );
+    } else {
+      this.pageNavigation = false;
+      this.handleRoute(this.fineMacRoutes.children.createAccount);
+    }
   }
 
   /**
@@ -156,12 +202,14 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    *
    * @param route - The route to navigate to.
    */
-  public handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
+  public handleRoute(route: string, nonRelative: boolean = false, event?: Event, fragment?: string): void {
     if (event) {
       event.preventDefault();
     }
     if (nonRelative) {
       this.router.navigate([route]);
+    } else if (fragment) {
+      this.router.navigate([route], { fragment });
     } else {
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
@@ -169,6 +217,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.initialAccountDetailsSetup();
+    this.getBusinessUnit();
   }
 
   public ngOnDestroy(): void {

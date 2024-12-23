@@ -98,8 +98,10 @@ export class FinesMacReviewAccountComponent implements OnInit {
 
   private businessUnit: IOpalFinesBusinessUnit | null = null;
   public isReadOnly!: boolean;
-  public status = FINES_DRAFT_TAB_STATUSES.find((status) =>
-    status.statuses.includes(this.finesService.finesDraftState.account_status!),
+  public status = FINES_DRAFT_TAB_STATUSES.find(
+    (status) =>
+      this.finesService.finesDraftState.account_status &&
+      status.statuses.includes(this.finesService.finesDraftState.account_status),
   )?.prettyName;
 
   /**
