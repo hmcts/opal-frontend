@@ -4,8 +4,8 @@ import { DashboardComponent } from './dashboard.component';
 import { RouterModule } from '@angular/router';
 
 describe('DashboardComponent', () => {
-  let component: DashboardComponent;
-  let fixture: ComponentFixture<DashboardComponent>;
+  let component: DashboardComponent | null;
+  let fixture: ComponentFixture<DashboardComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,6 +15,12 @@ describe('DashboardComponent', () => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {

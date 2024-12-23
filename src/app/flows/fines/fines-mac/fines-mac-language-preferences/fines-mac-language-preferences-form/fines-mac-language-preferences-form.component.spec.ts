@@ -50,7 +50,7 @@ describe('FinesMacLanguagePreferencesFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }

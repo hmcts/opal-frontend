@@ -78,7 +78,7 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should have state and populate data$', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -89,7 +89,7 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -107,7 +107,7 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to personal details', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -125,7 +125,7 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit || !mockOpalFinesService) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }

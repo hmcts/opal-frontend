@@ -54,7 +54,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -72,7 +72,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to offence details - adult or youth only', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -90,7 +90,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to personal details - parent or guardian to pay', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -108,7 +108,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }

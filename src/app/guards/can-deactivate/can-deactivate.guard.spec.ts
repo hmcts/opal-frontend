@@ -4,10 +4,10 @@ import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard'
 import { ICanDeactivateCanComponentDeactivate } from '@guards/can-deactivate/interfaces/can-deactivate-can-component-deactivate.interface';
 
 describe('canDeactivateGuard', () => {
-  let mockComponent: ICanDeactivateCanComponentDeactivate;
-  let mockCurrentRoute: ActivatedRouteSnapshot;
-  let mockCurrentState: RouterStateSnapshot;
-  let mockNextState: RouterStateSnapshot;
+  let mockComponent: ICanDeactivateCanComponentDeactivate | null;
+  let mockCurrentRoute: ActivatedRouteSnapshot | null;
+  let mockCurrentState: RouterStateSnapshot | null;
+  let mockNextState: RouterStateSnapshot | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -17,7 +17,20 @@ describe('canDeactivateGuard', () => {
     mockNextState = {} as RouterStateSnapshot;
   });
 
+  afterAll(() => {
+    mockComponent = null;
+    mockCurrentRoute = null;
+    mockCurrentState = null;
+    mockNextState = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should return true if canDeactivate method of component returns true', () => {
+    if (!mockCurrentRoute || !mockCurrentState || !mockNextState) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockComponent = {
       canDeactivate: jasmine.createSpy('canDeactivate').and.returnValue(true),
     };
@@ -29,6 +42,11 @@ describe('canDeactivateGuard', () => {
   });
 
   it('should return false if canDeactivate method of component returns false and user clicks Cancel', () => {
+    if (!mockCurrentRoute || !mockCurrentState || !mockNextState) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockComponent = {
       canDeactivate: jasmine.createSpy('canDeactivate').and.returnValue(false),
     };
@@ -45,6 +63,11 @@ describe('canDeactivateGuard', () => {
   });
 
   it('should return true if canDeactivate method of component returns false and user clicks OK', () => {
+    if (!mockCurrentRoute || !mockCurrentState || !mockNextState) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockComponent = {
       canDeactivate: jasmine.createSpy('canDeactivate').and.returnValue(false),
     };

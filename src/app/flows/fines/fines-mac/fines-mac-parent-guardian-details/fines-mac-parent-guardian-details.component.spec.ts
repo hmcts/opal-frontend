@@ -51,7 +51,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -68,7 +68,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -86,7 +86,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }

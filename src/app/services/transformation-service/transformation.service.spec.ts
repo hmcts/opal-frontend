@@ -4,7 +4,7 @@ import { TransformationService } from './transformation.service';
 import { ITransformItem } from './interfaces/transform-item.interface';
 
 describe('TransformationService', () => {
-  let service: TransformationService;
+  let service: TransformationService | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -18,8 +18,18 @@ describe('TransformationService', () => {
     expect(service).toBeTruthy();
   });
 
+  afterAll(() => {
+    service = null;
+    TestBed.resetTestingModule();
+  });
+
   describe('applyTransformation', () => {
     it('should return the original value if no transformation is applied', () => {
+      if (!service) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       const value = 'test';
       const transformItem: ITransformItem = {
         key: 'testKey',
@@ -32,6 +42,11 @@ describe('TransformationService', () => {
     });
 
     it('should transform date values correctly', () => {
+      if (!service) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       const value = '04/06/1991';
       const transformItem: ITransformItem = {
         key: 'dateKey',
@@ -47,6 +62,11 @@ describe('TransformationService', () => {
 
   describe('transformObjectValues', () => {
     it('should return the input if it is not an object', () => {
+      if (!service) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       const input = 'not an object';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = service.transformObjectValues(input as any, []);
@@ -54,6 +74,11 @@ describe('TransformationService', () => {
     });
 
     it('should transform object values based on the given configuration', () => {
+      if (!service) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       const input = { dateKey: '01/01/1991', otherKey: 'value' };
       const transformItems: ITransformItem[] = [
         {
@@ -69,6 +94,11 @@ describe('TransformationService', () => {
     });
 
     it('should recursively transform nested objects', () => {
+      if (!service) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       const input = { nested: { dateKey: '01/01/1991' } };
       const transformItems: ITransformItem[] = [
         {

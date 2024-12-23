@@ -7,7 +7,7 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 describe('httpErrorInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) =>
     TestBed.runInInjectionContext(() => httpErrorInterceptor(req, next));
-  let globalStateService: GlobalStateService;
+  let globalStateService: GlobalStateService | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -16,15 +16,30 @@ describe('httpErrorInterceptor', () => {
     globalStateService = TestBed.inject(GlobalStateService);
   });
 
+  afterAll(() => {
+    globalStateService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should have no errors', () => {
     expect(interceptor).toBeTruthy();
   });
 
   it('should be created', () => {
+    if (!globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(globalStateService.error().error).toBeFalsy();
   });
 
   it('should intercept and set an error', () => {
+    if (!globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const errorResponse = new HttpErrorResponse({ status: 401 });
     const request = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = () => throwError(() => errorResponse);
@@ -33,6 +48,11 @@ describe('httpErrorInterceptor', () => {
 
     interceptor(request, next).subscribe({
       error: () => {
+        if (!globalStateService) {
+          fail('Required properties not properly initialised');
+          return;
+        }
+
         const errorState = globalStateService.error().error;
         expect(errorState).toBeTruthy();
       },
@@ -40,6 +60,11 @@ describe('httpErrorInterceptor', () => {
   });
 
   it('should intercept and set an error.error', () => {
+    if (!globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const errorResponse = new HttpErrorResponse({
       status: 401,
       error: new ErrorEvent('Error', {
@@ -56,6 +81,11 @@ describe('httpErrorInterceptor', () => {
 
     interceptor(request, next).subscribe({
       error: () => {
+        if (!globalStateService) {
+          fail('Required properties not properly initialised');
+          return;
+        }
+
         const errorState = globalStateService.error().error;
         expect(errorState).toBeTruthy();
       },

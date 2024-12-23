@@ -2,13 +2,22 @@ import { FormControl } from '@angular/forms';
 import { pastDateValidator } from './past-date.validator';
 
 describe('pastDateValidator', () => {
-  let control: FormControl;
+  let control: FormControl | null;
 
   beforeEach(() => {
     control = new FormControl('');
   });
 
+  afterAll(() => {
+    control = null;
+  });
+
   it('should return null if the control value is null or empty', () => {
+    if (!control) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     control.setValue(null);
     expect(pastDateValidator()(control)).toBeNull();
 
@@ -17,6 +26,11 @@ describe('pastDateValidator', () => {
   });
 
   it('should return null if the date is today or in the future', () => {
+    if (!control) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const today = new Date();
     const formattedToday = formatDateForTest(today); // helper function below
     control.setValue(formattedToday);
@@ -30,6 +44,11 @@ describe('pastDateValidator', () => {
   });
 
   it('should return an error if the date is in the past', () => {
+    if (!control) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const pastDate = new Date();
     pastDate.setDate(pastDate.getDate() - 10); // 10 days in the past
     const formattedPastDate = formatDateForTest(pastDate);

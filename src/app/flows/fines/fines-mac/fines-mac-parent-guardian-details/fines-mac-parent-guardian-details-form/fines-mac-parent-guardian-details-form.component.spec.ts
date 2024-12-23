@@ -62,7 +62,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit || !mockDateService) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -84,7 +84,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit || !mockDateService) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }

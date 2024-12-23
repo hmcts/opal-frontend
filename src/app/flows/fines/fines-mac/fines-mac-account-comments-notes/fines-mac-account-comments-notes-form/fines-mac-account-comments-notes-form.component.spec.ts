@@ -52,7 +52,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it('should emit form submit event with form value - nestedFlow true', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -74,7 +74,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it('should emit form submit event with form value - nestedFlow false', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -97,30 +97,30 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it('should return true if all mandatory sections have been provided', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
 
     mockFinesService.finesMacState.courtDetails = {
-      ...mockFinesService.finesMacState.courtDetails,
+      ...structuredClone(mockFinesService.finesMacState.courtDetails),
       status: FINES_MAC_STATUS.PROVIDED,
     };
     mockFinesService.finesMacState.personalDetails = {
-      ...mockFinesService.finesMacState.personalDetails,
+      ...structuredClone(mockFinesService.finesMacState.personalDetails),
       status: FINES_MAC_STATUS.PROVIDED,
     };
     mockFinesService.finesMacState.employerDetails = {
-      ...mockFinesService.finesMacState.employerDetails,
+      ...structuredClone(mockFinesService.finesMacState.employerDetails),
       status: FINES_MAC_STATUS.PROVIDED,
     };
-    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
+    mockFinesService.finesMacState.offenceDetails = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM)];
     mockFinesService.finesMacState.offenceDetails[0] = {
-      ...mockFinesService.finesMacState.offenceDetails[0],
+      ...structuredClone(mockFinesService.finesMacState.offenceDetails[0]),
       status: FINES_MAC_STATUS.PROVIDED,
     };
     mockFinesService.finesMacState.paymentTerms = {
-      ...mockFinesService.finesMacState.paymentTerms,
+      ...structuredClone(mockFinesService.finesMacState.paymentTerms),
       status: FINES_MAC_STATUS.PROVIDED,
     };
 
@@ -130,30 +130,30 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it('should return false if any mandatory section is missing', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
 
     mockFinesService.finesMacState.courtDetails = {
-      ...mockFinesService.finesMacState.courtDetails,
+      ...structuredClone(mockFinesService.finesMacState.courtDetails),
       status: FINES_MAC_STATUS.PROVIDED,
     };
     mockFinesService.finesMacState.personalDetails = {
-      ...mockFinesService.finesMacState.personalDetails,
+      ...structuredClone(mockFinesService.finesMacState.personalDetails),
       status: FINES_MAC_STATUS.PROVIDED,
     };
     mockFinesService.finesMacState.employerDetails = {
-      ...mockFinesService.finesMacState.employerDetails,
+      ...structuredClone(mockFinesService.finesMacState.employerDetails),
       status: FINES_MAC_STATUS.PROVIDED,
     };
-    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
+    mockFinesService.finesMacState.offenceDetails = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM)];
     mockFinesService.finesMacState.offenceDetails[0] = {
-      ...mockFinesService.finesMacState.offenceDetails[0],
+      ...structuredClone(mockFinesService.finesMacState.offenceDetails[0]),
       status: FINES_MAC_STATUS.PROVIDED,
     };
     mockFinesService.finesMacState.paymentTerms = {
-      ...mockFinesService.finesMacState.paymentTerms,
+      ...structuredClone(mockFinesService.finesMacState.paymentTerms),
       status: FINES_MAC_STATUS.NOT_PROVIDED,
     };
 

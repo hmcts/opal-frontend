@@ -53,7 +53,7 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value - continue flow', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -74,7 +74,7 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component|| !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -95,7 +95,7 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
   });
 
   it('should call initialCreateAccountSetup method', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }

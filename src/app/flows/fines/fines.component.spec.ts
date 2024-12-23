@@ -5,10 +5,10 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 import { FINES_MAC_STATE_MOCK } from '../fines/fines-mac/mocks/fines-mac-state.mock';
 
 describe('FinesComponent', () => {
-  let component: FinesComponent;
-  let fixture: ComponentFixture<FinesComponent>;
-  let mockFinesService: FinesService;
-  let mockGlobalStateService: GlobalStateService;
+  let component: FinesComponent | null;
+  let fixture: ComponentFixture<FinesComponent> | null;
+  let mockFinesService: FinesService | null;
+  let mockGlobalStateService: GlobalStateService | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -19,10 +19,18 @@ describe('FinesComponent', () => {
     component = fixture.componentInstance;
 
     mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     mockGlobalStateService = TestBed.inject(GlobalStateService);
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockGlobalStateService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -30,6 +38,11 @@ describe('FinesComponent', () => {
   });
 
   it('should call on destroy and clear state', () => {
+    if (!component || !mockFinesService || !fixture || !mockGlobalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const destroy = spyOn(component, 'ngOnDestroy');
 
     component.ngOnDestroy();

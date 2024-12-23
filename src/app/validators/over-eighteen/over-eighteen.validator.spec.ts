@@ -5,8 +5,8 @@ import { DateTime } from 'luxon';
 import { DateService } from '@services/date-service/date.service';
 
 describe('overEighteenValidator', () => {
-  let formGroup: FormGroup;
-  let dateService: jasmine.SpyObj<DateService>;
+  let formGroup: FormGroup | null;
+  let dateService: jasmine.SpyObj<DateService> | null;
 
   beforeEach(() => {
     const dateServiceSpy = jasmine.createSpyObj('DateService', ['getFromFormat']);
@@ -27,31 +27,62 @@ describe('overEighteenValidator', () => {
     );
   });
 
+  afterAll(() => {
+    formGroup = null;
+    dateService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should return null when dayOfMonth is not defined', () => {
+    if (!formGroup) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     formGroup.removeControl('dayOfMonth');
     formGroup.updateValueAndValidity();
     expect(formGroup.valid).toBeFalsy();
   });
 
   it('should return null when monthOfYear is not defined', () => {
+    if (!formGroup) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     formGroup.removeControl('monthOfYear');
     formGroup.updateValueAndValidity();
     expect(formGroup.valid).toBeFalsy();
   });
 
   it('should return null when year is not defined', () => {
+    if (!formGroup) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     formGroup.removeControl('year');
     formGroup.updateValueAndValidity();
     expect(formGroup.valid).toBeFalsy();
   });
 
   it('should return null if any control value is empty', () => {
+    if (!formGroup) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     formGroup.setValue({ dayOfMonth: '', monthOfYear: '', year: '' });
     formGroup.updateValueAndValidity();
     expect(formGroup.valid).toBeFalsy();
   });
 
   it('should return { underEighteen: true } if the date is less than 18 years ago', () => {
+    if (!formGroup || !dateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     dateService.getFromFormat.and.returnValue(DateTime.now().minus({ years: 17 }));
 
     formGroup.setValue({
@@ -68,6 +99,11 @@ describe('overEighteenValidator', () => {
   });
 
   it('should return null if the date is 18 years ago or more', () => {
+    if (!formGroup || !dateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     dateService.getFromFormat.and.returnValue(DateTime.now().minus({ years: 18 }));
 
     formGroup.setValue({
@@ -83,6 +119,11 @@ describe('overEighteenValidator', () => {
   });
 
   it('should return null if the date is 18 years ago or more (singular numbers)', () => {
+    if (!formGroup || !dateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     dateService.getFromFormat.and.returnValue(DateTime.now().minus({ years: 18 }));
 
     formGroup.setValue({
@@ -98,6 +139,11 @@ describe('overEighteenValidator', () => {
   });
 
   it('should handle invalid date formats correctly', () => {
+    if (!formGroup || !dateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     dateService.getFromFormat.and.returnValue(DateTime.invalid('Invalid date'));
 
     formGroup.setValue({

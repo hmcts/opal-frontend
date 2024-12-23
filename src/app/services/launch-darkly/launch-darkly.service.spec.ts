@@ -6,8 +6,8 @@ import { LAUNCH_DARKLY_FLAGS_MOCK } from '@services/launch-darkly/mocks/launch-d
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 describe('LaunchDarklyService', () => {
-  let service: LaunchDarklyService;
-  let globalStateService: GlobalStateService;
+  let service: LaunchDarklyService | null;
+  let globalStateService: GlobalStateService | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -21,7 +21,18 @@ describe('LaunchDarklyService', () => {
     };
   });
 
+  afterAll(() => {
+    service = null;
+    globalStateService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should initialize LaunchDarkly flags', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service.initializeLaunchDarklyClient();
 
     const mockFlags: LDFlagSet = LAUNCH_DARKLY_FLAGS_MOCK;
@@ -35,6 +46,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should format the flag changeset correctly', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const flags: LDFlagChangeset = LAUNCH_DARKLY_CHANGE_FLAGS_MOCK;
     const expectedFormattedFlags: LDFlagSet = LAUNCH_DARKLY_FLAGS_MOCK;
 
@@ -43,18 +59,33 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should return an empty object if the flags changeset is empty', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const flags: LDFlagChangeset = {};
     const formattedFlags = service['formatChangeFlags'](flags);
     expect(formattedFlags).toEqual({});
   });
 
   it('should initialize LaunchDarkly client', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service['initializeLaunchDarklyClient']();
 
     expect(service['ldClient']).toBeDefined();
   });
 
   it('should not initialize LaunchDarkly client if no client id', () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: true,
       clientId: null,
@@ -67,6 +98,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly client if not enabled', () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: false,
       clientId: '1234',
@@ -79,6 +115,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly client if not enabled and no client id', () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: false,
       clientId: null,
@@ -91,6 +132,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should close the LaunchDarkly client', () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: true,
       clientId: '1234',
@@ -104,6 +150,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should call closeLaunchDarklyClient on ngOnDestroy', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'closeLaunchDarklyClient');
     service.ngOnDestroy();
@@ -111,6 +162,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly flags when ldClient is not defined', async () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(service, 'setLaunchDarklyFlags');
 
@@ -120,6 +176,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly flags when ldClient is defined', async () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: true,
       clientId: '1234',
@@ -139,6 +200,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should throw an error when waitForInitialization fails', async () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: true,
       clientId: '1234',
@@ -154,6 +220,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should initialize LaunchDarkly change listener when ldClient is defined', () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: true,
       clientId: '1234',
@@ -169,6 +240,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should not initialize LaunchDarkly change listener when stream is false', () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: true,
       clientId: '1234',
@@ -184,6 +260,11 @@ describe('LaunchDarklyService', () => {
   });
 
   it('should update feature flags when ldClient emits change event', () => {
+    if (!service || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.launchDarklyConfig = {
       enabled: true,
       clientId: '1234',

@@ -22,8 +22,8 @@ describe('AppComponent', () => {
       href: '',
     },
   };
-  let globalStateService: GlobalStateService;
-  let dateService: jasmine.SpyObj<DateService>;
+  let globalStateService: GlobalStateService | null;
+  let dateService: jasmine.SpyObj<DateService> | null;
 
   beforeEach(() => {
     const dateServiceSpy = jasmine.createSpyObj(DateService, [
@@ -58,6 +58,12 @@ describe('AppComponent', () => {
     mockTokenExpiry.expiry = '2023-07-03T12:30:00Z';
   });
 
+  afterAll(() => {
+    globalStateService = null;
+    dateService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
@@ -76,6 +82,11 @@ describe('AppComponent', () => {
   });
 
   it('should test handle authentication when authenticated is false', () => {
+    if (!globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.authenticated.set(false);
 
     const fixture = TestBed.createComponent(AppComponent);
@@ -91,6 +102,11 @@ describe('AppComponent', () => {
   });
 
   it('should test handle authentication when authenticated is true', () => {
+    if (!globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     globalStateService.authenticated.set(true);
 
     const fixture = TestBed.createComponent(AppComponent);
@@ -118,6 +134,11 @@ describe('AppComponent', () => {
   });
 
   it('should show expired warning when remaining minutes is zero', fakeAsync(() => {
+    if (!globalStateService || !dateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().toISO();
@@ -138,6 +159,11 @@ describe('AppComponent', () => {
   }));
 
   it('should handle no expiry case correctly', fakeAsync(() => {
+    if (!globalStateService || !dateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     globalStateService.tokenExpiry = { expiry: null, warningThresholdInMilliseconds: 300000 }; // 5 minutes
@@ -153,6 +179,11 @@ describe('AppComponent', () => {
   }));
 
   it('should convert warningThresholdInMilliseconds to minutes', fakeAsync(() => {
+    if (!globalStateService || !dateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().plus({ minutes: 10 }).toISO();

@@ -71,7 +71,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should have state and populate data$', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -80,7 +80,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should handle form submission and navigate', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+    if (!component || !formSubmit || !mockFinesService || !mockOpalFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -88,11 +88,6 @@ describe('FinesMacCreateAccountComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     mockFinesService.finesMacState.accountDetails.formData = structuredClone(FINES_MAC_CREATE_ACCOUNT_STATE_MOCK);
-
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
-      fail('Required properties not properly initialised');
-      return;
-    }
 
     component.handleAccountDetailsSubmit(formSubmit);
 
@@ -104,7 +99,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should handle unsaved changes', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -119,7 +114,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should set the business unit when there is only one available and current unit is null', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -134,17 +129,12 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should not set the business unit when there are multiple units available', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
 
     mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id = null;
-
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
-      fail('Required properties not properly initialised');
-      return;
-    }
 
     const response = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK);
 
@@ -155,7 +145,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should create autocomplete items from the response', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+    if (!component || !mockOpalFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -172,7 +162,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should return an empty array if no business units are available', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture || !mockOpalFinesService) {
+    if (!component || !mockOpalFinesService) {
       fail('Required properties not properly initialised');
       return;
     }

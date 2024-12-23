@@ -51,7 +51,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate on handleRoute', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -64,7 +64,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate on handleRoute with relative to', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -77,7 +77,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate on handleRoute with event', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -92,13 +92,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to be empty string', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
 
     mockFinesService.finesMacState.accountDetails.formData = {
-      ...FINES_MAC_ACCOUNT_DETAILS_STATE,
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: '',
     };
     component.defendantType = '';
@@ -111,13 +111,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to values', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
 
     mockFinesService.finesMacState.accountDetails.formData = {
-      ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK),
       fm_create_account_defendant_type: 'adultOrYouthOnly',
     };
 
@@ -129,7 +129,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -137,7 +137,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const documentLanguage = 'CY';
     const hearingLanguage = 'EN';
     mockFinesService.finesMacState.languagePreferences.formData = {
-      ...mockFinesService.finesMacState.languagePreferences.formData,
+      ...structuredClone(mockFinesService.finesMacState.languagePreferences.formData),
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
@@ -153,7 +153,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -162,7 +162,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const hearingLanguage = 'french';
 
     mockFinesService.finesMacState.languagePreferences.formData = {
-      ...mockFinesService.finesMacState.languagePreferences.formData,
+      ...structuredClone(mockFinesService.finesMacState.languagePreferences.formData),
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
@@ -174,7 +174,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -197,7 +197,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should navigate back on navigateBack', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -226,7 +226,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set pageNavigation to false if URL includes createAccount', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -238,7 +238,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should call canDeactivate ', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -251,7 +251,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return true if personalDetails is true', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -262,13 +262,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
 
     mockFinesService.finesMacState.personalDetails = {
-      ...FINES_MAC_STATE.personalDetails,
+      ...structuredClone(FINES_MAC_STATE.personalDetails),
       status: FINES_MAC_STATUS.NOT_PROVIDED,
     };
     component.defendantType = 'parentOrGuardianToPay';
@@ -278,13 +278,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
-    if (!component || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
 
     mockFinesService.finesMacState.personalDetails = {
-      ...FINES_MAC_STATE.personalDetails,
+      ...structuredClone(FINES_MAC_STATE.personalDetails),
       status: FINES_MAC_STATUS.NOT_PROVIDED,
     };
     component.defendantType = 'test';

@@ -40,9 +40,9 @@ async function runRoutePermissionGuard(
 }
 
 describe('routePermissionsGuard', () => {
-  let mockPermissionsService: jasmine.SpyObj<PermissionsService>;
-  let mockSessionService: jasmine.SpyObj<SessionService>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockPermissionsService: jasmine.SpyObj<PermissionsService> | null;
+  let mockSessionService: jasmine.SpyObj<SessionService> | null;
+  let mockRouter: jasmine.SpyObj<Router> | null;
 
   const urlPath = FINES_ROUTING_PATHS.children.mac.root;
 
@@ -50,10 +50,10 @@ describe('routePermissionsGuard', () => {
     mockPermissionsService = jasmine.createSpyObj(routePermissionsGuard, ['getUniquePermissions']);
 
     mockSessionService = jasmine.createSpyObj(routePermissionsGuard, ['getUserState']);
-    mockSessionService.getUserState.and.returnValue(of(SESSION_USER_STATE_MOCK));
+    mockSessionService!.getUserState.and.returnValue(of(SESSION_USER_STATE_MOCK));
 
     mockRouter = jasmine.createSpyObj(routePermissionsGuard, ['navigate', 'createUrlTree', 'parseUrl']);
-    mockRouter.parseUrl.and.callFake((url: string) => {
+    mockRouter!.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
       const urlSegment = new UrlSegment(url, {});
       urlTree.root = new UrlSegmentGroup([urlSegment], {});
@@ -81,7 +81,19 @@ describe('routePermissionsGuard', () => {
     });
   });
 
+  afterAll(() => {
+    mockPermissionsService = null;
+    mockSessionService = null;
+    mockRouter = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should return true if user has permission id', fakeAsync(async () => {
+    if (!mockPermissionsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockPermissionsService.getUniquePermissions.and.returnValue([
       FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
     ]);
@@ -95,6 +107,11 @@ describe('routePermissionsGuard', () => {
   }));
 
   it('should re-route if no access', fakeAsync(async () => {
+    if (!mockPermissionsService || !mockRouter) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockPermissionsService.getUniquePermissions.and.returnValue([999]);
     await runRoutePermissionGuard(
       routePermissionsGuard,
@@ -105,6 +122,11 @@ describe('routePermissionsGuard', () => {
   }));
 
   it('should re-route no unique permission ids ', fakeAsync(async () => {
+    if (!mockPermissionsService || !mockRouter) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockPermissionsService.getUniquePermissions.and.returnValue([]);
 
     await runRoutePermissionGuard(
@@ -116,6 +138,11 @@ describe('routePermissionsGuard', () => {
   }));
 
   it('should re-route if no route permission ids ', fakeAsync(async () => {
+    if (!mockPermissionsService || !mockRouter) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockPermissionsService.getUniquePermissions.and.returnValue([]);
 
     await runRoutePermissionGuard(routePermissionsGuard, null, urlPath);
@@ -123,6 +150,11 @@ describe('routePermissionsGuard', () => {
   }));
 
   it('should re-route if route permission id does not exist', fakeAsync(async () => {
+    if (!mockPermissionsService || !mockRouter) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockPermissionsService.getUniquePermissions.and.returnValue([]);
 
     await runRoutePermissionGuard(routePermissionsGuard, 999999999, urlPath);
@@ -130,6 +162,11 @@ describe('routePermissionsGuard', () => {
   }));
 
   it('should allow access to login if catches an error ', fakeAsync(async () => {
+    if (!mockSessionService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockSessionService.getUserState.and.returnValue(throwError(() => 'Error'));
     const guard = await runRoutePermissionGuard(
       routePermissionsGuard,

@@ -59,7 +59,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -81,7 +81,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -103,7 +103,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   });
 
   it('should get originator name based on originator ID', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -113,7 +113,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   });
 
   it('should return empty string if originator ID is not found', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -123,7 +123,7 @@ describe('FinesMacCourtDetailsFormComponent', () => {
   });
 
   it('should set originator name based on sending court details', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }

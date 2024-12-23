@@ -56,7 +56,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -75,7 +75,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -94,7 +94,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to next route - form empty', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -114,7 +114,7 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }

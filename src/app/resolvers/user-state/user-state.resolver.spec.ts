@@ -11,7 +11,7 @@ import { SessionService } from '@services/session-service/session.service';
 describe('userStateResolver', () => {
   const executeResolver: ResolveFn<ISessionUserState> = (...resolverParameters) =>
     TestBed.runInInjectionContext(() => userStateResolver(...resolverParameters));
-  let mockSessionService: jasmine.SpyObj<SessionService>;
+  let mockSessionService: jasmine.SpyObj<SessionService> | null;
   beforeEach(() => {
     mockSessionService = jasmine.createSpyObj(SessionService, ['getUserState']);
 
@@ -20,11 +20,21 @@ describe('userStateResolver', () => {
     });
   });
 
+  afterAll(() => {
+    mockSessionService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should be created', () => {
     expect(executeResolver).toBeTruthy();
   });
 
   it('should resolve user state', async () => {
+    if (!mockSessionService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
     mockSessionService.getUserState.and.returnValue(of(mockUserState));
 

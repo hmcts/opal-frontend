@@ -114,7 +114,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should call initialPaymentTermsSetup method', () => {
-    if (!component || !formSubmit || !mockDateService) {
+    if (!component || !formSubmit || !mockDateService || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -152,9 +152,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component['addDefaultDatesFormControls']).toHaveBeenCalled();
     expect(component['addEnforcementFields']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(
-      component['finesService'].finesMacState.paymentTerms.formData,
-    );
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.paymentTerms.formData);
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
     expect(component.today).toBeDefined();
@@ -205,9 +203,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component['addDefaultDatesFormControls']).toHaveBeenCalled();
     expect(component['addEnforcementFields']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(
-      component['finesService'].finesMacState.paymentTerms.formData,
-    );
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.paymentTerms.formData);
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
     expect(component.today).toBeDefined();

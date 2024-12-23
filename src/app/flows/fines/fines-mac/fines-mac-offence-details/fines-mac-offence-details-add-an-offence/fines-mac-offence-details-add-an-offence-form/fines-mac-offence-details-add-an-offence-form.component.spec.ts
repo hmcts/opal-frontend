@@ -208,7 +208,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
-    if (!component) {
+    if (!component || !mockFinesMacOffenceDetailsService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -224,7 +224,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         fm_offence_details_offence_id: 'TEST1234',
       },
     };
-    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = mockData;
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = mockData;
 
     component['initialAddAnOffenceDetailsSetup']();
 

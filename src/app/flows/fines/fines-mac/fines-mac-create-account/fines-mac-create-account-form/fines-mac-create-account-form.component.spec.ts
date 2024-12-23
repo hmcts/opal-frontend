@@ -3,9 +3,7 @@ import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-f
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { Validators } from '@angular/forms';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks/fines-mac-create-account-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { of } from 'rxjs';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 
@@ -13,13 +11,10 @@ describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent | null;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent> | null;
   let mockFinesService: jasmine.SpyObj<FinesService> | null;
-  let formSubmit: IFinesMacAccountDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
     mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
-
-    formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
@@ -46,7 +41,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
     component = null;
     fixture = null;
     mockFinesService = null;
-    formSubmit = null;
     TestBed.resetTestingModule();
   });
 
@@ -55,7 +49,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should setup account type listener', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -70,7 +64,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should call handleAccountTypeChange when accountType value changes', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -85,7 +79,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should unsubscribe from account type listener on ngOnDestroy', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -103,7 +97,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - fine', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -121,7 +115,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
     fieldsToRemove.forEach((field) => {
-      if (!component || !formSubmit || !mockFinesService || !fixture) {
+      if (!component) {
         fail('Required properties not properly initialised');
         return;
       }
@@ -132,7 +126,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - fixed penalty', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -150,7 +144,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
     fieldsToRemove.forEach((field) => {
-      if (!component || !formSubmit || !mockFinesService || !fixture) {
+      if (!component) {
         fail('Required properties not properly initialised');
         return;
       }
@@ -161,7 +155,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should handle account type change - conditional caution', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -177,7 +171,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     expect(component['removeControl']).toHaveBeenCalledTimes(fieldsToRemove.length);
     fieldsToRemove.forEach((field) => {
-      if (!component || !formSubmit || !mockFinesService || !fixture) {
+      if (!component) {
         fail('Required properties not properly initialised');
         return;
       }
@@ -188,7 +182,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type based on account type - fixed penalty', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -206,7 +200,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type based on account type - fine', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -224,7 +218,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should set defendant type to default for conditional caution account type', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -240,7 +234,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should not do anything as the account, fieldName, and fieldValue are not real', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -258,7 +252,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   });
 
   it('should call initialCreateAccountSetup method', () => {
-    if (!component || !formSubmit || !mockFinesService || !fixture) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -277,8 +271,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component['setupCreateAccountForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['setupAccountTypeListener']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(
-      component['finesService'].finesMacState.accountDetails.formData,
-    );
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.accountDetails.formData);
   });
 });

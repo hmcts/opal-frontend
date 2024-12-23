@@ -8,9 +8,9 @@ import { GlobalStateService } from '../global-state-service/global-state.service
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('AuthService', () => {
-  let service: AuthService;
-  let globalStateService: GlobalStateService;
-  let httpMock: HttpTestingController;
+  let service: AuthService | null;
+  let globalStateService: GlobalStateService | null;
+  let httpMock: HttpTestingController | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,12 +22,29 @@ describe('AuthService', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
+  afterAll(() => {
+    service = null;
+    globalStateService = null;
+    httpMock = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
   it('should be authenticated', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service.checkAuthenticated().subscribe((resp) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(resp).toEqual(true);
       expect(globalStateService.authenticated()).toEqual(true);
     });
@@ -39,7 +56,17 @@ describe('AuthService', () => {
   });
 
   it('should be not authenticated', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service.checkAuthenticated().subscribe((resp) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(resp).toEqual(false);
       expect(globalStateService.authenticated()).toEqual(false);
     });
@@ -51,9 +78,19 @@ describe('AuthService', () => {
   });
 
   it('should make a GET request to check authentication and set authenticated state to false on error', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service.checkAuthenticated().subscribe(
       () => {},
       () => {
+        if (!globalStateService) {
+          fail('Required properties not properly initialised');
+          return;
+        }
+
         expect(globalStateService.authenticated()).toEqual(false);
       },
     );

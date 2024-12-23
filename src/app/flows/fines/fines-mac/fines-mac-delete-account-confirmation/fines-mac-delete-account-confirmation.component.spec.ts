@@ -38,7 +38,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should navigate on handleRoute', () => {
-    if (!component || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -51,7 +51,7 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
   });
 
   it('should navigate on handleRoute with event', () => {
-    if (!component || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }

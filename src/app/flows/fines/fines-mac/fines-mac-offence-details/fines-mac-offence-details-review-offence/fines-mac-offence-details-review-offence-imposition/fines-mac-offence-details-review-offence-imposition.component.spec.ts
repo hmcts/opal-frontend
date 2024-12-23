@@ -128,7 +128,10 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     ];
 
+    spyOn<any>(component, 'getMinorCreditorData').and.returnValue(expectedImpositionTableData[0].minorCreditor);
     component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
+    component.impositions[0].fm_offence_details_imposition_id = 0;
+    component.impositionTableData = [];
     component['getImpositionData']();
 
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);

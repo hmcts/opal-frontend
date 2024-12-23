@@ -54,7 +54,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value - nestedFlow true', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -75,7 +75,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   });
 
   it('should emit form submit event with form value - nestedFlow false', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -96,7 +96,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   });
 
   it('should set up the company details form', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -113,7 +113,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   });
 
   it('should set up the alias configuration for the company details form', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -124,7 +124,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
   });
 
   it('should call the necessary setup methods', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService) {
       fail('Required properties not properly initialised');
       return;
     }

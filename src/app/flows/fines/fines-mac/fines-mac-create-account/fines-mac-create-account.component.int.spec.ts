@@ -58,7 +58,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should render the child form component', async () => {
-    if (!component || !mockOpalFinesService || !fixture) {
+    if (!fixture) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -119,7 +119,7 @@ describe('FinesMacCreateAccountComponent', () => {
   });
 
   it('should transform refData to autoCompleteItems correctly', () => {
-    if (!component || !mockOpalFinesService || !fixture) {
+    if (!component) {
       fail('Required properties not properly initialised');
       return;
     }

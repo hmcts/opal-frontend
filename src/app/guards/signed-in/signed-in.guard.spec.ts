@@ -11,8 +11,8 @@ describe('signedInGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => signedInGuard(...guardParameters));
 
-  let mockAuthService: jasmine.SpyObj<AuthService>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockAuthService: jasmine.SpyObj<AuthService> | null;
+  let mockRouter: jasmine.SpyObj<Router> | null;
 
   const urlPath = '/sign-in';
   const expectedUrl = '/';
@@ -20,7 +20,7 @@ describe('signedInGuard', () => {
   beforeEach(() => {
     mockAuthService = jasmine.createSpyObj(signedInGuard, ['checkAuthenticated']);
     mockRouter = jasmine.createSpyObj(signedInGuard, ['navigate', 'createUrlTree', 'parseUrl']);
-    mockRouter.parseUrl.and.callFake((url: string) => {
+    mockRouter!.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
       const urlSegment = new UrlSegment(url, {});
       urlTree.root = new UrlSegmentGroup([urlSegment], {});
@@ -41,11 +41,22 @@ describe('signedInGuard', () => {
     });
   });
 
+  afterAll(() => {
+    mockAuthService = null;
+    mockRouter = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should be created', () => {
     expect(executeGuard).toBeTruthy();
   });
 
   it('should return false if the user is logged in and redirect to the default route', fakeAsync(async () => {
+    if (!mockRouter) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockIsLoggedInFalse();
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(signedInGuard, urlPath));
     expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([expectedUrl]);
@@ -53,12 +64,22 @@ describe('signedInGuard', () => {
   }));
 
   it('should allow access to login if catches an error ', fakeAsync(async () => {
+    if (!mockAuthService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(signedInGuard, urlPath));
     expect(authenticated).toBeTruthy();
   }));
 
   const mockIsLoggedInFalse = () => {
+    if (!mockAuthService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockAuthService.checkAuthenticated.and.returnValue(of(false));
   };
 });

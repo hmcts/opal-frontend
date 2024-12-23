@@ -54,7 +54,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate to account details', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -72,7 +72,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   });
 
   it('should handle form submission and navigate next route', () => {
-    if (!component || !mockFinesService || !fixture || !formSubmit) {
+    if (!component || !mockFinesService || !formSubmit) {
       fail('Required properties not properly initialised');
       return;
     }
@@ -96,11 +96,11 @@ describe('FinesMacCompanyDetailsComponent', () => {
     }
 
     component.handleUnsavedChanges(true);
-    expect(component['finesService'].finesMacState.unsavedChanges).toBeTruthy();
+    expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(component['finesService'].finesMacState.unsavedChanges).toBeFalsy();
+    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });
