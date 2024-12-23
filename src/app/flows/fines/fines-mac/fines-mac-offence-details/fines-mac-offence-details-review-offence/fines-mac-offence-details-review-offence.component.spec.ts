@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsReviewOffenceComponent } from './fines-mac-offence-details-review-offence.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -14,20 +13,23 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state.mock';
 
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
-  let component: FinesMacOffenceDetailsReviewOffenceComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceComponent>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let component: FinesMacOffenceDetailsReviewOffenceComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceComponent> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
 
   beforeEach(async () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
       'removeIndexFromImpositionKeys',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
+    mockFinesMacOffenceDetailsService!.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue({
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+    mockFinesMacOffenceDetailsService!.removeIndexFromImpositionKeys.and.returnValue({
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK),
     });
 
     await TestBed.configureTestingModule({
@@ -50,10 +52,10 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     component = fixture.componentInstance;
 
     component.offence = {
-      ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData,
-        fm_offence_details_impositions: [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }],
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
+        fm_offence_details_impositions: [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]) }],
       },
     };
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
@@ -63,11 +65,11 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     fixture.detectChanges();
   });
 
-  beforeEach(() => {
-    component.offence = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
-    component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
-    component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.showActions = false;
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesMacOffenceDetailsService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -75,6 +77,11 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   });
 
   it('should emit action when onActionClick is called', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = { actionName: 'testAction', offenceId: 123 };
     const emitSpy = spyOn(component.actionClicked, 'emit');
 

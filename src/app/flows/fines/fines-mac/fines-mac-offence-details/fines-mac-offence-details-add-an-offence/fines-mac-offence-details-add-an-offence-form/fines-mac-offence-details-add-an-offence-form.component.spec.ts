@@ -26,13 +26,13 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
-  let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  let component: FinesMacOffenceDetailsAddAnOffenceFormComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormComponent> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
+  let mockUtilsService: jasmine.SpyObj<UtilsService> | null;
+  let mockDateService: jasmine.SpyObj<DateService> | null;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -42,14 +42,17 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
       'emptyOffences',
       'offenceCodeMessage',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
+    mockFinesMacOffenceDetailsService!.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
 
@@ -91,11 +94,27 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockFinesMacOffenceDetailsService = null;
+    mockOpalFinesService = null;
+    mockUtilsService = null;
+    mockDateService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
     component.ngOnInit();
     const index = 0;
@@ -111,6 +130,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true when result_code is costs', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
     component.ngOnInit();
     const index = 0;
@@ -126,6 +150,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true on initial call of resultCodeListener', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
     component.ngOnInit();
     const index = 0;
@@ -164,6 +193,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
     component.selectedOffenceConfirmation = true;
@@ -174,6 +208,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     const mockData = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK };
     mockData.offenceDetailsDraft[0] = {
       ...mockData.offenceDetailsDraft[0],
@@ -194,6 +236,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should update offenceCodeControl value with uppercased value', () => {
+    if (!component || !mockUtilsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockCjsCode = 'abc123';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     mockUtilsService.upperCaseAllLetters.and.returnValue(mockCjsCode);
@@ -206,6 +253,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockCjsCode = 'abc12345';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
@@ -217,6 +269,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjs_code length is between 7 and 8', fakeAsync(() => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockCjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
@@ -234,6 +291,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   }));
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', fakeAsync(() => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockCjsCode = 'abc123450';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
     offenceCodeControl.reset();
@@ -251,6 +313,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   }));
 
   it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjsCode length is between 7 and 8', () => {
+    if (!component || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const cjsCode = 'abc1234';
     const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
 
@@ -262,6 +329,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set errors on offence code control', () => {
+    if (!component || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     (mockOpalFinesService.getOffenceByCjsCode as jasmine.Spy).and.returnValue(of({ count: 0, refData: [] }));
 
     const cjsCode = 'abc1234';
@@ -275,6 +347,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false when cjsCode length is not between 7 and 8', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const cjsCode = 'abc123458';
 
     component['populateOffenceHint'](cjsCode);
@@ -283,6 +360,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should populate offence details draft when navigating to search offences', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.goToSearchOffences();
@@ -293,9 +375,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should populate offence details draft when navigating to search offences when draft is empty - search offences', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
     component['initialAddAnOffenceDetailsSetup']();
 
     component.goToSearchOffences();
@@ -306,6 +395,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should populate offence details draft when navigating to search offences when draft is populated - search offences', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
@@ -318,6 +412,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should go to minor creditor', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
@@ -329,10 +428,17 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should populate offence details draft when navigating to search offences when draft is empty - remove imposition', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
 
     component.removeImpositionConfirmation(0);
 
@@ -342,6 +448,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should populate offence details draft when navigating to search offences when draft is populated - remove imposition', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
@@ -354,6 +465,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should test majorCreditorValidation and add validator when add is true', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const index = 0;
     const formGroup = new FormGroup({
       fm_offence_details_major_creditor_id: new FormGroup({
@@ -378,6 +494,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should test majorCreditorValidation and remove validator when add is false', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const index = 0;
     const formGroup = new FormGroup({
       fm_offence_details_major_creditor_id: new FormGroup({
@@ -400,6 +521,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should perform major creditor validation when creditor value is major', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
     component.ngOnInit();
     const index = 0;
@@ -421,6 +547,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should perform major creditor validation when creditor value is minor', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
     component.ngOnInit();
     const index = 0;
@@ -442,6 +573,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should trigger majorCreditorValidation when the control is already populated when loading the listener', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
     component.ngOnInit();
     const index = 0;
@@ -463,6 +599,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should navigate to account details when emptyOffences is true', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.emptyOffences = true;
     const handleRouteSpy = spyOn(component, 'handleRoute');
 
@@ -475,6 +616,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should navigate to review offences when emptyOffences is false', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.emptyOffences = false;
     const handleRouteSpy = spyOn(component, 'handleRoute');
 
@@ -484,6 +630,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should calculate balance remaining for each form group', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Create a sample form array with two form groups
     const formArray = new FormArray([
       new FormGroup({
@@ -511,6 +662,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should calculate balance remaining and call super.handleFormSubmit', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = jasmine.createSpyObj('event', ['preventDefault']);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'calculateBalanceRemaining');
@@ -522,16 +678,27 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should initialize the form and setup listeners', () => {
+    if (!component || !mockFinesMacOffenceDetailsService || !mockFinesService || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Mock data
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     const offenceDetailsDraft = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft };
     offenceDetailsDraft[0].formData.fm_offence_details_impositions.splice(0, 1);
     const impositionsLength = offenceDetailsDraft[0].formData.fm_offence_details_impositions.length;
 
     // Mock dependencies
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAddAnOffenceForm');
@@ -570,8 +737,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
       removeMinorCreditor: 0,
@@ -585,6 +760,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should update minorCreditorsHidden based on hidden imposition minor creditor', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.minorCreditorsHidden = { 0: false };
 
     component.minorCreditorActions({ action: 'showHideDetails', index: 0 });
@@ -593,11 +773,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should return the correct minor creditor form data for the specified row index', () => {
-    const mockMinorCreditorForm = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK };
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    const mockMinorCreditorForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK);
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
+    mockFinesService.finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
 
     const result = component.getMinorCreditor(0);
@@ -606,8 +791,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should return undefined if childFormData is not defined', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
+    mockFinesService.finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     mockFinesService.finesMacState.offenceDetails[0].childFormData = [];
 
     const result = component.getMinorCreditor(0);
@@ -616,12 +806,17 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should return one item in the array of minor creditors', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 1,
         },
       },

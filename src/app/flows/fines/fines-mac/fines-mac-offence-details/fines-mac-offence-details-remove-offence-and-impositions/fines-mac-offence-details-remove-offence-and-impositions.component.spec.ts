@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent } from './fines-mac-offence-details-remove-offence-and-impositions.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -18,11 +17,11 @@ import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-se
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 
 describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
-  let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -39,21 +38,23 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
       'finesMacOffenceDetailsDraftState',
       'removeIndexFromImpositionKeys',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
+    mockFinesMacOffenceDetailsService!.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue({
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+    mockFinesMacOffenceDetailsService!.removeIndexFromImpositionKeys.and.returnValue({
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK),
     });
-    mockFinesMacOffenceDetailsService.offenceIndex = 0;
+    mockFinesMacOffenceDetailsService!.offenceIndex = 0;
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    mockFinesService!.finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent],
-
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
@@ -75,31 +76,60 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockFinesMacOffenceDetailsService = null;
+    mockOpalFinesService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have state and populate resultCodeData$', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(component.referenceData$).not.toBeUndefined();
   });
 
   it('should remove the offence and set offenceRemoved to true', () => {
+    if (!component || !mockFinesService || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.confirmOffenceRemoval();
     expect(mockFinesService.finesMacState.offenceDetails.length).toBe(0);
     expect(mockFinesMacOffenceDetailsService.offenceRemoved).toBeTrue();
   });
 
   it('should navigate to reviewOffences route after removing offence', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component, 'handleRoute');
     component.confirmOffenceRemoval();
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences);
   });
 
   it('should remove first item in array leaving one item remaining', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.offenceDetails = [
-      { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK },
+      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
         formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_id: 1 },
       },
     ];

@@ -4,8 +4,8 @@ import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fine
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 
 describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
-  let component: FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent>;
+  let component: FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -20,11 +20,22 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should emit action when onActionClick is called', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const action = 'Change';
     const emitSpy = spyOn(component.actionClicked, 'emit');
 
@@ -34,6 +45,11 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
   });
 
   it('should set offenceTitle when getOffenceTitle is called', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.getOffenceTitle();
 
     expect(component.offenceTitle).toEqual(component.offenceRefData.refData[0].offence_title);

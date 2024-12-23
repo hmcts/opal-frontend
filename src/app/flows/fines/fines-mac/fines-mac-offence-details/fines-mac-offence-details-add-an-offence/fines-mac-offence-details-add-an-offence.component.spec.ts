@@ -27,16 +27,16 @@ import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../../fines-mac-payment-terms
 import { FINES_MAC_PAYMENT_TERMS_STATE } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-state';
 
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
-  let component: FinesMacOffenceDetailsAddAnOffenceComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
-  let mockOpalFinesService: Partial<OpalFines>;
-  let formSubmit: IFinesMacOffenceDetailsForm;
+  let component: FinesMacOffenceDetailsAddAnOffenceComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
+  let formSubmit: IFinesMacOffenceDetailsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'offenceIndex',
@@ -44,7 +44,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
       'finesMacOffenceDetailsDraftState',
       'offenceCodeMessage',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService!.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
 
     mockOpalFinesService = {
       getResults: jasmine.createSpy('getResults').and.returnValue(of(OPAL_FINES_RESULTS_REF_DATA_MOCK)),
@@ -85,16 +87,36 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockFinesMacOffenceDetailsService = null;
+    mockOpalFinesService = null;
+    formSubmit = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have state and populate data$', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(component['resultCodeData$']).not.toBeUndefined();
     expect(component['majorCreditorData$']).not.toBeUndefined();
   });
 
   it('should handle form submission and navigate to account details', () => {
+    if (!component || !mockFinesService || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     mockFinesService.finesMacState.offenceDetails = [];
 
@@ -109,6 +131,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
+    if (!component || !mockFinesService || !formSubmit || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     mockFinesService.finesMacState.offenceDetails = [];
     component.offenceIndex = 0;
@@ -125,6 +152,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.handleUnsavedChanges(true);
     expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
@@ -135,9 +167,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should update offence details index when form exists in the state', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    if (!component || !mockFinesService || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
 
-    const existingForm = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+
+    const existingForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     mockFinesService.finesMacState.offenceDetails = [{ ...existingForm }];
     mockFinesService.finesMacState.offenceDetails[0] = {
@@ -152,14 +189,19 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(mockFinesService.finesMacState.offenceDetails[0].childFormData).toBeNull();
   });
 
-  it('should add offence details form to the state when form does not exist', () => {
+  it('should add offence details form to the state when form does not exist - no offence details', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const form = {
-      ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
         fm_offence_details_impositions: [
           {
-            ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_impositions[0],
+            ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_impositions[0]),
             fm_offence_details_amount_imposed: 100,
             fm_offence_details_amount_paid: 50,
           },
@@ -175,13 +217,21 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(mockFinesService.finesMacState.offenceDetails[0]).toEqual(form);
   });
 
-  it('should add offence details form to the state when form does not exist', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+  it('should add offence details form to the state when form does not exist - existing offence details', () => {
+    if (!component || !mockFinesService || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
 
     mockFinesService.finesMacState.offenceDetails = [];
@@ -193,6 +243,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should add new object when offenceDetails is empty', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.offenceDetails = [];
 
     component['retrieveFormData']();
@@ -201,6 +256,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should create autocomplete items for results', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const response = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     const result = component['createAutoCompleteItemsResults'](response);
     expect(result.length).toBe(response.refData.length);
@@ -209,6 +269,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should create autocomplete items for major creditors', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const response = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     const result = component['createAutoCompleteItemsMajorCreditors'](response);
     expect(result.length).toBe(response.refData.length);
@@ -216,23 +281,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(result[0].name).toBe(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK);
   });
 
-  it('should update offence details index when form exists in the state', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+  it('should add offence details form to the state when form does not exist - brand new offence', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
 
-    const existingForm = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
-
-    mockFinesService.finesMacState.offenceDetails = [{ ...existingForm }];
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = null;
-
-    component['updateOffenceDetailsIndex'](form);
-
-    expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
-    expect(mockFinesService.finesMacState.offenceDetails[0].formData).toEqual(form.formData);
-    expect(mockFinesService.finesMacState.offenceDetails[0].childFormData).toBeNull();
-  });
-
-  it('should add offence details form to the state when form does not exist', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     mockFinesService.finesMacState.offenceDetails = [];
 
@@ -243,6 +298,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should retrieve form data and set offenceIndex to 0 when offenceDetails is empty', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.offenceDetails = [];
 
     component['retrieveFormData']();
@@ -251,7 +311,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should retrieve form data and set offenceIndex to offenceIndex from service when offenceDetails is not empty', () => {
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
+    if (!component || !mockFinesService || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    mockFinesService.finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     mockFinesMacOffenceDetailsService.offenceIndex = 1;
 
     component['retrieveFormData']();
@@ -259,58 +324,28 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(component.offenceIndex).toBe(1);
   });
 
-  it('should handle form submission and navigate to account details', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesService.finesMacState.offenceDetails = [];
-
-    formSubmit.nestedFlow = false;
-
-    component.handleOffenceDetailsSubmit(formSubmit);
-
-    expect(mockFinesService.finesMacState.offenceDetails).toContain(formSubmit);
-    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.reviewOffences], {
-      relativeTo: component['activatedRoute'].parent,
-    });
-  });
-
-  it('should handle form submission and navigate to next route', () => {
-    const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesService.finesMacState.offenceDetails = [];
-    component.offenceIndex = 0;
-
-    formSubmit.nestedFlow = true;
-
-    component.handleOffenceDetailsSubmit(formSubmit);
-
-    expect(mockFinesService.finesMacState.offenceDetails).toContain(formSubmit);
-    expect(routerSpy).not.toHaveBeenCalled();
-    expect(component.showOffenceDetailsForm).toBeTruthy();
-    expect(component.offenceIndex).toBe(1);
-    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
-  });
-
-  it('should handle unsaved changes', () => {
-    component.handleUnsavedChanges(true);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
-    expect(component.stateUnsavedChanges).toBeTruthy();
-
-    component.handleUnsavedChanges(false);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
-    expect(component.stateUnsavedChanges).toBeFalsy();
-  });
-
   it('should set minorCreditorAdded to false on destroy', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.ngOnDestroy();
     expect(mockFinesMacOffenceDetailsService.minorCreditorAdded).toBeFalsy();
   });
 
   it('should get collection order date from payment terms', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const date = new Date();
     spyOn(component['dateService'], 'getDateFromFormat').and.returnValue(date);
     mockFinesService.finesMacState.paymentTerms = {
-      ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK,
+      ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_PAYMENT_TERMS_STATE_MOCK,
+        ...structuredClone(FINES_MAC_PAYMENT_TERMS_STATE_MOCK),
         fm_payment_terms_collection_order_date: '01/01/2022',
       },
     };
@@ -321,9 +356,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should return null when collection order date is not available', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.paymentTerms = {
-      ...FINES_MAC_PAYMENT_TERMS_FORM,
-      formData: { ...FINES_MAC_PAYMENT_TERMS_STATE, fm_payment_terms_collection_order_date: null },
+      ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM),
+      formData: { ...structuredClone(FINES_MAC_PAYMENT_TERMS_STATE), fm_payment_terms_collection_order_date: null },
     };
 
     const result = component['getCollectionOrderDate']();
@@ -332,11 +372,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should set payment terms status to INCOMPLETE when collection order date is earlier than earliest date of sentence', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const earliestDateOfSentence = new Date('2022-02-01');
     mockFinesService.finesMacState.paymentTerms = {
-      ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK,
+      ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_PAYMENT_TERMS_STATE_MOCK,
+        ...structuredClone(FINES_MAC_PAYMENT_TERMS_STATE_MOCK),
         fm_payment_terms_collection_order_date: '01/01/2022',
       },
     };
@@ -348,11 +393,16 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should not set payment terms status to INCOMPLETE when collection order date is not earlier than earliest date of sentence', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const collectionOrderDate = new Date('2022-03-01');
     const earliestDateOfSentence = new Date('2022-02-01');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn(component as any, 'getCollectionOrderDate').and.returnValue(collectionOrderDate);
-    mockFinesService.finesMacState.paymentTerms = { ...FINES_MAC_PAYMENT_TERMS_FORM };
+    mockFinesService.finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
     mockFinesService.getEarliestDateOfSentence.and.returnValue(earliestDateOfSentence);
 
     component['checkPaymentTermsCollectionOrder']();

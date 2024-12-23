@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsReviewOffenceHeadingComponent } from './fines-mac-offence-details-review-offence-heading.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -9,9 +8,9 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { of } from 'rxjs';
 
 describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
-  let component: FinesMacOffenceDetailsReviewOffenceHeadingComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceHeadingComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
+  let component: FinesMacOffenceDetailsReviewOffenceHeadingComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceHeadingComponent> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -39,10 +38,23 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockOpalFinesService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should fetch offence reference data', () => {
+    if (!component || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['getOffenceRefData']();
 
     expect(mockOpalFinesService.getOffenceByCjsCode).toHaveBeenCalledWith(component.offenceCode);
@@ -52,6 +64,11 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
   });
 
   it('should emit actionClicked event with correct parameters', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const action = 'Change';
     const emittedValue = { actionName: action, offenceId: component.offenceId };
     const emitSpy = spyOn(component.actionClicked, 'emit');

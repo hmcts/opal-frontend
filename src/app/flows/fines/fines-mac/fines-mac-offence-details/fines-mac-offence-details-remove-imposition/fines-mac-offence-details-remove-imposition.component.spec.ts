@@ -20,11 +20,11 @@ import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
 
 describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
-  let component: FinesMacOffenceDetailsRemoveImpositionComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveImpositionComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let component: FinesMacOffenceDetailsRemoveImpositionComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveImpositionComponent> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
+  let mockUtilsService: jasmine.SpyObj<UtilsService> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -41,7 +41,10 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
+    mockFinesMacOffenceDetailsService!.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
 
@@ -73,15 +76,34 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesMacOffenceDetailsService = null;
+    mockOpalFinesService = null;
+    mockUtilsService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have state and populate resultCodeData$', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(component['resultCodeData$']).not.toBeUndefined();
   });
 
   it('should update monetary string correctly', () => {
+    if (!component || !mockUtilsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const value = 150;
     const expectedMonetaryString = '£150.00';
     mockUtilsService.convertToMonetaryString.and.returnValue(expectedMonetaryString);
@@ -92,6 +114,14 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should get imposition to be removed', () => {
+    if (!component || !mockUtilsService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     const { formArray, formArrayControls } = { ...FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK };
     mockUtilsService.convertToMonetaryString.and.returnValue('£50.00');
 
@@ -116,11 +146,19 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should confirm removal and update form data', () => {
+    if (!component || !mockFinesMacOffenceDetailsService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeMinorCreditorAndUpdateIds');
     spyOn(component, 'handleRoute');
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     const { rowIndex, formArray } = { ...FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK };
     fixture.detectChanges();
 
@@ -128,7 +166,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
     ];
     component.confirmRemoval(rowIndex, formArray);
 
@@ -146,11 +184,19 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should confirm removal and update form data', () => {
+    if (!component || !mockFinesMacOffenceDetailsService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'removeControlAndRenumber');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'dropMinorCreditorImpositionPosition');
     spyOn(component, 'handleRoute');
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     const { rowIndex, formArray } = { ...FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK };
     fixture.detectChanges();
 
@@ -159,9 +205,9 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 5,
         },
       },
@@ -182,20 +228,25 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should update imposition positions correctly after removing an item', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Setup mock offenceDetailsArray and formArray
     const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 1,
         },
       },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 2,
         },
       },
@@ -213,19 +264,24 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should drop imposition positions correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 1,
         },
       },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 2,
         },
       },
@@ -240,18 +296,33 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   });
 
   it('should return CPS default value', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(component['getDefaultCreditor']('CPS')).toEqual(
       FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.crownProsecutionServiceDefault,
     );
   });
 
   it('should return default value', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     expect(component['getDefaultCreditor']('TEST')).toEqual(
       FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault,
     );
   });
 
   it('should return company name of minor creditor', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       {
         ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,

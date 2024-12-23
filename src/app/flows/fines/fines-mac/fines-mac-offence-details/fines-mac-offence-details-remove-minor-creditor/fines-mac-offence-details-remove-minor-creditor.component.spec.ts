@@ -12,21 +12,24 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
 
 describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
-  let component: FinesMacOffenceDetailsRemoveMinorCreditorComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveMinorCreditorComponent>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let component: FinesMacOffenceDetailsRemoveMinorCreditorComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveMinorCreditorComponent> | null;
+  let mockUtilsService: jasmine.SpyObj<UtilsService> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
 
   beforeEach(async () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
+    mockFinesMacOffenceDetailsService!.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
       offenceDetailsDraft: [
         {
-          ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
-          childFormData: [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
+          childFormData: [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) }],
         },
       ],
     };
@@ -55,16 +58,12 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
     fixture.detectChanges();
   });
 
-  beforeEach(() => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-      offenceDetailsDraft: [
-        {
-          ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
-          childFormData: [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
-        },
-      ],
-    };
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesMacOffenceDetailsService = null;
+    mockUtilsService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -72,12 +71,22 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
   });
 
   it('should find the index of a minor creditor with the given imposition position', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const actualIndex = component['findMinorCreditorIndex'](0);
 
     expect(actualIndex).toBe(0);
   });
 
   it('should remove minor creditor when confirmMinorCreditorRemoval is called', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component.confirmMinorCreditorRemoval();

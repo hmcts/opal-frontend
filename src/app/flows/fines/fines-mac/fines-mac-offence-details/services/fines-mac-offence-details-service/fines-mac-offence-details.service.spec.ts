@@ -4,11 +4,16 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 
 describe('FinesMacOffenceDetailsService', () => {
-  let service: FinesMacOffenceDetailsService;
+  let service: FinesMacOffenceDetailsService | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(FinesMacOffenceDetailsService);
+  });
+
+  afterAll(() => {
+    service = null;
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {
@@ -16,11 +21,21 @@ describe('FinesMacOffenceDetailsService', () => {
   });
 
   it('should store offence details draft state', () => {
-    service.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    service.finesMacOffenceDetailsDraftState = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE);
     expect(service.finesMacOffenceDetailsDraftState).toEqual(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE);
   });
 
   it('should set show_date_of_sentence to true for unique dates', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const forms = [
       {
         formData: {
