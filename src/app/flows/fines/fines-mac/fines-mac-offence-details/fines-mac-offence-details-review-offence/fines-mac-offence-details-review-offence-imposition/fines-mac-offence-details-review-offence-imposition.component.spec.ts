@@ -15,6 +15,7 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offen
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../../mocks/fines-mac-offence-details-state.mock';
 import { FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor } from './enums/fines-mac-offence-details-review-offence-imposition-default-creditor.enum';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK } from './mocks/fines-mac-offence-details-review-offence-imposition-data.mock';
+import { IFinesMacOffenceDetailsReviewSummaryImpositionTableData } from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
@@ -99,12 +100,12 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   it('should set impositionTableData with correct values', () => {
     const expectedTotal = '£100.00';
     mockUtilsService.convertToMonetaryString.and.returnValue(expectedTotal);
-    const expectedImpositionTableData = [
+    const imposition = { ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] };
+    const expectedImpositionTableData: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[] = [
       {
         impositionId: 0,
         impositionDescription: OPAL_FINES_RESULTS_REF_DATA_MOCK.refData.find(
-          (result) =>
-            result.result_id === FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0].fm_offence_details_result_id!,
+          (result) => result.result_id === imposition.fm_offence_details_result_id!,
         )!.result_title,
         creditor: 'HM Courts & Tribunals Service (HMCTS)',
         minorCreditor: {
@@ -121,8 +122,10 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
         balanceRemaining: expectedTotal,
       },
     ];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getMinorCreditorData').and.returnValue(expectedImpositionTableData[0].minorCreditor);
 
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [imposition];
     component['getImpositionData']();
 
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);

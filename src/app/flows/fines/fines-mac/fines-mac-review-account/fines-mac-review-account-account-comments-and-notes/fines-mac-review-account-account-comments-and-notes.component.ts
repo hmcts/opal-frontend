@@ -22,6 +22,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 })
 export class FinesMacReviewAccountAccountCommentsAndNotesComponent {
   @Input({ required: true }) public accountCommentsAndNotes!: IFinesMacAccountCommentsNotesState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeAccountCommentsAndNotesDetails = new EventEmitter<void>();
 
   public readonly defaultValues = FinesMacReviewAccountDefaultValues;

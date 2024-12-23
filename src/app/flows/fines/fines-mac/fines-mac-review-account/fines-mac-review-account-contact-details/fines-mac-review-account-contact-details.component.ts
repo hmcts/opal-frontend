@@ -23,6 +23,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 })
 export class FinesMacReviewAccountContactDetailsComponent {
   @Input({ required: true }) public contactDetails!: IFinesMacContactDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeContactDetails = new EventEmitter<void>();
 
   public readonly finesMacStatus = FINES_MAC_STATUS;
