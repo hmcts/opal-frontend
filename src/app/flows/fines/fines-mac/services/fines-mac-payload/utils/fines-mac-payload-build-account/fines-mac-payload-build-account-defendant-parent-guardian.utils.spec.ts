@@ -14,11 +14,11 @@ import { FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK } from '../mocks/s
 import { finesMacPayloadBuildAccountDefendantParentGuardian } from './fines-mac-payload-build-account-defendant-parent-guardian.utils';
 
 describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
-  let contactDetailsState: IFinesMacContactDetailsState;
-  let languagePreferencesState: IFinesMacLanguagePreferencesState;
-  let personalDetailsState: IFinesMacPersonalDetailsState;
-  let employerDetailsState: IFinesMacEmployerDetailsState;
-  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState;
+  let contactDetailsState: IFinesMacContactDetailsState | null;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState | null;
+  let personalDetailsState: IFinesMacPersonalDetailsState | null;
+  let employerDetailsState: IFinesMacEmployerDetailsState | null;
+  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState | null;
 
   beforeEach(() => {
     contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
@@ -28,7 +28,26 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
     parentGuardianDetailsState = structuredClone(FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK);
   });
 
+  afterAll(() => {
+    contactDetailsState = null;
+    languagePreferencesState = null;
+    personalDetailsState = null;
+    employerDetailsState = null;
+    parentGuardianDetailsState = null;
+  });
+
   it('should build the correct payload', () => {
+    if (
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !parentGuardianDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     personalDetailsState.fm_personal_details_vehicle_make = null;
     personalDetailsState.fm_personal_details_vehicle_registration_mark = null;
     personalDetailsState.fm_personal_details_aliases = [];
@@ -49,6 +68,17 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
   });
 
   it('should build the correct payload with aliases', () => {
+    if (
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !parentGuardianDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     personalDetailsState.fm_personal_details_add_alias = false;
     personalDetailsState.fm_personal_details_aliases = [];
     personalDetailsState.fm_personal_details_vehicle_make = null;

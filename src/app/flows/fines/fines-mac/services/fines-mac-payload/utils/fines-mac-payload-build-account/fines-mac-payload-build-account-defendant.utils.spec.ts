@@ -23,13 +23,13 @@ import { finesMacPayloadBuildAccountDefendant } from './fines-mac-payload-build-
 import { FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-account-details-state.mock';
 
 describe('finesMacPayloadBuildAccountDefendant', () => {
-  let contactDetailsState: IFinesMacContactDetailsState;
-  let languagePreferencesState: IFinesMacLanguagePreferencesState;
-  let personalDetailsState: IFinesMacPersonalDetailsState;
-  let employerDetailsState: IFinesMacEmployerDetailsState;
-  let companyDetailsState: IFinesMacCompanyDetailsState;
-  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState;
-  let accountDetailsState: IFinesMacAccountDetailsState;
+  let contactDetailsState: IFinesMacContactDetailsState | null;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState | null;
+  let personalDetailsState: IFinesMacPersonalDetailsState | null;
+  let employerDetailsState: IFinesMacEmployerDetailsState | null;
+  let companyDetailsState: IFinesMacCompanyDetailsState | null;
+  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState | null;
+  let accountDetailsState: IFinesMacAccountDetailsState | null;
 
   beforeEach(() => {
     contactDetailsState = structuredClone(FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK);
@@ -41,7 +41,30 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
     accountDetailsState = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK);
   });
 
+  afterEach(() => {
+    contactDetailsState = null;
+    languagePreferencesState = null;
+    personalDetailsState = null;
+    employerDetailsState = null;
+    companyDetailsState = null;
+    parentGuardianDetailsState = null;
+    accountDetailsState = null;
+  });
+
   it('should build payload for parent or guardian defendant', () => {
+    if (
+      !accountDetailsState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !companyDetailsState ||
+      !parentGuardianDetailsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     accountDetailsState.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
     personalDetailsState.fm_personal_details_add_alias = false;
@@ -66,6 +89,19 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
   });
 
   it('should build payload for parent or guardian defendant with aliases', () => {
+    if (
+      !accountDetailsState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !companyDetailsState ||
+      !parentGuardianDetailsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     accountDetailsState.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
     personalDetailsState.fm_personal_details_add_alias = false;
@@ -87,6 +123,19 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
   });
 
   it('should build payload for company defendant', () => {
+    if (
+      !accountDetailsState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !companyDetailsState ||
+      !parentGuardianDetailsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     accountDetailsState.fm_create_account_defendant_type = 'company';
 
     companyDetailsState.fm_company_details_add_alias = false;
@@ -106,6 +155,19 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
   });
 
   it('should build payload for company defendant with aliases', () => {
+    if (
+      !accountDetailsState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !companyDetailsState ||
+      !parentGuardianDetailsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     accountDetailsState.fm_create_account_defendant_type = 'company';
 
     const result = finesMacPayloadBuildAccountDefendant(
@@ -122,6 +184,19 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
   });
 
   it('should build payload for individual defendant with aliases', () => {
+    if (
+      !accountDetailsState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !companyDetailsState ||
+      !parentGuardianDetailsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     accountDetailsState.fm_create_account_defendant_type = 'individual';
 
     const result = finesMacPayloadBuildAccountDefendant(
@@ -138,6 +213,19 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
   });
 
   it('should build payload for individual defendant', () => {
+    if (
+      !accountDetailsState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !companyDetailsState ||
+      !parentGuardianDetailsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     accountDetailsState.fm_create_account_defendant_type = 'individual';
 
     personalDetailsState.fm_personal_details_add_alias = false;
