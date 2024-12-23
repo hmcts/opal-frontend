@@ -12,18 +12,21 @@ import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-term
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
+import { of } from 'rxjs';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
-  let component: FinesMacPaymentTermsFormComponent;
-  let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent>;
-  let mockGlobalStateService: GlobalStateService;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
-  let formSubmit: IFinesMacPaymentTermsForm;
+  let component: FinesMacPaymentTermsFormComponent | null;
+  let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent> | null;
+  let mockGlobalStateService: GlobalStateService | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockDateService: jasmine.SpyObj<DateService> | null;
+  let formSubmit: IFinesMacPaymentTermsForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    mockFinesService!.getEarliestDateOfSentence.and.returnValue(new Date('2024-09-01'));
+
     mockDateService = jasmine.createSpyObj(DateService, [
       'getPreviousDate',
       'calculateAge',
@@ -35,16 +38,19 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       'toDateStringFormat',
     ]);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.getEarliestDateOfSentence.and.returnValue(new Date('2024-09-01'));
-    formSubmit = { ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsFormComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
         { provide: DateService, useValue: mockDateService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
@@ -59,8 +65,14 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     fixture.detectChanges();
   });
 
-  beforeEach(() => {
-    component.form.reset();
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockDateService = null;
+    mockGlobalStateService = null;
+    formSubmit = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -68,6 +80,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     spyOn(component['formSubmit'], 'emit');
@@ -80,6 +97,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     spyOn(component['formSubmit'], 'emit');
@@ -92,6 +114,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should call initialPaymentTermsSetup method', () => {
+    if (!component || !formSubmit || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPermissions');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,8 +161,13 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should call initialPaymentTermsSetup method with offence details data', () => {
+    if (!component || !formSubmit || !mockDateService || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.paymentTerms.formData = {
-      ...mockFinesService.finesMacState.paymentTerms.formData,
+      ...structuredClone(mockFinesService.finesMacState.paymentTerms.formData),
       fm_payment_terms_collection_order_date: '01/09/2024',
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -183,6 +215,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should add controls when has days in default is true', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'parentOrGuardianToPay';
 
     component['initialPaymentTermsSetup']();
@@ -197,6 +234,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should remove controls when has days in default is false', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'parentOrGuardianToPay';
 
     component['initialPaymentTermsSetup']();
@@ -211,6 +253,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the future', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const dateValue = DateTime.now().plus({ years: 4 }).toFormat('dd/MM/yyyy');
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.isDateInTheFuture.and.returnValue(true);
@@ -223,6 +270,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set dateInFuture and dateInPast to true when dateValue is a valid date in the past', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const dateValue = DateTime.now().minus({ years: 4 }).toFormat('dd/MM/yyyy');
     mockDateService.isValidDate.and.returnValue(true);
     mockDateService.isDateInTheFuture.and.returnValue(false);
@@ -235,6 +287,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set dateInFuture and dateInPast to false when dateValue is not a valid date', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const dateValue = 'invalid-date';
     mockDateService.isValidDate.and.returnValue(false);
 
@@ -245,6 +302,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should update form controls based on selected payment term', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const paymentTermsControl = component.form.controls['fm_payment_terms_payment_terms'];
     const selectedTerm = 'payInFull';
 
@@ -257,6 +319,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should update form controls based on selected payment term', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const paymentTermsControl = component.form.controls['fm_payment_terms_payment_terms'];
     const selectedTerm = 'instalmentsOnly';
 
@@ -269,10 +336,15 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should check defendant age and set accessDefaultDates to true when age is 18 or above', () => {
+    if (!component || !mockFinesService || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'adultOrYouthOnly';
     const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
     mockFinesService.finesMacState.personalDetails.formData = {
-      ...mockFinesService.finesMacState.personalDetails.formData,
+      ...structuredClone(mockFinesService.finesMacState.personalDetails.formData),
       fm_personal_details_dob: dob,
     };
     mockDateService.calculateAge.and.returnValue(30);
@@ -285,9 +357,14 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should check defendant age and set accessDefaultDates to false when age is below 18', () => {
+    if (!component || !mockFinesService || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const dob = DateTime.now().minus({ years: 10 }).toFormat('dd/MM/yyyy');
     mockFinesService.finesMacState.personalDetails.formData = {
-      ...mockFinesService.finesMacState.personalDetails.formData,
+      ...structuredClone(mockFinesService.finesMacState.personalDetails.formData),
       fm_personal_details_dob: dob,
     };
     mockDateService.calculateAge.and.returnValue(10);
@@ -301,6 +378,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'parentOrGuardianToPay';
 
     component['determineAccess']();
@@ -310,6 +392,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set accessDefaultDates to true defendant type parent or guardian to pay', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'company';
 
     component['determineAccess']();
@@ -319,6 +406,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should create enforcement fields for company defendant type', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'company';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
@@ -334,6 +426,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should create enforcement fields for non-company defendant type', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'adultOrYouthOnly';
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addControlsSpy = spyOn<any>(component, 'addControls');
@@ -349,6 +446,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should add control when hold enforcement on account is true', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'company';
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
@@ -360,6 +462,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should remove control when hold enforcement on account is false', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'company';
     component['addEnforcementFields']();
     const NOENFControl = component.form.controls['fm_payment_terms_hold_enforcement_on_account'];
@@ -371,6 +478,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should reset and create collection order date when has collection order value is "yes"', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
@@ -389,6 +501,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should reset and create collection order date when has collection order value is "yes" with offence date', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockDateService.toDateStringFormat.and.returnValue(
       FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_sentence!,
     );
@@ -407,6 +524,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should remove collection order date and create make collection order today and collection order date when has collection order value is not "yes"', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component['addCollectionOrderFormControls']();
@@ -425,6 +547,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should set collection order date when make collection order today is true', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;
     component.today = '31/08/2024';
@@ -442,6 +569,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should setup permissions', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'hasPermissionAccess').and.returnValue(true);
 
@@ -452,6 +584,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should update form controls based on selected enforcement action', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'adultOrYouthOnly';
     component['addEnforcementFields']();
     const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
@@ -472,6 +609,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should update form controls based on selected enforcement action', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.defendantType = 'adultOrYouthOnly';
     component['addEnforcementFields']();
     const addEnforcementActionControl = component.form.controls['fm_payment_terms_add_enforcement_action'];
@@ -492,6 +634,11 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should add controls', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const controlsToAdd = [
       { controlName: 'control1', validators: [] },
       { controlName: 'control2', validators: [] },
@@ -501,11 +648,21 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['addControls'](controlsToAdd);
 
     controlsToAdd.forEach((control) => {
+      if (!component) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(component.form.contains(control.controlName)).toBe(true);
     });
   });
 
   it('should remove controls', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const controlsToRemove: IAbstractFormArrayControlValidation[] = [
       { controlName: 'control1', validators: [] },
       { controlName: 'control2', validators: [] },
