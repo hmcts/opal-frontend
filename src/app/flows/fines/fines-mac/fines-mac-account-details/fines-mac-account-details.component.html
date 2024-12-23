@@ -154,14 +154,16 @@
     <h2 class="govuk-heading-m">Check and submit for review</h2>
     <p class="govuk-body">Check that all required fields have been entered before you submit for review</p>
   }
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-  <a
-    class="govuk-link govuk-error-colour"
-    (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
-    (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
-    tabindex="0"
-    >Delete account</a
-  >
+  @if (!finesService.finesDraftAmend()) {
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+    <a
+      class="govuk-link govuk-error-colour"
+      (click)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+      (keyup.enter)="handleRoute(fineMacRoutes.children.deleteAccountConfirmation, false, $event)"
+      tabindex="0"
+      >Delete account</a
+    >
+  }
 </div>
 
 <ng-template #statusTag let-status>
