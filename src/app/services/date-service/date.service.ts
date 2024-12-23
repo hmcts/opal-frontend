@@ -198,4 +198,35 @@ export class DateService {
   public getFromFormatToFormat(date: string, fromFormat: string, toFormat: string): string {
     return this.getFromFormat(date, fromFormat).toFormat(toFormat);
   }
+
+  /**
+   * Returns a human-readable string indicating how many days ago or in the future the given date is.
+   * @param value - An ISO-formatted date string to compare with the current date.
+   * @returns A string such as 'Today', '1 day ago', '2 days ago', 'Tomorrow', etc.
+   */
+  public getDaysAgoString(value: string): string {
+    const inputDate = this.getFromIso(value).startOf('day');
+
+    if (!inputDate.isValid) {
+      return 'Invalid date';
+    }
+
+    const now = this.getDateNow().startOf('day');
+    const diffInDays = Math.round(now.diff(inputDate, 'days').days);
+
+    switch (diffInDays) {
+      case 0:
+        return 'Today';
+      case 1:
+        return '1 day ago';
+      case -1:
+        return 'Tomorrow';
+      default:
+        if (diffInDays > 1) {
+          return `${diffInDays} days ago`;
+        } else {
+          return `In ${Math.abs(diffInDays)} days`;
+        }
+    }
+  }
 }

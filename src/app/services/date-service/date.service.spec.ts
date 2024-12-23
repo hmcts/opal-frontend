@@ -390,4 +390,72 @@ describe('DateServiceService', () => {
     const result = service.getFromFormatToFormat(date, fromFormat, toFormat);
     expect(result).toEqual('01/01/2022');
   });
+
+  it('should return "Today" for the current date', () => {
+    const todayIso = DateTime.now().toISODate();
+    const result = service.getDaysAgoString(todayIso);
+    expect(result).toBe('Today');
+  });
+
+  it('should return "1 day ago" for yesterday\'s date', () => {
+    const yesterdayIso = DateTime.now().minus({ days: 1 }).toISODate();
+    const result = service.getDaysAgoString(yesterdayIso);
+    expect(result).toBe('1 day ago');
+  });
+
+  it('should return "Tomorrow" for tomorrow\'s date', () => {
+    const tomorrowIso = DateTime.now().plus({ days: 1 }).toISODate();
+    const result = service.getDaysAgoString(tomorrowIso);
+    expect(result).toBe('Tomorrow');
+  });
+
+  it('should return "2 days ago" for two days ago', () => {
+    const twoDaysAgoIso = DateTime.now().minus({ days: 2 }).toISODate();
+    const result = service.getDaysAgoString(twoDaysAgoIso);
+    expect(result).toBe('2 days ago');
+  });
+
+  it('should return "In 2 days" for two days in the future', () => {
+    const inTwoDaysIso = DateTime.now().plus({ days: 2 }).toISODate();
+    const result = service.getDaysAgoString(inTwoDaysIso);
+    expect(result).toBe('In 2 days');
+  });
+
+  it('should handle invalid date formats gracefully', () => {
+    const invalidDate = 'not-a-date';
+    const result = service.getDaysAgoString(invalidDate);
+    expect(result).toBe('Invalid date');
+  });
+
+  it('should return correct string for dates far in the past', () => {
+    const pastDateIso = DateTime.now().minus({ days: 365 }).toISODate();
+    const result = service.getDaysAgoString(pastDateIso);
+    expect(result).toBe('365 days ago');
+  });
+
+  it('should return correct string for dates far in the future', () => {
+    const futureDateIso = DateTime.now().plus({ days: 365 }).toISODate();
+    const result = service.getDaysAgoString(futureDateIso);
+    expect(result).toBe('In 365 days');
+  });
+
+  it('should handle dates around daylight saving time changes', () => {
+    const dstDateIso = DateTime.fromISO('2023-03-14').toString();
+    const todayIso = DateTime.fromISO('2023-03-15').toString();
+    spyOn(service, 'getDateNow').and.returnValue(DateTime.fromISO(todayIso));
+
+    const result = service.getDaysAgoString(dstDateIso);
+    expect(result).toBe('1 day ago');
+  });
+
+  it('should return "Invalid date" for empty string input', () => {
+    const result = service.getDaysAgoString('');
+    expect(result).toBe('Invalid date');
+  });
+
+  it('should return "Invalid date" for null input', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = service.getDaysAgoString(null as any);
+    expect(result).toBe('Invalid date');
+  });
 });
