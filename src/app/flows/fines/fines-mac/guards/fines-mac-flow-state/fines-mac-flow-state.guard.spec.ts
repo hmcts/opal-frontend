@@ -12,22 +12,22 @@ import { FINES_MAC_ACCOUNT_DETAILS_STATE } from '../../fines-mac-account-details
 import { getGuardWithDummyUrl } from '@guards/helpers/get-guard-with-dummy-url';
 
 describe('finesMacFlowStateGuard', () => {
-  let mockRouter: jasmine.SpyObj<Router>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
+  let mockRouter: jasmine.SpyObj<Router> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
 
   const urlPath = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`;
   const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ROUTING_PATHS.children.mac.root}/${FINES_MAC_ROUTING_PATHS.children.createAccount}`;
 
   beforeEach(() => {
     mockRouter = jasmine.createSpyObj(finesMacFlowStateGuard, ['navigate', 'createUrlTree', 'parseUrl']);
-    mockRouter.parseUrl.and.callFake((url: string) => {
+    mockRouter!.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
       const urlSegment = new UrlSegment(url, {});
       urlTree.root = new UrlSegmentGroup([urlSegment], {});
       return urlTree;
     });
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE);
 
     TestBed.configureTestingModule({
       providers: [
@@ -38,7 +38,13 @@ describe('finesMacFlowStateGuard', () => {
         },
       ],
     });
-    mockRouter.createUrlTree.and.returnValue(new UrlTree());
+    mockRouter!.createUrlTree.and.returnValue(new UrlTree());
+  });
+
+  afterAll(() => {
+    mockFinesService = null;
+    mockRouter = null;
+    TestBed.resetTestingModule();
   });
 
   beforeAll(() => {
@@ -46,6 +52,11 @@ describe('finesMacFlowStateGuard', () => {
   });
 
   it('should return true if AccountType and DefendantType are populated', fakeAsync(async () => {
+    if (!mockFinesService || !mockRouter) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK;
 
     const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
@@ -55,6 +66,11 @@ describe('finesMacFlowStateGuard', () => {
   }));
 
   it('should navigate to create account page if AccountType and DefendantType are not populated', fakeAsync(async () => {
+    if (!mockFinesService || !mockRouter) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.accountDetails.formData = FINES_MAC_ACCOUNT_DETAILS_STATE;
     const result = await runFinesMacEmptyFlowGuardWithContext(getGuardWithDummyUrl(finesMacFlowStateGuard, urlPath));
 
