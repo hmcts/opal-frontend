@@ -9,9 +9,9 @@ import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../mocks
 import { IFinesMacCourtDetailsState } from '../../../../fines-mac-court-details/interfaces/fines-mac-court-details-state.interface';
 
 describe('finesMacPayloadBuildAccountOffences', () => {
-  let offencesMockState: IFinesMacOffenceDetailsForm[];
-  let offencesMockStateMinorCreditor: IFinesMacOffenceDetailsForm[];
-  let courtDetailsState: IFinesMacCourtDetailsState;
+  let offencesMockState: IFinesMacOffenceDetailsForm[] | null;
+  let offencesMockStateMinorCreditor: IFinesMacOffenceDetailsForm[] | null;
+  let courtDetailsState: IFinesMacCourtDetailsState | null;
 
   beforeEach(() => {
     offencesMockState = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE]);
@@ -19,18 +19,39 @@ describe('finesMacPayloadBuildAccountOffences', () => {
     offencesMockStateMinorCreditor = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
   });
 
+  afterAll(() => {
+    offencesMockState = null;
+    courtDetailsState = null;
+    offencesMockStateMinorCreditor = null;
+  });
+
   it('should build payload with impositions with a major creditor', () => {
+    if (!offencesMockState || !courtDetailsState || !offencesMockStateMinorCreditor) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const results = finesMacPayloadBuildAccountOffences(offencesMockState, courtDetailsState);
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR);
   });
 
   it('should build payload with a minor creditor', () => {
+    if (!offencesMockState || !courtDetailsState || !offencesMockStateMinorCreditor) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const results = finesMacPayloadBuildAccountOffences(offencesMockStateMinorCreditor, courtDetailsState);
 
     expect(results).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
   });
 
   it('should build payload with a null response object', () => {
+    if (!offencesMockState || !offencesMockStateMinorCreditor) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     offencesMockState = [
       {
         ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
@@ -63,6 +84,11 @@ describe('finesMacPayloadBuildAccountOffences', () => {
   });
 
   it('should build payload with null values', () => {
+    if (!offencesMockState || !offencesMockStateMinorCreditor) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     offencesMockState = [
       {
         ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,

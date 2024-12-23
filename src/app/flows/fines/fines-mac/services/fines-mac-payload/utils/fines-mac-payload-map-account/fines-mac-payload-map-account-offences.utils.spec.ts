@@ -9,12 +9,21 @@ import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from '../mocks
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from '../mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 
 describe('finesMacPayloadMapAccountOffences', () => {
-  let initialState: IFinesMacState;
+  let initialState: IFinesMacState | null;
   beforeEach(() => {
     initialState = structuredClone(FINES_MAC_STATE);
   });
 
+  afterAll(() => {
+    initialState = null;
+  });
+
   it('should map offences with impositions that have major creditors to the state correctly', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     const result = finesMacPayloadMapAccountOffences(initialState, payload);
 
@@ -26,6 +35,11 @@ describe('finesMacPayloadMapAccountOffences', () => {
   });
 
   it('should map offences with impositions that have minor creditors to the state correctly', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
 
