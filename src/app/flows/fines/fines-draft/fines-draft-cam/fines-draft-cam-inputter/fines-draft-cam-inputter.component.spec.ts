@@ -23,12 +23,14 @@ describe('FinesDraftCamInputterComponent', () => {
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
   let mockGlobalStateService: GlobalStateService;
   const mockFinesDraftAmend = signal<boolean>(false);
+  const mockFinesDraftBannerMessage = signal<string>('');
   const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>(
     'FinesService',
-    ['finesMacState', 'finesDraftState', 'finesDraftFragment', 'finesDraftAmend'],
+    ['finesMacState', 'finesDraftState', 'finesDraftFragment', 'finesDraftAmend', 'finesDraftBannerMessage'],
     {
       finesDraftFragment: jasmine.createSpyObj('finesDraftFragment', ['set']),
       finesDraftAmend: mockFinesDraftAmend,
+      finesDraftBannerMessage: mockFinesDraftBannerMessage,
     },
   );
 
