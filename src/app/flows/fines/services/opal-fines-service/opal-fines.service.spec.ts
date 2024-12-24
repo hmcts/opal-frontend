@@ -42,6 +42,7 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-majo
 import { OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK } from './mocks/opal-fines-draft-account-params.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/opal-fines-draft-accounts.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -499,5 +500,20 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('GET');
 
     req.flush(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+  });
+
+  it('should send a PUT request to update the draft account payload', () => {
+    const body: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+    const apiUrl = `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`;
+
+    service.putDraftAddAccountPayload(body).subscribe((response) => {
+      expect(response).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(body);
+
+    req.flush(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
   });
 });

@@ -21,11 +21,18 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
   standalone: true,
-  imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
+  imports: [
+    CommonModule,
+    MojSubNavigationComponent,
+    MojSubNavigationItemComponent,
+    FinesDraftTableWrapperComponent,
+    MojBannerComponent,
+  ],
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -34,7 +41,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly globalStateService = inject(GlobalStateService);
   private readonly dateService = inject(DateService);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
-  private readonly finesService = inject(FinesService);
+  protected readonly finesService = inject(FinesService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly businessUnitIds = this.globalStateService
