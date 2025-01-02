@@ -39,7 +39,7 @@ const mapAccountOffencesMinorCreditorState = (
   minorCreditor: IFinesMacPayloadAccountOffencesMinorCreditor,
   index: number,
 ): IFinesMacOffenceDetailsMinorCreditorState => {
-  const creditorType = minorCreditor ? getCreditorType(minorCreditor.company_flag) : null;
+  const creditorType = getCreditorType(minorCreditor.company_flag);
 
   return {
     fm_offence_details_imposition_position: index,
