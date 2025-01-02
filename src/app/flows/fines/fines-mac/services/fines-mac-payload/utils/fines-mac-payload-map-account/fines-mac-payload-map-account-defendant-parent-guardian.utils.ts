@@ -65,7 +65,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
     employer_post_code,
     employer_telephone_number,
     employer_email_address,
-  } = payload || {};
+  } = payload;
 
   mappedFinesMacState.employerDetails.formData = {
     ...mappedFinesMacState.employerDetails.formData,
