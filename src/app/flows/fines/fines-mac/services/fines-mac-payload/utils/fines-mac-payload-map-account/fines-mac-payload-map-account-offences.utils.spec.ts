@@ -119,7 +119,7 @@ describe('finesMacPayloadMapAccountOffences', () => {
     expect(result.offenceDetails[0].childFormData).toEqual([]);
   });
 
-  it('should return an empty array for impositions and child form data if impositions is null', () => {
+  it('should return an empty array for impositions and child form data if impositions is an empty array', () => {
     if (!initialState) {
       fail('Initial state is not properly initialised');
       return;
