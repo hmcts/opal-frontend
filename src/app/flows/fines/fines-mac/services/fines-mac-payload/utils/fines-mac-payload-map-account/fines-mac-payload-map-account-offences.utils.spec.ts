@@ -130,7 +130,7 @@ describe('finesMacPayloadMapAccountOffences', () => {
     payload.account.offences[0].impositions = [];
 
     const result = finesMacPayloadMapAccountOffences(initialState, payload);
-    console.log(result);
+
     expect(result.offenceDetails[0].formData.fm_offence_details_impositions).toEqual([]);
     expect(result.offenceDetails[0].childFormData).toEqual([]);
   });
