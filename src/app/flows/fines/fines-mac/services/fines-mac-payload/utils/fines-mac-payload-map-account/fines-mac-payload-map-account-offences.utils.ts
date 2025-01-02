@@ -242,7 +242,7 @@ const mapAccountOffencesPayload = (
   mappedFinesMacState: IFinesMacState,
   offences: IFinesMacPayloadAccountOffences[] | null,
 ): IFinesMacState => {
-  if (!offences) {
+  if (!offences?.length) {
     return mappedFinesMacState;
   }
 

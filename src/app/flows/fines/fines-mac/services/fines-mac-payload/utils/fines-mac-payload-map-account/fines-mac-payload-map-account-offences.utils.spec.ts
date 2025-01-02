@@ -88,4 +88,18 @@ describe('finesMacPayloadMapAccountOffences', () => {
       result.offenceDetails[0].formData.fm_offence_details_impositions[0].fm_offence_details_balance_remaining,
     ).toEqual(0);
   });
+
+  it('should return an empty array if no offences', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = null;
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload);
+
+    expect(result.offenceDetails).toEqual([]);
+  });
 });
