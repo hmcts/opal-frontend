@@ -251,12 +251,11 @@ const mapAccountOffencesPayload = (
     const offenceDetailsFormState: IFinesMacOffenceDetailsForm = buildDefaultOffenceDetailsFormState();
 
     // Map impositions and minor creditor state if available
-    const mappedOffenceDetailsImpositionsState = offence.impositions?.length
-      ? mapAccountOffencesImpositions(offence.impositions)
-      : [];
-    const mappedOffenceDetailsMinorCreditorForm = offence.impositions?.length
-      ? mapAccountOffenceDetailsMinorCreditorForm(mapAccountOffencesMinorCreditors(offence.impositions))
-      : [];
+    const mappedOffenceDetailsImpositionsState = mapAccountOffencesImpositions(offence.impositions);
+
+    const mappedOffenceDetailsMinorCreditorForm = mapAccountOffenceDetailsMinorCreditorForm(
+      mapAccountOffencesMinorCreditors(offence.impositions),
+    );
 
     // Map the offence details state
     offenceDetailsFormState.formData = {

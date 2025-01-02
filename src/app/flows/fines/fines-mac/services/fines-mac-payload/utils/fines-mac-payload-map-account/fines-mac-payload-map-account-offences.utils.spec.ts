@@ -118,4 +118,20 @@ describe('finesMacPayloadMapAccountOffences', () => {
     expect(result.offenceDetails[0].formData.fm_offence_details_impositions).toEqual([]);
     expect(result.offenceDetails[0].childFormData).toEqual([]);
   });
+
+  it('should return an empty array for impositions and child form data if impositions is null', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    payload.account.offences[0].impositions = [];
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload);
+    console.log(result);
+    expect(result.offenceDetails[0].formData.fm_offence_details_impositions).toEqual([]);
+    expect(result.offenceDetails[0].childFormData).toEqual([]);
+  });
 });
