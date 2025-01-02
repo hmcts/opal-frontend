@@ -119,7 +119,7 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.length).toEqual(1);
   });
 
-  it('should map parent/guardian details if present in payload', () => {
+  it('should map parent/guardian details if present in payload, if aliases has no len return empty array', () => {
     if (!initialState) {
       fail('Required mock states are not properly initialised');
       return;
