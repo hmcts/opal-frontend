@@ -37,6 +37,10 @@ const mapAccountDefendantCompanyDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
+  if (!payload) {
+    return mappedFinesMacState;
+  }
+
   // Map aliases
   const aliases = payload.aliases
     ? mapAccountDefendantCompanyDebtorDetailsAliases(payload.aliases)
