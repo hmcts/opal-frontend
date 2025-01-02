@@ -47,8 +47,8 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
   // Update parent guardian details
   mappedFinesMacState.parentGuardianDetails.formData = {
     ...mappedFinesMacState.parentGuardianDetails.formData,
-    fm_parent_guardian_details_vehicle_make: payload?.vehicle_make,
-    fm_parent_guardian_details_vehicle_registration_mark: payload?.vehicle_registration_mark,
+    fm_parent_guardian_details_vehicle_make: payload?.vehicle_make ?? null,
+    fm_parent_guardian_details_vehicle_registration_mark: payload?.vehicle_registration_mark ?? null,
     fm_parent_guardian_details_add_alias: aliases.length > 0,
     fm_parent_guardian_details_aliases: aliases,
   };
@@ -69,16 +69,16 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
 
   mappedFinesMacState.employerDetails.formData = {
     ...mappedFinesMacState.employerDetails.formData,
-    fm_employer_details_employer_reference: employee_reference,
-    fm_employer_details_employer_company_name: employer_company_name,
-    fm_employer_details_employer_address_line_1: employer_address_line_1,
-    fm_employer_details_employer_address_line_2: employer_address_line_2,
-    fm_employer_details_employer_address_line_3: employer_address_line_3,
-    fm_employer_details_employer_address_line_4: employer_address_line_4,
-    fm_employer_details_employer_address_line_5: employer_address_line_5,
-    fm_employer_details_employer_post_code: employer_post_code,
-    fm_employer_details_employer_telephone_number: employer_telephone_number,
-    fm_employer_details_employer_email_address: employer_email_address,
+    fm_employer_details_employer_reference: employee_reference ?? null,
+    fm_employer_details_employer_company_name: employer_company_name ?? null,
+    fm_employer_details_employer_address_line_1: employer_address_line_1 ?? null,
+    fm_employer_details_employer_address_line_2: employer_address_line_2 ?? null,
+    fm_employer_details_employer_address_line_3: employer_address_line_3 ?? null,
+    fm_employer_details_employer_address_line_4: employer_address_line_4 ?? null,
+    fm_employer_details_employer_address_line_5: employer_address_line_5 ?? null,
+    fm_employer_details_employer_post_code: employer_post_code ?? null,
+    fm_employer_details_employer_telephone_number: employer_telephone_number ?? null,
+    fm_employer_details_employer_email_address: employer_email_address ?? null,
   };
 
   // Update language preferences
@@ -86,8 +86,8 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
 
   mappedFinesMacState.languagePreferences.formData = {
     ...mappedFinesMacState.languagePreferences.formData,
-    fm_language_preferences_document_language: document_language,
-    fm_language_preferences_hearing_language: hearing_language,
+    fm_language_preferences_document_language: document_language ?? null,
+    fm_language_preferences_hearing_language: hearing_language ?? null,
   };
 
   return mappedFinesMacState;
