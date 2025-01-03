@@ -74,6 +74,7 @@ export default defineConfig({
   viewportWidth: 2560,
   viewportHeight: 2560,
   reporter: 'junit',
+
   e2e: {
     baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
     specPattern: '**/*.feature',
@@ -83,11 +84,21 @@ export default defineConfig({
       openMode: 0,
     },
   },
+
   experimentalModifyObstructiveThirdPartyCode: true,
   chromeWebSecurity: false,
+
   env: {
     CYPRESS_TEST_EMAIL: process.env['OPAL_TEST_USER_EMAIL'],
     CYPRESS_TEST_PASSWORD: process.env['OPAL_TEST_USER_PASSWORD'],
     TEST_MODE: process.env['TEST_MODE'] || 'OPAL',
+  },
+
+  component: {
+    devServer: {
+      framework: 'angular',
+      bundler: 'webpack',
+    },
+    specPattern: '**/*.cy.ts',
   },
 });
