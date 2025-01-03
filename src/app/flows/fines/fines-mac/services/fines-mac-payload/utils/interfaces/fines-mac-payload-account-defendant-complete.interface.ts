@@ -6,7 +6,7 @@ export interface IFinesMacPayloadAccountDefendantComplete {
   title: string | null;
   surname: string | null;
   forenames: string | null;
-  organisation_name: string | null;
+  company_name: string | null;
   dob: string | null;
   address_line_1: string | null;
   address_line_2: string | null;

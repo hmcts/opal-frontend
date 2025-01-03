@@ -65,7 +65,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    */
   private setupCompanyDetailsForm(): void {
     this.form = new FormGroup({
-      fm_company_details_organisation_name: new FormControl(null, [
+      fm_company_details_company_name: new FormControl(null, [
         Validators.required,
         Validators.maxLength(50),
         alphabeticalTextValidator(),

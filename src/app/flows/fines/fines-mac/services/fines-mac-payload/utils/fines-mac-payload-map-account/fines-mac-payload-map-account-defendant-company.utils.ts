@@ -5,8 +5,8 @@ import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../in
 import { IFinesMacPayloadAccountDefendantDebtorDetailComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-complete.interface';
 
 /**
- * Maps an array of `IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete` objects to an array of `IFinesMacCompanyDetailsAliasState` objects.
- * Each alias in the input array is transformed into an object with a key in the format `fm_company_details_alias_organisation_name_<index>`.
+ * Maps an array of `IFinesMacPayloadBuildAccountDefendantDebtorDetailAliasComplete` objects to an array of `IFinesMacCompanyDetailsAliasState` objects.
+ * Each alias in the input array is transformed into an object with a key in the format `fm_company_details_alias_company_name_<index>`.
  * If the input array is null, an empty array is returned.
  *
  * @param payloadAccountDefendantCompanyDebtorDetailsAliases - The array of `IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete` objects or null.
@@ -22,7 +22,7 @@ const mapAccountDefendantCompanyDebtorDetailsAliases = (
   }
 
   return payloadAccountDefendantCompanyDebtorDetailsAliases.map((alias, index) => ({
-    [`fm_company_details_alias_organisation_name_${index}`]: alias.alias_company_name,
+    [`fm_company_details_alias_company_name_${index}`]: alias.alias_company_name,
   }));
 };
 
@@ -70,7 +70,7 @@ export const finesMacPayloadMapAccountDefendantCompanyPayload = (
   payload: IFinesMacPayloadAccountDefendantComplete,
 ): IFinesMacState => {
   const {
-    organisation_name,
+    company_name,
     address_line_1,
     address_line_2,
     address_line_3,
@@ -86,7 +86,7 @@ export const finesMacPayloadMapAccountDefendantCompanyPayload = (
   // Update company details
   mappedFinesMacState.companyDetails.formData = {
     ...mappedFinesMacState.companyDetails.formData,
-    fm_company_details_organisation_name: organisation_name,
+    fm_company_details_company_name: company_name,
     fm_company_details_address_line_1: address_line_1,
     fm_company_details_address_line_2: address_line_2,
     fm_company_details_address_line_3: address_line_3,
