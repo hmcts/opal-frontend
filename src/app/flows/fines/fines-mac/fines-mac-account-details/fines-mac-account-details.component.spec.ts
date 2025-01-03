@@ -17,7 +17,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE };
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
     mockFinesService.checkMandatorySections.and.returnValue(false);
 
     await TestBed.configureTestingModule({
@@ -118,6 +118,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
     const documentLanguage = 'german';
     const hearingLanguage = 'french';
+
     mockFinesService.finesMacState.languagePreferences.formData = {
       ...mockFinesService.finesMacState.languagePreferences.formData,
       fm_language_preferences_document_language: documentLanguage,
@@ -189,7 +190,10 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
-    mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    mockFinesService.finesMacState.personalDetails = {
+      ...FINES_MAC_STATE.personalDetails,
+      status: FINES_MAC_STATUS.NOT_PROVIDED,
+    };
     component.defendantType = 'parentOrGuardianToPay';
     component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
     const result = component['canAccessPaymentTerms']();
@@ -197,7 +201,10 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
-    mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    mockFinesService.finesMacState.personalDetails = {
+      ...FINES_MAC_STATE.personalDetails,
+      status: FINES_MAC_STATUS.NOT_PROVIDED,
+    };
     component.defendantType = 'test';
     component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
     const result = component['canAccessPaymentTerms']();

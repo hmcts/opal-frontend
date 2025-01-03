@@ -35,9 +35,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       'toDateStringFormat',
     ]);
 
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockFinesService.getEarliestDateOfSentence.and.returnValue(new Date('2024-09-01'));
-    formSubmit = FINES_MAC_PAYMENT_TERMS_FORM_MOCK;
+    formSubmit = { ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsFormComponent],
@@ -134,7 +134,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   });
 
   it('should call initialPaymentTermsSetup method with offence details data', () => {
-    mockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_collection_order_date = '01/09/2024';
+    mockFinesService.finesMacState.paymentTerms.formData = {
+      ...mockFinesService.finesMacState.paymentTerms.formData,
+      fm_payment_terms_collection_order_date: '01/09/2024',
+    };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPermissions');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -268,7 +271,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should check defendant age and set accessDefaultDates to true when age is 18 or above', () => {
     component.defendantType = 'adultOrYouthOnly';
     const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_dob = dob;
+    mockFinesService.finesMacState.personalDetails.formData = {
+      ...mockFinesService.finesMacState.personalDetails.formData,
+      fm_personal_details_dob: dob,
+    };
     mockDateService.calculateAge.and.returnValue(30);
 
     component['determineAccess']();
@@ -280,7 +286,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should check defendant age and set accessDefaultDates to false when age is below 18', () => {
     const dob = DateTime.now().minus({ years: 10 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_dob = dob;
+    mockFinesService.finesMacState.personalDetails.formData = {
+      ...mockFinesService.finesMacState.personalDetails.formData,
+      fm_personal_details_dob: dob,
+    };
     mockDateService.calculateAge.and.returnValue(10);
     component.defendantType = 'adultOrYouthOnly';
 

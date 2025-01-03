@@ -4,7 +4,7 @@ import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/mocks/fines-mac-payload-account-defendant-individual.mock';
 
 export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
-  business_unit_id: 0,
+  business_unit_id: 61,
   submitted_by: null,
   submitted_by_name: 'Timmy Test',
   account: {
@@ -19,7 +19,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
     collection_order_date: '2024-10-22',
     suspended_committal_date: '2024-10-12',
     payment_card_request: true,
-    account_sentence_date: null,
+    account_sentence_date: '2024-09-01',
     defendant: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK,
@@ -45,17 +45,10 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
         offence_id: 'OFF1234',
         impositions: [
           {
-            result_id: 'FCC',
+            result_id: 'FCOST',
             amount_imposed: 900,
             amount_paid: 500,
             major_creditor_id: 3999,
-            minor_creditor: null,
-          },
-          {
-            result_id: 'FO',
-            amount_imposed: 0,
-            amount_paid: 0,
-            major_creditor_id: null,
             minor_creditor: null,
           },
         ],

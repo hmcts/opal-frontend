@@ -1,0 +1,54 @@
+<app-govuk-summary-card-list summaryCardListId="account-details">
+  <ng-container content>
+    <app-govuk-summary-list summaryListId="accountDetails">
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="accountDetails"
+        summaryListRowId="businessUnit"
+      >
+        <ng-container name>Business unit</ng-container>
+        <ng-container value>{{ businessUnit.business_unit_name }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="accountDetails"
+        summaryListRowId="accountType"
+      >
+        <ng-container name>Account type</ng-container>
+        <ng-container value>{{ accountType }}</ng-container>
+      </div>
+      <div
+        app-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="accountDetails"
+        summaryListRowId="defendantType"
+      >
+        <ng-container name>Defendant type</ng-container>
+        <ng-container value>{{ defendantType }}</ng-container>
+      </div>
+      @if (businessUnit.welsh_language) {
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="accountDetails"
+          summaryListRowId="documentLanguage"
+        >
+          <ng-container name>Document language</ng-container>
+          <ng-container value>{{ documentLanguage }}</ng-container>
+        </div>
+
+        <div
+          app-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="accountDetails"
+          summaryListRowId="courtHearingLanguage"
+        >
+          <ng-container name>Court hearing language</ng-container>
+          <ng-container value>{{ courtHearingLanguage }}</ng-container>
+        </div>
+      }
+    </app-govuk-summary-list>
+  </ng-container>
+</app-govuk-summary-card-list>

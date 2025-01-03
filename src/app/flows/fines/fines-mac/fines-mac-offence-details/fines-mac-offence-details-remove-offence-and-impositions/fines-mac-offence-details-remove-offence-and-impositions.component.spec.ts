@@ -48,8 +48,8 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     mockFinesMacOffenceDetailsService.offenceIndex = 0;
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = FINES_MAC_STATE_MOCK;
-    mockFinesService.finesMacState.offenceDetails = [FINES_MAC_OFFENCE_DETAILS_FORM_MOCK];
+    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent],
@@ -97,7 +97,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   it('should remove first item in array leaving one item remaining', () => {
     mockFinesService.finesMacState.offenceDetails = [
-      FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+      { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK },
       {
         ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
         formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_id: 1 },

@@ -374,23 +374,23 @@
   </div>
   <div class="govuk-form-group">
     <app-govuk-radio
-      fieldSetId="fm_payment_instalment_period"
-      fieldSetId="fm_payment_instalment_period"
+      fieldSetId="fm_payment_terms_instalment_period"
+      fieldSetId="fm_payment_terms_instalment_period"
       legendText="Frequency"
       legendClasses="govuk-fieldset__legend--s"
-      [errors]="formControlErrorMessages['fm_payment_instalment_period']"
-      [errors]="formControlErrorMessages['fm_payment_instalment_period']"
+      [errors]="formControlErrorMessages['fm_payment_terms_instalment_period']"
+      [errors]="formControlErrorMessages['fm_payment_terms_instalment_period']"
     >
       @for (frequency of frequencyOptions; track frequency.key) {
         <div
           app-govuk-radios-item
           [labelText]="frequency.value"
           [inputId]="frequency.key"
-          inputName="fm_payment_instalment_period"
-          inputName="fm_payment_instalment_period"
+          inputName="fm_payment_terms_instalment_period"
+          inputName="fm_payment_terms_instalment_period"
           [inputValue]="frequency.key"
-          [control]="form.controls['fm_payment_instalment_period']"
-          [control]="form.controls['fm_payment_instalment_period']"
+          [control]="form.controls['fm_payment_terms_instalment_period']"
+          [control]="form.controls['fm_payment_terms_instalment_period']"
         ></div>
       }
     </app-govuk-radio>

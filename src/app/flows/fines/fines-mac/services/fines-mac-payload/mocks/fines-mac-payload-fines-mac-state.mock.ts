@@ -16,42 +16,42 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   employerDetails: {
     formData: {
       ...FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   contactDetails: {
     formData: {
       ...FINES_MAC_PAYLOAD_CONTACT_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   parentGuardianDetails: {
     formData: {
       ...FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   personalDetails: {
     formData: {
       ...FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   companyDetails: {
     formData: {
       ...FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK,
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   courtDetails: {
     formData: {
@@ -66,7 +66,7 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
       fm_account_comments_notes_notes: 'Client prefers email communication over phone calls',
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   offenceDetails: [
     {
@@ -78,7 +78,7 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
       ...FINES_MAC_PAYLOAD_PAYMENT_TERMS_IN_FULL_MOCK,
     },
     nestedFlow: false,
-    status: 'Not provided',
+    status: 'Provided',
   },
   languagePreferences: {
     formData: {
@@ -98,4 +98,5 @@ export const FINES_MAC_PAYLOAD_FINES_MAC_STATE: IFinesMacState = {
   },
   unsavedChanges: false,
   stateChanges: false,
+  deleteFromCheckAccount: false,
 };

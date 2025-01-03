@@ -7,17 +7,10 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR: IFinesMacPa
     offence_id: 'OFF1234',
     impositions: [
       {
-        result_id: 'FCC',
+        result_id: 'FCOST',
         amount_imposed: 900,
         amount_paid: 500,
         major_creditor_id: 3999,
-        minor_creditor: null,
-      },
-      {
-        result_id: 'FO',
-        amount_imposed: 0,
-        amount_paid: 0,
-        major_creditor_id: null,
         minor_creditor: null,
       },
     ],
