@@ -126,7 +126,7 @@
     "mocha-junit-reporter": "^2.2.1",
     "typescript": "~5.5.0"
   },
-  "packageManager": "yarn@4.5.3",
+  "packageManager": "yarn@4.6.0",
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true
   },
