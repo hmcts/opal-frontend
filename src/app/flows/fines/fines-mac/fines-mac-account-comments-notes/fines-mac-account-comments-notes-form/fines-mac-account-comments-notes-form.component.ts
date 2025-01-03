@@ -40,6 +40,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   protected readonly finesService = inject(FinesService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
+  public mandatorySectionsCompleted!: boolean;
 
   /**
    * Sets up the account comments and notes form with the necessary form controls.
@@ -52,6 +53,17 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   }
 
   /**
+   * Checks if all mandatory sections are completed by calling the finesService.
+   * Updates the `mandatorySectionsCompleted` property with the result.
+   *
+   * @private
+   * @returns {void}
+   */
+  private checkMandatorySections(): void {
+    this.mandatorySectionsCompleted = this.finesService.checkMandatorySections();
+  }
+
+  /**
    * Performs the initial setup for the fines-mac-contact-details-form component.
    * This method sets up the account comments notes form, and populates the form with data.
    */
@@ -59,6 +71,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
     const { formData } = this.finesService.finesMacState.accountCommentsNotes;
     this.setupAccountCommentsNotesForm();
     this.rePopulateForm(formData);
+    this.checkMandatorySections();
   }
 
   public override ngOnInit(): void {
