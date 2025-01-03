@@ -15,8 +15,8 @@ class TestAbstractFormArrayParentBaseComponent extends AbstractFormArrayParentBa
 }
 
 describe('AbstractFormParentBaseComponent', () => {
-  let component: TestAbstractFormArrayParentBaseComponent;
-  let fixture: ComponentFixture<TestAbstractFormArrayParentBaseComponent>;
+  let component: TestAbstractFormArrayParentBaseComponent | null;
+  let fixture: ComponentFixture<TestAbstractFormArrayParentBaseComponent> | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -35,7 +35,17 @@ describe('AbstractFormParentBaseComponent', () => {
     component = fixture.componentInstance;
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should handle non-indexed keys correctly', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
     const input = [
       { name_0: 'John', age_0: 30, country: 'USA' },
       { name_1: 'Jane', age_1: 25 },
