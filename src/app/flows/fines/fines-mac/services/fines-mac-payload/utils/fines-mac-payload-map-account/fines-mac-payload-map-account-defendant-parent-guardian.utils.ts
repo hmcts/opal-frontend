@@ -40,9 +40,7 @@ const mapAccountDefendantParentGuardianDetailsPayloadDebtorDetailsToFinesMacStat
   payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
   // Map aliases
-  const aliases = payload.aliases
-    ? mapAccountDefendantParentGuardianDebtorDetailsAliases(payload.aliases)
-    : mappedFinesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases;
+  const aliases = mapAccountDefendantParentGuardianDebtorDetailsAliases(payload.aliases);
 
   // Update parent guardian details
   mappedFinesMacState.parentGuardianDetails.formData = {

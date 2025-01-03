@@ -14,24 +14,30 @@ const mapEnforcementActions = (
   mappedFinesMacState: IFinesMacState,
   enforcements: IFinesMacPayloadAccountPaymentTermsEnforcement[] | null,
 ): IFinesMacState => {
-  enforcements?.forEach(({ enforcement_result_responses: responses, result_id: resultId }) => {
+  if (!enforcements?.length) {
+    return mappedFinesMacState;
+  }
+
+  enforcements.forEach(({ enforcement_result_responses: responses, result_id: resultId }) => {
     if (resultId !== 'COLLO') {
       mappedFinesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = resultId;
       mappedFinesMacState.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account = resultId === 'NOENF';
       mappedFinesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action =
-        responses && responses?.length > 0;
-      // Take if it's company, and check if the result id is NOENF
-      responses?.forEach(({ parameter_name, response }) => {
-        const formData = mappedFinesMacState.paymentTerms.formData;
+        responses && responses.length > 0;
 
-        if (parameter_name === 'earliestreleasedate') {
-          formData.fm_payment_terms_earliest_release_date = response;
-        } else if (parameter_name === 'prisonandprisonnumber') {
-          formData.fm_payment_terms_prison_and_prison_number = response;
-        } else if (parameter_name === 'reason') {
-          formData.fm_payment_terms_reason_account_is_on_noenf = response;
-        }
-      });
+      if (responses?.length) {
+        responses.forEach(({ parameter_name, response }) => {
+          const formData = mappedFinesMacState.paymentTerms.formData;
+
+          if (parameter_name === 'earliestreleasedate') {
+            formData.fm_payment_terms_earliest_release_date = response;
+          } else if (parameter_name === 'prisonandprisonnumber') {
+            formData.fm_payment_terms_prison_and_prison_number = response;
+          } else if (parameter_name === 'reason') {
+            formData.fm_payment_terms_reason_account_is_on_noenf = response;
+          }
+        });
+      }
     }
   });
 
