@@ -7,9 +7,9 @@ import { ChangeDetectorRef } from '@angular/core';
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 
 describe('SignInComponent', () => {
-  let component: SignInComponent;
-  let fixture: ComponentFixture<SignInComponent>;
-  let globalStateService: GlobalStateService;
+  let component: SignInComponent | null;
+  let fixture: ComponentFixture<SignInComponent> | null;
+  let globalStateService: GlobalStateService | null;
   const mockDocumentLocation = {
     location: {
       href: '',
@@ -30,11 +30,22 @@ describe('SignInComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should initialise', () => {
+    if (!component || !globalStateService || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.ssoEnabled = true;
 
     expect(component.ssoEnabled).toBeTrue();
@@ -50,12 +61,22 @@ describe('SignInComponent', () => {
   });
 
   it('should handleSsoSignInButtonClick', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const spy = spyOn(component, 'handleSsoSignInButtonClick');
     component.handleSsoSignInButtonClick();
     expect(spy).toHaveBeenCalled();
   });
 
   it('should handleStubSignInFormSubmit', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const spy = spyOn(component, 'handleStubSignInFormSubmit');
     const mockFormData: ISignInStubForm = { email: 'test' };
 
@@ -64,6 +85,11 @@ describe('SignInComponent', () => {
   });
 
   it('should handleSsoSignInButtonClick', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const spy = spyOn(component, 'handleSsoSignInButtonClick').and.callFake(() => {
       mockDocumentLocation.location.href = SsoEndpoints.login;
     });
@@ -73,6 +99,11 @@ describe('SignInComponent', () => {
   });
 
   it('should handleStubSignInFormSubmit', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formData: ISignInStubForm = { email: 'test' };
     const url = `${SsoEndpoints.login}?email=${formData.email}`;
     const spy = spyOn(component, 'handleStubSignInFormSubmit').and.callFake(() => {

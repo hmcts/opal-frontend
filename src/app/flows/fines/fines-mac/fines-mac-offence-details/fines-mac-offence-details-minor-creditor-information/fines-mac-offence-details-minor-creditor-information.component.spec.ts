@@ -5,13 +5,13 @@ import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
 
 describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
-  let component: FinesMacOffenceDetailsMinorCreditorInformationComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorInformationComponent>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let component: FinesMacOffenceDetailsMinorCreditorInformationComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorInformationComponent> | null;
+  let mockUtilsService: jasmine.SpyObj<UtilsService> | null;
 
   beforeEach(async () => {
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['formatSortCode', 'upperCaseFirstLetter']);
-    mockUtilsService.formatSortCode.and.returnValue('12-34-56');
+    mockUtilsService!.formatSortCode.and.returnValue('12-34-56');
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorInformationComponent],
@@ -21,9 +21,16 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsMinorCreditorInformationComponent);
     component = fixture.componentInstance;
 
-    component.minorCreditor = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
+    component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockUtilsService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -31,7 +38,12 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set name to formatted individual name if creditor_type is individual', () => {
-    component.minorCreditor = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 
     // Call the method
     component['setName']();
@@ -41,9 +53,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set name to company name if creditor_type is company', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor with company type
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_creditor_type: 'company',
       fm_offence_details_minor_creditor_forenames: null,
       fm_offence_details_minor_creditor_surname: null,
@@ -58,9 +75,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should handle null or empty forenames and surnames correctly for individual type', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor with individual type but no forenames or surname
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_creditor_type: 'individual',
       fm_offence_details_minor_creditor_forenames: null,
       fm_offence_details_minor_creditor_surname: 'Doe',
@@ -75,9 +97,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set address with all address lines and post code', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor with full address details
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_address_line_1: '123 Main St',
       fm_offence_details_minor_creditor_address_line_2: 'Apt 4B',
       fm_offence_details_minor_creditor_address_line_3: 'District 9',
@@ -92,9 +119,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set address with missing address line 2 and line 3', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor with only address line 1 and post code
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_address_line_1: '123 Main St',
       fm_offence_details_minor_creditor_address_line_2: null,
       fm_offence_details_minor_creditor_address_line_3: null,
@@ -109,9 +141,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set address to "Not Provided" if all address fields are missing', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor with no address details
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_address_line_1: null,
       fm_offence_details_minor_creditor_address_line_2: null,
       fm_offence_details_minor_creditor_address_line_3: null,
@@ -126,9 +163,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set address with only post code provided', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor with only post code
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_address_line_1: null,
       fm_offence_details_minor_creditor_address_line_2: null,
       fm_offence_details_minor_creditor_address_line_3: null,
@@ -143,9 +185,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set payment details when payment details are provided', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor with payment details
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_pay_by_bacs: true,
       fm_offence_details_minor_creditor_bank_account_name: 'John Doe',
       fm_offence_details_minor_creditor_bank_sort_code: '123456',
@@ -167,9 +214,14 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set default "Not Provided" when payment details are not available', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // Set minorCreditor without payment details
     component.minorCreditor = {
-      ...component.minorCreditor,
+      ...structuredClone(component.minorCreditor),
       fm_offence_details_minor_creditor_pay_by_bacs: false,
       fm_offence_details_minor_creditor_bank_account_name: null,
       fm_offence_details_minor_creditor_bank_sort_code: null,
@@ -191,6 +243,11 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should emit actionClicked event with correct action and index', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const action = 'remove';
     spyOn(component.actionClicked, 'emit');
 

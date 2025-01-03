@@ -8,10 +8,10 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
-  let component: FinesMacReviewAccountPaymentTermsComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountPaymentTermsComponent>;
-  let mockGlobalStateService: GlobalStateService;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  let component: FinesMacReviewAccountPaymentTermsComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountPaymentTermsComponent> | null;
+  let mockGlobalStateService: GlobalStateService | null;
+  let mockDateService: jasmine.SpyObj<DateService> | null;
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat']);
@@ -27,11 +27,19 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountPaymentTermsComponent);
     component = fixture.componentInstance;
 
-    component.paymentTermsState = { ...FINES_MAC_PAYMENT_TERMS_STATE_MOCK };
-    component.businessUnit = { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0] };
+    component.paymentTermsState = structuredClone(FINES_MAC_PAYMENT_TERMS_STATE_MOCK);
+    component.businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     component.defendantType = 'adultOrYouthOnly';
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockGlobalStateService = null;
+    mockDateService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -39,6 +47,11 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should get payment terms correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const paymentTerms = component.paymentTermsState.fm_payment_terms_payment_terms!;
 
     component['getPaymentTerms']();
@@ -50,9 +63,14 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should format pay by date correctly', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formattedDate = '01 January 2023';
     component.paymentTermsState = {
-      ...component.paymentTermsState,
+      ...structuredClone(component.paymentTermsState),
       fm_payment_terms_pay_by_date: '01/01/2023',
     };
     mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
@@ -63,9 +81,14 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should format days in default date correctly', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formattedDate = '01 January 2023';
     component.paymentTermsState = {
-      ...component.paymentTermsState,
+      ...structuredClone(component.paymentTermsState),
       fm_payment_terms_suspended_committal_date: '01/01/2023',
     };
     mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
@@ -76,8 +99,13 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should get enforcement action correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.paymentTermsState = {
-      ...component.paymentTermsState,
+      ...structuredClone(component.paymentTermsState),
       fm_payment_terms_enforcement_action: 'PRIS',
     };
 
@@ -88,9 +116,14 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should format earliest release date correctly', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formattedDate = '01 January 2023';
     component.paymentTermsState = {
-      ...component.paymentTermsState,
+      ...structuredClone(component.paymentTermsState),
       fm_payment_terms_earliest_release_date: '01/01/2023',
     };
     mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
@@ -101,8 +134,13 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should get frequency correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.paymentTermsState = {
-      ...component.paymentTermsState,
+      ...structuredClone(component.paymentTermsState),
       fm_payment_terms_instalment_period: 'W',
     };
 
@@ -113,9 +151,14 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should format start date correctly', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formattedDate = '01 January 2023';
     component.paymentTermsState = {
-      ...component.paymentTermsState,
+      ...structuredClone(component.paymentTermsState),
       fm_payment_terms_start_date: '01/01/2023',
     };
     mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
@@ -126,9 +169,14 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should format collection order date correctly', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formattedDate = '01 January 2023';
     component.paymentTermsState = {
-      ...component.paymentTermsState,
+      ...structuredClone(component.paymentTermsState),
       fm_payment_terms_collection_order_date: '01/01/2023',
     };
     mockDateService.getFromFormatToFormat.and.returnValue(formattedDate);
@@ -139,12 +187,22 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   });
 
   it('should emit change payment terms event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component.emitChangePaymentTerms, 'emit');
     component.changePaymentTerms();
     expect(component.emitChangePaymentTerms.emit).toHaveBeenCalled();
   });
 
   it('should call getPaymentTermsData on init', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getPaymentTermsData');
 

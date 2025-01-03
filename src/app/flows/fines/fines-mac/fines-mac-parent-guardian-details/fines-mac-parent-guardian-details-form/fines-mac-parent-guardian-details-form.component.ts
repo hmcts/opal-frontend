@@ -4,14 +4,10 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
-
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
-
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
@@ -23,7 +19,6 @@ import { specialCharactersValidator } from '@validators/special-characters/speci
 import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
-import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors';
@@ -37,7 +32,6 @@ import { DateService } from '@services/date-service/date.service';
     ReactiveFormsModule,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    GovukSelectComponent,
     GovukCancelLinkComponent,
     GovukTextInputComponent,
     GovukCheckboxesComponent,

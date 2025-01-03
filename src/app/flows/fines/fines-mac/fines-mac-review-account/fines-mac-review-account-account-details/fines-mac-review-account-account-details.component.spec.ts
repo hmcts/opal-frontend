@@ -11,8 +11,8 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../fines-mac-language
 import { IFinesMacLanguagePreferencesOptions } from '../../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
 
 describe('FinesMacReviewAccountAccountDetailsComponent', () => {
-  let component: FinesMacReviewAccountAccountDetailsComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountAccountDetailsComponent>;
+  let component: FinesMacReviewAccountAccountDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountAccountDetailsComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -22,11 +22,17 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountAccountDetailsComponent);
     component = fixture.componentInstance;
 
-    component.accountDetails = { ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK };
-    component.businessUnit = { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0] };
-    component.languagePreferences = { ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK };
+    component.accountDetails = structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK);
+    component.businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    component.languagePreferences = structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK);
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -34,6 +40,11 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
   });
 
   it('should set accountType correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['getAccountType']();
 
     expect(component.accountType).toBe(
@@ -44,6 +55,11 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
   });
 
   it('should set defendantType correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['getDefendantType']();
 
     expect(component.defendantType).toBe(
@@ -54,6 +70,11 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
   });
 
   it('should set documentLanguage correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['getDocumentLanguage']();
 
     expect(component.documentLanguage).toBe(
@@ -65,6 +86,11 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
   });
 
   it('should set courtHearingLanguage correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['getHearingLanguage']();
 
     expect(component.courtHearingLanguage).toBe(
@@ -75,6 +101,11 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
   });
 
   it('should call getAccountDetailsData on init', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getAccountDetailsData');
 

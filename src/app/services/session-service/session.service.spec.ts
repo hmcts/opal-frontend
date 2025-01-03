@@ -12,9 +12,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
 describe('SessionService', () => {
-  let service: SessionService;
-  let httpMock: HttpTestingController;
-  let globalStateService: GlobalStateService;
+  let service: SessionService | null;
+  let httpMock: HttpTestingController | null;
+  let globalStateService: GlobalStateService | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,11 +26,23 @@ describe('SessionService', () => {
     globalStateService = TestBed.inject(GlobalStateService);
   });
 
+  afterAll(() => {
+    service = null;
+    httpMock = null;
+    globalStateService = null;
+    TestBed.resetTestingModule();
+  });
+
   beforeEach(() => {
     mockTokenExpiry.expiry = '3600';
   });
 
   afterEach(() => {
+    if (!httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     httpMock.verify();
   });
 
@@ -39,9 +51,19 @@ describe('SessionService', () => {
   });
 
   it('should return the user state', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
 
     service.getUserState().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockUserState);
       expect(globalStateService.userState()).toEqual(mockUserState);
     });
@@ -52,9 +74,19 @@ describe('SessionService', () => {
   });
 
   it('should return cached response ', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
 
     service.getUserState().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockUserState);
       expect(globalStateService.userState()).toEqual(mockUserState);
     });
@@ -65,6 +97,11 @@ describe('SessionService', () => {
 
     // Make a second call
     service.getUserState().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockUserState);
       expect(globalStateService.userState()).toEqual(mockUserState);
     });
@@ -74,9 +111,19 @@ describe('SessionService', () => {
   });
 
   it('should do a new request if the cached response is empty ', () => {
+    if (!service || !httpMock || !globalStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockUserState: ISessionUserState = SESSION_USER_STATE_MOCK;
 
     service.getUserState().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockUserState);
       expect(globalStateService.userState()).toEqual(mockUserState);
     });
@@ -87,6 +134,11 @@ describe('SessionService', () => {
 
     // Make a second call
     service.getUserState().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockUserState);
       expect(globalStateService.userState()).toEqual(mockUserState);
     });
@@ -108,7 +160,17 @@ describe('SessionService', () => {
   });
 
   it('should return the token expiry information', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service.getTokenExpiry().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
     });
@@ -119,7 +181,17 @@ describe('SessionService', () => {
   });
 
   it('should return cached response', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service.getTokenExpiry().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
     });
@@ -128,6 +200,11 @@ describe('SessionService', () => {
     req.flush(mockTokenExpiry);
     // Make a second call
     service.getTokenExpiry().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
     });
@@ -136,7 +213,17 @@ describe('SessionService', () => {
   });
 
   it('should do a new request if the cached response is empty', () => {
+    if (!service || !httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     service.getTokenExpiry().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
     });
@@ -146,6 +233,11 @@ describe('SessionService', () => {
 
     // Make a second call
     service.getTokenExpiry().subscribe((response) => {
+      if (!globalStateService) {
+        fail('Required properties not properly initialised');
+        return;
+      }
+
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
     });

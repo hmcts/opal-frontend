@@ -4,8 +4,8 @@ import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-m
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from '../../fines-mac-account-comments-notes/mocks/fines-mac-account-comments-notes-state.mock';
 
 describe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
-  let component: FinesMacReviewAccountAccountCommentsAndNotesComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountAccountCommentsAndNotesComponent>;
+  let component: FinesMacReviewAccountAccountCommentsAndNotesComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountAccountCommentsAndNotesComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,9 +15,15 @@ describe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountAccountCommentsAndNotesComponent);
     component = fixture.componentInstance;
 
-    component.accountCommentsAndNotes = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    component.accountCommentsAndNotes = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -25,6 +31,11 @@ describe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
   });
 
   it('should emit change account comments and notes event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component.emitChangeAccountCommentsAndNotesDetails, 'emit');
 
     component.changeAccountCommentsAndNotesDetails();

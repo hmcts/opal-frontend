@@ -11,16 +11,16 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants/fines-mac-account-comments-notes-state';
 
 describe('FinesMacAccountCommentsNotesComponent', () => {
-  let component: FinesMacAccountCommentsNotesComponent;
-  let fixture: ComponentFixture<FinesMacAccountCommentsNotesComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let formSubmit: IFinesMacAccountCommentsNotesForm;
+  let component: FinesMacAccountCommentsNotesComponent | null;
+  let fixture: ComponentFixture<FinesMacAccountCommentsNotesComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let formSubmit: IFinesMacAccountCommentsNotesForm | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesComponent],
@@ -43,14 +43,27 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    formSubmit = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should handle form submission and navigate to account details', () => {
+    if (!component || !mockFinesService || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = false;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
@@ -62,9 +75,14 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to next route', () => {
+    if (!component || !mockFinesService || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
@@ -76,10 +94,15 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should handle form submission and navigate to next route - form empty', () => {
+    if (!component || !mockFinesService || !formSubmit) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
 
     const form = formSubmit;
-    form.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE };
+    form.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE);
     form.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(form);
@@ -91,6 +114,11 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   });
 
   it('should test handleUnsavedChanges', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.handleUnsavedChanges(true);
     expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();

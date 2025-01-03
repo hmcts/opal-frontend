@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body.interface';
 import {
   IOpalFinesCourt,
@@ -15,7 +14,6 @@ import {
 import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court.interface';
 import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body.interface';
 import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body.interface';
-
 import { OPAL_FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK } from './mocks/opal-fines-add-defendant-account-note.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
@@ -27,7 +25,6 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-
 import { OPAL_FINES_SEARCH_COURT_BODY_MOCK } from './mocks/opal-fines-search-court-body.mock';
 import { OPAL_FINES_SEARCH_COURT_MOCK } from './mocks/opal-fines-search-court.mock';
 import { OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK } from './mocks/opal-fines-search-defendant-accounts.mock';
-
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
@@ -41,8 +38,8 @@ import {
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-major-creditor-ref-data.mock';
 
 describe('OpalFines', () => {
-  let service: OpalFines;
-  let httpMock: HttpTestingController;
+  let service: OpalFines | null;
+  let httpMock: HttpTestingController | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -53,7 +50,18 @@ describe('OpalFines', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
+  afterAll(() => {
+    service = null;
+    httpMock = null;
+    TestBed.resetTestingModule();
+  });
+
   afterEach(() => {
+    if (!httpMock) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     httpMock.verify();
   });
 
@@ -62,6 +70,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a GET request to business unit ref data API', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const permission = 'ACCOUNT_ENQUIRY';
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
@@ -77,6 +90,11 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same ref data search', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const permission = 'ACCOUNT_ENQUIRY';
     const mockBusinessUnits = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.businessUnitRefData}?permission=${permission}`;
@@ -100,6 +118,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a POST request to court search API', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const searchBody: IOpalFinesSearchCourtBody = OPAL_FINES_SEARCH_COURT_BODY_MOCK;
     const expectedResponse: IOpalFinesSearchCourt[] = OPAL_FINES_SEARCH_COURT_MOCK;
 
@@ -114,6 +137,11 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same court search', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const searchBody: IOpalFinesSearchCourtBody = OPAL_FINES_SEARCH_COURT_BODY_MOCK;
     const expectedResponse: IOpalFinesSearchCourt[] = OPAL_FINES_SEARCH_COURT_MOCK;
 
@@ -136,6 +164,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a GET request to court ref data API', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
@@ -151,6 +184,11 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same ref data search', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const businessUnit = 1;
     const mockCourts: IOpalFinesCourtRefData = OPAL_FINES_COURT_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.courtRefData}?businessUnit=${businessUnit}`;
@@ -174,6 +212,11 @@ describe('OpalFines', () => {
   });
 
   it('should return the court name and code in a pretty format', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const court: IOpalFinesCourt = OPAL_FINES_COURT_REF_DATA_MOCK.refData[0];
 
     const result = service.getCourtPrettyName(court);
@@ -182,6 +225,11 @@ describe('OpalFines', () => {
   });
 
   it('should GET the defendant account', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const params: IOpalFinesGetDefendantAccountParams = {
       businessUnitId: 1,
       accountNumber: '1212',
@@ -199,6 +247,11 @@ describe('OpalFines', () => {
   });
 
   it('should RETURN the defendant account search', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const body: IOpalFinesSearchDefendantAccountBody = {
       court: 'Bath',
       surname: 'Test',
@@ -226,6 +279,11 @@ describe('OpalFines', () => {
   });
 
   it('should POST the defendant account note', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const body: IOpalFinesAddDefendantAccountNoteBody = OPAL_FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK;
 
     const apiUrl = OPAL_FINES_PATHS.defendantAccountAddNote;
@@ -241,6 +299,11 @@ describe('OpalFines', () => {
   });
 
   it('should GET the defendant account notes', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const defendantAccountId = 123;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccountNotes}/${defendantAccountId}`;
 
@@ -255,6 +318,11 @@ describe('OpalFines', () => {
   });
 
   it('should GET the defendant account details', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const defendantAccountId = 123;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccount}/${defendantAccountId}`;
 
@@ -269,6 +337,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a GET request to court ref data API', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
 
@@ -283,6 +356,11 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same ref data search', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockLocalJusticeArea: IOpalFinesLocalJusticeAreaRefData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.localJusticeAreaRefData}`;
 
@@ -305,6 +383,11 @@ describe('OpalFines', () => {
   });
 
   it('should return the local justice area name and code in a pretty format', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const localJusticeArea: IOpalFinesLocalJusticeArea = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData[0];
 
     const result = service.getLocalJusticeAreaPrettyName(localJusticeArea);
@@ -313,6 +396,11 @@ describe('OpalFines', () => {
   });
 
   it('should return the item value for a given configuration item name', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     const expectedValue = 'Item1';
 
@@ -322,6 +410,11 @@ describe('OpalFines', () => {
   });
 
   it('should return null if the configuration item name is not found', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1];
     const itemName = 'Item0';
 
@@ -331,6 +424,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a GET request to results ref data API', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const resultIds = ['1', '2', '3'];
     const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${resultIds[0]}&result_ids=${resultIds[1]}&result_ids=${resultIds[2]}`;
@@ -345,6 +443,11 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same result ids', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const resultIds = ['1', '2', '3'];
     const expectedResponse: IOpalFinesResultsRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.resultsRefData}?result_ids=${resultIds[0]}&result_ids=${resultIds[1]}&result_ids=${resultIds[2]}`;
@@ -365,6 +468,11 @@ describe('OpalFines', () => {
   });
 
   it('should return the result name and code in a pretty format', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const result: IOpalFinesResults = OPAL_FINES_RESULTS_REF_DATA_MOCK.refData[0];
 
     const prettyName = service.getResultPrettyName(result);
@@ -373,6 +481,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a GET request to offences ref data API', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const refData = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData[0];
     const expectedResponse: IOpalFinesOffencesRefData = {
       count: 1,
@@ -390,6 +503,11 @@ describe('OpalFines', () => {
   });
 
   it('should send a GET request to major creditor ref data API', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const businessUnit = 1;
     const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.majorCreditorRefData}?businessUnit=${businessUnit}`;
@@ -405,6 +523,11 @@ describe('OpalFines', () => {
   });
 
   it('should return cached response for the same ref data search', () => {
+    if (!httpMock || !service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const businessUnit = 1;
     const mockMajorCreditor: IOpalFinesMajorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     const expectedUrl = `${OPAL_FINES_PATHS.majorCreditorRefData}?businessUnit=${businessUnit}`;
@@ -428,6 +551,11 @@ describe('OpalFines', () => {
   });
 
   it('should return the major creditor name and code in a pretty format', () => {
+    if (!service) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const majorCreditor: IOpalFinesMajorCreditor = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0];
 
     const result = service.getMajorCreditorPrettyName(majorCreditor);

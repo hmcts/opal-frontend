@@ -21,12 +21,12 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-o
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 
 describe('FinesMacOffenceDetailsReviewComponent', () => {
-  let component: FinesMacOffenceDetailsReviewComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
-  let mockOpalFinesService: Partial<OpalFines>;
-  let mockDateService: jasmine.SpyObj<DateService>;
+  let component: FinesMacOffenceDetailsReviewComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
+  let mockDateService: jasmine.SpyObj<DateService> | null;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -43,10 +43,10 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     };
 
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_FORM];
-    mockFinesService.finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
-      { ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] },
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    mockFinesService!.finesMacState.offenceDetails = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM)];
+    mockFinesService!.finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]),
     ];
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
@@ -55,9 +55,10 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
       'removeIndexFromImpositionKeys',
       'offenceCodeMessage',
     ]);
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+    mockFinesMacOffenceDetailsService!.removeIndexFromImpositionKeys.and.returnValue([
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK),
     ]);
+
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat']);
 
     await TestBed.configureTestingModule({
@@ -81,12 +82,29 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockFinesMacOffenceDetailsService = null;
+    mockOpalFinesService = null;
+    mockDateService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should set offencesImpositions and sort offences by date', () => {
-    mockFinesService.finesMacState.offenceDetails = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM];
+    if (!component || !mockFinesService || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    mockFinesService.finesMacState.offenceDetails = [
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM),
+    ];
 
     component['getOffencesImpositions']();
 
@@ -95,6 +113,11 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should set emptyOffences to true when offencesImpositions is empty', () => {
+    if (!component || !mockFinesService || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState.offenceDetails = [];
     mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([]);
 
@@ -105,6 +128,11 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should sort offences by date in ascending order', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.offencesImpositions = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK];
 
     component['sortOffencesByDate']();
@@ -113,6 +141,11 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should reset addedOffenceCode and offenceDetailsDraft on ngOnDestroy', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };

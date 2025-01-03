@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details.component';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
@@ -7,10 +6,10 @@ import { FINES_MAC_PERSONAL_DETAILS_STATE_MOCK } from '../../fines-mac-personal-
 import { DateTime } from 'luxon';
 
 describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
-  let component: FinesMacReviewAccountPersonalDetailsComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountPersonalDetailsComponent>;
-  let mockDateService: jasmine.SpyObj<DateService>;
-  let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let component: FinesMacReviewAccountPersonalDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountPersonalDetailsComponent> | null;
+  let mockDateService: jasmine.SpyObj<DateService> | null;
+  let mockUtilsService: jasmine.SpyObj<UtilsService> | null;
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
@@ -27,7 +26,7 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountPersonalDetailsComponent);
     component = fixture.componentInstance;
 
-    component.personalDetails = { ...FINES_MAC_PERSONAL_DETAILS_STATE_MOCK };
+    component.personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -37,8 +36,13 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should format aliases correctly', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.personalDetails.fm_personal_details_aliases = [
-      ...component.personalDetails.fm_personal_details_aliases,
+      ...structuredClone(component.personalDetails.fm_personal_details_aliases),
       { fm_personal_details_alias_forenames_1: 'James', fm_personal_details_alias_surname_1: 'Smith' },
       { fm_personal_details_alias_forenames_2: 'Emily', fm_personal_details_alias_surname_2: 'Johnston' },
       { fm_personal_details_alias_forenames_3: 'Oliver', fm_personal_details_alias_surname_4: 'Brown' },
@@ -57,6 +61,11 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should format date of birth correctly - adult', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockDateService.calculateAge.and.returnValue(34);
     mockDateService.getFromFormatToFormat.and.returnValue('01 January 1990');
 
@@ -66,6 +75,11 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should format date of birth correctly - youth', () => {
+    if (!component || !mockDateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const mockDob = DateTime.now().minus({ years: 10 });
 
     component.personalDetails = {
@@ -82,6 +96,11 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should format address correctly', () => {
+    if (!component || !mockUtilsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const formattedAddress = ['123 Main St', 'Apt 4B', 'Springfield', '12345'];
     mockUtilsService.formatAddress.and.returnValue(formattedAddress);
 
@@ -97,6 +116,11 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should emit change personal details event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component.emitChangePersonalDetails, 'emit');
 
     component.changePersonalDetails();
@@ -105,6 +129,11 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
   });
 
   it('should call getPersonalDetailsData on init', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getPersonalDetailsData');
 

@@ -4,8 +4,8 @@ import { SignInStubComponent } from './sign-in-stub.component';
 import { SIGN_IN_STUB_FORM_MOCK } from '../mocks';
 
 describe('SignInStubComponent', () => {
-  let component: SignInStubComponent;
-  let fixture: ComponentFixture<SignInStubComponent>;
+  let component: SignInStubComponent | null;
+  let fixture: ComponentFixture<SignInStubComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -17,11 +17,22 @@ describe('SignInStubComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should call setupSignInForm on ngOnInit', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupSignInForm');
     component.ngOnInit();
@@ -29,11 +40,21 @@ describe('SignInStubComponent', () => {
   });
 
   it('should initialize signInForm with email FormControl', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['setupSignInForm']();
     expect(component.signInForm.get('email')).toBeTruthy();
   });
 
   it('should require email field to be filled', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['setupSignInForm']();
     const emailControl = component.signInForm.get('email');
     emailControl?.setValue(null);
@@ -41,7 +62,13 @@ describe('SignInStubComponent', () => {
     emailControl?.setValue('test@example.com');
     expect(emailControl?.valid).toBeTruthy();
   });
+
   it('should emit signInForm value on form submit when form is valid', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component['signInFormSubmit'], 'emit');
     component.signInForm.setValue(SIGN_IN_STUB_FORM_MOCK);
     component.handleFormSubmit();
@@ -49,6 +76,11 @@ describe('SignInStubComponent', () => {
   });
 
   it('should not emit signInForm value on form submit when form is invalid', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component['signInFormSubmit'], 'emit');
     component.signInForm.setValue({
       email: null,

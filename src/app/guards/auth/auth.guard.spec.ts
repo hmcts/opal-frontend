@@ -13,9 +13,9 @@ describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => authGuard(...guardParameters));
 
-  let mockStateService: jasmine.SpyObj<GlobalStateService>;
-  let mockAuthService: jasmine.SpyObj<AuthService>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockStateService: jasmine.SpyObj<GlobalStateService> | null;
+  let mockAuthService: jasmine.SpyObj<AuthService> | null;
+  let mockRouter: jasmine.SpyObj<Router> | null;
 
   const urlPath = '/test-page';
   const expectedUrl = 'sign-in';
@@ -24,7 +24,7 @@ describe('authGuard', () => {
     mockAuthService = jasmine.createSpyObj(authGuard, ['checkAuthenticated']);
     mockStateService = jasmine.createSpyObj(authGuard, ['ssoEnabled']);
     mockRouter = jasmine.createSpyObj(authGuard, ['navigate', 'createUrlTree', 'parseUrl']);
-    mockRouter.parseUrl.and.callFake((url: string) => {
+    mockRouter!.parseUrl.and.callFake((url: string) => {
       const urlTree = new UrlTree();
       const urlSegment = new UrlSegment(url, {});
       urlTree.root = new UrlSegmentGroup([urlSegment], {});
@@ -49,6 +49,13 @@ describe('authGuard', () => {
     });
   });
 
+  afterAll(() => {
+    mockAuthService = null;
+    mockStateService = null;
+    mockRouter = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should be created', () => {
     expect(executeGuard).toBeTruthy();
   });
@@ -60,6 +67,11 @@ describe('authGuard', () => {
   }));
 
   it('should redirect to login with originalUrl and loggedOut url if catches an error ', fakeAsync(async () => {
+    if (!mockAuthService || !mockRouter || !mockStateService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockStateService.ssoEnabled = true;
     mockAuthService.checkAuthenticated.and.returnValue(throwError(() => 'Authentication error'));
     const authenticated = await runAuthGuardWithContext(getGuardWithDummyUrl(authGuard, urlPath));
@@ -68,6 +80,11 @@ describe('authGuard', () => {
   }));
 
   const mockIsLoggedInTrue = () => {
+    if (!mockAuthService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockAuthService.checkAuthenticated.and.returnValue(of(true));
   };
 });

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details.component';
 import { OPAL_FINES_COURT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-pretty-name.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -13,9 +12,9 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 
 describe('FinesMacReviewAccountCourtDetailsComponent', () => {
-  let component: FinesMacReviewAccountCourtDetailsComponent;
-  let fixture: ComponentFixture<FinesMacReviewAccountCourtDetailsComponent>;
-  let mockOpalFinesService: Partial<OpalFines>;
+  let component: FinesMacReviewAccountCourtDetailsComponent | null;
+  let fixture: ComponentFixture<FinesMacReviewAccountCourtDetailsComponent> | null;
+  let mockOpalFinesService: Partial<OpalFines> | null;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -44,11 +43,18 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountCourtDetailsComponent);
     component = fixture.componentInstance;
 
-    component.courtDetails = { ...FINES_MAC_COURT_DETAILS_STATE_MOCK };
+    component.courtDetails = structuredClone(FINES_MAC_COURT_DETAILS_STATE_MOCK);
     component.enforcementCourtsData = OPAL_FINES_COURT_REF_DATA_MOCK.refData;
     component.localJusticeAreasData = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK.refData;
 
     fixture.detectChanges();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockOpalFinesService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -56,6 +62,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should retrieve and set enforcement court details on init', () => {
+    if (!component || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['getEnforcementCourt']();
 
     expect(mockOpalFinesService.getCourtPrettyName).toHaveBeenCalled();
@@ -63,6 +74,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should retrieve and set sending court details on init', () => {
+    if (!component || !mockOpalFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component['getSendingCourt']();
 
     expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).toHaveBeenCalled();
@@ -70,6 +86,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should emit change court details event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     spyOn(component.emitChangeCourtDetails, 'emit');
 
     component.changeCourtDetails();
@@ -78,6 +99,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should call getCourtDetailsData on init', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'getCourtDetailsData');
 

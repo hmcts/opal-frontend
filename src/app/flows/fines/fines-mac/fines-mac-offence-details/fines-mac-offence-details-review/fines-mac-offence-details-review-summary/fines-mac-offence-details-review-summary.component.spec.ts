@@ -17,20 +17,20 @@ import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
-  let component: FinesMacOffenceDetailsReviewSummaryComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let component: FinesMacOffenceDetailsReviewSummaryComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryComponent> | null;
+  let mockFinesService: jasmine.SpyObj<FinesService> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    mockFinesService!.finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'offenceCodeMessage',
       'offenceIndex',
     ]);
-    mockFinesMacOffenceDetailsService.offenceCodeMessage = 'Offence AK123456 added';
+    mockFinesMacOffenceDetailsService!.offenceCodeMessage = 'Offence AK123456 added';
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewSummaryComponent],
@@ -59,17 +59,35 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesService = null;
+    mockFinesMacOffenceDetailsService = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should return the maximum offence ID', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const result = component['getMaxOffenceId']();
 
     expect(result).toBe(1);
   });
 
   it('should return 0 if offencesImpositions is empty', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     component.offencesImpositions = [];
 
     const result = component['getMaxOffenceId']();
@@ -78,6 +96,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should set the offenceIndex and navigate to addOffence route when actionName is "Change"', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const action = { actionName: 'change', offenceId: 1 };
 
@@ -90,6 +113,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should not set the offenceIndex and navigate to addOffence route when actionName is not "Change"', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const action = { actionName: 'remove', offenceId: 1 };
 
@@ -102,6 +130,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should toggle the offencesHidden value when the action name is not "Change" or "Remove"', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const action = { actionName: 'hide', offenceId: 1 };
 
     component.offenceAction(action);
@@ -116,6 +149,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should set the offenceIndex and navigate to addOffence route when addAnotherOffence is called', () => {
+    if (!component || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const maxOffenceId = component['getMaxOffenceId']();
     const expectedOffenceIndex = maxOffenceId + 1;
@@ -129,6 +167,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should navigate to relative route with event', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj('event', ['preventDefault']);
 
@@ -139,6 +182,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should test ngOnInit when offencesImpositions is empty', () => {
+    if (!component) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const addAnotherOffenceSpy = spyOn(component, 'addAnotherOffence');
     component.offencesImpositions = [];
 
@@ -148,6 +196,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState = {
       ...FINES_MAC_STATE_MOCK,
       accountDetails: {
@@ -169,6 +222,11 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+    if (!component || !mockFinesService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     mockFinesService.finesMacState = {
       ...FINES_MAC_STATE_MOCK,
       accountDetails: {

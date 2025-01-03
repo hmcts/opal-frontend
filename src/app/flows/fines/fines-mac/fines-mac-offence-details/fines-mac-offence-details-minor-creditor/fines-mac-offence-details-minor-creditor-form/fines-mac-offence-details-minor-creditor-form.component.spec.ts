@@ -8,15 +8,17 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-ma
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fines-mac-offence-details-minor-creditor-form.mock';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
-  let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
-  let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let component: FinesMacOffenceDetailsMinorCreditorFormComponent | null;
+  let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent> | null;
+  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService> | null;
 
   beforeEach(async () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService!.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
@@ -36,11 +38,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => {
-    // Ensure that the ngUnsubscribe subject is completed after each test
-    component['ngUnsubscribe'].next();
-    component['ngUnsubscribe'].complete();
-    fixture.destroy();
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    mockFinesMacOffenceDetailsService = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -48,6 +50,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set individual validators for forenames and surname controls', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
 
@@ -77,6 +84,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set validators for company name control', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const companyNameControl = component.form.controls['fm_offence_details_minor_creditor_company_name'];
 
     // Call the method to set validators
@@ -97,6 +109,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set validators for payment detail controls', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
     const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
@@ -148,6 +165,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and clear validators for name-related controls', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const titleControl = component.form.controls['fm_offence_details_minor_creditor_title'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
     const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
@@ -175,6 +197,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and clear validators for payment detail controls', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
     const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
@@ -205,6 +232,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and set validators based on hasPaymentDetails true value', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_pay_by_bacs'];
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
@@ -245,6 +277,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and set validators based on hasPaymentDetails false value', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const hasPaymentDetailsControl = component.form.controls['fm_offence_details_minor_creditor_pay_by_bacs'];
     const nameOnAccountControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_name'];
     const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
@@ -284,6 +321,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and set individual validators when creditorType is individual', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const creditorTypeControl = component.form.controls['fm_offence_details_minor_creditor_creditor_type'];
     const companyNameControl = component.form.controls['fm_offence_details_minor_creditor_company_name'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
@@ -320,6 +362,11 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should reset and set company validators when creditorType is company', () => {
+    if (!component || !fixture) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
     const creditorTypeControl = component.form.controls['fm_offence_details_minor_creditor_creditor_type'];
     const companyNameControl = component.form.controls['fm_offence_details_minor_creditor_company_name'];
     const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
@@ -356,11 +403,19 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should handle editing a minor creditor', () => {
+    if (!component || !fixture || !mockFinesMacOffenceDetailsService) {
+      fail('Required properties not properly initialised');
+      return;
+    }
+
+    // Cannot use structuredClone as FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK contains
+    // Angular-specific objects (FormArray, FormGroup, FormControl) that include methods
+    // and metadata, which structuredClone does not support.
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
 
