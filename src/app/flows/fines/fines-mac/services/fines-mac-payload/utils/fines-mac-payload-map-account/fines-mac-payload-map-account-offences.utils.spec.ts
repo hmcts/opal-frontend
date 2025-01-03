@@ -49,4 +49,89 @@ describe('finesMacPayloadMapAccountOffences', () => {
 
     expect(result.offenceDetails[0].formData).toEqual(offencesMockState[0].formData);
   });
+
+  it('should return a null creditor', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    if (payload.account.offences[0].impositions) {
+      payload.account.offences[0].impositions[0].minor_creditor = null;
+    }
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload);
+
+    expect(result.offenceDetails[0].formData.fm_offence_details_impositions[0].fm_offence_details_creditor).toEqual(
+      null,
+    );
+  });
+
+  it('should return balance remaining of 0 if amount imposed and paid if null', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    if (payload.account.offences[0].impositions) {
+      payload.account.offences[0].impositions[0].amount_imposed = null;
+      payload.account.offences[0].impositions[0].amount_paid = null;
+    }
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload);
+
+    expect(
+      result.offenceDetails[0].formData.fm_offence_details_impositions[0].fm_offence_details_balance_remaining,
+    ).toEqual(0);
+  });
+
+  it('should return an empty array if no offences', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = null;
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload);
+
+    expect(result.offenceDetails).toEqual([]);
+  });
+
+  it('should return an empty array for impositions and child form data if impositions is null', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    payload.account.offences[0].impositions = null;
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload);
+
+    expect(result.offenceDetails[0].formData.fm_offence_details_impositions).toEqual([]);
+    expect(result.offenceDetails[0].childFormData).toEqual([]);
+  });
+
+  it('should return an empty array for impositions and child form data if impositions is an empty array', () => {
+    if (!initialState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacAddAccountPayload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    payload.account.offences = structuredClone(FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR);
+    payload.account.offences[0].impositions = [];
+
+    const result = finesMacPayloadMapAccountOffences(initialState, payload);
+
+    expect(result.offenceDetails[0].formData.fm_offence_details_impositions).toEqual([]);
+    expect(result.offenceDetails[0].childFormData).toEqual([]);
+  });
 });

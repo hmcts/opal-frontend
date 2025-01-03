@@ -118,4 +118,22 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias).toBe(true);
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.length).toEqual(1);
   });
+
+  it('should map parent/guardian details if present in payload, if aliases has no len return empty array', () => {
+    if (!initialState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK,
+    );
+
+    if (payload.parent_guardian?.debtor_detail) {
+      payload.parent_guardian.debtor_detail.aliases = [];
+    }
+
+    const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
+    expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases).toEqual([]);
+  });
 });
