@@ -111,22 +111,21 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   it('should validate accessibility attributes', () => {
     setupComponent([
-        { value: '1', name: 'Business Unit 1' },
-        { value: '2', name: 'Business Unit 2' },
-      ]);
-  
-      cy.get(SELECTORS.submitButton).click();
-  
+      { value: '1', name: 'Business Unit 1' },
+      { value: '2', name: 'Business Unit 2' },
+    ]);
+
+    cy.get(SELECTORS.submitButton).click();
+
     // Verify the outer error summary container exists
     cy.get(SELECTORS.errorSummary).should('exist');
-  
+
     // Verify the inner role="alert" container
     cy.get(`${SELECTORS.errorSummary} div[role="alert"]`).should('exist');
-  
+
     // Verify the error summary title
     cy.get('.govuk-error-summary__title').should('contain', 'There is a problem');
   });
-  
 
   it('should simulate partial inputs and navigation', () => {
     setupComponent([
