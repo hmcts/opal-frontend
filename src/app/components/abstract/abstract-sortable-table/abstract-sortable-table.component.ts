@@ -8,16 +8,16 @@ import { SortableValues } from '@services/sort-service/types/sort-service-type';
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
+  private readonly sortService = inject(SortService);
   public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
-  public abstractcurrentPage!: number;
-  public abstractitemsPerPage!: number;
-  public abstractpaginatedData: IAbstractTableData<SortableValues>[] | null = null;
+  public abstractCurrentPage!: number;
+  public abstractItemsPerPage!: number;
+  public abstractPaginatedData: IAbstractTableData<SortableValues>[] | null = null;
+  public sortState: IAbstractSortState = {};
 
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
-  private readonly sortService = inject(SortService);
-  public sortState: IAbstractSortState = {};
   /**
    * Initializes the sort state for the table component.
    * If an existing sort state is present, it uses that; otherwise, it creates a new sort state based on the table data.
@@ -28,21 +28,6 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   private initialiseSortState(): void {
     const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
     this.sortState = sortState;
-  }
-
-  public updatePaginatedData(): void {
-    const startIndex = (this.abstractcurrentPage - 1) * this.abstractitemsPerPage;
-    const endIndex = startIndex + this.abstractitemsPerPage;
-    if (this.abstractTableData) {
-      this.abstractpaginatedData = this.abstractTableData.slice(startIndex, endIndex);
-    } else {
-      this.abstractpaginatedData = null;
-    }
-  }
-
-  onPageChange(newPage: number): void {
-    this.abstractcurrentPage = newPage;
-    this.updatePaginatedData();
   }
 
   /**
@@ -86,6 +71,36 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     }
 
     this.abstractSortState.emit(this.sortState);
+  }
+
+  /**
+   * Updates the paginated data for the table based on the current page and items per page.
+   *
+   * This method calculates the start and end indices for the current page and slices the
+   * `abstractTableData` array to get the data for the current page. If `abstractTableData`
+   * is not available, it sets `abstractPaginatedData` to null.
+   *
+   * @returns {void}
+   */
+  public updatePaginatedData(): void {
+    const startIndex = (this.abstractCurrentPage - 1) * this.abstractItemsPerPage;
+    const endIndex = startIndex + this.abstractItemsPerPage;
+    if (this.abstractTableData) {
+      this.abstractPaginatedData = this.abstractTableData.slice(startIndex, endIndex);
+    } else {
+      this.abstractPaginatedData = null;
+    }
+  }
+
+  /**
+   * Handles the event when the page is changed.
+   * Updates the current page number and refreshes the paginated data.
+   *
+   * @param newPage - The new page number to set.
+   */
+  public onPageChange(newPage: number): void {
+    this.abstractCurrentPage = newPage;
+    this.updatePaginatedData();
   }
   public ngOnInit(): void {
     this.initialiseSortState();

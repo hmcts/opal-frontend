@@ -167,35 +167,35 @@ describe('AbstractSortableTableComponent', () => {
       { id: 4, name: 'Item 4' },
       { id: 5, name: 'Item 5' },
     ];
-    component.abstractcurrentPage = 1;
-    component.abstractitemsPerPage = 2;
+    component.abstractCurrentPage = 1;
+    component.abstractItemsPerPage = 2;
 
     component.updatePaginatedData();
 
-    expect(component.abstractpaginatedData).toEqual([
+    expect(component.abstractPaginatedData).toEqual([
       { id: 1, name: 'Item 1' },
       { id: 2, name: 'Item 2' },
     ]);
 
-    component.abstractcurrentPage = 2;
+    component.abstractCurrentPage = 2;
     component.updatePaginatedData();
 
-    expect(component.abstractpaginatedData).toEqual([
+    expect(component.abstractPaginatedData).toEqual([
       { id: 3, name: 'Item 3' },
       { id: 4, name: 'Item 4' },
     ]);
 
-    component.abstractcurrentPage = 3;
+    component.abstractCurrentPage = 3;
     component.updatePaginatedData();
 
-    expect(component.abstractpaginatedData).toEqual([{ id: 5, name: 'Item 5' }]);
+    expect(component.abstractPaginatedData).toEqual([{ id: 5, name: 'Item 5' }]);
   });
 
   it('should set paginated data to null if abstractTableData is null', () => {
     if (component) {
       component.abstractTableData = null;
       component.updatePaginatedData();
-      expect(component.abstractpaginatedData).toBeNull();
+      expect(component.abstractPaginatedData).toBeNull();
     } else {
       fail('component returned null');
     }
@@ -213,13 +213,13 @@ describe('AbstractSortableTableComponent', () => {
       { id: 4, name: 'Item 4' },
       { id: 5, name: 'Item 5' },
     ];
-    component.abstractcurrentPage = 1;
-    component.abstractitemsPerPage = 2;
+    component.abstractCurrentPage = 1;
+    component.abstractItemsPerPage = 2;
 
     component.onPageChange(2);
 
-    expect(component.abstractcurrentPage).toBe(2);
-    expect(component.abstractpaginatedData).toEqual([
+    expect(component.abstractCurrentPage).toBe(2);
+    expect(component.abstractPaginatedData).toEqual([
       { id: 3, name: 'Item 3' },
       { id: 4, name: 'Item 4' },
     ]);
