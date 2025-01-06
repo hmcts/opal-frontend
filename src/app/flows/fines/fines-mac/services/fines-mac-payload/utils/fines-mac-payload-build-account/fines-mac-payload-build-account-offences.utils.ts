@@ -42,7 +42,11 @@ const getCompanyFlag = (creditorType: string | null): boolean => {
  */
 const buildAccountOffencesImpositionsMinorCreditorPayload = (
   childFormData: IFinesMacOffenceDetailsMinorCreditorForm | null,
-): IFinesMacPayloadAccountOffencesMinorCreditor => {
+): IFinesMacPayloadAccountOffencesMinorCreditor | null => {
+  if (!childFormData) {
+    return null;
+  }
+
   const payByBacs = childFormData?.formData?.fm_offence_details_minor_creditor_pay_by_bacs ?? null;
   const payoutOnHold = getPayoutOnHold(payByBacs);
   const creditorType = childFormData?.formData?.fm_offence_details_minor_creditor_creditor_type ?? null;
@@ -91,9 +95,8 @@ const buildAccountOffencesImpositionsPayload = (
       fm_offence_details_major_creditor_id: majorCreditorId,
     }) => {
       const impositionMinorCreditor = impositionId !== null ? childFormData[impositionId] : null;
-      const minorCreditor = impositionMinorCreditor
-        ? buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor)
-        : null;
+      const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor);
+
       return {
         result_id: resultId ?? null,
         amount_imposed: amountImposed ?? null,
