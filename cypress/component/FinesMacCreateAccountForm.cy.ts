@@ -29,9 +29,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
     defendantType: 'Select a defendant type',
   };
 
-  const setupComponent = (
-    autoCompleteItems: { value: string; name: string }[] = [],
-  ) => {
+  const setupComponent = (autoCompleteItems: { value: string; name: string }[] = []) => {
     mount(FinesMacCreateAccountFormComponent, {
       imports: [ReactiveFormsModule],
       providers: [

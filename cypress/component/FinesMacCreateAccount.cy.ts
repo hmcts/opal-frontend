@@ -107,7 +107,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should have accessible autocomplete component', () => {
     setupComponent(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK, null);
-    
+
     cy.get('#fm_create_account_business_unit_id-autocomplete')
       .should('have.attr', 'aria-autocomplete', 'list')
       .and('have.attr', 'role', 'combobox');
