@@ -107,14 +107,13 @@ describe('ComponentName.cy.ts', () => {
   });
 
   it('playground', () => {
-    cy.mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
-      imports: [CommonModule, HttpClientModule, RouterTestingModule],
-      providers: [FinesService, OpalFines, FinesMacOffenceDetailsService, DateService],
-      componentProperties: {
-        defendantType: '',
-        offenceIndex: 0,
-      },
-    });
+    // cy.mount(FinesMacOffenceDetailsAddAnOffenceComponent, {
+    //   imports: [CommonModule, HttpClientModule, RouterTestingModule],
+    //   providers: [FinesService, OpalFines, FinesMacOffenceDetailsService, DateService],
+    //   componentProperties: {
+    //     defendantType: '',
+    //     offenceIndex: 0,
+    //   },
 
     // Wait for the mocked HTTP requests to complete
     cy.wait('@getResults');
