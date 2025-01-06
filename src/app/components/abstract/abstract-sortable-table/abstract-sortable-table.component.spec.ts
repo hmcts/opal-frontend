@@ -14,9 +14,9 @@ class TestComponent extends AbstractSortableTableComponent {
 }
 
 describe('AbstractSortableTableComponent', () => {
-  let component: TestComponent;
-  let fixture: ComponentFixture<TestComponent>;
-  let service: SortService;
+  let component: TestComponent | null;
+  let fixture: ComponentFixture<TestComponent> | null;
+  let service: SortService | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -32,11 +32,22 @@ describe('AbstractSortableTableComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    service = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should not set existing sort state', () => {
+    if (!component || !service || !fixture) {
+      fail('component, service or fixture returned null');
+      return;
+    }
     const newSortState: IAbstractSortState = { ...ABSTRACT_EXISTING_SORT_STATE_MOCK, imposition: 'none' };
     component.abstractExistingSortState = null;
     fixture.detectChanges();
@@ -46,6 +57,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should not init with an existing sort state', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const newSortState: IAbstractSortState = { ...ABSTRACT_EXISTING_SORT_STATE_MOCK, imposition: 'none' };
     component.ngOnInit();
     fixture.detectChanges();
@@ -54,6 +70,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should set an existing sort state', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const newSortState: IAbstractSortState = { ...ABSTRACT_EXISTING_SORT_STATE_MOCK };
     component.abstractExistingSortState = newSortState;
     fixture.detectChanges();
@@ -63,6 +84,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should init with a new sort state', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const newSortState: IAbstractSortState = { ...ABSTRACT_EXISTING_SORT_STATE_MOCK };
     component.abstractExistingSortState = newSortState;
     component.ngOnInit();
@@ -72,6 +98,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should create a new sort state', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const newSortState: IAbstractSortState = { ...ABSTRACT_EXISTING_SORT_STATE_MOCK, imposition: 'none' };
     const sortState = component['createSortState'](MOCK_ABSTRACT_TABLE_DATA);
     fixture.detectChanges();
@@ -79,6 +110,10 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should update sort state and sort data in ascending order', () => {
+    if (!component || !service || !fixture) {
+      fail('component, service or fixture returned null');
+      return;
+    }
     const event = { key: 'amountPaid', sortType: 'ascending' as const };
     const sortedData = service.sortObjectArrayAsc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
     const newSortState: IAbstractSortState = {
@@ -96,6 +131,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should update sort state and sort data in descending order', () => {
+    if (!component || !service || !fixture) {
+      fail('component, service or fixture returned null');
+      return;
+    }
+
     const event = { key: 'amountPaid', sortType: 'descending' as const };
     const sortedData = service.sortObjectArrayDesc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
     const newSortState: IAbstractSortState = {

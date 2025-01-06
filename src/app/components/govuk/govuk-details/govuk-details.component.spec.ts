@@ -9,8 +9,8 @@ import { By } from '@angular/platform-browser';
 class TestHostComponent {}
 
 describe('GovukDetailsComponent', () => {
-  let component: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
+  let component: TestHostComponent | null;
+  let fixture: ComponentFixture<TestHostComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,16 +23,32 @@ describe('GovukDetailsComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should render summary link - Test Link', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.debugElement.query(By.css('.govuk-details__summary-text'));
     expect(element.nativeElement.textContent).toContain('Test Link');
   });
 
   it('should render detail text - This is a test', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.debugElement.query(By.css('.govuk-details__text'));
     expect(element.nativeElement.textContent).toContain('This is a test');
   });

@@ -16,12 +16,12 @@ import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fi
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK } from '../mocks/fines-mac-payload-account-defendant-parent-guardian-complete-with-alias.mock';
 
 describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
-  let initialState: IFinesMacState;
-  let personalDetailsState: IFinesMacPersonalDetailsState;
-  let contactDetailsState: IFinesMacContactDetailsState;
-  let employerDetailsState: IFinesMacEmployerDetailsState;
-  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState;
-  let languagePreferencesState: IFinesMacLanguagePreferencesState;
+  let initialState: IFinesMacState | null;
+  let personalDetailsState: IFinesMacPersonalDetailsState | null;
+  let contactDetailsState: IFinesMacContactDetailsState | null;
+  let employerDetailsState: IFinesMacEmployerDetailsState | null;
+  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState | null;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState | null;
 
   beforeEach(() => {
     initialState = structuredClone(FINES_MAC_STATE);
@@ -32,7 +32,28 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     languagePreferencesState = structuredClone(FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK);
   });
 
+  afterAll(() => {
+    initialState = null;
+    personalDetailsState = null;
+    contactDetailsState = null;
+    employerDetailsState = null;
+    parentGuardianDetailsState = null;
+    languagePreferencesState = null;
+  });
+
   it('should map personal details from payload to state', () => {
+    if (
+      !initialState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !parentGuardianDetailsState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK,
     );
@@ -55,6 +76,11 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
   });
 
   it('should not map debtor details from payload to state if parent_guardian is null', () => {
+    if (!initialState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone({
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK,
       parent_guardian: null,
@@ -79,6 +105,11 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
   });
 
   it('should map parent/guardian details if present in payload', () => {
+    if (!initialState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK,
     );
@@ -86,5 +117,23 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
     const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_add_alias).toBe(true);
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.length).toEqual(1);
+  });
+
+  it('should map parent/guardian details if present in payload, if aliases has no len return empty array', () => {
+    if (!initialState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_WITH_ALIAS_MOCK,
+    );
+
+    if (payload.parent_guardian?.debtor_detail) {
+      payload.parent_guardian.debtor_detail.aliases = [];
+    }
+
+    const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
+    expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases).toEqual([]);
   });
 });

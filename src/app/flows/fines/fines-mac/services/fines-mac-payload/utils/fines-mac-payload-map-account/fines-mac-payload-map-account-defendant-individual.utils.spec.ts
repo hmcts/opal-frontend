@@ -14,11 +14,11 @@ import { FINES_MAC_PAYLOAD_EMPLOYER_DETAILS_STATE_MOCK } from '../mocks/state/fi
 import { FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK } from '../mocks/state/fines-mac-payload-language-preferences-state.mock';
 
 describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
-  let initialState: IFinesMacState;
-  let personalDetailsState: IFinesMacPersonalDetailsState;
-  let contactDetailsState: IFinesMacContactDetailsState;
-  let employerDetailsState: IFinesMacEmployerDetailsState;
-  let languagePreferencesState: IFinesMacLanguagePreferencesState;
+  let initialState: IFinesMacState | null;
+  let personalDetailsState: IFinesMacPersonalDetailsState | null;
+  let contactDetailsState: IFinesMacContactDetailsState | null;
+  let employerDetailsState: IFinesMacEmployerDetailsState | null;
+  let languagePreferencesState: IFinesMacLanguagePreferencesState | null;
 
   beforeEach(() => {
     initialState = structuredClone(FINES_MAC_STATE);
@@ -28,7 +28,26 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
     languagePreferencesState = structuredClone(FINES_MAC_PAYLOAD_LANGUAGE_PREFERENCES_STATE_MOCK);
   });
 
+  afterAll(() => {
+    initialState = null;
+    personalDetailsState = null;
+    contactDetailsState = null;
+    employerDetailsState = null;
+    languagePreferencesState = null;
+  });
+
   it('should map personal details from payload to state', () => {
+    if (
+      !initialState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK,
     );
@@ -45,6 +64,17 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
   });
 
   it('should not map debtor details from payload to state if debtor details is null', () => {
+    if (
+      !initialState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone({
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK,
       debtor_detail: null,
@@ -75,6 +105,17 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
   });
 
   it('should map personal details with aliases from payload to state', () => {
+    if (
+      !initialState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
     const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
       FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK,
     );
@@ -82,5 +123,28 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
     const result = finesMacPayloadMapAccountDefendantIndividualPayload(initialState, payload);
     expect(result.personalDetails.formData.fm_personal_details_add_alias).toBe(true);
     expect(result.personalDetails.formData.fm_personal_details_aliases.length).toBeGreaterThan(0);
+  });
+
+  it('should map personal details with aliases from payload to state and return an empty array if aliases has no len', () => {
+    if (
+      !initialState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK,
+    );
+    if (payload.debtor_detail) {
+      payload.debtor_detail.aliases = [];
+    }
+
+    const result = finesMacPayloadMapAccountDefendantIndividualPayload(initialState, payload);
+    expect(result.personalDetails.formData.fm_personal_details_aliases).toEqual([]);
   });
 });

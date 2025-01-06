@@ -15,10 +15,10 @@ import { IFinesMacPersonalDetailsState } from '../../../../fines-mac-personal-de
 import { FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK } from '../mocks/state/fines-mac-payload-personal-details-state.mock';
 
 describe('finesMacPayloadMapAccountDefendant', () => {
-  let mappedFinesMacState: IFinesMacState;
-  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState;
-  let companyDetailsState: IFinesMacCompanyDetailsState;
-  let personalDetailsState: IFinesMacPersonalDetailsState;
+  let mappedFinesMacState: IFinesMacState | null;
+  let parentGuardianDetailsState: IFinesMacParentGuardianDetailsState | null;
+  let companyDetailsState: IFinesMacCompanyDetailsState | null;
+  let personalDetailsState: IFinesMacPersonalDetailsState | null;
   beforeEach(() => {
     mappedFinesMacState = structuredClone(FINES_MAC_STATE);
     parentGuardianDetailsState = structuredClone(FINES_MAC_PAYLOAD_PARENT_GUARDIAN_DETAILS_STATE_MOCK);
@@ -26,7 +26,19 @@ describe('finesMacPayloadMapAccountDefendant', () => {
     personalDetailsState = structuredClone(FINES_MAC_PAYLOAD_PERSONAL_DETAILS_STATE_MOCK);
   });
 
+  afterAll(() => {
+    mappedFinesMacState = null;
+    parentGuardianDetailsState = null;
+    companyDetailsState = null;
+    personalDetailsState = null;
+  });
+
   it('should map parentOrGuardianToPay defendant type correctly', () => {
+    if (!mappedFinesMacState || !parentGuardianDetailsState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
     const payload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
     payload.defendant_type = 'parentOrGuardianToPay';
     payload.defendant = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK;
@@ -40,6 +52,11 @@ describe('finesMacPayloadMapAccountDefendant', () => {
   });
 
   it('should map company defendant type correctly', () => {
+    if (!mappedFinesMacState || !companyDetailsState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
     const payload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
     payload.defendant_type = 'company';
     payload.defendant = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK;
@@ -52,6 +69,11 @@ describe('finesMacPayloadMapAccountDefendant', () => {
   });
 
   it('should map individual defendant type correctly by default', () => {
+    if (!mappedFinesMacState || !personalDetailsState) {
+      fail('Initial state is not properly initialised');
+      return;
+    }
+
     const payload = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
     payload.defendant_type = 'individual';
     payload.defendant = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK;

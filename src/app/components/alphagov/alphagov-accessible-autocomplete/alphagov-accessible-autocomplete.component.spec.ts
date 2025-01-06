@@ -5,9 +5,9 @@ import { FormControl, Validators } from '@angular/forms';
 import { ALPHAGOV_ACCESSIBLE_AUTOCOMPLETE_ITEMS_MOCK } from './mocks';
 
 describe('AlphagovAccessibleAutocompleteComponent', () => {
-  let component: AlphagovAccessibleAutocompleteComponent;
-  let fixture: ComponentFixture<AlphagovAccessibleAutocompleteComponent>;
-  let formControl: FormControl;
+  let component: AlphagovAccessibleAutocompleteComponent | null;
+  let fixture: ComponentFixture<AlphagovAccessibleAutocompleteComponent> | null;
+  let formControl: FormControl | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -29,11 +29,23 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    formControl = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should build autocomplete props correctly', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const expectedProps: AccessibleAutocompleteProps = {
       id: component.autoCompleteId,
       element: component.autocompleteContainer.nativeElement,
@@ -41,7 +53,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
       name: component.autoCompleteId,
       showAllValues: component.showAllValues,
       defaultValue: component['_control'].value || '',
-      onConfirm: (selectedName: string) => component['handleOnConfirm'](selectedName),
+      onConfirm: (selectedName: string) => {
+        if (component) {
+          component['handleOnConfirm'](selectedName);
+        }
+      },
     };
 
     const actualProps = component['buildAutoCompleteProps']();
@@ -55,6 +71,10 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should handle on confirm and input should be marked as dirty', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
     const selectedName = ALPHAGOV_ACCESSIBLE_AUTOCOMPLETE_ITEMS_MOCK[0].name;
     const inputValue = ALPHAGOV_ACCESSIBLE_AUTOCOMPLETE_ITEMS_MOCK[0].name;
     const selectedItem = ALPHAGOV_ACCESSIBLE_AUTOCOMPLETE_ITEMS_MOCK[0];
@@ -80,6 +100,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should handle on confirm and input should be marked as pristine', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const selectedName = undefined;
     const inputValue = '';
     const selectedItem = null;
@@ -104,12 +129,22 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should get the control', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const result = component.getControl;
 
     expect(result).toEqual(component['_control']);
   });
 
   it('should get the default value', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const controlValue = ALPHAGOV_ACCESSIBLE_AUTOCOMPLETE_ITEMS_MOCK[0].value;
     const selectedItem = ALPHAGOV_ACCESSIBLE_AUTOCOMPLETE_ITEMS_MOCK[0];
 
@@ -121,6 +156,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should return an empty string if control value is falsy', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component['_control'].setValue(null);
 
     const result = component['getDefaultValue']();
@@ -129,6 +169,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should return an empty string if control value does not match any item', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const controlValue = 'test';
 
     component['_control'].setValue(controlValue);
@@ -139,6 +184,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should not clear the autocomplete as we have a value', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'configureAutoComplete');
 
@@ -151,6 +201,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should clear autocomplete when control value changes to null', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'configureAutoComplete');
 
@@ -167,6 +222,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should not do anything as we have no values', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'configureAutoComplete');
 
@@ -186,6 +246,11 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   }
 
   it('it should test the onConfirm section of buildAutoCompleteProps', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const autoCompleteProps = component['buildAutoCompleteProps']();
     if (typeof autoCompleteProps.onConfirm === 'function') {
       const onConfirm = autoCompleteProps.onConfirm;
