@@ -28,6 +28,11 @@ describe('AbstractSortableTableComponent', () => {
     fixture = null;
     TestBed.resetTestingModule();
   });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
   it('should update paginated data correctly', () => {
     if (!component) {
       fail('component returned null');
