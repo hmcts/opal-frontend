@@ -14,9 +14,4 @@ describe('MojPaginationItemComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should have default values for inputs', () => {
-    expect(component.extraClasses).toBe('');
-    expect(component.isActive).toBe(false);
-  });
 });

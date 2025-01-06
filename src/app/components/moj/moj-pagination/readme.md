@@ -25,19 +25,21 @@ The `MojPaginationComponent` is a reusable Angular component that provides pagin
 ```html
 <app-moj-pagination
   [limit]="10"
+  [maxPagesToShow]="2"
   [total]="100"
-  [currentPage]="1"
+  [currentPage]="currentPage"
   (changePage)="onPageChange($event)"
 ></app-moj-pagination>
 ```
 
 ### **Input Properties**
 
-| Property      | Type   | Default | Description                        |
-| ------------- | ------ | ------- | ---------------------------------- |
-| `limit`       | number | `10`    | Number of items per page.          |
-| `total`       | number | `0`     | Total number of items to paginate. |
-| `currentPage` | number | `1`     | The currently active page number.  |
+| Property         | Type   | Default | Description                              |
+| ---------------- | ------ | ------- | ---------------------------------------- |
+| `limit`          | number | `10`    | Number of items per page.                |
+| `total`          | number | `0`     | Total number of items to paginate.       |
+| `currentPage`    | number | `1`     | The currently active page number.        |
+| `maxPagesToShow` | number | `1`     | Total number of pages to show before ... |
 
 ### **Output Events**
 

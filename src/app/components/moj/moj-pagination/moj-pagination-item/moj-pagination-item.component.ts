@@ -1,12 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-moj-pagination-item',
+  selector: 'app-moj-pagination-item , [app-moj-pagination-item]',
   standalone: true,
   imports: [],
   templateUrl: './moj-pagination-item.component.html',
 })
-export class MojPaginationItemComponent {
-  @Input() extraClasses = '';
-  @Input() isActive: boolean = false;
-}
+export class MojPaginationItemComponent {}

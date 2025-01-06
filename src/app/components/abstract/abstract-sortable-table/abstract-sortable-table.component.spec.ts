@@ -111,4 +111,61 @@ describe('AbstractSortableTableComponent', () => {
     expect(component.abstractTableData).toEqual(sortedData);
     expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortState);
   });
+  it('should update paginated data correctly', () => {
+    component.abstractTableData = [
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+      { id: 3, name: 'Item 3' },
+      { id: 4, name: 'Item 4' },
+      { id: 5, name: 'Item 5' },
+    ];
+    component.abstractcurrentPage = 1;
+    component.abstractitemsPerPage = 2;
+
+    component.updatePaginatedData();
+
+    expect(component.abstractpaginatedData).toEqual([
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+    ]);
+
+    component.abstractcurrentPage = 2;
+    component.updatePaginatedData();
+
+    expect(component.abstractpaginatedData).toEqual([
+      { id: 3, name: 'Item 3' },
+      { id: 4, name: 'Item 4' },
+    ]);
+
+    component.abstractcurrentPage = 3;
+    component.updatePaginatedData();
+
+    expect(component.abstractpaginatedData).toEqual([{ id: 5, name: 'Item 5' }]);
+  });
+
+  it('should set paginated data to null if abstractTableData is null', () => {
+    component.abstractTableData = null;
+    component.updatePaginatedData();
+    expect(component.abstractpaginatedData).toBeNull();
+  });
+
+  it('should change page and update paginated data', () => {
+    component.abstractTableData = [
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+      { id: 3, name: 'Item 3' },
+      { id: 4, name: 'Item 4' },
+      { id: 5, name: 'Item 5' },
+    ];
+    component.abstractcurrentPage = 1;
+    component.abstractitemsPerPage = 2;
+
+    component.onPageChange(2);
+
+    expect(component.abstractcurrentPage).toBe(2);
+    expect(component.abstractpaginatedData).toEqual([
+      { id: 3, name: 'Item 3' },
+      { id: 4, name: 'Item 4' },
+    ]);
+  });
 });

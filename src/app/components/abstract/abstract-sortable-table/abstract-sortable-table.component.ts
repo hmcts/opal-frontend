@@ -10,15 +10,14 @@ import { SortableValues } from '@services/sort-service/types/sort-service-type';
 export abstract class AbstractSortableTableComponent implements OnInit {
   public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
+  public abstractcurrentPage!: number;
+  public abstractitemsPerPage!: number;
+  public abstractpaginatedData: IAbstractTableData<SortableValues>[] | null = null;
+
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
   private readonly sortService = inject(SortService);
   public sortState: IAbstractSortState = {};
-
-  ngOnInit(): void {
-    this.initialiseSortState();
-  }
-
   /**
    * Initializes the sort state for the table component.
    * If an existing sort state is present, it uses that; otherwise, it creates a new sort state based on the table data.
@@ -26,9 +25,24 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    * @private
    * @returns {void}
    */
-  public initialiseSortState(): void {
+  private initialiseSortState(): void {
     const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
     this.sortState = sortState;
+  }
+
+  public updatePaginatedData(): void {
+    const startIndex = (this.abstractcurrentPage - 1) * this.abstractitemsPerPage;
+    const endIndex = startIndex + this.abstractitemsPerPage;
+    if (this.abstractTableData) {
+      this.abstractpaginatedData = this.abstractTableData.slice(startIndex, endIndex);
+    } else {
+      this.abstractpaginatedData = null;
+    }
+  }
+
+  onPageChange(newPage: number): void {
+    this.abstractcurrentPage = newPage;
+    this.updatePaginatedData();
   }
 
   /**
@@ -70,8 +84,11 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     } else {
       this.abstractTableData = this.sortService.sortObjectArrayDesc(this.abstractTableData, key);
     }
-    console.log(this.abstractTableData);
 
     this.abstractSortState.emit(this.sortState);
+  }
+  public ngOnInit(): void {
+    this.initialiseSortState();
+    this.updatePaginatedData();
   }
 }

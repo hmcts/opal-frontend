@@ -1,49 +1,53 @@
-<nav class="moj-pagination" aria-label="Pagination navigation">
-  <app-moj-pagination-list>
-    <app-moj-pagination-item extraClasses="moj-pagination__item--prev">
-      @if (currentPage > 1) {
-        <app-moj-pagination-link
-          [changePage]="changePage"
-          [page]="currentPage - 1"
-          [currentPage]="currentPage"
-          [totalPages]="totalPages()"
-        >
-          Previous<span class="govuk-visually-hidden"> page </span></app-moj-pagination-link
-        >
-      }
-    </app-moj-pagination-item>
-    @for (page of pages(); track page) {
-      <app-moj-pagination-item [isActive]="page === currentPage">
+<ul app-moj-pagination-list class="moj-pagination__list">
+  <li app-moj-pagination-item class="moj-pagination__item moj-pagination__item--prev">
+    @if (currentPage > 1) {
+      <app-moj-pagination-link
+        [changePage]="changePage"
+        [page]="currentPage - 1"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages()"
+      >
+        Previous<span class="govuk-visually-hidden"> page </span></app-moj-pagination-link
+      >
+    }
+  </li>
+  @for (page of pages(); track page) {
+    <li
+      app-moj-pagination-item
+      class="moj-pagination__item"
+      [class.moj-pagination__item--active]="page === currentPage"
+      [class.moj-pagination__item--dot]="page === '...'"
+    >
+      @if (page !== currentPage && page !== '...') {
         <app-moj-pagination-link
           [changePage]="changePage"
           [page]="+page"
           [currentPage]="currentPage"
           [totalPages]="totalPages()"
         >
-          @if (page !== '...') {
-            {{ page }}
-          }
+          {{ page }}
         </app-moj-pagination-link>
-        @if (page === '...') {
-          <span>…</span>
-        }
-      </app-moj-pagination-item>
-    }
-
-    <app-moj-pagination-item extraClasses="moj-pagination__item--next">
-      @if (currentPage < totalPages()) {
-        <app-moj-pagination-link
-          [changePage]="changePage"
-          [page]="currentPage + 1"
-          [currentPage]="currentPage"
-          [totalPages]="totalPages()"
-        >
-          Next<span class="govuk-visually-hidden"> page</span></app-moj-pagination-link
-        >
+      } @else if (page === '...') {
+        <strong>...</strong>
+      } @else {
+        {{ page }}
       }
-    </app-moj-pagination-item>
-  </app-moj-pagination-list>
-  <p class="moj-pagination__results">
-    Showing <b>{{ startItem() - 1 }}</b> to <b>{{ endItem() }}</b> of <b>{{ totalItems() }}</b> results
-  </p>
-</nav>
+    </li>
+  }
+
+  <li app-moj-pagination-item class="moj-pagination__item moj-pagination__item--next">
+    @if (currentPage < totalPages()) {
+      <app-moj-pagination-link
+        [changePage]="changePage"
+        [page]="currentPage + 1"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages()"
+      >
+        Next<span class="govuk-visually-hidden"> page</span></app-moj-pagination-link
+      >
+    }
+  </li>
+</ul>
+<p class="moj-pagination__results">
+  Showing <b>{{ startItem() - 1 }}</b> to <b>{{ endItem() }}</b> of <b>{{ totalItems() }}</b> results
+</p>
