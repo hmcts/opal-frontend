@@ -1,8 +1,7 @@
 import { mount } from 'cypress/angular';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FinesMacCreateAccountFormComponent } from '../../src/app/flows/fines/fines-mac/fines-mac-create-account/fines-mac-create-account-form/fines-mac-create-account-form.component';
-import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES } from 'src/app/flows/fines/fines-mac/fines-mac-create-account/constants/fines-mac-create-account-account-types';
 import { ActivatedRoute } from '@angular/router';
+import { FinesMacCreateAccountFormComponent } from 'src/app/flows/fines/fines-mac/fines-mac-create-account/fines-mac-create-account-form/fines-mac-create-account-form.component';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   const ACCOUNT_CREATION_TEXT = 'The account will be created in Business Unit 1';
@@ -32,7 +31,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
   const setupComponent = (
     autoCompleteItems: { value: string; name: string }[] = [],
-    accountTypes: { key: string; value: string }[] = [],
   ) => {
     mount(FinesMacCreateAccountFormComponent, {
       imports: [ReactiveFormsModule],
@@ -50,12 +48,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
       ],
       componentProperties: {
         autoCompleteItems,
-        accountTypes: accountTypes.length
-          ? accountTypes
-          : Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(([key, value]) => ({
-              key,
-              value,
-            })),
       },
     });
   };
