@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 
 @Component({
   selector: 'app-moj-pagination-item , [app-moj-pagination-item]',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './moj-pagination-item.component.html',
 })
-export class MojPaginationItemComponent {}
+export class MojPaginationItemComponent {
+  @HostBinding('class') class = 'moj-pagination__item';
+}
