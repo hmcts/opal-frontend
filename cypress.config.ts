@@ -18,16 +18,23 @@ async function setupNodeEvents(
         module: {
           rules: [
             {
+              // Only .ts files
               test: /\.ts$/,
-              exclude: [/node_modules/],
+              // Ignore node_modules and the src folder
+              exclude: [/node_modules/, /src/],
               use: [
                 {
                   loader: 'ts-loader',
+                  options: {
+                    configFile: 'e2e.tsconfig.json',
+                    transpileOnly: true,
+                  },
                 },
               ],
             },
             {
               test: /\.feature$/,
+              include: [/cypress\/e2e/],
               use: [
                 {
                   loader: '@badeball/cypress-cucumber-preprocessor/webpack',
@@ -77,7 +84,8 @@ export default defineConfig({
 
   e2e: {
     baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
-    specPattern: '**/*.feature',
+    specPattern: 'cypress/e2e/**/*.feature',
+    excludeSpecPattern: '**/*/*.cy.ts',
     setupNodeEvents,
     retries: {
       runMode: 1,
@@ -99,6 +107,7 @@ export default defineConfig({
       framework: 'angular',
       bundler: 'webpack',
     },
-    specPattern: '**/*.cy.ts',
+    specPattern: 'cypress/component/**/*.cy.ts',
+    supportFile: false,
   },
 });
