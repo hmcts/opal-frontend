@@ -152,6 +152,14 @@ describe('AbstractSortableTableComponent', () => {
     expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortState);
   });
   it('should update paginated data correctly', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
     component.abstractTableData = [
       { id: 1, name: 'Item 1' },
       { id: 2, name: 'Item 2' },
@@ -184,12 +192,20 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should set paginated data to null if abstractTableData is null', () => {
-    component.abstractTableData = null;
-    component.updatePaginatedData();
-    expect(component.abstractpaginatedData).toBeNull();
+    if (component) {
+      component.abstractTableData = null;
+      component.updatePaginatedData();
+      expect(component.abstractpaginatedData).toBeNull();
+    } else {
+      fail('component returned null');
+    }
   });
 
   it('should change page and update paginated data', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
     component.abstractTableData = [
       { id: 1, name: 'Item 1' },
       { id: 2, name: 'Item 2' },
