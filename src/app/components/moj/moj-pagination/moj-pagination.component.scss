@@ -1,0 +1,10 @@
+.moj-pagination {
+  text-align: justify;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr;
+  justify-content: space-between;
+}
+.moj-pagination__results {
+  text-align: right;
+}
