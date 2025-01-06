@@ -9,8 +9,8 @@ import { By } from '@angular/platform-browser';
 class TestHostComponent {}
 
 describe('GovukPanelComponent', () => {
-  let component: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
+  let component: TestHostComponent | null;
+  let fixture: ComponentFixture<TestHostComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,16 +23,32 @@ describe('GovukPanelComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should render panel title - Test Title', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.debugElement.query(By.css('.govuk-panel__title'));
     expect(element.nativeElement.textContent).toContain('Test Title');
   });
 
   it('should render panel body text - This is a test', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.debugElement.query(By.css('.govuk-panel__body'));
     expect(element.nativeElement.textContent).toContain('This is a test');
   });

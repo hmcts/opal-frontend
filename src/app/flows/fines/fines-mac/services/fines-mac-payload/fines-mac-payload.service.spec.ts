@@ -199,4 +199,16 @@ describe('FinesMacPayloadService', () => {
     const result = service['setFinesMacStateStatuses'](finesMacState);
     expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.NOT_PROVIDED);
   });
+
+  it('should get the business unit user id', () => {
+    if (!service || !sessionUserState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const businessUnitId = 17;
+    const businessUnitUserId = 'L017KG';
+    const result = service['getBusinessUnitBusinessUserId'](businessUnitId, sessionUserState);
+    expect(result).toEqual(businessUnitUserId);
+  });
 });
