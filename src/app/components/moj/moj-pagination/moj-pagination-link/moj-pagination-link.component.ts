@@ -14,6 +14,38 @@ export class MojPaginationLinkComponent {
   @Input() changePage: EventEmitter<number> = new EventEmitter<number>();
 
   /**
+   * Checks if the given page number is not the current page.
+   *
+   * @param page - The page number to check.
+   * @returns A boolean indicating whether the given page is not the current page.
+   */
+
+  private pageIsNotCurrentPage(page: number): boolean {
+    return page !== this.currentPage;
+  }
+
+  /**
+   * Checks if the given page number is not negative.
+   *
+   * @param page - The page number to check.
+   * @returns `true` if the page number is greater than 0, otherwise `false`.
+   */
+
+  private pageIsNotNegative(page: number): boolean {
+    return page > 0;
+  }
+
+  /**
+   * Checks if the given page number is not greater than the total number of pages.
+   *
+   * @param page - The page number to check.
+   * @returns `true` if the page number is less than or equal to the total number of pages, otherwise `false`.
+   */
+
+  private pageIsNotGreaterThanTotalPages(page: number): boolean {
+    return page <= this.totalPages;
+  }
+  /**
    * Handles the page change event.
    *
    * @param event - The mouse event that triggered the page change.
@@ -27,11 +59,7 @@ export class MojPaginationLinkComponent {
   public changePageEvent(event: MouseEvent, page: number): void {
     event.preventDefault();
 
-    const pageIsNotCurrentPage = page !== this.currentPage;
-    const pageIsNotNegative = page > 0;
-    const pageIsNotGreaterThanTotalPages = page <= this.totalPages;
-
-    if (pageIsNotCurrentPage && pageIsNotNegative && pageIsNotGreaterThanTotalPages) {
+    if (this.pageIsNotCurrentPage(page) && this.pageIsNotNegative(page) && this.pageIsNotGreaterThanTotalPages(page)) {
       this.changePage.emit(page);
     }
   }
