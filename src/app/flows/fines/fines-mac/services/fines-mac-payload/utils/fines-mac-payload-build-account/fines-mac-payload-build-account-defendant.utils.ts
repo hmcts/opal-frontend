@@ -47,6 +47,7 @@ const applyBasePayloadsToIndividualOrCompanyDefendant = (
     ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
     ...defendant,
     debtor_detail: debtorDetail,
+    parent_guardian: null,
   };
 };
 
@@ -78,6 +79,7 @@ const applyBasePayloadsToParentGuardianDefendant = (
   return {
     ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
     ...defendant,
+    debtor_detail: null,
     parent_guardian: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN,
       ...defendant.parent_guardian,

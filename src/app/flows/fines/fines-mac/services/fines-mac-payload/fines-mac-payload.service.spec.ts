@@ -54,6 +54,7 @@ describe('FinesMacPayloadService', () => {
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
+    finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(finesMacPayloadAddAccount);
   });
 
@@ -68,6 +69,7 @@ describe('FinesMacPayloadService', () => {
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
 
     finesMacPayloadAddAccount.account.offences = FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR;
+    finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(finesMacPayloadAddAccount);
   });
 
@@ -88,6 +90,7 @@ describe('FinesMacPayloadService', () => {
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
     const result = service.buildReplaceAccountPayload(finesMacState, sessionUserState);
+    finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(finesMacPayloadAddAccount);
   });
 
@@ -198,5 +201,17 @@ describe('FinesMacPayloadService', () => {
 
     const result = service['setFinesMacStateStatuses'](finesMacState);
     expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.NOT_PROVIDED);
+  });
+
+  it('should get the business unit user id', () => {
+    if (!service || !sessionUserState) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const businessUnitId = 17;
+    const businessUnitUserId = 'L017KG';
+    const result = service['getBusinessUnitBusinessUserId'](businessUnitId, sessionUserState);
+    expect(result).toEqual(businessUnitUserId);
   });
 });

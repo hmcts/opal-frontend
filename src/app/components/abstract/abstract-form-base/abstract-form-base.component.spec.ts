@@ -35,8 +35,8 @@ class TestAbstractFormBaseComponent extends AbstractFormBaseComponent {
 }
 
 describe('AbstractFormBaseComponent', () => {
-  let component: TestAbstractFormBaseComponent;
-  let fixture: ComponentFixture<TestAbstractFormBaseComponent>;
+  let component: TestAbstractFormBaseComponent | null;
+  let fixture: ComponentFixture<TestAbstractFormBaseComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -58,17 +58,33 @@ describe('AbstractFormBaseComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should reset the form when handleClearForm is called', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     spyOn(component.form, 'reset');
     component.handleClearForm();
     expect(component.form.reset).toHaveBeenCalled();
   });
 
   it('should scroll to the label and focus the field when testScroll is called', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldId = 'testField';
     const fieldElement = document.createElement('input');
     fieldElement.id = fieldId;
@@ -91,6 +107,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should scroll to the govuk-fieldset__legend if no label for fieldId is found', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldId = 'testField';
     const fieldElement = document.createElement('input');
     fieldElement.id = fieldId;
@@ -112,6 +133,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should scroll to label[for=fieldId-autocomplete] if present', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldId = 'testField';
     const fieldElement = document.createElement('input');
     fieldElement.id = `${fieldId}-autocomplete`;
@@ -134,6 +160,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should test scrollTo', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'scroll');
 
@@ -143,6 +174,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return the highest priority error', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const errorKeys = ['required', 'minLength'];
     const fieldErrors: IAbstractFormBaseFieldError = ABSTRACT_FORM_BASE_FORM_CONTROL_ERROR_MOCK;
 
@@ -152,6 +188,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return null if errorKeys is empty', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const errorKeys: string[] = [];
     const fieldErrors: IAbstractFormBaseFieldError = ABSTRACT_FORM_BASE_FORM_CONTROL_ERROR_MOCK;
 
@@ -160,6 +201,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return null if fieldErrors is empty', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const errorKeys = ['required', 'minLength'];
     const fieldErrors: IAbstractFormBaseFieldError = {};
 
@@ -169,12 +215,22 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return null if nothing is not passed in', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const result = component['getHighestPriorityError']();
 
     expect(result).toBe(null);
   });
 
   it('should return null if errorKeys and fieldErrors are empty', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const errorKeys: string[] = [];
     const fieldErrors: IAbstractFormBaseFieldError = {};
 
@@ -184,6 +240,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an array of error summary entries for nested form group controls', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     component['fieldErrors'] = {
       street: {
         required: {
@@ -217,11 +278,21 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should repopulate the form', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component['rePopulateForm'](ABSTRACT_FORM_BASE_FORM_STATE_MOCK);
     expect(component.form.value.forename).toBe('Test');
   });
 
   it('should remove error summary messages', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.formErrorSummaryMessage = ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 1);
 
     component['removeErrorSummaryMessages'](component.formErrorSummaryMessage, [1]);
@@ -230,6 +301,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return the indices of form error summary messages for given field IDs', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldIds = ['dayOfMonth', 'monthOfYear', 'year'];
     const formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] =
       ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK;
@@ -240,6 +316,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if no form error summary messages match the field IDs', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldIds = ['surname', 'address', 'phone'];
     const formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] =
       ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK;
@@ -249,6 +330,11 @@ describe('AbstractFormBaseComponent', () => {
     expect(result).toEqual([]);
   });
   it('should return the indices of form error summary messages for given field IDs', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldIds = ['dayOfMonth', 'monthOfYear', 'year'];
     const formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] =
       ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK;
@@ -259,6 +345,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if no form error summary messages match the field IDs', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldIds = ['surname', 'address', 'phone'];
     const formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] =
       ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK;
@@ -269,6 +360,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return the indices of form error summary messages to remove for date fields', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.formErrorSummaryMessage = ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK;
 
     const result = component['getDateFieldsToRemoveIndexes']();
@@ -277,6 +373,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return the indices of form error summary messages to remove for date fields when only two fields are present', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.formErrorSummaryMessage = ABSTRACT_FORM_BASE_FORM_DATE_ERROR_SUMMARY_MOCK.slice(0, 2);
 
     const result = component['getDateFieldsToRemoveIndexes']();
@@ -285,6 +386,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if no form error summary messages to remove for date fields', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.formErrorSummaryMessage = [];
 
     const result = component['getDateFieldsToRemoveIndexes']();
@@ -293,6 +399,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should set the error messages', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const errorSummaryEntry: IAbstractFormBaseFormError[] = ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK;
 
     component['setErrorMessages'](errorSummaryEntry);
@@ -322,6 +433,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should set initial form error messages to null for each form control', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component['setInitialErrorMessages']();
 
     expect(component.formControlErrorMessages['forename']).toBeNull();
@@ -330,6 +446,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if the form is valid', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.form.patchValue(ABSTRACT_FORM_BASE_FORM_STATE_MOCK);
     const result = component['getFormErrors'](component.form);
 
@@ -337,6 +458,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if the form control does not have a field error', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const invalidField = new FormGroup({
       test: new FormControl(null, Validators.required),
     });
@@ -346,6 +472,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if the form array does not have any field errors', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formArray = new FormArray([
       new FormGroup({
         test: new FormControl(null, Validators.required),
@@ -365,6 +496,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should handle FormArray containing non-FormGroup controls', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formArray = new FormArray([
       new FormControl(null, Validators.required),
       new FormGroup({
@@ -382,6 +518,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return the error summary entries', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component['fieldErrors'] = ABSTRACT_FORM_BASE_FIELD_ERRORS;
     const errorMessage = component['getFieldErrorDetails'](['court']);
     const expectedResp = { message: 'Select a court', priority: 1, type: 'required' };
@@ -390,10 +531,20 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return null as no control error', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     expect(component['getFieldErrorDetails'](['surname'])).toBeNull();
   });
 
   it('should manipulate the form error message for specified fields', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'required';
@@ -410,6 +561,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should not manipulate the form error message if the error type does not match', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'maxLength';
@@ -421,6 +577,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if formErrors is empty', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fields = ['monthOfYear', 'dayOfMonth', 'year'];
     const messageOverride = 'New error message';
     const errorType = 'required';
@@ -432,6 +593,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should handle date input form errors', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.formErrors = ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK;
     const messageOverride = 'Please enter a DOB';
 
@@ -446,6 +612,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return the highest priority form errors', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formErrors: IAbstractFormBaseFormError[] = [
       ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK[0],
       { ...ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK[1], priority: 2 },
@@ -459,6 +630,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return an empty array if formErrors is empty', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formErrors: IAbstractFormBaseFormError[] = [];
 
     const result = component['getHighPriorityFormErrors'](formErrors);
@@ -467,6 +643,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should return all form errors if they have the same priority', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formErrors: IAbstractFormBaseFormError[] = ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK;
 
     const result = component['getHighPriorityFormErrors'](formErrors);
@@ -475,6 +656,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should split form errors into clean and removed form errors', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fieldIds = ['monthOfYear', 'dayOfMonth', 'year'];
     const formErrors: IAbstractFormBaseFormError[] = ABSTRACT_FORM_BASE_FORM_ERROR_SUMMARY_MOCK;
 
@@ -490,6 +676,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should emit form submit event with form value', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formValue = ABSTRACT_FORM_BASE_FORM_STATE_MOCK;
     component['rePopulateForm'](formValue);
 
@@ -500,18 +691,33 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should navigate to account-details page on handleRoute', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleRoute('test');
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 
   it('should navigate to relative route', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleRoute('test', true);
     expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 
   it('should navigate to relative route with event', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj('event', ['preventDefault']);
 
@@ -522,6 +728,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should test hasUnsavedChanges', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component['formSubmitted'] = false;
     expect(component['hasUnsavedChanges']()).toBe(false);
 
@@ -534,6 +745,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should set the value of the form control and mark it as touched', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const testValue = 'newValue';
     const controlName = 'surname';
 
@@ -546,6 +762,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should add controls to a form group', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const formGroup = new FormGroup({});
     const controls: IAbstractFormArrayControlValidation[] = [
       { controlName: 'firstName', validators: [] },
@@ -562,6 +783,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should remove control name errors', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.formControlErrorMessages = {
       court: 'test message',
     };
@@ -572,6 +798,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should create a new control with the given control name and validators', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const controlName = 'testControl';
     const validators: ValidatorFn[] = [Validators.required];
 
@@ -583,12 +814,22 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should remove a control from the form', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const controlName = 'surname';
     component['removeControl'](controlName);
     expect(component.form.get(controlName)).toBeNull();
   });
 
   it('should create a form control with the specified validators and initial value', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const validators = [Validators.required];
     const initialValue = 'Test';
 
@@ -600,6 +841,11 @@ describe('AbstractFormBaseComponent', () => {
   });
 
   it('should create a form control with default initial value of null', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const validators = [Validators.required];
 
     const formControl = component['createFormControl'](validators);

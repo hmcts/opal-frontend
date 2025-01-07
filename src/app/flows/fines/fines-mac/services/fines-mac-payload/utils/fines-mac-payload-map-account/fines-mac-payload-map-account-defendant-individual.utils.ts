@@ -15,7 +15,7 @@ const mapAccountDefendantIndividualDebtorDetailsAliases = (
     | IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[]
     | null,
 ): IFinesMacPersonalDetailsAliasState[] => {
-  if (!payloadAccountDefendantIndividualDebtorDetailsAliases) {
+  if (!payloadAccountDefendantIndividualDebtorDetailsAliases?.length) {
     return [];
   }
 
@@ -37,14 +37,8 @@ const mapAccountDefendantIndividualDebtorDetails = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccountDefendantDebtorDetailComplete,
 ): IFinesMacState => {
-  if (!payload) {
-    return mappedFinesMacState;
-  }
-
   // Map aliases
-  const aliases = payload.aliases
-    ? mapAccountDefendantIndividualDebtorDetailsAliases(payload.aliases)
-    : mappedFinesMacState.personalDetails.formData.fm_personal_details_aliases;
+  const aliases = mapAccountDefendantIndividualDebtorDetailsAliases(payload.aliases);
 
   // Update personal details
   mappedFinesMacState.personalDetails.formData = {
