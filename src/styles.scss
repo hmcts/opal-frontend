@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'govuk-frontend/dist/govuk/helpers/colour';
 @import 'govuk-frontend/dist/govuk/settings/colours-applied';
+@import 'govuk-frontend/dist/govuk/objects/_width-container.scss';
 
 html,
 body {
@@ -27,9 +28,8 @@ body {
 }
 
 .govuk-width-container {
-  height: 100%; /* Ensure the container takes the full height if necessary */
-  width: 1028px;
-  max-width: 1028px;
+  height: 100%;
+  @include govuk-width-container(1028px);
 }
 
 .govuk-main-wrapper {
