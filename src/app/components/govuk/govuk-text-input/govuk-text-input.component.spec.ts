@@ -6,9 +6,9 @@ import { By } from '@angular/platform-browser';
 import { ChangeDetectorRef } from '@angular/core';
 
 describe('GovukTextInputComponent', () => {
-  let component: GovukTextInputComponent;
-  let fixture: ComponentFixture<GovukTextInputComponent>;
-  let formControl: FormControl;
+  let component: GovukTextInputComponent | null;
+  let fixture: ComponentFixture<GovukTextInputComponent> | null;
+  let formControl: FormControl | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -28,21 +28,44 @@ describe('GovukTextInputComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    formControl = null;
+
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have extra label classes', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const elem = fixture.debugElement.query(By.css('.govuk-label.govuk-label--l')).nativeElement;
     expect(elem).toBeTruthy();
   });
 
   it('should have labelText', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const elem = fixture.debugElement.query(By.css('.govuk-label.govuk-label--l')).nativeElement;
     expect(elem.textContent).toContain('test');
   });
 
   it('should have extra input classes', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     const labelClass = 'govuk-input--width-20';
     component.inputClasses = labelClass;
     fixture.detectChanges();
