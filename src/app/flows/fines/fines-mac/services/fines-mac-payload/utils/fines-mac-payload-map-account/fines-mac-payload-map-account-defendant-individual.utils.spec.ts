@@ -124,4 +124,27 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
     expect(result.personalDetails.formData.fm_personal_details_add_alias).toBe(true);
     expect(result.personalDetails.formData.fm_personal_details_aliases.length).toBeGreaterThan(0);
   });
+
+  it('should map personal details with aliases from payload to state and return an empty array if aliases has no len', () => {
+    if (
+      !initialState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState
+    ) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_MOCK,
+    );
+    if (payload.debtor_detail) {
+      payload.debtor_detail.aliases = [];
+    }
+
+    const result = finesMacPayloadMapAccountDefendantIndividualPayload(initialState, payload);
+    expect(result.personalDetails.formData.fm_personal_details_aliases).toEqual([]);
+  });
 });

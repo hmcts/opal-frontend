@@ -15,11 +15,11 @@ class TestHostComponent {
 }
 
 describe('GovukSummaryListRowComponent', () => {
-  let component: TestHostComponent;
-  let componentGSLRC: GovukSummaryListRowComponent;
+  let component: TestHostComponent | null;
+  let componentGSLRC: GovukSummaryListRowComponent | null;
 
-  let fixture: ComponentFixture<TestHostComponent>;
-  let fixtureGSLRC: ComponentFixture<GovukSummaryListRowComponent>;
+  let fixture: ComponentFixture<TestHostComponent> | null;
+  let fixtureGSLRC: ComponentFixture<GovukSummaryListRowComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -35,29 +35,56 @@ describe('GovukSummaryListRowComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    fixtureGSLRC = null;
+
+    component = null;
+    componentGSLRC = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should render into the name ng-content', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.nativeElement.querySelector('#testRowTestKey');
 
     expect(element.innerText).toBe('Tim');
   });
 
   it('should render into the value ng-content', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.nativeElement.querySelector('#testRowTestValue > .govuk-body');
 
     expect(element.innerText).toBe('Hello');
   });
 
   it('should not render into the action ng-content', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
     const element = fixture.nativeElement.querySelector('#testRowTestActions');
 
     expect(element).toBeFalsy();
   });
 
   it('should render into the action ng-content', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
     component.action = true;
     fixture.detectChanges();
 
@@ -67,6 +94,10 @@ describe('GovukSummaryListRowComponent', () => {
   });
 
   it('should emit actionClick event when handleActionClick is called', () => {
+    if (!componentGSLRC) {
+      fail('componentGSLRC returned null');
+      return;
+    }
     const event = new Event('click');
     spyOn(componentGSLRC.actionClick, 'emit');
 
@@ -76,6 +107,10 @@ describe('GovukSummaryListRowComponent', () => {
   });
 
   it('should prevent default behavior when handleActionClick is called', () => {
+    if (!componentGSLRC) {
+      fail('componentGSLRC returned null');
+      return;
+    }
     const event = new Event('click');
     spyOn(event, 'preventDefault');
 
@@ -85,6 +120,11 @@ describe('GovukSummaryListRowComponent', () => {
   });
 
   it('should set the host values onInit', () => {
+    if (!componentGSLRC || !fixtureGSLRC) {
+      fail('componentGSLRC or fixtureGSLRCreturned null');
+      return;
+    }
+
     componentGSLRC.summaryListId = 'test';
     componentGSLRC.summaryListRowId = 'rowTest';
 

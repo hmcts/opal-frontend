@@ -126,7 +126,7 @@ Feature: PO-362 Company task list screen
 
 
 #DESCOPED by PO-549
-# Scenario: AC6a.b company task list Check and submit for review section
+# Scenario: AC6a.b company task list Check and submit section
 #   Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"
 #   Then I am on the dashboard
 
@@ -137,12 +137,12 @@ Feature: PO-362 Company task list screen
 #   And I select the "Company" radio button
 #   And I click the "Continue" button
 
-#   Then I see the "Check and submit for review" section heading
-#   And I see the "Check that all required fields have been entered before you publish" text under the "Check and submit for review" section
-#   And I see the "Review account" button under the "Check and submit for review" section
+#   Then I see the "Check and submit" section heading
+#   And I see the "Check that all required fields have been entered before you publish" text under the "Check and submit" section
+#   And I see the "Check account" button under the "Check and submit" section
 
 # Descoped
-# Scenario: AC6.c company task list Review account button
+# Scenario: AC6.c company task list Check account button
 #   Given I am on the OPAL Frontend
 #   Then I see "Opal" in the header
 
@@ -156,7 +156,7 @@ Feature: PO-362 Company task list screen
 #   And I click on continue button
 
 #   Then I see "Account details" on the page header
-#   When The button "Review account" is clicked, nothing happens
+#   When The button "Check account" is clicked, nothing happens
 
 
 # Descoped

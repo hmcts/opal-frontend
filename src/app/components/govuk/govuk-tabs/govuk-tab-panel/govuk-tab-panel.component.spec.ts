@@ -8,8 +8,8 @@ import { Component } from '@angular/core';
 })
 class TestHostComponent {}
 describe('GovukTabPanelComponent', () => {
-  let component: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
+  let component: TestHostComponent | null;
+  let fixture: ComponentFixture<TestHostComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -22,11 +22,22 @@ describe('GovukTabPanelComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should render into list ng-content', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
+
     const element = fixture.nativeElement.querySelector('#testOneTestTwo');
     expect(element.innerText).toBe('Hello World');
   });

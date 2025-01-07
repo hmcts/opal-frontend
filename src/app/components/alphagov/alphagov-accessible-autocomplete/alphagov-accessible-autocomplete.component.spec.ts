@@ -41,8 +41,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should build autocomplete props correctly', () => {
-    if (!component || component === null) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -140,8 +140,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should get the default value', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -156,8 +156,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should return an empty string if control value is falsy', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -169,8 +169,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should return an empty string if control value does not match any item', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -184,8 +184,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should not clear the autocomplete as we have a value', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -201,8 +201,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should clear autocomplete when control value changes to null', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -222,8 +222,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   });
 
   it('should not do anything as we have no values', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
@@ -246,8 +246,8 @@ describe('AlphagovAccessibleAutocompleteComponent', () => {
   }
 
   it('it should test the onConfirm section of buildAutoCompleteProps', () => {
-    if (!component || !fixture) {
-      fail('component or fixture returned null');
+    if (!component) {
+      fail('component returned null');
       return;
     }
 
