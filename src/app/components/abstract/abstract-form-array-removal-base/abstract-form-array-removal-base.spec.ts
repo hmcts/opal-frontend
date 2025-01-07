@@ -11,8 +11,8 @@ class TestAbstractFormArrayRemovalComponent extends AbstractFormArrayRemovalComp
 }
 
 describe('AbstractFormArrayRemovalBase', () => {
-  let component: TestAbstractFormArrayRemovalComponent;
-  let fixture: ComponentFixture<TestAbstractFormArrayRemovalComponent>;
+  let component: TestAbstractFormArrayRemovalComponent | null;
+  let fixture: ComponentFixture<TestAbstractFormArrayRemovalComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,7 +34,18 @@ describe('AbstractFormArrayRemovalBase', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should retrieve control value or default value when control does not exist', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formArray = new FormArray([new FormGroup({ field: new FormControl('test') })]);
     const value = component['getFormArrayControlValue'](formArray, 'field', 0, 'default');
     expect(value).toBe('test');
@@ -48,6 +59,11 @@ describe('AbstractFormArrayRemovalBase', () => {
   });
 
   it('should remove control and renumber the remaining controls', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formArray = new FormArray([
       new FormGroup({ field1: new FormControl('value1') }),
       new FormGroup({ field2: new FormControl('value2') }),
@@ -60,6 +76,11 @@ describe('AbstractFormArrayRemovalBase', () => {
   });
 
   it('should renumber the controls in a FormArray', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formArray = new FormArray([
       new FormGroup({ field1: new FormControl('value1') }),
       new FormGroup({ field2: new FormControl('value2') }),
@@ -72,6 +93,11 @@ describe('AbstractFormArrayRemovalBase', () => {
   });
 
   it('should update control keys in a form group', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formGroup = new FormGroup({
       dynamicField_field1_1: new FormControl('value1'),
       dynamicField_field2_1: new FormControl('value2'),
@@ -92,18 +118,33 @@ describe('AbstractFormArrayRemovalBase', () => {
   });
 
   it('should navigate to account-details page on handleRoute', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleRoute('test');
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 
   it('should navigate to relative route', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component.handleRoute('test', true);
     expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 
   it('should navigate to relative route with event', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj('event', ['preventDefault']);
 
