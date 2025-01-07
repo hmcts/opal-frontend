@@ -36,28 +36,27 @@ const getCreditorType = (companyFlag: boolean | null): string => {
  * @returns An object containing the mapped minor creditor state details.
  */
 const mapAccountOffencesMinorCreditorState = (
-  imposition: IFinesMacPayloadAccountOffencesImposition,
+  minorCreditor: IFinesMacPayloadAccountOffencesMinorCreditor,
   index: number,
 ): IFinesMacOffenceDetailsMinorCreditorState => {
-  const minorCreditor = imposition.minor_creditor;
-  const creditorType = minorCreditor ? getCreditorType(minorCreditor.company_flag) : null;
+  const creditorType = getCreditorType(minorCreditor.company_flag);
 
   return {
     fm_offence_details_imposition_position: index,
     fm_offence_details_minor_creditor_creditor_type: creditorType,
-    fm_offence_details_minor_creditor_title: minorCreditor?.title ?? null,
-    fm_offence_details_minor_creditor_forenames: minorCreditor?.forenames ?? null,
-    fm_offence_details_minor_creditor_surname: minorCreditor?.surname ?? null,
-    fm_offence_details_minor_creditor_company_name: minorCreditor?.company_name ?? null,
-    fm_offence_details_minor_creditor_address_line_1: minorCreditor?.address_line_1 ?? null,
-    fm_offence_details_minor_creditor_address_line_2: minorCreditor?.address_line_2 ?? null,
-    fm_offence_details_minor_creditor_address_line_3: minorCreditor?.address_line_3 ?? null,
-    fm_offence_details_minor_creditor_post_code: minorCreditor?.post_code ?? null,
-    fm_offence_details_minor_creditor_pay_by_bacs: minorCreditor?.pay_by_bacs ?? null,
-    fm_offence_details_minor_creditor_bank_account_name: minorCreditor?.bank_account_name ?? null,
-    fm_offence_details_minor_creditor_bank_sort_code: minorCreditor?.bank_sort_code ?? null,
-    fm_offence_details_minor_creditor_bank_account_number: minorCreditor?.bank_account_number ?? null,
-    fm_offence_details_minor_creditor_bank_account_ref: minorCreditor?.bank_account_ref ?? null,
+    fm_offence_details_minor_creditor_title: minorCreditor.title,
+    fm_offence_details_minor_creditor_forenames: minorCreditor.forenames,
+    fm_offence_details_minor_creditor_surname: minorCreditor.surname,
+    fm_offence_details_minor_creditor_company_name: minorCreditor.company_name,
+    fm_offence_details_minor_creditor_address_line_1: minorCreditor.address_line_1,
+    fm_offence_details_minor_creditor_address_line_2: minorCreditor.address_line_2,
+    fm_offence_details_minor_creditor_address_line_3: minorCreditor.address_line_3,
+    fm_offence_details_minor_creditor_post_code: minorCreditor.post_code,
+    fm_offence_details_minor_creditor_pay_by_bacs: minorCreditor.pay_by_bacs,
+    fm_offence_details_minor_creditor_bank_account_name: minorCreditor.bank_account_name,
+    fm_offence_details_minor_creditor_bank_sort_code: minorCreditor.bank_sort_code,
+    fm_offence_details_minor_creditor_bank_account_number: minorCreditor.bank_account_number,
+    fm_offence_details_minor_creditor_bank_account_ref: minorCreditor.bank_account_ref,
   };
 };
 
@@ -145,20 +144,24 @@ const mapAccountOffencesImpositionsState = (
  * Maps an array of impositions to an array of minor creditor states.
  *
  * @param impositions - An array of impositions or null.
- * @returns An array of minor creditor states. If the input is null, returns an empty array.
+ * @returns An array of minor creditor states. If the input is null or empty, returns an empty array.
  */
 const mapAccountOffencesMinorCreditors = (
   impositions: IFinesMacPayloadAccountOffencesImposition[] | null,
 ): IFinesMacOffenceDetailsMinorCreditorState[] => {
-  if (!impositions) {
+  // Return an empty array if the input is null or empty
+  if (!impositions?.length) {
     return [];
   }
 
+  // Filter impositions with valid minor creditors and map them
   return impositions
-    .filter((imposition) => imposition.minor_creditor)
-    .map((imposition, index) => mapAccountOffencesMinorCreditorState(imposition, index));
+    .filter((imposition) => !!imposition.minor_creditor)
+    .map(({ minor_creditor: minorCreditor }, index) =>
+      minorCreditor ? mapAccountOffencesMinorCreditorState(minorCreditor, index) : null,
+    )
+    .filter((state): state is IFinesMacOffenceDetailsMinorCreditorState => state !== null);
 };
-
 /**
  * Maps an array of IFinesMacPayloadAccountOffencesImposition to an array of IFinesMacOffenceDetailsImpositionsState.
  *
@@ -168,7 +171,7 @@ const mapAccountOffencesMinorCreditors = (
 const mapAccountOffencesImpositions = (
   impositions: IFinesMacPayloadAccountOffencesImposition[] | null,
 ): IFinesMacOffenceDetailsImpositionsState[] => {
-  if (!impositions) {
+  if (!impositions?.length) {
     return [];
   }
 
@@ -239,7 +242,7 @@ const mapAccountOffencesPayload = (
   mappedFinesMacState: IFinesMacState,
   offences: IFinesMacPayloadAccountOffences[] | null,
 ): IFinesMacState => {
-  if (!offences) {
+  if (!offences?.length) {
     return mappedFinesMacState;
   }
 
@@ -248,12 +251,11 @@ const mapAccountOffencesPayload = (
     const offenceDetailsFormState: IFinesMacOffenceDetailsForm = buildDefaultOffenceDetailsFormState();
 
     // Map impositions and minor creditor state if available
-    const mappedOffenceDetailsImpositionsState = offence.impositions?.length
-      ? mapAccountOffencesImpositions(offence.impositions)
-      : [];
-    const mappedOffenceDetailsMinorCreditorForm = offence.impositions?.length
-      ? mapAccountOffenceDetailsMinorCreditorForm(mapAccountOffencesMinorCreditors(offence.impositions))
-      : [];
+    const mappedOffenceDetailsImpositionsState = mapAccountOffencesImpositions(offence.impositions);
+
+    const mappedOffenceDetailsMinorCreditorForm = mapAccountOffenceDetailsMinorCreditorForm(
+      mapAccountOffencesMinorCreditors(offence.impositions),
+    );
 
     // Map the offence details state
     offenceDetailsFormState.formData = {

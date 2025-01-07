@@ -11,4 +11,5 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK: IFinesMa
     ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK.debtor_detail,
     aliases: null,
   },
+  parent_guardian: null,
 };
