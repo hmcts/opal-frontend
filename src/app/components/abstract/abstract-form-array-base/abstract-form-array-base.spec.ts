@@ -14,8 +14,8 @@ class TestAbstractFormArrayBaseComponent extends AbstractFormArrayBaseComponent 
 }
 
 describe('AbstractFormArrayBaseComponent', () => {
-  let component: TestAbstractFormArrayBaseComponent;
-  let fixture: ComponentFixture<TestAbstractFormArrayBaseComponent>;
+  let component: TestAbstractFormArrayBaseComponent | null;
+  let fixture: ComponentFixture<TestAbstractFormArrayBaseComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,13 +31,29 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   beforeEach(() => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.formArrayControls = [];
     component.formArrayControlsValidation = [];
     component.formArrayFields = [];
   });
 
   afterEach(() => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.ngOnDestroy();
+  });
+
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
   });
 
   it('should create', () => {
@@ -45,6 +61,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should set up the form array form controls for the form', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const impositions = [
       {
         result_code_0: 'Test',
@@ -59,6 +80,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should add controls to the formArrayControls form array', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const index = 0;
 
     expect(component.formArrayControls.length).toBe(0);
@@ -69,6 +95,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should remove an alias from the formArrayControls form array', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const index = 0;
 
     component.addControlsToFormArray(index, 'impositions');
@@ -79,6 +110,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should create form controls based on the given fields and index', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const fields = ['field1', 'field2', 'field3'];
     const index = 0;
 
@@ -104,6 +140,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should create a form array with validators and controls', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const validators: ValidatorFn[] = [Validators.required];
     const controls: FormControl[] = [new FormControl('test')];
 
@@ -114,6 +155,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should create a form array with validators and no controls', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const validators: ValidatorFn[] = [Validators.required];
 
     const formArray = component['createFormArray'](validators);
@@ -123,6 +169,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should create a form array with no validators and controls', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const controls: FormControl[] = [new FormControl('test')];
 
     const formArray = component['createFormArray']([], controls);
@@ -132,6 +183,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should remove specific error messages from formControlErrorMessages for the given form array control', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const index = 0;
 
     // Mock form array controls and field names
@@ -158,6 +214,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should return null when control has no errors', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const controlPath = ['field1'];
 
     // Create a FormControl without errors
@@ -175,6 +236,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should retrieve field errors when they exist', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const controlPath = ['field1'];
 
     // Create a FormControl with errors
@@ -197,6 +263,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should remove a form array control from the form array', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formArrayControl: IAbstractFormArrayControls = {
       field1: { inputId: 'field1_0', inputName: 'field1_0', controlName: 'field1_0' },
       field2: { inputId: 'field2_0', inputName: 'field2_0', controlName: 'field2_0' },
@@ -214,6 +285,11 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should remove form array form group control validators', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const formControl = new FormControl();
     formControl.setValidators(Validators.required);
     formControl.setValue('test');
@@ -227,11 +303,21 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should return the default value if control is null', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const result = component['getControlValueOrDefault'](null, 'default value');
     expect(result).toBe('default value');
   });
 
   it('should add index to form array data', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const data = [
       { field1: 'value1', field2: 'value2' },
       { field1: 'value3', field2: 'value4' },
@@ -246,6 +332,10 @@ describe('AbstractFormArrayBaseComponent', () => {
   });
 
   it('should handle undefined values in form array data', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
     const data = [
       { field1: 'value1', field2: undefined },
       { field1: undefined, field2: 'value4' },

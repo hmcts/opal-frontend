@@ -15,8 +15,8 @@ class TestAbstractFormParentBaseComponent extends AbstractFormParentBaseComponen
 }
 
 describe('AbstractFormParentBaseComponent', () => {
-  let component: TestAbstractFormParentBaseComponent;
-  let fixture: ComponentFixture<TestAbstractFormParentBaseComponent>;
+  let component: TestAbstractFormParentBaseComponent | null;
+  let fixture: ComponentFixture<TestAbstractFormParentBaseComponent> | null;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -35,29 +35,60 @@ describe('AbstractFormParentBaseComponent', () => {
     component = fixture.componentInstance;
   });
 
+  afterAll(() => {
+    component = null;
+    fixture = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should return false if there are unsaved changes', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.stateUnsavedChanges = true;
     expect(component.canDeactivate()).toBe(false);
   });
 
   it('should return true if there are no unsaved changes', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     component.stateUnsavedChanges = false;
     expect(component.canDeactivate()).toBe(true);
   });
 
   it('should test routerNavigate', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component['routerNavigate']('test');
     expect(routerSpy).toHaveBeenCalledWith(['test'], { relativeTo: component['activatedRoute'].parent });
   });
 
   it('should test routerNavigate with no activated route', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     component['routerNavigate']('test', true);
     expect(routerSpy).toHaveBeenCalledWith(['test']);
   });
 
   it('should test routerNavigate with event', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const routerSpy = spyOn(component['router'], 'navigate');
     const event = jasmine.createSpyObj('event', ['preventDefault']);
 
@@ -67,6 +98,11 @@ describe('AbstractFormParentBaseComponent', () => {
   });
 
   it('should return true if any form value is truthy', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const form = {
       name: 'John Doe',
       age: 25,
@@ -77,6 +113,11 @@ describe('AbstractFormParentBaseComponent', () => {
   });
 
   it('should return false if all form values are falsy', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
     const form = {
       name: '',
       age: 0,
