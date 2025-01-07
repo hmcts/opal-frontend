@@ -7,7 +7,7 @@ class TestComponent extends AbstractSortableTablePaginationComponent {
   }
 }
 
-describe('AbstractSortableTableComponent', () => {
+describe('AbstractSortableTablePaginationComponent', () => {
   let component: TestComponent | null;
   let fixture: ComponentFixture<TestComponent> | null;
 
