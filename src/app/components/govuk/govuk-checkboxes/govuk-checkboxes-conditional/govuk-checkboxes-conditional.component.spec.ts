@@ -8,8 +8,8 @@ import { Component } from '@angular/core';
 })
 class TestHostComponent {}
 describe('GovukCheckboxesConditionalComponent', () => {
-  let component: TestHostComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
+  let component: TestHostComponent | null;
+  let fixture: ComponentFixture<TestHostComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,11 +23,21 @@ describe('GovukCheckboxesConditionalComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should create with id', () => {
+    if (!fixture) {
+      fail('fixture returned null');
+      return;
+    }
     const element = fixture.nativeElement.querySelector('#test-conditional');
     expect(element.innerText).toBe('Hello World');
   });
