@@ -28,6 +28,8 @@ body {
 
 .govuk-width-container {
   height: 100%; /* Ensure the container takes the full height if necessary */
+  width: 1028px;
+  max-width: 1028px;
 }
 
 .govuk-main-wrapper {
