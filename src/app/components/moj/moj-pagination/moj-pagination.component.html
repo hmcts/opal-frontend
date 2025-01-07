@@ -1,4 +1,4 @@
-<nav class="moj-pagination" aria-label="Pagination navigation">
+<nav class="moj-pagination moj-pagination-alignment" [attr.aria-label]="ariaLabel">
   <ul app-moj-pagination-list>
     <li app-moj-pagination-item class="moj-pagination__item moj-pagination__item--prev">
       @if (currentPage > 1) {

@@ -1,20 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  signal,
-  HostBinding,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, signal } from '@angular/core';
 import { MojPaginationItemComponent } from './moj-pagination-item/moj-pagination-item.component';
 import { MojPaginationListComponent } from './moj-pagination-list/moj-pagination-list.component';
 import { MojPaginationLinkComponent } from './moj-pagination-link/moj-pagination-link.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-moj-pagination, [app-moj-pagination]',
+  selector: 'app-moj-pagination,',
   styleUrls: ['./moj-pagination.component.scss'],
   standalone: true,
   imports: [CommonModule, MojPaginationItemComponent, MojPaginationListComponent, MojPaginationLinkComponent],
@@ -26,8 +17,8 @@ export class MojPaginationComponent implements OnChanges {
   @Input() total = 0;
   @Input() maxPagesToShow = 5;
   @Input() limit = 100;
+  @Input() ariaLabel = 'Pagination navigation';
   @Output() changePage = new EventEmitter<number>();
-  @HostBinding('class') class = 'moj-pagination';
 
   public pages = signal<(number | string)[]>([]);
   public totalPages = signal<number>(0);
