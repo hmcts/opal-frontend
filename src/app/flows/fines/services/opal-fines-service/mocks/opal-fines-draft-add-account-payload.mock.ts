@@ -108,7 +108,7 @@ export const OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK: IFinesMacAddAccountPaylo
       {
         date_of_sentence: '01/12/2024',
         imposing_court_id: '6246',
-        offence_id: 'HY35014',
+        offence_id: 294885,
         impositions: [
           {
             result_id: 'FVS',

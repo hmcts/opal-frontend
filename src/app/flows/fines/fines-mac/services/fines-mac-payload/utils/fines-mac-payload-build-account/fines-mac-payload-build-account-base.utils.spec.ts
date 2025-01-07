@@ -28,7 +28,8 @@ describe('finesMacPayloadBuildAccountBase', () => {
     offenceMock = structuredClone({
       fm_offence_details_id: 0,
       fm_offence_details_date_of_sentence: null,
-      fm_offence_details_offence_id: 'OFF1234',
+      fm_offence_details_offence_cjs_code: 'OFF1234',
+      fm_offence_details_offence_id: 1234,
       fm_offence_details_impositions: [
         {
           fm_offence_details_imposition_id: 1,
