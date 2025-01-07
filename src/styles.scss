@@ -29,6 +29,10 @@ body {
 
 .govuk-width-container {
   height: 100%;
+}
+
+.govuk-width-container,
+.moj-header__container {
   @include govuk-width-container(1028px);
 }
 
