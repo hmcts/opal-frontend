@@ -15,7 +15,7 @@ dependencies:
     repository: 'https://charts.bitnami.com/bitnami'
     condition: redis.enabled
   - name: postgresql
-    version: 16.3.2
+    version: 16.3.5
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: opal-fines-service
