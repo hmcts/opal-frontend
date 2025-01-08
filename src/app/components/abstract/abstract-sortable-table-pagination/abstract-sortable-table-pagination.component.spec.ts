@@ -57,6 +57,7 @@ describe('AbstractSortableTablePaginationComponent', () => {
     }
 
     component.abstractPaginatedCurrentPage.set(2);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const indices = (component as any).calculatePaginationIndices();
 
     expect(indices.startIndex).toBe(1);
