@@ -11,24 +11,9 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   private readonly sortService = inject(SortService);
   public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
-  public abstractCurrentPage!: number;
-  public abstractItemsPerPage!: number;
-  public abstractPaginatedData: IAbstractTableData<SortableValues>[] | null = null;
   public sortState: IAbstractSortState = {};
 
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
-
-  /**
-   * Initializes the sort state for the table component.
-   * If an existing sort state is present, it uses that; otherwise, it creates a new sort state based on the table data.
-   *
-   * @private
-   * @returns {void}
-   */
-  private initialiseSortState(): void {
-    const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
-    this.sortState = sortState;
-  }
 
   /**
    * Creates an initial sort state for a table based on the provided table data.
@@ -47,6 +32,18 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     }
 
     return sortState;
+  }
+
+  /**
+   * Initializes the sort state for the table component.
+   * If an existing sort state is present, it uses that; otherwise, it creates a new sort state based on the table data.
+   *
+   * @private
+   * @returns {void}
+   */
+  protected initialiseSortState(): void {
+    const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
+    this.sortState = sortState;
   }
 
   /**
