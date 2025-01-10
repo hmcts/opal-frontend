@@ -19,7 +19,7 @@ export const FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS: IAbstractFormBaseF
       priority: 4,
     },
   },
-  fm_offence_details_offence_id: {
+  fm_offence_details_offence_cjs_code: {
     required: {
       message: 'Enter an offence code',
       priority: 1,
