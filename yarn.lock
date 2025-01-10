@@ -4013,14 +4013,14 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^3.0.0":
-  version: 3.3.0
-  resolution: "@ministryofjustice/frontend@npm:3.3.0"
+  version: 3.3.1
+  resolution: "@ministryofjustice/frontend@npm:3.3.1"
   dependencies:
     govuk-frontend: "npm:^5.0.0"
     moment: "npm:^2.27.0"
   peerDependencies:
     jquery: ^3.6.0
-  checksum: 10/d61ca4c4e96271f5e4e52fc7354e0e19ceb3348475d12d161015c103069101454581cb2274dd9ed50bcb69fedb3d61bda7861474c8ecdb3cd878c5956fe67c87
+  checksum: 10/ab278d257fcac450dfe083d7fc04cfdaacd0317a7ad8a79c43c852f56daae6d0bed3b32fe7a5d0a3f8cbe8c066373f4388fc0746d3a5f80ce70cfb1bd9da69d9
   languageName: node
   linkType: hard
 
