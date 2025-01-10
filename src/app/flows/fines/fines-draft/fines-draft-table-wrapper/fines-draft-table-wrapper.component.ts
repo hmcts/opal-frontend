@@ -24,11 +24,11 @@ import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/gov
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
-  public override abstractTableData!: IFinesDraftTableWrapperTableData[];
-  public override abstractPaginatedData!: IFinesDraftTableWrapperTableData[];
-  public override abstractPaginatedItemsPerPage = signal(25);
+  public override abstractTableData = signal<IFinesDraftTableWrapperTableData[]>([]);
+  public override abstractTablePaginatedData = signal<IFinesDraftTableWrapperTableData[]>([]);
+  public override abstractTablePaginatedItemsPerPage = signal(25);
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
-    this.abstractTableData = tableData;
+    this.abstractTableData.set(tableData);
   }
 
   @Input({ required: true }) set existingSortState(existingSortState: IFinesDraftTableWrapperTableSort | null) {

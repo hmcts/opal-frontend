@@ -31,7 +31,7 @@ describe('FinesDraftTableWrapperComponent', () => {
   it('should set abstractTableData when tableData input is provided', () => {
     const testData: IFinesDraftTableWrapperTableData[] = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK;
     component.tableData = testData;
-    expect(component.abstractTableData).toEqual(testData);
+    expect(component.abstractTableData()).toEqual(testData);
   });
 
   it('should set abstractExistingSortState when existingSortState input is provided', () => {

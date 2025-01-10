@@ -1,5 +1,3 @@
----
-
 # Abstract Sortable Table Component
 
 This Angular component serves as a foundational base for managing table sorting functionality. It provides reusable logic for handling table data sorting and is designed to be extended by other table components.
@@ -38,11 +36,10 @@ import { AbstractSortableTableComponent } from '@components/abstract/abstract-so
   templateUrl: './sortable-table.component.html',
 })
 export class SortableTableComponent extends AbstractSortableTableComponent {
-  public abstractTableData = [
+  public abstractTableData = signal([
     { name: 'Alice', age: 30 },
     { name: 'Bob', age: 25 },
-    { name: 'Charlie', age: 35 },
-  ];
+  ]);
 
   public abstractExistingSortState = {
     name: 'none',
@@ -55,9 +52,18 @@ export class SortableTableComponent extends AbstractSortableTableComponent {
 
 `AbstractSortableTableComponent` provides key inputs to manage table data and sorting states.
 
-| Input         | Type       | Description                                         |
-| ------------- | ---------- | --------------------------------------------------- |
-| `abstractTableData`   | `IAbstractTableData[]`| The table data to be displayed and sorted.    |
+| Input                       | Type                           | Description                                |
+| --------------------------- | ------------------------------ | ------------------------------------------ |
+| `abstractTableData`         | `signal<IAbstractTableData[]>` | The table data to be displayed and sorted. |
+| `abstractExistingSortState` | `IAbstractSortState` or `null` | Tracks the existing sort state (if any).   |
+
+## Outputs
+
+`AbstractSortableTableComponent` provides outputs the sort state.
+
+| Output              | Type                               | Description                                        |
+| ------------------- | ---------------------------------- | -------------------------------------------------- |
+| `abstractSortState` | `EventEmitter<IAbstractSortState>` | Emits the updated sort state when sorting changes. |
 
 ## Methods
 
@@ -65,15 +71,17 @@ export class SortableTableComponent extends AbstractSortableTableComponent {
 
 ### Common Methods:
 
-- **`createSortState(tableData: IAbstractTableData[])`**: Generates the initial sort state with all columns set to 'none'.
+- **`createSortState(tableData: IAbstractTableData[])`**:
+  Generates an initial sort state based on the provided table data.
 - **`onSortChange(event: { key: string; sortType: 'ascending' | 'descending' })`**: Updates the sorting state and reorders the table data accordingly.
 - **`ngOnInit()`**: Lifecycle hook to initialise the sort state.
 
-###Examples
+### Examples
 
 ```
 onSortChange({ key: 'name', sortType: 'ascending' });
 ```
+
 ## Interfaces
 
 `AbstractSortableTableComponent` uses several interfaces to define table data and sorting state structures.
@@ -81,6 +89,7 @@ onSortChange({ key: 'name', sortType: 'ascending' });
 ### Key Interfaces:
 
 1. **Table Data Interface**:
+
    - `IAbstractTableData`: Represents a row of table data.
 
 2. **Sort State Interface**:

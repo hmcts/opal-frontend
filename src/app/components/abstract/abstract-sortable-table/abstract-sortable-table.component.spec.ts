@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractSortableTableComponent } from './abstract-sortable-table.component';
 import { SortService } from '@services/sort-service/sort-service';
-import { IAbstractSortState } from './interfaces/abstract-sortable-table-interfaces';
+import { IAbstractSortState, IAbstractTableData } from './interfaces/abstract-sortable-table-interfaces';
 import { ABSTRACT_EXISTING_SORT_STATE_MOCK } from './mocks/abstract-sortable-table-existing-sort-state-mock';
 import { MOCK_ABSTRACT_TABLE_DATA } from './mocks/abstract-sortable-table-data-mock';
+import { SortableValues } from '@services/sort-service/types/sort-service-type';
 
 class TestComponent extends AbstractSortableTableComponent {
   constructor() {
     super();
-    this.abstractTableData = MOCK_ABSTRACT_TABLE_DATA;
+    this.abstractTableData.set(MOCK_ABSTRACT_TABLE_DATA);
     this.abstractExistingSortState = null;
   }
 }
@@ -109,13 +110,28 @@ describe('AbstractSortableTableComponent', () => {
     expect(sortState).toEqual(newSortState);
   });
 
+  it('should create a new sort state when tableData is null', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
+    const newSortState: IAbstractSortState = {};
+    const sortState = component['createSortState']([]);
+    fixture.detectChanges();
+    expect(sortState).toEqual(newSortState);
+  });
+
   it('should update sort state and sort data in ascending order', () => {
     if (!component || !service || !fixture) {
       fail('component, service or fixture returned null');
       return;
     }
     const event = { key: 'amountPaid', sortType: 'ascending' as const };
-    const sortedData = service.sortObjectArrayAsc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
+    const sortedData = service.sortObjectArrayAsc(
+      MOCK_ABSTRACT_TABLE_DATA,
+      'amountPaid',
+    ) as IAbstractTableData<SortableValues>[];
     const newSortState: IAbstractSortState = {
       ...ABSTRACT_EXISTING_SORT_STATE_MOCK,
       imposition: 'none',
@@ -126,7 +142,7 @@ describe('AbstractSortableTableComponent', () => {
     component['onSortChange'](event);
 
     expect(component.sortState).toEqual(newSortState);
-    expect(component.abstractTableData).toEqual(sortedData);
+    expect(component.abstractTableData()).toEqual(sortedData);
     expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortState);
   });
 
@@ -137,7 +153,10 @@ describe('AbstractSortableTableComponent', () => {
     }
 
     const event = { key: 'amountPaid', sortType: 'descending' as const };
-    const sortedData = service.sortObjectArrayDesc(MOCK_ABSTRACT_TABLE_DATA, 'amountPaid');
+    const sortedData = service.sortObjectArrayDesc(
+      MOCK_ABSTRACT_TABLE_DATA,
+      'amountPaid',
+    ) as IAbstractTableData<SortableValues>[];
     const newSortState: IAbstractSortState = {
       ...ABSTRACT_EXISTING_SORT_STATE_MOCK,
       imposition: 'none',
@@ -148,7 +167,7 @@ describe('AbstractSortableTableComponent', () => {
     component['onSortChange'](event);
 
     expect(component.sortState).toEqual(newSortState);
-    expect(component.abstractTableData).toEqual(sortedData);
+    expect(component.abstractTableData()).toEqual(sortedData);
     expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortState);
   });
 });

@@ -1,7 +1,7 @@
-@if (abstractTableData!.length > this.abstractPaginatedItemsPerPage()) {
+@if (abstractTableData()!.length > this.abstractTablePaginatedItemsPerPage()) {
   <strong
-    >Showing {{ abstractPaginatedStartIndex() }} - {{ abstractPaginatedEndIndex() }} of
-    {{ abstractTableData.length }} accounts
+    >Showing {{ abstractTablePaginatedStartIndex() }} - {{ abstractTablePaginatedEndIndex() }} of
+    {{ abstractTableData().length }} accounts
   </strong>
 }
 <app-moj-sortable-table>
@@ -58,7 +58,7 @@
     </th>
   </ng-container>
   <ng-container row>
-    @for (row of abstractPaginatedData; track row.defendantId) {
+    @for (row of abstractTablePaginatedData(); track row.defendantId) {
       <tr app-moj-sortable-table-row>
         @if (isApprovedTab) {
           <td app-moj-sortable-table-row-data id="account">{{ row.account }}</td>
@@ -74,11 +74,11 @@
     }
   </ng-container>
 </app-moj-sortable-table>
-@if (abstractTableData!.length > this.abstractPaginatedItemsPerPage()) {
+@if (abstractTableData()!.length > this.abstractTablePaginatedItemsPerPage()) {
   <app-govuk-pagination
-    [currentPage]="abstractPaginatedCurrentPage()"
-    [limit]="abstractPaginatedItemsPerPage()"
-    [total]="abstractTableData.length"
+    [currentPage]="abstractTablePaginatedCurrentPage()"
+    [limit]="abstractTablePaginatedItemsPerPage()"
+    [total]="abstractTableData().length"
     (changePage)="onPageChange($event)"
   ></app-govuk-pagination>
 }

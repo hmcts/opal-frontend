@@ -36,21 +36,22 @@ import { AbstractSortableTablePaginationComponent } from '@components/abstract/a
   templateUrl: './sortable-table-pagination.component.html',
 })
 export class SortableTablePaginationComponent extends AbstractSortableTablePaginationComponent {
-  public abstractTableData = [
+  public abstractTableData = signal([
     { name: 'Alice', age: 30 },
     { name: 'Bob', age: 25 },
     { name: 'Charlie', age: 35 },
     { name: 'Diana', age: 28 },
     { name: 'Eve', age: 32 },
-  ];
+  ]);
 
   public abstractExistingSortState = {
     name: 'none',
     age: 'none',
   };
 
-  public abstractPageSize = 2;
-  public abstractCurrentPage = 1;
+  public abstractTablePaginatedItemsPerPage = signal(5);
+  public abstractTablePaginatedCurrentPage = signal(1);
+  public abstractTablePaginatedData = signal<IAbstractTableData[]>([]);
 }
 ```
 
@@ -58,12 +59,13 @@ export class SortableTablePaginationComponent extends AbstractSortableTablePagin
 
 `AbstractSortableTablePaginationComponent` provides key inputs to manage table data and sorting states.
 
-| Input                       | Type                   | Description                                      |
-| --------------------------- | ---------------------- | ------------------------------------------------ |
-| `abstractTableData`         | `IAbstractTableData[]` | The table data to be displayed and sorted.       |
-| `abstractExistingSortState` | `IAbstractSortState`   | The initial sorting state for the table columns. |
-| `abstractPageSize`          | `number`               | The number of rows to display per page.          |
-| `abstractCurrentPage`       | `number`               | The current page number.                         |
+| Input                                | Type                           | Description                                                  |
+| ------------------------------------ | ------------------------------ | ------------------------------------------------------------ |
+| `abstractTablePaginatedCurrentPage`  | `signal<number>`               | Tracks the current page in the pagination.                   |
+| `abstractTablePaginatedItemsPerPage` | `signal<number>`               | Specifies the number of items per page.                      |
+| `abstractTablePaginatedStartIndex`   | `signal<number>`               | Indicates the start index of the items for the current page. |
+| `abstractTablePaginatedEndIndex`     | `signal<number>`               | Indicates the end index of the items for the current page.   |
+| `abstractTablePaginatedData`         | `signal<IAbstractTableData[]>` | Contains the paginated table data.                           |
 
 ## Methods
 
@@ -71,16 +73,14 @@ export class SortableTablePaginationComponent extends AbstractSortableTablePagin
 
 ### Common Methods:
 
-- **`createSortState(tableData: IAbstractTableData[])`**: Generates the initial sort state with all columns set to 'none'.
-- **`onSortChange(event: { key: string; sortType: 'ascending' | 'descending' })`**: Updates the sorting state and reorders the table data accordingly.
+- **`updatePaginatedData()`**:
+  Updates the paginated data based on the current page and items per page. Bound to an effect for automatic updates.
 - **`onPageChange(newPage: number)`**: Updates the current page and recalculates the table data to be displayed.
-- **`ngOnInit()`**: Lifecycle hook to initialise the sort state and pagination.
 
 ###Examples
 
 ```
 onPageChange(2); // Switches to page 2
-onSortChange({ key: 'name', sortType: 'ascending' }); // Sorts by name in ascending order
 ```
 
 ## Interfaces
