@@ -77,6 +77,7 @@ export default defineConfig({
   e2e: {
     baseUrl: process.env['TEST_URL'] || 'http://localhost:4000/',
     specPattern: '**/*.feature',
+    fixturesFolder: 'cypress/support/fixtures',
     setupNodeEvents,
     retries: {
       runMode: 1,
