@@ -153,6 +153,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should update paginated table data correctly', () => {
+    if (!component || !fixture) {
+      fail('component, service or fixture returned null');
+      return;
+    }
+
     component.currentPage.set(1);
     component.pageLimit.set(1);
     component.abstractTableData = MOCK_ABSTRACT_TABLE_DATA;
@@ -166,6 +171,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should update paginated table data when null', () => {
+    if (!component || !fixture) {
+      fail('component, service or fixture returned null');
+      return;
+    }
+
     component.currentPage.set(1);
     component.pageLimit.set(1);
     component.abstractTableData = null;
@@ -179,6 +189,11 @@ describe('AbstractSortableTableComponent', () => {
   });
 
   it('should handle page change correctly', () => {
+    if (!component) {
+      fail('component, service or fixture returned null');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'updatePaginatedTableData');
     component.handlePageChanged(3);

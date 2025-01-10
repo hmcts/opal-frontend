@@ -59,6 +59,9 @@
 <ng-template #tableWrapper>
   @if (draftAccounts$ | async; as draftAccounts) {
     @if (draftAccounts.length) {
+      @if (activeTab === 'rejected') {
+        <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
+      }
       <app-fines-draft-table-wrapper
         [tableData]="draftAccounts"
         [existingSortState]="tableSort"
@@ -88,6 +91,9 @@
 </ng-template>
 <ng-template #rejectedNoData>
   <p>You have no rejected accounts.</p>
+  <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
+</ng-template>
+<ng-template #rejectedTeamMemberData>
   <p>
     To resubmit accounts for other team members, you can
     <a
