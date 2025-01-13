@@ -10,7 +10,7 @@ import { signal } from '@angular/core';
 class TestComponent extends AbstractSortableTableComponent {
   constructor() {
     super();
-    this.abstractTableData.set(MOCK_ABSTRACT_TABLE_DATA);
+    this.abstractTableDataSignal.set(MOCK_ABSTRACT_TABLE_DATA);
     this.abstractExistingSortState = null;
   }
 }
@@ -55,7 +55,7 @@ describe('AbstractSortableTableComponent', () => {
     fixture.detectChanges();
 
     component['initialiseSortState']();
-    expect(component.sortState()).toEqual(newSortState());
+    expect(component.sortStateSignal()).toEqual(newSortState());
   });
 
   it('should not init with an existing sort state', () => {
@@ -68,7 +68,7 @@ describe('AbstractSortableTableComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(component.sortState()).toEqual(newSortState());
+    expect(component.sortStateSignal()).toEqual(newSortState());
   });
 
   it('should set an existing sort state', () => {
@@ -82,7 +82,7 @@ describe('AbstractSortableTableComponent', () => {
     fixture.detectChanges();
 
     component['initialiseSortState']();
-    expect(component.sortState()).toEqual(newSortState());
+    expect(component.sortStateSignal()).toEqual(newSortState());
   });
 
   it('should init with a new sort state', () => {
@@ -96,7 +96,7 @@ describe('AbstractSortableTableComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(component.sortState()).toEqual(newSortState());
+    expect(component.sortStateSignal()).toEqual(newSortState());
   });
 
   it('should create a new sort state', () => {
@@ -142,9 +142,9 @@ describe('AbstractSortableTableComponent', () => {
 
     component['onSortChange'](event);
 
-    expect(component.sortState()).toEqual(newSortState());
-    expect(component.abstractTableData()).toEqual(sortedData);
-    expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortState());
+    expect(component.sortStateSignal()).toEqual(newSortState());
+    expect(component.abstractTableDataSignal()).toEqual(sortedData);
+    expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortStateSignal());
   });
 
   it('should update sort state and sort data in descending order', () => {
@@ -167,8 +167,8 @@ describe('AbstractSortableTableComponent', () => {
 
     component['onSortChange'](event);
 
-    expect(component.sortState()).toEqual(newSortState());
-    expect(component.abstractTableData()).toEqual(sortedData);
-    expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortState());
+    expect(component.sortStateSignal()).toEqual(newSortState());
+    expect(component.abstractTableDataSignal()).toEqual(sortedData);
+    expect(component.abstractSortState.emit).toHaveBeenCalledWith(component.sortStateSignal());
   });
 });

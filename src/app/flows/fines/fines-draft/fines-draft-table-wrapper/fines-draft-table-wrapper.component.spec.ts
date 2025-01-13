@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesDraftTableWrapperComponent } from './fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table-wrapper-table-data.interface';
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
@@ -28,10 +27,10 @@ describe('FinesDraftTableWrapperComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set abstractTableData when tableData input is provided', () => {
+  it('should set abstractTableDataSignal when tableData input is provided', () => {
     const testData: IFinesDraftTableWrapperTableData[] = FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK;
     component.tableData = testData;
-    expect(component.abstractTableData()).toEqual(testData);
+    expect(component.abstractTableDataSignal()).toEqual(testData);
   });
 
   it('should set abstractExistingSortState when existingSortState input is provided', () => {

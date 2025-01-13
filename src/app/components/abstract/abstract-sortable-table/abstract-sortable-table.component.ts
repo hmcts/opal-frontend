@@ -10,9 +10,9 @@ import { SortableValues } from '@services/sort-service/types/sort-service-type';
 export abstract class AbstractSortableTableComponent implements OnInit {
   private readonly sortService = inject(SortService);
 
-  public abstractTableData = signal<IAbstractTableData<SortableValues>[]>([]);
+  public abstractTableDataSignal = signal<IAbstractTableData<SortableValues>[]>([]);
   public abstractExistingSortState: IAbstractSortState | null = null;
-  public sortState = signal<IAbstractSortState>({});
+  public sortStateSignal = signal<IAbstractSortState>({});
 
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
@@ -36,7 +36,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    * or generating a new one based on the current table data.
    */
   private initialiseSortState(): void {
-    this.sortState.set(this.abstractExistingSortState || this.createSortState(this.abstractTableData()));
+    this.sortStateSignal.set(this.abstractExistingSortState || this.createSortState(this.abstractTableDataSignal()));
   }
 
   /**
@@ -47,8 +47,8 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    * @param sortType - Sorting order ('ascending' or 'descending').
    */
   private updateSortState(key: string, sortType: 'ascending' | 'descending'): void {
-    this.sortState.set(
-      Object.keys(this.sortState()).reduce<IAbstractSortState>((state, columnKey) => {
+    this.sortStateSignal.set(
+      Object.keys(this.sortStateSignal()).reduce<IAbstractSortState>((state, columnKey) => {
         state[columnKey] = columnKey === key ? sortType : 'none';
         return state;
       }, {}),
@@ -64,8 +64,14 @@ export abstract class AbstractSortableTableComponent implements OnInit {
    */
   private getSortedTableData(key: string, sortType: 'ascending' | 'descending'): IAbstractTableData<SortableValues>[] {
     return sortType === 'ascending'
-      ? (this.sortService.sortObjectArrayAsc(this.abstractTableData(), key) as IAbstractTableData<SortableValues>[])
-      : (this.sortService.sortObjectArrayDesc(this.abstractTableData(), key) as IAbstractTableData<SortableValues>[]);
+      ? (this.sortService.sortObjectArrayAsc(
+          this.abstractTableDataSignal(),
+          key,
+        ) as IAbstractTableData<SortableValues>[])
+      : (this.sortService.sortObjectArrayDesc(
+          this.abstractTableDataSignal(),
+          key,
+        ) as IAbstractTableData<SortableValues>[]);
   }
 
   /**
@@ -85,10 +91,10 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     const sortedData = this.getSortedTableData(key, sortType);
 
     // Update the table data signal
-    this.abstractTableData.set(sortedData);
+    this.abstractTableDataSignal.set(sortedData);
 
     // Emit the updated sort state
-    this.abstractSortState.emit(this.sortState());
+    this.abstractSortState.emit(this.sortStateSignal());
   }
 
   /**

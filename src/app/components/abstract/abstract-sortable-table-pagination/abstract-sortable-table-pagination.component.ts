@@ -7,28 +7,28 @@ import { AbstractSortableTableComponent } from '../abstract-sortable-table/abstr
 })
 export abstract class AbstractSortableTablePaginationComponent extends AbstractSortableTableComponent {
   // Signal for the current page. Used to calculate the start and end indices for pagination.
-  public currentPage = signal(1);
+  public currentPageSignal = signal(1);
 
   // Signal for the number of items per page. Determines how many items are displayed on each page.
-  public itemsPerPage = signal(10);
+  public itemsPerPageSignal = signal(10);
 
-  // Signal for the start index (1-based). Automatically updates when `currentPage` or `itemsPerPage` changes.
-  public startIndex = computed(() => {
-    const currentPage = this.currentPage();
-    return (currentPage - 1) * this.itemsPerPage() + 1;
+  // Signal for the start index (1-based). Automatically updates when `currentPageSignal` or `itemsPerPageSignal` changes.
+  public startIndexComputed = computed(() => {
+    const currentPage = this.currentPageSignal();
+    return (currentPage - 1) * this.itemsPerPageSignal() + 1;
   });
 
-  // Signal for the end index (1-based). Automatically recalculates when `startIndex` or `abstractTableData` changes.
-  public endIndex = computed(() => {
-    const startIndex = this.startIndex();
-    return Math.min(startIndex + this.itemsPerPage() - 1, this.abstractTableData().length);
+  // Signal for the end index (1-based). Automatically recalculates when `startIndexComputed` or `abstractTableDataSignal` changes.
+  public endIndexComputed = computed(() => {
+    const startIndex = this.startIndexComputed();
+    return Math.min(startIndex + this.itemsPerPageSignal() - 1, this.abstractTableDataSignal().length);
   });
 
-  // Computed signal for paginated table data. Reactively slices `abstractTableData` based on `startIndex` and `endIndex`.
-  public paginatedTableData = computed(() => {
-    const data = this.abstractTableData(); // Full table data
+  // Computed signal for paginated table data. Reactively slices `abstractTableDataSignal` based on `startIndexComputed` and `endIndexComputed`.
+  public paginatedTableDataComputed = computed(() => {
+    const data = this.abstractTableDataSignal(); // Full table data
 
-    return data.slice(this.startIndex() - 1, this.endIndex()); // Return paginated data subset
+    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed()); // Return paginated data subset
   });
 
   /**
@@ -38,11 +38,11 @@ export abstract class AbstractSortableTablePaginationComponent extends AbstractS
    *   - `key`: The column key to sort by.
    *   - `sortType`: The sorting order, either 'ascending' or 'descending'.
    *
-   * Resets `currentPage` to 1 and triggers re-sorting of `abstractTableData`.
+   * Resets `currentPageSignal` to 1 and triggers re-sorting of `abstractTableDataSignal`.
    */
   public override onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     super.onSortChange(event); // Update the sort state and sort the data
-    this.currentPage.set(1); // Reset the page to the first page
+    this.currentPageSignal.set(1); // Reset the page to the first page
   }
 
   /**
@@ -52,7 +52,7 @@ export abstract class AbstractSortableTablePaginationComponent extends AbstractS
    * it will be clamped between 1 and the total number of pages.
    */
   public onPageChange(newPage: number): void {
-    const totalPages = Math.ceil(this.abstractTableData().length / this.itemsPerPage());
-    this.currentPage.set(Math.max(1, Math.min(newPage, totalPages)));
+    const totalPages = Math.ceil(this.abstractTableDataSignal().length / this.itemsPerPageSignal());
+    this.currentPageSignal.set(Math.max(1, Math.min(newPage, totalPages)));
   }
 }

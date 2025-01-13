@@ -9,9 +9,9 @@ import { MOCK_ABSTRACT_TABLE_DATA } from '../abstract-sortable-table/mocks/abstr
 class TestComponent extends AbstractSortableTablePaginationComponent {
   constructor() {
     super();
-    this.abstractTableData.set(MOCK_ABSTRACT_TABLE_DATA);
+    this.abstractTableDataSignal.set(MOCK_ABSTRACT_TABLE_DATA);
     this.abstractExistingSortState = null;
-    this.itemsPerPage.set(1);
+    this.itemsPerPageSignal.set(1);
   }
 }
 
@@ -55,11 +55,11 @@ describe('AbstractSortableTablePaginationComponent', () => {
       return;
     }
 
-    expect(component.currentPage()).toBe(1);
-    expect(component.itemsPerPage()).toBe(1);
-    expect(component['startIndex']()).toBe(1);
-    expect(component['endIndex']()).toBe(1);
-    expect(component.paginatedTableData()).toEqual([MOCK_ABSTRACT_TABLE_DATA[0]]);
+    expect(component.currentPageSignal()).toBe(1);
+    expect(component.itemsPerPageSignal()).toBe(1);
+    expect(component['startIndexComputed']()).toBe(1);
+    expect(component['endIndexComputed']()).toBe(1);
+    expect(component.paginatedTableDataComputed()).toEqual([MOCK_ABSTRACT_TABLE_DATA[0]]);
   });
 
   it('should update current page on page change', () => {
@@ -69,7 +69,7 @@ describe('AbstractSortableTablePaginationComponent', () => {
     }
 
     component.onPageChange(2);
-    expect(component.currentPage()).toBe(2);
+    expect(component.currentPageSignal()).toBe(2);
   });
 
   it('should reset current page to 1 on sort change', () => {
@@ -78,8 +78,8 @@ describe('AbstractSortableTablePaginationComponent', () => {
       return;
     }
 
-    component.currentPage.set(2); // Set current page to 2
+    component.currentPageSignal.set(2); // Set current page to 2
     component.onSortChange({ key: 'name', sortType: 'ascending' }); // Trigger sort change
-    expect(component.currentPage()).toBe(1); // Expect current page to be reset to 1
+    expect(component.currentPageSignal()).toBe(1); // Expect current page to be reset to 1
   });
 });
