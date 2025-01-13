@@ -1,13 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { AbstractSortableTablePaginationComponent } from './abstract-sortable-table-pagination.component';
 import { MOCK_ABSTRACT_TABLE_DATA } from '../abstract-sortable-table/mocks/abstract-sortable-table-data-mock';
 
+@Component({
+  template: '', // Minimal template for the test component
+})
 class TestComponent extends AbstractSortableTablePaginationComponent {
-  constructor() {
-    super();
+  constructor(changeDetectorRef: ChangeDetectorRef) {
+    super(changeDetectorRef); // Pass ChangeDetectorRef to the parent class
     this.abstractTableData.set(MOCK_ABSTRACT_TABLE_DATA);
     this.abstractExistingSortState = null;
-    this.abstractTablePaginatedItemsPerPage.set(1);
+    this.itemsPerPage = 1;
   }
 }
 
@@ -17,12 +21,20 @@ describe('AbstractSortableTablePaginationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestComponent],
+      declarations: [TestComponent], // Declare the TestComponent
+      providers: [
+        {
+          provide: ChangeDetectorRef,
+          useValue: {
+            detectChanges: jasmine.createSpy('detectChanges'), // Mock detectChanges
+          },
+        },
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TestComponent);
+    fixture = TestBed.createComponent(TestComponent); // Create the TestComponent
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -43,11 +55,11 @@ describe('AbstractSortableTablePaginationComponent', () => {
       return;
     }
 
-    expect(component.abstractTablePaginatedCurrentPage()).toBe(1);
-    expect(component.abstractTablePaginatedItemsPerPage()).toBe(1);
-    expect(component.abstractTablePaginatedStartIndex()).toBe(1);
-    expect(component.abstractTablePaginatedEndIndex()).toBe(1);
-    expect(component.abstractTablePaginatedData()).toEqual([MOCK_ABSTRACT_TABLE_DATA[0]]);
+    expect(component.currentPage()).toBe(1);
+    expect(component.itemsPerPage).toBe(1);
+    expect(component['startIndex']).toBe(1);
+    expect(component['endIndex']).toBe(1);
+    expect(component.paginatedTableData).toEqual([MOCK_ABSTRACT_TABLE_DATA[0]]);
   });
 
   it('should update current page on page change', () => {
@@ -57,6 +69,17 @@ describe('AbstractSortableTablePaginationComponent', () => {
     }
 
     component.onPageChange(2);
-    expect(component.abstractTablePaginatedCurrentPage()).toBe(2);
+    expect(component.currentPage()).toBe(2);
+  });
+
+  it('should reset current page to 1 on sort change', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
+    component.currentPage.set(2); // Set current page to 2
+    component.onSortChange({ key: 'name', sortType: 'ascending' }); // Trigger sort change
+    expect(component.currentPage()).toBe(1); // Expect current page to be reset to 1
   });
 });

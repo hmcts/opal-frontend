@@ -12,7 +12,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
 
   public abstractTableData = signal<IAbstractTableData<SortableValues>[]>([]);
   public abstractExistingSortState: IAbstractSortState | null = null;
-  public sortState: IAbstractSortState = {};
+  public sortState = signal<IAbstractSortState>({});
 
   @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
@@ -32,23 +32,27 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   }
 
   /**
-   * Initializes the sort state using existing or generated sort state.
+   * Initializes the sort state by using the existing sort state if available,
+   * or generating a new one based on the current table data.
    */
   private initialiseSortState(): void {
-    this.sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData());
+    this.sortState.set(this.abstractExistingSortState || this.createSortState(this.abstractTableData()));
   }
 
   /**
    * Updates the sort state for a given column key and sort type.
+   * Resets the sort state for all other columns to 'none'.
    *
    * @param key - The column to sort by.
    * @param sortType - Sorting order ('ascending' or 'descending').
    */
   private updateSortState(key: string, sortType: 'ascending' | 'descending'): void {
-    this.sortState = Object.keys(this.sortState).reduce<IAbstractSortState>((state, columnKey) => {
-      state[columnKey] = columnKey === key ? sortType : 'none';
-      return state;
-    }, {});
+    this.sortState.set(
+      Object.keys(this.sortState()).reduce<IAbstractSortState>((state, columnKey) => {
+        state[columnKey] = columnKey === key ? sortType : 'none';
+        return state;
+      }, {}),
+    );
   }
 
   /**
@@ -84,7 +88,7 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     this.abstractTableData.set(sortedData);
 
     // Emit the updated sort state
-    this.abstractSortState.emit(this.sortState);
+    this.abstractSortState.emit(this.sortState());
   }
 
   /**

@@ -28,14 +28,12 @@ This component is designed to be used as a base class for managing sorting and p
 ### Example Usage:
 
 ```typescript
-import { Component } from '@angular/core';
-import { AbstractSortableTablePaginationComponent } from '@components/abstract/abstract-sortable-table-pagination/abstract-sortable-table-pagination.component';
-
 @Component({
   selector: 'app-sortable-table-pagination',
   templateUrl: './sortable-table-pagination.component.html',
 })
 export class SortableTablePaginationComponent extends AbstractSortableTablePaginationComponent {
+  // Define the full dataset for the table (Angular Signal for reactivity)
   public abstractTableData = signal([
     { name: 'Alice', age: 30 },
     { name: 'Bob', age: 25 },
@@ -44,14 +42,17 @@ export class SortableTablePaginationComponent extends AbstractSortableTablePagin
     { name: 'Eve', age: 32 },
   ]);
 
+  // Initial sort state for the columns
   public abstractExistingSortState = {
     name: 'none',
     age: 'none',
   };
 
-  public abstractTablePaginatedItemsPerPage = signal(5);
-  public abstractTablePaginatedCurrentPage = signal(1);
-  public abstractTablePaginatedData = signal<IAbstractTableData[]>([]);
+  constructor(cdr: ChangeDetectorRef) {
+    super(cdr);
+    // Set the number of items displayed per page
+    this.itemsPerPage = 5;
+  }
 }
 ```
 
@@ -59,13 +60,23 @@ export class SortableTablePaginationComponent extends AbstractSortableTablePagin
 
 `AbstractSortableTablePaginationComponent` provides key inputs to manage table data and sorting states.
 
-| Input                                | Type                           | Description                                                  |
-| ------------------------------------ | ------------------------------ | ------------------------------------------------------------ |
-| `abstractTablePaginatedCurrentPage`  | `signal<number>`               | Tracks the current page in the pagination.                   |
-| `abstractTablePaginatedItemsPerPage` | `signal<number>`               | Specifies the number of items per page.                      |
-| `abstractTablePaginatedStartIndex`   | `signal<number>`               | Indicates the start index of the items for the current page. |
-| `abstractTablePaginatedEndIndex`     | `signal<number>`               | Indicates the end index of the items for the current page.   |
-| `abstractTablePaginatedData`         | `signal<IAbstractTableData[]>` | Contains the paginated table data.                           |
+| Input                | Type                   | Description                                |
+| -------------------- | ---------------------- | ------------------------------------------ |
+| `currentPage`        | `signal<number>`       | Tracks the current page in the pagination. |
+| `itemsPerPage`       | `number`               | Specifies the number of items per page.    |
+| `paginatedTableData` | `IAbstractTableData[]` | Contains the paginated table data.         |
+
+> **Note**: `currentPage` and `abstractTableData` are the key properties that drive pagination.
+> Changing these signals will automatically trigger a recalculation of the paginated data.
+
+### Computed Properties
+
+The following computed properties are available to display pagination-related information:
+
+| Property     | Type     | Description                                              |
+| ------------ | -------- | -------------------------------------------------------- |
+| `startIndex` | `number` | The 1-based index of the first item on the current page. |
+| `endIndex`   | `number` | The 1-based index of the last item on the current page.  |
 
 ## Methods
 
@@ -73,19 +84,25 @@ export class SortableTablePaginationComponent extends AbstractSortableTablePagin
 
 ### Common Methods:
 
-- **`updatePaginatedData()`**:
-  Updates the paginated data based on the current page and items per page. Bound to an effect for automatic updates.
 - **`onPageChange(newPage: number)`**: Updates the current page and recalculates the table data to be displayed.
+- **`onSortChange(event: { key: string; sortType: 'ascending' | 'descending' })`**:
+  Updates the sort state for the table and resets the pagination to the first page. This ensures that the user always starts from the beginning of the dataset when a new sorting order is applied.
 
-###Examples
+### Examples
 
-```
-onPageChange(2); // Switches to page 2
-```
+- **Change Page**:
+  ```typescript
+  component.onPageChange(2); // Switches to page 2
+  ```
+- **Sort Table**:
+  ```typescript
+  component.onSortChange({ key: 'name', sortType: 'ascending' });
+  // Sorts the table by the 'name' column in ascending order and resets to page 1.
+  ```
 
 ## Interfaces
 
-`AbstractSortableTablePaginationComponent` uses the same interfaces for sorting as `AbstractSortableTableComponent` but also includes pagination-related interfaces.
+`AbstractSortableTablePaginationComponent` uses interfaces to represent table data and sorting state.
 
 ### Key Interfaces:
 
@@ -94,11 +111,7 @@ onPageChange(2); // Switches to page 2
    - `IAbstractTableData`: Represents a row of table data.
 
 2. **Sort State Interface**:
-
    - `IAbstractSortState`: Tracks the sorting state of each column.
-
-3. **Pagination Interface**:
-   - `IAbstractPaginationState`: Manages the current page and page size.
 
 ## Mocks
 
@@ -108,7 +121,6 @@ Several mock files are included to simulate table data, sorting behaviours, and 
 
 1. **abstract-sortable-table-data.mock.ts**: Simulates table data scenarios.
 2. **abstract-sortable-table-sort-state.mock.ts**: Provides mock sort states for testing.
-3. **abstract-pagination-state.mock.ts**:Mocks pagination state for testing.
 
 These mocks can be used in unit tests to validate table sorting and pagination behaviour.
 
@@ -122,16 +134,25 @@ ng test
 
 ### Testing Scenarios
 
-You can use the mock files to test various scenarios, such as sorting data, managing pagination state, and validating table behaviours.
+Use the mock files provided to test various scenarios, such as:
 
-```typescript
-import { AbstractPaginationStateMock } from '@mocks/abstract-pagination-state.mock.ts';
-// Simulate pagination scenarios in your tests
-```
+- Sorting data by different columns and verifying the updated order.
+- Changing the current page and validating that the correct data subset is displayed.
+- Adjusting the number of items per page and ensuring the table updates accordingly.
+
+### Additional Testing Scenarios
+
+- **Empty Datasets**: Ensure the component gracefully handles cases where the dataset is empty and displays a "No data available" message.
+- **Large Datasets**: Test performance and correctness with datasets containing thousands of rows.
+- **Custom Sorting Keys**: Validate that sorting logic works with non-numeric or complex keys, such as dates or nested object properties.
 
 ## Contributing
 
 Feel free to submit issues or pull requests to improve this component. Ensure that all changes follow Angular best practices and maintain consistency with sorting and pagination logic.
+
+### Prerequisites
+
+This component is compatible with Angular 16 and above, as it uses Angular Signals and standalone components.
 
 ---
 

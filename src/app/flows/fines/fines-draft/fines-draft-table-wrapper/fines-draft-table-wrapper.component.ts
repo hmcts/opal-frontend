@@ -25,8 +25,8 @@ import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/gov
 })
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
   public override abstractTableData = signal<IFinesDraftTableWrapperTableData[]>([]);
-  public override abstractTablePaginatedData = signal<IFinesDraftTableWrapperTableData[]>([]);
-  public override abstractTablePaginatedItemsPerPage = signal(25);
+  public override paginatedTableData: IFinesDraftTableWrapperTableData[] = [];
+  public override itemsPerPage = 5;
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
     this.abstractTableData.set(tableData);
   }
