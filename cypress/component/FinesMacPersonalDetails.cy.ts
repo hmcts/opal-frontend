@@ -227,6 +227,14 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('.govuk-error-message').should('contain', 'Enter a valid date of birth in the past');
   });
 
+  it('should display age panel when entering a valid age', () => {
+    setupComponent(null);
+
+    cy.get('input[id="fm_personal_details_dob"]').focus().type('01/01/1990', { delay: 0 });
+    cy.get('.moj-ticket-panel').should('exist');
+    cy.get('button[type="submit"]').click();
+  });
+
   it('should show error for invalid date format', () => {
     setupComponent(null);
 
