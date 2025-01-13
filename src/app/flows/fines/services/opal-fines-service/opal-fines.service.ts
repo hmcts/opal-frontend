@@ -34,7 +34,6 @@ import {
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
-import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 @Injectable({
   providedIn: 'root',
 })

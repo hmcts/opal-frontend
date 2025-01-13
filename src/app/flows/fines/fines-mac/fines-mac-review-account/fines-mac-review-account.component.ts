@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
@@ -10,7 +10,7 @@ import {
   IOpalFinesCourt,
   IOpalFinesCourtRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
-import { forkJoin, Observable, tap } from 'rxjs';
+import { catchError, forkJoin, Observable, of, Subject, takeUntil, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
@@ -26,8 +26,10 @@ import {
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { UtilsService } from '@services/utils/utils.service';
+import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { GovukTagComponent } from '../../../../components/govuk/govuk-tag/govuk-tag.component';
 import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/moj-timeline.component';
 import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
@@ -60,20 +62,24 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacReviewAccountComponent implements OnInit {
+export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
+  protected readonly globalStateService = inject(GlobalStateService);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
+  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   protected readonly utilsService = inject(UtilsService);
+  private readonly userState = this.globalStateService.userState();
   protected readonly dateService = inject(DateService);
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
 
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
-  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
@@ -96,6 +102,36 @@ export class FinesMacReviewAccountComponent implements OnInit {
     enforcementCourtsData: this.enforcementCourtsData$,
     localJusticeAreasData: this.localJusticeAreasData$,
   });
+
+  /**
+   * Submits the payload for adding a fines MAC account.
+   *
+   * This method builds the payload using the `finesMacPayloadService` and the current state of `finesService` and `userState`.
+   * It then posts the payload using `opalFinesService`. If the response is successful, it navigates to the submit confirmation route.
+   * Otherwise, it logs an error message.
+   *
+   * @private
+   * @returns {void}
+   */
+  private submitPayload(): void {
+    const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
+      this.finesService.finesMacState,
+      this.userState,
+    );
+    this.opalFinesService
+      .postDraftAddAccountPayload(finesMacAddAccountPayload)
+      .pipe(
+        tap(() => {
+          this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
+        }),
+        catchError(() => {
+          this.utilsService.scrollToTop();
+          return of(null);
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
+  }
 
   private businessUnit: IOpalFinesBusinessUnit | null = null;
   public isReadOnly!: boolean;
@@ -132,8 +168,16 @@ export class FinesMacReviewAccountComponent implements OnInit {
         'review',
       );
     } else {
-      this.handleRoute(this.fineMacRoutes.children.accountDetails);
+      this.handleRoute(this.finesMacRoutes.children.accountDetails);
     }
+  }
+
+  /**
+   * Submits the current payload for review.
+   * This method triggers the submission process by calling the `submitPayload` method.
+   */
+  public submitForReview(): void {
+    this.submitPayload();
   }
 
   /**
@@ -150,11 +194,21 @@ export class FinesMacReviewAccountComponent implements OnInit {
     } else if (fragment) {
       this.router.navigate([route], { fragment });
     } else {
-      if (route === this.fineMacRoutes.children.deleteAccountConfirmation) {
+      if (route === this.finesMacRoutes.children.deleteAccountConfirmation) {
         this.finesService.finesMacState.deleteFromCheckAccount = true;
       }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
+    this.globalStateService.error.set({
+      error: false,
+      message: '',
+    });
   }
 
   public ngOnInit(): void {
