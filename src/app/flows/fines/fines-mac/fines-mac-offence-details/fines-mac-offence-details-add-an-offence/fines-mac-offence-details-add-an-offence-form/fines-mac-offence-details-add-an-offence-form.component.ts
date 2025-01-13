@@ -123,7 +123,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
         optionalValidDateValidator(),
         futureDateValidator(),
       ]),
-      fm_offence_details_offence_id: new FormControl(null, [Validators.required]),
+      fm_offence_details_offence_cjs_code: new FormControl(null, [Validators.required]),
+      fm_offence_details_offence_id: new FormControl(null),
       fm_offence_details_impositions: new FormArray([]),
     });
   }
@@ -181,12 +182,15 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param cjsCode - The CJS code used to retrieve the offence details.
    */
   private populateOffenceHint(cjsCode: string): void {
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_cjs_code'];
+    const offenceIdControl = this.form.controls['fm_offence_details_offence_id'];
+    offenceIdControl.setValue(null);
 
     if (cjsCode?.length >= 7 && cjsCode?.length <= 8) {
       this.offenceCode$ = this.opalFinesService.getOffenceByCjsCode(cjsCode).pipe(
         tap((offence) => {
           offenceCodeControl.setErrors(offence.count !== 0 ? null : { invalidOffenceCode: true }, { emitEvent: false });
+          offenceIdControl.setValue(offence.count !== 1 ? null : offence.refData[0].offence_id, { emitEvent: false });
         }),
         map((response) => response),
       );
@@ -208,7 +212,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private offenceCodeListener(): void {
     this.selectedOffenceConfirmation = false;
 
-    const offenceCodeControl = this.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = this.form.controls['fm_offence_details_offence_cjs_code'];
 
     // Populate the offence hint if the offence code is already set
     if (offenceCodeControl.value) {

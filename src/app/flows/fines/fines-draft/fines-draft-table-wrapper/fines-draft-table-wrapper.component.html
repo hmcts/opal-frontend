@@ -1,5 +1,7 @@
-@if (paginatedTableData!.length > 25) {
-  <strong>Showing {{ startItem() }} - {{ endItem() }} of {{ abstractTableData.length }} accounts </strong>
+@if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
+  <strong
+    >Showing {{ startIndexComputed() }} - {{ endIndexComputed() }} of {{ abstractTableDataSignal().length }} accounts
+  </strong>
 }
 <app-moj-sortable-table>
   <ng-container head>
@@ -7,7 +9,7 @@
       <th
         app-moj-sortable-table-header
         columnKey="account"
-        [sortDirection]="sortState['account']"
+        [sortDirection]="sortStateSignal()['account']"
         (sortChange)="onSortChange($event)"
       >
         Account
@@ -16,7 +18,7 @@
     <th
       app-moj-sortable-table-header
       columnKey="defendant"
-      [sortDirection]="sortState['defendant']"
+      [sortDirection]="sortStateSignal()['defendant']"
       (sortChange)="onSortChange($event)"
     >
       Defendant
@@ -24,7 +26,7 @@
     <th
       app-moj-sortable-table-header
       columnKey="dob"
-      [sortDirection]="sortState['dob']"
+      [sortDirection]="sortStateSignal()['dob']"
       (sortChange)="onSortChange($event)"
     >
       Date of birth
@@ -32,7 +34,7 @@
     <th
       app-moj-sortable-table-header
       columnKey="created"
-      [sortDirection]="sortState['created']"
+      [sortDirection]="sortStateSignal()['created']"
       (sortChange)="onSortChange($event)"
     >
       Created
@@ -40,7 +42,7 @@
     <th
       app-moj-sortable-table-header
       columnKey="accountType"
-      [sortDirection]="sortState['accountType']"
+      [sortDirection]="sortStateSignal()['accountType']"
       (sortChange)="onSortChange($event)"
     >
       Account type
@@ -48,14 +50,14 @@
     <th
       app-moj-sortable-table-header
       columnKey="businessUnit"
-      [sortDirection]="sortState['businessUnit']"
+      [sortDirection]="sortStateSignal()['businessUnit']"
       (sortChange)="onSortChange($event)"
     >
       Business unit
     </th>
   </ng-container>
   <ng-container row>
-    @for (row of paginatedTableData; track row['defendantId']) {
+    @for (row of paginatedTableDataComputed(); track row.defendantId) {
       <tr app-moj-sortable-table-row>
         @if (isApprovedTab) {
           <td app-moj-sortable-table-row-data id="account">{{ row['account'] }}</td>
@@ -77,11 +79,11 @@
     }
   </ng-container>
 </app-moj-sortable-table>
-@if (paginatedTableData!.length > 25) {
+@if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
   <app-govuk-pagination
-    [currentPage]="currentPage()"
-    [limit]="pageLimit()"
-    [total]="abstractTableData.length"
-    (changePage)="handlePageChanged($event)"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="abstractTableDataSignal().length"
+    (changePage)="onPageChange($event)"
   ></app-govuk-pagination>
 }

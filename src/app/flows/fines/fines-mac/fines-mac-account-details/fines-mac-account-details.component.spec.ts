@@ -139,6 +139,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setLanguage');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'checkMandatorySections');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'routerListener');
 
     component['initialAccountDetailsSetup']();
@@ -146,6 +148,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['setLanguage']).toHaveBeenCalled();
+    expect(component['checkMandatorySections']).toHaveBeenCalled();
     expect(component['routerListener']).toHaveBeenCalled();
   });
 

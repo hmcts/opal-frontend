@@ -1,0 +1,49 @@
+{
+  "account_type": "Fine",
+  "business_unit_id": "73",
+  "timeline_data": [
+    {
+      "status_date": "2023-11-01",
+      "reason_text": "Account successfully activated after review.",
+      "username": "johndoe123",
+      "status": "Active"
+    }
+  ],
+  "submitted_by": "opal-test",
+  "submitted_by_name": "Laura Clerk1",
+  "account_status": "",
+  "account": {
+    "collection_order_made": true,
+    "account_type": "Fine",
+    "originator_name": "Police Force",
+    "defendant": {
+      "surname": "LNAME",
+      "dob": "01/01/2000",
+      "company_flag": false,
+      "address_line_1": "123 Elm Street",
+      "forenames": "FNAME"
+    },
+    "originator_id": "PF12345",
+    "offences": [
+      {
+        "offence_id": 1234,
+        "impositions": [
+          {
+            "amount_paid": 200,
+            "amount_imposed": 500,
+            "result_id": 1
+          }
+        ],
+        "date_of_sentence": "2023-11-15"
+      }
+    ],
+    "payment_card_request": true,
+    "defendant_type": "Adult",
+    "collection_order_made_today": false,
+    "account_sentence_date": "2023-12-01",
+    "payment_terms": {
+      "payment_terms_type_code": "P"
+    },
+    "enforcement_court_id": 101
+  }
+}

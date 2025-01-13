@@ -141,6 +141,14 @@ export const routing: Routes = [
     canActivate: [authGuard, finesMacFlowStateGuard],
   },
   {
+    path: FINES_MAC_ROUTING_PATHS.children.submitConfirmation,
+    loadComponent: () =>
+      import('../fines-mac-submit-confirmation/fines-mac-submit-confirmation.component').then(
+        (c) => c.FinesMacSubmitConfirmationComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:businessUnitId`,
     loadComponent: () =>
       import('../fines-mac-review-account/fines-mac-review-account.component').then(
