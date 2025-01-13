@@ -25,12 +25,48 @@ import { AbstractSortableTablePaginationComponent } from '@components/abstract/a
 
 This component is designed to be used as a base class for managing sorting and pagination in a reusable and scalable way.
 
+### Dynamic Data
+
+If the table data is fetched asynchronously, ensure that `abstractTableData` is updated reactively:
+
+```typescript
+fetchData(): void {
+  this.isLoading = true;
+  this.error = null;
+
+  fetch('/api/data')
+    .then((response) => response.json())
+    .then((data) => {
+      this.abstractTableData.set(data);
+      this.isLoading = false;
+    })
+    .catch((err) => {
+      this.error = 'Failed to load data.';
+      this.isLoading = false;
+    });
+}
+
+```
+
 ### Example Usage:
+
+#### Pagination Component
+
+The `app-govuk-pagination` component renders pagination controls. Ensure that the bindings (`currentPage`, `limit`, and `total`) are correctly connected to the signals in your component. The `changePage` event updates the `currentPage` signal to reflect the new page.
 
 ```typescript
 @Component({
   selector: 'app-sortable-table-pagination',
   templateUrl: './sortable-table-pagination.component.html',
+  imports: [
+    CommonModule,
+    MojSortableTableComponent,
+    MojSortableTableHeaderComponent,
+    MojSortableTableRowComponent,
+    MojSortableTableRowDataComponent,
+    GovukPaginationComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SortableTablePaginationComponent extends AbstractSortableTablePaginationComponent {
   // Define the full dataset for the table (Angular Signal for reactivity)
@@ -50,9 +86,49 @@ export class SortableTablePaginationComponent extends AbstractSortableTablePagin
 
   constructor(cdr: ChangeDetectorRef) {
     super(cdr);
-    // Set the number of items displayed per page
-    this.itemsPerPage = 5;
+    // Signals to manage pagination
+    this.currentPage = signal(1);
+    this.itemsPerPage = signal(5);
   }
+}
+```
+
+```html
+<app-moj-sortable-table>
+  <ng-container head>
+    <th
+      app-moj-sortable-table-header
+      columnKey="name"
+      [sortDirection]="sortState()['name']"
+      (sortChange)="onSortChange($event)"
+    >
+      Name
+    </th>
+    <th
+      app-moj-sortable-table-header
+      columnKey="age"
+      [sortDirection]="sortState()['age']"
+      (sortChange)="onSortChange($event)"
+    >
+      Age
+    </th>
+  </ng-container>
+  <ng-container row>
+    @for (row of paginatedTableData(); track row.name) {
+    <tr app-moj-sortable-table-row>
+      <td app-moj-sortable-table-row-data id="name">{{ row.name }}</td>
+      <td app-moj-sortable-table-row-data id="defendant">{{ row.age }}</a>
+    </tr>
+    }
+  </ng-container>
+</app-moj-sortable-table>
+@if (abstractTableData()!.length > this.paginatedTableData().length) {
+<app-govuk-pagination
+  [currentPage]="currentPage()"
+  [limit]="itemsPerPage()"
+  [total]="abstractTableData().length"
+  (changePage)="onPageChange($event)"
+></app-govuk-pagination>
 }
 ```
 
@@ -60,23 +136,22 @@ export class SortableTablePaginationComponent extends AbstractSortableTablePagin
 
 `AbstractSortableTablePaginationComponent` provides key inputs to manage table data and sorting states.
 
-| Input                | Type                   | Description                                |
-| -------------------- | ---------------------- | ------------------------------------------ |
-| `currentPage`        | `signal<number>`       | Tracks the current page in the pagination. |
-| `itemsPerPage`       | `number`               | Specifies the number of items per page.    |
-| `paginatedTableData` | `IAbstractTableData[]` | Contains the paginated table data.         |
+| Input                | Type                             | Description                                                                                                      |
+| -------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `currentPage`        | `signal<number>`                 | Tracks the current page in the pagination.                                                                       |
+| `itemsPerPage`       | `number`                         | Specifies the number of items per page.                                                                          |
+| `paginatedTableData` | `computed<IAbstractTableData[]>` | Reactively computed subset of the sorted table data for the current page. Combines sorting and pagination logic. |
 
-> **Note**: `currentPage` and `abstractTableData` are the key properties that drive pagination.
-> Changing these signals will automatically trigger a recalculation of the paginated data.
+> **Note**: `currentPage` and `abstractTableData` are Angular signals. Changing these signals triggers re-computation of dependent properties, including `startIndex`, `endIndex`, and `paginatedTableData`, which is a reactive computed property.
 
 ### Computed Properties
 
 The following computed properties are available to display pagination-related information:
 
-| Property     | Type     | Description                                              |
-| ------------ | -------- | -------------------------------------------------------- |
-| `startIndex` | `number` | The 1-based index of the first item on the current page. |
-| `endIndex`   | `number` | The 1-based index of the last item on the current page.  |
+| Property     | Type     | Description                                                                                              |
+| ------------ | -------- | -------------------------------------------------------------------------------------------------------- |
+| `startIndex` | `number` | The 1-based index of the first item on the current page. Depends on `currentPage` and `itemsPerPage`.    |
+| `endIndex`   | `number` | The 1-based index of the last item on the current page. Depends on `startIndex` and `abstractTableData`. |
 
 ## Methods
 
@@ -139,6 +214,7 @@ Use the mock files provided to test various scenarios, such as:
 - Sorting data by different columns and verifying the updated order.
 - Changing the current page and validating that the correct data subset is displayed.
 - Adjusting the number of items per page and ensuring the table updates accordingly.
+- **Dynamic Data Updates**: Verify that `paginatedTableData` updates correctly when `abstractTableData` changes dynamically (e.g., after an API call).
 
 ### Additional Testing Scenarios
 

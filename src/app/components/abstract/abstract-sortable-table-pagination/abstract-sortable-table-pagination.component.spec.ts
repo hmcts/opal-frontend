@@ -7,11 +7,11 @@ import { MOCK_ABSTRACT_TABLE_DATA } from '../abstract-sortable-table/mocks/abstr
   template: '', // Minimal template for the test component
 })
 class TestComponent extends AbstractSortableTablePaginationComponent {
-  constructor(changeDetectorRef: ChangeDetectorRef) {
-    super(changeDetectorRef); // Pass ChangeDetectorRef to the parent class
+  constructor() {
+    super();
     this.abstractTableData.set(MOCK_ABSTRACT_TABLE_DATA);
     this.abstractExistingSortState = null;
-    this.itemsPerPage = 1;
+    this.itemsPerPage.set(1);
   }
 }
 
@@ -56,10 +56,10 @@ describe('AbstractSortableTablePaginationComponent', () => {
     }
 
     expect(component.currentPage()).toBe(1);
-    expect(component.itemsPerPage).toBe(1);
-    expect(component['startIndex']).toBe(1);
-    expect(component['endIndex']).toBe(1);
-    expect(component.paginatedTableData).toEqual([MOCK_ABSTRACT_TABLE_DATA[0]]);
+    expect(component.itemsPerPage()).toBe(1);
+    expect(component['startIndex']()).toBe(1);
+    expect(component['endIndex']()).toBe(1);
+    expect(component.paginatedTableData()).toEqual([MOCK_ABSTRACT_TABLE_DATA[0]]);
   });
 
   it('should update current page on page change', () => {

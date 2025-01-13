@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Signal, signal } from '@angular/core';
 import { MojSortableTableHeaderComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-header/moj-sortable-table-header.component';
 import { MojSortableTableRowDataComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row-data/moj-sortable-table-row-data.component';
 import { MojSortableTableRowComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-row/moj-sortable-table-row.component';
@@ -25,8 +25,8 @@ import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/gov
 })
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
   public override abstractTableData = signal<IFinesDraftTableWrapperTableData[]>([]);
-  public override paginatedTableData: IFinesDraftTableWrapperTableData[] = [];
-  public override itemsPerPage = 5;
+  public override paginatedTableData!: Signal<IFinesDraftTableWrapperTableData[]>;
+  public override itemsPerPage = signal(25);
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
     this.abstractTableData.set(tableData);
   }
