@@ -69,6 +69,22 @@ describe('FinesMacPaymentTermsComponent', () => {
     });
   });
 
+  it('should handle form submission and navigate to next route with number data', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+
+    formSubmit.nestedFlow = true;
+    formSubmit.formData.fm_payment_terms_default_days_in_jail = 1;
+    formSubmit.formData.fm_payment_terms_lump_sum_amount = 1;
+    formSubmit.formData.fm_payment_terms_instalment_amount = 1;
+
+    component.handlePaymentTermsSubmit(formSubmit);
+
+    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
+    expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes], {
+      relativeTo: component['activatedRoute'].parent,
+    });
+  });
+
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
     expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();

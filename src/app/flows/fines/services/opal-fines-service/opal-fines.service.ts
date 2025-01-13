@@ -31,6 +31,7 @@ import {
   IOpalFinesMajorCreditor,
   IOpalFinesMajorCreditorRefData,
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 @Injectable({
@@ -285,6 +286,16 @@ export class OpalFines {
    */
   public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
     return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
+  }
+
+  /**
+   * Sends a POST request to add a draft account payload.
+   *
+   * @param body - The payload containing the account details to be added.
+   * @returns An Observable of the added account payload.
+   */
+  public postDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+    return this.http.post<IFinesMacAddAccountPayload>(OPAL_FINES_PATHS.draftAccounts, body);
   }
 
   /**

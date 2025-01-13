@@ -4,6 +4,10 @@ import { IFinesMacAddAccountPayload } from '../interfaces/fines-mac-payload-add-
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/mocks/fines-mac-payload-account-defendant-individual.mock';
 
 export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
+  draft_account_id: null,
+  created_at: null,
+  account_snapshot: null,
+  account_status_date: null,
   business_unit_id: 61,
   submitted_by: null,
   submitted_by_name: 'Timmy Test',
@@ -42,7 +46,7 @@ export const FINES_MAC_PAYLOAD_ADD_ACCOUNT: IFinesMacAddAccountPayload = {
       {
         date_of_sentence: '01/09/2024',
         imposing_court_id: 'Magistrates Court Database (204)',
-        offence_id: 'OFF1234',
+        offence_id: 1234,
         impositions: [
           {
             result_id: 'FCOST',
