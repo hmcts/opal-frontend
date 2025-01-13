@@ -7,7 +7,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT: IFinesMacPayloadAccountDefenda
   title: null,
   surname: null,
   forenames: null,
-  organisation_name: null,
+  company_name: null,
   dob: null,
   address_line_1: null,
   address_line_2: null,
