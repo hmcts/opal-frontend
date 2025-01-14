@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacReviewAccountComponent } from './fines-mac-review-account.component';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -21,7 +20,6 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/moc
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
-import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { UtilsService } from '@services/utils/utils.service';
 import { DateService } from '@services/date-service/date.service';
 
@@ -210,26 +208,26 @@ describe('FinesMacReviewAccountComponent', () => {
     );
   });
 
-  it('should set business unit and isReadOnly on getBusinessUnit', () => {
+  it('should set draft account and isReadOnly on getDraftAccountFinesMacState', () => {
     component['activatedRoute'].snapshot = {
       data: {
-        businessUnit: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
+        draftAccountFinesMacState: FINES_MAC_STATE_MOCK,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    component['getBusinessUnit']();
+    component['getDraftAccountFinesMacState']();
 
-    expect(component['businessUnit']).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    expect(component['draftAccountFinesMacState']).toEqual(structuredClone(FINES_MAC_STATE_MOCK));
     expect(component.isReadOnly).toBeTrue();
   });
 
-  it('should call getBusinessUnit on ngOnInit', () => {
+  it('should call getDraftAccount on ngOnInit', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getBusinessUnitSpy = spyOn<any>(component, 'getBusinessUnit').and.callThrough();
+    const getDraftAccountFinesMacStateSpy = spyOn<any>(component, 'getDraftAccountFinesMacState').and.callThrough();
 
     component.ngOnInit();
 
-    expect(getBusinessUnitSpy).toHaveBeenCalled();
+    expect(getDraftAccountFinesMacStateSpy).toHaveBeenCalled();
   });
 });

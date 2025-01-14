@@ -6,7 +6,7 @@ import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { businessUnitResolver } from '@services/fines/opal-fines-service/resolvers/business-unit.resolver';
+import { draftAccountResolver } from '@services/fines/opal-fines-service/resolvers/draft-account.resolver';
 
 export const routing: Routes = [
   {
@@ -149,12 +149,12 @@ export const routing: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:businessUnitId`,
+    path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:draftAccountId`,
     loadComponent: () =>
       import('../fines-mac-review-account/fines-mac-review-account.component').then(
         (c) => c.FinesMacReviewAccountComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
-    resolve: { businessUnit: businessUnitResolver },
+    canActivate: [authGuard],
+    resolve: { draftAccountFinesMacState: draftAccountResolver },
   },
 ];

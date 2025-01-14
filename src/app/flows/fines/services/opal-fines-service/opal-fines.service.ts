@@ -5,6 +5,7 @@ import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/o
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body.interface';
 import {
   IOpalFinesBusinessUnit,
+  IOpalFinesBusinessUnitNonSnakeCase,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import {
@@ -25,7 +26,10 @@ import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines
 import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-accounts.interface';
 
 import { Observable, shareReplay } from 'rxjs';
-import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import {
+  IOpalFinesOffencesNonSnakeCase,
+  IOpalFinesOffencesRefData,
+} from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import {
   IOpalFinesMajorCreditor,
@@ -347,7 +351,19 @@ export class OpalFines {
    * @param businessUnitId - The ID of the business unit to retrieve.
    * @returns An Observable that emits the business unit data.
    */
-  public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnit> {
-    return this.http.get<IOpalFinesBusinessUnit>(`${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`);
+  public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnitNonSnakeCase> {
+    return this.http.get<IOpalFinesBusinessUnitNonSnakeCase>(
+      `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`,
+    );
+  }
+
+  /**
+   * Retrieves an offence by its ID.
+   *
+   * @param {number} offenceId - The ID of the offence to retrieve.
+   * @returns {Observable<IOpalFinesOffencesNonSnakeCase>} An observable containing the offence data.
+   */
+  public getOffenceById(offenceId: number): Observable<IOpalFinesOffencesNonSnakeCase> {
+    return this.http.get<IOpalFinesOffencesNonSnakeCase>(`${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`);
   }
 }

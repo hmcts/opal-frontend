@@ -16,7 +16,6 @@ import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
 import { FinesMacReviewAccountContactDetailsComponent } from './fines-mac-review-account-contact-details/fines-mac-review-account-contact-details.component';
 import { FinesMacReviewAccountEmployerDetailsComponent } from './fines-mac-review-account-employer-details/fines-mac-review-account-employer-details.component';
-
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms/fines-mac-review-account-payment-terms.component';
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes/fines-mac-review-account-account-comments-and-notes.component';
 import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review-account-offence-details/fines-mac-review-account-offence-details.component';
@@ -29,14 +28,14 @@ import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { GovukTagComponent } from '../../../../components/govuk/govuk-tag/govuk-tag.component';
-import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/moj-timeline.component';
-import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
+import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
+import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
+import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -81,6 +80,12 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+
+  private draftAccountFinesMacState!: IFinesMacState | null;
+  public isReadOnly!: boolean;
+  public status = FINES_DRAFT_TAB_STATUSES.find((status) =>
+    status.statuses.includes(this.finesService.finesDraftState.account_status!),
+  )?.prettyName;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
@@ -133,23 +138,18 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private businessUnit: IOpalFinesBusinessUnit | null = null;
-  public isReadOnly!: boolean;
-  public status = FINES_DRAFT_TAB_STATUSES.find((status) =>
-    status.statuses.includes(this.finesService.finesDraftState.account_status!),
-  )?.prettyName;
-
   /**
-   * Retrieves the business unit from the activated route's snapshot data and assigns it to the component's businessUnit property.
-   * If a business unit is found, it updates the finesMacState's businessUnit in the finesService and sets the component to read-only mode.
+   * Retrieves the draft account state from the activated route's snapshot data.
+   * If the draft account state is present, it updates the fines service state and sets the component to read-only mode.
    *
    * @private
+   * @returns {void}
    */
-  private getBusinessUnit(): void {
+  private getDraftAccountFinesMacState(): void {
     if (this.activatedRoute.snapshot) {
-      this.businessUnit = this.activatedRoute.snapshot.data['businessUnit'];
-      if (this.businessUnit) {
-        this.finesService.finesMacState.businessUnit = this.businessUnit;
+      this.draftAccountFinesMacState = this.activatedRoute.snapshot.data['draftAccountFinesMacState'];
+      if (this.draftAccountFinesMacState) {
+        this.finesService.finesMacState = this.draftAccountFinesMacState;
         this.isReadOnly = true;
       }
     }
@@ -212,6 +212,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.getBusinessUnit();
+    this.getDraftAccountFinesMacState();
   }
 }
