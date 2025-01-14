@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@guards/auth/auth.guard';
 import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
-
 import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { draftAccountResolver } from '@services/fines/opal-fines-service/resolvers/draft-account.resolver';
+import { draftAccountResolver } from './resolvers/draft-account-resolver/draft-account.resolver';
 
 export const routing: Routes = [
   {
