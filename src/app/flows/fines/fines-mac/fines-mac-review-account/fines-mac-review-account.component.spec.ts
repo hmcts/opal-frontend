@@ -23,7 +23,6 @@ import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state
 import { UtilsService } from '@services/utils/utils.service';
 import { DateService } from '@services/date-service/date.service';
 import { DRAFT_ACCOUNT_RESOLVER_MOCK } from '../routing/resolvers/draft-account-resolver/mocks/draft-account-resolver.mock';
-import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
