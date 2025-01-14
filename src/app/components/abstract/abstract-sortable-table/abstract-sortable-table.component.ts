@@ -8,106 +8,99 @@ import { SortableValues } from '@services/sort-service/types/sort-service-type';
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
-  public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
-  public abstractExistingSortState!: IAbstractSortState | null;
-  @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
-
   private readonly sortService = inject(SortService);
-  public sortState: IAbstractSortState = {};
 
-  public currentPage = signal(1);
-  public pageLimit = signal(25);
-  public startItem = signal(1);
-  public endItem = signal(25);
-  public paginatedTableData!: IAbstractTableData<SortableValues>[] | null;
+  public abstractTableDataSignal = signal<IAbstractTableData<SortableValues>[]>([]);
+  public abstractExistingSortState: IAbstractSortState | null = null;
+  public sortStateSignal = signal<IAbstractSortState>({});
 
-  /**
-   * Initializes the sort state for the table component.
-   * If an existing sort state is present, it uses that; otherwise, it creates a new sort state based on the table data.
-   *
-   * @private
-   * @returns {void}
-   */
-  private initialiseSortState(): void {
-    const sortState = this.abstractExistingSortState || this.createSortState(this.abstractTableData);
-    this.sortState = sortState;
-  }
+  @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
   /**
    * Creates an initial sort state for a table based on the provided table data.
    *
-   * @param tableData - An array of table data objects. Each object represents a row in the table.
-   * @returns An object representing the initial sort state for each column in the table.
-   *          The keys of the object correspond to the column names, and the values are set to 'none'.
+   * @param tableData - Array of table data objects representing table rows.
+   * @returns Initial sort state object with column names as keys and 'none' as values.
    */
   private createSortState(tableData: IAbstractTableData<SortableValues>[] | null): IAbstractSortState {
-    const sortState: IAbstractSortState = {};
-
-    if (tableData && tableData.length > 0) {
-      Object.keys(tableData[0]).forEach((key) => {
-        sortState[key] = 'none';
-      });
-    }
-
-    return sortState;
+    return tableData?.length
+      ? Object.keys(tableData[0]).reduce<IAbstractSortState>((state, key) => {
+          state[key] = 'none';
+          return state;
+        }, {})
+      : {};
   }
 
   /**
-   * Updates the paginated data for the table.
-   *
-   * This method calculates the start and end indices for the current page based on the current page number and page limit.
-   * It then sets the start and end item indices and slices the abstract table data to get the data for the current page.
-   *
-   * @private
+   * Initializes the sort state by using the existing sort state if available,
+   * or generating a new one based on the current table data.
    */
-  private updatePaginatedTableData(): void {
-    const startIndex = (this.currentPage() - 1) * this.pageLimit();
-    const endIndex = startIndex + this.pageLimit();
-    const dataLength = this.abstractTableData?.length ?? 0;
-
-    this.startItem.set(startIndex + 1);
-    this.endItem.set(Math.min(endIndex, dataLength));
-
-    this.paginatedTableData = this.abstractTableData?.slice(startIndex, endIndex) ?? this.abstractTableData;
+  private initialiseSortState(): void {
+    this.sortStateSignal.set(this.abstractExistingSortState || this.createSortState(this.abstractTableDataSignal()));
   }
 
   /**
-   * Handles the change in sorting order for the table.
+   * Updates the sort state for a given column key and sort type.
+   * Resets the sort state for all other columns to 'none'.
    *
-   * @param event - An object containing the key to sort by and the sort type (ascending or descending).
+   * @param key - The column to sort by.
+   * @param sortType - Sorting order ('ascending' or 'descending').
+   */
+  private updateSortState(key: string, sortType: 'ascending' | 'descending'): void {
+    this.sortStateSignal.set(
+      Object.keys(this.sortStateSignal()).reduce<IAbstractSortState>((state, columnKey) => {
+        state[columnKey] = columnKey === key ? sortType : 'none';
+        return state;
+      }, {}),
+    );
+  }
+
+  /**
+   * Retrieves the sorted table data based on the specified key and sort type.
+   *
+   * @param key - The key of the property to sort by.
+   * @param sortType - The type of sorting to apply, either 'ascending' or 'descending'.
+   * @returns An array of sorted table data objects.
+   */
+  private getSortedTableData(key: string, sortType: 'ascending' | 'descending'): IAbstractTableData<SortableValues>[] {
+    return sortType === 'ascending'
+      ? (this.sortService.sortObjectArrayAsc(
+          this.abstractTableDataSignal(),
+          key,
+        ) as IAbstractTableData<SortableValues>[])
+      : (this.sortService.sortObjectArrayDesc(
+          this.abstractTableDataSignal(),
+          key,
+        ) as IAbstractTableData<SortableValues>[]);
+  }
+
+  /**
+   * Handles the change in sorting for the table.
+   *
+   * @param event - An object containing the key to sort by and the sort type.
    * @param event.key - The key of the column to sort.
    * @param event.sortType - The type of sorting to apply ('ascending' or 'descending').
    *
-   * Updates the sort state for each column, sorts the table data accordingly, and emits the updated sort state.
+   * This method updates the sort state, sorts the table data based on the provided key and sort type,
+   * updates the table data signal, and emits the updated sort state.
    */
   protected onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
     const { key, sortType } = event;
-    Object.keys(this.sortState).forEach((key) => {
-      this.sortState[key] = key === event.key ? event.sortType : 'none';
-    });
 
-    if (sortType === 'ascending') {
-      this.abstractTableData = this.sortService.sortObjectArrayAsc(this.abstractTableData, key);
-    } else {
-      this.abstractTableData = this.sortService.sortObjectArrayDesc(this.abstractTableData, key);
-    }
+    this.updateSortState(key, sortType);
+    const sortedData = this.getSortedTableData(key, sortType);
 
-    this.abstractSortState.emit(this.sortState);
+    // Update the table data signal
+    this.abstractTableDataSignal.set(sortedData);
+
+    // Emit the updated sort state
+    this.abstractSortState.emit(this.sortStateSignal());
   }
 
   /**
-   * Handles the event when the page number is changed.
-   *
-   * @param newPageNumber - The new page number to set.
-   * @returns void
+   * Lifecycle hook to initialise the sort state.
    */
-  public handlePageChanged(newPageNumber: number): void {
-    this.currentPage.set(newPageNumber);
-    this.updatePaginatedTableData();
-  }
-
   public ngOnInit(): void {
     this.initialiseSortState();
-    this.updatePaginatedTableData();
   }
 }

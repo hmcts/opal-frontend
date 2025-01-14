@@ -1,25 +1,23 @@
 <form (submit)="handleFormSubmit()">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-          <h1 class="govuk-fieldset__heading">Sign in</h1>
-        </legend>
+  <div class="govuk-grid-column-two-thirds">
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <h1 class="govuk-fieldset__heading">Sign in</h1>
+      </legend>
 
-        <div [formGroup]="signInForm">
-          <app-govuk-text-input
-            labelText="Email"
-            inputId="email"
-            inputName="email"
-            inputClasses="govuk-!-width-one-half"
-            [control]="signInForm.controls['email']"
-          ></app-govuk-text-input>
-        </div>
-      </fieldset>
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
-          <app-govuk-button buttonId="submitForm" type="submit"> Sign in</app-govuk-button>
-        </div>
+      <div [formGroup]="signInForm">
+        <app-govuk-text-input
+          labelText="Email"
+          inputId="email"
+          inputName="email"
+          inputClasses="govuk-!-width-one-half"
+          [control]="signInForm.controls['email']"
+        ></app-govuk-text-input>
+      </div>
+    </fieldset>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <app-govuk-button buttonId="submitForm" type="submit"> Sign in</app-govuk-button>
       </div>
     </div>
   </div>

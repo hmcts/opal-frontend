@@ -1,8 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { MojSubNavigationComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation.component';
-import { MojSubNavigationItemComponent } from '../../../../../components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
-import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
-import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { map, Observable } from 'rxjs';
@@ -12,13 +8,15 @@ import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
-import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
-import { IFinesMacAddAccountPayload } from '../../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
+import { MojSubNavigationItemComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
+import { MojSubNavigationComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation.component';
+import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
+import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
 
@@ -33,7 +31,6 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStateService = inject(GlobalStateService);
   private readonly dateService = inject(DateService);
-  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   private readonly finesService = inject(FinesService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -124,37 +121,28 @@ export class FinesDraftCamInputterComponent implements OnInit {
   }
 
   /**
-   * Updates the fines state with the given response.
+   * Navigates to the review account page for the given draft account ID.
    *
-   * @param response - The response object containing the new fines state.
-   *
-   * This method updates the `finesDraftState` and `finesMacState` properties
-   * of the `finesService` using the provided response. The `finesMacState` is
-   * derived by converting the response payload using the `convertPayloadToFinesMacState`
-   * method of the `finesMacPayloadService`.
+   * @param draftAccountId - The ID of the draft account to review.
+   * @returns void
    */
-  private updateFinesState(response: IFinesMacAddAccountPayload): void {
-    this.finesService.finesDraftState = response;
+  private navigateToReviewAccount(draftAccountId: number): void {
     this.finesService.finesDraftFragment.set(this.activeTab);
-    this.finesService.finesMacState = this.finesMacPayloadService.mapAccountPayload(response);
+    this.router.navigate([
+      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
+      draftAccountId,
+    ]);
   }
 
   /**
-   * Navigates to the review account page for manual account creation.
+   * Handles the click event on a defendant item.
+   * Navigates to the review account page for the specified defendant.
    *
-   * This method retrieves the business unit ID from the fines service's
-   * state and uses the Angular router to navigate to the review account
-   * page, appending the business unit ID to the route.
-   *
-   * @private
+   * @param {number} id - The unique identifier of the defendant.
    * @returns {void}
    */
-  private navigateToReviewAccount(): void {
-    const businessUnitId = this.finesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id;
-    this.router.navigate([
-      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
-      businessUnitId,
-    ]);
+  public onDefendantClick(id: number): void {
+    this.navigateToReviewAccount(id);
   }
 
   /**
@@ -168,22 +156,6 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private switchTab(fragment: string): void {
     this.activeTab = fragment;
     this.getDraftAccountsData();
-  }
-
-  /**
-   * Handles the click event on a defendant.
-   *
-   * @param {number} id - The ID of the defendant.
-   * @returns {void}
-   *
-   * This method retrieves the draft account details for the given defendant ID,
-   * updates the fines state with the response, and navigates to the review account page.
-   */
-  public onDefendantClick(id: number): void {
-    this.opalFinesService.getDraftAccountById(id).subscribe((response) => {
-      this.updateFinesState(response);
-      this.navigateToReviewAccount();
-    });
   }
 
   /**

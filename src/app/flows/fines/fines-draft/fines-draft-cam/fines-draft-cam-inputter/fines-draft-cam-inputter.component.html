@@ -1,113 +1,115 @@
-<h2 class="govuk-heading-l">Create accounts</h2>
-<app-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
-  <app-moj-sub-navigation-item
-    subNavItemId="inputter-in-review-tab"
-    [activeSubNavItemFragment]="activeTab"
-    subNavItemFragment="review"
-    subNavItemText="In review"
-  ></app-moj-sub-navigation-item>
-  @if (rejectedCount$ | async; as rejectedCount) {
-    @if (rejectedCount === '0') {
-      <app-moj-sub-navigation-item
-        subNavItemId="inputter-rejected-tab"
-        [activeSubNavItemFragment]="activeTab"
-        subNavItemFragment="rejected"
-        subNavItemText="Rejected"
-      ></app-moj-sub-navigation-item>
-    } @else {
-      <app-moj-sub-navigation-item
-        subNavItemId="inputter-rejected-tab"
-        [activeSubNavItemFragment]="activeTab"
-        subNavItemFragment="rejected"
-        subNavItemText="Rejected"
-        [count]="rejectedCount"
-      ></app-moj-sub-navigation-item>
+<div class="govuk-grid-column-full">
+  <h2 class="govuk-heading-l">Create accounts</h2>
+  <app-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    <app-moj-sub-navigation-item
+      subNavItemId="inputter-in-review-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="review"
+      subNavItemText="In review"
+    ></app-moj-sub-navigation-item>
+    @if (rejectedCount$ | async; as rejectedCount) {
+      @if (rejectedCount === '0') {
+        <app-moj-sub-navigation-item
+          subNavItemId="inputter-rejected-tab"
+          [activeSubNavItemFragment]="activeTab"
+          subNavItemFragment="rejected"
+          subNavItemText="Rejected"
+        ></app-moj-sub-navigation-item>
+      } @else {
+        <app-moj-sub-navigation-item
+          subNavItemId="inputter-rejected-tab"
+          [activeSubNavItemFragment]="activeTab"
+          subNavItemFragment="rejected"
+          subNavItemText="Rejected"
+          [count]="rejectedCount"
+        ></app-moj-sub-navigation-item>
+      }
+    }
+    <app-moj-sub-navigation-item
+      subNavItemId="inputter-approved-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="approved"
+      subNavItemText="Approved"
+    ></app-moj-sub-navigation-item>
+    <app-moj-sub-navigation-item
+      subNavItemId="inputter-deleted-tab"
+      [activeSubNavItemFragment]="activeTab"
+      subNavItemFragment="deleted"
+      subNavItemText="Deleted"
+    ></app-moj-sub-navigation-item>
+  </app-moj-sub-navigation>
+  @switch (activeTab) {
+    @case ('review') {
+      <h3 class="govuk-heading-m">In review</h3>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('rejected') {
+      <h3 class="govuk-heading-m">Rejected</h3>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('approved') {
+      <h3 class="govuk-heading-m">Approved</h3>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
+    }
+    @case ('deleted') {
+      <h3 class="govuk-heading-m">Deleted</h3>
+      <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
     }
   }
-  <app-moj-sub-navigation-item
-    subNavItemId="inputter-approved-tab"
-    [activeSubNavItemFragment]="activeTab"
-    subNavItemFragment="approved"
-    subNavItemText="Approved"
-  ></app-moj-sub-navigation-item>
-  <app-moj-sub-navigation-item
-    subNavItemId="inputter-deleted-tab"
-    [activeSubNavItemFragment]="activeTab"
-    subNavItemFragment="deleted"
-    subNavItemText="Deleted"
-  ></app-moj-sub-navigation-item>
-</app-moj-sub-navigation>
-@switch (activeTab) {
-  @case ('review') {
-    <h3 class="govuk-heading-m">In review</h3>
-    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
-  }
-  @case ('rejected') {
-    <h3 class="govuk-heading-m">Rejected</h3>
-    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
-  }
-  @case ('approved') {
-    <h3 class="govuk-heading-m">Approved</h3>
-    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
-  }
-  @case ('deleted') {
-    <h3 class="govuk-heading-m">Deleted</h3>
-    <ng-container *ngTemplateOutlet="tableWrapper"></ng-container>
-  }
-}
 
-<ng-template #tableWrapper>
-  @if (draftAccounts$ | async; as draftAccounts) {
-    @if (draftAccounts.length) {
-      @if (activeTab === 'rejected') {
-        <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
-      }
-      <app-fines-draft-table-wrapper
-        [tableData]="draftAccounts"
-        [existingSortState]="tableSort"
-        [isApprovedTab]="false"
-        (linkClicked)="onDefendantClick($event)"
-      ></app-fines-draft-table-wrapper>
-    } @else {
-      @switch (activeTab) {
-        @case ('review') {
-          <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
+  <ng-template #tableWrapper>
+    @if (draftAccounts$ | async; as draftAccounts) {
+      @if (draftAccounts.length) {
+        @if (activeTab === 'rejected') {
+          <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
         }
-        @case ('rejected') {
-          <ng-container *ngTemplateOutlet="rejectedNoData"></ng-container>
-        }
-        @case ('approved') {
-          <ng-container *ngTemplateOutlet="approvedNoData"></ng-container>
-        }
-        @case ('deleted') {
-          <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
+        <app-fines-draft-table-wrapper
+          [tableData]="draftAccounts"
+          [existingSortState]="tableSort"
+          [isApprovedTab]="false"
+          (linkClicked)="onDefendantClick($event)"
+        ></app-fines-draft-table-wrapper>
+      } @else {
+        @switch (activeTab) {
+          @case ('review') {
+            <ng-container *ngTemplateOutlet="reviewNoData"></ng-container>
+          }
+          @case ('rejected') {
+            <ng-container *ngTemplateOutlet="rejectedNoData"></ng-container>
+          }
+          @case ('approved') {
+            <ng-container *ngTemplateOutlet="approvedNoData"></ng-container>
+          }
+          @case ('deleted') {
+            <ng-container *ngTemplateOutlet="deletedNoData"></ng-container>
+          }
         }
       }
     }
-  }
-</ng-template>
-<ng-template #reviewNoData>
-  <p>You have no accounts in review.</p>
-</ng-template>
-<ng-template #rejectedNoData>
-  <p>You have no rejected accounts.</p>
-  <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
-</ng-template>
-<ng-template #rejectedTeamMemberData>
-  <p>
-    To resubmit accounts for other team members, you can
-    <a
-      class="govuk-link"
-      (click)="handleRoute(finesDraftCamRoutingPaths.children.viewAllRejected)"
-      (keydown.enter)="handleRoute(finesDraftCamRoutingPaths.children.viewAllRejected)"
-      tabindex="0"
-      >view all rejected accounts</a
-    >.
-  </p>
-</ng-template>
-<ng-template #approvedNoData>
-  <p>No accounts have been approved in the past 7 days.</p>
-</ng-template>
-<ng-template #deletedNoData>
-  <p>No accounts have been deleted in the past 7 days.</p>
-</ng-template>
+  </ng-template>
+  <ng-template #reviewNoData>
+    <p>You have no accounts in review.</p>
+  </ng-template>
+  <ng-template #rejectedNoData>
+    <p>You have no rejected accounts.</p>
+    <ng-container *ngTemplateOutlet="rejectedTeamMemberData"></ng-container>
+  </ng-template>
+  <ng-template #rejectedTeamMemberData>
+    <p>
+      To resubmit accounts for other team members, you can
+      <a
+        class="govuk-link"
+        (click)="handleRoute(finesDraftCamRoutingPaths.children.viewAllRejected)"
+        (keydown.enter)="handleRoute(finesDraftCamRoutingPaths.children.viewAllRejected)"
+        tabindex="0"
+        >view all rejected accounts</a
+      >.
+    </p>
+  </ng-template>
+  <ng-template #approvedNoData>
+    <p>No accounts have been approved in the past 7 days.</p>
+  </ng-template>
+  <ng-template #deletedNoData>
+    <p>No accounts have been deleted in the past 7 days.</p>
+  </ng-template>
+</div>

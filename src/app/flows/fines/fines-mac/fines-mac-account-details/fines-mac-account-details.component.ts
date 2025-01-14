@@ -59,6 +59,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public courtHearingLanguage!: string;
   public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
   public pageNavigation!: boolean;
+  public mandatorySectionsCompleted!: boolean;
   public readonly finesMacStatus = FINES_MAC_STATUS;
 
   /**
@@ -118,6 +119,17 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Checks if all mandatory sections are completed by calling the finesService.
+   * Updates the `mandatorySectionsCompleted` property with the result.
+   *
+   * @private
+   * @returns {void}
+   */
+  private checkMandatorySections(): void {
+    this.mandatorySectionsCompleted = this.finesService.checkMandatorySections();
+  }
+
+  /**
    * Performs the initial setup for the fines-mac-account-details component.
    * Sets the defendant type and account type.
    */
@@ -125,6 +137,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
     this.setDefendantType();
     this.setAccountType();
     this.setLanguage();
+    this.checkMandatorySections();
     this.routerListener();
   }
 

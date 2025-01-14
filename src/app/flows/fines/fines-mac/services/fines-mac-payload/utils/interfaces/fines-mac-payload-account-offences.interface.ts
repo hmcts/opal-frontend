@@ -31,6 +31,6 @@ export interface IFinesMacPayloadAccountOffencesImposition {
 export interface IFinesMacPayloadAccountOffences {
   date_of_sentence: string | null;
   imposing_court_id: string | null;
-  offence_id: string | null;
+  offence_id: number | null;
   impositions: IFinesMacPayloadAccountOffencesImposition[] | null;
 }

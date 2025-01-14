@@ -27,6 +27,7 @@ export const FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK: IFinesMacOffenceD
 export const FINES_MAC_OFFENCE_DETAILS_STATE_MOCK: IFinesMacOffenceDetailsState = {
   fm_offence_details_id: 0,
   fm_offence_details_date_of_sentence: '01/09/2024',
-  fm_offence_details_offence_id: 'OFF123',
+  fm_offence_details_offence_cjs_code: 'OFF123',
+  fm_offence_details_offence_id: 123,
   fm_offence_details_impositions: FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK,
 };
