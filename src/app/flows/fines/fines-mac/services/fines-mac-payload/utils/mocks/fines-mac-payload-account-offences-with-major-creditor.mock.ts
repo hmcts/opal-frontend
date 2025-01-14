@@ -4,7 +4,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MAJOR_CREDITOR: IFinesMacPa
   {
     date_of_sentence: '01/09/2024',
     imposing_court_id: 'Magistrates Court Database (204)',
-    offence_id: 'OFF1234',
+    offence_id: 1234,
     impositions: [
       {
         result_id: 'FCOST',

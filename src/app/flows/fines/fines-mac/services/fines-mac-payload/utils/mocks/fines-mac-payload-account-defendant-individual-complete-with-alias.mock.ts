@@ -18,4 +18,5 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_WITH_ALIAS_
         },
       ],
     },
+    parent_guardian: null,
   };

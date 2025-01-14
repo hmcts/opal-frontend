@@ -4,8 +4,8 @@ import { GovukNotificationBannerComponent } from './govuk-notification-banner.co
 import { By } from '@angular/platform-browser';
 
 describe('GovukNotificationBannerComponent', () => {
-  let component: GovukNotificationBannerComponent;
-  let fixture: ComponentFixture<GovukNotificationBannerComponent>;
+  let component: GovukNotificationBannerComponent | null;
+  let fixture: ComponentFixture<GovukNotificationBannerComponent> | null;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -22,11 +22,22 @@ describe('GovukNotificationBannerComponent', () => {
     fixture.detectChanges();
   });
 
+  afterAll(() => {
+    fixture = null;
+    component = null;
+    TestBed.resetTestingModule();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should create a success message', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     component.type = 'success';
     fixture.detectChanges();
 
@@ -48,6 +59,11 @@ describe('GovukNotificationBannerComponent', () => {
   });
 
   it('should create a success message', () => {
+    if (!component || !fixture) {
+      fail('component or fixture returned null');
+      return;
+    }
+
     component.type = 'information';
     fixture.detectChanges();
 
