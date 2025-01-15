@@ -33,6 +33,8 @@ import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-servi
 import { IDraftAccountResolver } from '../routing/resolvers/draft-account-resolver/interfaces/draft-account-resolver.interface';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+import { FinesMacBaseComponent } from '../components/abstract/fines-mac-base.component';
+import { TransformationService } from '@services/transformation-service/transformation.service';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -55,13 +57,14 @@ import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
+export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<FinesService> implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
+  private readonly transformationService = inject(TransformationService);
 
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
   private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
@@ -98,55 +101,50 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the state of the fines service with the provided draft account.
+   * Updates the state of the fines service with the provided draft account payload.
    *
-   * @param draftAccount - The draft account data to update the fines service state.
-   * @private
+   * This method updates two different states within the fines service:
+   * 1. The `finesDraftState` with the provided `draftAccount`.
+   * 2. The `finesMacState` with the mapped account payload derived from the `draftAccount`.
+   *
+   * @param draftAccount - The payload containing the draft account details to update the fines service state.
+   * @returns void
    */
   private updateFinesServiceState(draftAccount: IFinesMacAddAccountPayload): void {
-    this.finesService.finesDraftState = draftAccount;
-    this.finesService.finesMacState = this.finesMacPayloadService.mapAccountPayload(draftAccount);
+    this.updateServiceState(this.finesService, draftAccount, 'finesDraftState');
+    this.updateServiceState(
+      this.finesService,
+      this.finesMacPayloadService.mapAccountPayload(draftAccount),
+      'finesMacState',
+    );
   }
 
   /**
-   * Retrieves the draft account status from the fines service and updates the component's status property.
-   * It searches for a matching status in the FINES_DRAFT_TAB_STATUSES array based on the account status.
-   * If a matching status is found, the component's status property is set to the pretty name of the matching status.
-   * If no matching status is found, the component's status property is set to an empty string.
+   * Retrieves the draft account status and maps it to the corresponding status.
+   * The status is obtained from the fines service and mapped using the provided
+   * draft state and status mapping.
    *
    * @private
+   * @returns {void}
    */
   private getDraftAccountStatus(): void {
-    const accountStatus = this.finesService.finesDraftState?.account_status ?? '';
-    const matchingStatus = FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus));
-
-    this.status = matchingStatus?.prettyName ?? '';
+    this.status = this.getMappedStatus(this.finesService, 'finesDraftState.account_status', FINES_DRAFT_TAB_STATUSES);
   }
 
   /**
-   * Maps the details of a business unit from camelCase to snake_case.
-   * This is a temporary solution due to the getBusinessUnitById endpoint returning camelCase properties.
-   * Refactor this method once the endpoint is updated to return snake_case properties.
+   * Maps the business unit details from camelCase to snake_case and updates the fines service state.
    *
    * @param businessUnit - The business unit details in camelCase format.
+   * @remarks
+   * This method transforms the business unit details from camelCase to snake_case
+   * due to the `getBusinessUnitById` method returning data in camelCase. This is a temporary
+   * solution and should be refactored once the endpoint returns data in the correct format.
    */
   private mapBusinessUnitDetails(businessUnit: IOpalFinesBusinessUnitNonSnakeCase): void {
     // Due to getBusinessUnitById being camelCase, we need to map the snake_case to camelCase
     // Refactor once endpoint fixed
-    this.finesService.finesMacState.businessUnit = {
-      business_unit_code: businessUnit.businessUnitName,
-      business_unit_type: businessUnit.businessUnitType,
-      account_number_prefix: businessUnit.accountNumberPrefix,
-      opal_domain: businessUnit.opalDomain,
-      business_unit_id: businessUnit.businessUnitId,
-      business_unit_name: businessUnit.businessUnitName,
-      configurationItems: businessUnit.configurationItems.map((item) => ({
-        item_name: item.itemName,
-        item_value: item.itemValue,
-        item_values: item.itemValues,
-      })),
-      welsh_language: businessUnit.welshLanguage,
-    };
+    const businessUnitSnakeCase = this.transformationService.transformCamelToSnakeCase(businessUnit);
+    this.updateNestedServiceState(this.finesService, businessUnitSnakeCase, 'finesMacState.businessUnit');
   }
 
   /**
@@ -166,11 +164,15 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private mapOffenceDetails(offencesData: IOpalFinesOffencesNonSnakeCase[]): void {
     // Due to getOffencesById being camelCase, we need to map the snake_case to camelCase
     // Refactor once endpoint fixed
-    this.finesService.finesMacState.offenceDetails.forEach((offence) => {
-      offence.formData.fm_offence_details_offence_cjs_code = offencesData.find(
-        (x) => x.offenceId === offence.formData.fm_offence_details_offence_id,
-      )!.cjsCode;
-    });
+    const offenceDataSnakeCase = this.transformationService.transformCamelToSnakeCase(offencesData);
+    this.mapArrayData(
+      this.finesService,
+      offenceDataSnakeCase,
+      'finesMacState.offenceDetails',
+      'formData.fm_offence_details_offence_id',
+      'offence_id',
+      [{ sourceKey: 'cjs_code', targetKey: 'formData.fm_offence_details_offence_cjs_code' }],
+    );
   }
 
   /**
@@ -187,11 +189,9 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
       if (this.draftAccountFinesMacState) {
         const { draftAccount, businessUnit, offencesData } = this.draftAccountFinesMacState;
         this.updateFinesServiceState(draftAccount);
-        if (this.finesService.finesMacState) {
-          this.getDraftAccountStatus();
-          this.mapBusinessUnitDetails(businessUnit);
-          this.mapOffenceDetails(offencesData);
-        }
+        this.getDraftAccountStatus();
+        this.mapBusinessUnitDetails(businessUnit);
+        this.mapOffenceDetails(offencesData);
       }
     }
   }
