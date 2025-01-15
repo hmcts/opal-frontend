@@ -1,9 +1,13 @@
 import { mount } from 'cypress/angular';
-import { FinesMacPersonalDetailsComponent } from '../../src/app/flows/fines/fines-mac/fines-mac-personal-details/fines-mac-personal-details.component';
-import { OpalFines } from '../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
+import { FinesMacPersonalDetailsComponent } from '../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/fines-mac-personal-details.component';
+import { OpalFines } from '../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MAC_STATE_MOCK } from '../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../src/app/flows/fines/fines-mac/fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
+import { FINES_MAC_STATE_MOCK } from '../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
+import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
+import { PERSONAL_DETAILS_MISSING_ERRORS as missingErrors } from './errorMessages';
+import { PERSONAL_DETAILS_INVALID_ERRORS as invalidErrors } from './errorMessages';
+import { PERSONAL_DETAILS_LENGTH_ERRORS as tooLongErrors } from './errorMessages';
+import { PERSONAL_DETAILS_SPECIAL_CHARACTER_ERRORS as specialCharactersErrors } from './errorMessages';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   const setupComponent = (formSubmit: any) => {
@@ -258,7 +262,10 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('should show errors for invalid mandatory fields and allow corrections', () => {
-    setupComponent(null);
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+
+    // Mount the component
+    setupComponent(mockFormSubmit);
 
     cy.get('input[id="fm_personal_details_forenames"]')
       .focus()
@@ -290,5 +297,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('input[id="fm_personal_details_forenames"]').should('have.value', 'Coca Cola');
     cy.get('input[id="fm_personal_details_surname"]').should('have.value', 'Cola Family');
     cy.get('input[id="fm_personal_details_address_line_1"]').should('have.value', 'Pepsi Road');
+
+    cy.get('button[type="submit"]').click();
   });
 });
