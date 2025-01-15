@@ -6,7 +6,8 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM: IFinesMacOff
     formData: {
       fm_offence_details_id: 0,
       fm_offence_details_date_of_sentence: '01/09/2024',
-      fm_offence_details_offence_id: 'AK123456',
+      fm_offence_details_offence_cjs_code: 'AK123456',
+      fm_offence_details_offence_id: 314441,
       fm_offence_details_impositions: [
         {
           fm_offence_details_imposition_id: 0,
@@ -27,7 +28,8 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM: IFinesMacOff
     formData: {
       fm_offence_details_id: 1,
       fm_offence_details_date_of_sentence: '01/09/2024',
-      fm_offence_details_offence_id: 'AK123456',
+      fm_offence_details_offence_cjs_code: 'AK123456',
+      fm_offence_details_offence_id: 314441,
       fm_offence_details_impositions: [
         {
           fm_offence_details_imposition_id: 1,

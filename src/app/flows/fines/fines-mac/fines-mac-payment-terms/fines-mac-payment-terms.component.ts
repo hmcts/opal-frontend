@@ -28,6 +28,22 @@ export class FinesMacPaymentTermsComponent extends AbstractFormParentBaseCompone
     // Update the status as form is mandatory
     form.status = FINES_MAC_STATUS.PROVIDED;
 
+    // Change number fields to number type
+    const {
+      fm_payment_terms_lump_sum_amount,
+      fm_payment_terms_instalment_amount,
+      fm_payment_terms_default_days_in_jail,
+    } = form.formData;
+    form.formData.fm_payment_terms_lump_sum_amount = fm_payment_terms_lump_sum_amount
+      ? Number(fm_payment_terms_lump_sum_amount)
+      : null;
+    form.formData.fm_payment_terms_instalment_amount = fm_payment_terms_instalment_amount
+      ? Number(fm_payment_terms_instalment_amount)
+      : null;
+    form.formData.fm_payment_terms_default_days_in_jail = fm_payment_terms_default_days_in_jail
+      ? Number(fm_payment_terms_default_days_in_jail)
+      : null;
+
     // Update the state with the form data
     this.finesService.finesMacState = {
       ...this.finesService.finesMacState,

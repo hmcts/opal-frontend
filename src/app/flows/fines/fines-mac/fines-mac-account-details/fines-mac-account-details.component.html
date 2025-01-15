@@ -108,17 +108,17 @@
   <app-govuk-task-list taskListId="accountCommentsAndNotes" taskListClasses="govuk-!-margin-left-0 ">
     <ng-container *ngTemplateOutlet="accountCommentsAndNotes"></ng-container>
   </app-govuk-task-list>
-  @if (finesService.checkMandatorySections()) {
-    <h2 class="govuk-heading-m">Check and submit for review</h2>
+  @if (mandatorySectionsCompleted) {
+    <h2 class="govuk-heading-m">Check and submit</h2>
     <app-govuk-button
-      buttonId="reviewAccountButton"
+      buttonId="checkAccountButton"
       buttonClasses="govuk-!-margin-bottom-0"
       (buttonClickEvent)="handleRoute(fineMacRoutes.children.reviewAccount)"
-      >Review account</app-govuk-button
+      >Check account</app-govuk-button
     >
   } @else {
-    <h2 class="govuk-heading-m">Check and submit for review</h2>
-    <p class="govuk-body">Check that all required fields have been entered before you submit for review</p>
+    <h2 class="govuk-heading-m">Check and submit</h2>
+    <p class="govuk-body">You cannot proceed until all required sections have been completed.</p>
   }
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <a

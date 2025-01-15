@@ -19,5 +19,6 @@ export const FINES_MAC_ROUTING_PATHS: IFinesMacRoutingPaths = {
     reviewAccount: 'review-account',
     searchOffences: 'search-offences',
     addOffence: 'add-offence',
+    submitConfirmation: 'submit-confirmation',
   },
 };

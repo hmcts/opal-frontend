@@ -8,12 +8,15 @@ import { SortableValues } from '@services/sort-service/types/sort-service-type';
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {
+  private readonly sortService = inject(SortService);
   public abstractTableData!: IAbstractTableData<SortableValues>[] | null;
   public abstractExistingSortState!: IAbstractSortState | null;
-  @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
-
-  private readonly sortService = inject(SortService);
+  public abstractCurrentPage!: number;
+  public abstractItemsPerPage!: number;
+  public abstractPaginatedData: IAbstractTableData<SortableValues>[] | null = null;
   public sortState: IAbstractSortState = {};
+
+  @Output() abstractSortState = new EventEmitter<IAbstractSortState>();
 
   /**
    * Initializes the sort state for the table component.
@@ -70,6 +73,12 @@ export abstract class AbstractSortableTableComponent implements OnInit {
     this.abstractSortState.emit(this.sortState);
   }
 
+  /**
+   * Angular lifecycle hook that is called after Angular has initialized all data-bound properties of a directive.
+   * This method is used to initialize the sort state of the table.
+   *
+   * @see https://angular.io/api/core/OnInit
+   */
   public ngOnInit(): void {
     this.initialiseSortState();
   }
