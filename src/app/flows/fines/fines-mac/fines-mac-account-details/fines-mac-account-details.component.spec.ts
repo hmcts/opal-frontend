@@ -194,7 +194,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getDraftAccountFinesMacState');
+    spyOn<any>(component, 'getDraftAccountFinesMacStateForAmending');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -208,7 +208,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     component['initialAccountDetailsSetup']();
 
-    expect(component['getDraftAccountFinesMacState']).toHaveBeenCalled();
+    expect(component['getDraftAccountFinesMacStateForAmending']).toHaveBeenCalled();
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['setLanguage']).toHaveBeenCalled();
@@ -278,7 +278,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(result).toBe(false);
   });
 
-  it('should set draftAccountFinesMacState', () => {
+  it('should test getDraftAccountFinesMacStateForAmending', () => {
     component['activatedRoute'].snapshot = {
       data: {
         draftAccountFinesMacState: DRAFT_ACCOUNT_RESOLVER_MOCK,
@@ -298,41 +298,26 @@ describe('FinesMacAccountDetailsComponent', () => {
     ];
     mockFinesMacPayloadService.mapAccountPayload.and.returnValue(finesMacStateWithOffences);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updateFinesServiceStateSpy = spyOn<any>(component, 'updateFinesServiceState').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getDraftAccountStatusSpy = spyOn<any>(component, 'getDraftAccountStatus').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapBusinessUnitDetailsSpy = spyOn<any>(component, 'mapBusinessUnitDetails').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapOffenceDetailsSpy = spyOn<any>(component, 'mapOffenceDetails').and.callThrough();
+    component['getDraftAccountFinesMacStateForAmending']();
 
-    component['getDraftAccountFinesMacState']();
-
-    expect(updateFinesServiceStateSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
-    expect(getDraftAccountStatusSpy).toHaveBeenCalled();
-    expect(mapBusinessUnitDetailsSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit);
-    expect(mapOffenceDetailsSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.offencesData);
-  });
-
-  it('should call getBusinessUnit on ngOnInit', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const initialAccountDetailsSetupSpy = spyOn<any>(component, 'initialAccountDetailsSetup');
-
-    component.ngOnInit();
-
-    expect(initialAccountDetailsSetupSpy).toHaveBeenCalled();
-  });
-
-  it('should set status on getDraftAccountStatus', () => {
-    component['finesService'].finesDraftState = structuredClone(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
-    component['getDraftAccountStatus']();
-
+    expect(component['finesService'].finesDraftState).toEqual(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
+    expect(component['finesService'].finesMacState).toEqual(
+      component['finesMacPayloadService'].mapAccountPayload(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount),
+    );
     expect(component.status).toEqual('In review');
-
-    component['finesService'].finesDraftState.account_status = null;
-    component['getDraftAccountStatus']();
-
-    expect(component.status).toEqual('');
+    expect(component['finesService'].finesMacState.businessUnit).toEqual(
+      jasmine.objectContaining({
+        business_unit_code: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitCode,
+        business_unit_type: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitType,
+        account_number_prefix: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.accountNumberPrefix,
+        opal_domain: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.opalDomain,
+        business_unit_id: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitId,
+        business_unit_name: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitName,
+        welsh_language: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.welshLanguage,
+      }),
+    );
+    expect(
+      component['finesService'].finesMacState.offenceDetails[0].formData.fm_offence_details_offence_cjs_code,
+    ).toEqual('AK123456');
   });
 });

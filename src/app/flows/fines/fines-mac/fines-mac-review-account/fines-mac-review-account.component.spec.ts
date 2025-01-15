@@ -225,7 +225,7 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(getDraftAccountFinesMacStateForReviewSpy).toHaveBeenCalled();
   });
 
-  it('should call updateFinesServiceState with draftAccount on getDraftAccountFinesMacState', () => {
+  it('should test getDraftAccountFinesMacState', () => {
     component['activatedRoute'].snapshot = {
       data: {
         draftAccountFinesMacState: DRAFT_ACCOUNT_RESOLVER_MOCK,
