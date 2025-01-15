@@ -28,7 +28,6 @@ import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/mo
 import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { IDraftAccountResolver } from '../routing/resolvers/draft-account-resolver/interfaces/draft-account-resolver.interface';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FinesMacBaseComponent } from '../components/abstract/fines-mac-base.component';
 import { TransformationService } from '@services/transformation-service/transformation.service';
@@ -82,7 +81,6 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
 
-  private draftAccountFinesMacState!: IDraftAccountResolver | null;
   public status = FINES_DRAFT_TAB_STATUSES.find(
     (status) =>
       this.finesService.finesDraftState.account_status &&
@@ -113,44 +111,43 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
    * @returns {void}
    */
   private getDraftAccountFinesMacStateForAmending(): void {
-    if (this.activatedRoute.snapshot) {
-      this.draftAccountFinesMacState = this.activatedRoute.snapshot.data['draftAccountFinesMacState'];
-      if (this.draftAccountFinesMacState) {
-        const { draftAccount, businessUnit, offencesData } = this.draftAccountFinesMacState;
+    const snapshot = this.activatedRoute.snapshot;
+    if (!snapshot) return;
 
-        // Populate the Fines Mac State with the draft account payload for amendments
-        this.updateServiceState(this.finesService, draftAccount, 'finesDraftState');
-        this.updateServiceState(
-          this.finesService,
-          this.finesMacPayloadService.mapAccountPayload(draftAccount),
-          'finesMacState',
-        );
+    const draftAccountFinesMacState = snapshot.data['draftAccountFinesMacState'];
+    if (!draftAccountFinesMacState) return;
 
-        // Extract the account status from the payload to display at the top of the screen
-        this.status = this.getMappedStatus(
-          this.finesService,
-          'finesDraftState.account_status',
-          FINES_DRAFT_TAB_STATUSES,
-        );
+    const { draftAccount, businessUnit, offencesData } = draftAccountFinesMacState;
 
-        // Map snake_case business unit data to camelCase to align with service expectations
-        // To be updated once the endpoint provides camelCase data directly
-        const businessUnitSnakeCase = this.transformationService.transformCamelToSnakeCase(businessUnit);
-        this.updateNestedServiceState(this.finesService, businessUnitSnakeCase, 'finesMacState.businessUnit');
+    // Populate the Fines Mac State with the draft account payload for amendments
+    this.updateServiceState(this.finesService, draftAccount, 'finesDraftState');
+    this.updateServiceState(
+      this.finesService,
+      this.finesMacPayloadService.mapAccountPayload(draftAccount),
+      'finesMacState',
+    );
 
-        // Map snake_case offence data to camelCase to align with service expectations
-        // To be updated once the endpoint provides camelCase data directly
-        const offenceDataSnakeCase = this.transformationService.transformCamelToSnakeCase(offencesData);
-        this.mapArrayData(
-          this.finesService,
-          offenceDataSnakeCase,
-          'finesMacState.offenceDetails',
-          'formData.fm_offence_details_offence_id',
-          'offence_id',
-          [{ sourceKey: 'cjs_code', targetKey: 'formData.fm_offence_details_offence_cjs_code' }],
-        );
-      }
-    }
+    // Extract the account status from the payload to display at the top of the screen
+    this.status = this.getMappedStatus(this.finesService, 'finesDraftState.account_status', FINES_DRAFT_TAB_STATUSES);
+
+    // Map snake_case business unit data to camelCase to align with service expectations
+    // To be updated once the endpoint provides camelCase data directly
+    this.updateNestedServiceState(
+      this.finesService,
+      this.transformationService.transformCamelToSnakeCase(businessUnit),
+      'finesMacState.businessUnit',
+    );
+
+    // Map snake_case offence data to camelCase to align with service expectations
+    // To be updated once the endpoint provides camelCase data directly
+    this.mapArrayData(
+      this.finesService,
+      this.transformationService.transformCamelToSnakeCase(offencesData),
+      'finesMacState.offenceDetails',
+      'formData.fm_offence_details_offence_id',
+      'offence_id',
+      [{ sourceKey: 'cjs_code', targetKey: 'formData.fm_offence_details_offence_cjs_code' }],
+    );
   }
 
   /**
