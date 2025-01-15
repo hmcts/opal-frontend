@@ -12,11 +12,11 @@ dependencies:
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: redis
     version: 20.6.2
-    repository: 'https://charts.bitnami.com/bitnami'
+    repository: 'oci://registry-1.docker.io/bitnamicharts'
     condition: redis.enabled
   - name: postgresql
     version: 16.3.5
-    repository: https://charts.bitnami.com/bitnami
+    repository: 'oci://registry-1.docker.io/bitnamicharts'
     condition: postgresql.enabled
   - name: opal-fines-service
     version: 0.0.33
