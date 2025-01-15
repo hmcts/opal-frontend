@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body.interface';
 import {
   IOpalFinesCourt,
@@ -15,7 +14,6 @@ import {
 import { IOpalFinesSearchCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court.interface';
 import { IOpalFinesSearchCourtBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-court-body.interface';
 import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-account-body.interface';
-
 import { OPAL_FINES_ADD_DEFENDANT_ACCOUNT_NOTE_BODY_MOCK } from './mocks/opal-fines-add-defendant-account-note.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from './mocks/opal-fines-court-ref-data.mock';
@@ -27,7 +25,6 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from './mocks/opal-fines-
 import { OPAL_FINES_SEARCH_COURT_BODY_MOCK } from './mocks/opal-fines-search-court-body.mock';
 import { OPAL_FINES_SEARCH_COURT_MOCK } from './mocks/opal-fines-search-court.mock';
 import { OPAL_FINES_SEARCH_DEFENDANT_ACCOUNTS_MOCK } from './mocks/opal-fines-search-defendant-accounts.mock';
-
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
@@ -39,9 +36,13 @@ import {
   IOpalFinesMajorCreditorRefData,
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from './mocks/opal-fines-major-creditor-ref-data.mock';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-draft-add-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK } from './mocks/opal-fines-draft-account-params.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from './mocks/opal-fines-draft-accounts.mock';
-import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
+import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-business-unit-non-snake-case.mock';
+import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from './mocks/opal-fines-offence-data-non-snake-case.mock';
 
 describe('OpalFines', () => {
   let service: OpalFines;
@@ -438,6 +439,21 @@ describe('OpalFines', () => {
     expect(result).toEqual(`${majorCreditor.name} (${majorCreditor.major_creditor_code})`);
   });
 
+  it('should POST the fines mac payload', () => {
+    const body: IFinesMacAddAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+
+    const apiUrl = OPAL_FINES_PATHS.draftAccounts;
+
+    service.postDraftAddAccountPayload(body).subscribe((response) => {
+      expect(response).toEqual(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('POST');
+
+    req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
+  });
+
   it('should send a GET request to draft accounts API with correct query parameters', () => {
     const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
 
@@ -492,12 +508,26 @@ describe('OpalFines', () => {
     const apiUrl = `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`;
 
     service.getBusinessUnitById(businessUnitId).subscribe((businessUnit) => {
-      expect(businessUnit).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      expect(businessUnit).toEqual(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK);
     });
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
 
-    req.flush(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    req.flush(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK);
+  });
+
+  it('should GET the offence by id', () => {
+    const offenceId = 123;
+    const apiUrl = `${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`;
+
+    service.getOffenceById(offenceId).subscribe((offence) => {
+      expect(offence).toEqual(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK);
+    });
+
+    const req = httpMock.expectOne(apiUrl);
+    expect(req.request.method).toBe('GET');
+
+    req.flush(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK);
   });
 });

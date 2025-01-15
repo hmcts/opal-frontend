@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesDraftCamInputterComponent } from './fines-draft-cam-inputter.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
@@ -13,7 +12,6 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
-import { FINES_MAC_STATE_MOCK } from '../../../fines-mac/mocks/fines-mac-state.mock';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
 import { signal } from '@angular/core';
@@ -108,47 +106,33 @@ describe('FinesDraftCamInputterComponent', () => {
     expect(mockOpalFinesService.getDraftAccounts).toHaveBeenCalledWith(params);
   });
 
-  it('should update fines state correctly', () => {
-    const response = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
-    component['updateFinesState'](response);
-    expect(mockFinesService.finesDraftState).toEqual(response);
-    expect(mockFinesService.finesMacState).toEqual(mockFinesMacPayloadService.mapAccountPayload(response));
-  });
-
   it('should navigate to review account', () => {
+    const draftAccountId = 1;
     const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    component.activeTab = 'review';
-    mockFinesService.finesDraftAmend.set(false);
-    component['navigateToReviewAccount']();
+    component['navigateToReviewAccount'](draftAccountId);
     expect(routerSpy).toHaveBeenCalledWith([
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
-      FINES_MAC_STATE_MOCK.accountDetails.formData.fm_create_account_business_unit_id,
+      draftAccountId,
     ]);
     expect(mockFinesService.finesDraftAmend()).toBeFalse();
   });
 
   it('should navigate to review account when rejected', () => {
+    const draftAccountId = 1;
     const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     component.activeTab = 'rejected';
-    mockFinesService.finesDraftAmend.set(true);
-    component['navigateToReviewAccount']();
+    component['navigateToReviewAccount'](draftAccountId);
     expect(routerSpy).toHaveBeenCalledWith([
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
-      FINES_MAC_STATE_MOCK.accountDetails.formData.fm_create_account_business_unit_id,
+      draftAccountId,
     ]);
+    expect(mockFinesService.finesDraftAmend()).toBeTrue();
   });
 
   it('should handle defendant click', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn(component as any, 'updateFinesState');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn(component as any, 'navigateToReviewAccount');
     component.onDefendantClick(1);
-    expect(mockOpalFinesService.getDraftAccountById).toHaveBeenCalledWith(1);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).updateFinesState).toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((component as any).navigateToReviewAccount).toHaveBeenCalled();
   });

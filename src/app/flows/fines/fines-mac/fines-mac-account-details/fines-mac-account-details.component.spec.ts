@@ -11,9 +11,11 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks/fines-mac-account-details-state.mock';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { signal } from '@angular/core';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
+import { DRAFT_ACCOUNT_RESOLVER_MOCK } from '../routing/resolvers/draft-account-resolver/mocks/draft-account-resolver.mock';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -21,6 +23,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockDateService: jasmine.SpyObj<DateService>;
+  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
 
   beforeEach(async () => {
     const mockFinesDraftAmend = signal<boolean>(false);
@@ -36,7 +39,12 @@ describe('FinesMacAccountDetailsComponent', () => {
     mockFinesService.checkMandatorySections.and.returnValue(false);
     mockFinesService.finesDraftFragment.and.returnValue('rejected');
 
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
+    mockDateService = jasmine.createSpyObj(DateService, [
+      'getFromFormatToFormat',
+      'calculateAge',
+      'getFromFormat',
+      'isValidDate',
+    ]);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
       'upperCaseAllLetters',
       'upperCaseFirstLetter',
@@ -44,12 +52,15 @@ describe('FinesMacAccountDetailsComponent', () => {
       'convertToMonetaryString',
     ]);
 
+    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['mapAccountPayload']);
+
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
         { provide: DateService, useValue: mockDateService },
+        { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -183,19 +194,25 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'getDraftAccountFinesMacState');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setAccountType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setLanguage');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'checkMandatorySections');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'routerListener');
 
     component['initialAccountDetailsSetup']();
 
+    expect(component['getDraftAccountFinesMacState']).toHaveBeenCalled();
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['setLanguage']).toHaveBeenCalled();
+    expect(component['checkMandatorySections']).toHaveBeenCalled();
     expect(component['routerListener']).toHaveBeenCalled();
   });
 
@@ -261,28 +278,61 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(result).toBe(false);
   });
 
-  it('should set business unit and isReadOnly on getBusinessUnit', () => {
+  it('should set draftAccountFinesMacState', () => {
     component['activatedRoute'].snapshot = {
       data: {
-        businessUnit: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
+        draftAccountFinesMacState: DRAFT_ACCOUNT_RESOLVER_MOCK,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    component['getBusinessUnit']();
+    const finesMacStateWithOffences = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacStateWithOffences.offenceDetails = [
+      {
+        ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0],
+        formData: {
+          ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0].formData,
+          fm_offence_details_offence_id: 314441,
+        },
+      },
+    ];
+    mockFinesMacPayloadService.mapAccountPayload.and.returnValue(finesMacStateWithOffences);
 
-    expect(component['businessUnit']).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateFinesServiceStateSpy = spyOn<any>(component, 'updateFinesServiceState').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getDraftAccountStatusSpy = spyOn<any>(component, 'getDraftAccountStatus').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapBusinessUnitDetailsSpy = spyOn<any>(component, 'mapBusinessUnitDetails').and.callThrough();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapOffenceDetailsSpy = spyOn<any>(component, 'mapOffenceDetails').and.callThrough();
+
+    component['getDraftAccountFinesMacState']();
+
+    expect(updateFinesServiceStateSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
+    expect(getDraftAccountStatusSpy).toHaveBeenCalled();
+    expect(mapBusinessUnitDetailsSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit);
+    expect(mapOffenceDetailsSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.offencesData);
   });
 
   it('should call getBusinessUnit on ngOnInit', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getBusinessUnitSpy = spyOn<any>(component, 'getBusinessUnit').and.callThrough();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const initialAccountDetailsSetupSpy = spyOn<any>(component, 'initialAccountDetailsSetup');
 
     component.ngOnInit();
 
-    expect(getBusinessUnitSpy).toHaveBeenCalled();
     expect(initialAccountDetailsSetupSpy).toHaveBeenCalled();
+  });
+
+  it('should set status on getDraftAccountStatus', () => {
+    component['finesService'].finesDraftState = structuredClone(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
+    component['getDraftAccountStatus']();
+
+    expect(component.status).toEqual('In review');
+
+    component['finesService'].finesDraftState.account_status = null;
+    component['getDraftAccountStatus']();
+
+    expect(component.status).toEqual('');
   });
 });

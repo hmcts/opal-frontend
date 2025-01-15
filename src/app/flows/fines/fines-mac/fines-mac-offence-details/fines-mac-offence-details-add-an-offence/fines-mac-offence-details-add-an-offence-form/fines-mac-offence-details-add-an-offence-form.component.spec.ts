@@ -164,7 +164,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to false', () => {
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
     component.selectedOffenceConfirmation = true;
 
@@ -179,7 +179,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       ...mockData.offenceDetailsDraft[0],
       formData: {
         ...mockData.offenceDetailsDraft[0].formData,
-        fm_offence_details_offence_id: 'TEST1234',
+        fm_offence_details_offence_cjs_code: 'TEST1234',
       },
     };
     component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = mockData;
@@ -195,7 +195,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should update offenceCodeControl value with uppercased value', () => {
     const mockCjsCode = 'abc123';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     mockUtilsService.upperCaseAllLetters.and.returnValue(mockCjsCode);
 
     component['offenceCodeListener']();
@@ -207,7 +207,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', () => {
     const mockCjsCode = 'abc12345';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
 
     component['offenceCodeListener']();
@@ -218,7 +218,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjs_code length is between 7 and 8', fakeAsync(() => {
     const mockCjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'populateOffenceHint');
@@ -235,7 +235,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to false when cjs_code length is not between 7 and 8', fakeAsync(() => {
     const mockCjsCode = 'abc123450';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
     offenceCodeControl.reset();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'populateOffenceHint');
@@ -252,7 +252,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should set selectedOffenceConfirmation to true and call getOffenceByCjsCode when cjsCode length is between 7 and 8', () => {
     const cjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
 
     component['populateOffenceHint'](cjsCode);
 
@@ -265,7 +265,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     (mockOpalFinesService.getOffenceByCjsCode as jasmine.Spy).and.returnValue(of({ count: 0, refData: [] }));
 
     const cjsCode = 'abc1234';
-    const offenceCodeControl = component.form.controls['fm_offence_details_offence_id'];
+    const offenceCodeControl = component.form.controls['fm_offence_details_offence_cjs_code'];
 
     component['populateOffenceHint'](cjsCode);
 
