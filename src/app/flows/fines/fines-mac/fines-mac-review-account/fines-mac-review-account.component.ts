@@ -37,6 +37,7 @@ import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timel
 import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
 import { FinesMacBaseComponent } from '../components/abstract/fines-mac-base.component';
 import { TransformationService } from '@services/transformation-service/transformation.service';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -84,7 +85,7 @@ export class FinesMacReviewAccountComponent extends FinesMacBaseComponent<FinesS
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
 
   public isReadOnly!: boolean;
-  public status!: string;
+  public reviewAccountStatus!: string;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
@@ -138,49 +139,34 @@ export class FinesMacReviewAccountComponent extends FinesMacBaseComponent<FinesS
   }
 
   /**
-   * Retrieves the draft account fines MAC state for review from the activated route snapshot.
-   * Updates the fines service state with the retrieved draft account, business unit, and offences data.
-   * Maps the status and transforms the business unit and offences data from camelCase to snake_case.
-   * Sets the component to read-only mode.
+   * Fetches and maps the review account payload from the activated route snapshot.
+   *
+   * This method performs the following steps:
+   * 1. Retrieves the snapshot from the activated route.
+   * 2. Extracts the `reviewAccountFetchMap` data from the snapshot.
+   * 3. Updates the fines service state with the fetched payload.
+   * 4. Sets the review account status based on the mapped status.
+   * 5. Sets the component to read-only mode.
    *
    * @private
    * @returns {void}
    */
-  private getDraftAccountFinesMacStateForReview(): void {
+  private reviewAccountFetchedMappedPayload(): void {
     const snapshot = this.activatedRoute.snapshot;
     if (!snapshot) return;
 
-    const draftAccountFinesMacState = snapshot.data['draftAccountFinesMacState'];
-    if (!draftAccountFinesMacState) return;
-
-    const { draftAccount, businessUnit, offencesData } = draftAccountFinesMacState;
+    const fetchMap = snapshot.data['reviewAccountFetchMap'] as IFetchMapFinesMacPayload;
+    if (!fetchMap) return;
 
     // Get payload into Fines Mac State
-    this.updateServiceState(this.finesService, draftAccount, 'finesDraftState');
-    this.updateServiceState(
-      this.finesService,
-      this.finesMacPayloadService.mapAccountPayload(draftAccount),
-      'finesMacState',
-    );
+    this.updateServiceState(this.finesService, fetchMap.finesMacDraft, 'finesDraftState');
+    this.updateServiceState(this.finesService, fetchMap.finesMacState, 'finesMacState');
 
     // Grab the status from the payload
-    this.status = this.getMappedStatus(this.finesService, 'finesDraftState.account_status', FINES_DRAFT_TAB_STATUSES);
-
-    // Transform and update business unit data
-    this.updateNestedServiceState(
+    this.reviewAccountStatus = this.getMappedStatus(
       this.finesService,
-      this.transformationService.transformCamelToSnakeCase(businessUnit),
-      'finesMacState.businessUnit',
-    );
-
-    // Transform and map offence data
-    this.mapArrayData(
-      this.finesService,
-      this.transformationService.transformCamelToSnakeCase(offencesData),
-      'finesMacState.offenceDetails',
-      'formData.fm_offence_details_offence_id',
-      'offence_id',
-      [{ sourceKey: 'cjs_code', targetKey: 'formData.fm_offence_details_offence_cjs_code' }],
+      'finesDraftState.account_status',
+      FINES_DRAFT_TAB_STATUSES,
     );
 
     this.isReadOnly = true;
@@ -243,6 +229,6 @@ export class FinesMacReviewAccountComponent extends FinesMacBaseComponent<FinesS
   }
 
   public ngOnInit(): void {
-    this.getDraftAccountFinesMacStateForReview();
+    this.reviewAccountFetchedMappedPayload();
   }
 }

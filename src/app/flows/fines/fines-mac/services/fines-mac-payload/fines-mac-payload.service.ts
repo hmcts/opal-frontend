@@ -29,6 +29,8 @@ import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -293,13 +295,37 @@ export class FinesMacPayloadService {
     return mappedFinesMacState;
   }
 
+  private finesMacPayloadMapBusinessUnit(
+    finesMacState: IFinesMacState,
+    businessUnitRefData: IOpalFinesBusinessUnitNonSnakeCase,
+  ): IFinesMacState {
+    finesMacState.businessUnit = this.transformationService.transformCamelToSnakeCase(businessUnitRefData);
+    return finesMacState;
+  }
+
+  private finesMacPayloadMapOffencesCjsCode(
+    finesMacState: IFinesMacState,
+    offencesRefData: IOpalFinesOffencesNonSnakeCase[],
+  ): IFinesMacState {
+    finesMacState.offenceDetails.forEach((offence) => {
+      offence.formData.fm_offence_details_offence_cjs_code = offencesRefData.find(
+        (x) => x.offenceId === offence.formData.fm_offence_details_offence_id,
+      )!.cjsCode;
+    });
+    return finesMacState;
+  }
+
   /**
    * Maps the provided account payload to the fines MAC state.
    *
    * @param payload - The payload containing account information to be mapped.
    * @returns The updated fines MAC state after mapping the account information.
    */
-  public mapAccountPayload(payload: IFinesMacAddAccountPayload) {
+  public mapAccountPayload(
+    payload: IFinesMacAddAccountPayload,
+    businessUnitRefData: IOpalFinesBusinessUnitNonSnakeCase | null,
+    offencesRefData: IOpalFinesOffencesNonSnakeCase[] | null,
+  ) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
@@ -314,6 +340,12 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+    if (businessUnitRefData) {
+      finesMacState = this.finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
+    }
+    if (offencesRefData) {
+      finesMacState = this.finesMacPayloadMapOffencesCjsCode(finesMacState, offencesRefData);
+    }
     finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;

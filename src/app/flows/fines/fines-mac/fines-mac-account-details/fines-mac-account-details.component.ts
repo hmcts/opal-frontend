@@ -31,6 +31,7 @@ import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FinesMacBaseComponent } from '../components/abstract/fines-mac-base.component';
 import { TransformationService } from '@services/transformation-service/transformation.service';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -81,11 +82,7 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
 
-  public status = FINES_DRAFT_TAB_STATUSES.find(
-    (status) =>
-      this.finesService.finesDraftState.account_status &&
-      status.statuses.includes(this.finesService.finesDraftState.account_status),
-  )?.prettyName;
+  public accountDetailsStatus!: string;
 
   /**
    * Determines whether the component can be deactivated.
@@ -96,57 +93,34 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
   }
 
   /**
-   * Retrieves the draft account fines MAC state for amending and updates the service state accordingly.
+   * Fetches and maps the account details payload from the activated route snapshot.
    *
    * This method performs the following actions:
-   * 1. Checks if the `activatedRoute.snapshot` is available.
-   * 2. Retrieves the `draftAccountFinesMacState` from the route snapshot data.
-   * 3. If `draftAccountFinesMacState` is available, extracts `draftAccount`, `businessUnit`, and `offencesData`.
-   * 4. Updates the fines service state with the draft account payload for amendments.
+   * 1. Retrieves the snapshot from the activated route.
+   * 2. Extracts the account details fetch map from the snapshot data.
+   * 3. Updates the Fines Mac State with the draft account payload for amendments.
+   * 4. Updates the Fines Mac State with the current account state.
    * 5. Extracts and sets the account status from the payload to display at the top of the screen.
-   * 6. Transforms and updates the business unit data from snake_case to camelCase.
-   * 7. Transforms and maps the offence data from snake_case to camelCase.
    *
    * @private
    * @returns {void}
    */
-  private getDraftAccountFinesMacStateForAmending(): void {
+  private accountDetailsFetchedMappedPayload(): void {
     const snapshot = this.activatedRoute.snapshot;
     if (!snapshot) return;
 
-    const draftAccountFinesMacState = snapshot.data['draftAccountFinesMacState'];
-    if (!draftAccountFinesMacState) return;
-
-    const { draftAccount, businessUnit, offencesData } = draftAccountFinesMacState;
+    const accountDetailsFetchMap = snapshot.data['accountDetailsFetchMap'] as IFetchMapFinesMacPayload;
+    if (!accountDetailsFetchMap) return;
 
     // Populate the Fines Mac State with the draft account payload for amendments
-    this.updateServiceState(this.finesService, draftAccount, 'finesDraftState');
-    this.updateServiceState(
-      this.finesService,
-      this.finesMacPayloadService.mapAccountPayload(draftAccount),
-      'finesMacState',
-    );
+    this.updateServiceState(this.finesService, accountDetailsFetchMap.finesMacDraft, 'finesDraftState');
+    this.updateServiceState(this.finesService, accountDetailsFetchMap.finesMacState, 'finesMacState');
 
     // Extract the account status from the payload to display at the top of the screen
-    this.status = this.getMappedStatus(this.finesService, 'finesDraftState.account_status', FINES_DRAFT_TAB_STATUSES);
-
-    // Map snake_case business unit data to camelCase to align with service expectations
-    // To be updated once the endpoint provides camelCase data directly
-    this.updateNestedServiceState(
+    this.accountDetailsStatus = this.getMappedStatus(
       this.finesService,
-      this.transformationService.transformCamelToSnakeCase(businessUnit),
-      'finesMacState.businessUnit',
-    );
-
-    // Map snake_case offence data to camelCase to align with service expectations
-    // To be updated once the endpoint provides camelCase data directly
-    this.mapArrayData(
-      this.finesService,
-      this.transformationService.transformCamelToSnakeCase(offencesData),
-      'finesMacState.offenceDetails',
-      'formData.fm_offence_details_offence_id',
-      'offence_id',
-      [{ sourceKey: 'cjs_code', targetKey: 'formData.fm_offence_details_offence_cjs_code' }],
+      'finesDraftState.account_status',
+      FINES_DRAFT_TAB_STATUSES,
     );
   }
 
@@ -214,7 +188,7 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
    * Sets the defendant type and account type.
    */
   private initialAccountDetailsSetup(): void {
-    this.getDraftAccountFinesMacStateForAmending();
+    this.accountDetailsFetchedMappedPayload();
     this.setDefendantType();
     this.setAccountType();
     this.setLanguage();

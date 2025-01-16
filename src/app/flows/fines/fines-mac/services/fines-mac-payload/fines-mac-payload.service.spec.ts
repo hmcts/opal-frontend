@@ -100,7 +100,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
-    const result = service.mapAccountPayload(finesMacPayloadAddAccount);
+    const result = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
     finesMacState.parentGuardianDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
