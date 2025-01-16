@@ -234,7 +234,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
   });
 
   it('should show errors for invalid mandatory fields and allow corrections', () => {
-    setupComponent(null);
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+
+    setupComponent(mockFormSubmit);
 
     cy.get(DOM_ELEMENTS['firstName']).focus().type('Stuart Philips aarogyam Guuci Coach VII', { delay: 0 });
     cy.get(DOM_ELEMENTS['lastName']).focus().type('Chicago bulls Burberry RedBull 2445 PizzaHut', { delay: 0 });
@@ -255,5 +257,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS['firstName']).should('have.value', 'Coca Cola');
     cy.get(DOM_ELEMENTS['lastName']).should('have.value', 'Cola Family');
     cy.get(DOM_ELEMENTS['addressLine1']).should('have.value', 'Pepsi Road');
+
+    cy.get(DOM_ELEMENTS['submitButton']).click();
+
+    cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 });

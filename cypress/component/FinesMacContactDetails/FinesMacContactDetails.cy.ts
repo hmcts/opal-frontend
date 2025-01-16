@@ -57,7 +57,9 @@ describe('FinesMacContactDetailsComponent', () => {
   });
 
   it('should accept valid contact details', () => {
-    setupComponent(null);
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+
+    setupComponent(mockFormSubmit);
 
     cy.get(DOM_ELEMENTS['primaryEmail']).focus().clear().type('name@example.com', { delay: 0 });
     cy.get(DOM_ELEMENTS['secondaryEmail']).focus().clear().type('secondary@example.com', { delay: 0 });
@@ -65,7 +67,8 @@ describe('FinesMacContactDetailsComponent', () => {
     cy.get(DOM_ELEMENTS['homeTelephone']).focus().clear().type('01632960001', { delay: 0 });
     cy.get(DOM_ELEMENTS['workTelephone']).focus().clear().type('01632960002', { delay: 0 });
 
-    // Verify no error messages are displayed
-    cy.get('.govuk-error-message').should('not.exist');
+    cy.get(DOM_ELEMENTS['submitButton']).click();
+
+    cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 });
