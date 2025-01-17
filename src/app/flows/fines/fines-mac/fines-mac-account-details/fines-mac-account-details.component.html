@@ -16,7 +16,7 @@
         }}
       }
     </h1>
-    <app-govuk-tag tagClasses="govuk-tag govuk-tag--red" tagId="status">{{ status }}</app-govuk-tag>
+    <app-govuk-tag tagClasses="govuk-tag govuk-tag--red" tagId="status">{{ accountDetailsStatus }}</app-govuk-tag>
     <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>
     <app-moj-timeline>
       @for (timelineItem of finesService.finesDraftState.timeline_data; track timelineItem.status_date) {
@@ -142,7 +142,7 @@
   <app-govuk-task-list taskListId="accountCommentsAndNotes" taskListClasses="govuk-!-margin-left-0 ">
     <ng-container *ngTemplateOutlet="accountCommentsAndNotes"></ng-container>
   </app-govuk-task-list>
-  @if (finesService.checkMandatorySections()) {
+  @if (mandatorySectionsCompleted) {
     <h2 class="govuk-heading-m">Check and submit</h2>
     <app-govuk-button
       buttonId="checkAccountButton"

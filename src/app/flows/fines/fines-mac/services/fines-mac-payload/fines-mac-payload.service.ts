@@ -29,6 +29,9 @@ import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
+import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -299,7 +302,11 @@ export class FinesMacPayloadService {
    * @param payload - The payload containing account information to be mapped.
    * @returns The updated fines MAC state after mapping the account information.
    */
-  public mapAccountPayload(payload: IFinesMacAddAccountPayload) {
+  public mapAccountPayload(
+    payload: IFinesMacAddAccountPayload,
+    businessUnitRefData: IOpalFinesBusinessUnitNonSnakeCase | null,
+    offencesRefData: IOpalFinesOffencesNonSnakeCase[] | null,
+  ) {
     // Convert the values back to the original format
     const transformedPayload = this.transformPayload(structuredClone(payload), FINES_MAC_MAP_TRANSFORM_ITEMS_CONFIG);
 
@@ -313,7 +320,12 @@ export class FinesMacPayloadService {
       transformedPayload.account.account_notes,
     );
 
-    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
+
+    if (businessUnitRefData) {
+      finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
+    }
+
     finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;

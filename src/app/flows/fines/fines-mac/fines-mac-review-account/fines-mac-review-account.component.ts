@@ -25,7 +25,8 @@ import {
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
+import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
@@ -34,8 +35,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
 import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
-import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
 @Component({
@@ -70,10 +70,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly globalStateService = inject(GlobalStateService);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
-  protected readonly utilsService = inject(UtilsService);
-  protected readonly dateService = inject(DateService);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
+  protected readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStateService.userState();
+  protected readonly dateService = inject(DateService);
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
@@ -81,6 +81,9 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+
+  public isReadOnly!: boolean;
+  public reviewAccountStatus!: string;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
@@ -103,28 +106,75 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     localJusticeAreasData: this.localJusticeAreasData$,
   });
 
-  private businessUnit: IOpalFinesBusinessUnit | null = null;
-  public isReadOnly!: boolean;
-  public status = FINES_DRAFT_TAB_STATUSES.find(
-    (status) =>
-      this.finesService.finesDraftState.account_status &&
-      status.statuses.includes(this.finesService.finesDraftState.account_status),
-  )?.prettyName;
-
   /**
-   * Retrieves the business unit from the activated route's snapshot data and assigns it to the component's businessUnit property.
-   * If a business unit is found, it updates the finesMacState's businessUnit in the finesService and sets the component to read-only mode.
+   * Submits the payload for adding a fines MAC account.
+   *
+   * This method builds the payload using the `finesMacPayloadService` and the current state of `finesService` and `userState`.
+   * It then posts the payload using `opalFinesService`. If the response is successful, it navigates to the submit confirmation route.
+   * Otherwise, it logs an error message.
    *
    * @private
+   * @returns {void}
    */
-  private getBusinessUnit(): void {
-    if (this.activatedRoute.snapshot) {
-      this.businessUnit = this.activatedRoute.snapshot.data['businessUnit'];
-      if (this.businessUnit) {
-        this.finesService.finesMacState.businessUnit = this.businessUnit;
-        this.isReadOnly = true;
-      }
-    }
+  private submitPayload(): void {
+    const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
+      this.finesService.finesMacState,
+      this.userState,
+    );
+    this.opalFinesService
+      .postDraftAddAccountPayload(finesMacAddAccountPayload)
+      .pipe(
+        tap(() => {
+          this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
+        }),
+        catchError(() => {
+          this.utilsService.scrollToTop();
+          return of(null);
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Extracts and sets the review account status from the fines service state.
+   *
+   * @private
+   * @returns {void}
+   */
+  private setReviewAccountStatus(): void {
+    const accountStatus = this.finesService.finesDraftState?.account_status;
+    if (!accountStatus) return;
+
+    this.reviewAccountStatus =
+      FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus))?.prettyName ?? '';
+  }
+
+  /**
+   * Fetches and maps the review account payload from the activated route snapshot.
+   *
+   * This method retrieves the `reviewAccountFetchMap` data from the route snapshot,
+   * updates the `finesMacState` and `finesDraftState` in the `finesService`, and sets
+   * the review account status. It also sets the component to read-only mode.
+   *
+   * @private
+   * @returns {void}
+   */
+  private reviewAccountFetchedMappedPayload(): void {
+    const snapshot = this.activatedRoute.snapshot;
+    if (!snapshot) return;
+
+    const fetchMap = snapshot.data['reviewAccountFetchMap'] as IFetchMapFinesMacPayload;
+    if (!fetchMap) return;
+
+    // Get payload into Fines Mac State
+    this.finesService.finesMacState = fetchMap.finesMacState;
+    this.finesService.finesDraftState = fetchMap.finesMacDraft;
+
+    // Grab the status from the payload
+    this.setReviewAccountStatus();
+
+    this.isReadOnly = true;
   }
 
   /**
@@ -239,8 +289,18 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     }
   }
 
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+
+    this.globalStateService.error.set({
+      error: false,
+      message: '',
+    });
+  }
+
   public ngOnInit(): void {
-    this.getBusinessUnit();
+    this.reviewAccountFetchedMappedPayload();
   }
 
   public ngOnDestroy(): void {

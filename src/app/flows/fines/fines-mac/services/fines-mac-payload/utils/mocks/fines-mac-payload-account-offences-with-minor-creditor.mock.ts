@@ -4,7 +4,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR: IFinesMacPa
   {
     date_of_sentence: '01/09/2024',
     imposing_court_id: 'Magistrates Court Database (204)',
-    offence_id: 'HY35014',
+    offence_id: 294885,
     impositions: [
       {
         result_id: 'FCOST',

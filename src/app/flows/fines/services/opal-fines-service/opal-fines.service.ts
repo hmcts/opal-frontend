@@ -5,6 +5,7 @@ import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/o
 import { IOpalFinesAddDefendantAccountNoteBody } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-defendant-account-note-body.interface';
 import {
   IOpalFinesBusinessUnit,
+  IOpalFinesBusinessUnitNonSnakeCase,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import {
@@ -25,15 +26,18 @@ import { IOpalFinesSearchDefendantAccountBody } from '@services/fines/opal-fines
 import { IOpalFinesSearchDefendantAccounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-defendant-accounts.interface';
 
 import { Observable, shareReplay } from 'rxjs';
-import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
+import {
+  IOpalFinesOffencesNonSnakeCase,
+  IOpalFinesOffencesRefData,
+} from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults, IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import {
   IOpalFinesMajorCreditor,
   IOpalFinesMajorCreditorRefData,
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
-import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 @Injectable({
   providedIn: 'root',
 })
@@ -289,6 +293,16 @@ export class OpalFines {
   }
 
   /**
+   * Sends a POST request to add a draft account payload.
+   *
+   * @param body - The payload containing the account details to be added.
+   * @returns An Observable of the added account payload.
+   */
+  public postDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+    return this.http.post<IFinesMacAddAccountPayload>(OPAL_FINES_PATHS.draftAccounts, body);
+  }
+
+  /**
    * Retrieves draft accounts based on the provided filters.
    *
    * @param filters - An object containing the filter parameters for the draft accounts.
@@ -337,8 +351,20 @@ export class OpalFines {
    * @param businessUnitId - The ID of the business unit to retrieve.
    * @returns An Observable that emits the business unit data.
    */
-  public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnit> {
-    return this.http.get<IOpalFinesBusinessUnit>(`${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`);
+  public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnitNonSnakeCase> {
+    return this.http.get<IOpalFinesBusinessUnitNonSnakeCase>(
+      `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`,
+    );
+  }
+
+  /**
+   * Retrieves an offence by its ID.
+   *
+   * @param {number} offenceId - The ID of the offence to retrieve.
+   * @returns {Observable<IOpalFinesOffencesNonSnakeCase>} An observable containing the offence data.
+   */
+  public getOffenceById(offenceId: number): Observable<IOpalFinesOffencesNonSnakeCase> {
+    return this.http.get<IOpalFinesOffencesNonSnakeCase>(`${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`);
   }
 
   /**

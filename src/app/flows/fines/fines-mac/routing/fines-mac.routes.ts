@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@guards/auth/auth.guard';
 import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
-
 import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { businessUnitResolver } from '@services/fines/opal-fines-service/resolvers/business-unit.resolver';
+import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac-payload-resolver/fetch-map-fines-mac-payload.resolver';
 
 export const routing: Routes = [
   {
@@ -141,22 +140,30 @@ export const routing: Routes = [
     canActivate: [authGuard, finesMacFlowStateGuard],
   },
   {
-    path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:businessUnitId`,
+    path: FINES_MAC_ROUTING_PATHS.children.submitConfirmation,
+    loadComponent: () =>
+      import('../fines-mac-submit-confirmation/fines-mac-submit-confirmation.component').then(
+        (c) => c.FinesMacSubmitConfirmationComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: `${FINES_MAC_ROUTING_PATHS.children.reviewAccount}/:draftAccountId`,
     loadComponent: () =>
       import('../fines-mac-review-account/fines-mac-review-account.component').then(
         (c) => c.FinesMacReviewAccountComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
-    resolve: { businessUnit: businessUnitResolver },
+    canActivate: [authGuard],
+    resolve: { reviewAccountFetchMap: fetchMapFinesMacPayloadResolver },
   },
   {
-    path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:businessUnitId`,
+    path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:draftAccountId`,
     loadComponent: () =>
       import('../fines-mac-account-details/fines-mac-account-details.component').then(
         (c) => c.FinesMacAccountDetailsComponent,
       ),
-    canActivate: [authGuard, finesMacFlowStateGuard],
+    canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
-    resolve: { businessUnit: businessUnitResolver },
+    resolve: { accountDetailsFetchMap: fetchMapFinesMacPayloadResolver },
   },
 ];

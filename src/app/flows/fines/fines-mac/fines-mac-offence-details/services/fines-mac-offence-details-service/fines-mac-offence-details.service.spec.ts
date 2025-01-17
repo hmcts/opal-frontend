@@ -25,7 +25,8 @@ describe('FinesMacOffenceDetailsService', () => {
       {
         formData: {
           fm_offence_details_id: 0,
-          fm_offence_details_offence_id: 'GMMET001',
+          fm_offence_details_offence_cjs_code: 'GMMET001',
+          fm_offence_details_offence_id: 314201,
           fm_offence_details_date_of_sentence: '2023-01-01',
           fm_offence_details_impositions: [
             {
@@ -46,7 +47,8 @@ describe('FinesMacOffenceDetailsService', () => {
       {
         formData: {
           fm_offence_details_id: 1,
-          fm_offence_details_offence_id: 'GMMET001',
+          fm_offence_details_offence_cjs_code: 'GMMET001',
+          fm_offence_details_offence_id: 314201,
           fm_offence_details_date_of_sentence: '2023-01-01',
           fm_offence_details_impositions: [
             {

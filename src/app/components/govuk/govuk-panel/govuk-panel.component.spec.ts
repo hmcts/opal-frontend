@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 @Component({
-  template: `<app-govuk-panel panelTitle="Test Title"><p>This is a test</p></app-govuk-panel>`,
+  template: `<app-govuk-panel panelTitle="Test Title"><div>This is a test</div></app-govuk-panel>`,
 })
 class TestHostComponent {}
 

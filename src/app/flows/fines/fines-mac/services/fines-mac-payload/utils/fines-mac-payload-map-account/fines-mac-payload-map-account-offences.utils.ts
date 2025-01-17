@@ -1,3 +1,4 @@
+import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-creditor-options.constant';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
@@ -241,6 +242,7 @@ const buildDefaultOffenceDetailsFormState = (): IFinesMacOffenceDetailsForm => {
 const mapAccountOffencesPayload = (
   mappedFinesMacState: IFinesMacState,
   offences: IFinesMacPayloadAccountOffences[] | null,
+  offencesRefData: IOpalFinesOffencesNonSnakeCase[] | null,
 ): IFinesMacState => {
   if (!offences?.length) {
     return mappedFinesMacState;
@@ -257,12 +259,18 @@ const mapAccountOffencesPayload = (
       mapAccountOffencesMinorCreditors(offence.impositions),
     );
 
+    let offenceRefData;
+    if (offencesRefData) {
+      offenceRefData = offencesRefData.find((refData) => refData.offenceId === offence.offence_id);
+    }
+
     // Map the offence details state
     offenceDetailsFormState.formData = {
       ...offenceDetailsFormState.formData,
       fm_offence_details_id: index,
       fm_offence_details_date_of_sentence: offence.date_of_sentence,
       fm_offence_details_offence_id: offence.offence_id,
+      fm_offence_details_offence_cjs_code: offenceRefData ? offenceRefData.cjsCode : null,
       fm_offence_details_impositions: mappedOffenceDetailsImpositionsState,
     };
 
@@ -286,6 +294,7 @@ const mapAccountOffencesPayload = (
 export const finesMacPayloadMapAccountOffences = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacAddAccountPayload,
+  offencesRefData: IOpalFinesOffencesNonSnakeCase[] | null,
 ): IFinesMacState => {
-  return mapAccountOffencesPayload(mappedFinesMacState, payload.account.offences);
+  return mapAccountOffencesPayload(mappedFinesMacState, payload.account.offences, offencesRefData);
 };

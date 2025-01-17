@@ -21,7 +21,6 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
-import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
@@ -29,6 +28,7 @@ import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/mo
 import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -70,18 +70,14 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public courtHearingLanguage!: string;
   public paymentTermsBypassDefendantTypes = [this.defendantTypes.company, this.defendantTypes.parentOrGuardianToPay];
   public pageNavigation!: boolean;
+  public mandatorySectionsCompleted!: boolean;
   public readonly finesMacStatus = FINES_MAC_STATUS;
 
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
 
-  private businessUnit: IOpalFinesBusinessUnit | null = null;
-  public status = FINES_DRAFT_TAB_STATUSES.find(
-    (status) =>
-      this.finesService.finesDraftState.account_status &&
-      status.statuses.includes(this.finesService.finesDraftState.account_status),
-  )?.prettyName;
+  public accountDetailsStatus!: string;
 
   /**
    * Determines whether the component can be deactivated.
@@ -92,18 +88,42 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Retrieves the business unit from the activated route's snapshot data and assigns it to the component's businessUnit property.
-   * If a business unit is found, it updates the finesMacState's businessUnit in the finesService and sets the component to read-only mode.
+   * Sets the account details status from the fines service state.
    *
    * @private
+   * @returns {void}
    */
-  private getBusinessUnit(): void {
-    if (this.activatedRoute.snapshot) {
-      this.businessUnit = this.activatedRoute.snapshot.data['businessUnit'];
-      if (this.businessUnit) {
-        this.finesService.finesMacState.businessUnit = this.businessUnit;
-      }
-    }
+  private setAccountDetailsStatus(): void {
+    const accountStatus = this.finesService.finesDraftState?.account_status;
+    if (!accountStatus) return;
+
+    this.accountDetailsStatus =
+      FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus))?.prettyName ?? '';
+  }
+
+  /**
+   * Fetches and maps account details payload from the activated route snapshot.
+   *
+   * This method retrieves the `accountDetailsFetchMap` from the route snapshot data,
+   * and updates the `finesMacState` and `finesDraftState` in the `finesService` with the fetched data.
+   * It also sets the account details status based on the fetched payload.
+   *
+   * @private
+   * @returns {void}
+   */
+  private accountDetailsFetchedMappedPayload(): void {
+    const snapshot = this.activatedRoute.snapshot;
+    if (!snapshot) return;
+
+    const accountDetailsFetchMap = snapshot.data['accountDetailsFetchMap'] as IFetchMapFinesMacPayload;
+    if (!accountDetailsFetchMap) return;
+
+    // Get payload into Fines Mac State
+    this.finesService.finesMacState = accountDetailsFetchMap.finesMacState;
+    this.finesService.finesDraftState = accountDetailsFetchMap.finesMacDraft;
+
+    // Grab the status from the payload
+    this.setAccountDetailsStatus();
   }
 
   /**
@@ -155,13 +175,27 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Checks if all mandatory sections are completed by calling the finesService.
+   * Updates the `mandatorySectionsCompleted` property with the result.
+   *
+   * @private
+   * @returns {void}
+   */
+  private checkMandatorySections(): void {
+    this.mandatorySectionsCompleted = this.finesService.checkMandatorySections();
+  }
+
+  /**
    * Performs the initial setup for the fines-mac-account-details component.
    * Sets the defendant type and account type.
    */
   private initialAccountDetailsSetup(): void {
+    this.accountDetailsFetchedMappedPayload();
+    this.setAccountDetailsStatus();
     this.setDefendantType();
     this.setAccountType();
     this.setLanguage();
+    this.checkMandatorySections();
     this.routerListener();
   }
 
@@ -217,7 +251,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.initialAccountDetailsSetup();
-    this.getBusinessUnit();
   }
 
   public ngOnDestroy(): void {

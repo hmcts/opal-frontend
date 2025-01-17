@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountComponent } from './fines-mac-review-account.component';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -14,15 +14,16 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
+import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
+import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
+import { GlobalStateService } from '@services/global-state-service/global-state.service';
+import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
-import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { UtilsService } from '@services/utils/utils.service';
 import { DateService } from '@services/date-service/date.service';
-import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
-import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
-import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
-import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
+import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { signal } from '@angular/core';
 
 describe('FinesMacReviewAccountComponent', () => {
@@ -30,10 +31,10 @@ describe('FinesMacReviewAccountComponent', () => {
   let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
+  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
+  let mockGlobalStateService: GlobalStateService;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
-  let mockGlobalStateService: jasmine.SpyObj<GlobalStateService>;
 
   const mockFinesDraftAmend = signal<boolean>(false);
   const mockFinesDraftBannerMessage = signal<string>('');
@@ -68,10 +69,16 @@ describe('FinesMacReviewAccountComponent', () => {
       getOffenceByCjsCode: jasmine
         .createSpy('getOffenceByCjsCode')
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
-      putDraftAddAccountPayload: jasmine
-        .createSpy('putDraftAddAccountPayload')
-        .and.returnValue(of(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK)),
+      postDraftAddAccountPayload: jasmine
+        .createSpy('postDraftAddAccountPayload')
+        .and.returnValue(of({ ...OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK })),
     };
+
+    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
+      'buildAddAccountPayload',
+      'mapAccountPayload',
+    ]);
+    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT });
 
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
@@ -115,6 +122,13 @@ describe('FinesMacReviewAccountComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacReviewAccountComponent);
     component = fixture.componentInstance;
+
+    mockGlobalStateService = TestBed.inject(GlobalStateService);
+    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
+    mockGlobalStateService.error.set({
+      error: false,
+      message: '',
+    });
 
     fixture.detectChanges();
   });
@@ -182,6 +196,31 @@ describe('FinesMacReviewAccountComponent', () => {
     });
   });
 
+  it('should submit payload on submitForReview', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const submitPayloadSpy = spyOn<any>(component, 'submitPayload').and.callThrough();
+    component.submitForReview();
+    expect(submitPayloadSpy).toHaveBeenCalled();
+  });
+
+  it('should handle submitPayload success', () => {
+    const handleRouteSpy = spyOn(component, 'handleRoute');
+    component['submitPayload']();
+    expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.submitConfirmation);
+  });
+
+  it('should handle submitPayload failure', () => {
+    mockGlobalStateService.error.set({
+      error: true,
+      message: 'Something went wrong',
+    });
+    mockOpalFinesService.postDraftAddAccountPayload = jasmine
+      .createSpy('postDraftAddAccountPayload')
+      .and.returnValue(throwError(() => new Error('Something went wrong')));
+    component['submitPayload']();
+    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+  });
+
   it('should navigate back on navigateBack', () => {
     const handleRouteSpy = spyOn(component, 'handleRoute');
     mockFinesService.finesDraftFragment.set('review');
@@ -197,118 +236,104 @@ describe('FinesMacReviewAccountComponent', () => {
     );
   });
 
-  it('should set business unit and isReadOnly on getBusinessUnit', () => {
+  it('should call reviewAccountFetchedMappedPayload on ngOnInit', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const reviewAccountFetchedMappedPayloadSpy = spyOn<any>(
+      component,
+      'reviewAccountFetchedMappedPayload',
+    ).and.callThrough();
+
+    component.ngOnInit();
+
+    expect(reviewAccountFetchedMappedPayloadSpy).toHaveBeenCalled();
+  });
+
+  it('should test reviewAccountFetchedMappedPayload', () => {
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+    };
     component['activatedRoute'].snapshot = {
       data: {
-        businessUnit: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0],
+        reviewAccountFetchMap: snapshotData,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    component['getBusinessUnit']();
+    component['reviewAccountFetchedMappedPayload']();
 
-    expect(component['businessUnit']).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     expect(component.isReadOnly).toBeTrue();
+    expect(component['finesService'].finesDraftState).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE_MOCK);
+    expect(component.reviewAccountStatus).toEqual('In review');
   });
 
-  it('should call getBusinessUnit on ngOnInit', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getBusinessUnitSpy = spyOn<any>(component, 'getBusinessUnit').and.callThrough();
+  it('should test reviewAccountFetchedMappedPayload', () => {
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+    };
+    component['activatedRoute'].snapshot = {
+      data: {
+        test: snapshotData,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
 
-    component.ngOnInit();
+    component['reviewAccountFetchedMappedPayload']();
 
-    expect(getBusinessUnitSpy).toHaveBeenCalled();
+    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE);
+    expect(component['finesService'].finesDraftState).toEqual(FINES_DRAFT_STATE);
   });
 
-  it('should submit payload on submitForReview', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const submitPayloadSpy = spyOn<any>(component, 'submitPayload').and.callThrough();
-    component.submitForReview();
-    expect(submitPayloadSpy).toHaveBeenCalled();
-  });
-
-  it('should handle submitPayload success', () => {
+  it('should call handleRoute with submitConfirmation on submitPayload success', () => {
     const handleRouteSpy = spyOn(component, 'handleRoute');
-    mockFinesService.finesDraftAmend.set(true);
-    mockFinesService.finesDraftState = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    mockFinesService.finesDraftFragment.set('rejected');
-
     component['submitPayload']();
-
-    expect(handleRouteSpy).toHaveBeenCalledWith(
-      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
-      false,
-      undefined,
-      'rejected',
-    );
+    expect(handleRouteSpy).toHaveBeenCalledWith(component['finesMacRoutes'].children.submitConfirmation);
   });
 
-  it('should handle submitPayload failure', () => {
-    mockGlobalStateService.error.set({
-      error: true,
-      message: 'Something went wrong',
-    });
-    mockOpalFinesService.putDraftAddAccountPayload = jasmine
+  it('should call scrollToTop on submitPayload failure', () => {
+    mockOpalFinesService.postDraftAddAccountPayload = jasmine
       .createSpy('postDraftAddAccountPayload')
       .and.returnValue(throwError(() => new Error('Something went wrong')));
-    mockFinesService.finesDraftAmend.set(true);
     component['submitPayload']();
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
   });
 
-  it('should set banner message and navigate on successful putPayload', fakeAsync(() => {
-    const payload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
-    const handleRouteSpy = spyOn(component, 'handleRoute');
-    mockFinesService.finesDraftFragment.set('rejected');
-
-    // Mock the service method
-    mockOpalFinesService.putDraftAddAccountPayload = jasmine
-      .createSpy('putDraftAddAccountPayload')
-      .and.returnValue(of(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
-
-    // Execute the method
-    component['putPayload'](payload);
-
-    tick();
-
-    // Assert the signal was updated
-    expect(mockFinesService.finesDraftBannerMessage()).toBe(
-      `You have submitted ${payload.account_snapshot?.defendant_name}'s account for review`,
+  it('should navigate back to inputter on navigateBack when isReadOnly is true', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.isReadOnly = true;
+    component.navigateBack();
+    expect(routerSpy).toHaveBeenCalledWith(
+      [
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+      ],
+      {
+        fragment: 'review',
+      },
     );
+  });
 
-    // Assert navigation
-    expect(handleRouteSpy).toHaveBeenCalledWith(
-      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
-      false,
-      undefined,
-      'rejected',
-    );
-  }));
-
-  it('should scroll to top on putPayload error', fakeAsync(() => {
-    mockGlobalStateService.error.set({
-      error: true,
-      message: 'Something went wrong',
+  it('should navigate back to accountDetails on navigateBack when isReadOnly is false', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.isReadOnly = false;
+    component.navigateBack();
+    expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.accountDetails], {
+      relativeTo: component['activatedRoute'].parent,
     });
-    mockOpalFinesService.putDraftAddAccountPayload = jasmine
-      .createSpy('putDraftAddAccountPayload')
-      .and.returnValue(throwError(() => new Error('Something went wrong')));
-    component['putPayload'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    tick();
-    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
-  }));
+  });
 
-  it('should complete ngUnsubscribe on ngOnDestroy', () => {
-    const nextSpy = spyOn(component['ngUnsubscribe'], 'next');
-    const completeSpy = spyOn(component['ngUnsubscribe'], 'complete');
+  it('should test setReviewAccountStatus when draft state is null', () => {
+    mockFinesService.finesDraftState = FINES_DRAFT_STATE;
+    component['setReviewAccountStatus']();
+    expect(component.reviewAccountStatus).toBeUndefined();
+  });
 
-    component.ngOnDestroy();
-
-    expect(nextSpy).toHaveBeenCalled();
-    expect(completeSpy).toHaveBeenCalled();
-    expect(mockGlobalStateService.error.set).toHaveBeenCalledWith({
-      error: false,
-      message: '',
-    });
+  it('should test setAccountDetailsStatus when draft state is unknown', () => {
+    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' };
+    component['setReviewAccountStatus']();
+    expect(component.reviewAccountStatus).toEqual('');
   });
 });
