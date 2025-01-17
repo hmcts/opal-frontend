@@ -26,7 +26,7 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 import { signal } from '@angular/core';
 
-xdescribe('FinesMacReviewAccountComponent', () => {
+describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
