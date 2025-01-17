@@ -35,10 +35,7 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
 import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
-import { IDraftAccountResolver } from '../routing/resolvers/draft-account-resolver/interfaces/draft-account-resolver.interface';
-import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -84,9 +81,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
   protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
 
-  private draftAccountFinesMacState!: IDraftAccountResolver | null;
   public isReadOnly!: boolean;
-  public status!: string;
+  public reviewAccountStatus!: string;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
     .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
@@ -140,103 +136,44 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the state of the fines service with the provided draft account.
-   *
-   * @param draftAccount - The draft account data to update the fines service state.
-   * @private
-   */
-  private updateFinesServiceState(draftAccount: IFinesMacAddAccountPayload): void {
-    this.finesService.finesDraftState = draftAccount;
-    this.finesService.finesMacState = this.finesMacPayloadService.mapAccountPayload(draftAccount);
-  }
-
-  /**
-   * Retrieves the draft account status from the fines service and updates the component's status property.
-   * It searches for a matching status in the FINES_DRAFT_TAB_STATUSES array based on the account status.
-   * If a matching status is found, the component's status property is set to the pretty name of the matching status.
-   * If no matching status is found, the component's status property is set to an empty string.
-   *
-   * @private
-   */
-  private getDraftAccountStatus(): void {
-    const accountStatus = this.finesService.finesDraftState?.account_status ?? '';
-    const matchingStatus = FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus));
-
-    this.status = matchingStatus?.prettyName ?? '';
-  }
-
-  /**
-   * Maps the details of a business unit from camelCase to snake_case.
-   * This is a temporary solution due to the getBusinessUnitById endpoint returning camelCase properties.
-   * Refactor this method once the endpoint is updated to return snake_case properties.
-   *
-   * @param businessUnit - The business unit details in camelCase format.
-   */
-  private mapBusinessUnitDetails(businessUnit: IOpalFinesBusinessUnitNonSnakeCase): void {
-    // Due to getBusinessUnitById being camelCase, we need to map the snake_case to camelCase
-    // Refactor once endpoint fixed
-    this.finesService.finesMacState.businessUnit = {
-      business_unit_code: businessUnit.businessUnitName,
-      business_unit_type: businessUnit.businessUnitType,
-      account_number_prefix: businessUnit.accountNumberPrefix,
-      opal_domain: businessUnit.opalDomain,
-      business_unit_id: businessUnit.businessUnitId,
-      business_unit_name: businessUnit.businessUnitName,
-      configurationItems: businessUnit.configurationItems.map((item) => ({
-        item_name: item.itemName,
-        item_value: item.itemValue,
-        item_values: item.itemValues,
-      })),
-      welsh_language: businessUnit.welshLanguage,
-    };
-  }
-
-  /**
-   * Maps offence details from the provided offences data to the fines service state.
-   *
-   * This method updates the `fm_offence_details_offence_cjs_code` property of each offence
-   * in the `finesMacState.offenceDetails` array by finding the corresponding offence in the
-   * provided `offencesData` array based on the `offenceId`.
-   *
-   * @param offencesData - An array of offence data objects in non-snake case format.
-   *
-   * @remarks
-   * This method is a temporary solution due to the `getOffencesById` method returning data
-   * in camelCase. It should be refactored once the endpoint is fixed to return data in the
-   * expected format.
-   */
-  private mapOffenceDetails(offencesData: IOpalFinesOffencesNonSnakeCase[]): void {
-    // Due to getOffencesById being camelCase, we need to map the snake_case to camelCase
-    // Refactor once endpoint fixed
-    this.finesService.finesMacState.offenceDetails.forEach((offence) => {
-      offence.formData.fm_offence_details_offence_cjs_code = offencesData.find(
-        (x) => x.offenceId === offence.formData.fm_offence_details_offence_id,
-      )!.cjsCode;
-    });
-  }
-
-  /**
-   * Retrieves the draft account fines MAC state from the activated route snapshot.
-   * If the state is available, it updates the fines service state, maps the business unit details,
-   * maps the offence details, and sets the component to read-only mode.
+   * Extracts and sets the review account status from the fines service state.
    *
    * @private
    * @returns {void}
    */
-  private getDraftAccountFinesMacState(): void {
-    if (this.activatedRoute.snapshot) {
-      this.draftAccountFinesMacState = this.activatedRoute.snapshot.data['draftAccountFinesMacState'];
-      if (this.draftAccountFinesMacState) {
-        const { draftAccount, businessUnit, offencesData } = this.draftAccountFinesMacState;
-        this.updateFinesServiceState(draftAccount);
-        if (this.finesService.finesMacState) {
-          this.getDraftAccountStatus();
-          this.mapBusinessUnitDetails(businessUnit);
-          this.mapOffenceDetails(offencesData);
-          this.isReadOnly = true;
-        }
-      }
-    }
+  private setReviewAccountStatus(): void {
+    const accountStatus = this.finesService.finesDraftState?.account_status;
+    if (!accountStatus) return;
+
+    this.reviewAccountStatus =
+      FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus))?.prettyName ?? '';
+  }
+
+  /**
+   * Fetches and maps the review account payload from the activated route snapshot.
+   *
+   * This method retrieves the `reviewAccountFetchMap` data from the route snapshot,
+   * updates the `finesMacState` and `finesDraftState` in the `finesService`, and sets
+   * the review account status. It also sets the component to read-only mode.
+   *
+   * @private
+   * @returns {void}
+   */
+  private reviewAccountFetchedMappedPayload(): void {
+    const snapshot = this.activatedRoute.snapshot;
+    if (!snapshot) return;
+
+    const fetchMap = snapshot.data['reviewAccountFetchMap'] as IFetchMapFinesMacPayload;
+    if (!fetchMap) return;
+
+    // Get payload into Fines Mac State
+    this.finesService.finesMacState = fetchMap.finesMacState;
+    this.finesService.finesDraftState = fetchMap.finesMacDraft;
+
+    // Grab the status from the payload
+    this.setReviewAccountStatus();
+
+    this.isReadOnly = true;
   }
 
   /**
@@ -296,6 +233,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.getDraftAccountFinesMacState();
+    this.reviewAccountFetchedMappedPayload();
   }
 }

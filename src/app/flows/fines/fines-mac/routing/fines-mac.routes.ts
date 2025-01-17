@@ -5,7 +5,7 @@ import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { draftAccountResolver } from './resolvers/draft-account-resolver/draft-account.resolver';
+import { fetchMapFinesMacPayloadResolver } from './resolvers/fetch-map-fines-mac-payload-resolver/fetch-map-fines-mac-payload.resolver';
 
 export const routing: Routes = [
   {
@@ -154,7 +154,7 @@ export const routing: Routes = [
         (c) => c.FinesMacReviewAccountComponent,
       ),
     canActivate: [authGuard],
-    resolve: { draftAccountFinesMacState: draftAccountResolver },
+    resolve: { reviewAccountFetchMap: fetchMapFinesMacPayloadResolver },
   },
   {
     path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:draftAccountId`,
@@ -164,6 +164,6 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
-    resolve: { draftAccountFinesMacState: draftAccountResolver },
+    resolve: { accountDetailsFetchMap: fetchMapFinesMacPayloadResolver },
   },
 ];

@@ -13,9 +13,10 @@ import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { signal } from '@angular/core';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
-import { DRAFT_ACCOUNT_RESOLVER_MOCK } from '../routing/resolvers/draft-account-resolver/mocks/draft-account-resolver.mock';
-import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -35,7 +36,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       },
     );
     mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
-    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Rejected' };
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
     mockFinesService.checkMandatorySections.and.returnValue(false);
     mockFinesService.finesDraftFragment.and.returnValue('rejected');
 
@@ -194,7 +195,9 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it('should call setDefendantType and setAccountType on initialAccountDetailsSetup', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    spyOn<any>(component, 'getDraftAccountFinesMacState');
+    spyOn<any>(component, 'accountDetailsFetchedMappedPayload');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setAccountDetailsStatus');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -208,7 +211,8 @@ describe('FinesMacAccountDetailsComponent', () => {
 
     component['initialAccountDetailsSetup']();
 
-    expect(component['getDraftAccountFinesMacState']).toHaveBeenCalled();
+    expect(component['accountDetailsFetchedMappedPayload']).toHaveBeenCalled();
+    expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['setLanguage']).toHaveBeenCalled();
@@ -278,61 +282,65 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(result).toBe(false);
   });
 
-  it('should set draftAccountFinesMacState', () => {
+  it('should test accountDetailsFetchedMappedPayload', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setAccountDetailsStatus');
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT), account_status: 'Rejected' },
+    };
     component['activatedRoute'].snapshot = {
       data: {
-        draftAccountFinesMacState: DRAFT_ACCOUNT_RESOLVER_MOCK,
+        accountDetailsFetchMap: snapshotData,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
-    const finesMacStateWithOffences = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacStateWithOffences.offenceDetails = [
-      {
-        ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0],
-        formData: {
-          ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0].formData,
-          fm_offence_details_offence_id: 314441,
-        },
+    component['accountDetailsFetchedMappedPayload']();
+
+    expect(component['finesService'].finesDraftState).toEqual(snapshotData.finesMacDraft);
+    expect(component['finesService'].finesMacState).toEqual(snapshotData.finesMacState);
+    expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
+  });
+
+  it('should test accountDetailsFetchedMappedPayload', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setAccountDetailsStatus');
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+    };
+    component['activatedRoute'].snapshot = {
+      data: {
+        test: snapshotData,
       },
-    ];
-    mockFinesMacPayloadService.mapAccountPayload.and.returnValue(finesMacStateWithOffences);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updateFinesServiceStateSpy = spyOn<any>(component, 'updateFinesServiceState').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getDraftAccountStatusSpy = spyOn<any>(component, 'getDraftAccountStatus').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapBusinessUnitDetailsSpy = spyOn<any>(component, 'mapBusinessUnitDetails').and.callThrough();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapOffenceDetailsSpy = spyOn<any>(component, 'mapOffenceDetails').and.callThrough();
+    component['accountDetailsFetchedMappedPayload']();
 
-    component['getDraftAccountFinesMacState']();
-
-    expect(updateFinesServiceStateSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
-    expect(getDraftAccountStatusSpy).toHaveBeenCalled();
-    expect(mapBusinessUnitDetailsSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit);
-    expect(mapOffenceDetailsSpy).toHaveBeenCalledWith(DRAFT_ACCOUNT_RESOLVER_MOCK.offencesData);
+    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE);
+    expect(component['finesService'].finesDraftState).toEqual(FINES_DRAFT_STATE);
+    expect(component['setAccountDetailsStatus']).not.toHaveBeenCalled();
   });
 
-  it('should call getBusinessUnit on ngOnInit', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const initialAccountDetailsSetupSpy = spyOn<any>(component, 'initialAccountDetailsSetup');
-
-    component.ngOnInit();
-
-    expect(initialAccountDetailsSetupSpy).toHaveBeenCalled();
+  it('should test setAccountDetailsStatus when draft state is null', () => {
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
+    component['setAccountDetailsStatus']();
+    expect(component.accountDetailsStatus).toBeUndefined();
   });
 
-  it('should set status on getDraftAccountStatus', () => {
-    component['finesService'].finesDraftState = structuredClone(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
-    component['getDraftAccountStatus']();
+  it('should test setAccountDetailsStatus when draft state is populated', () => {
+    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Rejected' };
+    component['setAccountDetailsStatus']();
+    expect(component.accountDetailsStatus).toEqual('Rejected');
+  });
 
-    expect(component.status).toEqual('In review');
-
-    component['finesService'].finesDraftState.account_status = null;
-    component['getDraftAccountStatus']();
-
-    expect(component.status).toEqual('');
+  it('should test setAccountDetailsStatus when draft state is unknown', () => {
+    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' };
+    component['setAccountDetailsStatus']();
+    expect(component.accountDetailsStatus).toEqual('');
   });
 });
