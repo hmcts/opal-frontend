@@ -210,7 +210,6 @@ describe('FinesMacReviewAccountComponent', () => {
       .and.returnValue(throwError(() => new Error('Something went wrong')));
     component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
-    expect(mockGlobalStateService.error()).toEqual({ error: true, message: 'Something went wrong' });
   });
 
   it('should handle submitPayload failure', () => {
@@ -220,7 +219,6 @@ describe('FinesMacReviewAccountComponent', () => {
       .and.returnValue(throwError(() => new Error('Something went wrong')));
     component['handlePostRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
-    expect(mockGlobalStateService.error()).toEqual({ error: true, message: 'Something went wrong' });
   });
 
   it('should test processPutResponse', () => {

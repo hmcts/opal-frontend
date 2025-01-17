@@ -163,9 +163,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       .putDraftAddAccountPayload(payload)
       .pipe(
         tap((response) => this.processPutResponse(response)),
-        catchError((error) => {
-          const errorMessage = error.message;
-          this.globalStateService.error.set({ error: true, message: errorMessage });
+        catchError(() => {
           this.utilsService.scrollToTop();
           return of(null);
         }),
@@ -188,9 +186,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       .postDraftAddAccountPayload(payload)
       .pipe(
         tap(() => this.processPostResponse()),
-        catchError((error) => {
-          const errorMessage = error.message;
-          this.globalStateService.error.set({ error: true, message: errorMessage });
+        catchError(() => {
           this.utilsService.scrollToTop();
           return of(null);
         }),
