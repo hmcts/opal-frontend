@@ -84,8 +84,13 @@ describe('FinesMacSubmitConfirmationComponent', () => {
 
     component.seeAllAccounts();
 
-    expect(routerSpy).toHaveBeenCalledWith([
-      `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter}`,
-    ]);
+    expect(routerSpy).toHaveBeenCalledWith(
+      [
+        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter}`,
+      ],
+      {
+        fragment: 'review',
+      },
+    );
   });
 });

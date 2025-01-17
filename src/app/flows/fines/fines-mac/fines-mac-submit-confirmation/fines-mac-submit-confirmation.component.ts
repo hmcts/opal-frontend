@@ -45,8 +45,13 @@ export class FinesMacSubmitConfirmationComponent {
   public seeAllAccounts(): void {
     this.finesService.finesMacState = { ...FINES_MAC_STATE };
 
-    this.router.navigate([
-      `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter}`,
-    ]);
+    this.router.navigate(
+      [
+        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter}`,
+      ],
+      {
+        fragment: 'review',
+      },
+    );
   }
 }

@@ -528,7 +528,7 @@ describe('OpalFines', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
 
-    req.flush(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    req.flush(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK);
   });
 
   it('should send a PUT request to update the draft account payload', () => {

@@ -107,36 +107,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   });
 
   /**
-   * Submits the payload for adding a fines MAC account.
-   *
-   * This method builds the payload using the `finesMacPayloadService` and the current state of `finesService` and `userState`.
-   * It then posts the payload using `opalFinesService`. If the response is successful, it navigates to the submit confirmation route.
-   * Otherwise, it logs an error message.
-   *
-   * @private
-   * @returns {void}
-   */
-  private submitPayload(): void {
-    const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
-      this.finesService.finesMacState,
-      this.userState,
-    );
-    this.opalFinesService
-      .postDraftAddAccountPayload(finesMacAddAccountPayload)
-      .pipe(
-        tap(() => {
-          this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
-        }),
-        catchError(() => {
-          this.utilsService.scrollToTop();
-          return of(null);
-        }),
-        takeUntil(this.ngUnsubscribe),
-      )
-      .subscribe();
-  }
-
-  /**
    * Extracts and sets the review account status from the fines service state.
    *
    * @private
@@ -178,32 +148,22 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sends the provided payload to the server to update the draft account information.
+   * Handles the PUT request to add an account payload.
    *
-   * @param payload - The payload containing the account information to be updated.
+   * @param payload - The payload containing the account information to be added.
    *
-   * The method performs the following actions:
-   * - Calls the `putDraftAddAccountPayload` method of `opalFinesService` with the provided payload.
-   * - On success, sets a banner message indicating the account has been submitted for review.
-   * - Navigates to the inputter route.
-   * - On error, scrolls to the top of the page.
-   * - The observable completes when `ngUnsubscribe` emits.
+   * This method sends the payload to the `opalFinesService` to update the draft account information.
+   * It processes the response using `processPutResponse` method and handles any errors by scrolling to the top of the page.
+   * The request is automatically unsubscribed when the component is destroyed using `takeUntil` with `ngUnsubscribe`.
    */
-  private putPayload(payload: IFinesMacAddAccountPayload): void {
+  private handlePutRequest(payload: IFinesMacAddAccountPayload): void {
     this.opalFinesService
       .putDraftAddAccountPayload(payload)
       .pipe(
-        tap(() => {
-          const accountName = payload.account_snapshot?.defendant_name;
-          this.finesService.finesDraftBannerMessage.set(`You have submitted ${accountName}'s account for review`);
-          this.handleRoute(
-            `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
-            false,
-            undefined,
-            this.finesService.finesDraftFragment(),
-          );
-        }),
-        catchError(() => {
+        tap((response) => this.processPutResponse(response)),
+        catchError((error) => {
+          const errorMessage = error.message;
+          this.globalStateService.error.set({ error: true, message: errorMessage });
           this.utilsService.scrollToTop();
           return of(null);
         }),
@@ -213,33 +173,132 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Submits the payload for adding a fines MAC account.
+   * Handles the post request to add an account payload.
    *
-   * This method builds the payload using the `finesMacPayloadService` and the current state of `finesService` and `userState`.
-   * It then posts the payload using `opalFinesService`. If the response is successful, it navigates to the submit confirmation route.
-   * Otherwise, it logs an error message.
+   * @param payload - The payload containing the account details to be added.
+   *
+   * This method sends the payload to the `opalFinesService` to post the draft add account payload.
+   * It processes the response upon success and handles any errors by scrolling to the top of the page.
+   * The request is automatically unsubscribed when the component is destroyed.
+   */
+  private handlePostRequest(payload: IFinesMacAddAccountPayload): void {
+    this.opalFinesService
+      .postDraftAddAccountPayload(payload)
+      .pipe(
+        tap(() => this.processPostResponse()),
+        catchError((error) => {
+          const errorMessage = error.message;
+          this.globalStateService.error.set({ error: true, message: errorMessage });
+          this.utilsService.scrollToTop();
+          return of(null);
+        }),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Processes the response from a PUT request and updates the state accordingly.
+   *
+   * @param response - The response payload from the PUT request containing account details.
+   * @param response.account_snapshot - Snapshot of the account details.
+   * @param response.account_snapshot.defendant_name - The name of the defendant associated with the account.
+   *
+   * Updates the fines draft banner message with the defendant's name, sets the state changes and unsaved changes flags to false,
+   * and handles routing to the inputter route.
+   */
+  private processPutResponse(response: IFinesMacAddAccountPayload): void {
+    const accountName = response.account_snapshot?.defendant_name;
+    this.finesService.finesDraftBannerMessage.set(`You have submitted ${accountName}'s account for review`);
+    this.finesService.finesMacState.stateChanges = false;
+    this.finesService.finesMacState.unsavedChanges = false;
+
+    this.handleRoute(
+      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+      false,
+      undefined,
+      this.finesService.finesDraftFragment(),
+    );
+  }
+
+  /**
+   * Processes the post response by handling the route to the submit confirmation page.
+   * This method is called after a post request is successfully completed.
+   * It navigates to the submit confirmation route defined in the finesMacRoutes.
    *
    * @private
    * @returns {void}
    */
-  private submitPayload(): void {
-    const finesMacAddAccountPayload = this.finesMacPayloadService.buildReplaceAccountPayload(
+  private processPostResponse(): void {
+    this.handleRoute(this.finesMacRoutes.children.submitConfirmation);
+  }
+
+  /**
+   * Prepares the payload for a PUT request to replace an account.
+   *
+   * This method utilizes the `finesMacPayloadService` to build the payload
+   * required for replacing an account. It takes into consideration the current
+   * state of fines (`finesMacState`), the draft state of fines (`finesDraftState`),
+   * and the user state (`userState`).
+   *
+   * @returns {IFinesMacAddAccountPayload} The payload for the PUT request.
+   */
+  private preparePutPayload(): IFinesMacAddAccountPayload {
+    return this.finesMacPayloadService.buildReplaceAccountPayload(
       this.finesService.finesMacState,
+      this.finesService.finesDraftState,
       this.userState,
     );
+  }
+
+  /**
+   * Prepares the payload for posting account data.
+   *
+   * This method constructs the payload required to add an account by utilizing
+   * the `finesMacPayloadService` to build the payload based on the current state
+   * of `finesMacState` and `userState`.
+   *
+   * @returns {IFinesMacAddAccountPayload} The payload for adding an account.
+   */
+  private preparePostPayload(): IFinesMacAddAccountPayload {
+    return this.finesMacPayloadService.buildAddAccountPayload(this.finesService.finesMacState, this.userState);
+  }
+
+  /**
+   * Submits the payload for a PUT request.
+   * This method prepares the payload and then handles the PUT request.
+   *
+   * @private
+   */
+  private submitPutPayload(): void {
+    const payload = this.preparePutPayload();
+    this.handlePutRequest(payload);
+  }
+
+  /**
+   * Submits the post payload by preparing the payload and handling the post request.
+   *
+   * @private
+   * @returns {void}
+   */
+  private submitPostPayload(): void {
+    const payload = this.preparePostPayload();
+    this.handlePostRequest(payload);
+  }
+
+  /**
+   * Submits the payload based on the draft amendment status.
+   *
+   * If the fines draft amendment is present, it submits the payload using a PUT request.
+   * Otherwise, it submits the payload using a POST request.
+   *
+   * @returns {void}
+   */
+  public submitPayload(): void {
     if (this.finesService.finesDraftAmend()) {
-      finesMacAddAccountPayload.account_snapshot = this.finesService.finesDraftState.account_snapshot;
-      finesMacAddAccountPayload.account_status = this.finesService.finesDraftState.account_status;
-      finesMacAddAccountPayload.account_status_date = this.finesService.finesDraftState.account_status_date;
-      finesMacAddAccountPayload.created_at = this.finesService.finesDraftState.created_at;
-      finesMacAddAccountPayload.draft_account_id = this.finesService.finesDraftState.draft_account_id;
-      finesMacAddAccountPayload.submitted_by = this.finesService.finesDraftState.submitted_by;
-      finesMacAddAccountPayload.submitted_by_name = this.finesService.finesDraftState.submitted_by_name;
-      finesMacAddAccountPayload.timeline_data = [
-        ...this.finesService.finesDraftState.timeline_data,
-        ...finesMacAddAccountPayload.timeline_data,
-      ];
-      this.putPayload(finesMacAddAccountPayload);
+      this.submitPutPayload();
+    } else {
+      this.submitPostPayload();
     }
   }
 
@@ -293,23 +352,13 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    this.globalStateService.error.set({
-      error: false,
-      message: '',
-    });
+    // this.globalStateService.error.set({
+    //   error: false,
+    //   message: '',
+    // });
   }
 
   public ngOnInit(): void {
     this.reviewAccountFetchedMappedPayload();
-  }
-
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-
-    this.globalStateService.error.set({
-      error: false,
-      message: '',
-    });
   }
 }
