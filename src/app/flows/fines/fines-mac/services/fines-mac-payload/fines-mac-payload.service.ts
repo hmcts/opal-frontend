@@ -31,7 +31,7 @@ import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-paylo
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
-import { FINES_MAC_BUSINESS_UNIT_STATE } from '../../constants/fines-mac-business-unit-state';
+import { finesMacPayloadMapBusinessUnit } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-business-unit.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -296,28 +296,6 @@ export class FinesMacPayloadService {
     return mappedFinesMacState;
   }
 
-  private finesMacPayloadMapBusinessUnit(
-    finesMacState: IFinesMacState,
-    businessUnitRefData: IOpalFinesBusinessUnitNonSnakeCase,
-  ): IFinesMacState {
-    finesMacState.businessUnit = {
-      ...FINES_MAC_BUSINESS_UNIT_STATE,
-      business_unit_code: businessUnitRefData.businessUnitCode,
-      business_unit_type: businessUnitRefData.businessUnitType,
-      account_number_prefix: businessUnitRefData.accountNumberPrefix,
-      opal_domain: businessUnitRefData.opalDomain,
-      business_unit_id: businessUnitRefData.businessUnitId,
-      business_unit_name: businessUnitRefData.businessUnitName,
-      welsh_language: businessUnitRefData.welshLanguage,
-      configurationItems: businessUnitRefData.configurationItems.map((item) => ({
-        item_name: item.itemName,
-        item_value: item.itemValue,
-        item_values: item.itemValues,
-      })),
-    };
-    return finesMacState;
-  }
-
   /**
    * Maps the provided account payload to the fines MAC state.
    *
@@ -345,7 +323,7 @@ export class FinesMacPayloadService {
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
 
     if (businessUnitRefData) {
-      finesMacState = this.finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
+      finesMacState = finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
     }
 
     finesMacState = this.setFinesMacStateStatuses(finesMacState);
