@@ -422,6 +422,6 @@ describe('FinesMacReviewAccountComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    //expect(mockGlobalStateService.error()).toEqual({ error: false, message: '' });
+    expect(mockGlobalStateService.error()).toEqual({ error: false, message: '' });
   });
 });

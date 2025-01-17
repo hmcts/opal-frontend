@@ -352,10 +352,10 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    // this.globalStateService.error.set({
-    //   error: false,
-    //   message: '',
-    // });
+    this.globalStateService.error.set({
+      error: false,
+      message: '',
+    });
   }
 
   public ngOnInit(): void {
