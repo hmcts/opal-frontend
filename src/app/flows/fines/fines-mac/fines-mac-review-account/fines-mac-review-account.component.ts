@@ -91,6 +91,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       tap((response: IOpalFinesCourtRefData) => {
         this.enforcementCourtsData = response.refData;
       }),
+      takeUntil(this.ngUnsubscribe),
     );
 
   private readonly localJusticeAreasData$: Observable<IOpalFinesLocalJusticeAreaRefData> = this.opalFinesService
@@ -99,6 +100,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       tap((response: IOpalFinesLocalJusticeAreaRefData) => {
         this.localJusticeAreasData = response.refData;
       }),
+      takeUntil(this.ngUnsubscribe),
     );
 
   protected groupLjaAndCourtData$ = forkJoin({
