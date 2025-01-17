@@ -29,7 +29,6 @@ import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
-import { DateService } from '@services/date-service/date.service';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
@@ -67,13 +66,12 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  protected readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStateService = inject(GlobalStateService);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   protected readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStateService.userState();
-  protected readonly dateService = inject(DateService);
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
