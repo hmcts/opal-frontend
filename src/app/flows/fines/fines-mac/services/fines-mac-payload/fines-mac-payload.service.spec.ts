@@ -1,10 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-
 import { FinesMacPayloadService } from './fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from './mocks/fines-mac-payload-fines-mac-state.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
 import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
-
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
@@ -15,6 +13,8 @@ import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
+import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
+import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offence-data-non-snake-case.mock';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -213,5 +213,38 @@ describe('FinesMacPayloadService', () => {
     const businessUnitUserId = 'L017KG';
     const result = service['getBusinessUnitBusinessUserId'](businessUnitId, sessionUserState);
     expect(result).toEqual(businessUnitUserId);
+  });
+
+  it('should mapAccountPayload with businessUnitRefData and offencesRefData', () => {
+    if (!sessionUserState || !finesMacPayloadAddAccount || !dateService || !service) {
+      fail('Required mock states are not properly initialised');
+      return;
+    }
+
+    const businessUnitRefData = structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK);
+    const offencesRefData = structuredClone(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK);
+
+    const result = service.mapAccountPayload(finesMacPayloadAddAccount, businessUnitRefData, [offencesRefData]);
+    const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
+    finesMacState.parentGuardianDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
+    finesMacState.companyDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    finesMacState.businessUnit = {
+      business_unit_code: businessUnitRefData.businessUnitCode,
+      business_unit_type: businessUnitRefData.businessUnitType,
+      account_number_prefix: businessUnitRefData.accountNumberPrefix,
+      opal_domain: businessUnitRefData.opalDomain,
+      business_unit_id: businessUnitRefData.businessUnitId,
+      business_unit_name: businessUnitRefData.businessUnitName,
+      configurationItems: businessUnitRefData.configurationItems.map((item) => ({
+        item_name: item.itemName,
+        item_value: item.itemValue,
+        item_values: item.itemValues,
+      })),
+      welsh_language: businessUnitRefData.welshLanguage,
+    };
+
+    expect(result).toEqual(finesMacState);
   });
 });

@@ -14,6 +14,9 @@ import { UtilsService } from '@services/utils/utils.service';
 import { signal } from '@angular/core';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
+import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
@@ -33,7 +36,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       },
     );
     mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
-    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Rejected' };
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
     mockFinesService.checkMandatorySections.and.returnValue(false);
     mockFinesService.finesDraftFragment.and.returnValue('rejected');
 
@@ -194,6 +197,8 @@ describe('FinesMacAccountDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'accountDetailsFetchedMappedPayload');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setAccountDetailsStatus');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setDefendantType');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setAccountType');
@@ -207,6 +212,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     component['initialAccountDetailsSetup']();
 
     expect(component['accountDetailsFetchedMappedPayload']).toHaveBeenCalled();
+    expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
     expect(component['setDefendantType']).toHaveBeenCalled();
     expect(component['setAccountType']).toHaveBeenCalled();
     expect(component['setLanguage']).toHaveBeenCalled();
@@ -276,46 +282,65 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(result).toBe(false);
   });
 
-  // it('should test getDraftAccountFinesMacStateForAmending', () => {
-  //   component['activatedRoute'].snapshot = {
-  //     data: {
-  //       draftAccountFinesMacState: DRAFT_ACCOUNT_RESOLVER_MOCK,
-  //     },
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   } as any;
+  it('should test accountDetailsFetchedMappedPayload', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setAccountDetailsStatus');
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT), account_status: 'Rejected' },
+    };
+    component['activatedRoute'].snapshot = {
+      data: {
+        accountDetailsFetchMap: snapshotData,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
 
-  //   const finesMacStateWithOffences = structuredClone(FINES_MAC_STATE_MOCK);
-  //   finesMacStateWithOffences.offenceDetails = [
-  //     {
-  //       ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0],
-  //       formData: {
-  //         ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0].formData,
-  //         fm_offence_details_offence_id: 314441,
-  //       },
-  //     },
-  //   ];
-  //   mockFinesMacPayloadService.mapAccountPayload.and.returnValue(finesMacStateWithOffences);
+    component['accountDetailsFetchedMappedPayload']();
 
-  //   component['getDraftAccountFinesMacStateForAmending']();
+    expect(component['finesService'].finesDraftState).toEqual(snapshotData.finesMacDraft);
+    expect(component['finesService'].finesMacState).toEqual(snapshotData.finesMacState);
+    expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
+  });
 
-  //   expect(component['finesService'].finesDraftState).toEqual(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
-  //   expect(component['finesService'].finesMacState).toEqual(
-  //     component['finesMacPayloadService'].mapAccountPayload(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount),
-  //   );
-  //   expect(component.status).toEqual('In review');
-  //   expect(component['finesService'].finesMacState.businessUnit).toEqual(
-  //     jasmine.objectContaining({
-  //       business_unit_code: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitCode,
-  //       business_unit_type: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitType,
-  //       account_number_prefix: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.accountNumberPrefix,
-  //       opal_domain: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.opalDomain,
-  //       business_unit_id: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitId,
-  //       business_unit_name: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.businessUnitName,
-  //       welsh_language: DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit.welshLanguage,
-  //     }),
-  //   );
-  //   expect(
-  //     component['finesService'].finesMacState.offenceDetails[0].formData.fm_offence_details_offence_cjs_code,
-  //   ).toEqual('AK123456');
-  // });
+  it('should test accountDetailsFetchedMappedPayload', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'setAccountDetailsStatus');
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+    };
+    component['activatedRoute'].snapshot = {
+      data: {
+        test: snapshotData,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    component['accountDetailsFetchedMappedPayload']();
+
+    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE);
+    expect(component['finesService'].finesDraftState).toEqual(FINES_DRAFT_STATE);
+    expect(component['setAccountDetailsStatus']).not.toHaveBeenCalled();
+  });
+
+  it('should test setAccountDetailsStatus when draft state is null', () => {
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
+    component['setAccountDetailsStatus']();
+    expect(component.accountDetailsStatus).toBeUndefined();
+  });
+
+  it('should test setAccountDetailsStatus when draft state is populated', () => {
+    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Rejected' };
+    component['setAccountDetailsStatus']();
+    expect(component.accountDetailsStatus).toEqual('Rejected');
+  });
+
+  it('should test setAccountDetailsStatus when draft state is unknown', () => {
+    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' };
+    component['setAccountDetailsStatus']();
+    expect(component.accountDetailsStatus).toEqual('');
+  });
 });

@@ -35,7 +35,6 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
 import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
-import { FinesMacBaseComponent } from '../components/abstract/fines-mac-base.component';
 import { TransformationService } from '@services/transformation-service/transformation.service';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
@@ -63,7 +62,7 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacReviewAccountComponent extends FinesMacBaseComponent<FinesService> implements OnInit, OnDestroy {
+export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -139,14 +138,25 @@ export class FinesMacReviewAccountComponent extends FinesMacBaseComponent<FinesS
   }
 
   /**
+   * Extracts and sets the review account status from the fines service state.
+   *
+   * @private
+   * @returns {void}
+   */
+  private setReviewAccountStatus(): void {
+    const accountStatus = this.finesService.finesDraftState?.account_status;
+    if (!accountStatus) return;
+
+    this.reviewAccountStatus =
+      FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus))?.prettyName ?? '';
+  }
+
+  /**
    * Fetches and maps the review account payload from the activated route snapshot.
    *
-   * This method performs the following steps:
-   * 1. Retrieves the snapshot from the activated route.
-   * 2. Extracts the `reviewAccountFetchMap` data from the snapshot.
-   * 3. Updates the fines service state with the fetched payload.
-   * 4. Sets the review account status based on the mapped status.
-   * 5. Sets the component to read-only mode.
+   * This method retrieves the `reviewAccountFetchMap` data from the route snapshot,
+   * updates the `finesMacState` and `finesDraftState` in the `finesService`, and sets
+   * the review account status. It also sets the component to read-only mode.
    *
    * @private
    * @returns {void}
@@ -159,15 +169,11 @@ export class FinesMacReviewAccountComponent extends FinesMacBaseComponent<FinesS
     if (!fetchMap) return;
 
     // Get payload into Fines Mac State
-    this.updateServiceState(this.finesService, fetchMap.finesMacDraft, 'finesDraftState');
-    this.updateServiceState(this.finesService, fetchMap.finesMacState, 'finesMacState');
+    this.finesService.finesMacState = fetchMap.finesMacState;
+    this.finesService.finesDraftState = fetchMap.finesMacDraft;
 
     // Grab the status from the payload
-    this.reviewAccountStatus = this.getMappedStatus(
-      this.finesService,
-      'finesDraftState.account_status',
-      FINES_DRAFT_TAB_STATUSES,
-    );
+    this.setReviewAccountStatus();
 
     this.isReadOnly = true;
   }

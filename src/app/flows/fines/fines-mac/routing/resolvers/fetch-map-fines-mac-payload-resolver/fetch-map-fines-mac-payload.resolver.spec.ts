@@ -70,33 +70,38 @@ describe('fetchMapFinesMacPayloadResolver', () => {
     expect(mockOpalFinesService.getBusinessUnitById).toHaveBeenCalledWith(61);
   });
 
-  // it('should resolve data when all API calls succeed - empty offences', async () => {
-  //   // Mock successful API calls
-  //   const draftAccountWithEmptyOffences = {
-  //     ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
-  //     account: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT).account, offences: null },
-  //   };
-  //   mockOpalFinesService.getDraftAccountById.and.returnValue(of(draftAccountWithEmptyOffences));
-  //   mockOpalFinesService.getBusinessUnitById.and.returnValue(
-  //     of(structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK)),
-  //   );
+  it('should resolve data when all API calls succeed - empty offences', async () => {
+    // Mock successful API calls
+    const draftAccountWithEmptyOffences = {
+      ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+      account: { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT).account, offences: null },
+    };
+    mockOpalFinesService.getDraftAccountById.and.returnValue(of(draftAccountWithEmptyOffences));
+    mockOpalFinesService.getBusinessUnitById.and.returnValue(
+      of(structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK)),
+    );
 
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
-  //   const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
+    const mapPayloadResult = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    mapPayloadResult.offenceDetails = [];
 
-  //   const result = await executeResolver(route, mockRouterStateSnapshot);
+    mockFinesMacPayloadService.mapAccountPayload.and.returnValue(mapPayloadResult);
 
-  //   expect(result).toEqual({
-  //     finesMacState: FINES_MAC_PAYLOAD_FINES_MAC_STATE,
-  //     finesMacDraft: FINES_MAC_PAYLOAD_ADD_ACCOUNT,
-  //   });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
+    const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
 
-  //   // Verify calls were made with the correct arguments
-  //   expect(mockOpalFinesService.getDraftAccountById).toHaveBeenCalledWith(DRAFT_ACCOUNT_ID);
-  //   expect(mockOpalFinesService.getBusinessUnitById).toHaveBeenCalledWith(61);
-  //   expect(mockOpalFinesService.getOffenceById).not.toHaveBeenCalled();
-  // });
+    const result = await executeResolver(route, mockRouterStateSnapshot);
+
+    expect(result).toEqual({
+      finesMacState: mapPayloadResult,
+      finesMacDraft: draftAccountWithEmptyOffences,
+    });
+
+    // Verify calls were made with the correct arguments
+    expect(mockOpalFinesService.getDraftAccountById).toHaveBeenCalledWith(DRAFT_ACCOUNT_ID);
+    expect(mockOpalFinesService.getBusinessUnitById).toHaveBeenCalledWith(61);
+    expect(mockOpalFinesService.getOffenceById).not.toHaveBeenCalled();
+  });
 
   it('should throw an error and update global state if business unit ID is missing', async () => {
     // Mock draft account with no business unit ID

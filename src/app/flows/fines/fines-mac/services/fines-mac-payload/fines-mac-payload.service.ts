@@ -31,6 +31,7 @@ import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-paylo
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
+import { FINES_MAC_BUSINESS_UNIT_STATE } from '../../constants/fines-mac-business-unit-state';
 
 @Injectable({
   providedIn: 'root',
@@ -299,19 +300,21 @@ export class FinesMacPayloadService {
     finesMacState: IFinesMacState,
     businessUnitRefData: IOpalFinesBusinessUnitNonSnakeCase,
   ): IFinesMacState {
-    finesMacState.businessUnit = this.transformationService.transformCamelToSnakeCase(businessUnitRefData);
-    return finesMacState;
-  }
-
-  private finesMacPayloadMapOffencesCjsCode(
-    finesMacState: IFinesMacState,
-    offencesRefData: IOpalFinesOffencesNonSnakeCase[],
-  ): IFinesMacState {
-    finesMacState.offenceDetails.forEach((offence) => {
-      offence.formData.fm_offence_details_offence_cjs_code = offencesRefData.find(
-        (x) => x.offenceId === offence.formData.fm_offence_details_offence_id,
-      )!.cjsCode;
-    });
+    finesMacState.businessUnit = {
+      ...FINES_MAC_BUSINESS_UNIT_STATE,
+      business_unit_code: businessUnitRefData.businessUnitCode,
+      business_unit_type: businessUnitRefData.businessUnitType,
+      account_number_prefix: businessUnitRefData.accountNumberPrefix,
+      opal_domain: businessUnitRefData.opalDomain,
+      business_unit_id: businessUnitRefData.businessUnitId,
+      business_unit_name: businessUnitRefData.businessUnitName,
+      welsh_language: businessUnitRefData.welshLanguage,
+      configurationItems: businessUnitRefData.configurationItems.map((item) => ({
+        item_name: item.itemName,
+        item_value: item.itemValue,
+        item_values: item.itemValues,
+      })),
+    };
     return finesMacState;
   }
 
@@ -339,13 +342,12 @@ export class FinesMacPayloadService {
       transformedPayload.account.account_notes,
     );
 
-    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
+    finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload, offencesRefData);
+
     if (businessUnitRefData) {
       finesMacState = this.finesMacPayloadMapBusinessUnit(finesMacState, businessUnitRefData);
     }
-    if (offencesRefData) {
-      finesMacState = this.finesMacPayloadMapOffencesCjsCode(finesMacState, offencesRefData);
-    }
+
     finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;

@@ -29,7 +29,6 @@ import { MojTimelineItemComponent } from '../../../../components/moj/moj-timelin
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { FinesMacBaseComponent } from '../components/abstract/fines-mac-base.component';
 import { TransformationService } from '@services/transformation-service/transformation.service';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
@@ -54,7 +53,7 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<FinesService> implements OnInit, OnDestroy {
+export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
@@ -93,14 +92,25 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
   }
 
   /**
-   * Fetches and maps the account details payload from the activated route snapshot.
+   * Sets the account details status from the fines service state.
    *
-   * This method performs the following actions:
-   * 1. Retrieves the snapshot from the activated route.
-   * 2. Extracts the account details fetch map from the snapshot data.
-   * 3. Updates the Fines Mac State with the draft account payload for amendments.
-   * 4. Updates the Fines Mac State with the current account state.
-   * 5. Extracts and sets the account status from the payload to display at the top of the screen.
+   * @private
+   * @returns {void}
+   */
+  private setAccountDetailsStatus(): void {
+    const accountStatus = this.finesService.finesDraftState?.account_status;
+    if (!accountStatus) return;
+
+    this.accountDetailsStatus =
+      FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus))?.prettyName ?? '';
+  }
+
+  /**
+   * Fetches and maps account details payload from the activated route snapshot.
+   *
+   * This method retrieves the `accountDetailsFetchMap` from the route snapshot data,
+   * and updates the `finesMacState` and `finesDraftState` in the `finesService` with the fetched data.
+   * It also sets the account details status based on the fetched payload.
    *
    * @private
    * @returns {void}
@@ -112,16 +122,12 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
     const accountDetailsFetchMap = snapshot.data['accountDetailsFetchMap'] as IFetchMapFinesMacPayload;
     if (!accountDetailsFetchMap) return;
 
-    // Populate the Fines Mac State with the draft account payload for amendments
-    this.updateServiceState(this.finesService, accountDetailsFetchMap.finesMacDraft, 'finesDraftState');
-    this.updateServiceState(this.finesService, accountDetailsFetchMap.finesMacState, 'finesMacState');
+    // Get payload into Fines Mac State
+    this.finesService.finesMacState = accountDetailsFetchMap.finesMacState;
+    this.finesService.finesDraftState = accountDetailsFetchMap.finesMacDraft;
 
-    // Extract the account status from the payload to display at the top of the screen
-    this.accountDetailsStatus = this.getMappedStatus(
-      this.finesService,
-      'finesDraftState.account_status',
-      FINES_DRAFT_TAB_STATUSES,
-    );
+    // Grab the status from the payload
+    this.setAccountDetailsStatus();
   }
 
   /**
@@ -189,6 +195,7 @@ export class FinesMacAccountDetailsComponent extends FinesMacBaseComponent<Fines
    */
   private initialAccountDetailsSetup(): void {
     this.accountDetailsFetchedMappedPayload();
+    this.setAccountDetailsStatus();
     this.setDefendantType();
     this.setAccountType();
     this.setLanguage();
