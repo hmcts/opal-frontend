@@ -150,6 +150,16 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Handles the request error by scrolling to the top of the page.
+   *
+   * @returns {null} Always returns null.
+   */
+  private handleRequestError(): null {
+    this.utilsService.scrollToTop();
+    return null;
+  }
+
+  /**
    * Handles the PUT request to add an account payload.
    *
    * @param payload - The payload containing the account information to be added.
@@ -164,8 +174,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       .pipe(
         tap((response) => this.processPutResponse(response)),
         catchError(() => {
-          this.utilsService.scrollToTop();
-          return of(null);
+          return of(this.handleRequestError());
         }),
         takeUntil(this.ngUnsubscribe),
       )
@@ -187,8 +196,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       .pipe(
         tap(() => this.processPostResponse()),
         catchError(() => {
-          this.utilsService.scrollToTop();
-          return of(null);
+          return of(this.handleRequestError());
         }),
         takeUntil(this.ngUnsubscribe),
       )

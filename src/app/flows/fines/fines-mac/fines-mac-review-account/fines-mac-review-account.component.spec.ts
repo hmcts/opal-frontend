@@ -204,21 +204,32 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(component['finesService'].finesDraftState).toEqual(FINES_DRAFT_STATE);
   });
 
+  it('should call scrollToTop and return null', () => {
+    const result = component['handleRequestError']();
+
+    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(result).toBeNull();
+  });
+
   it('should call scrollToTop on handlePutRequest failure', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
     mockOpalFinesService.putDraftAddAccountPayload = jasmine
       .createSpy('putDraftAddAccountPayload')
       .and.returnValue(throwError(() => new Error('Something went wrong')));
     component['handlePutRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(handleRequestErrorSpy).toHaveBeenCalled();
   });
 
   it('should handle submitPayload failure', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
     mockFinesService.finesDraftFragment.set('');
     mockOpalFinesService.postDraftAddAccountPayload = jasmine
       .createSpy('postDraftAddAccountPayload')
       .and.returnValue(throwError(() => new Error('Something went wrong')));
     component['handlePostRequest'](FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(handleRequestErrorSpy).toHaveBeenCalled();
   });
 
   it('should test processPutResponse', () => {
