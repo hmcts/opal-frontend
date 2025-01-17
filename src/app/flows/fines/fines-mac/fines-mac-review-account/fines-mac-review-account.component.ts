@@ -35,7 +35,6 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
 import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
-import { TransformationService } from '@services/transformation-service/transformation.service';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
 @Component({
@@ -74,7 +73,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStateService.userState();
   protected readonly dateService = inject(DateService);
-  private readonly transformationService = inject(TransformationService);
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];

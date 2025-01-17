@@ -28,8 +28,6 @@ import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/mo
 import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { TransformationService } from '@services/transformation-service/transformation.service';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
 @Component({
@@ -59,8 +57,6 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   protected readonly finesService = inject(FinesService);
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
-  private readonly finesMacPayloadService = inject(FinesMacPayloadService);
-  private readonly transformationService = inject(TransformationService);
 
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
   private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
