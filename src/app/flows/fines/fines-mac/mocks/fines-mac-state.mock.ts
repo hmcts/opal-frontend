@@ -20,7 +20,7 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
     ...FINES_MAC_ACCOUNT_DETAILS_FORM,
     formData: {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
-      fm_create_account_business_unit_id: 1,
+      fm_create_account_business_unit_id: 69,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
       fm_create_account_account_type: 'fine',
     },
@@ -42,17 +42,21 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
   courtDetails: FINES_MAC_COURT_DETAILS_FORM,
   accountCommentsNotes: FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM,
 
-  offenceDetails: [{
-    ...FINES_MAC_OFFENCE_DETAILS_FORM,
-    formData: {
-      ...FINES_MAC_OFFENCE_DETAILS_STATE,
-      fm_offence_details_offence_cjs_code: '123',
-      fm_offence_details_offence_date: '01/01/2020',
-      fm_offence_details_offence_description: 'Speeding',
-      fm_offence_details_offence_count: 1,
-      fm_offence_details_offence_value: 100,
+  offenceDetails: [
+    {
+      ...FINES_MAC_OFFENCE_DETAILS_FORM,
+      formData: {
+        ...FINES_MAC_OFFENCE_DETAILS_STATE,
+        fm_offence_details_id: 0,
+        fm_offence_details_date_of_sentence: '01/10/2022',
+        fm_offence_details_offence_cjs_code: null,
+        fm_offence_details_offence_id: null,
+        fm_offence_details_impositions: [],
+      },
+      nestedFlow: false,
     },
-  }],
+    
+  ],
   paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,

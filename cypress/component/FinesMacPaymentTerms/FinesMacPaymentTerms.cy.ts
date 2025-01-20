@@ -3,8 +3,10 @@ import { OpalFines } from '../../../src/app/flows/fines/services/opal-fines-serv
 import { FinesMacPaymentTermsComponent } from '../../../src/app/flows/fines/fines-mac/fines-mac-payment-terms/fines-mac-payment-terms.component';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { PermissionsService } from '@services/permissions-service/permissions.service';
+import { FinesService, FinesService } from '@services/fines/fines-service/fines.service';
 import { DateService } from '@services/date-service/date.service';
+import { inject } from '@angular/core';
+import { mock } from 'node:test';
 
 describe('FinesMacPaymentTermsComponent', () => {
   /**
@@ -12,18 +14,36 @@ describe('FinesMacPaymentTermsComponent', () => {
    */
   const setupComponent = (formSubmit: any, defendantTypeMock: string | undefined = '') => {
     // Mock the state with data from multiple forms
+    const dateService = new DateService();
+    const MockFinesService = inject(FinesService);
+
+    MockFinesService.finesMacState = {
+      ...FINES_MAC_STATE_MOCK,
+    };
+
     const mockFinesService = {
       finesMacState: {
         ...FINES_MAC_STATE_MOCK,
       },
+      getEarliestDateOfSentence(): Date | null {
+        return this.finesMacState.offenceDetails.reduce(
+          (mostRecent, offence) => {
+            const offenceDate = dateService.getDateFromFormat(
+              offence.formData.fm_offence_details_date_of_sentence!,
+              'dd/MM/yyyy',
+            );
+            return offenceDate && (!mostRecent || offenceDate < mostRecent) ? offenceDate : mostRecent;
+          },
+          null as Date | null,
+        );
+      },
     };
-
-  
 
     // Mount the component with mocked services and data
     mount(FinesMacPaymentTermsComponent, {
       providers: [
         { provide: OpalFines, useValue: mockFinesService },
+        { provide: FinesService, useValue: MockFinesService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -69,12 +89,12 @@ describe('FinesMacPaymentTermsComponent', () => {
       'Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
   };
 
-  it('should prefill the collection order date with the earliestDateOfSentence', () => {
+  it.only('should prefill the collection order date with the earliestDateOfSentence', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit, 'adultOrYouthOnly');
 
     cy.get('input[id="fm_payment_terms_collection_order_made_true"]').click();
-    cy.get('input[id="fm_payment_terms_collection_order_date"]').should('have.value');
+    cy.get('input[id="fm_payment_terms_collection_order_date"]').should('have.value', '01/10/2022');
   });
 
   it('should render the component', () => {
