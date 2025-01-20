@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule, inject, provideAppInitializer } from '@angular/core';
 import { BrowserModule, provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,16 +32,14 @@ import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-foote
   providers: [
     provideClientHydration(withNoHttpTransferCache()),
     provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor])),
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      useFactory: (appInitializerService: AppInitializerService) => {
+    provideAppInitializer(() => {
+      const initializerFn = ((appInitializerService: AppInitializerService) => {
         return () => {
           return appInitializerService.initializeApp();
         };
-      },
-      deps: [AppInitializerService],
-    },
+      })(inject(AppInitializerService));
+      return initializerFn();
+    }),
     provideHttpClient(
       withInterceptorsFromDi(),
       withXsrfConfiguration({
