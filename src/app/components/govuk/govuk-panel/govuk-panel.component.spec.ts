@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 
 @Component({
   template: `<app-govuk-panel panelTitle="Test Title"><div>This is a test</div></app-govuk-panel>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

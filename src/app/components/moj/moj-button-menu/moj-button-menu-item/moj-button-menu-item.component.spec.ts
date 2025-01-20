@@ -11,6 +11,7 @@ import { MojButtonMenuComponent } from '../moj-button-menu.component';
       <ng-container linkText>Action 3</ng-container>
     </app-moj-button-menu-item>
   </app-moj-button-menu>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

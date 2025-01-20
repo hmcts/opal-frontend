@@ -11,6 +11,7 @@ import { By } from '@angular/platform-browser';
     <ng-content date>23/07/2024</ng-content>
     <ng-content description><p>Hello world!</p></ng-content>
   </app-moj-timeline-item>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

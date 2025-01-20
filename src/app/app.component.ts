@@ -10,6 +10,7 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly launchDarklyService = inject(LaunchDarklyService);

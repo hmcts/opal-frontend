@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
     <ng-container name>Tim</ng-container>
     <ng-container status>Hello</ng-container></app-govuk-task-list-item
   >`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('GovukTaskListItemComponent', () => {

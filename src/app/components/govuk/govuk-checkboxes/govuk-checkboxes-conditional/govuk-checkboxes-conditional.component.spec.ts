@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-checkboxes-conditional conditionalId="test"> Hello World</app-govuk-checkboxes-conditional>`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('GovukCheckboxesConditionalComponent', () => {

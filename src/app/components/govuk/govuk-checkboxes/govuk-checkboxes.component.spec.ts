@@ -13,6 +13,7 @@ import { Component } from '@angular/core';
   >
     Hello World</app-govuk-checkboxes
   >`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('GovukCheckboxesNewComponent', () => {

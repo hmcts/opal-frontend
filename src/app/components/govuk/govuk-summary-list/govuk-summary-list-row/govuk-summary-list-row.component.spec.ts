@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
     <ng-container value><p class="govuk-body">Hello</p></ng-container>
     <ng-container action>Change<span class="govuk-visually-hidden"> name</span></ng-container>
   </div>`,
+  standalone: false,
 })
 class TestHostComponent {
   action = false;

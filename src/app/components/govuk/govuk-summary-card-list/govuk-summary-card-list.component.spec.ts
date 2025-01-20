@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
     ><li actions>Test</li>
     <p content>Hello World</p></app-govuk-summary-card-list
   >`,
+  standalone: false,
 })
 class TestHostComponent {}
 

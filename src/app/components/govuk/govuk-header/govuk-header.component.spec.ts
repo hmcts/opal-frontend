@@ -12,6 +12,7 @@ import { provideRouter } from '@angular/router';
       <ng-container linkText>Test Link</ng-container>
     </app-govuk-header-navigation-item>
   </app-govuk-header>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<th app-govuk-table-heading>Test Column</th>`,
+  standalone: false,
 })
 class TestWrapperComponent {}
 

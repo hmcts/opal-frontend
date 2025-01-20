@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { SignInSsoComponent } from './sign-in-sso/sign-in-sso.component';
 import { SignInStubComponent } from './sign-in-stub/sign-in-stub.component';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
@@ -10,7 +9,7 @@ import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [CommonModule, GovukButtonComponent, SignInSsoComponent, SignInStubComponent],
+  imports: [CommonModule, SignInSsoComponent, SignInStubComponent],
   templateUrl: './sign-in.component.html',
 
   changeDetection: ChangeDetectionStrategy.OnPush,

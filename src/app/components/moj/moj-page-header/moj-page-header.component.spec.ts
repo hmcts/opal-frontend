@@ -24,6 +24,7 @@ import { By } from '@angular/platform-browser';
       </button>
     </ng-content>
   </app-moj-page-header>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

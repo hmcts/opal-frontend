@@ -8,6 +8,7 @@ import { addGdsBodyClass } from '../helpers/add-gds-body-class';
   template: `<app-govuk-tabs tabsId="test"
     ><span items>Test Content</span><span panels>More Test Content</span></app-govuk-tabs
   >`,
+  standalone: false,
 })
 class TestHostComponent {}
 

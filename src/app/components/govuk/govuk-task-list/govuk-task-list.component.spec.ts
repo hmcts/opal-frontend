@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-task-list taskListId="test" taskListClasses="test-class">Hello World</app-govuk-task-list>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

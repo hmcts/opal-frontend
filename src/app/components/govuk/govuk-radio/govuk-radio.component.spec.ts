@@ -13,6 +13,7 @@ import { Component } from '@angular/core';
   >
     Hello World</app-govuk-radio
   >`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('GovukRadioComponent', () => {

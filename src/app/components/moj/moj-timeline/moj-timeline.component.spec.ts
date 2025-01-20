@@ -13,6 +13,7 @@ import { MojTimelineItemComponent } from './moj-timeline-item/moj-timeline-item.
       <ng-content timelineDescription><p>Hello world!</p></ng-content>
     </app-moj-timeline-item>
   </app-moj-timeline>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

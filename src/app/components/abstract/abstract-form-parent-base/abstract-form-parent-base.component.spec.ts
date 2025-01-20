@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-test-form-parent-base',
   template: '',
+  standalone: false,
 })
 class TestAbstractFormParentBaseComponent extends AbstractFormParentBaseComponent {
   constructor() {

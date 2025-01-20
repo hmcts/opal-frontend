@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-summary-list summaryListId="test">Hello World</app-govuk-summary-list>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

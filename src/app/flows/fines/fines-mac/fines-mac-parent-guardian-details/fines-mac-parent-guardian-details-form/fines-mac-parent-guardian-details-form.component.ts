@@ -23,7 +23,6 @@ import { specialCharactersValidator } from '@validators/special-characters/speci
 import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-conditional/govuk-checkboxes-conditional.component';
 import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
-import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors';
@@ -37,7 +36,6 @@ import { DateService } from '@services/date-service/date.service';
     ReactiveFormsModule,
     GovukButtonComponent,
     GovukErrorSummaryComponent,
-    GovukSelectComponent,
     GovukCancelLinkComponent,
     GovukTextInputComponent,
     GovukCheckboxesComponent,

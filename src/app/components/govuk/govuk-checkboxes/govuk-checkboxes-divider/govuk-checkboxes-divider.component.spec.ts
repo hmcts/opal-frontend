@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-checkboxes-divider> Hello World</app-govuk-checkboxes-divider>`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('GovukCheckboxesDividerComponent', () => {

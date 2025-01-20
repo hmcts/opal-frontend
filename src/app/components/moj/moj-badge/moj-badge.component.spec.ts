@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-moj-badge badgeId="test" badgeClasses="test-class">Test</app-moj-badge>`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('MojBadgeComponent', () => {

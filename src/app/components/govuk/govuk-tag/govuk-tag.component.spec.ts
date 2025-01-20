@@ -4,6 +4,7 @@ import { GovukTagComponent } from './govuk-tag.component';
 import { Component } from '@angular/core';
 @Component({
   template: `<app-govuk-tag tagId="test" tagClasses="test-class">Test</app-govuk-tag>`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('GovukTagComponent', () => {

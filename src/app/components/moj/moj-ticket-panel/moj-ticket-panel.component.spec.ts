@@ -7,6 +7,7 @@ import { By } from '@angular/platform-browser';
   template: `<app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--blue">
     <h1>Hello world!</h1>
   </app-moj-ticket-panel>`,
+  standalone: false,
 })
 class TestHostComponent {}
 

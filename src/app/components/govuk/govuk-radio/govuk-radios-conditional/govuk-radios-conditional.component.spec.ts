@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-radios-conditional conditionalId="test"> Hello World</app-govuk-radios-conditional>`,
+  standalone: false,
 })
 class TestHostComponent {}
 describe('GovukRadiosConditionalComponent', () => {

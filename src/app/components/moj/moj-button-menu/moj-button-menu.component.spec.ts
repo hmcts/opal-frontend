@@ -10,6 +10,7 @@ import { MojButtonMenuItemComponent } from './moj-button-menu-item/moj-button-me
       <ng-container linkText>Action 1</ng-container>
     </app-moj-button-menu-item>
   </app-moj-button-menu>`,
+  standalone: false,
 })
 class TestHostComponent {}
 
