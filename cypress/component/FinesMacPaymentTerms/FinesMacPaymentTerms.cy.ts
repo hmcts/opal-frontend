@@ -15,55 +15,15 @@ describe('FinesMacPaymentTermsComponent', () => {
     const mockFinesService = {
       finesMacState: {
         ...FINES_MAC_STATE_MOCK,
-        accountDetails: {
-          formData: {
-            fm_create_account_account_type: 'fine',
-            fm_create_account_business_unit_id: 69,
-            fm_create_account_defendant_type: defendantTypeMock,
-          },
-        },
-        personalDetails: {
-          formData: {
-            fm_personal_details_title: 'Mr',
-            fm_personal_details_forenames: 'Jack',
-            fm_personal_details_surname: 'Sparrow',
-            fm_personal_details_dob: '02/01/2002',
-            fm_personal_details_address_line_1: '123 Main Street',
-          },
-        },
-        offenceDetails: [
-          {
-            formData: {
-              fm_offence_details_id: 0,
-              fm_offence_details_date_of_sentence: '02/01/2020',
-              fm_offence_details_offence_cjs_code: 'ABC123',
-              fm_offence_details_offence_id: '001',
-            },
-          },
-          {
-            formData: {
-              fm_offence_details_id: 1,
-              fm_offence_details_date_of_sentence: '03/01/2020',
-              fm_offence_details_offence_cjs_code: 'DEF456',
-              fm_offence_details_offence_id: '002',
-            },
-          },
-        ],
       },
-      // Mock method to return the earliest offence date
-      getEarliestOffenceDate: () => new Date('2020-01-02'),
     };
 
-    // Mock permissions service
-    const mockPermissionService = {
-      hasPermission: () => true,
-    };
+  
 
     // Mount the component with mocked services and data
     mount(FinesMacPaymentTermsComponent, {
       providers: [
         { provide: OpalFines, useValue: mockFinesService },
-        { provide: PermissionsService, useValue: mockPermissionService },
         {
           provide: ActivatedRoute,
           useValue: {
