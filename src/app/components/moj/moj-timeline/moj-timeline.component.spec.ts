@@ -13,7 +13,7 @@ import { MojTimelineItemComponent } from './moj-timeline-item/moj-timeline-item.
       <ng-content timelineDescription><p>Hello world!</p></ng-content>
     </app-moj-timeline-item>
   </app-moj-timeline>`,
-  standalone: false,
+  imports: [MojTimelineComponent, MojTimelineItemComponent],
 })
 class TestHostComponent {}
 
@@ -23,8 +23,7 @@ describe('MojTimelineComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojTimelineComponent, MojTimelineItemComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

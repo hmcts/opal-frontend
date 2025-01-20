@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-moj-badge badgeId="test" badgeClasses="test-class">Test</app-moj-badge>`,
-  standalone: false,
+  imports: [MojBadgeComponent],
 })
 class TestHostComponent {}
 describe('MojBadgeComponent', () => {
@@ -13,8 +13,7 @@ describe('MojBadgeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojBadgeComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

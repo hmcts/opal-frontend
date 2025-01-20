@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-summary-list summaryListId="test">Hello World</app-govuk-summary-list>`,
-  standalone: false,
+  imports: [GovukSummaryListComponent],
 })
 class TestHostComponent {}
 
@@ -15,8 +15,7 @@ describe('GovukSummaryListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukSummaryListComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

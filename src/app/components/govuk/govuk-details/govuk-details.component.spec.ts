@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 
 @Component({
   template: `<app-govuk-details summaryText="Test Link"><p>This is a test</p></app-govuk-details>`,
-  standalone: false,
+  imports: [GovukDetailsComponent],
 })
 class TestHostComponent {}
 
@@ -15,8 +15,7 @@ describe('GovukDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukDetailsComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

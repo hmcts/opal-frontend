@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-test-form-parent-base',
   template: '',
-  standalone: false,
 })
 class TestAbstractFormParentBaseComponent extends AbstractFormParentBaseComponent {
   constructor() {
@@ -21,7 +20,7 @@ describe('AbstractFormParentBaseComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TestAbstractFormParentBaseComponent],
+      imports: [TestAbstractFormParentBaseComponent],
       providers: [
         {
           provide: ActivatedRoute,

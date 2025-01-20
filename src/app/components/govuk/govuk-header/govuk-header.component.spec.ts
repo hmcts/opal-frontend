@@ -12,7 +12,7 @@ import { provideRouter } from '@angular/router';
       <ng-container linkText>Test Link</ng-container>
     </app-govuk-header-navigation-item>
   </app-govuk-header>`,
-  standalone: false,
+  imports: [GovukHeaderComponent, GovukHeaderNavigationItemComponent],
 })
 class TestHostComponent {}
 
@@ -22,8 +22,7 @@ describe('GovukHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukHeaderComponent, GovukHeaderNavigationItemComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
       providers: [provideRouter([])],
     }).compileComponents();
 

@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-radios-conditional conditionalId="test"> Hello World</app-govuk-radios-conditional>`,
-  standalone: false,
+  imports: [GovukRadiosConditionalComponent],
 })
 class TestHostComponent {}
 describe('GovukRadiosConditionalComponent', () => {
@@ -14,8 +14,7 @@ describe('GovukRadiosConditionalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukRadiosConditionalComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

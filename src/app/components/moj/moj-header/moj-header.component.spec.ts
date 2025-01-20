@@ -12,7 +12,7 @@ import { provideRouter } from '@angular/router';
       <ng-container linkText>Test Link</ng-container>
     </app-moj-header-navigation-item>
   </app-moj-header>`,
-  standalone: false,
+  imports: [MojHeaderComponent, MojHeaderNavigationItemComponent],
 })
 class TestHostComponent {}
 
@@ -22,9 +22,8 @@ describe('MojHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojHeaderComponent, MojHeaderNavigationItemComponent],
       providers: [provideRouter([])],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

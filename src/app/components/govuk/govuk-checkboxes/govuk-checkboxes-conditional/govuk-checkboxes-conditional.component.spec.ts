@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-checkboxes-conditional conditionalId="test"> Hello World</app-govuk-checkboxes-conditional>`,
-  standalone: false,
+  imports: [GovukCheckboxesConditionalComponent],
 })
 class TestHostComponent {}
 describe('GovukCheckboxesConditionalComponent', () => {
@@ -14,8 +14,7 @@ describe('GovukCheckboxesConditionalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukCheckboxesConditionalComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

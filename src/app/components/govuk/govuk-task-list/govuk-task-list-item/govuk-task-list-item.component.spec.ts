@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
     <ng-container name>Tim</ng-container>
     <ng-container status>Hello</ng-container></app-govuk-task-list-item
   >`,
-  standalone: false,
+  imports: [GovukTaskListItemComponent],
 })
 class TestHostComponent {}
 describe('GovukTaskListItemComponent', () => {
@@ -17,8 +17,7 @@ describe('GovukTaskListItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukTaskListItemComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

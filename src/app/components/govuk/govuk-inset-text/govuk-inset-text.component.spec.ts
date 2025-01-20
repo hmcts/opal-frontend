@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-inset-text insetTextId="test">Hello World</app-govuk-inset-text>`,
-  standalone: false,
+  imports: [GovukInsetTextComponent],
 })
 class TestHostComponent {}
 
@@ -15,8 +15,7 @@ describe('GovukInsetTextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukInsetTextComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
