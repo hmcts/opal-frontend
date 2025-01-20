@@ -1,0 +1,33 @@
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+  withInterceptorsFromDi,
+  withXsrfConfiguration,
+} from '@angular/common/http';
+import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core';
+import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
+import { httpErrorInterceptor } from '@interceptors/http-error/http-error.interceptor';
+import { AppInitializerService } from '@services/app-initializer-service/app-initializer.service';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    provideClientHydration(withNoHttpTransferCache()),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([httpErrorInterceptor]),
+      withInterceptorsFromDi(),
+      withXsrfConfiguration({
+        headerName: 'X-XSRF-TOKEN',
+        cookieName: 'XSRF-TOKEN',
+      }),
+    ),
+    provideAppInitializer(() => {
+      const appInitializerService = inject(AppInitializerService);
+      return appInitializerService.initializeApp();
+    }),
+  ],
+};

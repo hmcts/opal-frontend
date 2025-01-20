@@ -5,13 +5,26 @@ import { SessionService } from '@services/session-service/session.service';
 import { DateService } from '@services/date-service/date.service';
 import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
+import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
 
 /* eslint-disable @angular-eslint/prefer-standalone */
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    MojHeaderComponent,
+    MojHeaderNavigationItemComponent,
+    MojBannerComponent,
+    GovukFooterComponent,
+  ],
   templateUrl: './app.component.html',
-  standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly launchDarklyService = inject(LaunchDarklyService);
