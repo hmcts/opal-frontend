@@ -5,7 +5,7 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 import { GovukHeaderLinks } from './enums';
 @Component({
   selector: 'app-govuk-header',
-  standalone: true,
+
   imports: [CommonModule, RouterLink],
   templateUrl: './govuk-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -23,7 +23,7 @@ import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interf
 
 @Component({
   selector: 'app-fines-mac-create-account',
-  standalone: true,
+
   imports: [CommonModule, RouterModule, FinesMacCreateAccountFormComponent],
   templateUrl: './fines-mac-create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

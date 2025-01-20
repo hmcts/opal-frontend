@@ -30,7 +30,7 @@ import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
-  standalone: true,
+
   imports: [
     FormsModule,
     ReactiveFormsModule,

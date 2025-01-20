@@ -7,6 +7,7 @@ import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile,
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
+/* eslint-disable @angular-eslint/prefer-standalone */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

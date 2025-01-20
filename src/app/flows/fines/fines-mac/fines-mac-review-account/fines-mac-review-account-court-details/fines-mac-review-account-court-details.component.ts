@@ -10,7 +10,7 @@ import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/i
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
-  standalone: true,
+
   imports: [
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,

@@ -12,22 +12,22 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { httpErrorInterceptor } from '@interceptors/http-error/http-error.interceptor';
 import { AppInitializerService } from '@services/app-initializer-service/app-initializer.service';
-import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
-import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
 
 @NgModule({
   declarations: [AppComponent],
   bootstrap: [AppComponent],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
+    MojBannerComponent,
     MojHeaderComponent,
     MojHeaderNavigationItemComponent,
     GovukFooterComponent,
+    BrowserModule,
+    AppRoutingModule,
     BrowserAnimationsModule,
-    MojBannerComponent,
   ],
   providers: [
     provideClientHydration(withNoHttpTransferCache()),

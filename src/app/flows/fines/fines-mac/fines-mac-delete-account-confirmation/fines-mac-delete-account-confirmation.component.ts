@@ -7,7 +7,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',
-  standalone: true,
+
   imports: [GovukButtonComponent, GovukCancelLinkComponent],
   templateUrl: './fines-mac-delete-account-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

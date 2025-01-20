@@ -20,7 +20,7 @@ import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
-  standalone: true,
+
   imports: [
     CommonModule,
     GovukButtonComponent,

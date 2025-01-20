@@ -4,7 +4,7 @@ import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/form
 
 @Component({
   selector: 'app-govuk-radios-item, [app-govuk-radios-item]',
-  standalone: true,
+
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-radios-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

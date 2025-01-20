@@ -8,7 +8,7 @@ import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 
 @Component({
   selector: 'app-sign-in',
-  standalone: true,
+
   imports: [CommonModule, SignInSsoComponent, SignInStubComponent],
   templateUrl: './sign-in.component.html',
 

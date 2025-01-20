@@ -4,7 +4,7 @@ import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/form
 
 @Component({
   selector: 'app-govuk-checkboxes-item, [app-govuk-checkboxes-item]',
-  standalone: true,
+
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-checkboxes-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

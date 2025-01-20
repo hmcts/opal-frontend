@@ -17,7 +17,7 @@ import { Subject, pairwise, startWith, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-alphagov-accessible-autocomplete',
-  standalone: true,
+
   imports: [ReactiveFormsModule],
   templateUrl: './alphagov-accessible-autocomplete.component.html',
   styleUrl: './alphagov-accessible-autocomplete.component.scss',

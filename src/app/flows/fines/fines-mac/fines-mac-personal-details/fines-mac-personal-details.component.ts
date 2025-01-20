@@ -9,7 +9,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-personal-details',
-  standalone: true,
+
   imports: [FinesMacPersonalDetailsFormComponent],
   templateUrl: './fines-mac-personal-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

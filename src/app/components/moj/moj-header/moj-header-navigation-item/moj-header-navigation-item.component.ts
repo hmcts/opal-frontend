@@ -2,8 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-moj-header-navigation-item, [app-moj-header-navigation-item]',
-  standalone: true,
-  imports: [],
   templateUrl: './moj-header-navigation-item.component.html',
 })
 export class MojHeaderNavigationItemComponent {

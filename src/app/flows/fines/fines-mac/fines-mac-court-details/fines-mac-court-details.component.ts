@@ -18,7 +18,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-court-details',
-  standalone: true,
+
   imports: [CommonModule, RouterModule, FinesMacCourtDetailsFormComponent],
   templateUrl: './fines-mac-court-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
