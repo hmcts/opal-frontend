@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/form
 
 @Component({
   selector: 'app-govuk-text-input',
-  standalone: true,
+
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-text-input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,7 +3,7 @@ import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-govuk-tab-list-item',
-  standalone: true,
+
   imports: [],
   templateUrl: './govuk-tab-list-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

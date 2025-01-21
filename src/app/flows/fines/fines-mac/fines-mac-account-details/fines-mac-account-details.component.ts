@@ -24,7 +24,7 @@ import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types
 
 @Component({
   selector: 'app-fines-mac-account-details',
-  standalone: true,
+
   imports: [
     CommonModule,
     RouterModule,

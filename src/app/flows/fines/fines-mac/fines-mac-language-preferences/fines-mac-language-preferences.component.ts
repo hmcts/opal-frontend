@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-fines-mac-language-preferences',
-  standalone: true,
+
   imports: [CommonModule, RouterModule, FinesMacLanguagePreferencesFormComponent],
   templateUrl: './fines-mac-language-preferences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

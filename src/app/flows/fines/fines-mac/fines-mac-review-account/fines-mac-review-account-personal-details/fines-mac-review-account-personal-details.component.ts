@@ -12,7 +12,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 
 @Component({
   selector: 'app-fines-mac-review-account-personal-details',
-  standalone: true,
+
   imports: [
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,

@@ -11,6 +11,7 @@ import { By } from '@angular/platform-browser';
     <ng-content date>23/07/2024</ng-content>
     <ng-content description><p>Hello world!</p></ng-content>
   </app-moj-timeline-item>`,
+  imports: [MojTimelineItemComponent],
 })
 class TestHostComponent {}
 
@@ -20,8 +21,7 @@ describe('MojTimelineItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojTimelineItemComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
