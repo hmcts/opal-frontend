@@ -10,7 +10,7 @@ import { DateService } from '@services/date-service/date.service';
   providedIn: 'root',
 })
 export class FinesService {
-  private readonly dateService = inject(DateService);
+  private readonly dateService = new DateService();
 
   // Non reactive state
   public finesMacState: IFinesMacState = { ...FINES_MAC_STATE };
@@ -27,8 +27,7 @@ export class FinesService {
   }
 
   /**
-   * Checks if the status of each offence in the provided offence details array is 'PROVIDED'.
-   *
+   * Checks if the status of each offence in the provided ofß
    * @param offenceDetails - An array of offence details to check.
    * @returns `true` if all offence statuses are 'PROVIDED', otherwise `false`.
    */

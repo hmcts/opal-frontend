@@ -10,8 +10,8 @@ import {
   ALIAS_PERSONAL_DETAILS,
   LENGTH_VALIDATION,
   CORRECTION_TEST_MESSAGES,
-} from './ErrorMessages/FinesMacPersonalDetailsErrors';
-import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './DOMElements/FinesMacPersonalDetailsElements';
+} from './constants/FinesMacPersonalDetailsErrors';
+import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/FinesMacPersonalDetailsElements';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   const setupComponent = (formSubmit: any) => {
