@@ -16,9 +16,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       const isBrowser = typeof window !== 'undefined';
       const isErrorEvent = isBrowser && typeof ErrorEvent !== 'undefined' && error.error instanceof ErrorEvent;
 
-      const errorMessage = isErrorEvent
-        ? `Client Error: ${error.error.message}`
-        : `Server Error: ${error.message || 'An unknown error occurred'}`;
+      const errorMessage = isErrorEvent ? `Error: ${error.error.message}` : `Error: ${error.message}`;
 
       globalStateService.error.set({
         error: true,

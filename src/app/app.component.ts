@@ -12,7 +12,6 @@ import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
 
-/* eslint-disable @angular-eslint/prefer-standalone */
 @Component({
   selector: 'app-root',
   standalone: true,

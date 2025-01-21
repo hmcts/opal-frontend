@@ -9,12 +9,17 @@ import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core'
 import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
 import { httpErrorInterceptor } from '@interceptors/http-error/http-error.interceptor';
 import { AppInitializerService } from '@services/app-initializer-service/app-initializer.service';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withRouterConfig({
+        canceledNavigationResolution: 'computed',
+      }),
+    ),
     provideClientHydration(withNoHttpTransferCache()),
     provideHttpClient(
       withFetch(),
