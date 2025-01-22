@@ -10,6 +10,7 @@ import {
   ALIAS_PERSONAL_DETAILS,
   LENGTH_VALIDATION,
   CORRECTION_TEST_MESSAGES,
+  VEHICLE_DETAILS_ERRORS,
 } from './constants/FinesMacPersonalDetailsErrors';
 import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/FinesMacPersonalDetailsElements';
 
@@ -287,7 +288,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS['submitButton']).click();
 
-    for (const [key, value] of Object.entries(CORRECTION_TEST_MESSAGES)) {
+    for (const [, value] of Object.entries(CORRECTION_TEST_MESSAGES)) {
       cy.get(DOM_ELEMENTS['errorSummary']).should('contain', value);
     }
 
@@ -302,10 +303,35 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should render vehicle details for adultOrYouthOnly defendant type', () => {
+  it('should render vehicle details for adultOrYouthOnly defendant type and validate max length of data', () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     // Verify the vehicle details section is rendered
-    cy.get(DOM_ELEMENTS['vehicleDetailsSection']).should('exist');
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(
+      24,
+    );
+
+    cy.get(DOM_ELEMENTS['submitButton']).first().click();
+
+    for (const [, value] of Object.entries(VEHICLE_DETAILS_ERRORS)) {
+      cy.get(DOM_ELEMENTS['errorSummary']).should('contain', value);
+    }
+  });
+
+  it('should not render vehicle details for AY-PG defendant type', () => {
+    setupComponent(null, 'parentOrGuardianToPay');
+
+    // Verify the vehicle details section is not rendered
+    cy.get(DOM_ELEMENTS['vehicleMake']).should('not.exist');
+    cy.get(DOM_ELEMENTS['vehicleRegistration']).should('not.exist');
+  });
+
+  it('should not render vehicle details for company defendant type', () => {
+    setupComponent(null, 'company');
+
+    // Verify the vehicle details section is not rendered
+    cy.get(DOM_ELEMENTS['vehicleMake']).should('not.exist');
+    cy.get(DOM_ELEMENTS['vehicleRegistration']).should('not.exist');
   });
 });

@@ -8,11 +8,22 @@ import { INVALID_DETAILS } from './constants/FinesMacContactDetailsErrors';
 import { DOM_ELEMENTS } from './constants/FinesMacContactDetailsElements';
 
 describe('FinesMacContactDetailsComponent', () => {
-  const setupComponent = (formSubmit: any) => {
-    const mockFinesService = {
-      finesMacState: { ...FINES_MAC_STATE_MOCK },
-    };
+  let mockFinesService = {
+    finesMacState: { ...FINES_MAC_STATE_MOCK },
+  };
 
+  afterEach(() => {
+    cy.then(() => {
+      mockFinesService.finesMacState.contactDetails.formData = {
+        fm_contact_details_email_address_1: '',
+        fm_contact_details_email_address_2: '',
+        fm_contact_details_telephone_number_mobile: '',
+        fm_contact_details_telephone_number_home: '',
+        fm_contact_details_telephone_number_business: '',
+      };
+    });
+  });
+  const setupComponent = (formSubmit: any) => {
     mount(FinesMacContactDetailsComponent, {
       providers: [
         { provide: OpalFines, useValue: mockFinesService },
@@ -43,15 +54,17 @@ describe('FinesMacContactDetailsComponent', () => {
   it('should show errors for invalid contact details', () => {
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS['primaryEmail']).focus().type('invalid-email', { delay: 0 });
-    cy.get(DOM_ELEMENTS['secondaryEmail']).focus().type('invalid-email', { delay: 0 });
-    cy.get(DOM_ELEMENTS['mobileTelephone']).focus().type('invalid-phone', { delay: 0 });
-    cy.get(DOM_ELEMENTS['homeTelephone']).focus().type('invalid-phone', { delay: 0 });
-    cy.get(DOM_ELEMENTS['workTelephone']).focus().type('invalid-phone', { delay: 0 });
+    mockFinesService.finesMacState.contactDetails.formData = {
+      fm_contact_details_email_address_1: 'invalid-email',
+      fm_contact_details_email_address_2: 'invalid-email',
+      fm_contact_details_telephone_number_mobile: 'invalid-phone',
+      fm_contact_details_telephone_number_home: 'invalid-phone',
+      fm_contact_details_telephone_number_business: 'invalid-phone',
+    };
 
     cy.get(DOM_ELEMENTS['submitButton']).click();
 
-    for (const [key, value] of Object.entries(INVALID_DETAILS)) {
+    for (const [, value] of Object.entries(INVALID_DETAILS)) {
       cy.get(DOM_ELEMENTS['errorSummary']).should('contain', value);
     }
   });
@@ -61,11 +74,13 @@ describe('FinesMacContactDetailsComponent', () => {
 
     setupComponent(mockFormSubmit);
 
-    cy.get(DOM_ELEMENTS['primaryEmail']).focus().clear().type('name@example.com', { delay: 0 });
-    cy.get(DOM_ELEMENTS['secondaryEmail']).focus().clear().type('secondary@example.com', { delay: 0 });
-    cy.get(DOM_ELEMENTS['mobileTelephone']).focus().clear().type('07700900982', { delay: 0 });
-    cy.get(DOM_ELEMENTS['homeTelephone']).focus().clear().type('01632960001', { delay: 0 });
-    cy.get(DOM_ELEMENTS['workTelephone']).focus().clear().type('01632960002', { delay: 0 });
+    mockFinesService.finesMacState.contactDetails.formData = {
+      fm_contact_details_email_address_1: 'name@example.com',
+      fm_contact_details_email_address_2: 'secondary@example.com',
+      fm_contact_details_telephone_number_mobile: '07700900982',
+      fm_contact_details_telephone_number_home: '01632960001',
+      fm_contact_details_telephone_number_business: '01632960002',
+    };
 
     cy.get(DOM_ELEMENTS['submitButton']).click();
 

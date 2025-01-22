@@ -33,3 +33,8 @@ export const CORRECTION_TEST_MESSAGES: { [key: string]: string } = {
   lastNameTooLong: "The defendant's last name must be 30 characters or fewer",
   addressLine1ContainsSpecialCharacters: 'The address line 1 must not contain special characters',
 };
+
+export const VEHICLE_DETAILS_ERRORS: { [key: string]: string } = {
+  vehicleMake: 'The make of car must be 30 characters or fewer',
+  vehicleRegistration: 'The registration number must be 11 characters or fewer',
+};
