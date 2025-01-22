@@ -33,10 +33,11 @@ import {
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root',   
 })
 export class OpalFines {
-  private readonly http = inject(HttpClient);
+  constructor(private readonly http: HttpClient) {}
+
   private courtCache$: { [key: string]: Observable<IOpalFinesSearchCourt[]> } = {};
   private courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> } = {};
   private businessUnitsCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> } = {};
@@ -274,3 +275,4 @@ export class OpalFines {
     return this.http.post<IFinesMacAddAccountPayload>(OPAL_FINES_PATHS.draftAccounts, body);
   }
 }
+

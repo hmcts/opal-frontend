@@ -13,6 +13,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@services/permissions-service/permissions.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
+import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacPaymentTermsComponent', () => {
   /**
@@ -20,7 +21,7 @@ describe('FinesMacPaymentTermsComponent', () => {
    */
   const setupComponent = (formSubmit: any, defendantTypeMock: string | undefined = '') => {
     // Mock the state with data from multiple forms
-    const MockFinesService = new FinesService();
+    const MockFinesService = new FinesService(new DateService());
     const mockPermissionService = new PermissionsService();
 
     mockPermissionService.getUniquePermissions(SESSION_USER_STATE_MOCK);
@@ -67,12 +68,12 @@ describe('FinesMacPaymentTermsComponent', () => {
     cy.get(DOM_ELEMENTS['finesMacPaymentTermsForm']).should('exist');
   });
 
-  it('should handle "Pay in full" with past dates and submit form', () => {
+  it.only('should handle "Pay in full" with past dates and submit form', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
     cy.get(DOM_ELEMENTS['payInFull']).first().click();
-    cy.get(DOM_ELEMENTS['payByDate']).type('01/01/2022', { delay: 0 });
+    cy.get(DOM_ELEMENTS['payByDate']).clear().type('01/01/2022', { delay: 0 });
     cy.get(DOM_ELEMENTS['submitButton']).first().click();
     cy.get(DOM_ELEMENTS['mojTicketPanel']).should('contain', ERROR_MESSAGES['dateInPast']);
 

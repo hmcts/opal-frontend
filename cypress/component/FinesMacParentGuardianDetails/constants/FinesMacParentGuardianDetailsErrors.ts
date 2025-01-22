@@ -25,6 +25,7 @@ export const LENGTH_VALIDATION: { [key: string]: string } = {
   addressLine2TooLong: 'The address line 2 must be 25 characters or fewer',
   addressLine3TooLong: 'The address line 3 must be 13 characters or fewer',
   vehicleRegistrationTooLong: 'The registration number must be 11 characters or fewer',
+  vehicleMakeTooLong: 'The make of car must be 30 characters or fewer',
 };
 
 export const CORRECTION_TEST_MESSAGES: { [key: string]: string } = {

@@ -93,6 +93,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS['addressLine2']).focus().type('a'.repeat(31), { delay: 0 });
     cy.get(DOM_ELEMENTS['addressLine3']).focus().type('a'.repeat(31), { delay: 0 });
     cy.get(DOM_ELEMENTS['vehicle_registration_mark']).focus().type('a'.repeat(31), { delay: 0 });
+    cy.get(DOM_ELEMENTS['vehicle_make']).focus().type('a'.repeat(31), { delay: 0 });
     cy.get(DOM_ELEMENTS['submitButton']).first().click();
 
     for (const [key, value] of Object.entries(LENGTH_VALIDATION)) {
@@ -203,7 +204,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     cy.get(DOM_ELEMENTS['errorSummary']).should('contain', FORMAT_CHECK['validNationalInsuranceNumber']);
   });
 
-  it('should show errors for invalid mandatory fields and allow corrections', () => {
+  it('should show errors for invalid mandatory fields and allow corrections and submit form', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
     setupComponent(mockFormSubmit);

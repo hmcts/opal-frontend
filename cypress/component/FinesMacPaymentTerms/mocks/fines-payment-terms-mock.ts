@@ -14,6 +14,7 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../../../../src/app/flows/fines
 import { IFinesMacState } from '../../../../src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_MAC_PERSONAL_DETAILS_STATE } from '../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-state';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
+import { FINES_MAC_PAYMENT_TERMS_STATE } from '../../../../src/app/flows/fines/fines-mac/fines-mac-payment-terms/constants/fines-mac-payment-terms-state';
 
 export const FINES_PAYMENT_TERMS_MOCK: IFinesMacState = {
   accountDetails: {
@@ -56,7 +57,16 @@ export const FINES_PAYMENT_TERMS_MOCK: IFinesMacState = {
       nestedFlow: false,
     },
   ],
-  paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
+  paymentTerms: {
+    ...FINES_MAC_PAYMENT_TERMS_FORM,
+    formData: {
+      ...FINES_MAC_PAYMENT_TERMS_STATE,
+      fm_payment_terms_payment_terms: 'payInFull',
+      fm_payment_terms_pay_by_date: '01/10/2025',
+    },
+    nestedFlow: false,
+  },
+
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
   unsavedChanges: false,

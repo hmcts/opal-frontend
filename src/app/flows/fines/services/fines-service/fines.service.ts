@@ -10,7 +10,7 @@ import { DateService } from '@services/date-service/date.service';
   providedIn: 'root',
 })
 export class FinesService {
-  private readonly dateService = new DateService();
+  constructor(private readonly dateService : DateService) {}
 
   // Non reactive state
   public finesMacState: IFinesMacState = { ...FINES_MAC_STATE };
