@@ -18,9 +18,9 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/
 import { OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-add-account-payload.mock';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { UtilsService } from '@services/utils/utils.service';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
@@ -28,7 +28,8 @@ describe('FinesMacReviewAccountComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
   let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
-  let mockGlobalStateService: GlobalStateService;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStore: any;
   let mockUtilService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
@@ -89,9 +90,9 @@ describe('FinesMacReviewAccountComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountComponent);
     component = fixture.componentInstance;
 
-    mockGlobalStateService = TestBed.inject(GlobalStateService);
-    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
-    mockGlobalStateService.error.set({
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+    globalStore.setError({
       error: false,
       message: '',
     });
@@ -168,7 +169,7 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should handle submitPayload failure', () => {
-    mockGlobalStateService.error.set({
+    globalStore.setError({
       error: true,
       message: 'Something went wrong',
     });

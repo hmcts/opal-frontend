@@ -49,6 +49,7 @@ import { IAbstractFormArrayControlValidation } from '@components/abstract/interf
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { dateBeforeValidator } from '@validators/date-before/date-before.validator';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -81,10 +82,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
+  private readonly globalStore = inject(GlobalStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] =
-    this.globalStateService.userState()?.business_unit_user || [];
+  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStore.userState()?.business_unit_user || [];
 
   private readonly earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
   private readonly collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);

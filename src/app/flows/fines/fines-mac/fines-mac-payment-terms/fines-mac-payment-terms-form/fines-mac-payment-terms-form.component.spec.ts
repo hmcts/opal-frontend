@@ -9,18 +9,19 @@ import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent>;
-  let mockGlobalStateService: GlobalStateService;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacPaymentTermsForm;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStore: any;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
@@ -48,8 +49,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       ],
     }).compileComponents();
 
-    mockGlobalStateService = TestBed.inject(GlobalStateService);
-    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
 
     fixture = TestBed.createComponent(FinesMacPaymentTermsFormComponent);
     component = fixture.componentInstance;

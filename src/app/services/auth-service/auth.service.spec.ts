@@ -1,24 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-
 import { AuthService } from './auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
-import { GlobalStateService } from '../global-state-service/global-state.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let globalStateService: GlobalStateService;
   let httpMock: HttpTestingController;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStore: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
+    globalStore = TestBed.inject(GlobalStore);
     service = TestBed.inject(AuthService);
-    globalStateService = TestBed.inject(GlobalStateService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -29,7 +28,7 @@ describe('AuthService', () => {
   it('should be authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(true);
-      expect(globalStateService.authenticated()).toEqual(true);
+      expect(globalStore.authenticated()).toEqual(true);
     });
 
     const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
@@ -41,7 +40,7 @@ describe('AuthService', () => {
   it('should be not authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(false);
-      expect(globalStateService.authenticated()).toEqual(false);
+      expect(globalStore.authenticated()).toEqual(false);
     });
 
     const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
@@ -54,7 +53,7 @@ describe('AuthService', () => {
     service.checkAuthenticated().subscribe(
       () => {},
       () => {
-        expect(globalStateService.authenticated()).toEqual(false);
+        expect(globalStore.authenticated()).toEqual(false);
       },
     );
 

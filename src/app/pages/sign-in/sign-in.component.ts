@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject }
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { SignInSsoComponent } from './sign-in-sso/sign-in-sso.component';
 import { SignInStubComponent } from './sign-in-stub/sign-in-stub.component';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { ISignInStubForm } from './interfaces';
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Component({
   selector: 'app-sign-in',
@@ -15,7 +15,7 @@ import { SsoEndpoints } from '@routing/enums/sso-endpoints';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent implements OnInit {
-  public readonly globalStateService = inject(GlobalStateService);
+  public readonly globalStore = inject(GlobalStore);
   public ssoEnabled: boolean | null = true;
   private readonly document = inject(DOCUMENT);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -38,7 +38,7 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
     // This is to prevent a load flicker when switching between sso/stub sign in
-    this.ssoEnabled = this.globalStateService.ssoEnabled;
+    this.ssoEnabled = this.globalStore.ssoEnabled();
     this.changeDetectorRef.detectChanges();
   }
 }

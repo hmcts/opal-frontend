@@ -2,18 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { httpErrorInterceptor } from './http-error.interceptor';
 import { of, throwError } from 'rxjs';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 describe('httpErrorInterceptor', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStore: any;
   const interceptor: HttpInterceptorFn = (req, next) =>
     TestBed.runInInjectionContext(() => httpErrorInterceptor(req, next));
-  let globalStateService: GlobalStateService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [GlobalStateService],
-    });
-    globalStateService = TestBed.inject(GlobalStateService);
+    globalStore = TestBed.inject(GlobalStore);
   });
 
   it('should have no errors', () => {
@@ -21,7 +19,7 @@ describe('httpErrorInterceptor', () => {
   });
 
   it('should be created', () => {
-    expect(globalStateService.error().error).toBeFalsy();
+    expect(globalStore.error().error).toBeFalsy();
   });
 
   it('should intercept and set an error', () => {
@@ -29,11 +27,11 @@ describe('httpErrorInterceptor', () => {
     const request = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = () => throwError(() => errorResponse);
 
-    expect(globalStateService.error().error).toBeFalsy();
+    expect(globalStore.error().error).toBeFalsy();
 
     interceptor(request, next).subscribe({
       error: () => {
-        const errorState = globalStateService.error().error;
+        const errorState = globalStore.error().error;
         expect(errorState).toBeTruthy();
       },
     });
@@ -52,11 +50,11 @@ describe('httpErrorInterceptor', () => {
     const request = new HttpRequest('GET', '/test');
     const next: HttpHandlerFn = () => throwError(() => errorResponse);
 
-    expect(globalStateService.error().error).toBeFalsy();
+    expect(globalStore.error().error).toBeFalsy();
 
     interceptor(request, next).subscribe({
       error: () => {
-        const errorState = globalStateService.error().error;
+        const errorState = globalStore.error().error;
         expect(errorState).toBeTruthy();
       },
     });
@@ -70,6 +68,6 @@ describe('httpErrorInterceptor', () => {
       httpErrorInterceptor(req, next).subscribe();
     });
 
-    expect(globalStateService.error()).toEqual({ error: false, message: '' });
+    expect(globalStore.error()).toEqual({ error: false, message: '' });
   });
 });

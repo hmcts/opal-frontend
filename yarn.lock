@@ -3935,6 +3935,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ngrx/signals@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@ngrx/signals@npm:19.0.0"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/core": ^19.0.0
+    rxjs: ^6.5.3 || ^7.4.0
+  peerDependenciesMeta:
+    rxjs:
+      optional: true
+  checksum: 10/6c337a1dd89b9e5c2f39e39b0d56e8c3a99f9f0764817bd1c0c2559e2bf7b62abd4d8785d60b613b62b816d7929a0d3278c693c38b750a2746435fb2699d2c80
+  languageName: node
+  linkType: hard
+
 "@ngtools/webpack@npm:19.1.2":
   version: 19.1.2
   resolution: "@ngtools/webpack@npm:19.1.2"
@@ -12807,6 +12822,7 @@ __metadata:
     "@hmcts/nodejs-logging": "npm:^4.0.4"
     "@hmcts/properties-volume": "npm:^1.1.0"
     "@ministryofjustice/frontend": "npm:^3.0.0"
+    "@ngrx/signals": "npm:^19.0.0"
     "@types/config": "npm:^3.3.3"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/express": "npm:^5.0.0"

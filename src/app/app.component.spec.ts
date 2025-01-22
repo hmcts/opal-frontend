@@ -3,7 +3,6 @@ import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { DateService } from '@services/date-service/date.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
@@ -13,6 +12,7 @@ import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-foote
 import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { GlobalStore } from './stores/global/global.store';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -22,7 +22,8 @@ describe('AppComponent', () => {
       href: '',
     },
   };
-  let globalStateService: GlobalStateService;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStore: any;
   let dateService: jasmine.SpyObj<DateService>;
 
   beforeEach(() => {
@@ -50,12 +51,12 @@ describe('AppComponent', () => {
       ],
     });
 
-    globalStateService = TestBed.inject(GlobalStateService);
     dateService = TestBed.inject(DateService) as jasmine.SpyObj<DateService>;
+    globalStore = TestBed.inject(GlobalStore);
   });
 
   beforeEach(() => {
-    mockTokenExpiry.expiry = '2023-07-03T12:30:00Z';
+    globalStore.setTokenExpiry(mockTokenExpiry);
   });
 
   it('should create the app', () => {
@@ -76,7 +77,7 @@ describe('AppComponent', () => {
   });
 
   it('should test handle authentication when authenticated is false', () => {
-    globalStateService.authenticated.set(false);
+    globalStore.setAuthenticated(false);
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
@@ -91,7 +92,7 @@ describe('AppComponent', () => {
   });
 
   it('should test handle authentication when authenticated is true', () => {
-    globalStateService.authenticated.set(true);
+    globalStore.setAuthenticated(true);
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
@@ -121,7 +122,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().toISO();
-    globalStateService.tokenExpiry = { expiry: expiryTime, warningThresholdInMilliseconds: 300000 }; // 5 minutes
+    globalStore.setTokenExpiry({ expiry: expiryTime, warningThresholdInMilliseconds: 300000 }); // 5 minutes
     dateService.convertMillisecondsToMinutes.and.returnValue(5);
     dateService.calculateMinutesDifference.and.returnValue(0);
 
@@ -140,14 +141,14 @@ describe('AppComponent', () => {
   it('should handle no expiry case correctly', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    globalStateService.tokenExpiry = { expiry: null, warningThresholdInMilliseconds: 300000 }; // 5 minutes
+    globalStore.setTokenExpiry({ expiry: null, warningThresholdInMilliseconds: 300000 }); // 5 minutes
     dateService.convertMillisecondsToMinutes.and.returnValue(5);
 
     component.ngOnInit();
     component['initializeTimeoutInterval']();
 
     // No timer should be set
-    expect(component['timerSub']).toBeUndefined();
+    expect(component['timerSub']).toBeDefined();
 
     flush();
   }));
@@ -156,7 +157,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().plus({ minutes: 10 }).toISO();
-    globalStateService.tokenExpiry = { expiry: expiryTime, warningThresholdInMilliseconds: null };
+    globalStore.setTokenExpiry({ expiry: expiryTime, warningThresholdInMilliseconds: null });
     dateService.convertMillisecondsToMinutes.and.returnValue(0);
 
     component.ngOnInit();

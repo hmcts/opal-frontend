@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SignInComponent } from './sign-in.component';
 import { ISignInStubForm } from './interfaces';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
   let fixture: ComponentFixture<SignInComponent>;
-  let globalStateService: GlobalStateService;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStore: any;
   const mockDocumentLocation = {
     location: {
       href: '',
@@ -19,13 +19,12 @@ describe('SignInComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SignInComponent],
-      providers: [],
     }).compileComponents();
-
-    globalStateService = TestBed.inject(GlobalStateService);
 
     fixture = TestBed.createComponent(SignInComponent);
     component = fixture.componentInstance;
+
+    globalStore = TestBed.inject(GlobalStore);
 
     fixture.detectChanges();
   });
@@ -39,7 +38,7 @@ describe('SignInComponent', () => {
 
     expect(component.ssoEnabled).toBeTrue();
 
-    globalStateService.ssoEnabled = false;
+    globalStore.setSsoEnabled(false);
 
     const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef);
     const detectChangesSpy = spyOn(cdr.constructor.prototype, 'detectChanges');

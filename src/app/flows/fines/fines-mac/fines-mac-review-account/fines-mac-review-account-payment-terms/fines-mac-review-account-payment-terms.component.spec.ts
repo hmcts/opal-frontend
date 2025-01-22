@@ -1,17 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms.component';
 import { DateService } from '@services/date-service/date.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from '../../fines-mac-payment-terms/mocks/fines-mac-payment-terms-state.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let component: FinesMacReviewAccountPaymentTermsComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountPaymentTermsComponent>;
-  let mockGlobalStateService: GlobalStateService;
   let mockDateService: jasmine.SpyObj<DateService>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let globalStore: any;
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat']);
@@ -21,15 +22,15 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
       providers: [{ provide: DateService, useValue: mockDateService }],
     }).compileComponents();
 
-    mockGlobalStateService = TestBed.inject(GlobalStateService);
-    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
-
     fixture = TestBed.createComponent(FinesMacReviewAccountPaymentTermsComponent);
     component = fixture.componentInstance;
 
     component.paymentTermsState = { ...FINES_MAC_PAYMENT_TERMS_STATE_MOCK };
     component.businessUnit = { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0] };
     component.defendantType = 'adultOrYouthOnly';
+
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
 
     fixture.detectChanges();
   });
