@@ -4,12 +4,12 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

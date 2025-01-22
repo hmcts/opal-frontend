@@ -8,14 +8,14 @@ import { ISessionTokenExpiry } from '@services/session-service/interfaces/sessio
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
 describe('SessionService', () => {
   let service: SessionService;
   let httpMock: HttpTestingController;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

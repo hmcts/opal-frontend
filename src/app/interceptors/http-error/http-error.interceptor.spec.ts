@@ -3,10 +3,10 @@ import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from
 import { httpErrorInterceptor } from './http-error.interceptor';
 import { of, throwError } from 'rxjs';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('httpErrorInterceptor', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
   const interceptor: HttpInterceptorFn = (req, next) =>
     TestBed.runInInjectionContext(() => httpErrorInterceptor(req, next));
 

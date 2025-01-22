@@ -4,11 +4,11 @@ import { LDFlagChangeset, LDFlagSet } from 'launchdarkly-js-client-sdk';
 import { LAUNCH_DARKLY_CHANGE_FLAGS_MOCK } from '@services/launch-darkly/mocks/launch-darkly-change-flags.mock';
 import { LAUNCH_DARKLY_FLAGS_MOCK } from '@services/launch-darkly/mocks/launch-darkly-flags.mock';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('LaunchDarklyService', () => {
   let service: LaunchDarklyService;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

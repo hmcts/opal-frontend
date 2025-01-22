@@ -21,6 +21,7 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/moc
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { UtilsService } from '@services/utils/utils.service';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
@@ -28,8 +29,7 @@ describe('FinesMacReviewAccountComponent', () => {
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
   let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
   let mockUtilService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {

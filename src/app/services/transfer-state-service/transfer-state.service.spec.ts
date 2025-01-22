@@ -4,11 +4,11 @@ import { TRANSFER_STATE_MOCK } from './mocks';
 import { PLATFORM_ID, makeStateKey } from '@angular/core';
 import { ITransferStateServerState } from './interfaces/transfer-state-server-state.interface';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('TransferStateService', () => {
   let service: TransferStateService;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

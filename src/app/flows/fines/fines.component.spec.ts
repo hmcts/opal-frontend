@@ -3,13 +3,13 @@ import { FinesComponent } from './fines.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../fines/fines-mac/mocks/fines-mac-state.mock';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('FinesComponent', () => {
   let component: FinesComponent;
   let fixture: ComponentFixture<FinesComponent>;
   let mockFinesService: FinesService;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -4,12 +4,12 @@ import { ISignInStubForm } from './interfaces';
 import { ChangeDetectorRef } from '@angular/core';
 import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
   let fixture: ComponentFixture<SignInComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
   const mockDocumentLocation = {
     location: {
       href: '',

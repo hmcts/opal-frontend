@@ -6,14 +6,14 @@ import { of, throwError } from 'rxjs';
 import { getGuardWithDummyUrl } from '@guards/helpers/get-guard-with-dummy-url';
 import { runAuthGuardWithContext } from '@guards/helpers/run-auth-guard-with-context';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('authGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => authGuard(...guardParameters));
   let mockAuthService: jasmine.SpyObj<AuthService>;
   let mockRouter: jasmine.SpyObj<Router>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
 
   const urlPath = '/test-page';
   const expectedUrl = 'sign-in';

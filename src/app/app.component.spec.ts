@@ -13,6 +13,7 @@ import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.compon
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { GlobalStore } from './stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -22,8 +23,7 @@ describe('AppComponent', () => {
       href: '',
     },
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
   let dateService: jasmine.SpyObj<DateService>;
 
   beforeEach(() => {

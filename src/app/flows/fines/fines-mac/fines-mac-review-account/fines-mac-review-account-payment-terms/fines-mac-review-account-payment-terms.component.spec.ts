@@ -6,13 +6,13 @@ import { FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from '../../fines-mac-payment-term
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let component: FinesMacReviewAccountPaymentTermsComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountPaymentTermsComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let globalStore: any;
+  let globalStore: GlobalStoreType;
 
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat']);
