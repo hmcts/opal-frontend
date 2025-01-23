@@ -57,16 +57,7 @@ export const FINES_PAYMENT_TERMS_MOCK: IFinesMacState = {
       nestedFlow: false,
     },
   ],
-  paymentTerms: {
-    ...FINES_MAC_PAYMENT_TERMS_FORM,
-    formData: {
-      ...FINES_MAC_PAYMENT_TERMS_STATE,
-      fm_payment_terms_payment_terms: 'payInFull',
-      fm_payment_terms_pay_by_date: '01/10/2025',
-    },
-    nestedFlow: false,
-  },
-
+  paymentTerms: FINES_MAC_PAYMENT_TERMS_FORM,
   languagePreferences: FINES_MAC_LANGUAGE_PREFERENCES_FORM,
   businessUnit: FINES_MAC_BUSINESS_UNIT_STATE,
   unsavedChanges: false,
