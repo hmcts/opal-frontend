@@ -11,8 +11,8 @@ import {
   LENGTH_VALIDATION,
   CORRECTION_TEST_MESSAGES,
   VEHICLE_DETAILS_ERRORS,
-} from './constants/FinesMacPersonalDetailsErrors';
-import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/FinesMacPersonalDetailsElements';
+} from './constants/fines_mac_personal_details_errors';
+import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/fines_mac_personal_details_elements';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let mockFinesService = {

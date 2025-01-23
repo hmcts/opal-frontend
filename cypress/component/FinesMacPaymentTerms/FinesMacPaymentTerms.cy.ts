@@ -7,8 +7,8 @@ import {
   LUMPSUM_ERRORS,
   INSTALLMENT_ERRORS,
   ENFORCEMENT_ERRORS,
-} from './constants/FinesMacPaymentTermsErrors';
-import { DOM_ELEMENTS } from './constants/FinesMacPaymentTermsElements';
+} from './constants/fines_mac_payment_terms_errors';
+import { DOM_ELEMENTS } from './constants/fines_mac_payment_terms_elements';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@services/permissions-service/permissions.service';

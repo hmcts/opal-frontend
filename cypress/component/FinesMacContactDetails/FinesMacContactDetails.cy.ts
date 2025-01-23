@@ -4,8 +4,8 @@ import { OpalFines } from '../../../src/app/flows/fines/services/opal-fines-serv
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
-import { INVALID_DETAILS } from './constants/FinesMacContactDetailsErrors';
-import { DOM_ELEMENTS } from './constants/FinesMacContactDetailsElements';
+import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
+import { DOM_ELEMENTS } from './constants/fines_mac_contact_details_elements';
 
 describe('FinesMacContactDetailsComponent', () => {
   let mockFinesService = {

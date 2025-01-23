@@ -10,7 +10,10 @@ import { HttpClient } from '@angular/common/http';
 describe('FinesMacParentGuardianDetailsComponent', () => {
   const setupComponent = (formSubmit: any) => {
     const MockFinesService = new FinesService(new DateService());
-    const mockHttpClient = {} as HttpClient; // Mock HttpClient
+    const mockHttpClient = {
+      get: cy.stub().as('httpGet'),
+      pipe: cy.stub().as('httpPipe'),
+    } as unknown as HttpClient; // Mock HttpClient
     const mockOpalFinesService = new OpalFines(mockHttpClient);
 
     MockFinesService.finesMacState = {
@@ -39,9 +42,9 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   };
 
   it('should render the child component', () => {
-    setupComponent(null);
+    setupComponent(null,);
 
     // Verify the child component is rendered
-    cy.get('app-fines-mac-parent-guardian-details-form').should('exist');
+    cy.get('app-fines-mac-court-details-form').should('exist');
   });
 });
