@@ -265,33 +265,33 @@ export class FinesMacPayloadService {
    *
    * @returns The updated `mappedFinesMacState` object with updated statuses for each section.
    */
-  private setFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
-    const getFormStatus = <T extends object>(formData: T) => this.getFinesMacStateFormStatus(formData);
+  // private setFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
+  //   const getFormStatus = <T extends object>(formData: T) => this.getFinesMacStateFormStatus(formData);
 
-    mappedFinesMacState.accountCommentsNotes.status = getFormStatus(mappedFinesMacState.accountCommentsNotes.formData);
-    mappedFinesMacState.accountDetails.status = getFormStatus(mappedFinesMacState.accountDetails.formData);
-    mappedFinesMacState.companyDetails.status = getFormStatus(mappedFinesMacState.companyDetails.formData);
-    mappedFinesMacState.contactDetails.status = getFormStatus(mappedFinesMacState.contactDetails.formData);
-    mappedFinesMacState.courtDetails.status = getFormStatus(mappedFinesMacState.courtDetails.formData);
-    mappedFinesMacState.employerDetails.status = getFormStatus(mappedFinesMacState.employerDetails.formData);
-    mappedFinesMacState.parentGuardianDetails.status = getFormStatus(
-      mappedFinesMacState.parentGuardianDetails.formData,
-    );
-    mappedFinesMacState.paymentTerms.status = getFormStatus(mappedFinesMacState.paymentTerms.formData);
-    mappedFinesMacState.personalDetails.status = getFormStatus(mappedFinesMacState.personalDetails.formData);
+  //   mappedFinesMacState.accountCommentsNotes.status = getFormStatus(mappedFinesMacState.accountCommentsNotes.formData);
+  //   mappedFinesMacState.accountDetails.status = getFormStatus(mappedFinesMacState.accountDetails.formData);
+  //   mappedFinesMacState.companyDetails.status = getFormStatus(mappedFinesMacState.companyDetails.formData);
+  //   mappedFinesMacState.contactDetails.status = getFormStatus(mappedFinesMacState.contactDetails.formData);
+  //   mappedFinesMacState.courtDetails.status = getFormStatus(mappedFinesMacState.courtDetails.formData);
+  //   mappedFinesMacState.employerDetails.status = getFormStatus(mappedFinesMacState.employerDetails.formData);
+  //   mappedFinesMacState.parentGuardianDetails.status = getFormStatus(
+  //     mappedFinesMacState.parentGuardianDetails.formData,
+  //   );
+  //   mappedFinesMacState.paymentTerms.status = getFormStatus(mappedFinesMacState.paymentTerms.formData);
+  //   mappedFinesMacState.personalDetails.status = getFormStatus(mappedFinesMacState.personalDetails.formData);
 
-    // Loop over the nested offence details forms, and the child forms if they exist
-    mappedFinesMacState.offenceDetails.forEach((offence) => {
-      offence.status = getFormStatus(offence.formData);
-      if (offence.childFormData) {
-        offence.childFormData.forEach((childOffence) => {
-          childOffence.status = getFormStatus(childOffence.formData);
-        });
-      }
-    });
+  //   // Loop over the nested offence details forms, and the child forms if they exist
+  //   mappedFinesMacState.offenceDetails.forEach((offence) => {
+  //     offence.status = getFormStatus(offence.formData);
+  //     if (offence.childFormData) {
+  //       offence.childFormData.forEach((childOffence) => {
+  //         childOffence.status = getFormStatus(childOffence.formData);
+  //       });
+  //     }
+  //   });
 
-    return mappedFinesMacState;
-  }
+  //   return mappedFinesMacState;
+  // }
 
   /**
    * Maps the provided account payload to the fines MAC state.
@@ -314,7 +314,7 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
-    finesMacState = this.setFinesMacStateStatuses(finesMacState);
+    //finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;
   }

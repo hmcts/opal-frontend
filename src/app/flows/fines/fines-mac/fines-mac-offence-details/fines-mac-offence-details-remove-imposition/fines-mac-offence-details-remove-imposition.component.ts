@@ -17,15 +17,14 @@ import { FormArray } from '@angular/forms';
 import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row-data/govuk-table-body-row-data.component';
 import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
 import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
-
   imports: [
     CommonModule,
     GovukButtonComponent,
@@ -42,7 +41,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
   implements OnInit, OnDestroy
 {
-  private readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
@@ -52,7 +51,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     .pipe(tap((response) => (this.resultCode = response)));
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
   private readonly majorCreditorData$: Observable<IOpalFinesMajorCreditorRefData> = this.opalFinesService
-    .getMajorCreditors(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .getMajorCreditors(this.finesMacStore.getBusinessUnitId())
     .pipe(tap((response) => (this.majorCreditors = response)));
   public groupResultCodeAndMajorCreditorData$ = forkJoin({
     resultCodeData: this.resultCodeData$,

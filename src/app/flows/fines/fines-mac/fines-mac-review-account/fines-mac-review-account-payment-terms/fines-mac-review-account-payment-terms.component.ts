@@ -23,7 +23,6 @@ import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
-
   imports: [
     CommonModule,
     GovukSummaryCardListComponent,

@@ -5,31 +5,26 @@ import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-f
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { Observable, tap, map } from 'rxjs';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form/fines-mac-create-account-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import {
   IOpalFinesBusinessUnit,
   IOpalFinesBusinessUnitRefData,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-
 import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_STATE } from '../constants/fines-mac-state';
-import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
-import { FINES_MAC_CREATE_ACCOUNT_FORM } from './constants/fines-mac-create-account-form';
-import { FINES_MAC_CREATE_ACCOUNT_STATE } from './constants/fines-mac-create-account-state';
 import { FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS } from './constants/fines-mac-create-account-configuration-items';
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
+import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-form';
 
 @Component({
   selector: 'app-fines-mac-create-account',
-
   imports: [CommonModule, RouterModule, FinesMacCreateAccountFormComponent],
   templateUrl: './fines-mac-create-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountComponent extends AbstractFormParentBaseComponent implements OnInit {
-  protected readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
   private readonly opalFinesService = inject(OpalFines);
   private businessUnits!: IOpalFinesBusinessUnit[];
   private readonly configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;
@@ -51,13 +46,11 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   private setBusinessUnit(response: IOpalFinesBusinessUnitRefData): void {
     const { count, refData } = response;
-    const { fm_create_account_business_unit_id: businessUnit } =
-      this.finesService.finesMacState.accountDetails.formData;
+    const { fm_create_account_business_unit_id: businessUnit } = this.finesMacStore.accountDetails().formData;
 
     if (count === 1 && businessUnit === null) {
-      this.finesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id =
-        refData[0].business_unit_id;
-      this.finesService.finesMacState.businessUnit = refData[0];
+      this.finesMacStore.accountDetails().formData.fm_create_account_business_unit_id = refData[0].business_unit_id;
+      this.finesMacStore.setBusinessUnit(refData[0]);
     }
     this.businessUnits = refData;
   }
@@ -96,27 +89,17 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
       this.configurationItems.defaultDocumentCourtHearingPreference,
     );
 
-    // Update the status as form is mandatory
-    form.status = FINES_MAC_STATUS.PROVIDED;
+    // Construct language preference form
+    const languagePreferenceForm = {
+      ...structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_FORM),
+      formData: {
+        fm_language_preferences_document_language: defaultDocumentLanguage,
+        fm_language_preferences_hearing_language: defaultCourtHearingLanguage,
+      },
+    };
 
     // Update the state with the form data
-    this.finesService.finesMacState = {
-      ...this.finesService.finesMacState,
-      accountDetails: form,
-      businessUnit: this.businessUnits.find(
-        (unit) => unit.business_unit_id === form.formData.fm_create_account_business_unit_id,
-      )!,
-      languagePreferences: {
-        ...this.finesService.finesMacState.languagePreferences,
-        formData: {
-          ...this.finesService.finesMacState.languagePreferences.formData,
-          fm_language_preferences_document_language: defaultDocumentLanguage,
-          fm_language_preferences_hearing_language: defaultCourtHearingLanguage,
-        },
-      },
-      unsavedChanges: false,
-      stateChanges: true,
-    };
+    this.finesMacStore.setAccountDetails(form, businessUnit, languagePreferenceForm);
 
     this.routerNavigate(FINES_MAC_ROUTING_PATHS.children.accountDetails);
   }
@@ -127,23 +110,15 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
 
   public ngOnInit(): void {
-    const { fm_create_account_business_unit_id: businessUnitId } =
-      this.finesService.finesMacState.accountDetails.formData;
-    this.finesService.finesMacState = {
-      ...FINES_MAC_STATE,
-      accountDetails: {
-        ...FINES_MAC_CREATE_ACCOUNT_FORM,
-        formData: {
-          ...FINES_MAC_CREATE_ACCOUNT_STATE,
-          fm_create_account_business_unit_id: businessUnitId,
-        },
-      },
-    };
-    this.finesService.finesMacState.offenceDetails = [];
+    const businessUnitId = this.finesMacStore.getBusinessUnitId();
+    this.finesMacStore.resetFinesMacStore();
+    if (businessUnitId) {
+      this.finesMacStore.setBusinessUnitId(businessUnitId);
+    }
   }
 }

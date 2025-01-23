@@ -51,7 +51,6 @@ export class FinesMacOffenceDetailsService {
           show_date_of_sentence,
         },
         nestedFlow: form.nestedFlow,
-        status: form.status,
       };
     });
   }

@@ -3,7 +3,6 @@ import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-ac
 
 @Component({
   selector: 'app-fines-mac-review-account-not-provided',
-
   imports: [],
   templateUrl: './fines-mac-review-account-not-provided.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

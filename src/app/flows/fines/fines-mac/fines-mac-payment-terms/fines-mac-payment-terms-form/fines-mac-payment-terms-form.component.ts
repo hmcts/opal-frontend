@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
@@ -50,10 +49,10 @@ import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '..
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { dateBeforeValidator } from '@validators/date-before/date-before.validator';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
-
   imports: [
     CommonModule,
     FormsModule,
@@ -80,14 +79,14 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
 
-  protected readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
   private readonly globalStore = inject(GlobalStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
   private readonly userStateRoles: ISessionUserStateRole[] = this.globalStore.userState()?.business_unit_user || [];
 
-  private readonly earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
+  private readonly earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
   private readonly collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 
   public readonly permissionsMap = FinesMacPaymentTermsPermissions;
@@ -132,11 +131,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * It checks if the user has permission access for the collection order based on the business unit ID and user roles.
    */
   private setupPermissions(): void {
-    const { business_unit_id: businessUnitId } = this.finesService.finesMacState.businessUnit;
     if (this.userStateRoles && this.userStateRoles.length > 0) {
       this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
         this.permissionsMap.collectionOrder,
-        businessUnitId,
+        this.finesMacStore.getBusinessUnitId(),
         this.userStateRoles,
       );
     }
@@ -159,7 +157,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * It also sets the `yesterday` and `today` properties with the appropriate date values.
    */
   private initialPaymentTermsSetup(): void {
-    const { formData } = this.finesService.finesMacState.paymentTerms;
+    const { formData } = this.finesMacStore.paymentTerms();
     this.setupPermissions();
     this.setupPaymentTermsForm();
     this.paymentTermsListener();
@@ -434,7 +432,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     let formData;
     switch (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes]) {
       case this.defendantTypes.adultOrYouthOnly:
-        formData = this.finesService.finesMacState.personalDetails.formData;
+        formData = this.finesMacStore.personalDetails().formData;
         this.accessDefaultDates =
           !formData.fm_personal_details_dob || this.dateService.calculateAge(formData.fm_personal_details_dob) >= 18;
         this.accessCollectionOrder =

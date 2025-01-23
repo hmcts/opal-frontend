@@ -3,13 +3,11 @@ import { FinesMacOffenceDetailsMinorCreditorFormComponent } from './fines-mac-of
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from './interfaces/fines-mac-offence-details-minor-creditor-form.interface';
-import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor',
-
   imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
   templateUrl: './fines-mac-offence-details-minor-creditor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +17,7 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
   implements OnInit, OnDestroy
 {
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
-  protected readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
 
   /**
    * Handles the submission of the minor creditor form.
@@ -35,9 +33,6 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
     const { removeImposition, removeMinorCreditor } =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
     form.formData.fm_offence_details_imposition_position = removeMinorCreditor ?? removeImposition!.rowIndex;
-
-    // Update the status as form is mandatory
-    form.status = FINES_MAC_STATUS.PROVIDED;
 
     // If childFormData exists and has at least one item in
     const { childFormData } =
@@ -67,7 +62,7 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
 

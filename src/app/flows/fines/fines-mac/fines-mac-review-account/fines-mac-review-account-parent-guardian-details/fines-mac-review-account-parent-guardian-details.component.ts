@@ -12,7 +12,6 @@ import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-ac
 
 @Component({
   selector: 'app-fines-mac-review-account-parent-guardian-details',
-
   imports: [
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,

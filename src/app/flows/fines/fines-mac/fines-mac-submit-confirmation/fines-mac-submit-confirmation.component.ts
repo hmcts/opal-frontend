@@ -4,12 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_STATE } from '../constants/fines-mac-state';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-submit-confirmation',
-
   imports: [GovukPanelComponent],
   templateUrl: './fines-mac-submit-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +15,7 @@ import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 export class FinesMacSubmitConfirmationComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
 
   /**
    * Navigates to the create account page within the fines MAC flow.
@@ -43,7 +41,7 @@ export class FinesMacSubmitConfirmationComponent {
    * @returns {void}
    */
   public seeAllAccounts(): void {
-    this.finesService.finesMacState = { ...FINES_MAC_STATE };
+    this.finesMacStore.resetFinesMacStore();
 
     this.router.navigate([
       `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter}`,

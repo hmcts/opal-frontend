@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 
 @Component({
   selector: 'app-govuk-back-link',
-
   imports: [],
   templateUrl: './govuk-back-link.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

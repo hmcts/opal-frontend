@@ -4,38 +4,26 @@ import { IFinesMacParentGuardianDetailsForm } from './interfaces/fines-mac-paren
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacParentGuardianDetailsFormComponent } from './fines-mac-parent-guardian-details-form/fines-mac-parent-guardian-details-form.component';
-
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',
-
   imports: [CommonModule, RouterModule, FinesMacParentGuardianDetailsFormComponent],
   templateUrl: './fines-mac-parent-guardian-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacParentGuardianDetailsComponent extends AbstractFormParentBaseComponent {
-  protected readonly finesService = inject(FinesService);
-  public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
+  public finesMacStore = inject(FinesMacStore);
+  public defendantType = this.finesMacStore.getDefendantType();
 
   /**
    * Handles the form submission for parent/guardian details.
    * @param formData - The form data containing the search parameters.
    */
   public handleParentGuardianDetailsSubmit(form: IFinesMacParentGuardianDetailsForm): void {
-    // Update the status as form is mandatory
-    form.status = FINES_MAC_STATUS.PROVIDED;
-
-    // Update the state with the form data
-    this.finesService.finesMacState = {
-      ...this.finesService.finesMacState,
-      parentGuardianDetails: form,
-      unsavedChanges: false,
-      stateChanges: true,
-    };
+    this.finesMacStore.setParentGuardianDetails(form);
 
     if (form.nestedFlow && this.defendantType) {
       const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['parentOrGuardianDetails'];
@@ -53,7 +41,7 @@ export class FinesMacParentGuardianDetailsComponent extends AbstractFormParentBa
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

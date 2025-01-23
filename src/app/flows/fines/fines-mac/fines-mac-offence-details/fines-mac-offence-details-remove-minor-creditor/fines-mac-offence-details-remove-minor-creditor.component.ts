@@ -10,7 +10,6 @@ import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../fine
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-minor-creditor',
-
   imports: [
     CommonModule,
     GovukButtonComponent,

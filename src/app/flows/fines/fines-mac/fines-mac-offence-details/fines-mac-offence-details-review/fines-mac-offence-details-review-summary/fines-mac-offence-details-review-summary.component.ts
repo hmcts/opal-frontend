@@ -13,14 +13,13 @@ import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fin
 import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { MojBannerComponent } from '../../../../../../components/moj/moj-banner/moj-banner.component';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-mac-offence-details-review-summary-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces/fines-mac-offence-details-review-summary-details-hidden.interface';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
-
   imports: [
     CommonModule,
     GovukButtonComponent,
@@ -42,7 +41,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
   public readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   public readonly finesMacStatus = FINES_MAC_STATUS;
@@ -86,9 +85,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
    * @returns {boolean} Returns true if the defendant type is 'adultOrYouthOnly', otherwise returns false.
    */
   private isAdultOrYouthOnly(): boolean {
-    return (
-      this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
-    );
+    return this.finesMacStore.getDefendantType() === 'adultOrYouthOnly';
   }
 
   /**
@@ -132,14 +129,14 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
 
   /**
    * Checks the sub-navigation button status based on the provided conditions.
-   * If the user is an adult or youth only, it checks if the finesMacState personalDetails status is provided.
+   * If the user is an adult or youth only, it checks if the finesMacStore personalDetails status is provided.
    * Otherwise, it returns true.
    *
    * @returns {boolean} The sub-navigation button status.
    */
   public checkSubNavigationButton(): boolean {
     if (this.isAdultOrYouthOnly()) {
-      return this.finesService.finesMacState.personalDetails.status === FINES_MAC_STATUS.PROVIDED;
+      return this.finesMacStore.personalDetailsStatus() === FINES_MAC_STATUS.PROVIDED;
     }
     return true;
   }

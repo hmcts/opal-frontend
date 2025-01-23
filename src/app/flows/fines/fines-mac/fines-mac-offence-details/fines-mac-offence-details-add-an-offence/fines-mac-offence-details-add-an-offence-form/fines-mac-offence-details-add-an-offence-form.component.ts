@@ -40,7 +40,6 @@ import { GovukTextInputPrefixSuffixComponent } from '@components/govuk/govuk-tex
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { CommonModule } from '@angular/common';
@@ -52,10 +51,10 @@ import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfac
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor-hidden.interface';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
-
   imports: [
     CommonModule,
     FormsModule,
@@ -91,7 +90,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly opalFinesService = inject(OpalFines);
   protected readonly dateService = inject(DateService);
   protected readonly utilsService = inject(UtilsService);
-  protected readonly finesMacService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
@@ -146,15 +145,15 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     if (hasOffenceDetailsDraft) {
       formData = offenceDetailsDraft[0].formData;
     } else {
-      const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.offenceIndex];
+      const offenceDetails = structuredClone(this.finesMacStore.offenceDetails()[this.offenceIndex]);
       formData = offenceDetails
         ? {
-            ...offenceDetails.formData,
+            ...structuredClone(offenceDetails.formData),
             fm_offence_details_impositions: this.addIndexToFormArrayData(
               offenceDetails.formData.fm_offence_details_impositions,
             ),
           }
-        : { ...FINES_MAC_OFFENCE_DETAILS_STATE, fm_offence_details_id: this.offenceIndex };
+        : { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE), fm_offence_details_id: this.offenceIndex };
     }
 
     const impositionsLength = formData[impositionsKey].length;
@@ -421,7 +420,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
     const index = offenceDetailsDraft.findIndex((item) => item.formData.fm_offence_details_id === offenceDetailsIndex);
 
     const childFormData =
-      this.finesMacService.finesMacState.offenceDetails[this.offenceIndex]?.childFormData ||
+      structuredClone(this.finesMacStore.offenceDetails()[this.offenceIndex]?.childFormData) ||
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0]?.childFormData ||
       [];
 
@@ -554,7 +553,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @returns The minor creditor form data for the specified row index, or undefined if not found.
    */
   public getMinorCreditor(rowIndex: number): IFinesMacOffenceDetailsMinorCreditorForm | undefined {
-    return this.finesMacService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
+    const offenceDetails = this.finesMacStore.offenceDetails()[this.offenceIndex];
+    return offenceDetails.childFormData!.find(
       (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
     );
   }
@@ -565,7 +565,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * The minor creditors are then stored in the `minorCreditors` property of the component.
    */
   public getMinorCreditors(): void {
-    const offenceDetails = this.finesMacService.finesMacState.offenceDetails[this.offenceIndex];
+    const offenceDetails = this.finesMacStore.offenceDetails()[this.offenceIndex];
     const draftOffenceDetails =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
 

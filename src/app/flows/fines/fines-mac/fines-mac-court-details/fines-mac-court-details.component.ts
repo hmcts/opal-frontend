@@ -5,27 +5,24 @@ import { Observable, forkJoin, map, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form/fines-mac-court-details-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 import { IFinesMacCourtDetailsForm } from './interfaces/fines-mac-court-details-form.interface';
 import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
-import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-court-details',
-
   imports: [CommonModule, RouterModule, FinesMacCourtDetailsFormComponent],
   templateUrl: './fines-mac-court-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseComponent {
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
   public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   private readonly sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getLocalJusticeAreas()
@@ -38,7 +35,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
       }),
     );
   private readonly enforcementCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
-    .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .getCourts(this.finesMacStore.getBusinessUnitId())
     .pipe(
       map((response: IOpalFinesCourtRefData) => {
         return this.createAutoCompleteItemsCourts(response);
@@ -49,7 +46,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
     enforcementCourtData: this.enforcementCourtData$,
   });
 
-  public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
+  public defendantType = this.finesMacStore.getDefendantType();
 
   /**
    * Creates an array of autocomplete items based on the response from the server.
@@ -90,16 +87,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
    * @param formData - The form data containing the search parameters.
    */
   public handleCourtDetailsSubmit(form: IFinesMacCourtDetailsForm): void {
-    // Update the status as form is mandatory
-    form.status = FINES_MAC_STATUS.PROVIDED;
-
-    // Update the state with the form data
-    this.finesService.finesMacState = {
-      ...this.finesService.finesMacState,
-      courtDetails: form,
-      unsavedChanges: false,
-      stateChanges: true,
-    };
+    this.finesMacStore.setCourtDetails(form);
 
     if (form.nestedFlow && this.defendantType) {
       const nextRoute = FINES_MAC_ROUTING_NESTED_ROUTES[this.defendantType]['courtDetails'];
@@ -117,7 +105,7 @@ export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseCompone
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
 }
