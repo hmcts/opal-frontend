@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-table-heading, [app-govuk-table-heading]',
-  standalone: true,
+
   imports: [],
   templateUrl: './govuk-table-heading.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

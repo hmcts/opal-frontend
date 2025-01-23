@@ -8,7 +8,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-payment-terms',
-  standalone: true,
+
   imports: [FinesMacPaymentTermsFormComponent],
   templateUrl: './fines-mac-payment-terms.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

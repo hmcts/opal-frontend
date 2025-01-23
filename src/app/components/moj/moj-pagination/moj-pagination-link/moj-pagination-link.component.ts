@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input } from '@angula
 
 @Component({
   selector: 'app-moj-pagination-link',
-  standalone: true,
+
   imports: [],
   templateUrl: './moj-pagination-link.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

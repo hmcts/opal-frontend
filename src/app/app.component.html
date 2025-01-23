@@ -32,7 +32,7 @@
           <app-moj-banner text="Warning: Your session has expired. Please log back in." type="warning"></app-moj-banner>
         }
 
-        @if (globalStateService.error().error) {
+        @if (globalStateService.authenticated() && globalStateService.error().error) {
           <app-moj-banner type="warning" [text]="globalStateService.error().message"></app-moj-banner>
         }
         <div class="govuk-grid-row">

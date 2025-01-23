@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, inject, PLATFORM_ID 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-govuk-accordion',
-  standalone: true,
+
   imports: [CommonModule],
   templateUrl: './govuk-accordion.component.html',
 

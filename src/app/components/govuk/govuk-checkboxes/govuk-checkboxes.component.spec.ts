@@ -13,6 +13,7 @@ import { Component } from '@angular/core';
   >
     Hello World</app-govuk-checkboxes
   >`,
+  imports: [GovukCheckboxesComponent],
 })
 class TestHostComponent {}
 describe('GovukCheckboxesNewComponent', () => {
@@ -21,8 +22,7 @@ describe('GovukCheckboxesNewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukCheckboxesComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

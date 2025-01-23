@@ -20,7 +20,7 @@ describe('AbstractFormParentBaseComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TestAbstractFormParentBaseComponent],
+      imports: [TestAbstractFormParentBaseComponent],
       providers: [
         {
           provide: ActivatedRoute,

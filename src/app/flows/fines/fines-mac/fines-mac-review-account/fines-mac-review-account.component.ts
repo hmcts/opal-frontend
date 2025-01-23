@@ -32,7 +32,7 @@ import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-fines-mac-review-account',
-  standalone: true,
+
   imports: [
     CommonModule,
     GovukBackLinkComponent,

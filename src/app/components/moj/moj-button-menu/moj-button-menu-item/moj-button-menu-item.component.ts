@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 
 @Component({
   selector: 'app-moj-button-menu-item',
-  standalone: true,
+
   imports: [],
   templateUrl: './moj-button-menu-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -8,7 +8,6 @@ import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { IAbstractFormArrayControl } from '../interfaces/abstract-form-array-control.interface';
 
 @Component({
-  standalone: true,
   template: '',
 })
 export abstract class AbstractFormAliasBaseComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {

@@ -15,10 +15,9 @@ global['self'] = win;
 import 'zone.js/node';
 
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr';
+import { CommonEngine } from '@angular/ssr/node';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
-import { AppServerModule } from './src/main.server';
 
 import { Logger } from '@hmcts/nodejs-logging';
 
@@ -29,6 +28,7 @@ import Routes from './server/routes';
 import { CSRFToken } from './server/csrf-token';
 import config from 'config';
 import TransferServerState from './server/interfaces/transferServerState';
+import bootstrap from './src/main.server';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -77,7 +77,7 @@ export function app(): express.Express {
 
     commonEngine
       .render({
-        bootstrap: AppServerModule,
+        bootstrap,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: distFolder,
@@ -117,5 +117,3 @@ const moduleFilename = (mainModule && mainModule.filename) || '';
 if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
   run();
 }
-
-export default AppServerModule;

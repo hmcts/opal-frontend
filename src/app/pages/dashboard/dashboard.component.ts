@@ -5,7 +5,7 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
+
   imports: [RouterModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
