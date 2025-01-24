@@ -58,6 +58,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       'upperCaseAllLetters',
       'formatSortCode',
       'upperCaseFirstLetter',
+      'scrollToTop',
     ]);
 
     await TestBed.configureTestingModule({

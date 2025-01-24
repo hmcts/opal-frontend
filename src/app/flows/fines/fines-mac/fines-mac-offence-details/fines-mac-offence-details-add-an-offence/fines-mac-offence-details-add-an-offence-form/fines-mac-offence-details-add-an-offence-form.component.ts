@@ -15,7 +15,6 @@ import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphag
 import { DateService } from '@services/date-service/date.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { UtilsService } from '@services/utils/utils.service';
 import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap, takeUntil, map } from 'rxjs';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes';
 import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options.constant';
@@ -90,7 +89,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly dateService = inject(DateService);
-  protected readonly utilsService = inject(UtilsService);
   protected readonly finesMacService = inject(FinesService);
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;

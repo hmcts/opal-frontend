@@ -265,6 +265,7 @@
 <ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
   <app-moj-ticket-panel
     [sectionClasses]="found ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'"
+    [alert]="true"
   >
     @let offenceFound = found ? 'Offence found' : 'Offence not found';
     <strong>{{ offenceFound }}</strong>

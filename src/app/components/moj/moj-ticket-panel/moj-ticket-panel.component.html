@@ -1,4 +1,4 @@
-<article class="moj-ticket-panel {{ componentClasses }}">
+<article class="moj-ticket-panel {{ componentClasses }}" [attr.role]="alert ? 'alert' : ''">
   <section class="moj-ticket-panel__content {{ sectionClasses }}">
     <ng-content></ng-content>
   </section>
