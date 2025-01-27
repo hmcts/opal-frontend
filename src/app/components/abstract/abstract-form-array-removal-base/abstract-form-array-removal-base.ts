@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormArrayRemovalBaseControlValue } from './interfaces/abstract-form-array-removal-base-control-value.interface';
 
 @Component({
-  standalone: true,
   template: '',
 })
 export abstract class AbstractFormArrayRemovalComponent {

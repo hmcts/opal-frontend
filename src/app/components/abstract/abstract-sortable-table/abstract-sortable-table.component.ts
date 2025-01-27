@@ -4,7 +4,6 @@ import { IAbstractSortState, IAbstractTableData } from './interfaces/abstract-so
 import { SortableValues } from '@services/sort-service/types/sort-service-type';
 
 @Component({
-  standalone: true,
   template: '',
 })
 export abstract class AbstractSortableTableComponent implements OnInit {

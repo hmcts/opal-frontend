@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input, PLATFORM_ID, 
 
 @Component({
   selector: 'app-govuk-tabs',
-  standalone: true,
+
   imports: [],
   templateUrl: './govuk-tabs.component.html',
 

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-moj-badge',
-  standalone: true,
+
   imports: [],
   templateUrl: './moj-badge.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

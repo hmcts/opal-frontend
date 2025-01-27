@@ -52,7 +52,7 @@ import { dateBeforeValidator } from '@validators/date-before/date-before.validat
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
-  standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,

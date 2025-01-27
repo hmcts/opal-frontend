@@ -22,7 +22,7 @@ import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
-  standalone: true,
+
   imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

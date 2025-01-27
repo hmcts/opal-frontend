@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
     ><li actions>Test</li>
     <p content>Hello World</p></app-govuk-summary-card-list
   >`,
+  imports: [GovukSummaryCardListComponent],
 })
 class TestHostComponent {}
 
@@ -17,8 +18,7 @@ describe('GovukSummaryCardListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukSummaryCardListComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

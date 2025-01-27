@@ -7,7 +7,7 @@ import { IFinesMacOffenceDetailsReviewSummaryForm } from '../../interfaces/fines
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-offences-total',
-  standalone: true,
+
   imports: [GovukSummaryListComponent, GovukSummaryListRowComponent],
   templateUrl: './fines-mac-offence-details-review-summary-offences-total.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

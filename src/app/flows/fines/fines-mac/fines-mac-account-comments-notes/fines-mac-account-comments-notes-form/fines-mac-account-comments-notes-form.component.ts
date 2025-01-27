@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
-  standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,

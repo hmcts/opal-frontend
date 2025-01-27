@@ -6,20 +6,16 @@ import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-c
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
-import { GovukSummaryListRowActionItemComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row-actions/govuk-summary-list-row-action-item/govuk-summary-list-row-action-item.component';
-import { GovukSummaryListRowActionsComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row-actions/govuk-summary-list-row-actions.component';
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',
-  standalone: true,
+
   imports: [
     CommonModule,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukSummaryCardListComponent,
-    GovukSummaryListRowActionsComponent,
-    GovukSummaryListRowActionItemComponent,
     GovukSummaryCardActionComponent,
   ],
   templateUrl: './fines-mac-offence-details-minor-creditor-information.component.html',

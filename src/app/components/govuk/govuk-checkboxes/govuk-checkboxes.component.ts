@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-checkboxes',
-  standalone: true,
+
   imports: [CommonModule],
   templateUrl: './govuk-checkboxes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

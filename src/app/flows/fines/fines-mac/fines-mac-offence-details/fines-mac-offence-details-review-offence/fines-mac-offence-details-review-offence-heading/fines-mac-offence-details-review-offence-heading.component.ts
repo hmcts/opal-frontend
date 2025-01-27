@@ -7,7 +7,7 @@ import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fine
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-heading',
-  standalone: true,
+
   imports: [CommonModule, FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent],
   templateUrl: './fines-mac-offence-details-review-offence-heading.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

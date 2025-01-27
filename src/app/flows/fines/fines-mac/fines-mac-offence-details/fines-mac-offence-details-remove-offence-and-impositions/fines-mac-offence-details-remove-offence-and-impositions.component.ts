@@ -16,7 +16,7 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-offence-and-impositions',
-  standalone: true,
+
   imports: [CommonModule, GovukButtonComponent, GovukCancelLinkComponent, FinesMacOffenceDetailsReviewOffenceComponent],
   templateUrl: './fines-mac-offence-details-remove-offence-and-impositions.component.html',
 })

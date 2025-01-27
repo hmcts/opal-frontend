@@ -3,12 +3,6 @@ import { inject } from '@angular/core';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { catchError, tap, throwError } from 'rxjs';
 
-/**
- * Interceptor function to handle HTTP errors.
- * @param req - The HTTP request.
- * @param next - The next interceptor in the chain.
- * @returns An Observable of the HTTP response.
- */
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const globalStateService = inject(GlobalStateService);
 
@@ -18,9 +12,15 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       globalStateService.error.set({ error: false, message: '' });
     }),
     catchError((error) => {
+      // Ensure ErrorEvent is handled only in browser environments
+      const isBrowser = typeof window !== 'undefined';
+      const isErrorEvent = isBrowser && typeof ErrorEvent !== 'undefined' && error.error instanceof ErrorEvent;
+
+      const errorMessage = isErrorEvent ? `Error: ${error.error.message}` : `Error: ${error.message}`;
+
       globalStateService.error.set({
         error: true,
-        message: error.error instanceof ErrorEvent ? `Error: ${error.error.message}` : `Error: ${error.message}`,
+        message: errorMessage,
       });
 
       return throwError(() => error);

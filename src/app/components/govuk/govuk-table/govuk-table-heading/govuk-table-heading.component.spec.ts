@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<th app-govuk-table-heading>Test Column</th>`,
+  imports: [GovukTableHeadingComponent],
 })
 class TestWrapperComponent {}
 
@@ -13,8 +14,7 @@ describe('GovukTableHeadingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukTableHeadingComponent],
-      declarations: [TestWrapperComponent],
+      imports: [TestWrapperComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestWrapperComponent);

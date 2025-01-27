@@ -5,7 +5,7 @@ import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/g
 
 @Component({
   selector: 'app-govuk-select',
-  standalone: true,
+
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-select.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
