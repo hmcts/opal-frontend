@@ -2,7 +2,7 @@ import { Component, Input, ChangeDetectionStrategy, HostBinding } from '@angular
 
 @Component({
   selector: 'app-moj-sortable-table-row,[app-moj-sortable-table-row]',
-  standalone: true,
+
   imports: [],
   templateUrl: './moj-sortable-table-row.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

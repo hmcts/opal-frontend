@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-moj-button-menu',
-  standalone: true,
+
   imports: [],
   templateUrl: './moj-button-menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

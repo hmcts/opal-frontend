@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-govuk-button',
-  standalone: true,
+
   imports: [CommonModule],
   templateUrl: './govuk-button.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -14,7 +14,7 @@ import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-li
 
 @Component({
   selector: 'app-fines-mac-review-account-account-details',
-  standalone: true,
+
   imports: [GovukSummaryCardListComponent, GovukSummaryListComponent, GovukSummaryListRowComponent],
   templateUrl: './fines-mac-review-account-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

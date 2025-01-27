@@ -20,7 +20,7 @@ import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrappe
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
-  standalone: true,
+
   imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

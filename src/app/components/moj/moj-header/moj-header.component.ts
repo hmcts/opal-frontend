@@ -4,7 +4,6 @@ import { MojHeaderLinks } from './enums';
 
 @Component({
   selector: 'app-moj-header',
-  standalone: true,
   imports: [RouterLink],
   templateUrl: './moj-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-govuk-pagination',
-  standalone: true,
+
   imports: [CommonModule],
   templateUrl: './govuk-pagination.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

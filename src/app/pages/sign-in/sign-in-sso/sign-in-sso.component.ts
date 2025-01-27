@@ -4,7 +4,7 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 
 @Component({
   selector: 'app-sign-in-sso',
-  standalone: true,
+
   imports: [CommonModule, GovukButtonComponent],
   templateUrl: './sign-in-sso.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -9,7 +9,7 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
 
 @Component({
   selector: 'app-fines-mac-offence-details-search-offences',
-  standalone: true,
+
   imports: [GovukButtonComponent, GovukBackLinkComponent],
   templateUrl: './fines-mac-offence-details-search-offences.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

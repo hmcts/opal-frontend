@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-moj-pagination,',
   styleUrls: ['./moj-pagination.component.scss'],
-  standalone: true,
+
   imports: [CommonModule, MojPaginationItemComponent, MojPaginationListComponent, MojPaginationLinkComponent],
   templateUrl: './moj-pagination.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
