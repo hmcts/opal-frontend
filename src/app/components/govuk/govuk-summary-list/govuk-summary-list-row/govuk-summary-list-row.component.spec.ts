@@ -9,6 +9,7 @@ import { Component } from '@angular/core';
     <ng-container value><p class="govuk-body">Hello</p></ng-container>
     <ng-container action>Change<span class="govuk-visually-hidden"> name</span></ng-container>
   </div>`,
+  imports: [GovukSummaryListRowComponent],
 })
 class TestHostComponent {
   action = false;
@@ -23,8 +24,7 @@ describe('GovukSummaryListRowComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukSummaryListRowComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

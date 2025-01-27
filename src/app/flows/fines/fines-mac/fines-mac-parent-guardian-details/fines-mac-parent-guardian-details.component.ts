@@ -12,7 +12,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details',
-  standalone: true,
+
   imports: [CommonModule, RouterModule, FinesMacParentGuardianDetailsFormComponent],
   templateUrl: './fines-mac-parent-guardian-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

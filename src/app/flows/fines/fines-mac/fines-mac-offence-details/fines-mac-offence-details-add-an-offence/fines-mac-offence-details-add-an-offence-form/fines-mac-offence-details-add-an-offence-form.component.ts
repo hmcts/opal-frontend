@@ -55,7 +55,7 @@ import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './in
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
-  standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,

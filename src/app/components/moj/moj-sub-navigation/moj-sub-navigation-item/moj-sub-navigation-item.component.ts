@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-moj-sub-navigation-item',
-  standalone: true,
+
   imports: [],
   templateUrl: './moj-sub-navigation-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

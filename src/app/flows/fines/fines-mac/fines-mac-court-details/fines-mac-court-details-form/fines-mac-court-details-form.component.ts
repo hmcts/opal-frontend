@@ -28,7 +28,7 @@ import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-se
 
 @Component({
   selector: 'app-fines-mac-court-details-form',
-  standalone: true,
+
   imports: [
     FormsModule,
     ReactiveFormsModule,

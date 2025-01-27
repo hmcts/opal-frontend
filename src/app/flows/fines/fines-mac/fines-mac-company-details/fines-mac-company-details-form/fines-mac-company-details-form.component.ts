@@ -34,7 +34,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
-  standalone: true,
+
   imports: [
     FormsModule,
     ReactiveFormsModule,

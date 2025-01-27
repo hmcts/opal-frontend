@@ -7,6 +7,7 @@ import { By } from '@angular/platform-browser';
   template: `<app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--blue">
     <h1>Hello world!</h1>
   </app-moj-ticket-panel>`,
+  imports: [MojTicketPanelComponent],
 })
 class TestHostComponent {}
 
@@ -16,8 +17,7 @@ describe('MojTicketPanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojTicketPanelComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

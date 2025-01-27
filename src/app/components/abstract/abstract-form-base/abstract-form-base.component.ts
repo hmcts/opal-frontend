@@ -13,7 +13,6 @@ import { IAbstractFormControlErrorMessage } from '../interfaces/abstract-form-co
 import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
 
 @Component({
-  standalone: true,
   template: '',
 })
 export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {

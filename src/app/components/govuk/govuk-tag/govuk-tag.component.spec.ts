@@ -4,6 +4,7 @@ import { GovukTagComponent } from './govuk-tag.component';
 import { Component } from '@angular/core';
 @Component({
   template: `<app-govuk-tag tagId="test" tagClasses="test-class">Test</app-govuk-tag>`,
+  imports: [GovukTagComponent],
 })
 class TestHostComponent {}
 describe('GovukTagComponent', () => {
@@ -12,8 +13,7 @@ describe('GovukTagComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukTagComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

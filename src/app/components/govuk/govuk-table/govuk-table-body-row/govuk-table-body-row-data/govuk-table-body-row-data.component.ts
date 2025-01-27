@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular
 
 @Component({
   selector: 'app-govuk-table-body-row-data, [app-govuk-table-body-row-data]',
-  standalone: true,
+
   imports: [],
   templateUrl: './govuk-table-body-row-data.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

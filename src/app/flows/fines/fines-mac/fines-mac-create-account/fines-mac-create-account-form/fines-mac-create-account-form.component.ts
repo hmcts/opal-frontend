@@ -37,7 +37,7 @@ import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/int
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
-  standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,

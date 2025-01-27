@@ -42,7 +42,7 @@ import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-titl
 
 @Component({
   selector: 'app-fines-mac-personal-details-form',
-  standalone: true,
+
   imports: [
     FormsModule,
     ReactiveFormsModule,
