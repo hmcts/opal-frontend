@@ -34,8 +34,8 @@ describe('AppComponent', () => {
     ]);
 
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
       imports: [
+        AppComponent,
         MojHeaderComponent,
         MojHeaderNavigationItemComponent,
         GovukFooterComponent,

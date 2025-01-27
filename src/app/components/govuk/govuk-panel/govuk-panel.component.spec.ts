@@ -5,6 +5,7 @@ import { By } from '@angular/platform-browser';
 
 @Component({
   template: `<app-govuk-panel panelTitle="Test Title"><div>This is a test</div></app-govuk-panel>`,
+  imports: [GovukPanelComponent],
 })
 class TestHostComponent {}
 
@@ -14,8 +15,7 @@ describe('GovukPanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukPanelComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

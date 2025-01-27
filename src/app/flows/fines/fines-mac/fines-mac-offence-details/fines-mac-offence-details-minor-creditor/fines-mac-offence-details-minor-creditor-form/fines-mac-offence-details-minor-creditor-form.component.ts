@@ -29,7 +29,7 @@ import { specialCharactersValidator } from '@validators/special-characters/speci
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
-  standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,

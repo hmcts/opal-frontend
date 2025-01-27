@@ -3,7 +3,7 @@ import { IAbstractFormBaseFormErrorSummaryMessage } from '@components/abstract/a
 
 @Component({
   selector: 'app-govuk-error-summary',
-  standalone: true,
+
   imports: [],
   templateUrl: './govuk-error-summary.component.html',
 })

@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-checkboxes-divider> Hello World</app-govuk-checkboxes-divider>`,
+  imports: [GovukCheckboxesDividerComponent],
 })
 class TestHostComponent {}
 describe('GovukCheckboxesDividerComponent', () => {
@@ -13,8 +14,7 @@ describe('GovukCheckboxesDividerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukCheckboxesDividerComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

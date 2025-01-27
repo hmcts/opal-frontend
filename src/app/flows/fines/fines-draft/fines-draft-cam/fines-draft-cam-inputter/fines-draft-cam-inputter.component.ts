@@ -23,7 +23,6 @@ import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.compon
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
-  standalone: true,
   imports: [
     CommonModule,
     MojSubNavigationComponent,

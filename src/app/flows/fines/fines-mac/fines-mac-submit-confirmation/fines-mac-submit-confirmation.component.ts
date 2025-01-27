@@ -9,7 +9,7 @@ import { FINES_MAC_STATE } from '../constants/fines-mac-state';
 
 @Component({
   selector: 'app-fines-mac-submit-confirmation',
-  standalone: true,
+
   imports: [GovukPanelComponent],
   templateUrl: './fines-mac-submit-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

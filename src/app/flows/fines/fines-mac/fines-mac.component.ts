@@ -7,7 +7,7 @@ import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 
 @Component({
   selector: 'app-fines-mac',
-  standalone: true,
+
   imports: [RouterOutlet],
   templateUrl: './fines-mac.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

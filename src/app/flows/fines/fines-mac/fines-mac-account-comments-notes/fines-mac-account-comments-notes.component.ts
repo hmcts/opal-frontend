@@ -9,7 +9,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes',
-  standalone: true,
+
   imports: [FinesMacAccountCommentsNotesFormComponent],
   templateUrl: './fines-mac-account-comments-notes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

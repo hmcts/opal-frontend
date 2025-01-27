@@ -6,7 +6,7 @@ import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-ac
 
 @Component({
   selector: 'app-fines-mac-review-account-offence-details',
-  standalone: true,
+
   imports: [
     CommonModule,
     FinesMacOffenceDetailsReviewComponent,

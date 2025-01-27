@@ -4,7 +4,6 @@ import { MojNotificationBadgeComponent } from '../../moj-notification-badge/moj-
 
 @Component({
   selector: 'app-moj-sub-navigation-item',
-  standalone: true,
   imports: [MojNotificationBadgeComponent],
   templateUrl: './moj-sub-navigation-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

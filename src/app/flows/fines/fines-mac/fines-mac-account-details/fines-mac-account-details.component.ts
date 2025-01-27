@@ -32,7 +32,7 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 
 @Component({
   selector: 'app-fines-mac-account-details',
-  standalone: true,
+
   imports: [
     CommonModule,
     RouterModule,

@@ -7,7 +7,7 @@ import { DashboardPermissions } from './enums/dashboard-permissions.enum';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
+
   imports: [RouterModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
