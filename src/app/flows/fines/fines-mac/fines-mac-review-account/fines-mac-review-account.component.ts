@@ -40,7 +40,7 @@ import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interf
 
 @Component({
   selector: 'app-fines-mac-review-account',
-  standalone: true,
+
   imports: [
     CommonModule,
     GovukBackLinkComponent,

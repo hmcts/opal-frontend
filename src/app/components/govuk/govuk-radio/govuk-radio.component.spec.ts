@@ -13,6 +13,7 @@ import { Component } from '@angular/core';
   >
     Hello World</app-govuk-radio
   >`,
+  imports: [GovukRadioComponent],
 })
 class TestHostComponent {}
 describe('GovukRadioComponent', () => {
@@ -21,8 +22,7 @@ describe('GovukRadioComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukRadioComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

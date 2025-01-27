@@ -2,7 +2,6 @@ import { Component, computed, signal } from '@angular/core';
 import { AbstractSortableTableComponent } from '../abstract-sortable-table/abstract-sortable-table.component';
 
 @Component({
-  standalone: true,
   template: '',
 })
 export abstract class AbstractSortableTablePaginationComponent extends AbstractSortableTableComponent {

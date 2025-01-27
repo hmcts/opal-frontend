@@ -13,7 +13,7 @@ import { IFinesMacOffenceDetailsReviewSummaryForm } from './interfaces/fines-mac
 
 @Component({
   selector: 'app-fines-mac-offence-details-review',
-  standalone: true,
+
   imports: [CommonModule, FinesMacOffenceDetailsReviewSummaryComponent],
   templateUrl: './fines-mac-offence-details-review.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

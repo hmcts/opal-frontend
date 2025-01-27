@@ -1,4 +1,3 @@
-import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -18,8 +17,8 @@ import { Subject, pairwise, startWith, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-alphagov-accessible-autocomplete',
-  standalone: true,
-  imports: [TitleCasePipe, ReactiveFormsModule],
+
+  imports: [ReactiveFormsModule],
   templateUrl: './alphagov-accessible-autocomplete.component.html',
   styleUrl: './alphagov-accessible-autocomplete.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

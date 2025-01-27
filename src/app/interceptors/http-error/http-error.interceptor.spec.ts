@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { httpErrorInterceptor } from './http-error.interceptor';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 describe('httpErrorInterceptor', () => {
@@ -60,5 +60,16 @@ describe('httpErrorInterceptor', () => {
         expect(errorState).toBeTruthy();
       },
     });
+  });
+
+  it('should clear the state service on new requests', () => {
+    const req = new HttpRequest('GET', '/test');
+    const next: HttpHandlerFn = jasmine.createSpy().and.returnValue(of(null));
+
+    TestBed.runInInjectionContext(() => {
+      httpErrorInterceptor(req, next).subscribe();
+    });
+
+    expect(globalStateService.error()).toEqual({ error: false, message: '' });
   });
 });

@@ -6,7 +6,7 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 
 @Component({
   selector: 'app-fines',
-  standalone: true,
+
   imports: [RouterOutlet],
   templateUrl: './fines.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

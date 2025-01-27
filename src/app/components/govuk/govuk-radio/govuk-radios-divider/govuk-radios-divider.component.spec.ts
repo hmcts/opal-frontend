@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-radios-divider> Hello World</app-govuk-radios-divider>`,
+  imports: [GovukRadiosDividerComponent],
 })
 class TestHostComponent {}
 describe('GovukRadiosDividerComponent', () => {
@@ -13,8 +14,7 @@ describe('GovukRadiosDividerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukRadiosDividerComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
