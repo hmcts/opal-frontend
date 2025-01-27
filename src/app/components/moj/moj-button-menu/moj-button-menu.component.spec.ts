@@ -10,6 +10,7 @@ import { MojButtonMenuItemComponent } from './moj-button-menu-item/moj-button-me
       <ng-container linkText>Action 1</ng-container>
     </app-moj-button-menu-item>
   </app-moj-button-menu>`,
+  imports: [MojButtonMenuComponent, MojButtonMenuItemComponent],
 })
 class TestHostComponent {}
 
@@ -19,8 +20,7 @@ describe('MojButtonMenuComponent - TestHostComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojButtonMenuComponent, MojButtonMenuItemComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

@@ -10,7 +10,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-company-details',
-  standalone: true,
+
   imports: [FinesMacCompanyDetailsFormComponent],
   templateUrl: './fines-mac-company-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

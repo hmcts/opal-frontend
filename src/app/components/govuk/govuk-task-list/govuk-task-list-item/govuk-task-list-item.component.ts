@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-task-list-item',
-  standalone: true,
+
   imports: [],
   templateUrl: './govuk-task-list-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

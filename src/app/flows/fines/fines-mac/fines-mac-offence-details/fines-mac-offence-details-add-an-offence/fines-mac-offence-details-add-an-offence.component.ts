@@ -19,7 +19,7 @@ import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
-  standalone: true,
+
   imports: [CommonModule, RouterModule, FinesMacOffenceDetailsAddAnOffenceFormComponent],
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 export type GovukBannerType = 'success' | 'information';
 @Component({
   selector: 'app-govuk-notification-banner',
-  standalone: true,
+
   imports: [],
   templateUrl: './govuk-notification-banner.component.html',
 })

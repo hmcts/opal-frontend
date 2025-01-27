@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `<app-govuk-tab-panel tabsId="testOne" tabsPanelId="testTwo">Hello World</app-govuk-tab-panel>`,
+  imports: [GovukTabPanelComponent],
 })
 class TestHostComponent {}
 describe('GovukTabPanelComponent', () => {
@@ -13,8 +14,7 @@ describe('GovukTabPanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukTabPanelComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

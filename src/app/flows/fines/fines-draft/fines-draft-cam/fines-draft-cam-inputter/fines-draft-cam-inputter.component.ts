@@ -15,7 +15,7 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-status
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
-  standalone: true,
+
   imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

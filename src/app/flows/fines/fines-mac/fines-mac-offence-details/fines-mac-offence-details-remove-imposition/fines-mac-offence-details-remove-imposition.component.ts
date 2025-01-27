@@ -25,7 +25,7 @@ import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.c
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
-  standalone: true,
+
   imports: [
     CommonModule,
     GovukButtonComponent,
