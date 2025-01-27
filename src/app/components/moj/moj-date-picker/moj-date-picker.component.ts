@@ -14,7 +14,7 @@ import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-moj-date-picker',
-  standalone: true,
+
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './moj-date-picker.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

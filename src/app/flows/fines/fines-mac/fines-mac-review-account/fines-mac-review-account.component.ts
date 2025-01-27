@@ -39,7 +39,7 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 
 @Component({
   selector: 'app-fines-mac-review-account',
-  standalone: true,
+
   imports: [
     CommonModule,
     GovukBackLinkComponent,

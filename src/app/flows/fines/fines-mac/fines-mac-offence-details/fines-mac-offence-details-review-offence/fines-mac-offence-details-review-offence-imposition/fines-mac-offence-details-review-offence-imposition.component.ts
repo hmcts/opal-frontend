@@ -21,7 +21,7 @@ import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-li
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
-  standalone: true,
+
   imports: [
     CommonModule,
     GovukTableComponent,

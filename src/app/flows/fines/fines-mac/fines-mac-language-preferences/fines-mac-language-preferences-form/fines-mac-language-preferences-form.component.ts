@@ -12,7 +12,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants/fines-mac-l
 
 @Component({
   selector: 'app-fines-mac-language-preferences-form',
-  standalone: true,
+
   imports: [
     FormsModule,
     ReactiveFormsModule,

@@ -12,7 +12,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({
   selector: 'app-fines-mac-employer-details',
-  standalone: true,
+
   imports: [CommonModule, RouterModule, FinesMacEmployerDetailsFormComponent],
   templateUrl: './fines-mac-employer-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

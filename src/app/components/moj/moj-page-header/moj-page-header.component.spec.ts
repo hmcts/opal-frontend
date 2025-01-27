@@ -24,6 +24,7 @@ import { By } from '@angular/platform-browser';
       </button>
     </ng-content>
   </app-moj-page-header>`,
+  imports: [MojPageHeaderComponent],
 })
 class TestHostComponent {}
 
@@ -33,8 +34,7 @@ describe('MojPageHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MojPageHeaderComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

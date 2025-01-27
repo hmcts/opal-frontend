@@ -6,7 +6,6 @@ import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn } from 
 import { IAbstractFormArrayControl } from '../interfaces/abstract-form-array-control.interface';
 
 @Component({
-  standalone: true,
   template: '',
 })
 export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {

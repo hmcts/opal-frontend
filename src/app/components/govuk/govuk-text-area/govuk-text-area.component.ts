@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/form
 
 @Component({
   selector: 'app-govuk-text-area',
-  standalone: true,
+
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-text-area.component.html',
   styles: ``,

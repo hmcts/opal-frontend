@@ -8,6 +8,7 @@ import { addGdsBodyClass } from '../helpers/add-gds-body-class';
   template: `<app-govuk-tabs tabsId="test"
     ><span items>Test Content</span><span panels>More Test Content</span></app-govuk-tabs
   >`,
+  imports: [GovukTabsComponent],
 })
 class TestHostComponent {}
 
@@ -18,8 +19,7 @@ describe('GovukTabsComponent', () => {
   beforeAll(addGdsBodyClass);
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GovukTabsComponent],
-      declarations: [TestHostComponent],
+      imports: [TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);

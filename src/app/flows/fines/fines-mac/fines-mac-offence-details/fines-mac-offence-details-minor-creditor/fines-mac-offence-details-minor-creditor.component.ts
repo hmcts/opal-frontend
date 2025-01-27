@@ -9,7 +9,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor',
-  standalone: true,
+
   imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
   templateUrl: './fines-mac-offence-details-minor-creditor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -8,7 +8,7 @@ import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 
 @Component({
   selector: 'app-fines-mac-offence-details',
-  standalone: true,
+
   imports: [RouterOutlet],
   templateUrl: './fines-mac-offence-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
