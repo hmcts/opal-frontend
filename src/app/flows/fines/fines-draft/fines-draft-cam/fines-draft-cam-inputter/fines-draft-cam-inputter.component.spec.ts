@@ -93,7 +93,7 @@ describe('FinesDraftCamInputterComponent', () => {
     const response = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
     const tableData = component['populateTableData'](response);
     expect(tableData.length).toEqual(response.summaries.length);
-    expect(tableData[0].defendantId).toEqual(response.summaries[0].draft_account_id);
+    expect(tableData[0]['Defendant id']).toEqual(response.summaries[0].draft_account_id);
   });
 
   it('should call getDraftAccounts with correct parameters', () => {

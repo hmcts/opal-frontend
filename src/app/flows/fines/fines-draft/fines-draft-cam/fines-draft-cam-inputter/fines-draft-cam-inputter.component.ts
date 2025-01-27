@@ -114,15 +114,15 @@ export class FinesDraftCamInputterComponent implements OnInit {
       const { defendant_name, date_of_birth, created_date, account_type, business_unit_name } = account_snapshot;
 
       return {
-        account: '',
-        defendantId: draft_account_id,
-        defendant: defendant_name,
-        dob: date_of_birth
+        Account: '',
+        'Defendant id': draft_account_id,
+        Defendant: defendant_name,
+        'Date of birth': date_of_birth
           ? this.dateService.getFromFormatToFormat(date_of_birth, this.DATE_INPUT_FORMAT, this.DATE_OUTPUT_FORMAT)
           : '',
-        created: this.dateService.getDaysAgoString(created_date) ?? '',
-        accountType: FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
-        businessUnit: business_unit_name,
+        Created: this.dateService.getDaysAgoString(created_date) ?? '',
+        'Account type': FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
+        'Business unit': business_unit_name,
       };
     });
   }

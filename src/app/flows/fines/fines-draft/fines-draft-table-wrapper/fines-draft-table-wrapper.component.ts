@@ -8,6 +8,7 @@ import { IFinesDraftTableWrapperTableData } from './interfaces/fines-draft-table
 import { IFinesDraftTableWrapperTableSort } from './interfaces/fines-draft-table-wrapper-table-sort.interface';
 import { AbstractSortableTablePaginationComponent } from '@components/abstract/abstract-sortable-table-pagination/abstract-sortable-table-pagination.component';
 import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/govuk-pagination.component';
+import { MojSortableTableStatusComponent } from '@components/moj/moj-sortable-table/moj-sortable-table-status/moj-sortable-table-status.component';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -19,6 +20,7 @@ import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/gov
     MojSortableTableRowComponent,
     MojSortableTableRowDataComponent,
     GovukPaginationComponent,
+    MojSortableTableStatusComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,7 +28,7 @@ import { GovukPaginationComponent } from '@components/govuk/govuk-pagination/gov
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
   public override abstractTableDataSignal = signal<IFinesDraftTableWrapperTableData[]>([]);
   public override paginatedTableDataComputed!: Signal<IFinesDraftTableWrapperTableData[]>;
-  public override itemsPerPageSignal = signal(25);
+  public override itemsPerPageSignal = signal(5);
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
     this.abstractTableDataSignal.set(tableData);
   }
