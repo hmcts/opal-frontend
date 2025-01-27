@@ -1,0 +1,18 @@
+export const DOM_ELEMENTS: { [key: string]: string } = {
+  submitButton: 'button[type="submit"]',
+  additionalAlias: 'button[id="addAlias"]',
+  errorSummary: '.govuk-error-summary',
+  companyName: 'input[id="fm_company_details_company_name"]',
+  addAlias: 'input[id="fm_company_details_add_alias"]',
+  aliasRemoveButton: '.govuk-link--no-visited-state',
+  aliases: 'input[id="fm_company_details_aliases"]',
+  aliasCompanyName1: 'input[id="fm_company_details_alias_company_name_0"]',
+  aliasCompanyName2: 'input[id="fm_company_details_alias_company_name_1"]',
+  aliasCompanyName3: 'input[id="fm_company_details_alias_company_name_2"]',
+  aliasCompanyName4: 'input[id="fm_company_details_alias_company_name_3"]',
+  aliasCompanyName5: 'input[id="fm_company_details_alias_company_name_4"]',
+  addressLine1: 'input[id="fm_company_details_address_line_1"]',
+  addressLine2: 'input[id="fm_company_details_address_line_2"]',
+  addressLine3: 'input[id="fm_company_details_address_line_3"]',
+  postcode: 'input[id="fm_company_details_postcode"]',
+};

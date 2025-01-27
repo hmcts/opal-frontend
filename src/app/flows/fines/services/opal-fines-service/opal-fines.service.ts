@@ -25,7 +25,7 @@ import {
 } from './interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 @Injectable({
-  providedIn: 'root',   
+  providedIn: 'root',
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
@@ -192,4 +192,3 @@ export class OpalFines {
     return this.http.post<IFinesMacAddAccountPayload>(OPAL_FINES_PATHS.draftAccounts, body);
   }
 }
-

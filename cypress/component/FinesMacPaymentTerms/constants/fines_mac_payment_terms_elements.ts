@@ -33,6 +33,3 @@ export const DOM_ELEMENTS: { [key: string]: string } = {
   noenf: 'input[id="NOENF"]',
   reasonAccountIsOnNoenf: 'textarea[id="fm_payment_terms_reason_account_is_on_noenf"]',
 };
-
-
-

@@ -3,7 +3,11 @@ import { OpalFines } from '../../../src/app/flows/fines/services/opal-fines-serv
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacParentGuardianDetailsComponent } from '../../../src/app/flows/fines/fines-mac/fines-mac-parent-guardian-details/fines-mac-parent-guardian-details.component';
-import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/fines_mac_parent_guardian_details_elements';
+import {
+  DOM_ELEMENTS,
+  getAliasFirstName,
+  getAliasLastName,
+} from './constants/fines_mac_parent_guardian_details_elements';
 import {
   MAIN_PERSONAL_DETAILS,
   ALIAS_PERSONAL_DETAILS,
