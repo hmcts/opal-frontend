@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { SessionEndpoints } from '@services/session-service/enums/session-endpoints';
 import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 
 import { Observable, shareReplay, tap } from 'rxjs';
+import { SESSION_ENDPOINTS } from './constants/session-endpoints.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +31,7 @@ export class SessionService {
 
     if (!this.userStateCache$ || refresh) {
       this.userStateCache$ = this.http
-        .get<ISessionUserState>(SessionEndpoints.userState)
+        .get<ISessionUserState>(SESSION_ENDPOINTS.userState)
         .pipe(shareReplay(1))
         .pipe(
           tap((userState) => {
@@ -52,7 +52,7 @@ export class SessionService {
   public getTokenExpiry(): Observable<ISessionTokenExpiry> {
     if (!this.tokenExpiryCache$) {
       this.tokenExpiryCache$ = this.http
-        .get<ISessionTokenExpiry>(SessionEndpoints.expiry)
+        .get<ISessionTokenExpiry>(SESSION_ENDPOINTS.expiry)
         .pipe(shareReplay(1))
         .pipe(
           tap((expiry) => {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MojHeaderLinks } from './enums';
+import { MOJ_HEADER_LINKS } from './constants/moj-header-links.constant';
 
 @Component({
   selector: 'app-moj-header',
@@ -9,5 +9,5 @@ import { MojHeaderLinks } from './enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MojHeaderComponent {
-  public readonly headerLinks = MojHeaderLinks;
+  public readonly headerLinks = MOJ_HEADER_LINKS;
 }

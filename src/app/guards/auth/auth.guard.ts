@@ -2,7 +2,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { map, catchError, of } from 'rxjs';
 import { AuthService } from '@services/auth-service/auth.service';
-import { RoutingPaths } from '@routing/enums/routing-paths';
+import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
 /**
  * A guard that checks if the user is authenticated before allowing access to a route.
@@ -17,7 +17,7 @@ export const authGuard: CanActivateFn = () => {
       return resp;
     }),
     catchError(() => {
-      router.navigate([RoutingPaths.signIn]);
+      router.navigate([PAGES_ROUTING_PATHS.children.signIn]);
       return of(false);
     }),
   );

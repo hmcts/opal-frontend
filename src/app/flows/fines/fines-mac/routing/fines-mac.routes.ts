@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@guards/auth/auth.guard';
 import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
-
-import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths.constant';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
 import { routing as offenceDetailsRouting } from '../fines-mac-offence-details/routing/fines-mac-offence-details.routes';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../fines-mac-offence-details/routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { TitleResolver } from '@resolvers/title/title.resolver';
+import { FINES_MAC_ROUTING_TITLES } from './constants/fines-mac-routing-titles.constant';
 
 export const routing: Routes = [
   {
@@ -22,7 +22,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Create account' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.createAccount },
     resolve: { title: TitleResolver },
   },
   {
@@ -33,7 +33,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Account details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.accountDetails },
     resolve: { title: TitleResolver },
   },
   {
@@ -44,7 +44,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Employer details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.employerDetails },
     resolve: { title: TitleResolver },
   },
   {
@@ -55,7 +55,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Contact details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.contactDetails },
     resolve: { title: TitleResolver },
   },
   {
@@ -66,7 +66,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Parent or guardian details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.parentGuardianDetails },
     resolve: { title: TitleResolver },
   },
   {
@@ -77,7 +77,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Personal details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.personalDetails },
     resolve: { title: TitleResolver },
   },
 
@@ -89,7 +89,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Company details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.companyDetails },
     resolve: { title: TitleResolver },
   },
   {
@@ -100,7 +100,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Court details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.courtDetails },
     resolve: { title: TitleResolver },
   },
   {
@@ -111,7 +111,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Account comments & notes' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.accountCommentsNotes },
     resolve: { title: TitleResolver },
   },
   {
@@ -122,7 +122,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Payment terms' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.paymentTerms },
     resolve: { title: TitleResolver },
   },
   {
@@ -132,7 +132,7 @@ export const routing: Routes = [
         (c) => c.FinesMacDeleteAccountConfirmationComponent,
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
-    data: { title: 'Delete account confirmation' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation },
     resolve: { title: TitleResolver },
   },
   {
@@ -143,7 +143,7 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Language preferences' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.languagePreferences },
     resolve: { title: TitleResolver },
   },
   {
@@ -155,7 +155,7 @@ export const routing: Routes = [
     children: offenceDetailsRouting,
     canActivate: [authGuard, finesMacFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
-    data: { title: 'Offence details' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.offenceDetails },
     resolve: { title: TitleResolver },
   },
   {
@@ -165,7 +165,7 @@ export const routing: Routes = [
         (c) => c.FinesMacReviewAccountComponent,
       ),
     canActivate: [authGuard, finesMacFlowStateGuard],
-    data: { title: 'Review account' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.reviewAccount },
     resolve: { title: TitleResolver },
   },
   {
@@ -175,7 +175,7 @@ export const routing: Routes = [
         (c) => c.FinesMacSubmitConfirmationComponent,
       ),
     canActivate: [authGuard],
-    data: { title: 'Submit confirmation' },
+    data: { title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation },
     resolve: { title: TitleResolver },
   },
 ];

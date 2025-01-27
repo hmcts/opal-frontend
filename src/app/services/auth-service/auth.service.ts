@@ -1,9 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { catchError, tap, throwError } from 'rxjs';
-
-import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { GlobalStateService } from '../global-state-service/global-state.service';
+import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +13,7 @@ export class AuthService {
 
   public checkAuthenticated() {
     return this.http
-      .get<boolean>(SsoEndpoints.authenticated, {
+      .get<boolean>(SSO_ENDPOINTS.authenticated, {
         headers: new HttpHeaders({
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',

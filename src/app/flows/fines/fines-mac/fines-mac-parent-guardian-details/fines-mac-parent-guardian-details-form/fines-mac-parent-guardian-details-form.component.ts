@@ -13,7 +13,7 @@ import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-pare
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
 
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 import { dateOfBirthValidator } from '@validators/date-of-birth/date-of-birth.validator';
 import { nationalInsuranceNumberValidator } from '@validators/national-insurance-number/national-insurance-number.validator';

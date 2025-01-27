@@ -1,11 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-
 import { AuthService } from './auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-
-import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { GlobalStateService } from '../global-state-service/global-state.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -32,7 +30,7 @@ describe('AuthService', () => {
       expect(globalStateService.authenticated()).toEqual(true);
     });
 
-    const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
+    const req = httpMock.expectOne(`${SSO_ENDPOINTS.authenticated}`);
     expect(req.request.method).toBe('GET');
 
     req.flush(true);
@@ -44,7 +42,7 @@ describe('AuthService', () => {
       expect(globalStateService.authenticated()).toEqual(false);
     });
 
-    const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
+    const req = httpMock.expectOne(`${SSO_ENDPOINTS.authenticated}`);
     expect(req.request.method).toBe('GET');
 
     req.flush(false);
@@ -58,7 +56,7 @@ describe('AuthService', () => {
       },
     );
 
-    const req = httpMock.expectOne(`${SsoEndpoints.authenticated}`);
+    const req = httpMock.expectOne(`${SSO_ENDPOINTS.authenticated}`);
     expect(req.request.method).toBe('GET');
 
     req.flush('401 error', { status: 401, statusText: 'Not Authenticated' });
