@@ -97,7 +97,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 4200;
+  const port = process.env['PORT'] || 4000;
   const logger = Logger.getLogger('server');
 
   // Start up the Node server
