@@ -2570,14 +2570,14 @@ __metadata:
   linkType: hard
 
 "@cucumber/messages@npm:^27.0.0":
-  version: 27.0.2
-  resolution: "@cucumber/messages@npm:27.0.2"
+  version: 27.1.0
+  resolution: "@cucumber/messages@npm:27.1.0"
   dependencies:
     "@types/uuid": "npm:10.0.0"
     class-transformer: "npm:0.5.1"
     reflect-metadata: "npm:0.2.2"
-    uuid: "npm:10.0.0"
-  checksum: 10/d36c8cb915b2ef1b6d38a757101a352c070906f26c845a8601e501c34657868c607b020649957d2cb946ba4c54bf95c91b01e7f355b3d5b507af26ef1038f8e9
+    uuid: "npm:11.0.5"
+  checksum: 10/e6eb753467080828934951e0aaa856cc1c0cd09540f2b0e0332b9681948be5f68e8ba0bcbc0770d6fca4168e6548bd17b6c5b76122de911b6d3dd5fd5253a2f7
   languageName: node
   linkType: hard
 
@@ -17013,7 +17013,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:10.0.0, uuid@npm:^10.0.0":
+"uuid@npm:11.0.5":
+  version: 11.0.5
+  resolution: "uuid@npm:11.0.5"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 10/0594ecdff3051e15d4a2c614b4c72e73af373bde0a5d156512353c01156975295d024ae8d7151846d7bd4d22ccd251b16ed51b4318fa71505fb20ad984102dc1
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^10.0.0":
   version: 10.0.0
   resolution: "uuid@npm:10.0.0"
   bin:
