@@ -5,6 +5,7 @@ import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-det
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-contact-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('FinesMacContactDetailsFormComponent', () => {
   let component: FinesMacContactDetailsFormComponent;
@@ -23,7 +24,12 @@ describe('FinesMacContactDetailsFormComponent', () => {
       imports: [FinesMacContactDetailsFormComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
