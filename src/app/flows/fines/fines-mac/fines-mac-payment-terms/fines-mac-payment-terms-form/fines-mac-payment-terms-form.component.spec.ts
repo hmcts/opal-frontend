@@ -20,7 +20,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   let mockGlobalStateService: GlobalStateService;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacPaymentTermsForm;
 
   beforeEach(async () => {

@@ -13,7 +13,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacAccountDetailsForm;
 
   beforeEach(async () => {

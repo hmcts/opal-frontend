@@ -13,7 +13,6 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let fixture: ComponentFixture<FinesMacParentGuardianDetailsFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   let formSubmit: IFinesMacParentGuardianDetailsForm;
 

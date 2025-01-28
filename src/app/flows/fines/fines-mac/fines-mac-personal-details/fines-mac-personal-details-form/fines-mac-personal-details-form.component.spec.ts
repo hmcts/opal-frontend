@@ -15,7 +15,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   let fixture: ComponentFixture<FinesMacPersonalDetailsFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacPersonalDetailsForm;
 
   beforeEach(async () => {

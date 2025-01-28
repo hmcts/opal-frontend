@@ -12,7 +12,7 @@ describe('FinesMacLanguagePreferencesFormComponent', () => {
   let component: FinesMacLanguagePreferencesFormComponent;
   let fixture: ComponentFixture<FinesMacLanguagePreferencesFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacLanguagePreferencesForm;
 
   beforeEach(async () => {
