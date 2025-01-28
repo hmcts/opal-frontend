@@ -21,12 +21,12 @@ describe('AbstractSortableTablePaginationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestComponent], // Declare the TestComponent
+      imports: [TestComponent],
       providers: [
         {
           provide: ChangeDetectorRef,
           useValue: {
-            detectChanges: jasmine.createSpy('detectChanges'), // Mock detectChanges
+            detectChanges: jasmine.createSpy('detectChanges'),
           },
         },
       ],
