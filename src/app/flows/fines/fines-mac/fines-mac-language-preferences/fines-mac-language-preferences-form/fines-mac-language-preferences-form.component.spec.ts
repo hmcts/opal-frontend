@@ -1,36 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacLanguagePreferencesFormComponent } from './fines-mac-language-preferences-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacLanguagePreferencesForm } from '../interfaces/fines-mac-language-preferences-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from '../mocks/fines-mac-language-preferences-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 describe('FinesMacLanguagePreferencesFormComponent', () => {
   let component: FinesMacLanguagePreferencesFormComponent;
   let fixture: ComponentFixture<FinesMacLanguagePreferencesFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacLanguagePreferencesForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-
     formSubmit = { ...FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacLanguagePreferencesFormComponent],
-      providers: [
-        { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacLanguagePreferencesFormComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
     fixture.detectChanges();
   });
 

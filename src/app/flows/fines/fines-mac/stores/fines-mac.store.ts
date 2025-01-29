@@ -28,32 +28,7 @@ import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function checkFormValues(form: { [key: string]: any }): boolean {
-  return Object.values(form).some((value) => {
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    } else {
-      return Boolean(value);
-    }
-  });
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function checkFormArrayValues(forms: { [key: string]: any }[]): boolean {
-  return forms.every((form) => checkFormValues(form));
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getFormStatus(form: { [key: string]: any }): string {
-  return checkFormValues(form) ? FINES_MAC_STATUS.PROVIDED : FINES_MAC_STATUS.NOT_PROVIDED;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getArrayFormStatus(forms: { [key: string]: any }[]): string {
-  return forms.every((form) => getFormStatus(form)) ? FINES_MAC_STATUS.PROVIDED : FINES_MAC_STATUS.NOT_PROVIDED;
-}
+import { UtilsService } from '@services/utils/utils.service';
 
 export const FinesMacStore = signalStore(
   { providedIn: 'root' },
@@ -83,6 +58,7 @@ export const FinesMacStore = signalStore(
   }),
   withComputed((store) => {
     const dateServiceGetDateFromFormat = inject(DateService).getDateFromFormat;
+    const utilsService = inject(UtilsService);
 
     return {
       getDefendantType: computed(() => {
@@ -92,72 +68,106 @@ export const FinesMacStore = signalStore(
         return store.businessUnit().business_unit_id;
       }),
       employerDetailsStatus: computed(() => {
-        return getFormStatus(store.employerDetails().formData);
+        return utilsService.getFormStatus(
+          store.employerDetails().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       contactDetailsStatus: computed(() => {
-        return getFormStatus(store.contactDetails().formData);
+        return utilsService.getFormStatus(
+          store.contactDetails().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       parentGuardianDetailsStatus: computed(() => {
-        return getFormStatus(store.parentGuardianDetails().formData);
+        return utilsService.getFormStatus(
+          store.parentGuardianDetails().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       personalDetailsStatus: computed(() => {
-        return getFormStatus(store.personalDetails().formData);
+        return utilsService.getFormStatus(
+          store.personalDetails().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       companyDetailsStatus: computed(() => {
-        return getFormStatus(store.companyDetails().formData);
+        return utilsService.getFormStatus(
+          store.companyDetails().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       courtDetailsStatus: computed(() => {
-        return getFormStatus(store.courtDetails().formData);
+        return utilsService.getFormStatus(
+          store.courtDetails().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       accountCommentsNotesStatus: computed(() => {
-        return getFormStatus(store.accountCommentsNotes().formData);
+        return utilsService.getFormStatus(
+          store.accountCommentsNotes().formData,
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       offenceDetailsStatus: computed(() => {
-        return getArrayFormStatus(store.offenceDetails());
+        return utilsService.getArrayFormStatus(
+          store.offenceDetails(),
+          FINES_MAC_STATUS.PROVIDED,
+          FINES_MAC_STATUS.NOT_PROVIDED,
+        );
       }),
       paymentTermsStatus: computed(() => {
         if (store.paymentTerms().status) {
           return store.paymentTerms().status;
         } else {
-          return getFormStatus(store.paymentTerms().formData);
+          return utilsService.getFormStatus(
+            store.paymentTerms().formData,
+            FINES_MAC_STATUS.PROVIDED,
+            FINES_MAC_STATUS.NOT_PROVIDED,
+          );
         }
       }),
       adultOrYouthSectionsCompleted: computed(() => {
         const formsToCheck = [
-          checkFormValues(store.courtDetails().formData),
-          checkFormValues(store.personalDetails().formData),
-          checkFormValues(store.paymentTerms().formData),
-          checkFormArrayValues(store.offenceDetails()),
+          utilsService.checkFormValues(store.courtDetails().formData),
+          utilsService.checkFormValues(store.personalDetails().formData),
+          utilsService.checkFormValues(store.paymentTerms().formData),
+          utilsService.checkFormArrayValues(store.offenceDetails()),
         ];
-        console.log(formsToCheck);
         return formsToCheck.every(Boolean);
       }),
       parentGuardianSectionsCompleted: computed(() => {
         const formsToCheck = [
-          checkFormValues(store.courtDetails().formData),
-          checkFormValues(store.parentGuardianDetails().formData),
-          checkFormValues(store.personalDetails().formData),
-          checkFormValues(store.paymentTerms().formData),
-          checkFormArrayValues(store.offenceDetails()),
+          utilsService.checkFormValues(store.courtDetails().formData),
+          utilsService.checkFormValues(store.parentGuardianDetails().formData),
+          utilsService.checkFormValues(store.personalDetails().formData),
+          utilsService.checkFormValues(store.paymentTerms().formData),
+          utilsService.checkFormArrayValues(store.offenceDetails()),
         ];
         return formsToCheck.every(Boolean);
       }),
       companySectionsCompleted: computed(() => {
         const formsToCheck = [
-          checkFormValues(store.courtDetails().formData),
-          checkFormValues(store.companyDetails().formData),
-          checkFormValues(store.paymentTerms().formData),
-          checkFormArrayValues(store.offenceDetails()),
+          utilsService.checkFormValues(store.courtDetails().formData),
+          utilsService.checkFormValues(store.companyDetails().formData),
+          utilsService.checkFormValues(store.paymentTerms().formData),
+          utilsService.checkFormArrayValues(store.offenceDetails()),
         ];
         return formsToCheck.every(Boolean);
       }),
       getEarliestDateOfSentence: computed(() => {
         return store.offenceDetails().reduce(
           (mostRecent, offence) => {
-            const offenceDate = dateServiceGetDateFromFormat(
-              offence.formData.fm_offence_details_date_of_sentence!,
-              'dd/MM/yyyy',
-            );
+            const offenceDate = offence.formData.fm_offence_details_date_of_sentence
+              ? dateServiceGetDateFromFormat(offence.formData.fm_offence_details_date_of_sentence, 'dd/MM/yyyy')
+              : null;
             return offenceDate && (!mostRecent || offenceDate < mostRecent) ? offenceDate : mostRecent;
           },
           null as Date | null,
@@ -199,7 +209,6 @@ export const FinesMacStore = signalStore(
     },
     setAccountCommentsNotes: (accountCommentsNotes: IFinesMacAccountCommentsNotesForm) => {
       patchState(store, { accountCommentsNotes, stateChanges: true, unsavedChanges: false });
-      console.log(store.accountCommentsNotes());
     },
     setOffenceDetails: (offenceDetails: IFinesMacOffenceDetailsForm[]) => {
       patchState(store, { offenceDetails, stateChanges: true, unsavedChanges: false });
@@ -245,6 +254,9 @@ export const FinesMacStore = signalStore(
           },
         },
       });
+    },
+    setFinesMacStore: (finesMacState: IFinesMacState) => {
+      patchState(store, finesMacState);
     },
     getFinesMacStore: () => {
       const finesMacStore: IFinesMacState = {

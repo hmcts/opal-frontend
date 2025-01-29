@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPaymentTermsFormComponent } from './fines-mac-payment-terms-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
@@ -13,18 +12,20 @@ import { IAbstractFormArrayControlValidation } from '@components/abstract/interf
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacPaymentTermsForm;
   let globalStore: GlobalStoreType;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
     mockDateService = jasmine.createSpyObj(DateService, [
       'getPreviousDate',
       'calculateAge',
@@ -35,27 +36,26 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       'toFormat',
       'toDateStringFormat',
     ]);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.getEarliestDateOfSentence.and.returnValue(new Date('2024-09-01'));
     formSubmit = { ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsFormComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: DateService, useValue: mockDateService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
       ],
     }).compileComponents();
 
-    globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(SESSION_USER_STATE_MOCK);
-
     fixture = TestBed.createComponent(FinesMacPaymentTermsFormComponent);
     component = fixture.componentInstance;
 
     component.defendantType = 'adultOrYouthOnly';
+
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -126,19 +126,20 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component['addDefaultDatesFormControls']).toHaveBeenCalled();
     expect(component['addEnforcementFields']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(
-      component['finesService'].finesMacState.paymentTerms.formData,
-    );
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.paymentTerms().formData);
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
     expect(component.today).toBeDefined();
   });
 
   it('should call initialPaymentTermsSetup method with offence details data', () => {
-    mockFinesService.finesMacState.paymentTerms.formData = {
-      ...mockFinesService.finesMacState.paymentTerms.formData,
-      fm_payment_terms_collection_order_date: '01/09/2024',
-    };
+    finesMacStore.setPaymentTerms({
+      ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK),
+      formData: {
+        ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK.formData,
+        fm_payment_terms_collection_order_date: '01/09/2024',
+      },
+    });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPermissions');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -174,9 +175,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component['addDefaultDatesFormControls']).toHaveBeenCalled();
     expect(component['addEnforcementFields']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(
-      component['finesService'].finesMacState.paymentTerms.formData,
-    );
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.paymentTerms().formData);
     expect(mockDateService.getPreviousDate).toHaveBeenCalledWith({ days: 1 });
     expect(component.yesterday).toBeDefined();
     expect(component.today).toBeDefined();
@@ -272,10 +271,13 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   it('should check defendant age and set accessDefaultDates to true when age is 18 or above', () => {
     component.defendantType = 'adultOrYouthOnly';
     const dob = DateTime.now().minus({ years: 30 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData = {
-      ...mockFinesService.finesMacState.personalDetails.formData,
-      fm_personal_details_dob: dob,
-    };
+    finesMacStore.setPersonalDetails({
+      ...structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK),
+      formData: {
+        ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK.formData,
+        fm_personal_details_dob: dob,
+      },
+    });
     mockDateService.calculateAge.and.returnValue(30);
 
     component['determineAccess']();
@@ -287,10 +289,13 @@ describe('FinesMacPaymentTermsFormComponent', () => {
 
   it('should check defendant age and set accessDefaultDates to false when age is below 18', () => {
     const dob = DateTime.now().minus({ years: 10 }).toFormat('dd/MM/yyyy');
-    mockFinesService.finesMacState.personalDetails.formData = {
-      ...mockFinesService.finesMacState.personalDetails.formData,
-      fm_personal_details_dob: dob,
-    };
+    finesMacStore.setPersonalDetails({
+      ...structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK),
+      formData: {
+        ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK.formData,
+        fm_personal_details_dob: dob,
+      },
+    });
     mockDateService.calculateAge.and.returnValue(10);
     component.defendantType = 'adultOrYouthOnly';
 

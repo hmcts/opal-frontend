@@ -1,34 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacEmployerDetailsFormComponent } from './fines-mac-employer-details-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { IFinesMacEmployerDetailsForm } from '../interfaces/fines-mac-employer-details-form.interface';
 import { FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK } from '../mocks/fines-mac-employer-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 describe('FinesMacEmployerDetailsFormComponent', () => {
   let component: FinesMacEmployerDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacEmployerDetailsFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacEmployerDetailsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     formSubmit = { ...FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsFormComponent],
-      providers: [
-        { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacEmployerDetailsFormComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     component.defendantType = 'adultOrYouthOnly';
 
@@ -87,6 +85,6 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
 
     expect(component['setupEmployerDetailsForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.employerDetails.formData);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.employerDetails().formData);
   });
 });

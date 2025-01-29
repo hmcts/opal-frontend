@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent } from './fines-mac-offence-details-remove-offence-and-impositions.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
@@ -16,13 +14,15 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from '../fines-mac-offence-details-review/mocks/fines-mac-offence-details-review-summary-form.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -47,17 +47,12 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     });
     mockFinesMacOffenceDetailsService.offenceIndex = 0;
 
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
-
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent],
 
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
-        { provide: FinesService, useValue: mockFinesService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -72,6 +67,13 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent);
     component = fixture.componentInstance;
+
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(finesMacState);
+
     fixture.detectChanges();
   });
 
@@ -85,7 +87,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   it('should remove the offence and set offenceRemoved to true', () => {
     component.confirmOffenceRemoval();
-    expect(mockFinesService.finesMacState.offenceDetails.length).toBe(0);
+    expect(finesMacStore.offenceDetails().length).toBe(0);
     expect(mockFinesMacOffenceDetailsService.offenceRemoved).toBeTrue();
   });
 
@@ -96,14 +98,18 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   });
 
   it('should remove first item in array leaving one item remaining', () => {
-    mockFinesService.finesMacState.offenceDetails = [
-      { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK },
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [
+      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
-        formData: { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData, fm_offence_details_id: 1 },
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
+        formData: { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData), fm_offence_details_id: 1 },
       },
     ];
+    finesMacStore.setFinesMacStore(finesMacState);
+
     component.confirmOffenceRemoval();
-    expect(mockFinesService.finesMacState.offenceDetails.length).toBe(1);
+
+    expect(finesMacStore.offenceDetails().length).toBe(1);
   });
 });

@@ -132,7 +132,6 @@ describe('finesMacPayloadBuildAccountOffences', () => {
               fm_offence_details_imposition_position: 0,
             },
             nestedFlow: false,
-            status: 'Provided',
           },
         ],
       },

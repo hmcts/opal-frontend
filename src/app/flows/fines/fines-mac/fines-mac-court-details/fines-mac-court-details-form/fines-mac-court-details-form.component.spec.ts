@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCourtDetailsFormComponent } from './fines-mac-court-details-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-autocomplete-items.mock';
@@ -8,30 +7,29 @@ import { OPAL_FINES_LOCAL_JUSTICE_AREA_AUTOCOMPLETE_ITEMS_MOCK } from '@services
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-court-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacCourtDetailsFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacCourtDetailsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     formSubmit = { ...FINES_MAC_COURT_DETAILS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCourtDetailsFormComponent],
-      providers: [
-        { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacCourtDetailsFormComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     component.defendantType = 'adultOrYouthOnly';
     component.localJusticeAreas = OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK;

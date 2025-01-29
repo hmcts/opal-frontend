@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
@@ -14,13 +13,15 @@ import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-servic
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from './mocks/fines-mac-create-account-form.mock';
 import { IFinesMacAccountDetailsForm } from '../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 describe('FinesMacCreateAccountComponent', () => {
   let component: FinesMacCreateAccountComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
   let formSubmit: IFinesMacAccountDetailsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -29,15 +30,11 @@ describe('FinesMacCreateAccountComponent', () => {
         .and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
       getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
     };
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     formSubmit = { ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: OpalFines, useValue: mockOpalFinesService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
@@ -54,10 +51,8 @@ describe('FinesMacCreateAccountComponent', () => {
     fixture = TestBed.createComponent(FinesMacCreateAccountComponent);
     component = fixture.componentInstance;
 
-    mockFinesService.finesMacState.accountDetails.formData = {
-      ...mockFinesService.finesMacState.accountDetails.formData,
-      fm_create_account_business_unit_id: null,
-    };
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -75,7 +70,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     component.handleAccountDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.accountDetails).toEqual(formSubmit);
+    expect(finesMacStore.accountDetails()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -84,11 +79,11 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
+    expect(finesMacStore.unsavedChanges()).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
+    expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 
@@ -97,7 +92,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
     component['setBusinessUnit'](response);
 
-    expect(mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id).toEqual(
+    expect(finesMacStore.accountDetails().formData.fm_create_account_business_unit_id).toEqual(
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id,
     );
   });
@@ -105,26 +100,21 @@ describe('FinesMacCreateAccountComponent', () => {
   it('should not set the business unit for account details when there is only one business unit available but the current business unit is not null', () => {
     const response = { count: 1, refData: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]] };
 
-    mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id =
-      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_id;
-
     fixture.detectChanges();
 
     component['setBusinessUnit'](response);
 
-    expect(mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id).toEqual(
-      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1].business_unit_id,
+    expect(finesMacStore.accountDetails().formData.fm_create_account_business_unit_id).toEqual(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id,
     );
   });
 
   it('should not set the business unit for account details when there are multiple business units available', () => {
     const response = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK;
 
-    mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id = null;
-
     component['setBusinessUnit'](response);
 
-    expect(mockFinesService.finesMacState.accountDetails.formData.fm_create_account_business_unit_id).toBeNull();
+    expect(finesMacStore.accountDetails().formData.fm_create_account_business_unit_id).toBeNull();
   });
 
   it('should create an array of autocomplete items from the response', () => {

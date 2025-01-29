@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form.component';
 import { DateService } from '@services/date-service/date.service';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { UtilsService } from '@services/utils/utils.service';
@@ -24,15 +23,17 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-ro
 import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
+import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockDateService: jasmine.SpyObj<DateService>;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -40,9 +41,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         .createSpy('getOffenceByCjsCode')
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
     };
-
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
@@ -64,7 +62,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       imports: [FinesMacOffenceDetailsAddAnOffenceFormComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
-        { provide: FinesService, useValue: mockFinesService },
         { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         { provide: UtilsService, useValue: mockUtilsService },
         { provide: DateService, useValue: mockDateService },
@@ -82,6 +79,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceFormComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     component.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
     component.majorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
@@ -531,7 +531,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAddAnOffenceForm');
@@ -595,10 +594,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should return the correct minor creditor form data for the specified row index', () => {
     const mockMinorCreditorForm = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK };
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) }];
+    finesMacState.offenceDetails[0].childFormData = [
+      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
     ];
+    finesMacStore.setFinesMacStore(finesMacState);
 
     const result = component.getMinorCreditor(0);
 
@@ -607,8 +608,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should return undefined if childFormData is not defined', () => {
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = [];
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) }];
+    finesMacState.offenceDetails[0].childFormData = [];
+    finesMacStore.setFinesMacStore(finesMacState);
 
     const result = component.getMinorCreditor(0);
 

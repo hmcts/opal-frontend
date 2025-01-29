@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsMinorCreditorComponent } from './fines-mac-offence-details-minor-creditor.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { ActivatedRoute } from '@angular/router';
@@ -10,18 +9,17 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from './mocks/fine
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state.constant';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let formSubmit: IFinesMacOffenceDetailsMinorCreditorForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
@@ -32,7 +30,6 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         {
           provide: ActivatedRoute,
@@ -45,6 +42,10 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsMinorCreditorComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
     fixture.detectChanges();
   });
 
@@ -54,7 +55,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
   it('should handle form submission when editing and navigate to add an offence', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesService.finesMacState.offenceDetails = [];
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [];
+    finesMacStore.setFinesMacStore(finesMacState);
     formSubmit.nestedFlow = false;
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
@@ -78,7 +81,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
   it('should handle form submission when editing and navigate to add an offence multiple childFormData', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesService.finesMacState.offenceDetails = [];
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [];
+    finesMacStore.setFinesMacStore(finesMacState);
     formSubmit.nestedFlow = false;
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
@@ -108,7 +113,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
   it('should handle form submission and navigate to add an offence', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
-    mockFinesService.finesMacState.offenceDetails = [];
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [];
+    finesMacStore.setFinesMacStore(finesMacState);
     formSubmit.nestedFlow = false;
 
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
@@ -128,11 +135,11 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
+    expect(finesMacStore.unsavedChanges()).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
+    expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

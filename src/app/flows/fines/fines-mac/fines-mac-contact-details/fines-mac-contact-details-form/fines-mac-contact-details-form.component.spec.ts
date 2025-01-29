@@ -1,34 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacContactDetailsFormComponent } from './fines-mac-contact-details-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-contact-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 describe('FinesMacContactDetailsFormComponent', () => {
   let component: FinesMacContactDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacContactDetailsFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacContactDetailsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     formSubmit = { ...FINES_MAC_CONTACT_DETAILS_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacContactDetailsFormComponent],
-      providers: [
-        { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacContactDetailsFormComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
     fixture.detectChanges();
   });
 

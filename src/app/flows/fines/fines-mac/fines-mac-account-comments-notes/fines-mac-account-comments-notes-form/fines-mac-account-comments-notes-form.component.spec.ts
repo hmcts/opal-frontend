@@ -3,33 +3,44 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountCommentsNotesFormComponent } from './fines-mac-account-comments-notes-form.component';
 import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
 import { ActivatedRoute } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from '../mocks/fines-mac-account-comments-notes-form.mock';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
+import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@services/utils/utils.service';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let component: FinesMacAccountCommentsNotesFormComponent;
   let fixture: ComponentFixture<FinesMacAccountCommentsNotesFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacAccountCommentsNotesForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     formSubmit = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesFormComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: DateService,
+          useValue: jasmine.createSpyObj(DateService, ['getDateFromFormat']),
+        },
+        {
+          provide: UtilsService,
+          useValue: jasmine.createSpyObj(UtilsService, ['checkFormValues', 'checkFormArrayValues']),
+        },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacAccountCommentsNotesFormComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
     fixture.detectChanges();
   });
 

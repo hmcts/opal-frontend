@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsComponent } from './fines-mac-offence-details.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FinesMacOffenceDetailsService } from './services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from './constants/fines-mac-offence-details-draft-state.constant';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsComponent>;
-  let mockFinesService: FinesService;
   let mockFinesMacOffenceDetailsService: FinesMacOffenceDetailsService;
   let globalStore: GlobalStoreType;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -22,11 +23,12 @@ describe('FinesMacOffenceDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsComponent);
     component = fixture.componentInstance;
 
-    mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     mockFinesMacOffenceDetailsService = TestBed.inject(FinesMacOffenceDetailsService);
 
     globalStore = TestBed.inject(GlobalStore);
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -49,20 +51,13 @@ describe('FinesMacOffenceDetailsComponent', () => {
   });
 
   it('should call canDeactivate ', () => {
-    // Empty state, should return true
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
     expect(component.canDeactivate()).toBeTruthy();
 
-    mockFinesService.finesMacState = {
-      ...mockFinesService.finesMacState,
-      unsavedChanges: true,
-    };
+    finesMacStore.setUnsavedChanges(true);
     expect(component.canDeactivate()).toBeFalsy();
 
-    mockFinesService.finesMacState = {
-      ...mockFinesService.finesMacState,
-      unsavedChanges: false,
-    };
+    finesMacStore.setUnsavedChanges(false);
     expect(component.canDeactivate()).toBeTruthy();
   });
 });

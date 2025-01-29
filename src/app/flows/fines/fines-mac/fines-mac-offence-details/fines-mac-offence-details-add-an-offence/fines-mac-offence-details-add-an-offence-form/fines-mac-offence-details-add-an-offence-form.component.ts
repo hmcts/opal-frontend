@@ -553,7 +553,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @returns The minor creditor form data for the specified row index, or undefined if not found.
    */
   public getMinorCreditor(rowIndex: number): IFinesMacOffenceDetailsMinorCreditorForm | undefined {
-    const offenceDetails = this.finesMacStore.offenceDetails()[this.offenceIndex];
+    const offenceDetails = structuredClone(this.finesMacStore.offenceDetails()[this.offenceIndex]);
     return offenceDetails.childFormData!.find(
       (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
     );
@@ -565,7 +565,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * The minor creditors are then stored in the `minorCreditors` property of the component.
    */
   public getMinorCreditors(): void {
-    const offenceDetails = this.finesMacStore.offenceDetails()[this.offenceIndex];
+    const offenceDetails = structuredClone(this.finesMacStore.offenceDetails()[this.offenceIndex]);
     const draftOffenceDetails =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
 

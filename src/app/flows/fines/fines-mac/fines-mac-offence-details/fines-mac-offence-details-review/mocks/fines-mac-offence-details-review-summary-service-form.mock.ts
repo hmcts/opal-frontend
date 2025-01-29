@@ -1,4 +1,3 @@
-import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-details-form.interface';
 
 export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM: IFinesMacOffenceDetailsForm[] = [
@@ -22,7 +21,6 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM: IFinesMacOff
       ],
     },
     nestedFlow: false,
-    status: FINES_MAC_STATUS.PROVIDED,
   },
   {
     formData: {
@@ -44,6 +42,5 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM: IFinesMacOff
       ],
     },
     nestedFlow: false,
-    status: FINES_MAC_STATUS.PROVIDED,
   },
 ];

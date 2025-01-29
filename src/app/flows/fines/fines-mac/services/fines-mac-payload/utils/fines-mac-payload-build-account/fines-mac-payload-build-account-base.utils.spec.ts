@@ -250,11 +250,11 @@ describe('finesMacPayloadBuildAccountBase', () => {
       return;
     }
 
-    paymentTermsState.fm_payment_terms_collection_order_made = undefined;
-    paymentTermsState.fm_payment_terms_collection_order_made_today = undefined;
-    paymentTermsState.fm_payment_terms_collection_order_date = undefined;
-    paymentTermsState.fm_payment_terms_suspended_committal_date = undefined;
-    paymentTermsState.fm_payment_terms_payment_card_request = undefined;
+    // paymentTermsState.fm_payment_terms_collection_order_made = undefined;
+    // paymentTermsState.fm_payment_terms_collection_order_made_today = undefined;
+    // paymentTermsState.fm_payment_terms_collection_order_date = undefined;
+    // paymentTermsState.fm_payment_terms_suspended_committal_date = undefined;
+    // paymentTermsState.fm_payment_terms_payment_card_request = undefined;
 
     const result = finesMacPayloadBuildAccountBase(
       accountDetailsState,

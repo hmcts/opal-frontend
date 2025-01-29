@@ -2,35 +2,33 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCreateAccountFormComponent } from './fines-mac-create-account-form.component';
 import { OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-autocomplete-items.mock';
 import { Validators } from '@angular/forms';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_CREATE_ACCOUNT_FORM_MOCK } from '../mocks/fines-mac-create-account-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacAccountDetailsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
     formSubmit = { ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK };
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
-      providers: [
-        { provide: FinesService, useValue: mockFinesService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-      ],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacCreateAccountFormComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     component.autoCompleteItems = OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK;
 
@@ -210,8 +208,6 @@ describe('FinesMacCreateAccountFormComponent', () => {
     expect(component['setupCreateAccountForm']).toHaveBeenCalled();
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
     expect(component['setupAccountTypeListener']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(
-      component['finesService'].finesMacState.accountDetails.formData,
-    );
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.accountDetails().formData);
   });
 });

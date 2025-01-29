@@ -46,10 +46,12 @@ export class FinesMacCreateAccountComponent extends AbstractFormParentBaseCompon
    */
   private setBusinessUnit(response: IOpalFinesBusinessUnitRefData): void {
     const { count, refData } = response;
-    const { fm_create_account_business_unit_id: businessUnit } = this.finesMacStore.accountDetails().formData;
+    const { fm_create_account_business_unit_id: businessUnit } = structuredClone(
+      this.finesMacStore.accountDetails().formData,
+    );
 
     if (count === 1 && businessUnit === null) {
-      this.finesMacStore.accountDetails().formData.fm_create_account_business_unit_id = refData[0].business_unit_id;
+      this.finesMacStore.setBusinessUnitId(refData[0].business_unit_id);
       this.finesMacStore.setBusinessUnit(refData[0]);
     }
     this.businessUnits = refData;
