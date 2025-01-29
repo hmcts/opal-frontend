@@ -6,13 +6,13 @@ import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FORM_MOCK } from '../mocks/fines-mac-parent-guardian-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@services/date-service/date.service';
+import { of } from 'rxjs';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacParentGuardianDetailsFormComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   let formSubmit: IFinesMacParentGuardianDetailsForm;
 
@@ -28,7 +28,12 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       providers: [
         { provide: FinesService, useValue: mockFinesService },
         { provide: DateService, useValue: mockDateService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
