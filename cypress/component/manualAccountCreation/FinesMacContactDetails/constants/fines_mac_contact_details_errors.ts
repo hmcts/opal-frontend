@@ -1,4 +1,4 @@
-export const INVALID_DETAILS: { [key: string]: string } = {
+export const INVALID_DETAILS = {
   invalidPrimaryEmail: 'Enter primary email address in the correct format like, name@example.com',
   invalidSecondaryEmail: 'Enter secondary email address in the correct format like, name@example.com',
   invalidMobileTelephone: 'Enter a mobile telephone number, like 07700 900 982',
