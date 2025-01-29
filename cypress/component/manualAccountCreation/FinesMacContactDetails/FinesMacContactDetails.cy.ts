@@ -3,7 +3,6 @@ import { FinesMacContactDetailsComponent } from '../../../../src/app/flows/fines
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
 import { DOM_ELEMENTS } from './constants/fines_mac_contact_details_elements';
 
@@ -12,17 +11,6 @@ describe('FinesMacContactDetailsComponent', () => {
     finesMacState: { ...FINES_MAC_STATE_MOCK },
   };
 
-  afterEach(() => {
-    cy.then(() => {
-      mockFinesService.finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: '',
-        fm_contact_details_email_address_2: '',
-        fm_contact_details_telephone_number_mobile: '',
-        fm_contact_details_telephone_number_home: '',
-        fm_contact_details_telephone_number_business: '',
-      };
-    });
-  });
   const setupComponent = (formSubmit: any) => {
     mount(FinesMacContactDetailsComponent, {
       providers: [
@@ -43,12 +31,23 @@ describe('FinesMacContactDetailsComponent', () => {
       },
     });
   };
+  afterEach(() => {
+    cy.then(() => {
+      mockFinesService.finesMacState.contactDetails.formData = {
+        fm_contact_details_email_address_1: '',
+        fm_contact_details_email_address_2: '',
+        fm_contact_details_telephone_number_mobile: '',
+        fm_contact_details_telephone_number_home: '',
+        fm_contact_details_telephone_number_business: '',
+      };
+    });
+  });
 
   it('should render the component', () => {
     setupComponent(null);
 
     // Verify the component is rendered
-    cy.get(DOM_ELEMENTS['primaryEmail']).should('exist');
+    cy.get(DOM_ELEMENTS.primaryEmail).should('exist');
   });
 
   it('should show errors for invalid contact details', () => {
@@ -62,10 +61,10 @@ describe('FinesMacContactDetailsComponent', () => {
       fm_contact_details_telephone_number_business: 'invalid-phone',
     };
 
-    cy.get(DOM_ELEMENTS['submitButton']).click();
+    cy.get(DOM_ELEMENTS.submitButton).click();
 
     for (const [, value] of Object.entries(INVALID_DETAILS)) {
-      cy.get(DOM_ELEMENTS['errorSummary']).should('contain', value);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
     }
   });
 
@@ -82,7 +81,7 @@ describe('FinesMacContactDetailsComponent', () => {
       fm_contact_details_telephone_number_business: '01632960002',
     };
 
-    cy.get(DOM_ELEMENTS['submitButton']).click();
+    cy.get(DOM_ELEMENTS.errorSummary).click();
 
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
