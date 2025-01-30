@@ -22,9 +22,9 @@ export const routing: Routes = [
   {
     path: FINES_DRAFT_ROUTING_PATHS.children.createAndManage,
     loadComponent: () =>
-      import('../fines-draft-cam/fines-draft-cam-inputter/fines-draft-cam-inputter.component').then(
-        (c) => c.FinesDraftCamInputterComponent,
-      ),
+      import(
+        '../fines-draft-check-and-manage/fines-draft-check-and-manage-tabs/fines-draft-check-and-manage-tabs-inputter.component'
+      ).then((c) => c.FinesDraftCheckAndManageTabsComponent),
     canActivate: [authGuard, routePermissionsGuard],
     data: { routePermissionId: draftCreateAndManagePermissionId },
   },
@@ -40,9 +40,9 @@ export const routing: Routes = [
   {
     path: FINES_DRAFT_ROUTING_PATHS.children.checkAndValidate,
     loadComponent: () =>
-      import('../fines-draft-cav/fines-draft-cav-checker/fines-draft-cav-checker.component').then(
-        (c) => c.FinesDraftCavCheckerComponent,
-      ),
+      import(
+        '../fines-draft-check-and-validate/fines-draft-check-and-validate-tabs/fines-draft-check-and-validate-tabs.component'
+      ).then((c) => c.FinesDraftCheckAndValidateTabsComponent),
     canActivate: [authGuard, routePermissionsGuard],
     data: { routePermissionId: draftCheckAndValidatePermissionId },
   },

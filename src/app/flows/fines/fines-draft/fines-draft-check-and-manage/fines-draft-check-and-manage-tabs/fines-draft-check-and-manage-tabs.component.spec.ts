@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesDraftCamInputterComponent } from './fines-draft-cam-inputter.component';
+import { FinesDraftCheckAndManageTabsComponent } from './fines-draft-check-and-manage-tabs-inputter.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of } from 'rxjs';
@@ -16,9 +16,9 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
 import { signal } from '@angular/core';
 
-describe('FinesDraftCamInputterComponent', () => {
-  let component: FinesDraftCamInputterComponent;
-  let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
+describe('FinesDraftCheckAndManageTabsComponent', () => {
+  let component: FinesDraftCheckAndManageTabsComponent;
+  let fixture: ComponentFixture<FinesDraftCheckAndManageTabsComponent>;
   let mockGlobalStateService: GlobalStateService;
   const mockFinesDraftAmend = signal<boolean>(false);
   const mockFinesDraftBannerMessage = signal<string>('');
@@ -45,7 +45,7 @@ describe('FinesDraftCamInputterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesDraftCamInputterComponent],
+      imports: [FinesDraftCheckAndManageTabsComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
@@ -63,7 +63,7 @@ describe('FinesDraftCamInputterComponent', () => {
     mockGlobalStateService = TestBed.inject(GlobalStateService);
     mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
 
-    fixture = TestBed.createComponent(FinesDraftCamInputterComponent);
+    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();

@@ -22,7 +22,7 @@ import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.compon
 import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-routing-paths.constant';
 
 @Component({
-  selector: 'app-fines-draft-cam-inputter',
+  selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
     CommonModule,
     MojSubNavigationComponent,
@@ -30,10 +30,10 @@ import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-r
     FinesDraftTableWrapperComponent,
     MojBannerComponent,
   ],
-  templateUrl: './fines-draft-cam-inputter.component.html',
+  templateUrl: './fines-draft-check-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCamInputterComponent implements OnInit {
+export class FinesDraftCheckAndManageTabsComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStateService = inject(GlobalStateService);
   private readonly dateService = inject(DateService);
