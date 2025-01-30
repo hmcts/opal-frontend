@@ -42,9 +42,9 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue({
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
-    });
+    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue(
+      FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+    );
     mockFinesMacOffenceDetailsService.offenceIndex = 0;
 
     await TestBed.configureTestingModule({
@@ -69,7 +69,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     component = fixture.componentInstance;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);
@@ -100,7 +100,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   it('should remove first item in array leaving one item remaining', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
         formData: { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData), fm_offence_details_id: 1 },

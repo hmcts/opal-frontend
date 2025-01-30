@@ -9,14 +9,14 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 
-fdescribe('FinesMacPaymentTermsComponent', () => {
+describe('FinesMacPaymentTermsComponent', () => {
   let component: FinesMacPaymentTermsComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsComponent>;
   let formSubmit: IFinesMacPaymentTermsForm;
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    formSubmit = { ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsComponent],

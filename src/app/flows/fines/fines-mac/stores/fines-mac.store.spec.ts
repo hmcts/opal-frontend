@@ -72,8 +72,8 @@ describe('FinesMacStore', () => {
 
   it('should set employer details', () => {
     const newEmployerDetails = {
-      ...FINES_MAC_EMPLOYER_DETAILS_FORM,
-      formData: { ...FINES_MAC_EMPLOYER_DETAILS_FORM.formData, name: 'New Employer' },
+      ...structuredClone(FINES_MAC_EMPLOYER_DETAILS_FORM),
+      formData: { ...structuredClone(FINES_MAC_EMPLOYER_DETAILS_FORM.formData), name: 'New Employer' },
     };
     store.setEmployerDetails(newEmployerDetails);
     expect(store.employerDetails()).toEqual(newEmployerDetails);
@@ -194,7 +194,7 @@ describe('FinesMacStore', () => {
     // should test earliest date of sentence
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
         formData: {
@@ -214,7 +214,7 @@ describe('FinesMacStore', () => {
   it('should test earliest date of sentence return a null', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
         formData: {

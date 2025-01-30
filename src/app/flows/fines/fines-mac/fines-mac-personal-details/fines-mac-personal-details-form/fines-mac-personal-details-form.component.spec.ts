@@ -21,7 +21,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, ['isValidDate', 'calculateAge', 'getPreviousDate']);
 
-    formSubmit = { ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPersonalDetailsFormComponent],

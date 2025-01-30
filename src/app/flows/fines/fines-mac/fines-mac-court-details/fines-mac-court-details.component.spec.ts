@@ -34,7 +34,7 @@ describe('FinesMacCourtDetailsComponent', () => {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
       getCourtPrettyName: jasmine.createSpy('getCourtPrettyName').and.returnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
     };
-    formSubmit = { ...FINES_MAC_COURT_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_COURT_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCourtDetailsComponent],

@@ -23,9 +23,11 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
 
-    formSubmit = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorComponent],
@@ -64,7 +66,7 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
 
@@ -91,9 +93,9 @@ describe('FinesMacOffenceDetailsMinorCreditorComponent', () => {
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 1,
         },
       },

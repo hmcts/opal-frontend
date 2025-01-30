@@ -9,6 +9,7 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
+import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let component: FinesMacAccountCommentsNotesFormComponent;
@@ -18,7 +19,7 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    formSubmit = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesFormComponent],
@@ -81,5 +82,43 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
         nestedFlow: false,
       }),
     );
+  });
+
+  it('should test checkMandatorySections with the different defendant types', () => {
+    const adultOrYouthOnly = structuredClone(FINES_MAC_STATE);
+    adultOrYouthOnly.accountDetails.formData = {
+      ...adultOrYouthOnly.accountDetails.formData,
+      fm_create_account_defendant_type: 'adultOrYouthOnly',
+    };
+    finesMacStore.setFinesMacStore(adultOrYouthOnly);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
+    parentOrGuardianToPay.accountDetails.formData = {
+      ...parentOrGuardianToPay.accountDetails.formData,
+      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+    };
+    finesMacStore.setFinesMacStore(parentOrGuardianToPay);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const company = structuredClone(parentOrGuardianToPay);
+    company.accountDetails.formData = {
+      ...company.accountDetails.formData,
+      fm_create_account_defendant_type: 'company',
+    };
+    finesMacStore.setFinesMacStore(company);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const defaultCase = structuredClone(company);
+    defaultCase.accountDetails.formData = {
+      ...defaultCase.accountDetails.formData,
+      fm_create_account_defendant_type: 'defaultCase',
+    };
+    finesMacStore.setFinesMacStore(defaultCase);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
   });
 });

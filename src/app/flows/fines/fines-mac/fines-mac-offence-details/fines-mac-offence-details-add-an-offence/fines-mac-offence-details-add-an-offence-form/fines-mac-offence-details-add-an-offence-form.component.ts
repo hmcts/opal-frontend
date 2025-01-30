@@ -565,11 +565,12 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * The minor creditors are then stored in the `minorCreditors` property of the component.
    */
   public getMinorCreditors(): void {
-    const offenceDetails = structuredClone(this.finesMacStore.offenceDetails()[this.offenceIndex]);
+    const offenceDetails = this.finesMacStore.offenceDetails()[this.offenceIndex];
     const draftOffenceDetails =
       this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
 
-    const minorCreditorsArray = offenceDetails?.childFormData || draftOffenceDetails?.childFormData || [];
+    const minorCreditorsArray =
+      structuredClone(offenceDetails?.childFormData) || draftOffenceDetails?.childFormData || [];
 
     this.minorCreditors = minorCreditorsArray.reduce((acc, creditor) => {
       const position = creditor.formData.fm_offence_details_imposition_position;

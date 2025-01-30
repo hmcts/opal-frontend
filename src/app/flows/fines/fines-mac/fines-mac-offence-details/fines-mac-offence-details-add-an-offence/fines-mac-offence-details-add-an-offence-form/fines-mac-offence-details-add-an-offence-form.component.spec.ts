@@ -174,11 +174,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
-    const mockData = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK };
+    const mockData = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
     mockData.offenceDetailsDraft[0] = {
-      ...mockData.offenceDetailsDraft[0],
+      ...structuredClone(mockData.offenceDetailsDraft[0]),
       formData: {
-        ...mockData.offenceDetailsDraft[0].formData,
+        ...structuredClone(mockData.offenceDetailsDraft[0].formData),
         fm_offence_details_offence_cjs_code: 'TEST1234',
       },
     };
@@ -295,7 +295,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should populate offence details draft when navigating to search offences when draft is empty - search offences', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
     component['initialAddAnOffenceDetailsSetup']();
 
     component.goToSearchOffences();
@@ -332,7 +334,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
 
     component.removeImpositionConfirmation(0);
 
@@ -592,12 +596,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should return the correct minor creditor form data for the specified row index', () => {
-    const mockMinorCreditorForm = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK };
+    const mockMinorCreditorForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK);
     component.offenceIndex = 0;
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.offenceDetails = [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) }];
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     finesMacState.offenceDetails[0].childFormData = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
     finesMacStore.setFinesMacStore(finesMacState);
 
@@ -609,7 +613,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should return undefined if childFormData is not defined', () => {
     component.offenceIndex = 0;
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.offenceDetails = [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) }];
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     finesMacState.offenceDetails[0].childFormData = [];
     finesMacStore.setFinesMacStore(finesMacState);
 
@@ -620,11 +624,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should return one item in the array of minor creditors', () => {
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 1,
         },
       },

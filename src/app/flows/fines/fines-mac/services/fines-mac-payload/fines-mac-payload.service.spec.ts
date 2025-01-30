@@ -64,7 +64,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
-    finesMacState.offenceDetails = structuredClone([{ ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE }]);
+    finesMacState.offenceDetails = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
 
@@ -102,8 +102,8 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
-    finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
-    finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
+    finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
+    finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
 
     expect(result).toEqual(finesMacState);
   });

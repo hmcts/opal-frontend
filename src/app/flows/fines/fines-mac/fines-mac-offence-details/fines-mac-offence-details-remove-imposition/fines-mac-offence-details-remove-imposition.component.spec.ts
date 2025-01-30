@@ -128,7 +128,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
     component.confirmRemoval(rowIndex, formArray);
 
@@ -139,7 +139,7 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
       FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
     expect(component['removeMinorCreditorAndUpdateIds']).toHaveBeenCalledWith(
-      [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
+      [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK],
       0,
     );
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
@@ -159,9 +159,9 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 5,
         },
       },
@@ -184,18 +184,18 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   it('should update imposition positions correctly after removing an item', () => {
     // Setup mock offenceDetailsArray and formArray
     const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 1,
         },
       },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 2,
         },
       },
@@ -214,18 +214,18 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
   it('should drop imposition positions correctly', () => {
     const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 1,
         },
       },
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_imposition_position: 2,
         },
       },
@@ -254,9 +254,9 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
   it('should return company name of minor creditor', () => {
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
       {
-        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
         formData: {
-          ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
           fm_offence_details_minor_creditor_company_name: 'Test Company',
           fm_offence_details_imposition_position: 1,
           fm_offence_details_minor_creditor_creditor_type: 'company',

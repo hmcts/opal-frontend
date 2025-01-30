@@ -25,8 +25,8 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountPaymentTermsComponent);
     component = fixture.componentInstance;
 
-    component.paymentTermsState = { ...FINES_MAC_PAYMENT_TERMS_STATE_MOCK };
-    component.businessUnit = { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0] };
+    component.paymentTermsState = structuredClone(FINES_MAC_PAYMENT_TERMS_STATE_MOCK);
+    component.businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     component.defendantType = 'adultOrYouthOnly';
 
     globalStore = TestBed.inject(GlobalStore);

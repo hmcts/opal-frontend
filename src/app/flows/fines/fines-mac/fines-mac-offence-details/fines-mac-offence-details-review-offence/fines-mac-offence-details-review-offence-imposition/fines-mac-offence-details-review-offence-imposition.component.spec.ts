@@ -63,14 +63,14 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.offenceIndex = 0;
     component.isReadOnly = false;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.offenceDetails = [{ ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK) }];
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     finesMacState.offenceDetails[0].childFormData = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);
@@ -81,7 +81,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   beforeEach(() => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.offenceIndex = 0;
   });
 
@@ -126,7 +126,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     ];
 
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component['getImpositionData']();
 
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
@@ -135,7 +135,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   it('should return minor creditor - Any resultCodeCreditor', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
     finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
     const {
@@ -221,11 +221,11 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should sort impositions by allocation order and result title', () => {
-    component.impositions = [...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK];
+    component.impositions = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK)];
     const expected = [
-      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[2] },
-      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[0] },
-      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[1] },
+      FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[2],
+      FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[0],
+      FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[1],
     ];
 
     component['sortImpositionsByAllocationOrder']();
@@ -234,7 +234,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should invert showMinorCreditorData', () => {
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component['getImpositionData']();
     const impositionId = component.impositionTableData[0].impositionId;
 

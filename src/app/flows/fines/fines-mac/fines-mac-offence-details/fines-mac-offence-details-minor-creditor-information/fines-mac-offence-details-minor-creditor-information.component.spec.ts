@@ -21,7 +21,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsMinorCreditorInformationComponent);
     component = fixture.componentInstance;
 
-    component.minorCreditor = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
+    component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -31,7 +31,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set name to formatted individual name if creditor_type is individual', () => {
-    component.minorCreditor = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
+    component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 
     // Call the method
     component['setName']();

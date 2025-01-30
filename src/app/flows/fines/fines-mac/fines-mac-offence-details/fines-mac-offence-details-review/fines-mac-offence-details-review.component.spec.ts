@@ -49,7 +49,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
       'offenceCodeMessage',
     ]);
     mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK),
     ]);
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat']);
 
@@ -83,7 +83,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM)];
     finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
-      { ...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]) },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0]),
     ];
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);
@@ -96,7 +96,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should set offencesImpositions and sort offences by date', () => {
-    finesMacStore.setOffenceDetails([...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM]);
+    finesMacStore.setOffenceDetails([...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM)]);
 
     component['getOffencesImpositions']();
 
@@ -115,7 +115,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should sort offences by date in ascending order', () => {
-    component.offencesImpositions = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK];
+    component.offencesImpositions = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK)];
 
     component['sortOffencesByDate']();
 

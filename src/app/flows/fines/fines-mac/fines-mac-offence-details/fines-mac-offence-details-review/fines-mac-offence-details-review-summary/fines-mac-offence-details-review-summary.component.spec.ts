@@ -62,7 +62,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.offencesImpositions = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK];
+    component.offencesImpositions = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK)];
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
@@ -163,14 +163,14 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails = {
-      ...FINES_MAC_STATE_MOCK.accountDetails,
+      ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
       formData: {
-        ...FINES_MAC_STATE_MOCK.accountDetails.formData,
+        ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
         fm_create_account_defendant_type: 'adultOrYouthOnly',
       },
     };
     finesMacState.personalDetails = {
-      ...FINES_MAC_STATE_MOCK.personalDetails,
+      ...structuredClone(FINES_MAC_STATE_MOCK.personalDetails),
     };
     finesMacStore.setFinesMacStore(finesMacState);
 
@@ -182,9 +182,9 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails = {
-      ...FINES_MAC_STATE_MOCK.accountDetails,
+      ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
       formData: {
-        ...FINES_MAC_STATE_MOCK.accountDetails.formData,
+        ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
         fm_create_account_defendant_type: 'parentOrGuardianToPay',
       },
       nestedFlow: false,

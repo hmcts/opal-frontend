@@ -30,7 +30,7 @@ describe('FinesMacCreateAccountComponent', () => {
         .and.returnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK)),
       getConfigurationItemValue: jasmine.createSpy('getConfigurationItemValue').and.returnValue(of('welshEnglish')),
     };
-    formSubmit = { ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountComponent],
@@ -145,5 +145,12 @@ describe('FinesMacCreateAccountComponent', () => {
       expect(result).toEqual(OPAL_FINES_BUSINESS_UNIT_AUTOCOMPLETE_ITEMS_MOCK);
       expect(mockOpalFinesService.getBusinessUnits).toHaveBeenCalled();
     });
+  });
+
+  it('should initialise but capture business unit id', () => {
+    spyOn(finesMacStore, 'setBusinessUnitId');
+    finesMacStore.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    component.ngOnInit();
+    expect(finesMacStore.setBusinessUnitId).toHaveBeenCalled();
   });
 });

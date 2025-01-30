@@ -59,11 +59,11 @@ describe('FinesMacReviewAccountComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
       postDraftAddAccountPayload: jasmine
         .createSpy('postDraftAddAccountPayload')
-        .and.returnValue(of({ ...OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK })),
+        .and.returnValue(of(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK)),
     };
 
     mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['buildAddAccountPayload']);
-    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT });
+    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountComponent],

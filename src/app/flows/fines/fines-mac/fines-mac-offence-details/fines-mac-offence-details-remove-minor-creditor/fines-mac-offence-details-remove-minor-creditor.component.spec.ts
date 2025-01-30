@@ -25,8 +25,8 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
       offenceDetailsDraft: [
         {
-          ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
-          childFormData: [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
+          childFormData: [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)],
         },
       ],
     };
@@ -60,8 +60,8 @@ describe('FinesMacOffenceDetailsRemoveMinorCreditorComponent', () => {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
       offenceDetailsDraft: [
         {
-          ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
-          childFormData: [{ ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK }],
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
+          childFormData: [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)],
         },
       ],
     };

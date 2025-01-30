@@ -84,10 +84,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private readonly globalStore = inject(GlobalStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStore.userState()?.business_unit_user || [];
+  private userStateRoles: ISessionUserStateRole[] = [];
 
-  private readonly earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
-  private readonly collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
+  private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
+  private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 
   public readonly permissionsMap = FinesMacPaymentTermsPermissions;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
@@ -131,6 +131,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * It checks if the user has permission access for the collection order based on the business unit ID and user roles.
    */
   private setupPermissions(): void {
+    this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     if (this.userStateRoles && this.userStateRoles.length > 0) {
       this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
         this.permissionsMap.collectionOrder,
@@ -146,6 +147,24 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
       fm_payment_terms_payment_terms: new FormControl<string | null>(null, [Validators.required]),
+      fm_payment_terms_collection_order_made: new FormControl<boolean | null>(null),
+      fm_payment_terms_collection_order_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_collection_order_made_today: new FormControl<boolean | null>(null),
+      fm_payment_terms_pay_by_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_lump_sum_amount: new FormControl<number | null>(null),
+      fm_payment_terms_instalment_amount: new FormControl<number | null>(null),
+      fm_payment_terms_instalment_period: new FormControl<boolean | null>(null),
+      fm_payment_terms_start_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_payment_card_request: new FormControl<boolean | null>(null),
+      fm_payment_terms_has_days_in_default: new FormControl<boolean | null>(null),
+      fm_payment_terms_suspended_committal_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_default_days_in_jail: new FormControl<number | null>(null),
+      fm_payment_terms_add_enforcement_action: new FormControl<boolean | null>(null),
+      fm_payment_terms_enforcement_action: new FormControl<boolean | null>(null),
+      fm_payment_terms_earliest_release_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_prison_and_prison_number: new FormControl<boolean | null>(null),
+      fm_payment_terms_hold_enforcement_on_account: new FormControl<boolean | null>(null),
+      fm_payment_terms_reason_account_is_on_noenf: new FormControl<boolean | null>(null),
     });
   }
 
@@ -162,6 +181,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     this.setupPaymentTermsForm();
     this.paymentTermsListener();
     this.determineAccess();
+    this.earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
+    if (this.earliestDateOfSentence) {
+      this.collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
+    }
     if (this.accessCollectionOrder) {
       this.addCollectionOrderFormControls();
     }
@@ -305,6 +328,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       this.addControls(controls.fieldsToAdd);
 
       const collectionOrderDateControl = this.form.get('fm_payment_terms_collection_order_date');
+      this.earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
+
       if (selectedOption === true && this.earliestDateOfSentence) {
         collectionOrderDateControl?.addValidators(this.collectionOrderDateValidator);
         if (collectionOrderDateControl?.value === null) {

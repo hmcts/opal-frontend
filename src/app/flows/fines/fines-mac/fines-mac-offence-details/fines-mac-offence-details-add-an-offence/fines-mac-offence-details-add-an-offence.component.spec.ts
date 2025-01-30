@@ -43,7 +43,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
       'finesMacOffenceDetailsDraftState',
       'offenceCodeMessage',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['getFormStatus']);
 
     mockOpalFinesService = {
@@ -60,7 +62,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
-    formSubmit = { ...FINES_MAC_OFFENCE_DETAILS_FORM[0] };
+    formSubmit = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM[0]);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceComponent],
@@ -117,23 +119,23 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     });
   });
 
-  // it('should handle form submission and navigate to next route', () => {
-  //   const routerSpy = spyOn(component['router'], 'navigate');
-  //   const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-  //   finesMacState.offenceDetails = [];
-  //   finesMacStore.setFinesMacStore(finesMacState);
-  //   component.offenceIndex = 0;
+  it('should handle form submission and navigate to next route', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [];
+    finesMacStore.setFinesMacStore(finesMacState);
+    component.offenceIndex = 0;
 
-  //   formSubmit.nestedFlow = true;
+    formSubmit.nestedFlow = true;
 
-  //   component.handleOffenceDetailsSubmit(formSubmit);
+    component.handleOffenceDetailsSubmit(formSubmit);
 
-  //   expect(finesMacStore.offenceDetails()).toContain(formSubmit);
-  //   expect(routerSpy).not.toHaveBeenCalled();
-  //   expect(component.showOffenceDetailsForm).toBeTruthy();
-  //   expect(component.offenceIndex).toBe(1);
-  //   expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
-  // });
+    expect(finesMacStore.offenceDetails()).toContain(formSubmit);
+    expect(routerSpy).not.toHaveBeenCalled();
+    expect(component.showOffenceDetailsForm).toBeTruthy();
+    expect(component.offenceIndex).toBe(1);
+    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
+  });
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
@@ -146,14 +148,14 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should update offence details index when form exists in the state', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
-    const existingForm = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const existingForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.offenceDetails = [{ ...existingForm }];
+    finesMacState.offenceDetails = [structuredClone(existingForm)];
     finesMacState.offenceDetails[0] = {
-      ...finesMacState.offenceDetails[0],
+      ...structuredClone(finesMacState.offenceDetails[0]),
       childFormData: null,
     };
     finesMacStore.setFinesMacStore(finesMacState);
@@ -167,12 +169,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should add offence details form to the state when form does not exist', () => {
     const form = {
-      ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData,
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
         fm_offence_details_impositions: [
           {
-            ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_impositions[0],
+            ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_impositions[0]),
             fm_offence_details_amount_imposed: 100,
             fm_offence_details_amount_paid: 50,
           },
@@ -191,12 +193,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should add offence details form to the state when form does not exist', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -236,24 +238,24 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   });
 
   it('should update offence details index when form exists in the state', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
-    const existingForm = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const existingForm = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.offenceDetails = [{ ...existingForm }];
+    finesMacState.offenceDetails = [structuredClone(existingForm)];
     finesMacState.offenceDetails[0].childFormData = null;
     finesMacStore.setFinesMacStore(finesMacState);
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails.length).toBe(1);
+    expect(finesMacStore.offenceDetails().length).toBe(1);
     expect(finesMacStore.offenceDetails()[0].formData).toEqual(form.formData);
     expect(finesMacStore.offenceDetails()[0].childFormData).toBeNull();
   });
 
   it('should add offence details form to the state when form does not exist', () => {
-    const form = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
@@ -261,7 +263,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     component['updateOffenceDetailsIndex'](form);
 
-    expect(finesMacStore.offenceDetails.length).toBe(1);
+    expect(finesMacStore.offenceDetails().length).toBe(1);
     expect(finesMacStore.offenceDetails()[0]).toEqual(form);
   });
 
@@ -277,7 +279,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should retrieve form data and set offenceIndex to offenceIndex from service when offenceDetails is not empty', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     finesMacStore.setFinesMacStore(finesMacState);
 
     mockFinesMacOffenceDetailsService.offenceIndex = 1;
@@ -379,12 +381,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
         fm_payment_terms_collection_order_date: '01/01/2022',
       },
     };
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     finesMacStore.setFinesMacStore(finesMacState);
     mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.INCOMPLETE);
 
     component['checkPaymentTermsCollectionOrder']();
 
-    expect(finesMacStore.paymentTerms().status).toBe(FINES_MAC_STATUS.INCOMPLETE);
+    expect(finesMacStore.paymentTermsStatus()).toEqual(FINES_MAC_STATUS.INCOMPLETE);
   });
 
   it('should not set payment terms status to INCOMPLETE when collection order date is not earlier than earliest date of sentence', () => {
@@ -392,7 +395,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn(component as any, 'getCollectionOrderDate').and.returnValue(collectionOrderDate);
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacState.paymentTerms = { ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM) };
+    finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
     finesMacStore.setFinesMacStore(finesMacState);
 
     component['checkPaymentTermsCollectionOrder']();

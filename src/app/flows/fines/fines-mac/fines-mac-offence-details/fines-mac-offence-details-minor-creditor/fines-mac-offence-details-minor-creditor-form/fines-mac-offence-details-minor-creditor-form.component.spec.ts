@@ -16,7 +16,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
       'finesMacOffenceDetailsDraftState',
     ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
+    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
+    );
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],

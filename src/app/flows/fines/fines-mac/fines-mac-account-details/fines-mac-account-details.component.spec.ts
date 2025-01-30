@@ -87,7 +87,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set defendantType and accountType to be empty string', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.accountDetails.formData = {
-      ...FINES_MAC_ACCOUNT_DETAILS_STATE,
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: '',
     };
     finesMacStore.setFinesMacStore(finesMacState);
@@ -103,7 +103,7 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set defendantType and accountType to values', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.accountDetails.formData = {
-      ...FINES_MAC_ACCOUNT_DETAILS_STATE,
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: 'adultOrYouthOnly',
       fm_create_account_account_type: 'conditionalCaution',
     };
@@ -121,7 +121,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const hearingLanguage = 'EN';
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.languagePreferences.formData = {
-      ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
+      ...structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK),
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
@@ -142,7 +142,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     const hearingLanguage = 'french';
     const finesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState.languagePreferences.formData = {
-      ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK,
+      ...structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK),
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
@@ -245,5 +245,43 @@ describe('FinesMacAccountDetailsComponent', () => {
     const result = component['canAccessPaymentTerms']();
 
     expect(result).toBe(false);
+  });
+
+  it('should test checkMandatorySections with the different defendant types', () => {
+    const adultOrYouthOnly = structuredClone(FINES_MAC_STATE);
+    adultOrYouthOnly.accountDetails.formData = {
+      ...adultOrYouthOnly.accountDetails.formData,
+      fm_create_account_defendant_type: 'adultOrYouthOnly',
+    };
+    finesMacStore.setFinesMacStore(adultOrYouthOnly);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
+    parentOrGuardianToPay.accountDetails.formData = {
+      ...parentOrGuardianToPay.accountDetails.formData,
+      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+    };
+    finesMacStore.setFinesMacStore(parentOrGuardianToPay);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const company = structuredClone(parentOrGuardianToPay);
+    company.accountDetails.formData = {
+      ...company.accountDetails.formData,
+      fm_create_account_defendant_type: 'company',
+    };
+    finesMacStore.setFinesMacStore(company);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const defaultCase = structuredClone(company);
+    defaultCase.accountDetails.formData = {
+      ...defaultCase.accountDetails.formData,
+      fm_create_account_defendant_type: 'defaultCase',
+    };
+    finesMacStore.setFinesMacStore(defaultCase);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
   });
 });

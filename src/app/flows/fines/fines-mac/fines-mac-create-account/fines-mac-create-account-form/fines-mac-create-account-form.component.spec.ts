@@ -17,7 +17,7 @@ describe('FinesMacCreateAccountFormComponent', () => {
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    formSubmit = { ...FINES_MAC_CREATE_ACCOUNT_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_CREATE_ACCOUNT_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],

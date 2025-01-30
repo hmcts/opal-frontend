@@ -35,8 +35,9 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       'getDateNow',
       'toFormat',
       'toDateStringFormat',
+      'getDateFromFormat',
     ]);
-    formSubmit = { ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsFormComponent],
@@ -136,7 +137,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     finesMacStore.setPaymentTerms({
       ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK.formData,
+        ...structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK.formData),
         fm_payment_terms_collection_order_date: '01/09/2024',
       },
     });
@@ -274,7 +275,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     finesMacStore.setPersonalDetails({
       ...structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK.formData,
+        ...structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK.formData),
         fm_personal_details_dob: dob,
       },
     });
@@ -292,7 +293,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     finesMacStore.setPersonalDetails({
       ...structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK.formData,
+        ...structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK.formData),
         fm_personal_details_dob: dob,
       },
     });
@@ -398,6 +399,10 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     mockDateService.toDateStringFormat.and.returnValue(
       FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_sentence!,
     );
+    mockDateService.getDateFromFormat.and.returnValue(
+      new Date(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData.fm_offence_details_date_of_sentence!),
+    );
+    finesMacStore.setOffenceDetails([structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)]);
 
     component.defendantType = 'adultOrYouthOnly';
     component.accessCollectionOrder = true;

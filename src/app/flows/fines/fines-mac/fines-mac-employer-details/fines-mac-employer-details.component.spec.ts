@@ -16,7 +16,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
   let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    formSubmit = { ...FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_EMPLOYER_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacEmployerDetailsComponent],

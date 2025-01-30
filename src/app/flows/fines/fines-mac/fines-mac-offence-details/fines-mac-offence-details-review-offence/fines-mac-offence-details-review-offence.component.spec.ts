@@ -26,9 +26,9 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
       ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
     };
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue({
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
-    });
+    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue(
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK),
+    );
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewOffenceComponent],
@@ -50,10 +50,10 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     component = fixture.componentInstance;
 
     component.offence = {
-      ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK,
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
       formData: {
-        ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData,
-        fm_offence_details_impositions: [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }],
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
+        fm_offence_details_impositions: [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])],
       },
     };
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
@@ -64,7 +64,7 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   });
 
   beforeEach(() => {
-    component.offence = { ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK };
+    component.offence = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.showActions = false;
