@@ -7,18 +7,18 @@ export const FORMAT_CHECK: { [key: string]: string } = {
   validNationalInsuranceNumber: 'Enter a National Insurance number in the format AANNNNNNA',
 };
 
-export const MAIN_PERSONAL_DETAILS: { [key: string]: string } = {
+export const MAIN_PERSONAL_DETAILS = {
   missingFirstName: "Enter parent or guardian's first name(s)",
   missingLastName: "Enter parent or guardian's last name",
   missingAddressLine1: 'Enter address line 1, typically the building and street',
 };
 
-export const ALIAS_PERSONAL_DETAILS: { [key: string]: string } = {
+export const ALIAS_PERSONAL_DETAILS = {
   missingAlias: 'Enter first name(s) for alias',
   missingAliasLastName: 'Enter last name for alias',
 };
 
-export const LENGTH_VALIDATION: { [key: string]: string } = {
+export const LENGTH_VALIDATION = {
   firstNameTooLong: "The parent or guardian's first name(s) must be 20 characters or fewer",
   lastNameTooLong: "The parent or guardian's last name must be 30 characters or fewer",
   addressLine1TooLong: 'The address line 1 must be 25 characters or fewer',
@@ -28,7 +28,7 @@ export const LENGTH_VALIDATION: { [key: string]: string } = {
   vehicleMakeTooLong: 'The make of car must be 30 characters or fewer',
 };
 
-export const CORRECTION_TEST_MESSAGES: { [key: string]: string } = {
+export const CORRECTION_TEST_MESSAGES = {
   firstNameTooLong: "The parent or guardian's first name(s) must be 20 characters or fewer",
   lastNameTooLong: "The parent or guardian's last name must be 30 characters or fewer",
   addressLine1ContainsSpecialCharacters: 'The address line 1 must not contain special characters',

@@ -1,8 +1,19 @@
-export const DOM_ELEMENTS: { [key: string]: string } = {
+export const DOM_ELEMENTS = {
+  pageTitle: 'h1.govuk-heading-l',
+  Legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
+  addressLine1Label: 'label[for="fm_company_details_address_line_1"]',
+  addressLine2Label: 'label[for="fm_company_details_address_line_2"]',
+  addressLine3Label: 'label[for="fm_company_details_address_line_3"]',
+  postcodeLabel: 'label[for="fm_company_details_postcode"]',
+  companyNameLabel: 'label[for="fm_company_details_company_name"]',
+  aliasCompanyName1Label: 'label[for="fm_company_details_alias_company_name_0"]',
+
   submitButton: 'button[type="submit"]',
-  additionalAlias: 'button[id="addAlias"]',
   errorSummary: '.govuk-error-summary',
-  companyName: 'input[id="fm_company_details_company_name"]',
+  cancelLink: 'a.govuk-link.button-link',
+
+  companyNameInput: 'input[id="fm_company_details_company_name"]',
+  additionalAlias: 'button[id="addAlias"]',
   addAlias: 'input[id="fm_company_details_add_alias"]',
   aliasRemoveButton: '.govuk-link--no-visited-state',
   aliases: 'input[id="fm_company_details_aliases"]',
@@ -11,8 +22,8 @@ export const DOM_ELEMENTS: { [key: string]: string } = {
   aliasCompanyName3: 'input[id="fm_company_details_alias_company_name_2"]',
   aliasCompanyName4: 'input[id="fm_company_details_alias_company_name_3"]',
   aliasCompanyName5: 'input[id="fm_company_details_alias_company_name_4"]',
-  addressLine1: 'input[id="fm_company_details_address_line_1"]',
-  addressLine2: 'input[id="fm_company_details_address_line_2"]',
-  addressLine3: 'input[id="fm_company_details_address_line_3"]',
-  postcode: 'input[id="fm_company_details_postcode"]',
+  addressLine1Input: 'input[id="fm_company_details_address_line_1"]',
+  addressLine2Input: 'input[id="fm_company_details_address_line_2"]',
+  addressLine3Input: 'input[id="fm_company_details_address_line_3"]',
+  postcodeInput: 'input[id="fm_company_details_postcode"]',
 };

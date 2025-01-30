@@ -11,7 +11,7 @@ describe('FinesMacContactDetailsComponent', () => {
     finesMacState: { ...FINES_MAC_STATE_MOCK },
   };
 
-  const setupComponent = (formSubmit: any) => {
+  const setupComponent = (formSubmit: any, defendantType: string = '') => {
     mount(FinesMacContactDetailsComponent, {
       providers: [
         { provide: OpalFines, useValue: mockFinesService },
@@ -28,6 +28,7 @@ describe('FinesMacContactDetailsComponent', () => {
       ],
       componentProperties: {
         handleContactDetailsSubmit: formSubmit,
+        defendantType: defendantType,
       },
     });
   };
@@ -47,7 +48,47 @@ describe('FinesMacContactDetailsComponent', () => {
     setupComponent(null);
 
     // Verify the component is rendered
-    cy.get(DOM_ELEMENTS.primaryEmail).should('exist');
+    cy.get(DOM_ELEMENTS.primaryEmailInput).should('exist');
+  });
+
+  it('should load button for next page for adultOrYouthOnly Defendant', () => {
+    setupComponent(null, 'adultOrYouthOnly');
+
+    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add employer details');
+  });
+
+  it('should load button for next page for AYPG Defendant', () => {
+    setupComponent(null, 'parentOrGuardianToPay');
+
+    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add employer details');
+  });
+
+  it('should load button for next page for Company Defendant', () => {
+    setupComponent(null, 'company');
+
+    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
+  });
+
+  it('should load all elements on the screen correctly', () => {
+    setupComponent(null);
+
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Defendant contact details');
+
+    cy.get(DOM_ELEMENTS.primaryEmailInput).should('exist');
+    cy.get(DOM_ELEMENTS.secondaryEmailInput).should('exist');
+    cy.get(DOM_ELEMENTS.mobileTelephoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.homeTelephoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.workTelephoneInput).should('exist');
+    cy.get(DOM_ELEMENTS.submitButton).should('exist');
+
+    cy.get(DOM_ELEMENTS.primaryEmailSubheading).should('contain', 'Primary email address');
+    cy.get(DOM_ELEMENTS.secondaryEmailSubheading).should('contain', 'Secondary email address');
+    cy.get(DOM_ELEMENTS.mobileTelephoneSubheading).should('contain', 'Mobile telephone number');
+    cy.get(DOM_ELEMENTS.homeTelephoneSubheading).should('contain', 'Home telephone number');
+    cy.get(DOM_ELEMENTS.workTelephoneSubheading).should('contain', 'Work telephone number');
+
+    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Return to account details');
+    cy.get(DOM_ELEMENTS.cancelLink).should('contain', 'Cancel');
   });
 
   it('should show errors for invalid contact details', () => {
@@ -81,7 +122,7 @@ describe('FinesMacContactDetailsComponent', () => {
       fm_contact_details_telephone_number_business: '01632960002',
     };
 
-    cy.get(DOM_ELEMENTS.errorSummary).click();
+    cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });

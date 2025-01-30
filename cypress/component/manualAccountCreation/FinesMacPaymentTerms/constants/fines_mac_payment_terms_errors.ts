@@ -1,4 +1,4 @@
-export const ERROR_MESSAGES: { [key: string]: string } = {
+export const ERROR_MESSAGES = {
   dateInPast: 'Pay by date is in the past',
   dateInFuture: 'Pay by date is more than 3 years in the future',
   startDateInPast: 'Start date is in the past',
@@ -25,20 +25,20 @@ export const ERROR_MESSAGES: { [key: string]: string } = {
     'Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
 };
 
-export const INSTALLMENT_ERRORS: { [key: string]: string } = {
+export const INSTALLMENT_ERRORS = {
   startDate: 'Enter start date',
   instalmentAmount: 'Enter instalment amount',
   paymentFrequency: 'Select frequency of payment',
 };
 
-export const LUMPSUM_ERRORS: { [key: string]: string } = {
+export const LUMPSUM_ERRORS = {
   lumpSum: 'Enter lump sum',
   startDate: 'Enter start date',
   instalmentAmount: 'Enter instalment amount',
   paymentFrequency: 'Select frequency of payment',
 };
 
-export const ENFORCEMENT_ERRORS: { [key: string]: string } = {
+export const ENFORCEMENT_ERRORS = {
   validDate: 'Enter a valid calendar date',
   prisonTypeCheck:
     'Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
