@@ -12,6 +12,7 @@ import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-term
 import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
+import { of } from 'rxjs';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -19,7 +20,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
   let mockGlobalStateService: GlobalStateService;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacPaymentTermsForm;
 
   beforeEach(async () => {
@@ -44,7 +45,12 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       providers: [
         { provide: FinesService, useValue: mockFinesService },
         { provide: DateService, useValue: mockDateService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
