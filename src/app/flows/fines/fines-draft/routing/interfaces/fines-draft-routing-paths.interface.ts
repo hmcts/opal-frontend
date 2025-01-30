@@ -1,8 +1,9 @@
 import { IChildRoutingPaths } from '@routing/flows/interfaces/child-routing-paths.interface';
 
-export interface IFinesDraftCamRoutingPaths extends IChildRoutingPaths {
+export interface IFinesDraftRoutingPaths extends IChildRoutingPaths {
   children: {
-    inputter: string;
+    createAndManage: string;
+    checkAndValidate: string;
     viewAllRejected: string;
   };
 }

@@ -3,9 +3,9 @@ import { GovukPanelComponent } from '../../../../components/govuk/govuk-panel/go
 import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-submit-confirmation',
@@ -47,7 +47,7 @@ export class FinesMacSubmitConfirmationComponent {
 
     this.router.navigate(
       [
-        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.root}/${FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter}`,
+        `${FINES_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.root}/${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}`,
       ],
       {
         fragment: 'review',

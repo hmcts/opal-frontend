@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { FinesDraftCamViewAllRejectedComponent } from './fines-draft-cam-view-all-rejected.component';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
+import { FinesDraftViewAllRejectedComponent } from './fines-draft-view-all-rejected.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
+import { FINES_DRAFT_ROUTING_PATHS } from '../routing/constants/fines-draft-routing-paths.constant';
 
-describe('FinesDraftCamViewAllRejectedComponent', () => {
-  let component: FinesDraftCamViewAllRejectedComponent;
-  let fixture: ComponentFixture<FinesDraftCamViewAllRejectedComponent>;
+describe('FinesDraftViewAllRejectedComponent', () => {
+  let component: FinesDraftViewAllRejectedComponent;
+  let fixture: ComponentFixture<FinesDraftViewAllRejectedComponent>;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockRouter: jasmine.SpyObj<Router>;
 
@@ -17,7 +16,7 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [FinesDraftCamViewAllRejectedComponent, GovukBackLinkComponent],
+      imports: [FinesDraftViewAllRejectedComponent, GovukBackLinkComponent],
       providers: [
         { provide: FinesService, useValue: mockFinesService },
         { provide: Router, useValue: mockRouter },
@@ -30,7 +29,7 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesDraftCamViewAllRejectedComponent);
+    fixture = TestBed.createComponent(FinesDraftViewAllRejectedComponent);
     component = fixture.componentInstance;
 
     mockFinesService.finesDraftFragment.and.returnValue('rejected');
@@ -45,7 +44,7 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
   it('should navigate back on navigateBack', () => {
     component.navigateBack();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith([FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter], {
+    expect(mockRouter.navigate).toHaveBeenCalledWith([FINES_DRAFT_ROUTING_PATHS.children.createAndManage], {
       relativeTo: component['activatedRoute'].parent,
       fragment: 'rejected',
     });

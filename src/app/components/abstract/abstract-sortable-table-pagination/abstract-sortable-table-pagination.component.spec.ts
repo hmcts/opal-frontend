@@ -21,7 +21,7 @@ describe('AbstractSortableTablePaginationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestComponent], // Declare the TestComponent
+      imports: [TestComponent],
       providers: [
         {
           provide: ChangeDetectorRef,

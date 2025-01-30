@@ -30,13 +30,13 @@ import { GlobalStateService } from '@services/global-state-service/global-state.
 import { UtilsService } from '@services/utils/utils.service';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
 import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -80,7 +80,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
 
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
@@ -220,7 +220,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.finesService.finesMacState.unsavedChanges = false;
 
     this.handleRoute(
-      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}`,
       false,
       undefined,
       this.finesService.finesDraftFragment(),
@@ -315,7 +315,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public navigateBack(): void {
     if (this.isReadOnly) {
       this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}`,
         false,
         undefined,
         this.finesService.finesDraftFragment(),

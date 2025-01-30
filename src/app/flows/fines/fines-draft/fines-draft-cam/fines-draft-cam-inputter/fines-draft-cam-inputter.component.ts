@@ -18,8 +18,8 @@ import { MojSubNavigationComponent } from '@components/moj/moj-sub-navigation/mo
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -50,7 +50,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
-  protected readonly finesDraftCamRoutingPaths = FINES_DRAFT_CAM_ROUTING_PATHS;
+  protected readonly finesDraftRoutingPaths = FINES_DRAFT_ROUTING_PATHS;
 
   public draftAccounts$!: Observable<IFinesDraftTableWrapperTableData[]>;
 
