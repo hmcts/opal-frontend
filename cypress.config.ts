@@ -30,8 +30,8 @@ function setupBrowserLaunch(on) {
   });
 }
 
-function setupNodeEvents(on, config) {
-  addCucumberPreprocessorPlugin(on, config);
+async function setupNodeEvents(on, config) {
+  await addCucumberPreprocessorPlugin(on, config);
 
   on(
     'file:preprocessor',
@@ -75,7 +75,7 @@ function setupNodeEvents(on, config) {
   setupBrowserLaunch(on);
   config.env['messagesOutput'] =
     `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
-  return Promise.resolve(config);
+  return config;
 }
 
 export default defineConfig({
@@ -114,7 +114,7 @@ export default defineConfig({
       setupBrowserLaunch(on);
       config.env['messagesOutput'] =
         `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
-      return Promise.resolve(config);
+      return config;
     },
   },
 });
