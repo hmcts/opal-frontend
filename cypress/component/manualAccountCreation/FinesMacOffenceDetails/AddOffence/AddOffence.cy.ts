@@ -38,7 +38,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
         pathname: '/opal-fines-service/offences',
       },
       (req) => {
-        const requestedCjsCode = req.query.q;
+        const requestedCjsCode = req.query['q'];
         const matchedOffences = OPAL_FINES_OFFENCES_REF_DATA_MOCK.refData.filter(
           (offence) => offence.get_cjs_code === requestedCjsCode,
         );
