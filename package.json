@@ -62,7 +62,7 @@
     "@hmcts/properties-volume": "^1.1.0",
     "@ministryofjustice/frontend": "^3.0.0",
     "accessible-autocomplete": "^3.0.0",
-    "applicationinsights": "~3.4.0",
+    "applicationinsights": "~2.9.6",
     "axios": "^1.6.2",
     "body-parser": "^1.20.2",
     "config": "^3.3.9",
