@@ -115,7 +115,6 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
 
-
   it('should allow for form submission with valid data', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);

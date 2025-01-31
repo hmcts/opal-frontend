@@ -14,7 +14,6 @@ import { ADD_OFFENCE_OFFENCE_MOCK } from './mocks/add-offence-draft-state-mock';
 import { of } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@services/date-service/date.service';
-import { mock } from 'node:test';
 
 describe('FinesMacLanguagePreferenceComponent', () => {
   let mockFinesService = new FinesService(new DateService());

@@ -12,7 +12,7 @@ export const DOM_ELEMENTS = {
   vehicle_makeInput: 'input[id="fm_parent_guardian_details_vehicle_make"]',
   vehicle_registration_markInput: 'input[id="fm_parent_guardian_details_vehicle_registration_mark"]',
   niNumberInput: 'input[id="fm_parent_guardian_details_national_insurance_number"]',
-  
+
   firstNameLabel: 'label[for="fm_parent_guardian_details_forenames"]',
   lastNameLabel: 'label[for="fm_parent_guardian_details_surname"]',
   dobLabel: 'label[for="fm_parent_guardian_details_dob"]',
@@ -23,7 +23,7 @@ export const DOM_ELEMENTS = {
   vehicleMakeLabel: 'label[for="fm_parent_guardian_details_vehicle_make"]',
   vehicleRegistrationMarkLabel: 'label[for="fm_parent_guardian_details_vehicle_registration_mark"]',
   niNumberLabel: 'label[for="fm_parent_guardian_details_national_insurance_number"]',
- 
+
   firstNameHint: 'div[id = "fm_parent_guardian_details_forenames-hint"]',
   DateHint: 'div.govuk-hint',
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
