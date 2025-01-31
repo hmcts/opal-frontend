@@ -10,6 +10,8 @@ import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/
 import { of } from 'rxjs';
 import { DOM_ELEMENTS } from './constants/fines_mac_court_details_elements';
 import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_details_errors';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
   let mockFinesService = {
@@ -28,8 +30,12 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
     mount(FinesMacCourtDetailsComponent, {
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: FinesService, useValue: mockFinesService },
-        { provide: OpalFines, useValue: mockOpalFinesService },
+        // { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: OpalFines, useClass: OpalFines },
+
         {
           provide: ActivatedRoute,
           useValue: {
@@ -57,7 +63,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     };
   });
 
-  it('should render the component correctly for adultOrYouthOnly', () => {
+  it.only('should render the component correctly for adultOrYouthOnly', () => {
     setupComponent(null, 'adultOrYouthOnly');
     cy.get('app-fines-mac-court-details-form').should('exist');
 
