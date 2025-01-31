@@ -16,13 +16,12 @@ describe('FinesMacLanguagePreferenceComponent', () => {
   let mockFinesService = new FinesService(new DateService());
   mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
 
-  let mockOffenceDetailsService = new FinesMacOffenceDetailsService();
-  Object.assign(mockOffenceDetailsService, {
+  const mockOffenceDetailsService = {
     offenceIndex: 0,
     addedOffenceCode: '',
     finesMacOffenceDetailsDraftState: ADD_OFFENCE_OFFENCE_MOCK,
     offenceCodeMessage: '',
-  });
+  } as FinesMacOffenceDetailsService;
 
   beforeEach(() => {
     cy.intercept('GET', '**/opal-fines-service/results**', {
