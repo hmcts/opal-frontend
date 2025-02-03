@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
 import { SessionEndpoints } from '@services/session-service/enums/session-endpoints';
@@ -152,4 +152,36 @@ describe('SessionService', () => {
     // No new request should be made since the response is cached
     httpMock.expectNone(SessionEndpoints.expiry);
   });
+
+  it('should retry the request exactly MAX_RETRIES times before success', fakeAsync(() => {
+    service['tokenExpiryCache$'] = null; // Reset cache to force a fresh request
+
+    const mockResponse: ISessionTokenExpiry = { expiry: '3600', warningThresholdInMilliseconds: 5 };
+    const MAX_RETRIES = service['MAX_RETRIES']; // Read from service
+    const RETRY_DELAY_MS = service['RETRY_DELAY_MS'];
+
+    let result: ISessionTokenExpiry | undefined;
+
+    service.getTokenExpiry().subscribe((response) => {
+      result = response;
+    });
+
+    // Simulate failed requests up to `MAX_RETRIES`
+    for (let i = 0; i < MAX_RETRIES; i++) {
+      const req = httpMock.expectOne(SessionEndpoints.expiry);
+      expect(req.request.method).toBe('GET');
+      req.flush(null, { status: 500, statusText: 'Internal Server Error' });
+      tick(RETRY_DELAY_MS); // Advance time to trigger retry
+    }
+
+    // Final successful request
+    const req = httpMock.expectOne(SessionEndpoints.expiry);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+
+    flush(); // Ensure all pending observables complete
+
+    // Verify successful response after retries
+    expect(result).toEqual(mockResponse);
+  }));
 });

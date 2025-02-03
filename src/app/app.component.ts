@@ -47,7 +47,6 @@ export class AppComponent implements OnInit, OnDestroy {
     // https://angular.io/errors/NG0506
     this.ngZone.runOutsideAngular(() => {
       this.launchDarklyService.initializeLaunchDarklyClient();
-      this.initializeTimeoutInterval();
     });
   }
 
@@ -57,7 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * Otherwise, it sets up the timer subscription based on the expiry time.
    */
   private initializeTimeoutInterval(): void {
-    if (!isPlatformBrowser(this.platformId) || !this.globalStateService.tokenExpiry) {
+    if (!this.globalStateService.tokenExpiry) {
       return;
     }
 
@@ -93,6 +92,28 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Sets up the token expiry mechanism by subscribing to the token expiry observable.
+   * When the token expiry event is triggered, it runs the timeout initialization logic outside of Angular's zone.
+   * This helps in avoiding unnecessary change detection cycles.
+   *
+   * @private
+   * @returns {void}
+   */
+  private setupTokenExpiry(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    this.sessionService
+      .getTokenExpiry()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        this.ngZone.runOutsideAngular(() => {
+          this.initializeTimeoutInterval();
+        });
+      });
+  }
+
+  /**
    * Initializes the component after Angular has initialized all data-bound properties.
    * This method is called once after the first `ngOnChanges` method is called.
    */
@@ -103,6 +124,7 @@ export class AppComponent implements OnInit, OnDestroy {
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe();
+    this.setupTokenExpiry();
   }
 
   public ngOnDestroy(): void {
