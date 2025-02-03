@@ -40,7 +40,6 @@ describe('FinesMacAccountNotesAndCommentsComponent', () => {
       };
     });
   });
-  
 
   it('should render the component', () => {
     setupComponent(null);

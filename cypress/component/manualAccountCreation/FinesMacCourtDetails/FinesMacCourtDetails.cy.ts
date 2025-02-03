@@ -7,29 +7,23 @@ import { FinesMacCourtDetailsComponent } from '../../../../src/app/flows/fines/f
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
-import { of } from 'rxjs';
 import { DOM_ELEMENTS } from './constants/fines_mac_court_details_elements';
 import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_details_errors';
+import { provideHttpClient } from '@angular/common/http';
+import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
-  let mockFinesService = {
-    finesMacState: { ...FINES_COURTS_DETAILS_MOCK },
-  };
+  let mockFinesService = new FinesService(new DateService());
+  mockFinesService.finesMacState = { ...FINES_COURTS_DETAILS_MOCK };
 
   const setupComponent = (formSubmit: any, defType?: string) => {
     mockFinesService.finesMacState.businessUnit.business_unit_id = 73;
 
-    const mockOpalFinesService = {
-      getLocalJusticeAreas: () => of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK),
-      getLocalJusticeAreaPrettyName: (item: any) => `${item.name} (${item.lja_code})`,
-      getCourts: () => of(OPAL_FINES_COURT_REF_DATA_MOCK),
-      getCourtPrettyName: (item: any) => `${item.name} (${item.court_code})`,
-    };
-
     mount(FinesMacCourtDetailsComponent, {
       providers: [
+        provideHttpClient(),
+        OpalFines,
         { provide: FinesService, useValue: mockFinesService },
-        { provide: OpalFines, useValue: mockOpalFinesService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -47,6 +41,17 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
       },
     });
   };
+  //Mock OpalFines service http calls
+  beforeEach(() => {
+    cy.intercept('GET', '**/opal-fines-service/local-justice-areas', {
+      statusCode: 200,
+      body: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+    });
+    cy.intercept('GET', '**/opal-fines-service/courts**', {
+      statusCode: 200,
+      body: OPAL_FINES_COURT_REF_DATA_MOCK,
+    });
+  });
   //Clean up after each test
   afterEach(() => {
     mockFinesService.finesMacState.courtDetails.formData = {
