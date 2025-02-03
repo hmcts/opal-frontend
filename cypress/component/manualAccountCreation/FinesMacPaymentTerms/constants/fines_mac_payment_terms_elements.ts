@@ -1,3 +1,6 @@
+const date = new Date();
+const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+
 export const DOM_ELEMENTS = {
   pageTitle: 'h1.govuk-heading-l',
   legend: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
@@ -40,7 +43,7 @@ export const DOM_ELEMENTS = {
   datePickerSubmitButton: 'button.govuk-button.moj-js-datepicker-ok',
   datePickerCancelButton: 'button.govuk-button.govuk-button--secondary.moj-js-datepicker-cancel',
   datePickerDialogHead: 'div.moj-datepicker__dialog-header',
-  testDate: 'button[data-testid = "29/1/2025"]',
+  testDate: `button[data-testid="${formattedDate}"]`,
 
   // High-level form
   finesMacPaymentTermsForm: 'app-fines-mac-payment-terms-form',

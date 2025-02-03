@@ -17,6 +17,7 @@ import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let MockFinesService = new FinesService(new DateService());
+  const date = new Date();
 
   MockFinesService.finesMacState = {
     ...FINES_PAYMENT_TERMS_MOCK,
@@ -225,7 +226,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     cy.get(DOM_ELEMENTS.datePickerButton).click();
     cy.get(DOM_ELEMENTS.datePickerPayByDateElement).should('exist');
     cy.get(DOM_ELEMENTS.testDate).click();
-    cy.get(DOM_ELEMENTS.payByDate).should('have.value', '29/01/2025');
+    cy.get(DOM_ELEMENTS.payByDate).should(
+      'have.value',
+      `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
+    );
   });
 
   it('should allow startDate to be entered via date picker', () => {
@@ -235,7 +239,10 @@ describe('FinesMacPaymentTermsComponent', () => {
     cy.get(DOM_ELEMENTS.datePickerButton).click();
     cy.get(DOM_ELEMENTS.datePickerStartDateElement).should('exist');
     cy.get(DOM_ELEMENTS.testDate).click();
-    cy.get(DOM_ELEMENTS.startDate).should('have.value', '29/01/2025');
+    cy.get(DOM_ELEMENTS.startDate).should(
+      'have.value',
+      `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
+    );
   });
 
   it('should load button for next page for adultOrYouthOnly Defendant', () => {
