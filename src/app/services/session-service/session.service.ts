@@ -3,15 +3,15 @@ import { Injectable, inject } from '@angular/core';
 import { SessionEndpoints } from '@services/session-service/enums/session-endpoints';
 import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { Observable, retry, shareReplay, tap, timer } from 'rxjs';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SessionService {
   private readonly http = inject(HttpClient);
-  private readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStore = inject(GlobalStore);
   private userStateCache$!: Observable<ISessionUserState>;
   private tokenExpiryCache$!: Observable<ISessionTokenExpiry> | null;
 
@@ -29,7 +29,7 @@ export class SessionService {
     // The backend can return an empty object so...
     // If we don't have a user state, then we need to refresh it...
     // And override the shareReplay cache...
-    const refresh = !this.globalStateService.userState()?.user_id;
+    const refresh = !this.globalStore.userState()?.user_id;
 
     if (!this.userStateCache$ || refresh) {
       this.userStateCache$ = this.http
@@ -37,7 +37,7 @@ export class SessionService {
         .pipe(shareReplay(1))
         .pipe(
           tap((userState) => {
-            this.globalStateService.userState.set(userState);
+            this.globalStore.setUserState(userState);
           }),
         );
     }
@@ -61,7 +61,7 @@ export class SessionService {
           delay: () => timer(this.RETRY_DELAY_MS),
         }),
         tap((expiry) => {
-          this.globalStateService.tokenExpiry = expiry;
+          this.globalStore.setTokenExpiry(expiry);
         }),
         shareReplay(1),
       );

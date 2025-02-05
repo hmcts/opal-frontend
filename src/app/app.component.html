@@ -3,7 +3,7 @@
     <ng-container organisationName>HMCTS</ng-container>
     <ng-container serviceName>Opal</ng-container>
     <app-moj-header-navigation-item (actionClick)="handleAuthentication()">
-      @if (!globalStateService.authenticated()) {
+      @if (!globalStore.authenticated()) {
         <ng-container linkText>Sign in</ng-container>
       } @else {
         <ng-container linkText>Sign out</ng-container>
@@ -32,8 +32,8 @@
           <app-moj-banner text="Warning: Your session has expired. Please log back in." type="warning"></app-moj-banner>
         }
 
-        @if (globalStateService.authenticated() && globalStateService.error().error) {
-          <app-moj-banner type="warning" [text]="globalStateService.error().message"></app-moj-banner>
+        @if (globalStore.authenticated() && globalStore.error().error) {
+          <app-moj-banner type="warning" [text]="globalStore.error().message"></app-moj-banner>
         }
         <div class="govuk-grid-row">
           <router-outlet></router-outlet>
