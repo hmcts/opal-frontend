@@ -256,7 +256,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
   });
 
-  it.only('should show error for missing additional alias first name', () => {
+  it('should show error for missing additional alias first name', () => {
     setupComponent(null);
 
     mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -280,7 +280,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
   });
 
-  it.only('should show error for missing additional alias last name', () => {
+  it('should show error for missing additional alias last name', () => {
     setupComponent(null);
 
     mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
