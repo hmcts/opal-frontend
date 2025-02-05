@@ -16,6 +16,7 @@ export const FORMAT_CHECK = {
   bankAccountRefAlphabeticalTextPattern: 'Payment reference must only contain letters',
   bankAccountNumberNumericalTextPattern: 'Account number must only contain numbers',
   bankSortCodeNumericalTextPattern: 'Sort code must only contain numbers',
+  surnameRequired: `Enter minor creditor's last name`,
   bankAccountNameAlphabeticalTextPattern: 'Name on account must only contain letters',
   addressLine3SpecialCharactersPattern: 'The address line 3 must not contain special characters',
   addressLine2SpecialCharactersPattern: 'The address line 2 must not contain special characters',
@@ -31,6 +32,7 @@ export const REQUIRED_FIELDS = {
   bankAccountNumberRequired: 'Enter account number',
   bankAccountNameRequired: 'Enter name on the account',
   companyNameRequired: `Enter company name`,
-  surnameRequired: `Enter minor creditor's last name`,
   creditorTypeRequired: 'Select whether minor creditor is an individual or company',
 };
+
+
