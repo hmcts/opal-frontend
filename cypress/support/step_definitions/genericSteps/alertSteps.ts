@@ -2,14 +2,12 @@ import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
 Then('I click Cancel, a window pops up and I click Ok', () => {
   cy.contains('a', 'Cancel').click();
-  cy.on('window:confirm', () => {});
+  cy.once('window:confirm', () => true);
 });
 
 Then('I click Cancel, a window pops up and I click Cancel', () => {
   cy.contains('a', 'Cancel').click();
-  cy.on('window:confirm', () => {
-    return false;
-  });
+  cy.once('window:confirm', () => false);
 });
 
 Then('I click {string}, a window pops up and I click Ok', (link: string) => {

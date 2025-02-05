@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { IFinesMacState } from '../../fines-mac/interfaces/fines-mac-state.interface';
 import { FINES_MAC_STATE } from '../../fines-mac/constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../fines-mac/constants/fines-mac-status';
@@ -10,7 +10,7 @@ import { DateService } from '@services/date-service/date.service';
   providedIn: 'root',
 })
 export class FinesService {
-  private readonly dateService = inject(DateService);
+  constructor(private readonly dateService: DateService) {}
 
   // Non reactive state
   public finesMacState: IFinesMacState = { ...FINES_MAC_STATE };
@@ -27,8 +27,7 @@ export class FinesService {
   }
 
   /**
-   * Checks if the status of each offence in the provided offence details array is 'PROVIDED'.
-   *
+   * Checks if the status of each offence in the provided ofß
    * @param offenceDetails - An array of offence details to check.
    * @returns `true` if all offence statuses are 'PROVIDED', otherwise `false`.
    */
