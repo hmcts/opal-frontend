@@ -12,12 +12,14 @@ import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-foote
 import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { Observable, of } from 'rxjs';
+import { PLATFORM_ID } from '@angular/core';
 import { GlobalStore } from './stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
-describe('AppComponent', () => {
+describe('AppComponent - browser', () => {
   const mockDocumentLocation = {
     location: {
       href: '',
@@ -48,6 +50,7 @@ describe('AppComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         { provide: DateService, useValue: dateServiceSpy },
+        { provide: PLATFORM_ID, useValue: 'browser' },
       ],
     });
 
@@ -148,7 +151,7 @@ describe('AppComponent', () => {
     component['initializeTimeoutInterval']();
 
     // No timer should be set
-    expect(component['timerSub']).toBeDefined();
+    expect(component['timerSub']).toBeUndefined();
 
     flush();
   }));
@@ -170,4 +173,59 @@ describe('AppComponent', () => {
     tick(component['POLL_INTERVAL'] * 1000);
     flush();
   }));
+
+  it('should set up token expiry and initialize timeout interval', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    spyOn(component['sessionService'], 'getTokenExpiry').and.returnValue(of(SESSION_TOKEN_EXPIRY_MOCK));
+
+    component['setupTokenExpiry']();
+
+    expect(component['sessionService'].getTokenExpiry).toHaveBeenCalled();
+  });
+
+  it('should not set up token expiry if sessionService.getTokenExpiry does not emit', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    spyOn(component['sessionService'], 'getTokenExpiry').and.returnValue(new Observable());
+
+    component['setupTokenExpiry']();
+
+    expect(component['sessionService'].getTokenExpiry).toHaveBeenCalled();
+  });
+});
+
+describe('AppComponent - server', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        AppComponent,
+        MojHeaderComponent,
+        MojHeaderNavigationItemComponent,
+        GovukFooterComponent,
+        MojBannerComponent,
+        RouterModule.forRoot([]),
+      ],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        { provide: PLATFORM_ID, useValue: 'server' },
+      ],
+    });
+  });
+
+  beforeEach(() => {
+    mockTokenExpiry.expiry = '2023-07-03T12:30:00Z';
+  });
+
+  it('should not call getTokenExpiry as on server ', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    spyOn(component['sessionService'], 'getTokenExpiry').and.returnValue(new Observable());
+
+    component['setupTokenExpiry']();
+
+    expect(component['sessionService'].getTokenExpiry).not.toHaveBeenCalled();
+  });
 });
