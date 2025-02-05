@@ -15,7 +15,7 @@ export const MAIN_PERSONAL_DETAILS = {
 };
 
 export const ALIAS_PERSONAL_DETAILS = {
-  missingAlias: 'Enter first name(s) for alias',
+  missingAliasFirstName: 'Enter first name(s) for alias',
   missingAliasLastName: 'Enter last name for alias',
 };
 

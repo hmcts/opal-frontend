@@ -13,6 +13,7 @@ import {
   VEHICLE_DETAILS_ERRORS,
 } from './constants/fines_mac_personal_details_errors';
 import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/fines_mac_personal_details_elements';
+import { mock } from 'node:test';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let mockFinesService = {
@@ -228,35 +229,37 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAlias);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
   });
 
   it('should show error for missing alias last name', () => {
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
     mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_surname_0: 'Smith',
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAlias);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName);
   });
 
   it('should show error for missing alias first name', () => {
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
     mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_forenames_0: 'John',
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
   });
 
-  it('should show error for missing additional alias first name', () => {
+  it.only('should show error for missing additional alias first name', () => {
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
     mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_forenames_0: 'John',
       fm_personal_details_alias_surname_0: 'Smith',
@@ -266,13 +269,21 @@ describe('FinesMacPersonalDetailsComponent', () => {
       fm_personal_details_alias_surname_1: 'Smith',
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAlias);
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 1`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 1`);
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 2`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 2`);
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 3`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
   });
 
-  it('should show error for missing additional alias last name', () => {
+  it.only('should show error for missing additional alias last name', () => {
     setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.aliasAdd).click();
+    mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
     mockFinesService.finesMacState.personalDetails.formData.fm_personal_details_aliases.push({
       fm_personal_details_alias_forenames_0: 'John',
       fm_personal_details_alias_surname_0: 'Smith',
@@ -282,7 +293,15 @@ describe('FinesMacPersonalDetailsComponent', () => {
       fm_personal_details_alias_forenames_1: 'John',
     });
     cy.get(DOM_ELEMENTS.submitButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName);
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 1`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 1`);
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 2`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 2`);
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasFirstName} 3`);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
   });
 
   it('should show error for future date of birth', () => {
