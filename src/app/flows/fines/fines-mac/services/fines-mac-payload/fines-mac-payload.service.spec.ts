@@ -89,7 +89,7 @@ describe('FinesMacPayloadService', () => {
 
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
 
-    const result = service.buildReplaceAccountPayload(finesMacState, sessionUserState);
+    const result = service.buildReplaceAccountPayload(finesMacState, finesMacPayloadAddAccount, sessionUserState);
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(finesMacPayloadAddAccount);
   });

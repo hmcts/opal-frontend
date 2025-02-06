@@ -138,12 +138,15 @@ export class FinesMacPayloadService {
    */
   private buildAddReplaceAccountPayload(
     finesMacState: IFinesMacState,
+    draftAccountPayload: IFinesMacAddAccountPayload | null,
     sessionUserState: ISessionUserState,
     addAccount: boolean,
   ): IFinesMacAddAccountPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
-    const storedTimeLineData: IFinesMacAccountTimelineData[] = []; // Replace with stored timeline data when we have it...awaiting edit mode.
+    const storedTimeLineData: IFinesMacAccountTimelineData[] = draftAccountPayload
+      ? draftAccountPayload.timeline_data
+      : [];
     const accountStatus = addAccount ? FINES_MAC_PAYLOAD_STATUSES.submitted : FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
     const timeLineData = finesMacPayloadBuildAccountTimelineData(
@@ -156,7 +159,7 @@ export class FinesMacPayloadService {
 
     // Build the add account payload
     const addAccountPayload: IFinesMacAddAccountPayload = {
-      draft_account_id: null,
+      draft_account_id: draftAccountPayload ? draftAccountPayload.draft_account_id : null,
       created_at: null,
       account_snapshot: null,
       account_status_date: null,
@@ -187,7 +190,7 @@ export class FinesMacPayloadService {
     finesMacState: IFinesMacState,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, true);
+    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), null, sessionUserState, true);
   }
 
   /**
@@ -199,9 +202,15 @@ export class FinesMacPayloadService {
    */
   public buildReplaceAccountPayload(
     finesMacState: IFinesMacState,
+    draftAccountPayload: IFinesMacAddAccountPayload,
     sessionUserState: ISessionUserState,
   ): IFinesMacAddAccountPayload {
-    return this.buildAddReplaceAccountPayload(structuredClone(finesMacState), sessionUserState, false);
+    return this.buildAddReplaceAccountPayload(
+      structuredClone(finesMacState),
+      draftAccountPayload,
+      sessionUserState,
+      false,
+    );
   }
 
   /**
