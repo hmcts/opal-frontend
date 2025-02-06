@@ -5,11 +5,10 @@ import { routePermissionsGuard } from '@guards/route-permissions/route-permissio
 import { userStateResolver } from '@resolvers/user-state/user-state.resolver';
 import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
 import { routing as draftCamRouting } from '../fines-draft/fines-draft-cam/routing/fines-draft-cam.routes';
-import { RoutingPaths } from '@routing/enums/routing-paths';
-
 import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
+import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
 const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];
@@ -19,7 +18,7 @@ const draftCamPermissionId = FINES_ROUTING_PERMISSIONS[draftCamRootPath as keyof
 export const finesRouting: Routes = [
   {
     path: FINES_ROUTING_PATHS.root,
-    redirectTo: RoutingPaths.dashboard, // Redirect to dashboard
+    redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
     pathMatch: 'full',
   },
   {

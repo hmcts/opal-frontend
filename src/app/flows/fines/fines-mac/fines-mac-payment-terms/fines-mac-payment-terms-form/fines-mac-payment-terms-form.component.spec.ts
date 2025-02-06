@@ -8,12 +8,12 @@ import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-te
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
-import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
 import { of } from 'rxjs';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permisson-values.constant';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
@@ -455,7 +455,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['setupPermissions']();
 
     expect(component['hasPermissionAccess']).toHaveBeenCalled();
-    expect(component.permissions[FinesMacPaymentTermsPermissions.collectionOrder]).toBeTruthy();
+    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]).toBeTruthy();
   });
 
   it('should update form controls based on selected enforcement action', () => {

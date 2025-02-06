@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { GovukHeaderLinks } from './enums';
+import { GOVUK_HEADER_LINKS } from './constants/govuk-header-links.constant';
 @Component({
   selector: 'app-govuk-header',
   imports: [CommonModule, RouterLink],
@@ -9,5 +9,5 @@ import { GovukHeaderLinks } from './enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukHeaderComponent {
-  public readonly headerLinks = GovukHeaderLinks;
+  public readonly headerLinks = GOVUK_HEADER_LINKS;
 }

@@ -7,21 +7,18 @@ import {
   UrlSegmentGroup,
   UrlTree,
 } from '@angular/router';
-
 import { routePermissionsGuard } from './route-permissions.guard';
 import { PermissionsService } from '@services/permissions-service/permissions.service';
 import { SessionService } from '@services/session-service/session.service';
-
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { Observable, of, throwError } from 'rxjs';
 import { handleObservableResult } from '@guards/helpers/handle-observable-result';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
-import { RoutingPaths } from '@routing/enums/routing-paths';
 import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
+import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
 async function runRoutePermissionGuard(
   guard: typeof routePermissionsGuard,
@@ -101,7 +98,7 @@ describe('routePermissionsGuard', () => {
       FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
       urlPath,
     );
-    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${PAGES_ROUTING_PATHS.children.accessDenied}`]);
   }));
 
   it('should re-route no unique permission ids ', fakeAsync(async () => {
@@ -112,21 +109,21 @@ describe('routePermissionsGuard', () => {
       FINES_ROUTING_PERMISSIONS[FINES_ROUTING_PATHS.children.mac.root as keyof IFinesRoutingPermissions],
       urlPath,
     );
-    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${PAGES_ROUTING_PATHS.children.accessDenied}`]);
   }));
 
   it('should re-route if no route permission ids ', fakeAsync(async () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([]);
 
     await runRoutePermissionGuard(routePermissionsGuard, null, urlPath);
-    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${PAGES_ROUTING_PATHS.children.accessDenied}`]);
   }));
 
   it('should re-route if route permission id does not exist', fakeAsync(async () => {
     mockPermissionsService.getUniquePermissions.and.returnValue([]);
 
     await runRoutePermissionGuard(routePermissionsGuard, 999999999, urlPath);
-    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${RoutingPaths.accessDenied}`]);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledOnceWith([`/${PAGES_ROUTING_PATHS.children.accessDenied}`]);
   }));
 
   it('should allow access to login if catches an error ', fakeAsync(async () => {

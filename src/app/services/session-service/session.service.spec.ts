@@ -1,7 +1,6 @@
 import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
-import { SessionEndpoints } from '@services/session-service/enums/session-endpoints';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
@@ -9,6 +8,7 @@ import { ISessionUserState } from '@services/session-service/interfaces/session-
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { SESSION_ENDPOINTS } from './constants/session-endpoints.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -47,7 +47,7 @@ describe('SessionService', () => {
       expect(globalStore.userState()).toEqual(mockUserState);
     });
 
-    const req = httpMock.expectOne(SessionEndpoints.userState);
+    const req = httpMock.expectOne(SESSION_ENDPOINTS.userState);
     expect(req.request.method).toBe('GET');
     req.flush(mockUserState);
   });
@@ -60,7 +60,7 @@ describe('SessionService', () => {
       expect(globalStore.userState()).toEqual(mockUserState);
     });
 
-    const req = httpMock.expectOne(SessionEndpoints.userState);
+    const req = httpMock.expectOne(SESSION_ENDPOINTS.userState);
     expect(req.request.method).toBe('GET');
     req.flush(mockUserState);
 
@@ -71,7 +71,7 @@ describe('SessionService', () => {
     });
 
     // No new request should be made since the response is cached
-    httpMock.expectNone(SessionEndpoints.userState);
+    httpMock.expectNone(SESSION_ENDPOINTS.userState);
   });
 
   it('should do a new request if the cached response is empty ', () => {
@@ -82,7 +82,7 @@ describe('SessionService', () => {
       expect(globalStore.userState()).toEqual(mockUserState);
     });
 
-    let req = httpMock.expectOne(SessionEndpoints.userState);
+    let req = httpMock.expectOne(SESSION_ENDPOINTS.userState);
     expect(req.request.method).toBe('GET');
     req.flush(mockUserState);
 
@@ -93,7 +93,7 @@ describe('SessionService', () => {
     });
 
     // No new request should be made since the response is cached
-    httpMock.expectNone(SessionEndpoints.userState);
+    httpMock.expectNone(SESSION_ENDPOINTS.userState);
 
     // Clear the cache
     globalStore.setUserState({} as ISessionUserState);
@@ -103,7 +103,7 @@ describe('SessionService', () => {
       expect(response).toEqual(mockUserState);
     });
 
-    req = httpMock.expectOne(SessionEndpoints.userState);
+    req = httpMock.expectOne(SESSION_ENDPOINTS.userState);
     expect(req.request.method).toBe('GET');
     req.flush(mockUserState);
   });
@@ -114,7 +114,7 @@ describe('SessionService', () => {
       expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
 
-    const req = httpMock.expectOne(SessionEndpoints.expiry);
+    const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
     expect(req.request.method).toBe('GET');
     req.flush(mockTokenExpiry);
   });
@@ -124,7 +124,7 @@ describe('SessionService', () => {
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
-    const req = httpMock.expectOne(SessionEndpoints.expiry);
+    const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
     expect(req.request.method).toBe('GET');
     req.flush(mockTokenExpiry);
     // Make a second call
@@ -133,7 +133,7 @@ describe('SessionService', () => {
       expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
     // No new request should be made since the response is cached
-    httpMock.expectNone(SessionEndpoints.expiry);
+    httpMock.expectNone(SESSION_ENDPOINTS.expiry);
   });
 
   it('should do a new request if the cached response is empty', () => {
@@ -141,7 +141,7 @@ describe('SessionService', () => {
       expect(response).toEqual(mockTokenExpiry);
       expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
-    const req = httpMock.expectOne(SessionEndpoints.expiry);
+    const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
     expect(req.request.method).toBe('GET');
     req.flush(mockTokenExpiry);
 
@@ -151,7 +151,7 @@ describe('SessionService', () => {
       expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
     // No new request should be made since the response is cached
-    httpMock.expectNone(SessionEndpoints.expiry);
+    httpMock.expectNone(SESSION_ENDPOINTS.expiry);
   });
 
   it('should retry the request exactly MAX_RETRIES times before success', fakeAsync(() => {
@@ -169,14 +169,14 @@ describe('SessionService', () => {
 
     // Simulate failed requests up to `MAX_RETRIES`
     for (let i = 0; i < MAX_RETRIES; i++) {
-      const req = httpMock.expectOne(SessionEndpoints.expiry);
+      const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
       expect(req.request.method).toBe('GET');
       req.flush(null, { status: 500, statusText: 'Internal Server Error' });
       tick(RETRY_DELAY_MS); // Advance time to trigger retry
     }
 
     // Final successful request
-    const req = httpMock.expectOne(SessionEndpoints.expiry);
+    const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
 

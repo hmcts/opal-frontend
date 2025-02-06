@@ -1,7 +1,6 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { DateService } from '@services/date-service/date.service';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -16,6 +15,7 @@ import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
 import { GlobalStore } from './stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -85,13 +85,13 @@ describe('AppComponent - browser', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
-      mockDocumentLocation.location.href = SsoEndpoints.login;
+      mockDocumentLocation.location.href = SSO_ENDPOINTS.login;
     });
 
     component.handleAuthentication();
 
     expect(spy).toHaveBeenCalled();
-    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.login);
+    expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
   it('should test handle authentication when authenticated is true', () => {
@@ -100,13 +100,13 @@ describe('AppComponent - browser', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
-      mockDocumentLocation.location.href = SsoEndpoints.logout;
+      mockDocumentLocation.location.href = SSO_ENDPOINTS.logout;
     });
 
     component.handleAuthentication();
 
     expect(spy).toHaveBeenCalled();
-    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.logout);
+    expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
 
   it('should unsubscribe from the timeout interval subscription', () => {

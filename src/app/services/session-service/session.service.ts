@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { SessionEndpoints } from '@services/session-service/enums/session-endpoints';
 import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { Observable, retry, shareReplay, tap, timer } from 'rxjs';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { SESSION_ENDPOINTS } from './constants/session-endpoints.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +33,7 @@ export class SessionService {
 
     if (!this.userStateCache$ || refresh) {
       this.userStateCache$ = this.http
-        .get<ISessionUserState>(SessionEndpoints.userState)
+        .get<ISessionUserState>(SESSION_ENDPOINTS.userState)
         .pipe(shareReplay(1))
         .pipe(
           tap((userState) => {
@@ -55,7 +55,7 @@ export class SessionService {
    */
   public getTokenExpiry(): Observable<ISessionTokenExpiry> {
     if (!this.tokenExpiryCache$) {
-      this.tokenExpiryCache$ = this.http.get<ISessionTokenExpiry>(SessionEndpoints.expiry).pipe(
+      this.tokenExpiryCache$ = this.http.get<ISessionTokenExpiry>(SESSION_ENDPOINTS.expiry).pipe(
         retry({
           count: this.MAX_RETRIES,
           delay: () => timer(this.RETRY_DELAY_MS),

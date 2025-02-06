@@ -17,13 +17,13 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../constants/fines-mac-offence-details-result-codes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
 import { OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-autocomplete-items.mock';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
 import { AbstractFormArrayBaseComponent } from '@components/abstract/abstract-form-array-base/abstract-form-array-base';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -58,6 +58,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       'upperCaseAllLetters',
       'formatSortCode',
       'upperCaseFirstLetter',
+      'scrollToTop',
     ]);
 
     await TestBed.configureTestingModule({
@@ -226,8 +227,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
 
-    // Simulate the passage of time to account for debounceTime
-    tick(FinesMacOffenceDetailsDebounceTime.debounceTime);
+    // Simulate the passage of time to account for defaultDebounceTime
+    tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
     // Check if service was called after debounce
     expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);
@@ -243,8 +244,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component['offenceCodeListener']();
     offenceCodeControl.setValue(mockCjsCode);
 
-    // Simulate the passage of time to account for debounceTime
-    tick(FinesMacOffenceDetailsDebounceTime.debounceTime);
+    // Simulate the passage of time to account for defaultDebounceTime
+    tick(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime);
 
     // Check if service was called after debounce
     expect(component['populateOffenceHint']).toHaveBeenCalledWith(mockCjsCode);
