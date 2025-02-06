@@ -7,6 +7,7 @@ import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-persona
 import { ActivatedRoute } from '@angular/router';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
+import { of } from 'rxjs';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 
@@ -14,7 +15,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   let component: FinesMacPersonalDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacPersonalDetailsFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacPersonalDetailsForm;
   let finesMacStore: FinesMacStoreType;
 
@@ -27,7 +28,12 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       imports: [FinesMacPersonalDetailsFormComponent],
       providers: [
         { provide: DateService, useValue: mockDateService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 

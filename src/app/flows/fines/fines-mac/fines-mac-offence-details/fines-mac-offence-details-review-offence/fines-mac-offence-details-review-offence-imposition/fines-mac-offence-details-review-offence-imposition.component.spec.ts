@@ -11,12 +11,12 @@ import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../../mocks/fines-mac-offence-details-state.mock';
-import { FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor } from './enums/fines-mac-offence-details-review-offence-imposition-default-creditor.enum';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK } from './mocks/fines-mac-offence-details-review-offence-imposition-data.mock';
 import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { DateService } from '@services/date-service/date.service';
+import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
@@ -199,7 +199,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
     const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
     finesMacState.offenceDetails[0].childFormData = [];
     finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
-    const expectedCreditorText = FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor;
+    const expectedCreditorText = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
 
@@ -213,7 +213,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should return empty string if creditor is null - CPS resultCodeCreditor', () => {
-    const expectedCreditorText = FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor;
+    const expectedCreditorText = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'CPS', 0);
 

@@ -6,11 +6,11 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from '../mocks/fines-mac-lan
 import { ActivatedRoute } from '@angular/router';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { of } from 'rxjs';
 
 describe('FinesMacLanguagePreferencesFormComponent', () => {
   let component: FinesMacLanguagePreferencesFormComponent;
   let fixture: ComponentFixture<FinesMacLanguagePreferencesFormComponent>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacLanguagePreferencesForm;
   let finesMacStore: FinesMacStoreType;
 
@@ -19,7 +19,14 @@ describe('FinesMacLanguagePreferencesFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacLanguagePreferencesFormComponent],
-      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacLanguagePreferencesFormComponent);

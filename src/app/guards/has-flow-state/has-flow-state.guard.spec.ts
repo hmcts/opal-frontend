@@ -3,7 +3,7 @@ import { TestBed, fakeAsync } from '@angular/core/testing';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { of } from 'rxjs';
 import { hasFlowStateGuard } from './has-flow-state.guard';
-import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from '../../flows/fines/fines-mac/fines-mac-account-details/mocks/fines-mac-account-details-state.mock';
 import { getGuardWithDummyUrl } from '@guards/helpers/get-guard-with-dummy-url';
 import { runHasFlowStateGuardWithContext } from '@guards/helpers/run-has-flow-state-guard-with-context';

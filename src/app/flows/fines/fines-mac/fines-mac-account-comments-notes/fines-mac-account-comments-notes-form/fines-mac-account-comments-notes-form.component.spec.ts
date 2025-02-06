@@ -10,11 +10,11 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
+import { of } from 'rxjs';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let component: FinesMacAccountCommentsNotesFormComponent;
   let fixture: ComponentFixture<FinesMacAccountCommentsNotesFormComponent>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacAccountCommentsNotesForm;
   let finesMacStore: FinesMacStoreType;
 
@@ -24,7 +24,12 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesFormComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
         {
           provide: DateService,
           useValue: jasmine.createSpyObj(DateService, ['getDateFromFormat']),

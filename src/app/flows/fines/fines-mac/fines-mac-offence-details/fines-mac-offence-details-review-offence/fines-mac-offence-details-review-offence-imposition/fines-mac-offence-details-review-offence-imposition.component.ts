@@ -9,7 +9,6 @@ import {
   IFinesMacOffenceDetailsReviewSummaryImpositionTableRowTotalData,
   IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData,
 } from './interfaces/fines-mac-offence-details-review-offence-imposition-data.interface';
-import { FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor } from './enums/fines-mac-offence-details-review-offence-imposition-default-creditor.enum';
 import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row-data/govuk-table-body-row-data.component';
 import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
 import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
@@ -17,6 +16,7 @@ import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.c
 import { GovukSummaryListComponent } from '../../../../../../components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { CommonModule } from '@angular/common';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
+import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 
 @Component({
@@ -49,7 +49,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   private totalAmountImposed: number = 0;
   private totalAmountPaid: number = 0;
   private totalBalanceRemaining: number = 0;
-  protected readonly defaultValues = FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor;
+  protected readonly defaultValues = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES;
 
   /**
    * Sorts the impositions array based on the allocation order and result title.
@@ -104,7 +104,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
       (childFormData) => childFormData.formData.fm_offence_details_imposition_position === impositionId,
     );
 
-    if (!minorCreditor) return FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor.defaultMinorCreditor;
+    if (!minorCreditor) return FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES.defaultMinorCreditor;
 
     const {
       fm_offence_details_minor_creditor_creditor_type: creditorType,
@@ -163,7 +163,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
     return {
       address: formattedAddress.length > 0 ? formattedAddress : [],
       paymentMethod: payByBacs
-        ? FinesMacOffenceDetailsReviewOffenceImpositionDefaultCreditor.defaultPaymentMethod
+        ? FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES.defaultPaymentMethod
         : null,
       nameOnAccount: bankAccountName,
       sortCode: bankSortCode ? this.utilsService.formatSortCode(bankSortCode) : null,

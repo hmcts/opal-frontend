@@ -9,11 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { of } from 'rxjs';
 
 describe('FinesMacCourtDetailsFormComponent', () => {
   let component: FinesMacCourtDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacCourtDetailsFormComponent>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacCourtDetailsForm;
   let finesMacStore: FinesMacStoreType;
 
@@ -22,7 +22,14 @@ describe('FinesMacCourtDetailsFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCourtDetailsFormComponent],
-      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacCourtDetailsFormComponent);

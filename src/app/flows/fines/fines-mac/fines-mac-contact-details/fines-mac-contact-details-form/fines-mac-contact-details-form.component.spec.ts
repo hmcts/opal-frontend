@@ -6,11 +6,11 @@ import { FINES_MAC_CONTACT_DETAILS_FORM_MOCK } from '../mocks/fines-mac-contact-
 import { ActivatedRoute } from '@angular/router';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { of } from 'rxjs';
 
 describe('FinesMacContactDetailsFormComponent', () => {
   let component: FinesMacContactDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacContactDetailsFormComponent>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacContactDetailsForm;
   let finesMacStore: FinesMacStoreType;
 
@@ -19,7 +19,14 @@ describe('FinesMacContactDetailsFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacContactDetailsFormComponent],
-      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacContactDetailsFormComponent);

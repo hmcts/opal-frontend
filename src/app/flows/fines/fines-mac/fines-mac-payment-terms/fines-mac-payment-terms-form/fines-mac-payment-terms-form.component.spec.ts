@@ -7,7 +7,6 @@ import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-te
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
-import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
 import { GlobalStore } from 'src/app/stores/global/global.store';
@@ -15,12 +14,14 @@ import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
+import { of } from 'rxjs';
+import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permisson-values.constant';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
+
   let formSubmit: IFinesMacPaymentTermsForm;
   let globalStore: GlobalStoreType;
   let finesMacStore: FinesMacStoreType;
@@ -43,7 +44,12 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       imports: [FinesMacPaymentTermsFormComponent],
       providers: [
         { provide: DateService, useValue: mockDateService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
       ],
     }).compileComponents();
 
@@ -469,7 +475,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['setupPermissions']();
 
     expect(component['hasPermissionAccess']).toHaveBeenCalled();
-    expect(component.permissions[FinesMacPaymentTermsPermissions.collectionOrder]).toBeTruthy();
+    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]).toBeTruthy();
   });
 
   it('should update form controls based on selected enforcement action', () => {

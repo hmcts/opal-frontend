@@ -3,12 +3,12 @@ import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-c
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { IFinesMacPersonalDetailsState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-state.interface';
-import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
 import { IFinesMacPersonalDetailsAliasState } from '../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
+import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-personal-details',
@@ -30,7 +30,7 @@ export class FinesMacReviewAccountPersonalDetailsComponent implements OnInit {
   private readonly dateService = inject(DateService);
   private readonly utilsService = inject(UtilsService);
 
-  public readonly defaultValues = FinesMacReviewAccountDefaultValues;
+  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public aliases!: string[];
   public dob!: string | null;
   public address!: string[];

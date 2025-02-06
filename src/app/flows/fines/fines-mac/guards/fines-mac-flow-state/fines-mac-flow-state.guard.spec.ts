@@ -2,7 +2,7 @@ import { Router, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
 import { finesMacFlowStateGuard } from './fines-mac-flow-state.guard';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { runFinesMacEmptyFlowGuardWithContext } from '../helpers/run-fines-mac-empty-flow-guard-with-context';
 import { of } from 'rxjs';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';

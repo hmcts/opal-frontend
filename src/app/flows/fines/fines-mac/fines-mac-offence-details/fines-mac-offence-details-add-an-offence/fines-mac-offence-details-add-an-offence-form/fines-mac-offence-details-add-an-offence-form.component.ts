@@ -15,9 +15,8 @@ import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphag
 import { DateService } from '@services/date-service/date.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { UtilsService } from '@services/utils/utils.service';
 import { Observable, EMPTY, debounceTime, distinctUntilChanged, tap, takeUntil, map } from 'rxjs';
-import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_OFFENCE_DETAILS_CREDITOR_OPTIONS } from '../../constants/fines-mac-offence-details-creditor-options.constant';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../constants/fines-mac-offence-details-offences-field-errors.constant';
 import { IFinesMacOffenceDetailsForm } from '../../interfaces/fines-mac-offence-details-form.interface';
@@ -39,12 +38,11 @@ import { GovukTextInputPrefixSuffixComponent } from '@components/govuk/govuk-tex
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { FinesMacOffenceDetailsDebounceTime } from '../../enums/fines-mac-offence-details-debounce-time.enum';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { CommonModule } from '@angular/common';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../constants/fines-mac-offence-details-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditor } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor.interface';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
@@ -52,6 +50,7 @@ import { IFinesMacOffenceDetailsMinorCreditorForm } from '../../fines-mac-offenc
 import { IFinesMacOffenceDetailsAddAnOffenceFormMinorCreditorHidden } from './interfaces/fines-mac-offence-details-add-an-offence-form-minor-creditor-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../../constants/fines-mac-offence-details-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence-form',
@@ -89,7 +88,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly dateService = inject(DateService);
-  protected readonly utilsService = inject(UtilsService);
   public finesMacStore = inject(FinesMacStore);
   public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
@@ -227,7 +225,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
           cjs_code = this.utilsService.upperCaseAllLetters(cjs_code);
           offenceCodeControl.setValue(cjs_code, { emitEvent: false });
         }),
-        debounceTime(FinesMacOffenceDetailsDebounceTime.debounceTime),
+        debounceTime(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultDebounceTime),
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe((cjs_code: string) => {

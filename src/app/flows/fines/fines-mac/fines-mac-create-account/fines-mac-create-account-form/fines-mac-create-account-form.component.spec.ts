@@ -8,11 +8,11 @@ import { ActivatedRoute } from '@angular/router';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { of } from 'rxjs';
 
 describe('FinesMacCreateAccountFormComponent', () => {
   let component: FinesMacCreateAccountFormComponent;
   let fixture: ComponentFixture<FinesMacCreateAccountFormComponent>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacAccountDetailsForm;
   let finesMacStore: FinesMacStoreType;
 
@@ -21,7 +21,14 @@ describe('FinesMacCreateAccountFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCreateAccountFormComponent],
-      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacCreateAccountFormComponent);

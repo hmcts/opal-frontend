@@ -15,7 +15,6 @@ import { ISessionUserState } from '@services/session-service/interfaces/session-
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
 import { DateService } from '@services/date-service/date.service';
 import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
-import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
 import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 
@@ -29,6 +28,7 @@ import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
+import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -141,9 +141,7 @@ export class FinesMacPayloadService {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
     const storedTimeLineData: IFinesMacAccountTimelineData[] = []; // Replace with stored timeline data when we have it...awaiting edit mode.
-    const accountStatus = addAccount
-      ? FineMacPayloadAccountAccountStatuses.submitted
-      : FineMacPayloadAccountAccountStatuses.resubmitted;
+    const accountStatus = addAccount ? FINES_MAC_PAYLOAD_STATUSES.submitted : FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
     const timeLineData = finesMacPayloadBuildAccountTimelineData(
       sessionUserState['name'],

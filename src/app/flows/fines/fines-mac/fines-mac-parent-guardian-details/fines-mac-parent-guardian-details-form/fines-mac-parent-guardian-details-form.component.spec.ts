@@ -8,12 +8,12 @@ import { DateService } from '@services/date-service/date.service';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { UtilsService } from '@services/utils/utils.service';
+import { of } from 'rxjs';
 
 describe('FinesMacParentGuardianDetailsFormComponent', () => {
   let component: FinesMacParentGuardianDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacParentGuardianDetailsFormComponent>;
   let mockDateService: jasmine.SpyObj<DateService>;
-  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
   let formSubmit: IFinesMacParentGuardianDetailsForm;
   let finesMacStore: FinesMacStoreType;
 
@@ -26,7 +26,12 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       imports: [FinesMacParentGuardianDetailsFormComponent],
       providers: [
         { provide: DateService, useValue: mockDateService },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: of('manual-account-creation'),
+          },
+        },
         {
           provide: UtilsService,
           useValue: jasmine.createSpyObj(UtilsService, ['checkFormValues', 'checkFormArrayValues']),

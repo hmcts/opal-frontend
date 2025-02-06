@@ -33,6 +33,9 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(SESSION_USER_STATE_MOCK);
 
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
+
     fixture.detectChanges();
   });
 
