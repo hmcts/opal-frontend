@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
@@ -7,21 +7,18 @@ import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-
 import { forkJoin, Observable, tap } from 'rxjs';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { UtilsService } from '@services/utils/utils.service';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract-form-array-removal-base/abstract-form-array-removal-base';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names.constant';
 import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constants/fines-mac-offence-details-remove-imposition-defaults';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state.constant';
 import { CommonModule } from '@angular/common';
-import { FormArray } from '@angular/forms';
-import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
-import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row-data/govuk-table-body-row-data.component';
 import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
 import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { IFinesMacOffenceDetailsImpositionsState } from '../interfaces/fines-mac-offence-details-impositions-state.interface';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -39,9 +36,11 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 })
 export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   public finesMacStore = inject(FinesMacStore);
+  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
@@ -57,9 +56,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     resultCodeData: this.resultCodeData$,
     majorCreditorData: this.majorCreditorData$,
   });
-  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-  protected draftOffenceDetailsState = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
 
   public imposition = FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
   public creditor!: string;
@@ -78,46 +75,6 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    */
   private updateMonetaryString(value: number): string {
     return this.utilsService.convertToMonetaryString(value);
-  }
-
-  /**
-   * Removes a minor creditor from the array at the specified index and updates the imposition positions
-   * for the remaining items in the array.
-   *
-   * @param minorCreditorArray - The array of minor creditor forms.
-   * @param splicedIndex - The index at which to remove the minor creditor.
-   * @returns The updated array of minor creditor forms.
-   */
-  private removeMinorCreditorAndUpdateIds(
-    minorCreditorArray: IFinesMacOffenceDetailsMinorCreditorForm[],
-    splicedIndex: number,
-  ): void {
-    // Splice the array at the specified index
-    minorCreditorArray.splice(splicedIndex, 1);
-
-    // Update imposition position for the remaining items
-    for (let i = splicedIndex; i < minorCreditorArray.length; i++) {
-      const currentItem = minorCreditorArray[i];
-
-      currentItem.formData.fm_offence_details_imposition_position = i;
-    }
-  }
-
-  /**
-   * Decrements the imposition position by 1 for minor creditors after the specified index.
-   *
-   * @param minorCreditorArray - The array of minor creditor forms.
-   * @param dropIndex - The index after which to decrement the imposition positions.
-   * @returns The updated array of minor creditor forms.
-   */
-  private dropMinorCreditorImpositionPosition(
-    minorCreditorArray: IFinesMacOffenceDetailsMinorCreditorForm[],
-    dropIndex: number,
-  ): void {
-    const minorCreditors = minorCreditorArray.filter(
-      (x) => x.formData.fm_offence_details_imposition_position! >= dropIndex,
-    );
-    minorCreditors.forEach((minorCreditor) => (minorCreditor.formData.fm_offence_details_imposition_position! -= 1));
   }
 
   /**
@@ -147,8 +104,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    * @param rowIndex - The index of the row to find the minor creditor details for.
    */
   private setMinorCreditorDetails(rowIndex: number): void {
-    const minorCreditors =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData;
+    const minorCreditors = this.finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData;
     if (minorCreditors) {
       const minorCreditor = minorCreditors.find(
         (item) => item.formData.fm_offence_details_imposition_position === rowIndex,
@@ -214,37 +170,27 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
    * @param formArray - The form array containing the controls.
    * @param formArrayControls - The array of form array controls.
    */
-  public getImpositionToBeRemoved(
-    rowIndex: number,
-    formArray: FormArray,
-    formArrayControls: IAbstractFormArrayControls[],
-  ): void {
-    const formArrayControl = formArrayControls[rowIndex];
+  public getImpositionToBeRemoved(): void {
+    const rowIndex = this.finesMacOffenceDetailsStore.rowIndex();
+    const draft = this.finesMacOffenceDetailsStore.offenceDetailsDraft();
+    const draftStripped = this.finesMacOffenceDetailsService.removeIndexFromImpositionKey(draft);
 
-    const getControlValue = (controlName: string, defaultValue: string | number | null) =>
-      this.getFormArrayControlValue(formArray, controlName, rowIndex, defaultValue);
+    const impositionData = draftStripped[0].formData.fm_offence_details_impositions[
+      rowIndex!
+    ] as IFinesMacOffenceDetailsImpositionsState;
 
-    const resultCode = getControlValue(
-      formArrayControl[`fm_offence_details_result_id`].controlName,
-      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.nullDefault,
-    );
+    const resultCode =
+      impositionData.fm_offence_details_result_id ?? FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
 
-    this.creditor = getControlValue(
-      formArrayControl[`fm_offence_details_creditor`].controlName,
-      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault,
-    ) as string;
+    this.creditor =
+      impositionData.fm_offence_details_creditor ?? FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
 
-    this.setMajorCreditorDetails(
-      getControlValue(formArrayControl[`fm_offence_details_major_creditor_id`].controlName, null) as number | null,
-    );
+    this.setMajorCreditorDetails(impositionData.fm_offence_details_major_creditor_id ?? (null as number | null));
 
-    this.setMinorCreditorDetails(rowIndex);
+    this.setMinorCreditorDetails(rowIndex!);
 
-    const amountImposed = getControlValue(
-      formArrayControl[`fm_offence_details_amount_imposed`].controlName,
-      FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault,
-    ) as number;
-    const amountPaid = getControlValue(formArrayControl[`fm_offence_details_amount_paid`].controlName, 0) as number;
+    const amountImposed = impositionData.fm_offence_details_amount_imposed ?? 0;
+    const amountPaid = impositionData.fm_offence_details_amount_paid ?? 0;
     const balance = amountImposed - amountPaid;
 
     this.setMonetaryStrings(amountImposed, amountPaid, balance);
@@ -262,48 +208,30 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   }
 
   /**
-   * Confirms the removal of an imposition from the offence details.
+   * Confirms the removal of an imposition from the offence details draft.
    *
-   * This method performs the following actions:
-   * 1. Removes the control from the form array and renumbers the remaining controls.
-   * 2. Updates the imposition positions in the child form data if it exists.
-   * 3. Updates the offence details impositions in the form data.
-   * 4. Handles routing to the add offence path.
+   * This method retrieves the current row index from the finesMacOffenceDetailsStore.
+   * If the row index is not null, it clones the current offence details draft,
+   * removes the imposition at the specified row index, and updates the store with
+   * the modified draft. Finally, it navigates to the add offence route.
    *
-   * @param rowIndex - The index of the row to be removed.
-   * @param formArray - The form array containing the impositions.
+   * @returns {void}
    */
-  public confirmRemoval(rowIndex: number, formArray: FormArray): void {
-    const { formData, childFormData } = this.draftOffenceDetailsState.offenceDetailsDraft[0];
+  public confirmRemoval(): void {
+    const rowIndex = this.finesMacOffenceDetailsStore.rowIndex();
+    if (rowIndex === null) return;
 
-    this.removeControlAndRenumber(
-      formArray,
+    const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
+    const removalOffenceDetailsDraft = this.finesMacOffenceDetailsService.removeImposition(
+      offenceDetailsDraft,
       rowIndex,
-      FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.fieldNames,
-      FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES.dynamicFieldPrefix,
     );
 
-    if (childFormData) {
-      const index = childFormData.findIndex(
-        (childFormData) => childFormData.formData.fm_offence_details_imposition_position === rowIndex,
-      );
-      if (index >= 0) {
-        this.removeMinorCreditorAndUpdateIds(childFormData, index);
-      } else {
-        this.dropMinorCreditorImpositionPosition(childFormData, rowIndex);
-      }
-    }
-
-    formData.fm_offence_details_impositions = formArray.value;
-
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(removalOffenceDetailsDraft);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);
   }
 
-  public ngOnDestroy(): void {
-    this.draftOffenceDetailsState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
-  }
-
   public ngOnInit(): void {
-    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
+    this.finesMacOffenceDetailsStore.resetOffenceCodeMessage();
   }
 }

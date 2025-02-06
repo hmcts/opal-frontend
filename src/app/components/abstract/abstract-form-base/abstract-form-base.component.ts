@@ -27,7 +27,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   public formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
   protected fieldErrors!: IAbstractFormBaseFieldErrors;
   protected formSubmitted = false;
-  private readonly ngUnsubscribe = new Subject<void>();
+  protected readonly ngUnsubscribe = new Subject<void>();
   public formErrors!: IAbstractFormBaseFormError[];
 
   constructor() {}
@@ -437,11 +437,30 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Updates the validators of an existing form control.
+   *
+   * @param controlName - The name of the control to update.
+   * @param validators - An array of validators to apply to the control.
+   */
+  protected updateControl(controlName: string, validators: ValidatorFn[]): void {
+    const control = this.form.get(controlName);
+    if (control) {
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+    } else {
+      this.createControl(controlName, validators);
+    }
+  }
+
+  /**
    * Removes a control from the form.
    *
    * @param controlName - The name of the control to remove.
    */
   protected removeControl(controlName: string): void {
+    if (this.formControlErrorMessages [controlName]) {
+      this.removeControlErrors(controlName);
+    }
     this.form.removeControl(controlName);
   }
 

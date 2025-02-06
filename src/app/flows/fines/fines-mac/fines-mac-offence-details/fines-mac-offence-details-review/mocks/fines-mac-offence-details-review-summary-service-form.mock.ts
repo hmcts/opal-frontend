@@ -21,6 +21,7 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM: IFinesMacOff
       ],
     },
     nestedFlow: false,
+    childFormData: [],
   },
   {
     formData: {
@@ -42,5 +43,6 @@ export const FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_SERVICE_FORM: IFinesMacOff
       ],
     },
     nestedFlow: false,
+    childFormData: [],
   },
 ];

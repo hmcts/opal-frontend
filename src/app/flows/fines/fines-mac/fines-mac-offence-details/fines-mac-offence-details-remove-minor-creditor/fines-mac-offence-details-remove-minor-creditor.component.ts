@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { AbstractFormArrayRemovalComponent } from '@components/abstract/abstract-form-array-removal-base/abstract-form-array-removal-base';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-form.interface';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from '../fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-minor-creditor',
@@ -23,7 +23,7 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
   extends AbstractFormArrayRemovalComponent
   implements OnInit
 {
-  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
   public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorForm;
@@ -34,8 +34,7 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
    * @returns The minor creditor form data matching the imposition position.
    */
   private findMinorCreditor(impositionPosition: number): IFinesMacOffenceDetailsMinorCreditorForm {
-    const draftOffenceDetails =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+    const draftOffenceDetails = this.finesMacOffenceDetailsStore.offenceDetailsDraft()[0];
 
     const minorCreditorsArray = draftOffenceDetails.childFormData!;
     return minorCreditorsArray.find(
@@ -47,7 +46,7 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
    * Retrieves the minor creditor data and sets the corresponding properties.
    */
   private getMinorCreditorData(): void {
-    const impositionPosition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor;
+    const impositionPosition = this.finesMacOffenceDetailsStore.removeMinorCreditor();
     this.minorCreditor = this.findMinorCreditor(impositionPosition!);
   }
 
@@ -57,8 +56,7 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
    * @returns The index of the minor creditor, or -1 if not found.
    */
   private findMinorCreditorIndex(impositionPosition: number): number {
-    const draftOffenceDetails =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+    const draftOffenceDetails = this.finesMacOffenceDetailsStore.offenceDetailsDraft()[0];
 
     const minorCreditorsArray = draftOffenceDetails.childFormData!;
     return minorCreditorsArray.findIndex(
@@ -72,14 +70,13 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
    * After removal, it will navigate to the add offence page.
    */
   public confirmMinorCreditorRemoval(): void {
-    const impositionPosition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor!;
+    const impositionPosition = this.finesMacOffenceDetailsStore.removeMinorCreditor()!;
     const index = this.findMinorCreditorIndex(impositionPosition);
+    const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft()[0]);
 
     if (index !== -1) {
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!.splice(
-        index,
-        1,
-      );
+      offenceDetailsDraft.childFormData!.splice(index, 1);
+      this.finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceDetailsDraft]);
     }
 
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);
@@ -87,6 +84,6 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
 
   public ngOnInit(): void {
     this.getMinorCreditorData();
-    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
+    this.finesMacOffenceDetailsStore.resetOffenceCodeMessage();
   }
 }

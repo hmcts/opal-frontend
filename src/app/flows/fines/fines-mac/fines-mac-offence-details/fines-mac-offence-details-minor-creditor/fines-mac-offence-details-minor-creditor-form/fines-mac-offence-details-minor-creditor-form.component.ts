@@ -9,7 +9,6 @@ import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/g
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../constants/fines-mac-title-dropdown-options.constant';
 import { takeUntil } from 'rxjs';
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
-import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { CommonModule } from '@angular/common';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { GovukSelectComponent } from '@components/govuk/govuk-select/govuk-select.component';
@@ -26,6 +25,7 @@ import { IFinesMacOffenceDetailsMinorCreditorForm } from '../interfaces/fines-ma
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
+import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
@@ -51,7 +51,7 @@ import { specialCharactersValidator } from '@validators/special-characters/speci
 export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFormBaseComponent implements OnInit {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsMinorCreditorForm>();
 
-  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   public readonly creditorTypesOptions = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE;
   public readonly creditorTypes: IGovUkRadioOptions[] = Object.entries(this.creditorTypesOptions).map(
     ([key, value]) => ({
@@ -108,10 +108,9 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
     this.setInitialErrorMessages();
 
     // The following code is when editing a minor creditor to repopulate the form with the existing data
-    const impositionPosition = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor;
+    const impositionPosition = this.finesMacOffenceDetailsStore.removeMinorCreditor();
     if (impositionPosition !== null) {
-      const minorCreditors =
-        this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData!;
+      const minorCreditors = this.finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!;
       const minorCreditor = minorCreditors.find(
         (creditor) => creditor.formData.fm_offence_details_imposition_position === impositionPosition,
       )!;

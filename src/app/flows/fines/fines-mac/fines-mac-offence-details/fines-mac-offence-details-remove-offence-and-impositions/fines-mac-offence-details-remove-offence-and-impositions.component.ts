@@ -11,8 +11,9 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { forkJoin, Observable, tap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-offence-and-impositions',
@@ -25,7 +26,8 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
 {
   private readonly opalFinesService = inject(OpalFines);
   public finesMacStore = inject(FinesMacStore);
-  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly impositionRefData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
@@ -53,9 +55,9 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
    * @returns {void}
    */
   private getOffenceAndImpositions(): void {
-    this.offence = this.finesMacOffenceDetailsService.removeIndexFromImpositionKeys(
-      this.finesMacStore.offenceDetails(),
-    )[this.finesMacOffenceDetailsService.offenceIndex];
+    this.offence = this.finesMacOffenceDetailsService.removeIndexFromImpositionKey(this.finesMacStore.offenceDetails())[
+      this.finesMacOffenceDetailsStore.offenceIndex()
+    ];
   }
 
   /**
@@ -72,9 +74,9 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
    */
   public confirmOffenceRemoval(): void {
     const offenceDetails = structuredClone(this.finesMacStore.offenceDetails());
-    const startIndex = this.finesMacOffenceDetailsService.offenceIndex;
+    const startIndex = this.finesMacOffenceDetailsStore.offenceIndex();
 
-    offenceDetails.splice(this.finesMacOffenceDetailsService.offenceIndex, 1);
+    offenceDetails.splice(this.finesMacOffenceDetailsStore.offenceIndex(), 1);
 
     // decrease the fm_offence_details_id of each offence after the removed offence
     offenceDetails.slice(startIndex).forEach((offence) => {
@@ -83,7 +85,7 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
       }
     });
 
-    this.finesMacOffenceDetailsService.offenceRemoved = true;
+    this.finesMacOffenceDetailsStore.setOffenceRemoved(true);
     this.finesMacStore.setOffenceDetails(offenceDetails);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.reviewOffences);
   }

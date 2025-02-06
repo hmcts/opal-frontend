@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FinesMacOffenceDetailsService } from './services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from './constants/fines-mac-offence-details-draft-state.constant';
 import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from './stores/fines-mac-offence-details.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details',
@@ -15,7 +14,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 export class FinesMacOffenceDetailsComponent implements OnDestroy {
   private readonly globalStore = inject(GlobalStore);
   public finesMacStore = inject(FinesMacStore);
-  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
 
   /**
    * Checks if the component can be deactivated.
@@ -31,7 +30,7 @@ export class FinesMacOffenceDetailsComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // Cleanup our state when the route unloads...
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
+    this.finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
 
     // Clear any errors...
     this.globalStore.setError({

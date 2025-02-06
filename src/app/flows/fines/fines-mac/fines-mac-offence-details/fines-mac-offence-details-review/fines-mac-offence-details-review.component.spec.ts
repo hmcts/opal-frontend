@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsReviewComponent } from './fines-mac-offence-details-review.component';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { DateService } from '@services/date-service/date.service';
 import { of } from 'rxjs';
@@ -20,14 +19,16 @@ import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-se
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { UtilsService } from '@services/utils/utils.service';
+import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsReviewComponent', () => {
   let component: FinesMacOffenceDetailsReviewComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewComponent>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let mockOpalFinesService: Partial<OpalFines>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let finesMacStore: FinesMacStoreType;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -42,15 +43,6 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
         .createSpy('getOffenceByCjsCode')
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'addedOffenceCode',
-      'emptyOffences',
-      'removeIndexFromImpositionKeys',
-      'offenceCodeMessage',
-    ]);
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([
-      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK),
-    ]);
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormat']);
 
     await TestBed.configureTestingModule({
@@ -60,10 +52,6 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
-        {
-          provide: FinesMacOffenceDetailsService,
-          useValue: mockFinesMacOffenceDetailsService,
-        },
         { provide: DateService, mockDateService },
         {
           provide: UtilsService,
@@ -88,6 +76,8 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);
 
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
     fixture.detectChanges();
   });
 
@@ -101,17 +91,16 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     component['getOffencesImpositions']();
 
     expect(component.offencesImpositions).toEqual(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK);
-    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBe(false);
+    expect(finesMacOffenceDetailsStore.emptyOffences()).toBe(false);
   });
 
   it('should set emptyOffences to true when offencesImpositions is empty', () => {
     finesMacStore.setOffenceDetails([]);
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue([]);
 
     component['getOffencesImpositions']();
 
     expect(component.offencesImpositions).toEqual([]);
-    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBe(true);
+    expect(finesMacOffenceDetailsStore.emptyOffences()).toBe(true);
   });
 
   it('should sort offences by date in ascending order', () => {
@@ -123,14 +112,15 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   });
 
   it('should reset addedOffenceCode and offenceDetailsDraft on ngOnDestroy', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    };
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    finesMacOffenceDetailsStore.setRowIndex(0);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
 
     component.ngOnDestroy();
 
-    expect(mockFinesMacOffenceDetailsService.addedOffenceCode).toEqual('');
-    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft).toEqual([]);
-    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeImposition).toBeNull();
+    expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
+    expect(finesMacOffenceDetailsStore.rowIndex()).toBeNull();
+    expect(finesMacOffenceDetailsStore.removeMinorCreditor()).toEqual(0);
   });
 });

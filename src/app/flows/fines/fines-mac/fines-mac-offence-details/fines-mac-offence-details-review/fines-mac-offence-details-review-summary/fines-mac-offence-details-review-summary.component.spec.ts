@@ -3,7 +3,6 @@ import { FinesMacOffenceDetailsReviewSummaryComponent } from './fines-mac-offenc
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from '../mocks/fines-mac-offence-details-review-summary-form.mock';
-import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -16,12 +15,14 @@ import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
+import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryComponent>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let finesMacStore: FinesMacStoreType;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
@@ -31,16 +32,10 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
       'upperCaseFirstLetter',
       'convertToMonetaryString',
     ]);
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'offenceCodeMessage',
-      'offenceIndex',
-    ]);
-    mockFinesMacOffenceDetailsService.offenceCodeMessage = 'Offence AK123456 added';
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewSummaryComponent],
       providers: [
-        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -66,6 +61,8 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
+
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
 
     mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.PROVIDED);
 
@@ -96,7 +93,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.offenceAction(action);
 
-    expect(mockFinesMacOffenceDetailsService.offenceIndex).toBe(action.offenceId);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(action.offenceId);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -108,7 +105,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.offenceAction(action);
 
-    expect(mockFinesMacOffenceDetailsService.offenceIndex).toBe(action.offenceId);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(action.offenceId);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -135,7 +132,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.addAnotherOffence();
 
-    expect(mockFinesMacOffenceDetailsService.offenceIndex).toBe(expectedOffenceIndex);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(expectedOffenceIndex);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });

@@ -6,8 +6,6 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { UtilsService } from '@services/utils/utils.service';
 import { of } from 'rxjs';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac-offence-details-draft-state.constant';
-import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
@@ -25,15 +23,17 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
 import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceFormComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let finesMacStore: FinesMacStoreType;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -41,16 +41,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         .createSpy('getOffenceByCjsCode')
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK)),
     };
-
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'finesMacOffenceDetailsDraftState',
-      'emptyOffences',
-      'offenceCodeMessage',
-    ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    };
-
     mockDateService = jasmine.createSpyObj(DateService, ['getDateNow', 'toFormat']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
       'upperCaseAllLetters',
@@ -62,7 +52,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       imports: [FinesMacOffenceDetailsAddAnOffenceFormComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
-        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         { provide: UtilsService, useValue: mockUtilsService },
         { provide: DateService, useValue: mockDateService },
         provideRouter([]),
@@ -83,6 +72,11 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    finesMacOffenceDetailsStore.setRowIndex(0);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
+
     component.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
     component.majorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
 
@@ -96,7 +90,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     component.ngOnInit();
     const index = 0;
     const result_code = FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.compensation;
@@ -111,7 +105,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true when result_code is costs', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     component.ngOnInit();
     const index = 0;
     const result_code = FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES.costs;
@@ -126,7 +120,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set needsCreditorControl value to true on initial call of resultCodeListener', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     component.ngOnInit();
     const index = 0;
     const impositionsFormArray = component.form.get('fm_offence_details_impositions') as FormArray;
@@ -174,15 +168,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should set selectedOffenceConfirmation to true when already populated', () => {
-    const mockData = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
-    mockData.offenceDetailsDraft[0] = {
-      ...structuredClone(mockData.offenceDetailsDraft[0]),
-      formData: {
-        ...structuredClone(mockData.offenceDetailsDraft[0].formData),
-        fm_offence_details_offence_cjs_code: 'TEST1234',
-      },
+    const offenceDetails = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    offenceDetails.formData = {
+      ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
+      fm_offence_details_offence_cjs_code: 'TEST1234',
     };
-    component['finesMacOffenceDetailsService'].finesMacOffenceDetailsDraftState = mockData;
+
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceDetails]);
 
     component['initialAddAnOffenceDetailsSetup']();
 
@@ -295,9 +287,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should populate offence details draft when navigating to search offences when draft is empty - search offences', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
-      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
-    );
+    finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
     component['initialAddAnOffenceDetailsSetup']();
 
     component.goToSearchOffences();
@@ -330,14 +320,13 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
-  it('should populate offence details draft when navigating to search offences when draft is empty - remove imposition', () => {
+  it('should populate offence details draft when navigating to remove imposition when draft is empty', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
-      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
-    );
-
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    finesMacOffenceDetailsStore.setRowIndex(0);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
     component.removeImpositionConfirmation(0);
 
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeImposition], {
@@ -345,11 +334,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
-  it('should populate offence details draft when navigating to search offences when draft is populated - remove imposition', () => {
+  it('should populate offence details draft when navigating to remove imposition when draft is populated', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     component['initialAddAnOffenceDetailsSetup']();
-
     component.removeImpositionConfirmation(0);
 
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeImposition], {
@@ -404,7 +392,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should perform major creditor validation when creditor value is major', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
     component.ngOnInit();
     const index = 0;
     const creditorValue = 'major';
@@ -425,7 +413,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should perform major creditor validation when creditor value is minor', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
     component.ngOnInit();
     const index = 0;
     const creditorValue = 'minor';
@@ -446,7 +434,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should trigger majorCreditorValidation when the control is already populated when loading the listener', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    finesMacOffenceDetailsStore.resetStoreDraftImpositionMinor();
     component.ngOnInit();
     const index = 0;
     const creditorValue = 'major';
@@ -467,7 +455,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should navigate to account details when emptyOffences is true', () => {
-    mockFinesMacOffenceDetailsService.emptyOffences = true;
+    finesMacOffenceDetailsStore.setEmptyOffences(true);
     const handleRouteSpy = spyOn(component, 'handleRoute');
 
     component.cancelLink();
@@ -479,7 +467,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should navigate to review offences when emptyOffences is false', () => {
-    mockFinesMacOffenceDetailsService.emptyOffences = false;
+    finesMacOffenceDetailsStore.setEmptyOffences(false);
     const handleRouteSpy = spyOn(component, 'handleRoute');
 
     component.cancelLink();
@@ -527,14 +515,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
   it('should initialize the form and setup listeners', () => {
     // Mock data
-    const offenceDetailsDraft = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft };
-    offenceDetailsDraft[0].formData.fm_offence_details_impositions.splice(0, 1);
-    const impositionsLength = offenceDetailsDraft[0].formData.fm_offence_details_impositions.length;
+    const offenceDetailsDraft = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    offenceDetailsDraft.formData.fm_offence_details_impositions.splice(0, 1);
+    const impositionsLength = offenceDetailsDraft.formData.fm_offence_details_impositions.length;
 
     // Mock dependencies
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    };
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceDetailsDraft]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupAddAnOffenceForm');
@@ -565,7 +551,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
       'fm_offence_details_impositions',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(offenceDetailsDraft[0].formData);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(offenceDetailsDraft.formData);
     expect(component['offenceCodeListener']).toHaveBeenCalled();
     expect(component['addControlsToFormArray']).not.toHaveBeenCalled();
     expect(component['setupResultCodeListener']).toHaveBeenCalledTimes(impositionsLength);
@@ -575,10 +561,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-      removeMinorCreditor: 0,
-    };
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
 
     component.minorCreditorActions({ action: 'remove', index: 0 });
 
@@ -623,7 +607,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   });
 
   it('should return one item in the array of minor creditors', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
+    const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
+    offenceWithMinorCreditor.childFormData = [
       structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
       {
         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
@@ -633,11 +618,10 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         },
       },
     ];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft([offenceWithMinorCreditor]);
 
     component['removeMinorCreditorData'](0);
 
-    expect(
-      mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData.length,
-    ).toBe(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toBe(1);
   });
 });

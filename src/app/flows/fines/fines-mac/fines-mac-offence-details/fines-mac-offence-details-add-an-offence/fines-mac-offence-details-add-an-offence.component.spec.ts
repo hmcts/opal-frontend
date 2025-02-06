@@ -15,8 +15,6 @@ import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fi
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../constants/fines-mac-offence-details-draft-state.constant';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
@@ -26,26 +24,19 @@ import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../../fines-mac-payment-terms
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { UtilsService } from '@services/utils/utils.service';
+import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsAddAnOffenceComponent>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let mockOpalFinesService: Partial<OpalFines>;
   let formSubmit: IFinesMacOffenceDetailsForm;
   let finesMacStore: FinesMacStoreType;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'offenceIndex',
-      'addedOffenceCode',
-      'finesMacOffenceDetailsDraftState',
-      'offenceCodeMessage',
-    ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = structuredClone(
-      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
-    );
     mockUtilsService = jasmine.createSpyObj(UtilsService, ['getFormStatus']);
 
     mockOpalFinesService = {
@@ -67,7 +58,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsAddAnOffenceComponent],
       providers: [
-        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         { provide: OpalFines, useValue: mockOpalFinesService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
@@ -90,6 +80,8 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
 
     fixture.detectChanges();
   });
@@ -134,7 +126,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(routerSpy).not.toHaveBeenCalled();
     expect(component.showOffenceDetailsForm).toBeTruthy();
     expect(component.offenceIndex).toBe(1);
-    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
+    expect(finesMacOffenceDetailsStore.emptyOffences()).toBeFalsy();
   });
 
   it('should test handleUnsavedChanges', () => {
@@ -194,13 +186,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should add offence details form to the state when form does not exist', () => {
     const form = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    };
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
-    ];
-
+    const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    offenceWithMinorCreditor[0].childFormData = [structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK)];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceWithMinorCreditor);
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.offenceDetails = [];
     finesMacStore.setFinesMacStore(finesMacState);
@@ -282,7 +270,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
     finesMacStore.setFinesMacStore(finesMacState);
 
-    mockFinesMacOffenceDetailsService.offenceIndex = 1;
+    finesMacOffenceDetailsStore.setOffenceIndex(1);
 
     component['retrieveFormData']();
 
@@ -320,7 +308,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
     expect(routerSpy).not.toHaveBeenCalled();
     expect(component.showOffenceDetailsForm).toBeTruthy();
     expect(component.offenceIndex).toBe(1);
-    expect(mockFinesMacOffenceDetailsService.emptyOffences).toBeFalsy();
+    expect(finesMacOffenceDetailsStore.emptyOffences()).toBeFalsy();
   });
 
   it('should handle unsaved changes', () => {
@@ -335,7 +323,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceComponent', () => {
 
   it('should set minorCreditorAdded to false on destroy', () => {
     component.ngOnDestroy();
-    expect(mockFinesMacOffenceDetailsService.minorCreditorAdded).toBeFalsy();
+    expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBeFalsy();
   });
 
   it('should get collection order date from payment terms', () => {

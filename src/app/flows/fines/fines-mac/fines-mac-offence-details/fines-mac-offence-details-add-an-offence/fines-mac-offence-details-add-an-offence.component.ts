@@ -12,10 +12,10 @@ import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-det
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { AbstractFormArrayParentBaseComponent } from '@components/abstract/abstract-form-array-parent-base/abstract-form-array-parent-base.component';
 import { DateService } from '@services/date-service/date.service';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
@@ -30,7 +30,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   public finesMacStore = inject(FinesMacStore);
-  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly dateService = inject(DateService);
   public defendantType = this.finesMacStore.getDefendantType();
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
@@ -124,7 +124,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     });
 
     const offenceDetails = structuredClone(this.finesMacStore.offenceDetails());
-    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+    const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
 
     if (offenceDetailsDraft.length === 1 && offenceDetailsDraft[0].childFormData) {
       form.childFormData = offenceDetailsDraft[0].childFormData;
@@ -154,7 +154,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     if (this.finesMacStore.offenceDetails().length === 0) {
       this.offenceIndex = 0;
     } else {
-      this.offenceIndex = this.finesMacOffenceDetailsService.offenceIndex;
+      this.offenceIndex = this.finesMacOffenceDetailsStore.offenceIndex();
     }
   }
 
@@ -170,9 +170,9 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.showOffenceDetailsForm = false;
     this.changeDetectorRef.detectChanges();
     ++this.offenceIndex;
-    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
-    this.finesMacOffenceDetailsService.emptyOffences = false;
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);
+    this.finesMacOffenceDetailsStore.setEmptyOffences(false);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     this.showOffenceDetailsForm = true;
     this.changeDetectorRef.detectChanges();
   }
@@ -183,7 +183,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @param code - The offence code to be added.
    */
   private addOffenceCodeMessage(code: string): void {
-    this.finesMacOffenceDetailsService.offenceCodeMessage = `Offence ${code} added`;
+    this.finesMacOffenceDetailsStore.setOffenceCodeMessage(`Offence ${code} added`);
   }
 
   /**
@@ -233,7 +233,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.updateOffenceDetailsIndex(form);
     this.checkPaymentTermsCollectionOrder();
 
-    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_cjs_code!;
+    this.finesMacOffenceDetailsStore.setAddedOffenceCode(form.formData.fm_offence_details_offence_cjs_code!);
     this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_cjs_code!);
 
     if (form.nestedFlow) {
@@ -258,6 +258,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
+    this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);
   }
 }

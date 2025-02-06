@@ -1,28 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent } from './fines-mac-offence-details-remove-offence-and-impositions.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { of } from 'rxjs';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-details-form.mock';
-import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from '../fines-mac-offence-details-review/mocks/fines-mac-offence-details-review-summary-form.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
   let finesMacStore: FinesMacStoreType;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -35,24 +34,11 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
     };
 
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'finesMacOffenceDetailsDraftState',
-      'removeIndexFromImpositionKeys',
-    ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    };
-    mockFinesMacOffenceDetailsService.removeIndexFromImpositionKeys.and.returnValue(
-      FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
-    );
-    mockFinesMacOffenceDetailsService.offenceIndex = 0;
-
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent],
 
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
-        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -74,6 +60,8 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(finesMacState);
 
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
     fixture.detectChanges();
   });
 
@@ -88,7 +76,7 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   it('should remove the offence and set offenceRemoved to true', () => {
     component.confirmOffenceRemoval();
     expect(finesMacStore.offenceDetails().length).toBe(0);
-    expect(mockFinesMacOffenceDetailsService.offenceRemoved).toBeTrue();
+    expect(finesMacOffenceDetailsStore.offenceRemoved()).toBeTrue();
   });
 
   it('should navigate to reviewOffences route after removing offence', () => {

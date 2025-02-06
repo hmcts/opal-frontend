@@ -482,7 +482,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private addControls(controlsToAdd: IAbstractFormArrayControlValidation[]): void {
     controlsToAdd.forEach((control) => {
-      this.createControl(control.controlName, control.validators);
+      this.updateControl(control.controlName, control.validators);
       if (
         control.controlName === 'fm_payment_terms_start_date' ||
         control.controlName === 'fm_payment_terms_pay_by_date'
@@ -499,6 +499,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private removeControls(controlsToRemove: IAbstractFormArrayControlValidation[]): void {
     controlsToRemove.forEach((control) => {
+      const formControl = this.form.get(control.controlName);
+      if (formControl) {
+        formControl.reset();
+      }
       this.removeControl(control.controlName);
       if (
         control.controlName === 'fm_payment_terms_start_date' ||

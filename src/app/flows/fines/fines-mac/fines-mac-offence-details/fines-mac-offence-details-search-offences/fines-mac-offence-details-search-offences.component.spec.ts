@@ -1,27 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsSearchOffencesComponent } from './fines-mac-offence-details-search-offences.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
+import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesComponent>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'finesMacOffenceDetailsDraftState',
-    ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    };
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsSearchOffencesComponent],
       providers: [
-        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -33,6 +25,9 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesComponent);
     component = fixture.componentInstance;
+
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
     fixture.detectChanges();
   });
 

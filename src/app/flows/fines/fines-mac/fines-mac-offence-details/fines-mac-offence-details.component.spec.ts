@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsComponent } from './fines-mac-offence-details.component';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
-import { FinesMacOffenceDetailsService } from './services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from './constants/fines-mac-offence-details-draft-state.constant';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStoreType } from './stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from './stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsComponent', () => {
   let component: FinesMacOffenceDetailsComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsComponent>;
-  let mockFinesMacOffenceDetailsService: FinesMacOffenceDetailsService;
   let globalStore: GlobalStoreType;
   let finesMacStore: FinesMacStoreType;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,12 +23,12 @@ describe('FinesMacOffenceDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsComponent);
     component = fixture.componentInstance;
 
-    mockFinesMacOffenceDetailsService = TestBed.inject(FinesMacOffenceDetailsService);
-
     globalStore = TestBed.inject(GlobalStore);
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
 
     fixture.detectChanges();
   });
@@ -44,9 +44,7 @@ describe('FinesMacOffenceDetailsComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState).toEqual(
-      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE,
-    );
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
     expect(globalStore.error()).toEqual({ error: false, message: '' });
   });
 
