@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { GovukPanelComponent } from '../../../../components/govuk/govuk-panel/govuk-panel.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';

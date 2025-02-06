@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SignInComponent } from './sign-in.component';
 import { ISignInStubForm } from './interfaces';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { SsoEndpoints } from '@routing/enums/sso-endpoints';
+import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
   let fixture: ComponentFixture<SignInComponent>;
-  let globalStateService: GlobalStateService;
+  let globalStore: GlobalStoreType;
   const mockDocumentLocation = {
     location: {
       href: '',
@@ -19,13 +19,12 @@ describe('SignInComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SignInComponent],
-      providers: [],
     }).compileComponents();
-
-    globalStateService = TestBed.inject(GlobalStateService);
 
     fixture = TestBed.createComponent(SignInComponent);
     component = fixture.componentInstance;
+
+    globalStore = TestBed.inject(GlobalStore);
 
     fixture.detectChanges();
   });
@@ -39,7 +38,7 @@ describe('SignInComponent', () => {
 
     expect(component.ssoEnabled).toBeTrue();
 
-    globalStateService.ssoEnabled = false;
+    globalStore.setSsoEnabled(false);
 
     const cdr = fixture.debugElement.injector.get<ChangeDetectorRef>(ChangeDetectorRef);
     const detectChangesSpy = spyOn(cdr.constructor.prototype, 'detectChanges');
@@ -65,16 +64,16 @@ describe('SignInComponent', () => {
 
   it('should handleSsoSignInButtonClick', () => {
     const spy = spyOn(component, 'handleSsoSignInButtonClick').and.callFake(() => {
-      mockDocumentLocation.location.href = SsoEndpoints.login;
+      mockDocumentLocation.location.href = SSO_ENDPOINTS.login;
     });
     component.handleSsoSignInButtonClick();
     expect(spy).toHaveBeenCalled();
-    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.login);
+    expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
   it('should handleStubSignInFormSubmit', () => {
     const formData: ISignInStubForm = { email: 'test' };
-    const url = `${SsoEndpoints.login}?email=${formData.email}`;
+    const url = `${SSO_ENDPOINTS.login}?email=${formData.email}`;
     const spy = spyOn(component, 'handleStubSignInFormSubmit').and.callFake(() => {
       mockDocumentLocation.location.href = url;
     });

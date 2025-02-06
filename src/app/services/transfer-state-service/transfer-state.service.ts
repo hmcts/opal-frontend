@@ -1,13 +1,13 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, Optional, PLATFORM_ID, TransferState, inject, makeStateKey } from '@angular/core';
 import { ITransferStateServerState } from './interfaces/transfer-state-server-state.interface';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransferStateService {
-  private readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStore = inject(GlobalStore);
   private readonly storedServerTransferState!: ITransferStateServerState;
 
   constructor(
@@ -35,14 +35,14 @@ export class TransferStateService {
    * Sets the SSO enabled state based on the stored server transfer state.
    */
   public initializeSsoEnabled(): void {
-    this.globalStateService.ssoEnabled = this.storedServerTransferState?.ssoEnabled;
+    this.globalStore.setSsoEnabled(this.storedServerTransferState?.ssoEnabled);
   }
 
   /**
    * Initializes the LaunchDarkly configuration by assigning the stored server transfer state's
-   * launchDarklyConfig value to the globalStateService's launchDarklyConfig property.
+   * launchDarklyConfig value to the globalStore's launchDarklyConfig property.
    */
   public initializeLaunchDarklyConfig(): void {
-    this.globalStateService.launchDarklyConfig = this.storedServerTransferState?.launchDarklyConfig;
+    this.globalStore.setLaunchDarklyConfig(this.storedServerTransferState?.launchDarklyConfig);
   }
 }
