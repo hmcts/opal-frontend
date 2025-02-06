@@ -416,13 +416,13 @@
   </div>
 </ng-template>
 <ng-template #dateInPastTemplate let-fieldName>
-  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange">
+  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
     <strong>{{ fieldName }} is in the past</strong>
     <p>You can continue with date in the past or change</p>
   </app-moj-ticket-panel>
 </ng-template>
 <ng-template #dateInFutureTemplate let-fieldName>
-  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange">
+  <app-moj-ticket-panel sectionClasses="moj-ticket-panel__content--orange" [alert]="true">
     <strong>{{ fieldName }} is more than 3 years in the future</strong>
     <p>You can continue with date in the past or change</p>
   </app-moj-ticket-panel>

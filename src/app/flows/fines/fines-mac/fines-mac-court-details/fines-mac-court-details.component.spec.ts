@@ -11,7 +11,7 @@ import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from './mocks/fines-mac-court-details-form.mock';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
 import { OPAL_FINES_COURT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-pretty-name.mock';
 

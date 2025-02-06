@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { RouterOutlet } from '@angular/router';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { FinesMacOffenceDetailsService } from './services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from './constants/fines-mac-offence-details-draft-state.constant';
 import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details',
@@ -14,7 +14,7 @@ import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacOffenceDetailsComponent implements OnDestroy {
-  private readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStore = inject(GlobalStore);
   protected readonly finesService = inject(FinesService);
   protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
 
@@ -35,7 +35,7 @@ export class FinesMacOffenceDetailsComponent implements OnDestroy {
     this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE;
 
     // Clear any errors...
-    this.globalStateService.error.set({
+    this.globalStore.setError({
       error: false,
       message: '',
     });

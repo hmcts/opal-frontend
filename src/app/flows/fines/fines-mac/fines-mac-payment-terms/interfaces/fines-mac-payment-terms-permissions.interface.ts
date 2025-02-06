@@ -1,3 +1,3 @@
 export interface IFinesMacPaymentTermsPermissions {
-  500: boolean;
+  [key: number]: boolean;
 }

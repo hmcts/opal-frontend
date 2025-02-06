@@ -20,7 +20,6 @@ import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/g
 import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
 
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
-import { RoutingPaths } from '@routing/enums/routing-paths';
 import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';
 import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES } from '../constants/fines-mac-create-account-account-types';
@@ -30,10 +29,11 @@ import { FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS } from '../constants/fines-mac-cr
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { IFinesMacAccountTypes } from '../../interfaces/fines-mac-account-types.interface';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
+import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
@@ -62,7 +62,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   private readonly accountTypeSubject = new Subject<void>();
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly routingPath = RoutingPaths;
+  protected readonly routingPath = PAGES_ROUTING_PATHS;
 
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
