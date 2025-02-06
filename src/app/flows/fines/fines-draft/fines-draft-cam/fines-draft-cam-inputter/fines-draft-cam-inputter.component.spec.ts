@@ -20,10 +20,13 @@ describe('FinesDraftCamInputterComponent', () => {
   let component: FinesDraftCamInputterComponent;
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
   let globalStore: GlobalStoreType;
-  const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>('FinesService', [
-    'finesMacState',
-    'finesDraftState',
-  ]);
+  const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>(
+    'FinesService',
+    ['finesMacState', 'finesDraftState', 'finesDraftFragment'],
+    {
+      finesDraftFragment: jasmine.createSpyObj('finesDraftFragment', ['set']),
+    },
+  );
   const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
     jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
   const mockOpalFinesService: Partial<OpalFines> = {
@@ -138,5 +141,35 @@ describe('FinesDraftCamInputterComponent', () => {
   it('should initialize with default state', () => {
     component.ngOnInit();
     expect(mockFinesService.finesDraftState).toEqual(FINES_DRAFT_STATE);
+  });
+
+  it('should set rejectedCount$ to the count as a string', () => {
+    (mockOpalFinesService.getDraftAccounts as jasmine.Spy).and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+
+    component['getRejectedCount']();
+
+    component.rejectedCount$.subscribe((value) => {
+      expect(value).toBe('2');
+    });
+  });
+
+  it('should set rejectedCount$ to "99+" if count exceeds 99', () => {
+    const mockResponse = { count: 100 };
+    (mockOpalFinesService.getDraftAccounts as jasmine.Spy).and.returnValue(of(mockResponse));
+
+    component['getRejectedCount']();
+
+    component.rejectedCount$.subscribe((value) => {
+      expect(value).toBe('99+');
+    });
+  });
+
+  it('should handle route navigation correctly', () => {
+    const routerSpy = spyOn(component['router'], 'navigate');
+    const route = 'some/route';
+    component.activeTab = 'review';
+    component.handleRoute(route);
+    expect(mockFinesService.finesDraftFragment.set).toHaveBeenCalledWith('review');
+    expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 });

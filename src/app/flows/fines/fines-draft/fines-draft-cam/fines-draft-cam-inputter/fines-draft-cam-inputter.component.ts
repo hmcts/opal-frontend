@@ -8,7 +8,7 @@ import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { MojSubNavigationItemComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
@@ -17,6 +17,8 @@ import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { GlobalStore } from '@stores/global/global.store';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
+import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -31,6 +33,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly dateService = inject(DateService);
   private readonly finesService = inject(FinesService);
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly businessUnitIds = this.globalStore
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
@@ -41,10 +44,13 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
+  protected readonly finesDraftCamRoutingPaths = FINES_DRAFT_CAM_ROUTING_PATHS;
+
   public draftAccounts$!: Observable<IFinesDraftTableWrapperTableData[]>;
 
   public tableSort = FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT;
   public activeTab!: string;
+  public rejectedCount$!: Observable<string>;
 
   /**
    * Fetches draft accounts data based on the active tab option and business unit IDs.
@@ -64,6 +70,30 @@ export class FinesDraftCamInputterComponent implements OnInit {
         .getDraftAccounts(params)
         .pipe(map((response) => this.populateTableData(response)));
     }
+  }
+
+  /**
+   * Retrieves the count of rejected draft accounts and assigns it to `rejectedCount$`.
+   *
+   * This method constructs the parameters required to fetch the rejected draft accounts,
+   * including the business unit IDs and the status set to rejected. It then calls the
+   * `getDraftAccounts` method of `opalFinesService` with these parameters and maps the
+   * response to extract the count of rejected accounts.
+   *
+   * @private
+   * @returns {void}
+   */
+  private getRejectedCount(): void {
+    const params = { businessUnitIds: this.businessUnitIds, statuses: [OpalFinesDraftAccountStatuses.rejected] };
+
+    this.rejectedCount$ = this.opalFinesService.getDraftAccounts(params).pipe(
+      map((response) => {
+        if (response.count > 99) {
+          return '99+';
+        }
+        return response.count.toString();
+      }),
+    );
   }
 
   /**
@@ -97,6 +127,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
    * @returns void
    */
   private navigateToReviewAccount(draftAccountId: number): void {
+    this.finesService.finesDraftFragment.set(this.activeTab);
     this.router.navigate([
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
       draftAccountId,
@@ -136,7 +167,19 @@ export class FinesDraftCamInputterComponent implements OnInit {
     this.switchTab(event);
   }
 
+  /**
+   * Navigates to the specified route relative to the parent route.
+   *
+   * @param route - The route to navigate to.
+   */
+  public handleRoute(route: string): void {
+    this.finesService.finesDraftFragment.set(this.activeTab);
+    this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
+  }
+
   public ngOnInit(): void {
+    this.getRejectedCount();
     this.finesService.finesDraftState = FINES_DRAFT_STATE;
+    this.finesService.finesDraftFragment.set('');
   }
 }

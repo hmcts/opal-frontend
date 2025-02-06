@@ -249,7 +249,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
         false,
         undefined,
-        'review',
+        this.finesService.finesDraftFragment(),
       );
     } else {
       this.handleRoute(this.finesMacRoutes.children.accountDetails);
