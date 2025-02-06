@@ -23,16 +23,15 @@ import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.int
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/moj-timeline.component';
 import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-account-details',
-
   imports: [
     CommonModule,
     RouterModule,
@@ -75,7 +74,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
 
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
 
   public accountDetailsStatus!: string;
 
@@ -220,7 +219,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public navigateBack(): void {
     if (this.finesService.finesDraftAmend()) {
       this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}`,
         false,
         undefined,
         this.finesService.finesDraftFragment(),
