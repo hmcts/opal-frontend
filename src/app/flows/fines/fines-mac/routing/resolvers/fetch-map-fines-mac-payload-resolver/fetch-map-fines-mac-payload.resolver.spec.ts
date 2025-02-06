@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ResolveFn } from '@angular/router';
 import { OpalFines } from '../../../../services/opal-fines-service/opal-fines.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { Observable, of, throwError } from 'rxjs';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
@@ -11,6 +10,8 @@ import { fetchMapFinesMacPayloadResolver } from './fetch-map-fines-mac-payload.r
 import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from '../../../services/fines-mac-payload/mocks/fines-mac-payload-fines-mac-state.mock';
 import { FinesMacPayloadService } from '../../../services/fines-mac-payload/fines-mac-payload.service';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { GlobalStore } from '@stores/global/global.store';
 
 describe('fetchMapFinesMacPayloadResolver', () => {
   const executeResolver: ResolveFn<IFetchMapFinesMacPayload> = (...resolverParameters) =>
@@ -18,7 +19,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
   let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
-  let mockGlobalStateService: jasmine.SpyObj<GlobalStateService>;
+  let globalStore: GlobalStoreType;
 
   const DRAFT_ACCOUNT_ID = 1;
 
@@ -30,17 +31,15 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       'getOffenceById',
     ]);
     mockFinesMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['mapAccountPayload']);
-    mockGlobalStateService = jasmine.createSpyObj('GlobalStateService', ['error'], {
-      error: { set: jasmine.createSpy('set') },
-    });
 
     TestBed.configureTestingModule({
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
-        { provide: GlobalStateService, useValue: mockGlobalStateService },
       ],
     });
+
+    globalStore = TestBed.inject(GlobalStore);
   });
 
   it('should resolve data when all API calls succeed', async () => {
@@ -119,7 +118,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       `Business unit ID is missing for draftAccountId: ${DRAFT_ACCOUNT_ID}`,
     );
 
-    expect(mockGlobalStateService.error.set).toHaveBeenCalledWith({
+    expect(globalStore.error()).toEqual({
       error: true,
       message: `Business unit ID is missing for draftAccountId: ${DRAFT_ACCOUNT_ID}`,
     });
@@ -140,7 +139,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       'Cannot find business unit for ID: 61',
     );
 
-    expect(mockGlobalStateService.error.set).toHaveBeenCalledWith({
+    expect(globalStore.error()).toEqual({
       error: true,
       message: 'Cannot find business unit for ID: 61',
     });
@@ -156,7 +155,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
 
     await expectAsync(executeResolver(route, mockRouterStateSnapshot)).toBeRejectedWithError('Unexpected error');
 
-    expect(mockGlobalStateService.error.set).toHaveBeenCalledWith({
+    expect(globalStore.error()).toEqual({
       error: true,
       message: 'Unexpected error',
     });
@@ -176,7 +175,7 @@ describe('fetchMapFinesMacPayloadResolver', () => {
       name: 'ErrorWithoutMessage',
     });
 
-    expect(mockGlobalStateService.error.set).toHaveBeenCalledWith({
+    expect(globalStore.error()).toEqual({
       error: true,
       message: 'An unexpected error occurred',
     });

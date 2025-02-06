@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { UtilsService } from '@services/utils/utils.service';
-import { FinesMacOffenceDetailsDefaultValues } from '../enums/fines-mac-offence-details-default-values.enum';
 import { CommonModule } from '@angular/common';
 import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-list.component';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary-card-list/govuk-summary-card-action/govuk-summary-card-action.component';
 import { IFinesMacOffenceDetailsMinorCreditorState } from '../fines-mac-offence-details-minor-creditor/interfaces/fines-mac-offence-details-minor-creditor-state.interface';
+import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',
@@ -87,7 +87,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
    */
   private formatAddress(addressLines: (string | null)[]): string {
     const formattedAddress = addressLines.filter((line) => line).join('<br>');
-    return formattedAddress.length > 0 ? formattedAddress : FinesMacOffenceDetailsDefaultValues.defaultNotProvided;
+    return formattedAddress.length > 0 ? formattedAddress : FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided;
   }
 
   /**
@@ -110,7 +110,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
    * @returns The default payment method.
    */
   private setDefaultPaymentMethod(): string {
-    return FinesMacOffenceDetailsDefaultValues.defaultPaymentMethod;
+    return FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultPaymentMethod;
   }
 
   /**
@@ -118,7 +118,7 @@ export class FinesMacOffenceDetailsMinorCreditorInformationComponent implements 
    * @returns The default value for not provided.
    */
   private setDefaultNotProvided(): string {
-    return FinesMacOffenceDetailsDefaultValues.defaultNotProvided;
+    return FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided;
   }
 
   /**

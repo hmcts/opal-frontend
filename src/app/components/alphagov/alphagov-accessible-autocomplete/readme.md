@@ -42,7 +42,7 @@ You can use the accessible autocomplete component in your template as follows:
   <div id="{{ inputId }}-hint" *ngIf="hintText" class="govuk-hint">{{ hintText }}</div>
 
   <p *ngIf="errors" id="{{ autoCompleteId }}-error-message" class="govuk-error-message">
-    <span class="govuk-visually-hidden">Error:</span> {{ errors }}
+    <span class="govuk-visually-hidden">Error: </span> {{ errors }}
   </p>
 
   <div #autocomplete id="{{ autoCompleteId }}-container" class="{{ inputClasses }}"></div>

@@ -7,7 +7,7 @@ import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/int
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { Observable, forkJoin, map } from 'rxjs';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../constants/fines-mac-offence-details-result-codes.constant';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';

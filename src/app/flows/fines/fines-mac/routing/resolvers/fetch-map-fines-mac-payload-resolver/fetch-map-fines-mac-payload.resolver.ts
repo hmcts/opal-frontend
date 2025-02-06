@@ -1,15 +1,15 @@
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { FinesMacPayloadService } from '../../../services/fines-mac-payload/fines-mac-payload.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
+import { GlobalStore } from '@stores/global/global.store';
 
 export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload> = async (
   route: ActivatedRouteSnapshot,
 ) => {
-  const globalStateService = inject(GlobalStateService);
+  const globalStore = inject(GlobalStore);
   const opalFinesService = inject(OpalFines);
   const finesMacPayloadService = inject(FinesMacPayloadService);
 
@@ -43,7 +43,7 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
     return { finesMacState, finesMacDraft: draftAccount };
   } catch (error) {
     // Log and rethrow the error
-    globalStateService.error.set({
+    globalStore.setError({
       error: true,
       message: error instanceof Error ? error.message : 'An unexpected error occurred',
     });

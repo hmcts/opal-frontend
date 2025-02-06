@@ -46,10 +46,10 @@ You can use the checkboxes component in your template as follows:
 
 ```html
 <div class="govuk-form-group">
-  <fieldset class="govuk-fieldset" [id]="fieldSetId" [attr.aria-describedby]="fieldSetId ? fieldSetId + 'Hint' : ''">
+  <fieldset class="govuk-fieldset" [id]="fieldSetId" [attr.aria-describedby]="fieldSetId">
     <legend
       class="govuk-fieldset__legend {{ legendClasses }}"
-      [attr.describedby]="legendHint ? fieldSetId + 'Hint' : ''"
+      [attr.describedby]="fieldSetId"
     >
       {{ legendText }}
     </legend>
