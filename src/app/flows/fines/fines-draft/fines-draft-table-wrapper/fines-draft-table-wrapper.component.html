@@ -8,75 +8,87 @@
     @if (isApprovedTab) {
       <th
         app-moj-sortable-table-header
-        columnKey="account"
-        [sortDirection]="sortStateSignal()['account']"
+        columnKey="Account"
+        [sortDirection]="sortStateSignal()['Account']"
         (sortChange)="onSortChange($event)"
+        [dataIndex]="0"
       >
         Account
       </th>
     }
     <th
       app-moj-sortable-table-header
-      columnKey="defendant"
-      [sortDirection]="sortStateSignal()['defendant']"
+      columnKey="Defendant"
+      [sortDirection]="sortStateSignal()['Defendant']"
       (sortChange)="onSortChange($event)"
+      [dataIndex]="isApprovedTab ? 1 : 0"
     >
       Defendant
     </th>
     <th
       app-moj-sortable-table-header
-      columnKey="dob"
-      [sortDirection]="sortStateSignal()['dob']"
+      columnKey="Date of birth"
+      [sortDirection]="sortStateSignal()['Date of birth']"
       (sortChange)="onSortChange($event)"
+      [dataIndex]="isApprovedTab ? 2 : 1"
     >
       Date of birth
     </th>
     <th
       app-moj-sortable-table-header
-      columnKey="created"
-      [sortDirection]="sortStateSignal()['created']"
+      columnKey="Created"
+      [sortDirection]="sortStateSignal()['Created']"
       (sortChange)="onSortChange($event)"
+      [dataIndex]="isApprovedTab ? 3 : 2"
     >
       Created
     </th>
     <th
       app-moj-sortable-table-header
-      columnKey="accountType"
-      [sortDirection]="sortStateSignal()['accountType']"
+      columnKey="Account type"
+      [sortDirection]="sortStateSignal()['Account type']"
       (sortChange)="onSortChange($event)"
+      [dataIndex]="isApprovedTab ? 4 : 3"
     >
       Account type
     </th>
     <th
       app-moj-sortable-table-header
-      columnKey="businessUnit"
-      [sortDirection]="sortStateSignal()['businessUnit']"
+      columnKey="Business unit"
+      [sortDirection]="sortStateSignal()['Business unit']"
       (sortChange)="onSortChange($event)"
+      [dataIndex]="isApprovedTab ? 5 : 4"
     >
       Business unit
     </th>
   </ng-container>
   <ng-container row>
-    @for (row of paginatedTableDataComputed(); track row.defendantId) {
+    @for (row of paginatedTableDataComputed(); track row['Defendant id']) {
       <tr app-moj-sortable-table-row>
         @if (isApprovedTab) {
-          <td app-moj-sortable-table-row-data id="account">{{ row['account'] }}</td>
+          <td app-moj-sortable-table-row-data id="account">{{ row['Account'] }}</td>
         }
         <td app-moj-sortable-table-row-data id="defendant">
           <a
             class="govuk-link govuk-link--no-visited-state"
-            (click)="onDefendantClick(+row['defendantId'])"
-            (keydown.enter)="onDefendantClick(+row['defendantId'])"
+            (click)="onDefendantClick(+row['Defendant id'])"
+            (keydown.enter)="onDefendantClick(+row['Defendant id'])"
             tabindex="0"
-            >{{ row['defendant'] }}</a
+            >{{ row['Defendant'] }}</a
           >
         </td>
-        <td app-moj-sortable-table-row-data id="dob">{{ row['dob'] ? row['dob'] : '—' }}</td>
-        <td app-moj-sortable-table-row-data id="created">{{ row['created'] }}</td>
-        <td app-moj-sortable-table-row-data id="accountType">{{ row['accountType'] }}</td>
-        <td app-moj-sortable-table-row-data id="businessUnit">{{ row['businessUnit'] }}</td>
+        <td app-moj-sortable-table-row-data id="dob">{{ row['Date of birth'] ? row['Date of birth'] : '—' }}</td>
+        <td app-moj-sortable-table-row-data id="created">{{ row['Created'] }}</td>
+        <td app-moj-sortable-table-row-data id="accountType">{{ row['Account type'] }}</td>
+        <td app-moj-sortable-table-row-data id="businessUnit">{{ row['Business unit'] }}</td>
       </tr>
     }
+  </ng-container>
+  <ng-container status>
+    <app-moj-sortable-table-status
+      [columnTitle]="sortedColumnTitleSignal()"
+      [sortDirection]="sortedColumnDirectionSignal()"
+    ></app-moj-sortable-table-status>
   </ng-container>
 </app-moj-sortable-table>
 @if (abstractTableDataSignal()!.length > this.paginatedTableDataComputed().length) {
