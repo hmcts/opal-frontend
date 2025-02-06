@@ -11,7 +11,6 @@ import {
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
 import { CommonModule } from '@angular/common';
@@ -41,7 +40,6 @@ import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date
 import { GovukTextAreaComponent } from '@components/govuk/govuk-text-area/govuk-text-area.component';
 import { PermissionsService } from '@services/permissions-service/permissions.service';
 import { ISessionUserStateRole } from '@services/session-service/interfaces/session-user-state.interface';
-import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
 import { IFinesMacPaymentTermsPermissions } from '../interfaces/fines-mac-payment-terms-permissions.interface';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../constants/fines-mac-payment-terms-enforcement-action-options';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-enforcement-action-options-control-validation';
@@ -49,6 +47,9 @@ import { IAbstractFormArrayControlValidation } from '@components/abstract/interf
 import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '../interfaces/fines-mac-payment-terms-collection-order-options-control-validation.interface';
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { dateBeforeValidator } from '@validators/date-before/date-before.validator';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
+import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permisson-values.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
@@ -81,17 +82,17 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
 
   protected readonly finesService = inject(FinesService);
   protected readonly dateService = inject(DateService);
+  private readonly globalStore = inject(GlobalStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] =
-    this.globalStateService.userState()?.business_unit_user || [];
+  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStore.userState()?.business_unit_user || [];
 
   private readonly earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
   private readonly collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 
-  public readonly permissionsMap = FinesMacPaymentTermsPermissions;
+  public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FinesMacPaymentTermsPermissions.collectionOrder]: false,
+    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
   };
 
   override fieldErrors = {

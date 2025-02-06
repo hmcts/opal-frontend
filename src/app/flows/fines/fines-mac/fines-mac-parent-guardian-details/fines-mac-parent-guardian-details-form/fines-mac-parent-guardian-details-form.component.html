@@ -105,7 +105,11 @@
     [errors]="formControlErrorMessages['fm_parent_guardian_details_dob']"
   ></app-moj-date-picker>
   @if (age && ageLabel) {
-    <app-moj-ticket-panel componentClasses="govuk-!-width-one-third" sectionClasses="moj-ticket-panel__content--blue">
+    <app-moj-ticket-panel
+      componentClasses="govuk-!-width-one-third"
+      sectionClasses="moj-ticket-panel__content--blue"
+      [alert]="true"
+    >
       <strong>Age: {{ age }}</strong>
       <p>{{ ageLabel }}</p>
     </app-moj-ticket-panel>

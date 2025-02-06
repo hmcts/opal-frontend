@@ -1,20 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-
 import { FinesMacPayloadService } from './fines-mac-payload.service';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from './mocks/fines-mac-payload-fines-mac-state.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from './mocks/fines-mac-payload-add-account.mock';
 import { IFinesMacState } from '../../interfaces/fines-mac-state.interface';
-
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
-import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
 import { FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE } from './utils/mocks/state/fines-mac-payload-offence-details-minor-creditor-state.mock';
 import { FINES_MAC_PAYLOAD_ACCOUNT_OFFENCES_WITH_MINOR_CREDITOR } from './utils/mocks/fines-mac-payload-account-offences-with-minor-creditor.mock';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
+import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
 
 describe('FinesMacPayloadService', () => {
   let service: FinesMacPayloadService | null;
@@ -79,11 +77,11 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
-    finesMacPayloadAddAccount.account_status = FineMacPayloadAccountAccountStatuses.resubmitted;
+    finesMacPayloadAddAccount.account_status = FINES_MAC_PAYLOAD_STATUSES.resubmitted;
     finesMacPayloadAddAccount.timeline_data = [
       {
         ...finesMacPayloadAddAccount.timeline_data[0],
-        status: FineMacPayloadAccountAccountStatuses.resubmitted,
+        status: FINES_MAC_PAYLOAD_STATUSES.resubmitted,
       },
     ];
 

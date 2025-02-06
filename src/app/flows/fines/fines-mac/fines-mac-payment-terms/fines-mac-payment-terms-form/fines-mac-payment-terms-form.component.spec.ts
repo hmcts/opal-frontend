@@ -8,20 +8,21 @@ import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from '../mocks/fines-mac-payment-te
 import { DateService } from '@services/date-service/date.service';
 import { DateTime } from 'luxon';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
-import { FinesMacPaymentTermsPermissions } from '../enums/fines-mac-payment-terms-permissions.enum';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { IAbstractFormArrayControlValidation } from '@components/abstract/interfaces/abstract-form-array-control-validation.interface';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../fines-mac-offence-details/mocks/fines-mac-offence-details-form.mock';
 import { of } from 'rxjs';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permisson-values.constant';
 
 describe('FinesMacPaymentTermsFormComponent', () => {
   let component: FinesMacPaymentTermsFormComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsFormComponent>;
-  let mockGlobalStateService: GlobalStateService;
   let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockDateService: jasmine.SpyObj<DateService>;
 
   let formSubmit: IFinesMacPaymentTermsForm;
+  let globalStore: GlobalStoreType;
 
   beforeEach(async () => {
     mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
@@ -54,8 +55,8 @@ describe('FinesMacPaymentTermsFormComponent', () => {
       ],
     }).compileComponents();
 
-    mockGlobalStateService = TestBed.inject(GlobalStateService);
-    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
 
     fixture = TestBed.createComponent(FinesMacPaymentTermsFormComponent);
     component = fixture.componentInstance;
@@ -454,7 +455,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     component['setupPermissions']();
 
     expect(component['hasPermissionAccess']).toHaveBeenCalled();
-    expect(component.permissions[FinesMacPaymentTermsPermissions.collectionOrder]).toBeTruthy();
+    expect(component.permissions[FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]).toBeTruthy();
   });
 
   it('should update form controls based on selected enforcement action', () => {
