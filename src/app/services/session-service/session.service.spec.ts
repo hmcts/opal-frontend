@@ -1,12 +1,13 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SessionService } from './session.service';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { ISessionTokenExpiry } from '@services/session-service/interfaces/session-token-expiry.interface';
 import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { SESSION_ENDPOINTS } from './constants/session-endpoints.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
@@ -14,20 +15,20 @@ const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 describe('SessionService', () => {
   let service: SessionService;
   let httpMock: HttpTestingController;
-  let globalStateService: GlobalStateService;
+  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [GlobalStateService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(SessionService);
     httpMock = TestBed.inject(HttpTestingController);
-    globalStateService = TestBed.inject(GlobalStateService);
+    globalStore = TestBed.inject(GlobalStore);
   });
 
   beforeEach(() => {
-    mockTokenExpiry.expiry = '3600';
+    globalStore.setTokenExpiry(mockTokenExpiry);
   });
 
   afterEach(() => {
@@ -43,7 +44,7 @@ describe('SessionService', () => {
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(globalStateService.userState()).toEqual(mockUserState);
+      expect(globalStore.userState()).toEqual(mockUserState);
     });
 
     const req = httpMock.expectOne(SESSION_ENDPOINTS.userState);
@@ -56,7 +57,7 @@ describe('SessionService', () => {
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(globalStateService.userState()).toEqual(mockUserState);
+      expect(globalStore.userState()).toEqual(mockUserState);
     });
 
     const req = httpMock.expectOne(SESSION_ENDPOINTS.userState);
@@ -66,7 +67,7 @@ describe('SessionService', () => {
     // Make a second call
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(globalStateService.userState()).toEqual(mockUserState);
+      expect(globalStore.userState()).toEqual(mockUserState);
     });
 
     // No new request should be made since the response is cached
@@ -78,7 +79,7 @@ describe('SessionService', () => {
 
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(globalStateService.userState()).toEqual(mockUserState);
+      expect(globalStore.userState()).toEqual(mockUserState);
     });
 
     let req = httpMock.expectOne(SESSION_ENDPOINTS.userState);
@@ -88,14 +89,14 @@ describe('SessionService', () => {
     // Make a second call
     service.getUserState().subscribe((response) => {
       expect(response).toEqual(mockUserState);
-      expect(globalStateService.userState()).toEqual(mockUserState);
+      expect(globalStore.userState()).toEqual(mockUserState);
     });
 
     // No new request should be made since the response is cached
     httpMock.expectNone(SESSION_ENDPOINTS.userState);
 
     // Clear the cache
-    globalStateService.userState.set({} as ISessionUserState);
+    globalStore.setUserState({} as ISessionUserState);
 
     // Make a third call
     service.getUserState().subscribe((response) => {
@@ -110,7 +111,7 @@ describe('SessionService', () => {
   it('should return the token expiry information', () => {
     service.getTokenExpiry().subscribe((response) => {
       expect(response).toEqual(mockTokenExpiry);
-      expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
+      expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
 
     const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
@@ -121,7 +122,7 @@ describe('SessionService', () => {
   it('should return cached response', () => {
     service.getTokenExpiry().subscribe((response) => {
       expect(response).toEqual(mockTokenExpiry);
-      expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
+      expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
     const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
     expect(req.request.method).toBe('GET');
@@ -129,7 +130,7 @@ describe('SessionService', () => {
     // Make a second call
     service.getTokenExpiry().subscribe((response) => {
       expect(response).toEqual(mockTokenExpiry);
-      expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
+      expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
     // No new request should be made since the response is cached
     httpMock.expectNone(SESSION_ENDPOINTS.expiry);
@@ -138,7 +139,7 @@ describe('SessionService', () => {
   it('should do a new request if the cached response is empty', () => {
     service.getTokenExpiry().subscribe((response) => {
       expect(response).toEqual(mockTokenExpiry);
-      expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
+      expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
     const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
     expect(req.request.method).toBe('GET');
@@ -147,9 +148,41 @@ describe('SessionService', () => {
     // Make a second call
     service.getTokenExpiry().subscribe((response) => {
       expect(response).toEqual(mockTokenExpiry);
-      expect(globalStateService.tokenExpiry).toEqual(mockTokenExpiry);
+      expect(globalStore.tokenExpiry()).toEqual(mockTokenExpiry);
     });
     // No new request should be made since the response is cached
     httpMock.expectNone(SESSION_ENDPOINTS.expiry);
   });
+
+  it('should retry the request exactly MAX_RETRIES times before success', fakeAsync(() => {
+    service['tokenExpiryCache$'] = null; // Reset cache to force a fresh request
+
+    const mockResponse: ISessionTokenExpiry = { expiry: '3600', warningThresholdInMilliseconds: 5 };
+    const MAX_RETRIES = service['MAX_RETRIES']; // Read from service
+    const RETRY_DELAY_MS = service['RETRY_DELAY_MS'];
+
+    let result: ISessionTokenExpiry | undefined;
+
+    service.getTokenExpiry().subscribe((response) => {
+      result = response;
+    });
+
+    // Simulate failed requests up to `MAX_RETRIES`
+    for (let i = 0; i < MAX_RETRIES; i++) {
+      const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
+      expect(req.request.method).toBe('GET');
+      req.flush(null, { status: 500, statusText: 'Internal Server Error' });
+      tick(RETRY_DELAY_MS); // Advance time to trigger retry
+    }
+
+    // Final successful request
+    const req = httpMock.expectOne(SESSION_ENDPOINTS.expiry);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+
+    flush(); // Ensure all pending observables complete
+
+    // Verify successful response after retries
+    expect(result).toEqual(mockResponse);
+  }));
 });

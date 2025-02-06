@@ -1,15 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { catchError, tap, throwError } from 'rxjs';
-import { GlobalStateService } from '../global-state-service/global-state.service';
 import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStore = inject(GlobalStore);
 
   public checkAuthenticated() {
     return this.http
@@ -22,12 +22,12 @@ export class AuthService {
       })
       .pipe(
         tap((resp) => {
-          this.globalStateService.authenticated.set(resp);
+          this.globalStore.setAuthenticated(resp);
         }),
       )
       .pipe(
         catchError((error) => {
-          this.globalStateService.authenticated.set(false);
+          this.globalStore.setAuthenticated(false);
           return throwError(() => error);
         }),
       );

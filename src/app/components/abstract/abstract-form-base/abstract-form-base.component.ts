@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { Subject, takeUntil } from 'rxjs';
 import { IAbstractFormBaseFieldError } from './interfaces/abstract-form-base-field-error.interface';
 import { IAbstractFormBaseFieldErrors } from './interfaces/abstract-form-base-field-errors.interface';
@@ -24,7 +23,6 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public readonly globalStateService = inject(GlobalStateService);
   protected readonly utilsService = inject(UtilsService);
 
   public form!: FormGroup;

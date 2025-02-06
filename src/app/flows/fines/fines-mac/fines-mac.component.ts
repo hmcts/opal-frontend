@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE } from './constants/fines-mac-state';
 import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Component({
   selector: 'app-fines-mac',
@@ -13,7 +13,7 @@ import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacComponent implements OnDestroy {
-  private readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStore = inject(GlobalStore);
   protected readonly finesService = inject(FinesService);
 
   /**
@@ -56,7 +56,7 @@ export class FinesMacComponent implements OnDestroy {
     this.finesService.finesMacState.offenceDetails = [];
 
     // Clear any errors...
-    this.globalStateService.error.set({
+    this.globalStore.setError({
       error: false,
       message: '',
     });

@@ -1,22 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { GlobalStateService } from '../global-state-service/global-state.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let globalStateService: GlobalStateService;
   let httpMock: HttpTestingController;
+  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
+    globalStore = TestBed.inject(GlobalStore);
     service = TestBed.inject(AuthService);
-    globalStateService = TestBed.inject(GlobalStateService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -27,7 +28,7 @@ describe('AuthService', () => {
   it('should be authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(true);
-      expect(globalStateService.authenticated()).toEqual(true);
+      expect(globalStore.authenticated()).toEqual(true);
     });
 
     const req = httpMock.expectOne(`${SSO_ENDPOINTS.authenticated}`);
@@ -39,7 +40,7 @@ describe('AuthService', () => {
   it('should be not authenticated', () => {
     service.checkAuthenticated().subscribe((resp) => {
       expect(resp).toEqual(false);
-      expect(globalStateService.authenticated()).toEqual(false);
+      expect(globalStore.authenticated()).toEqual(false);
     });
 
     const req = httpMock.expectOne(`${SSO_ENDPOINTS.authenticated}`);
@@ -52,7 +53,7 @@ describe('AuthService', () => {
     service.checkAuthenticated().subscribe(
       () => {},
       () => {
-        expect(globalStateService.authenticated()).toEqual(false);
+        expect(globalStore.authenticated()).toEqual(false);
       },
     );
 
