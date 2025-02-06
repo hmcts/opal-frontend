@@ -27,5 +27,7 @@ export const routing: Routes = [
         (c) => c.FinesDraftCamViewAllRejectedComponent,
       ),
     canActivate: [authGuard],
+    data: { title: FINES_DRAFT_CAM_ROUTING_TITLES.children.viewAllRejected },
+    resolve: { title: TitleResolver },
   },
 ];
