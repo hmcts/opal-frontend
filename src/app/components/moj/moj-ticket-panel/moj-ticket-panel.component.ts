@@ -10,4 +10,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 export class MojTicketPanelComponent {
   @Input({ required: false }) componentClasses!: string;
   @Input({ required: false }) sectionClasses!: string;
+  @Input({ required: false }) alert!: boolean;
 }

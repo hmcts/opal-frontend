@@ -1,15 +1,15 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { catchError, tap, throwError } from 'rxjs';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
-  const globalStateService = inject(GlobalStateService);
+  const globalStore = inject(GlobalStore);
 
   return next(req).pipe(
     tap(() => {
       // Clear the state service on new requests
-      globalStateService.error.set({ error: false, message: '' });
+      globalStore.setError({ error: false, message: '' });
     }),
     catchError((error) => {
       // Ensure ErrorEvent is handled only in browser environments
@@ -18,7 +18,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
       const errorMessage = isErrorEvent ? `Error: ${error.error.message}` : `Error: ${error.message}`;
 
-      globalStateService.error.set({
+      globalStore.setError({
         error: true,
         message: errorMessage,
       });

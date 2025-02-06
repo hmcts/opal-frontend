@@ -7,7 +7,7 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacLanguagePreferencesForm } from './interfaces/fines-mac-language-preferences-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from './mocks/fines-mac-language-preferences-form.mock';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 
 describe('FinesMacLanguagePreferencesComponent', () => {
   let component: FinesMacLanguagePreferencesComponent;

@@ -2,7 +2,7 @@
   <label class="govuk-label {{ labelClasses }}" [for]="inputId"> {{ labelText }} </label>
   @if (errors) {
     <p id="{{ this.inputId }}-error-message" class="govuk-error-message">
-      <span class="govuk-visually-hidden">Error:</span> {{ errors }}
+      <span class="govuk-visually-hidden">Error: </span> {{ errors }}
     </p>
   }
   <div class="govuk-input__wrapper">
