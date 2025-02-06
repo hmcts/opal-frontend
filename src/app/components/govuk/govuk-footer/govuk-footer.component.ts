@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GovukFooter } from './enums';
+import { GOVUK_FOOTER_LINKS } from './constants/govuk-footer-links.constant';
 
 @Component({
   selector: 'app-govuk-footer',
@@ -9,5 +9,5 @@ import { GovukFooter } from './enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GovukFooterComponent {
-  public readonly footer = GovukFooter;
+  public readonly footer = GOVUK_FOOTER_LINKS;
 }

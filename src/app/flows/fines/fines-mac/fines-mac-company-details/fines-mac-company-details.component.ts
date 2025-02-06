@@ -4,8 +4,8 @@ import { IFinesMacCompanyDetailsForm } from './interfaces/fines-mac-company-deta
 
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form/fines-mac-company-details-form.component';
 import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 
 @Component({

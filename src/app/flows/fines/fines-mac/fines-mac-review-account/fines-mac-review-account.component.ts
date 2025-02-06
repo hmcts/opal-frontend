@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
@@ -27,8 +27,8 @@ import {
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { UtilsService } from '@services/utils/utils.service';
+import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -56,12 +56,12 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  protected readonly globalStateService = inject(GlobalStateService);
+  protected readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesService = inject(FinesService);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   private readonly utilsService = inject(UtilsService);
-  private readonly userState = this.globalStateService.userState();
+  private readonly userState = this.globalStore.userState();
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
@@ -158,7 +158,7 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    this.globalStateService.error.set({
+    this.globalStore.setError({
       error: false,
       message: '',
     });

@@ -3,10 +3,10 @@ import { GovukSummaryCardListComponent } from '@components/govuk/govuk-summary-c
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { IFinesMacEmployerDetailsState } from '../../fines-mac-employer-details/interfaces/fines-mac-employer-details-state.interface';
-import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
 import { UtilsService } from '@services/utils/utils.service';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
+import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-employer-details',
@@ -27,7 +27,7 @@ export class FinesMacReviewAccountEmployerDetailsComponent implements OnInit {
 
   private readonly utilsService = inject(UtilsService);
 
-  public readonly defaultValues = FinesMacReviewAccountDefaultValues;
+  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public employerAddress!: string[];
 
   /**
