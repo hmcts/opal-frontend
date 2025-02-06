@@ -5,6 +5,5 @@ export const FINES_DRAFT_ROUTING_PATHS: IFinesDraftRoutingPaths = {
   children: {
     createAndManage: 'create-and-manage',
     checkAndValidate: 'check-and-validate',
-    viewAllRejected: 'view-all-rejected',
   },
 };

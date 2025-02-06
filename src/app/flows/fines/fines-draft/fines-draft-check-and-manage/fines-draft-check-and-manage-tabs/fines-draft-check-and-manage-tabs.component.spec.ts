@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesDraftCheckAndManageTabsComponent } from './fines-draft-check-and-manage-tabs-inputter.component';
+import { FinesDraftCheckAndManageTabsComponent } from './fines-draft-check-and-manage-tabs.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of } from 'rxjs';

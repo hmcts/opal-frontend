@@ -3,7 +3,7 @@ import { FinesDraftViewAllRejectedComponent } from './fines-draft-view-all-rejec
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
-import { FINES_DRAFT_ROUTING_PATHS } from '../routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
 describe('FinesDraftViewAllRejectedComponent', () => {
   let component: FinesDraftViewAllRejectedComponent;
@@ -44,7 +44,7 @@ describe('FinesDraftViewAllRejectedComponent', () => {
   it('should navigate back on navigateBack', () => {
     component.navigateBack();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith([FINES_DRAFT_ROUTING_PATHS.children.createAndManage], {
+    expect(mockRouter.navigate).toHaveBeenCalledWith([FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS.children.tabs], {
       relativeTo: component['activatedRoute'].parent,
       fragment: 'rejected',
     });

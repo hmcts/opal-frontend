@@ -19,7 +19,7 @@ import { GlobalStore } from '@stores/global/global.store';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
-import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-check-and-manage-tabs',
@@ -50,7 +50,7 @@ export class FinesDraftCheckAndManageTabsComponent implements OnInit {
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
-  protected readonly finesDraftRoutingPaths = FINES_DRAFT_ROUTING_PATHS;
+  protected readonly finesDraftCheckAndManageRoutingPaths = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
 
   public draftAccounts$!: Observable<IFinesDraftTableWrapperTableData[]>;
 

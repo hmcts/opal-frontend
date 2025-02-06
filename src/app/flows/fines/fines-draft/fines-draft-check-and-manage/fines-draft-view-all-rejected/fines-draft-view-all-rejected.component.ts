@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
-import { FINES_DRAFT_ROUTING_PATHS } from '../routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-draft-view-all-rejected',
@@ -23,7 +23,7 @@ export class FinesDraftViewAllRejectedComponent {
    * @returns {void}
    */
   public navigateBack(): void {
-    this.router.navigate([`${FINES_DRAFT_ROUTING_PATHS.children.createAndManage}`], {
+    this.router.navigate([`${FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS.children.tabs}`], {
       relativeTo: this.activatedRoute.parent,
       fragment: this.finesService.finesDraftFragment(),
     });

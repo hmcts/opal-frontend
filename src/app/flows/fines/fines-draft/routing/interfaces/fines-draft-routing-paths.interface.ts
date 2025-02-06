@@ -4,6 +4,5 @@ export interface IFinesDraftRoutingPaths extends IChildRoutingPaths {
   children: {
     createAndManage: string;
     checkAndValidate: string;
-    viewAllRejected: string;
   };
 }

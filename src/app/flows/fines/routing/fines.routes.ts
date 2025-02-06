@@ -9,9 +9,11 @@ import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routin
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_ROUTING_PERMISSIONS } from '@routing/fines/constants/fines-routing-permissions.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
+import { FINES_DRAFT_ROUTING_PERMISSIONS } from '../fines-draft/routing/constants/fines-draft-routing-permissions.constant';
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
 const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];
+const draftRootPermissionIds = FINES_DRAFT_ROUTING_PERMISSIONS;
 
 export const finesRouting: Routes = [
   {
@@ -29,13 +31,19 @@ export const finesRouting: Routes = [
         children: macRouting,
         canActivate: [authGuard, routePermissionsGuard],
         canDeactivate: [canDeactivateGuard],
-        data: { routePermissionId: macRootPermissionId },
+        data: { routePermissionId: [macRootPermissionId] },
       },
       {
         path: FINES_ROUTING_PATHS.children.draft.root,
         loadComponent: () => import('../fines-draft/fines-draft.component').then((c) => c.FinesDraftComponent),
         children: draftRouting,
         canActivate: [authGuard],
+        data: {
+          routePermissionId: [
+            draftRootPermissionIds['check-and-validate'],
+            draftRootPermissionIds['create-and-manage'],
+          ],
+        },
       },
     ],
     resolve: { userState: userStateResolver },
