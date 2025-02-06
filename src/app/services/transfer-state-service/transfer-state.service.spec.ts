@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-
 import { TransferStateService } from './transfer-state.service';
-
 import { TRANSFER_STATE_MOCK } from './mocks';
-import { GlobalStateService } from '../global-state-service/global-state.service';
 import { PLATFORM_ID, makeStateKey } from '@angular/core';
 import { ITransferStateServerState } from './interfaces/transfer-state-server-state.interface';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
 
 describe('TransferStateService', () => {
   let service: TransferStateService;
-  let globalStateService: GlobalStateService;
+  let globalStore: GlobalStoreType;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,8 +20,9 @@ describe('TransferStateService', () => {
         },
       ],
     });
+
+    globalStore = TestBed.inject(GlobalStore);
     service = TestBed.inject(TransferStateService);
-    globalStateService = TestBed.inject(GlobalStateService);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (service as any).storedServerTransferState = TRANSFER_STATE_MOCK;
   });
@@ -40,12 +40,12 @@ describe('TransferStateService', () => {
   it('should initialize SSO enabled', () => {
     service.initializeSsoEnabled();
 
-    expect(globalStateService.ssoEnabled).toEqual(service['storedServerTransferState'].ssoEnabled);
+    expect(globalStore.ssoEnabled()).toEqual(service['storedServerTransferState'].ssoEnabled);
   });
 
   it('should initialize launch darkly', () => {
     service.initializeLaunchDarklyConfig();
 
-    expect(globalStateService.launchDarklyConfig).toEqual(service['storedServerTransferState'].launchDarklyConfig);
+    expect(globalStore.launchDarklyConfig()).toEqual(service['storedServerTransferState'].launchDarklyConfig);
   });
 });

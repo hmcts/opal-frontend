@@ -4,13 +4,12 @@ import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-li
 import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { IFinesMacContactDetailsState } from '../../fines-mac-contact-details/interfaces/fines-mac-contact-details-state.interface';
 import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
-import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
+import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-contact-details',
-
   imports: [
     GovukSummaryCardListComponent,
     GovukSummaryListComponent,
@@ -27,7 +26,7 @@ export class FinesMacReviewAccountContactDetailsComponent {
   @Output() public emitChangeContactDetails = new EventEmitter<void>();
 
   public readonly finesMacStatus = FINES_MAC_STATUS;
-  public readonly defaultValues = FinesMacReviewAccountDefaultValues;
+  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
 
   /**
    * Emits an event to indicate that contact details needs changed.

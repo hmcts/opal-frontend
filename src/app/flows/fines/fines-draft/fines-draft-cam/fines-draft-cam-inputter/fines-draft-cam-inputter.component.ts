@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
@@ -12,11 +11,12 @@ import { FinesService } from '@services/fines/fines-service/fines.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
 import { MojSubNavigationItemComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { MojSubNavigationComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation.component';
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
+import { GlobalStore } from '@stores/global/global.store';
+import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
@@ -35,15 +35,15 @@ import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.compon
 })
 export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
-  private readonly globalStateService = inject(GlobalStateService);
+  public globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
   protected readonly finesService = inject(FinesService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly businessUnitIds = this.globalStateService
+  private readonly businessUnitIds = this.globalStore
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
-  private readonly businessUnitUserIds = this.globalStateService
+  private readonly businessUnitUserIds = this.globalStore
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_user_id);
 
