@@ -18,6 +18,7 @@ export class FinesService {
   public finesMacState: IFinesMacState = { ...FINES_MAC_STATE };
   public finesDraftState: IFinesMacAddAccountPayload = { ...FINES_DRAFT_STATE };
   public readonly finesDraftFragment = signal<string>('');
+  public readonly finesDraftAmend = signal<boolean>(false);
 
   /**
    * Checks if the employer details status is valid.

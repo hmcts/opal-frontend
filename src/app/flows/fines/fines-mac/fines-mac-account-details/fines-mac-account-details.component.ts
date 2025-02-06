@@ -21,6 +21,14 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
+import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
+import { MojTimelineComponent } from '../../../../components/moj/moj-timeline/moj-timeline.component';
+import { MojTimelineItemComponent } from '../../../../components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
+import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@services/utils/utils.service';
+import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -37,6 +45,8 @@ import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     GovukBackLinkComponent,
+    MojTimelineComponent,
+    MojTimelineItemComponent,
   ],
   templateUrl: './fines-mac-account-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,8 +55,9 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesService = inject(FinesService);
+  protected readonly utilsService = inject(UtilsService);
+  protected readonly dateService = inject(DateService);
 
-  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;
   private readonly ngUnsubscribe: Subject<void> = new Subject<void>();
 
@@ -62,12 +73,57 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   public mandatorySectionsCompleted!: boolean;
   public readonly finesMacStatus = FINES_MAC_STATUS;
 
+  protected readonly finesRoutes = FINES_ROUTING_PATHS;
+  protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+
+  public accountDetailsStatus!: string;
+
   /**
    * Determines whether the component can be deactivated.
    * @returns A CanDeactivateTypes object representing the navigation status.
    */
   canDeactivate(): CanDeactivateTypes {
     return this.pageNavigation;
+  }
+
+  /**
+   * Sets the account details status from the fines service state.
+   *
+   * @private
+   * @returns {void}
+   */
+  private setAccountDetailsStatus(): void {
+    const accountStatus = this.finesService.finesDraftState?.account_status;
+    if (!accountStatus) return;
+
+    this.accountDetailsStatus =
+      FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus))?.prettyName ?? '';
+  }
+
+  /**
+   * Fetches and maps account details payload from the activated route snapshot.
+   *
+   * This method retrieves the `accountDetailsFetchMap` from the route snapshot data,
+   * and updates the `finesMacState` and `finesDraftState` in the `finesService` with the fetched data.
+   * It also sets the account details status based on the fetched payload.
+   *
+   * @private
+   * @returns {void}
+   */
+  private accountDetailsFetchedMappedPayload(): void {
+    const snapshot = this.activatedRoute.snapshot;
+    if (!snapshot) return;
+
+    const accountDetailsFetchMap = snapshot.data['accountDetailsFetchMap'] as IFetchMapFinesMacPayload;
+    if (!accountDetailsFetchMap) return;
+
+    // Get payload into Fines Mac State
+    this.finesService.finesMacState = accountDetailsFetchMap.finesMacState;
+    this.finesService.finesDraftState = accountDetailsFetchMap.finesMacDraft;
+
+    // Grab the status from the payload
+    this.setAccountDetailsStatus();
   }
 
   /**
@@ -134,6 +190,8 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * Sets the defendant type and account type.
    */
   private initialAccountDetailsSetup(): void {
+    this.accountDetailsFetchedMappedPayload();
+    this.setAccountDetailsStatus();
     this.setDefendantType();
     this.setAccountType();
     this.setLanguage();
@@ -160,8 +218,17 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    this.pageNavigation = false;
-    this.handleRoute(this.fineMacRoutes.children.createAccount);
+    if (this.finesService.finesDraftAmend()) {
+      this.handleRoute(
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+        false,
+        undefined,
+        this.finesService.finesDraftFragment(),
+      );
+    } else {
+      this.pageNavigation = false;
+      this.handleRoute(this.fineMacRoutes.children.createAccount);
+    }
   }
 
   /**
@@ -169,12 +236,14 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    *
    * @param route - The route to navigate to.
    */
-  public handleRoute(route: string, nonRelative: boolean = false, event?: Event): void {
+  public handleRoute(route: string, nonRelative: boolean = false, event?: Event, fragment?: string): void {
     if (event) {
       event.preventDefault();
     }
     if (nonRelative) {
       this.router.navigate([route]);
+    } else if (fragment) {
+      this.router.navigate([route], { fragment });
     } else {
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }

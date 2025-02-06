@@ -15,18 +15,22 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { GlobalStore } from '@stores/global/global.store';
+import { signal } from '@angular/core';
 
 describe('FinesDraftCamInputterComponent', () => {
   let component: FinesDraftCamInputterComponent;
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
   let globalStore: GlobalStoreType;
+  const mockFinesDraftAmend = signal<boolean>(false);
   const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>(
     'FinesService',
-    ['finesMacState', 'finesDraftState', 'finesDraftFragment'],
+    ['finesMacState', 'finesDraftState', 'finesDraftFragment', 'finesDraftAmend'],
     {
       finesDraftFragment: jasmine.createSpyObj('finesDraftFragment', ['set']),
+      finesDraftAmend: mockFinesDraftAmend,
     },
   );
+
   const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
     jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
   const mockOpalFinesService: Partial<OpalFines> = {
@@ -111,6 +115,19 @@ describe('FinesDraftCamInputterComponent', () => {
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
       draftAccountId,
     ]);
+    expect(mockFinesService.finesDraftAmend()).toBeFalse();
+  });
+
+  it('should navigate to review account when rejected', () => {
+    const draftAccountId = 1;
+    const routerSpy = spyOn(component['router'], 'navigate');
+    component.activeTab = 'rejected';
+    component['navigateToReviewAccount'](draftAccountId);
+    expect(routerSpy).toHaveBeenCalledWith([
+      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
+      draftAccountId,
+    ]);
+    expect(mockFinesService.finesDraftAmend()).toBeTrue();
   });
 
   it('should handle defendant click', () => {

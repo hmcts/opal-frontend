@@ -128,10 +128,18 @@ export class FinesDraftCamInputterComponent implements OnInit {
    */
   private navigateToReviewAccount(draftAccountId: number): void {
     this.finesService.finesDraftFragment.set(this.activeTab);
-    this.router.navigate([
-      `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
-      draftAccountId,
-    ]);
+    this.finesService.finesDraftAmend.set(this.activeTab === 'rejected');
+    if (this.finesService.finesDraftAmend()) {
+      this.router.navigate([
+        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
+        draftAccountId,
+      ]);
+    } else {
+      this.router.navigate([
+        `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
+        draftAccountId,
+      ]);
+    }
   }
 
   /**
@@ -181,5 +189,6 @@ export class FinesDraftCamInputterComponent implements OnInit {
     this.getRejectedCount();
     this.finesService.finesDraftState = FINES_DRAFT_STATE;
     this.finesService.finesDraftFragment.set('');
+    this.finesService.finesDraftAmend.set(false);
   }
 }
