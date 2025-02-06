@@ -24,6 +24,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   @Input({ required: true }) public courtDetails!: IFinesMacCourtDetailsState;
   @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourt[];
   @Input({ required: true }) public localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeCourtDetails = new EventEmitter<void>();
 
   private readonly opalFinesService = inject(OpalFines);

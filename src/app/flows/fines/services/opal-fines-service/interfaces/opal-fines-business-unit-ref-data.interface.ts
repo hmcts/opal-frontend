@@ -19,3 +19,20 @@ export interface IOpalFinesBusinessUnitRefData {
   count: number;
   refData: IOpalFinesBusinessUnit[];
 }
+
+export interface IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase {
+  itemName: string | null;
+  itemValue: string | null;
+  itemValues: string[] | null;
+}
+
+export interface IOpalFinesBusinessUnitNonSnakeCase {
+  businessUnitCode: string;
+  businessUnitType: string;
+  accountNumberPrefix: null | string;
+  opalDomain: null | string;
+  businessUnitId: number;
+  businessUnitName: string;
+  configurationItems: IOpalFinesBusinessUnitConfigurationItemsNonSnakeCase[];
+  welshLanguage: boolean | null;
+}
