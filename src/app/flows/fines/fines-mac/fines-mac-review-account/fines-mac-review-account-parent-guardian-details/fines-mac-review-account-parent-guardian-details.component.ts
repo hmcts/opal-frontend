@@ -8,7 +8,7 @@ import { IFinesMacParentGuardianDetailsState } from '../../fines-mac-parent-guar
 import { IFinesMacParentGuardianDetailsAliasState } from '../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
+import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-parent-guardian-details',
@@ -31,7 +31,7 @@ export class FinesMacReviewAccountParentGuardianDetailsComponent implements OnIn
   private readonly dateService = inject(DateService);
   private readonly utilsService = inject(UtilsService);
 
-  public readonly defaultValues = FinesMacReviewAccountDefaultValues;
+  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   public aliases!: string[];
   public dob!: string | null;
   public address!: string[];

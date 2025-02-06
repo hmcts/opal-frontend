@@ -1,12 +1,12 @@
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { OpalFines } from '../../../../services/opal-fines-service/opal-fines.service';
 import { forkJoin, firstValueFrom } from 'rxjs';
 import { IDraftAccountResolver } from './interfaces/draft-account-resolver.interface';
+import { GlobalStore } from '@stores/global/global.store';
 
 export const draftAccountResolver: ResolveFn<IDraftAccountResolver> = async (route: ActivatedRouteSnapshot) => {
-  const globalStateService = inject(GlobalStateService);
+  const globalStore = inject(GlobalStore);
   const opalFinesService = inject(OpalFines);
 
   // Extract the `draftAccountId` from the route parameters
@@ -37,7 +37,7 @@ export const draftAccountResolver: ResolveFn<IDraftAccountResolver> = async (rou
     return { draftAccount, businessUnit, offencesData };
   } catch (error) {
     // Log and rethrow the error
-    globalStateService.error.set({
+    globalStore.setError({
       error: true,
       message: error instanceof Error ? error.message : 'An unexpected error occurred',
     });

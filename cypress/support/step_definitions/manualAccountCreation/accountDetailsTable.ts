@@ -57,7 +57,7 @@ Then('I see the following in the {string} table:', (tableName: string, dataTable
     if (tableName === 'Offences and impositions') {
       tableSelector
         .find('app-fines-mac-offence-details-review-offence-heading-title')
-        .find('span')
+        .find('span.govuk-caption-m')
         .should('have.text', value);
     } else if (tableName === 'Payment terms' && key === 'Date of collection order') {
       const weeksInPast: number = parseInt(value.split(' ')[0], 10);

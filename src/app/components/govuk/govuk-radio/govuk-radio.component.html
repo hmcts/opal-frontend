@@ -1,10 +1,7 @@
 <div class="govuk-form-group" [class.govuk-form-group--error]="!!errors">
-  <fieldset class="govuk-fieldset" [id]="fieldSetId" [attr.aria-describedby]="fieldSetId ? fieldSetId + 'Hint' : ''">
+  <fieldset class="govuk-fieldset" [id]="fieldSetId" [attr.aria-describedby]="fieldSetId">
     @if (legendText) {
-      <legend
-        class="govuk-fieldset__legend {{ legendClasses }}"
-        [attr.describedby]="legendHint ? fieldSetId + 'Hint' : ''"
-      >
+      <legend class="govuk-fieldset__legend {{ legendClasses }}" [attr.describedby]="fieldSetId">
         {{ legendText }}
       </legend>
     }
@@ -16,7 +13,7 @@
 
     @if (errors) {
       <p id="{{ this.fieldSetId }}-error-message" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error:</span> {{ errors }}
+        <span class="govuk-visually-hidden">Error: </span> {{ errors }}
       </p>
     }
     <div class="govuk-radios {{ radioClasses }}" data-module="govuk-radios">

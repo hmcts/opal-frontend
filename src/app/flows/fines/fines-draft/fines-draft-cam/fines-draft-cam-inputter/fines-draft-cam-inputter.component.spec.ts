@@ -4,7 +4,6 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of } from 'rxjs';
 import { DateService } from '@services/date-service/date.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
@@ -13,12 +12,14 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { GlobalStore } from '@stores/global/global.store';
 
 describe('FinesDraftCamInputterComponent', () => {
   let component: FinesDraftCamInputterComponent;
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
-  let mockGlobalStateService: GlobalStateService;
+  let globalStore: GlobalStoreType;
   const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>(
     'FinesService',
     ['finesMacState', 'finesDraftState', 'finesDraftFragment'],
@@ -54,8 +55,8 @@ describe('FinesDraftCamInputterComponent', () => {
       ],
     }).compileComponents();
 
-    mockGlobalStateService = TestBed.inject(GlobalStateService);
-    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
 
     fixture = TestBed.createComponent(FinesDraftCamInputterComponent);
     component = fixture.componentInstance;
