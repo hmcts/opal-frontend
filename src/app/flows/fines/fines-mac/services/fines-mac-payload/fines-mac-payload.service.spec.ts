@@ -169,38 +169,6 @@ describe('FinesMacPayloadService', () => {
     );
   });
 
-  // it('should set the statuses of the states', () => {
-  //   if (!service || !finesMacState) {
-  //     fail('Required mock states are not properly initialised');
-  //     return;
-  //   }
-
-  //   const result = service['setFinesMacStateStatuses'](finesMacState);
-
-  //   expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  //   expect(result.parentGuardianDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  //   expect(result.companyDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  //   expect(result.courtDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  //   expect(result.accountCommentsNotes.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  //   expect(result.offenceDetails[0].status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  //   expect(result.paymentTerms.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  // });
-
-  // it('should set the statuses of the states to not provided', () => {
-  //   if (!service || !finesMacState) {
-  //     fail('Required mock states are not properly initialised');
-  //     return;
-  //   }
-  //   finesMacState.accountDetails.formData = {
-  //     fm_create_account_account_type: null,
-  //     fm_create_account_business_unit_id: null,
-  //     fm_create_account_defendant_type: null,
-  //   };
-
-  //   const result = service['setFinesMacStateStatuses'](finesMacState);
-  //   expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.NOT_PROVIDED);
-  // });
-
   it('should get the business unit user id', () => {
     if (!service || !sessionUserState) {
       fail('Required mock states are not properly initialised');
