@@ -121,6 +121,6 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
     expect(finesMacOffenceDetailsStore.rowIndex()).toBeNull();
-    expect(finesMacOffenceDetailsStore.removeMinorCreditor()).toEqual(0);
+    expect(finesMacOffenceDetailsStore.removeMinorCreditor()).toBeNull();
   });
 });

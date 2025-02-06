@@ -1,6 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IAbstractFormArrayControls } from '@components/abstract/interfaces/abstract-form-array-controls.interface';
-import { FormArray } from '@angular/forms';
 import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-details-form.interface';
 
 export const FinesMacOffenceDetailsStore = signalStore(
@@ -8,7 +7,6 @@ export const FinesMacOffenceDetailsStore = signalStore(
   withState(() => ({
     offenceDetailsDraft: [] as IFinesMacOffenceDetailsForm[],
     rowIndex: null as number | null,
-    formArray: {} as FormArray,
     formArrayControls: [] as IAbstractFormArrayControls[],
     removeMinorCreditor: null as number | null,
     offenceIndex: 0,
@@ -43,9 +41,6 @@ export const FinesMacOffenceDetailsStore = signalStore(
     setRowIndex: (rowIndex: number | null) => {
       patchState(store, { rowIndex });
     },
-    setFormArray: (formArray: FormArray) => {
-      patchState(store, { formArray });
-    },
     setFormArrayControls: (formArrayControls: IAbstractFormArrayControls[]) => {
       patchState(store, { formArrayControls });
     },
@@ -56,7 +51,6 @@ export const FinesMacOffenceDetailsStore = signalStore(
       patchState(store, {
         offenceDetailsDraft: [],
         rowIndex: null,
-        formArray: {} as FormArray,
         formArrayControls: [],
         removeMinorCreditor: null,
       });
@@ -68,7 +62,6 @@ export const FinesMacOffenceDetailsStore = signalStore(
       patchState(store, {
         offenceDetailsDraft: [],
         rowIndex: null,
-        formArray: {} as FormArray,
         formArrayControls: [],
         removeMinorCreditor: null as number | null,
         offenceIndex: 0,

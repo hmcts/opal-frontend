@@ -39,6 +39,7 @@ export class FinesMacOffenceDetailsService {
       if (child.formData.fm_offence_details_imposition_position === removedIndex) {
         // Remove the childFormData entry if it matches the removed index
         offence.childFormData = offence.childFormData.filter(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (c: any) => c.formData.fm_offence_details_imposition_position !== removedIndex,
         );
       } else if (child.formData.fm_offence_details_imposition_position > removedIndex) {

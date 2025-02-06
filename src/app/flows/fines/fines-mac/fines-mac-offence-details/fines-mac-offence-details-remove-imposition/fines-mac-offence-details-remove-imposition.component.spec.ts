@@ -8,10 +8,8 @@ import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../mocks/fines-mac-offence-details-draft-state.mock';
-import { FINES_MAC_OFFENCE_DETAILS_IMPOSITION_FIELD_NAMES } from '../constants/fines-mac-offence-details-imposition-field-names.constant';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
-import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK } from '../mocks/fines-mac-offence-details-remove-imposition.mock';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
@@ -128,11 +126,17 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   });
 
+  it('should not confirm removal as rowIndex is null', () => {
+    spyOn(component, 'handleRoute');
+    finesMacOffenceDetailsStore.setRowIndex(null);
+
+    component.confirmRemoval();
+
+    expect(component.handleRoute).not.toHaveBeenCalled();
+  });
+
   it('should confirm removal and update form data', () => {
     spyOn(component, 'handleRoute');
-    const { rowIndex, formArray } = { ...FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_MOCK };
-    fixture.detectChanges();
-
     const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK);
     offenceWithMinorCreditor.childFormData = [
       {
@@ -148,64 +152,6 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
 
     expect(component.handleRoute).toHaveBeenCalledWith(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   });
-
-  // it('should update imposition positions correctly after removing an item', () => {
-  //   // Setup mock offenceDetailsArray and formArray
-  //   const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-  //     structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
-  //     {
-  //       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
-  //       formData: {
-  //         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
-  //         fm_offence_details_imposition_position: 1,
-  //       },
-  //     },
-  //     {
-  //       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
-  //       formData: {
-  //         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
-  //         fm_offence_details_imposition_position: 2,
-  //       },
-  //     },
-  //   ];
-
-  //   const splicedIndex = 0;
-
-  //   component['removeMinorCreditorAndUpdateIds'](offenceDetailsArray, splicedIndex);
-
-  //   // Verify that positions are updated
-
-  //   expect(offenceDetailsArray.length).toBe(2);
-  //   expect(offenceDetailsArray[0].formData.fm_offence_details_imposition_position).toBe(0);
-  //   expect(offenceDetailsArray[1].formData.fm_offence_details_imposition_position).toBe(1);
-  // });
-
-  // it('should drop imposition positions correctly', () => {
-  //   const offenceDetailsArray: IFinesMacOffenceDetailsMinorCreditorForm[] = [
-  //     structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
-  //     {
-  //       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
-  //       formData: {
-  //         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
-  //         fm_offence_details_imposition_position: 1,
-  //       },
-  //     },
-  //     {
-  //       ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
-  //       formData: {
-  //         ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
-  //         fm_offence_details_imposition_position: 2,
-  //       },
-  //     },
-  //   ];
-
-  //   const dropIndex = 1;
-
-  //   component['dropMinorCreditorImpositionPosition'](offenceDetailsArray, dropIndex);
-
-  //   expect(offenceDetailsArray[1].formData.fm_offence_details_imposition_position).toBe(0);
-  //   expect(offenceDetailsArray[2].formData.fm_offence_details_imposition_position).toBe(1);
-  // });
 
   it('should return CPS default value', () => {
     expect(component['getDefaultCreditor']('CPS')).toEqual(
@@ -237,5 +183,46 @@ describe('FinesMacOffenceDetailsRemoveImpositionComponent', () => {
     component['setMinorCreditorDetails'](0);
 
     expect(component.minorCreditor).toEqual('Test Company');
+  });
+
+  it('should return individual name of minor creditor', () => {
+    const offenceWithMinorCreditors = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    offenceWithMinorCreditors[0].childFormData = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
+
+          fm_offence_details_minor_creditor_forenames: 'Joe',
+          fm_offence_details_minor_creditor_surname: 'Bloggs',
+          fm_offence_details_imposition_position: 0,
+          fm_offence_details_minor_creditor_creditor_type: 'individual',
+        },
+      },
+    ];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceWithMinorCreditors);
+
+    component['setMinorCreditorDetails'](0);
+
+    expect(component.minorCreditor).toEqual('Joe Bloggs');
+  });
+
+  it('should return default value for result code', () => {
+    const offence = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    offence[0].formData.fm_offence_details_impositions[0] = {
+      ...structuredClone(
+        FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft[0].formData.fm_offence_details_impositions[0],
+      ),
+      fm_offence_details_result_id: null,
+      fm_offence_details_amount_imposed: null,
+      fm_offence_details_amount_paid: null,
+    };
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(offence);
+
+    component['getImpositionToBeRemoved']();
+
+    expect(component.imposition).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault);
+    expect(component.amountImposedString).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault);
+    expect(component.amountPaidString).toEqual(FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.numberDefault);
   });
 });

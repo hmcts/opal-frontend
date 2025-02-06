@@ -141,6 +141,15 @@ describe('FinesMacPaymentTermsFormComponent', () => {
         fm_payment_terms_collection_order_date: '01/09/2024',
       },
     });
+    finesMacStore.setOffenceDetails([
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK.formData),
+          fm_offence_details_date_of_sentence: '01/09/2024',
+        },
+      },
+    ]);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupPermissions');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -164,6 +173,7 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     mockDateService.getPreviousDate.and.returnValue('30/08/2024');
     component.accessDefaultDates = true;
     mockDateService.toFormat.and.returnValue('31/08/2024');
+    mockDateService.getDateFromFormat.and.returnValue(new Date('01/09/2024'));
     component.accessCollectionOrder = true;
     component.accessDefaultDates = true;
     component['initialPaymentTermsSetup']();

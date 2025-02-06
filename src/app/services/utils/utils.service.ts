@@ -67,7 +67,7 @@ export class UtilsService {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public checkFormValues(form: { [key: string]: any }): boolean {
-    return Object.values(form ?? {}).some((value) => {
+    return Object.values(form).some((value) => {
       return Array.isArray(value) ? value.length > 0 : Boolean(value);
     });
   }

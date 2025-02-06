@@ -43,7 +43,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStore.userState()?.business_unit_user || [];
+  private userStateRoles: ISessionUserStateRole[] = [];
 
   public readonly permissionsMap = FinesMacPaymentTermsPermissions;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
@@ -74,6 +74,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    * @private
    */
   private setupPermissions(): void {
+    this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     const { business_unit_id: businessUnitId } = this.businessUnit;
     if (this.userStateRoles && this.userStateRoles.length > 0) {
       this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(

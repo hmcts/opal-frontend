@@ -10,7 +10,6 @@ import { DateService } from '@services/date-service/date.service';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from './interfaces/fines-mac-offence-details-review-summary-form.interface';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
-import { FormArray } from '@angular/forms';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 
 @Component({
@@ -73,14 +72,6 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
   }
 
   public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsStore.setAddedOffenceCode('');
-    this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);
-    this.finesMacOffenceDetailsStore.setOffenceRemoved(false);
-    if (this.finesMacOffenceDetailsStore.offenceDetailsDraft()) {
-      this.finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
-      this.finesMacOffenceDetailsStore.setRowIndex(null);
-      this.finesMacOffenceDetailsStore.setFormArray({} as FormArray);
-      this.finesMacOffenceDetailsStore.setFormArrayControls([]);
-    }
+    this.finesMacOffenceDetailsStore.resetStore();
   }
 }

@@ -8,13 +8,10 @@ import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../mocks/fines-mac-offence-
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../mocks/fines-mac-offence-details-state.mock';
-import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
-import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceComponent>;
-  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -45,8 +42,6 @@ describe('FinesMacOffenceDetailsReviewOffenceComponent', () => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
     component.showActions = false;
-
-    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
 
     fixture.detectChanges();
   });

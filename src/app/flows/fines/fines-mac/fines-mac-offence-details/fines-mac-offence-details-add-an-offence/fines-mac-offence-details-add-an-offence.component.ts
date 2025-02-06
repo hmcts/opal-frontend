@@ -107,21 +107,18 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
     // Update the impositions array with their respective index positions
+    // Change the amount imposed and amount paid to numbers
     form.formData.fm_offence_details_impositions.forEach((imposition, index) => {
       imposition.fm_offence_details_imposition_id = index;
-    });
-
-    form.formData.fm_offence_details_impositions = this.removeIndexFromFormArrayData(
-      form.formData.fm_offence_details_impositions,
-    );
-
-    // Change the amount imposed and amount paid to numbers
-    form.formData.fm_offence_details_impositions.forEach((imposition) => {
       imposition.fm_offence_details_amount_imposed = +imposition.fm_offence_details_amount_imposed!;
       imposition.fm_offence_details_amount_paid = imposition.fm_offence_details_amount_paid
         ? +imposition.fm_offence_details_amount_paid
         : 0;
     });
+
+    form.formData.fm_offence_details_impositions = this.removeIndexFromFormArrayData(
+      form.formData.fm_offence_details_impositions,
+    );
 
     const offenceDetails = structuredClone(this.finesMacStore.offenceDetails());
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());

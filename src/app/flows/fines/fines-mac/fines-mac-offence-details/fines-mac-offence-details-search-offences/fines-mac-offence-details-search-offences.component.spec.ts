@@ -2,13 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsSearchOffencesComponent } from './fines-mac-offence-details-search-offences.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offence-details.type';
-import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
   let component: FinesMacOffenceDetailsSearchOffencesComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsSearchOffencesComponent>;
-  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -25,8 +22,6 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsSearchOffencesComponent);
     component = fixture.componentInstance;
-
-    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
 
     fixture.detectChanges();
   });

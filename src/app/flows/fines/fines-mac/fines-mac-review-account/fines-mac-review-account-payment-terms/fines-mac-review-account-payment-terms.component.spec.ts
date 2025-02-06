@@ -7,6 +7,7 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/interfaces/fines-may-payment-terms-options.interface';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { ISessionUserState } from '@services/session-service/interfaces/session-user-state.interface';
 
 describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let component: FinesMacReviewAccountPaymentTermsComponent;
@@ -152,5 +153,16 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     component.ngOnInit();
 
     expect(component['getPaymentTermsData']).toHaveBeenCalled();
+  });
+
+  it('should setup permissions', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    spyOn<any>(component, 'hasPermissionAccess');
+    globalStore.setUserState({} as ISessionUserState);
+
+    component['setupPermissions']();
+
+    expect(component['hasPermissionAccess']).not.toHaveBeenCalled();
+    expect(component['userStateRoles']).toEqual([]);
   });
 });

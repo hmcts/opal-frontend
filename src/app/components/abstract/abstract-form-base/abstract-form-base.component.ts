@@ -458,7 +458,7 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
    * @param controlName - The name of the control to remove.
    */
   protected removeControl(controlName: string): void {
-    if (this.formControlErrorMessages [controlName]) {
+    if (this.formControlErrorMessages[controlName]) {
       this.removeControlErrors(controlName);
     }
     this.form.removeControl(controlName);

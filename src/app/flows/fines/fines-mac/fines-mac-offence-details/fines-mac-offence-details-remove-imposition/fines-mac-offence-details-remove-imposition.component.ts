@@ -179,8 +179,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
       rowIndex!
     ] as IFinesMacOffenceDetailsImpositionsState;
 
-    const resultCode =
-      impositionData.fm_offence_details_result_id ?? FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
+    const resultCode = impositionData.fm_offence_details_result_id;
 
     this.creditor =
       impositionData.fm_offence_details_creditor ?? FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS.stringDefault;
