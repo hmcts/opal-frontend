@@ -106,6 +106,10 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @param form - The form data containing the offence details to be updated or added.
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
+    form.formData.fm_offence_details_impositions = this.removeIndexFromFormArrayData(
+      form.formData.fm_offence_details_impositions,
+    );
+
     // Update the impositions array with their respective index positions
     // Change the amount imposed and amount paid to numbers
     form.formData.fm_offence_details_impositions.forEach((imposition, index) => {
@@ -115,10 +119,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
         ? +imposition.fm_offence_details_amount_paid
         : 0;
     });
-
-    form.formData.fm_offence_details_impositions = this.removeIndexFromFormArrayData(
-      form.formData.fm_offence_details_impositions,
-    );
 
     const offenceDetails = structuredClone(this.finesMacStore.offenceDetails());
     const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());

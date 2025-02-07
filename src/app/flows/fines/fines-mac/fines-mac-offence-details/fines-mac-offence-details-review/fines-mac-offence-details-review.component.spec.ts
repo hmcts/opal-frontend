@@ -114,13 +114,15 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
   it('should reset addedOffenceCode and offenceDetailsDraft on ngOnDestroy', () => {
     finesMacOffenceDetailsStore.setOffenceDetailsDraft(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
     finesMacOffenceDetailsStore.setRowIndex(0);
-    finesMacOffenceDetailsStore.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
+    finesMacOffenceDetailsStore.setAddedOffenceCode('Testing');
+    finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    finesMacOffenceDetailsStore.setOffenceRemoved(true);
 
     component.ngOnDestroy();
 
     expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
+    expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBe(false);
+    expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
-    expect(finesMacOffenceDetailsStore.rowIndex()).toBeNull();
-    expect(finesMacOffenceDetailsStore.removeMinorCreditor()).toBeNull();
   });
 });

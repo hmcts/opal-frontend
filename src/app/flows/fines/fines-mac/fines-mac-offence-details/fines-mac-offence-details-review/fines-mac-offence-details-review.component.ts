@@ -23,7 +23,7 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
   private readonly opalFinesService = inject(OpalFines);
   public finesMacStore = inject(FinesMacStore);
   public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
-  private readonly finesMacOffencDetailsService = inject(FinesMacOffenceDetailsService);
+  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly dateService = inject(DateService);
 
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
@@ -60,7 +60,7 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
    * and removes the index from the imposition keys.
    */
   private getOffencesImpositions(): void {
-    this.offencesImpositions = this.finesMacOffencDetailsService.removeIndexFromImpositionKey(
+    this.offencesImpositions = this.finesMacOffenceDetailsService.removeIndexFromImpositionKey(
       this.finesMacStore.offenceDetails(),
     );
     this.sortOffencesByDate();
@@ -72,6 +72,11 @@ export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy 
   }
 
   public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsStore.resetStore();
+    this.finesMacOffenceDetailsStore.setAddedOffenceCode('');
+    this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);
+    this.finesMacOffenceDetailsStore.setOffenceRemoved(false);
+    if (this.finesMacOffenceDetailsStore.offenceDetailsDraft()) {
+      this.finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
+    }
   }
 }
