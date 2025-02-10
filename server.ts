@@ -29,6 +29,7 @@ import { CSRFToken } from './server/csrf-token';
 import config from 'config';
 import TransferServerState from './server/interfaces/transferServerState';
 import bootstrap from './src/main.server';
+import AppInsightsConfiguration from './server/modules/appinsights/app-insights-configuration';
 
 const env = process.env['NODE_ENV'] || 'development';
 const developmentMode = env === 'development';
@@ -58,9 +59,11 @@ export function app(): express.Express {
   new AppInsights().enable();
 
   const launchDarkly = new LaunchDarkly().enableFor();
+  const appInsights = new AppInsightsConfiguration().enableFor();
   const serverTransferState: TransferServerState = {
     launchDarklyConfig: launchDarkly,
     ssoEnabled: config.get('features.sso.enabled'),
+    appInsightsConfig: appInsights,
   };
 
   // Serve static files from /browser

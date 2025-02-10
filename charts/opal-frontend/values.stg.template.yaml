@@ -38,6 +38,7 @@ opal-fines-service:
       OPAL_FINES_DB_PORT: 5432
       RUN_DB_MIGRATION_ON_STARTUP: true
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
+      FEATURES_APP_INSIGHTS_ENABLED: false
 postgresql:
   enabled: true
   image:

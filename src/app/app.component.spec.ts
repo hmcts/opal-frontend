@@ -2,7 +2,7 @@ import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DateService } from '@services/date-service/date.service';
-import { RouterModule, provideRouter } from '@angular/router';
+import { NavigationEnd, RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
 import { DateTime } from 'luxon';
@@ -193,6 +193,19 @@ describe('AppComponent - browser', () => {
 
     expect(component['sessionService'].getTokenExpiry).toHaveBeenCalled();
   });
+
+  it('should track page views on navigation end', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const mockNavigationEnd = new NavigationEnd(1, '/test', '/test');
+    spyOn(component['router'].events, 'pipe').and.returnValue(of(mockNavigationEnd));
+    spyOn(component['appInsightsService'], 'logPageView');
+
+    component.ngOnInit();
+    tick();
+
+    expect(component['appInsightsService'].logPageView).toHaveBeenCalledWith('test', '/test');
+  }));
 });
 
 describe('AppComponent - server', () => {
@@ -228,4 +241,15 @@ describe('AppComponent - server', () => {
 
     expect(component['sessionService'].getTokenExpiry).not.toHaveBeenCalled();
   });
+
+  it('should not track page views on server', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    spyOn(component['appInsightsService'], 'logPageView');
+
+    component.ngOnInit();
+    tick();
+
+    expect(component['appInsightsService'].logPageView).not.toHaveBeenCalled();
+  }));
 });
