@@ -28,7 +28,6 @@ First you have to create a new component called wrapper for your sortable table 
 
     @Component({
       selector: 'app-table-wrap',
-      
       imports: [
         CommonModule,
         MojSortableTableComponent,

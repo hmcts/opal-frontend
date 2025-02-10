@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-header-navigation-item',
-
   imports: [],
   templateUrl: './govuk-header-navigation-item.component.html',
   styleUrl: './govuk-header-navigation-item.component.scss',

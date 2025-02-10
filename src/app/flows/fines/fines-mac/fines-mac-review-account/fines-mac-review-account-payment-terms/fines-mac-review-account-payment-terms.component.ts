@@ -18,12 +18,11 @@ import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
 import { GlobalStore } from 'src/app/stores/global/global.store';
-import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-permisson-values.constant';
+import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
-
   imports: [
     CommonModule,
     GovukSummaryCardListComponent,
@@ -44,7 +43,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStore.userState()?.business_unit_user || [];
+  private userStateRoles: ISessionUserStateRole[] = [];
 
   public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
@@ -75,6 +74,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    * @private
    */
   private setupPermissions(): void {
+    this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     const { business_unit_id: businessUnitId } = this.businessUnit;
     if (this.userStateRoles && this.userStateRoles.length > 0) {
       this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(

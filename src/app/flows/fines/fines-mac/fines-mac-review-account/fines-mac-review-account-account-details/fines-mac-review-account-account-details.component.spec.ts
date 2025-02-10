@@ -22,9 +22,9 @@ describe('FinesMacReviewAccountAccountDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountAccountDetailsComponent);
     component = fixture.componentInstance;
 
-    component.accountDetails = { ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK };
-    component.businessUnit = { ...OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0] };
-    component.languagePreferences = { ...FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK };
+    component.accountDetails = structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK);
+    component.businessUnit = structuredClone(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    component.languagePreferences = structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK);
 
     fixture.detectChanges();
   });

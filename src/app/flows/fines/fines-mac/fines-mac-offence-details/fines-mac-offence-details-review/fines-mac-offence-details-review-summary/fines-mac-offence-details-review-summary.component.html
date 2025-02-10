@@ -4,10 +4,10 @@
   <div class="govuk-grid-column-full">
     <div class="govuk-grid-row">
       @if (
-        finesMacOffenceDetailsService.offenceCodeMessage && finesMacOffenceDetailsService.offenceCodeMessage.length > 0
+        finesMacOffenceDetailsStore.offenceCodeMessage() && finesMacOffenceDetailsStore.offenceCodeMessage().length > 0
       ) {
         <div class="govuk-grid-column-full">
-          <app-moj-banner type="success" [text]="finesMacOffenceDetailsService.offenceCodeMessage"></app-moj-banner>
+          <app-moj-banner type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></app-moj-banner>
         </div>
       }
     </div>

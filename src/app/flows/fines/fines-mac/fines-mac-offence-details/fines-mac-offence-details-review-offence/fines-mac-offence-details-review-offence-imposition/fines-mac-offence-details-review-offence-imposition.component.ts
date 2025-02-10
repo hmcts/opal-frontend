@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -18,10 +17,10 @@ import { GovukSummaryListComponent } from '../../../../../../components/govuk/go
 import { CommonModule } from '@angular/common';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
-
   imports: [
     CommonModule,
     GovukTableComponent,
@@ -42,7 +41,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   @Input({ required: false }) public isReadOnly!: boolean;
 
   private readonly opalFinesService = inject(OpalFines);
-  private readonly finesService = inject(FinesService);
+  public finesMacStore = inject(FinesMacStore);
   public readonly utilsService = inject(UtilsService);
 
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];
@@ -100,7 +99,8 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
    * @returns The text representation of the minor creditor.
    */
   private getMinorCreditorText(impositionId: number): string {
-    const minorCreditor = this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
+    const offenceDetails = this.finesMacStore.offenceDetails()[this.offenceIndex];
+    const minorCreditor = offenceDetails.childFormData!.find(
       (childFormData) => childFormData.formData.fm_offence_details_imposition_position === impositionId,
     );
 
@@ -135,11 +135,12 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
     impositionId: number,
   ): IFinesMacOffenceDetailsReviewSummaryMinorCreditorTableData | null {
     if (
-      this.finesService.finesMacState.offenceDetails.length === 0 ||
-      !this.finesService.finesMacState.offenceDetails[this.offenceIndex]?.childFormData
+      this.finesMacStore.offenceDetails().length === 0 ||
+      !this.finesMacStore.offenceDetails()[this.offenceIndex]?.childFormData
     )
       return null;
-    const minorCreditor = this.finesService.finesMacState.offenceDetails[this.offenceIndex].childFormData!.find(
+    const offenceDetails = this.finesMacStore.offenceDetails()[this.offenceIndex];
+    const minorCreditor = offenceDetails.childFormData!.find(
       (childFormData) => childFormData.formData.fm_offence_details_imposition_position === impositionId,
     );
 

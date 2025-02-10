@@ -13,7 +13,6 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-moj-primary-navigation',
-
   imports: [],
   templateUrl: './moj-primary-navigation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

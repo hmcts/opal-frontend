@@ -26,7 +26,7 @@ describe('FinesMacReviewAccountParentGuardianDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountParentGuardianDetailsComponent);
     component = fixture.componentInstance;
 
-    component.parentGuardianDetails = { ...FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK };
+    component.parentGuardianDetails = structuredClone(FINES_MAC_PARENT_GUARDIAN_DETAILS_STATE_MOCK);
 
     fixture.detectChanges();
   });

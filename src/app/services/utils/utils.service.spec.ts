@@ -72,4 +72,94 @@ describe('UtilsService', () => {
     service.scrollToTop();
     expect(viewportScrollerSpy).toHaveBeenCalledWith([0, 0]);
   });
+
+  it('should check if form values are provided', () => {
+    const form = { name: 'John', age: 30 };
+    const result = service.checkFormValues(form);
+    expect(result).toBeTrue();
+  });
+
+  it('should check if form values are not provided', () => {
+    const form = { name: '', age: null };
+    const result = service.checkFormValues(form);
+    expect(result).toBeFalse();
+  });
+
+  it('should check if all form array values are provided', () => {
+    const forms = [
+      { name: 'John', age: 30 },
+      { name: 'Jane', age: 25 },
+    ];
+    const result = service.checkFormArrayValues(forms);
+    expect(result).toBeTrue();
+  });
+
+  it('should check if not all form array values are provided', () => {
+    const forms = [
+      { name: 'John', age: 30 },
+      { name: '', age: null },
+    ];
+    const result = service.checkFormArrayValues(forms);
+    expect(result).toBeFalse();
+  });
+
+  it('should get form status as provided', () => {
+    const form = { name: 'John', age: 30 };
+    const result = service.getFormStatus(form, 'Provided', 'Not Provided');
+    expect(result).toEqual('Provided');
+  });
+
+  it('should get form status as not provided', () => {
+    const form = { name: '', age: null };
+    const result = service.getFormStatus(form, 'Provided', 'Not Provided');
+    expect(result).toEqual('Not Provided');
+  });
+
+  it('should get array form status as provided', () => {
+    const forms = [
+      { name: 'John', age: 30 },
+      { name: 'Jane', age: 25 },
+    ];
+    const result = service.getArrayFormStatus(forms, 'Provided', 'Not Provided');
+    expect(result).toEqual('Provided');
+  });
+
+  it('should get array form status as not provided', () => {
+    const forms = [
+      { name: 'John', age: 30 },
+      { name: '', age: null },
+    ];
+    const result = service.getArrayFormStatus(forms, 'Provided', 'Not Provided');
+    expect(result).toEqual('Not Provided');
+  });
+
+  it('should return true if an array contains values', () => {
+    const form = { key1: [1, 2, 3] };
+    expect(service.checkFormValues(form)).toBeTrue();
+  });
+
+  it('should return false if an array is empty', () => {
+    const form = { key1: [] };
+    expect(service.checkFormValues(form)).toBeFalse();
+  });
+
+  it('should return true for a non-empty string', () => {
+    const form = { key1: 'some value' };
+    expect(service.checkFormValues(form)).toBeTrue();
+  });
+
+  it('should return false for an empty string', () => {
+    const form = { key1: '' };
+    expect(service.checkFormValues(form)).toBeFalse();
+  });
+
+  it('should return false for null', () => {
+    const form = { key1: null };
+    expect(service.checkFormValues(form)).toBeFalse();
+  });
+
+  it('should return false for undefined', () => {
+    const form = { key1: undefined };
+    expect(service.checkFormValues(form)).toBeFalse();
+  });
 });

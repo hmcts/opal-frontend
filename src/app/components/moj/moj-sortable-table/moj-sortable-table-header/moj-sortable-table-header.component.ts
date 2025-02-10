@@ -2,7 +2,6 @@ import { Component, HostBinding, ChangeDetectionStrategy, Output, EventEmitter, 
 
 @Component({
   selector: 'app-moj-sortable-table-header, [app-moj-sortable-table-header]',
-
   imports: [],
   templateUrl: './moj-sortable-table-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

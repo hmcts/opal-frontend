@@ -243,55 +243,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Updates the status of various sections within the provided `mappedFinesMacState` object.
-   *
-   * @param mappedFinesMacState - The state object containing various sections of fines MAC data.
-   *
-   * This method iterates over the sections of the `mappedFinesMacState` object and updates their status
-   * by calling the `getFinesMacStateFormStatus` method with the respective form data. It handles the following sections:
-   * - accountCommentsNotes
-   * - accountDetails
-   * - companyDetails
-   * - contactDetails
-   * - courtDetails
-   * - employerDetails
-   * - parentGuardianDetails
-   * - paymentTerms
-   * - personalDetails
-   *
-   * Additionally, it processes nested `offenceDetails` forms and their child forms if they exist, updating their status as well.
-   *
-   * @returns The updated `mappedFinesMacState` object with updated statuses for each section.
-   */
-  private setFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
-    const getFormStatus = <T extends object>(formData: T) => this.getFinesMacStateFormStatus(formData);
-
-    mappedFinesMacState.accountCommentsNotes.status = getFormStatus(mappedFinesMacState.accountCommentsNotes.formData);
-    mappedFinesMacState.accountDetails.status = getFormStatus(mappedFinesMacState.accountDetails.formData);
-    mappedFinesMacState.companyDetails.status = getFormStatus(mappedFinesMacState.companyDetails.formData);
-    mappedFinesMacState.contactDetails.status = getFormStatus(mappedFinesMacState.contactDetails.formData);
-    mappedFinesMacState.courtDetails.status = getFormStatus(mappedFinesMacState.courtDetails.formData);
-    mappedFinesMacState.employerDetails.status = getFormStatus(mappedFinesMacState.employerDetails.formData);
-    mappedFinesMacState.parentGuardianDetails.status = getFormStatus(
-      mappedFinesMacState.parentGuardianDetails.formData,
-    );
-    mappedFinesMacState.paymentTerms.status = getFormStatus(mappedFinesMacState.paymentTerms.formData);
-    mappedFinesMacState.personalDetails.status = getFormStatus(mappedFinesMacState.personalDetails.formData);
-
-    // Loop over the nested offence details forms, and the child forms if they exist
-    mappedFinesMacState.offenceDetails.forEach((offence) => {
-      offence.status = getFormStatus(offence.formData);
-      if (offence.childFormData) {
-        offence.childFormData.forEach((childOffence) => {
-          childOffence.status = getFormStatus(childOffence.formData);
-        });
-      }
-    });
-
-    return mappedFinesMacState;
-  }
-
-  /**
    * Maps the provided account payload to the fines MAC state.
    *
    * @param payload - The payload containing account information to be mapped.
@@ -312,7 +263,6 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
-    finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;
   }

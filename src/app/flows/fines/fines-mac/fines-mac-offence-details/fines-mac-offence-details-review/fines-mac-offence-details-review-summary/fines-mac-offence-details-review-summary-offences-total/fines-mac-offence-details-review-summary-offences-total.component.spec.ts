@@ -14,7 +14,7 @@ describe('FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent);
     component = fixture.componentInstance;
 
-    component.offences = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK];
+    component.offences = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK)];
 
     fixture.detectChanges();
   });

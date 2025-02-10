@@ -4,7 +4,6 @@ import { FormControl, AbstractControl, ReactiveFormsModule } from '@angular/form
 
 @Component({
   selector: 'app-govuk-text-input-prefix-suffix',
-
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-text-input-prefix-suffix.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

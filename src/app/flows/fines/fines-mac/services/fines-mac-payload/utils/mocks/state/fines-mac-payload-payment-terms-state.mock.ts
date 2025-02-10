@@ -41,6 +41,7 @@ export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_INSTALMENTS_MOCK: IFinesMacPaymentT
   fm_payment_terms_lump_sum_amount: null,
   fm_payment_terms_hold_enforcement_on_account: null,
   fm_payment_terms_collection_order_made_today: null,
+  fm_payment_terms_has_days_in_default: null,
 };
 
 export const FINES_MAC_PAYLOAD_PAYMENT_TERMS_LUMP_SUM_PLUS_INSTALMENTS_MOCK: IFinesMacPaymentTermsState = {

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-radio',
-
   imports: [],
   templateUrl: './govuk-radio.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

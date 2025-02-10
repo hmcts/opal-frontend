@@ -8,7 +8,6 @@ import { GlobalStore } from 'src/app/stores/global/global.store';
 
 @Component({
   selector: 'app-sign-in',
-
   imports: [CommonModule, SignInSsoComponent, SignInStubComponent],
   templateUrl: './sign-in.component.html',
 

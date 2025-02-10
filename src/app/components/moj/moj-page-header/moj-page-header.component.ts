@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-moj-page-header',
-
   imports: [],
   templateUrl: './moj-page-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

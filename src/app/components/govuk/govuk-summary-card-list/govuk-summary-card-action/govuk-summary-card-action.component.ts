@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, O
 
 @Component({
   selector: 'app-govuk-summary-card-action, [app-govuk-summary-card-action]',
-
   imports: [],
   templateUrl: './govuk-summary-card-action.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

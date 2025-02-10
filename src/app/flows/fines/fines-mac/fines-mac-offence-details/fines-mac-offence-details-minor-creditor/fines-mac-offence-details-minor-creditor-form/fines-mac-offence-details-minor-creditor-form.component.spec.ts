@@ -1,27 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsMinorCreditorFormComponent } from './fines-mac-offence-details-minor-creditor-form.component';
-import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE } from '../../constants/fines-mac-offence-details-draft-state.constant';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
 
   beforeEach(async () => {
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'finesMacOffenceDetailsDraftState',
-    ]);
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = { ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE };
-
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
       providers: [
-        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -33,6 +27,9 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacOffenceDetailsMinorCreditorFormComponent);
     component = fixture.componentInstance;
+
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
     fixture.detectChanges();
   });
 
@@ -356,13 +353,10 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should handle editing a minor creditor', () => {
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState = {
-      ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    };
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0].childFormData = [
-      FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
-    ];
-    mockFinesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
+    const offenceWithMinorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft);
+    offenceWithMinorCreditor[0].childFormData = [FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK];
+    finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceWithMinorCreditor);
+    finesMacOffenceDetailsStore.setRemoveMinorCreditor(0);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     spyOn<any>(component, 'setupMinorCreditorForm');

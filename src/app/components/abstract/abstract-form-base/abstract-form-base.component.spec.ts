@@ -820,6 +820,7 @@ describe('AbstractFormBaseComponent', () => {
     }
 
     const controlName = 'surname';
+    component.formControlErrorMessages = { surname: 'Please enter a surname' };
     component['removeControl'](controlName);
     expect(component.form.get(controlName)).toBeNull();
   });

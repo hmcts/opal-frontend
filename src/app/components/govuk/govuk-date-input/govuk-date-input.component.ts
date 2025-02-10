@@ -5,7 +5,6 @@ import { IGovUkDateInput } from '@components/govuk/govuk-date-input/interfaces/g
 
 @Component({
   selector: 'app-govuk-date-input',
-
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './govuk-date-input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

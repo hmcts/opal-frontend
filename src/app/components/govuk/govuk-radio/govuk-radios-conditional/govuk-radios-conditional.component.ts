@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '
 
 @Component({
   selector: 'app-govuk-radios-conditional, [app-govuk-radios-conditional]',
-
   imports: [],
   templateUrl: './govuk-radios-conditional.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

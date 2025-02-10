@@ -3,7 +3,6 @@ import { GovukSummaryCardActionComponent } from '@components/govuk/govuk-summary
 
 @Component({
   selector: 'app-fines-mac-review-account-change-link',
-
   imports: [GovukSummaryCardActionComponent],
   templateUrl: './fines-mac-review-account-change-link.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

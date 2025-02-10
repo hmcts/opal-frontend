@@ -1,31 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacLanguagePreferencesComponent } from './fines-mac-language-preferences.component';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacLanguagePreferencesForm } from './interfaces/fines-mac-language-preferences-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK } from './mocks/fines-mac-language-preferences-form.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 describe('FinesMacLanguagePreferencesComponent', () => {
   let component: FinesMacLanguagePreferencesComponent;
   let fixture: ComponentFixture<FinesMacLanguagePreferencesComponent>;
-  let finesService: jasmine.SpyObj<FinesService>;
   let formSubmit: IFinesMacLanguagePreferencesForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    finesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    finesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-
-    formSubmit = { ...FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacLanguagePreferencesComponent],
       providers: [
-        { provide: FinesService, useValue: finesService },
         provideRouter([]),
         {
           provide: ActivatedRoute,
@@ -38,6 +33,10 @@ describe('FinesMacLanguagePreferencesComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacLanguagePreferencesComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
     fixture.detectChanges();
   });
 
@@ -50,7 +49,7 @@ describe('FinesMacLanguagePreferencesComponent', () => {
 
     component.handleLanguagePreferencesSubmit(formSubmit);
 
-    expect(finesService.finesMacState.languagePreferences).toEqual(formSubmit);
+    expect(finesMacStore.languagePreferences()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -58,11 +57,11 @@ describe('FinesMacLanguagePreferencesComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(component['finesService'].finesMacState.unsavedChanges).toBeTruthy();
+    expect(finesMacStore.unsavedChanges()).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(component['finesService'].finesMacState.unsavedChanges).toBeFalsy();
+    expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });
