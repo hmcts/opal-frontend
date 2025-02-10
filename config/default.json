@@ -22,6 +22,9 @@
     "launch-darkly": {
       "enabled": false,
       "stream": false
+    },
+    "app-insights": {
+      "enabled": true
     }
   },
   "session": {
@@ -41,7 +44,8 @@
       "redis-connection-string": "redis://localhost:6379",
       "opal-frontend-session-secret": "supersecret",
       "opal-frontend-cookie-secret": "supersecret",
-      "opal-frontend-csrf-secret": "supersecret"
+      "opal-frontend-csrf-secret": "supersecret",
+      "app-insights-connection-string": "supersecret"
     }
   },
   "expiry": {
