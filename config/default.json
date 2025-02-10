@@ -58,5 +58,8 @@
       "expiryTimeInMilliseconds": 300000,
       "warningThresholdInMilliseconds": 300000
     }
+  },
+  "application-insights": {
+    "cloudRoleName": "opal-frontend"
   }
 }

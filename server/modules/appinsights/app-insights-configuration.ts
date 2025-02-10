@@ -6,11 +6,16 @@ export default class AppInsightsConfiguration {
     const appInsightsConfig: appInsightsConfig = {
       enabled: config.get('features.app-insights.enabled'),
       connectionString: null,
-      cloudRoleName: 'opal-frontend',
+      cloudRoleName: null,
     };
 
-    if (appInsightsConfig.enabled && config.has('secrets.opal.app-insights-connection-string')) {
+    if (
+      appInsightsConfig.enabled &&
+      config.has('secrets.opal.app-insights-connection-string') &&
+      config.has('application-insights.cloudRoleName')
+    ) {
       appInsightsConfig.connectionString = config.get('secrets.opal.app-insights-connection-string');
+      appInsightsConfig.cloudRoleName = config.get('application-insights.cloudRoleName');
     }
 
     return appInsightsConfig;

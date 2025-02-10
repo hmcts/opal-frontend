@@ -1,6 +1,7 @@
 process.env['APPLICATIONINSIGHTS_CONFIGURATION_CONTENT'] = '{}';
 import * as appInsights from 'applicationinsights';
 import AppInsightsConfiguration from './app-insights-configuration';
+import config from 'config';
 
 // As of 2.9.0 issue reading bundled applicationinsights.json
 // https://github.com/microsoft/ApplicationInsights-node.js/issues/1226
@@ -12,7 +13,6 @@ export class AppInsights {
     const appInsightsConfig = appInsightsConfigInstance.enableFor();
     const enabled = appInsightsConfig.enabled;
     const connectionString = appInsightsConfig.connectionString;
-    const cloudRoleName = appInsightsConfig.cloudRoleName;
 
     if (enabled && connectionString) {
       appInsights
@@ -28,7 +28,9 @@ export class AppInsights {
         .enableWebInstrumentation(false)
         .start();
 
-      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRoleName;
+      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = config.get(
+        'application-insights.cloudRoleName',
+      );
       appInsights.defaultClient.trackTrace({
         message: 'App insights activated',
       });

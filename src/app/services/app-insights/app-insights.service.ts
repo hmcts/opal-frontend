@@ -39,7 +39,7 @@ export class AppInsightsService {
   private telemetryInitializer(envelope: ITelemetryItem): void {
     envelope.tags = envelope.tags || {};
     if (this.appInsightsConfig?.enabled) {
-      envelope.tags['ai.cloud.role'] = this.appInsightsConfig.cloudRoleName;
+      envelope.tags['ai.cloud.role'] = this.appInsightsConfig.cloudRoleName!;
     }
   }
 

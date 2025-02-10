@@ -1,7 +1,7 @@
 class appInsightsConfig {
   enabled!: boolean;
   connectionString!: string | null;
-  cloudRoleName!: string;
+  cloudRoleName!: string | null;
 }
 
 export default appInsightsConfig;
