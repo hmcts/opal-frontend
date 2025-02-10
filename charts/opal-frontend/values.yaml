@@ -26,6 +26,7 @@ nodejs:
     FEATURES_SSO_ENABLED: true
     SESSION_SAME_SITE: 'strict'
     CSRF_SAME_SITE: 'strict'
+    FEATURES_APP_INSIGHTS_ENABLED: true
 redis:
   enabled: false
 
