@@ -24,7 +24,7 @@
       "stream": false
     },
     "app-insights": {
-      "enabled": true
+      "enabled": false
     }
   },
   "session": {
