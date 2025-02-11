@@ -21,8 +21,8 @@ import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-det
 export class FinesMacOffenceDetailsReviewComponent implements OnInit, OnDestroy {
   @Input({ required: false }) public isReadOnly = false;
   private readonly opalFinesService = inject(OpalFines);
-  public finesMacStore = inject(FinesMacStore);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly dateService = inject(DateService);
 

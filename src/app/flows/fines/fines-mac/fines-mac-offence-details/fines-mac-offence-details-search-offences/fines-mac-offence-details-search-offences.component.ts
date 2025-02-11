@@ -15,7 +15,7 @@ import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details
 export class FinesMacOffenceDetailsSearchOffencesComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
 
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 

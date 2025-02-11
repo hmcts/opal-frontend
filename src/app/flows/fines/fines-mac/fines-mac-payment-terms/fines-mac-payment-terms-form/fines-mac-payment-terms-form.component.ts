@@ -79,7 +79,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
 
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
   private readonly globalStore = inject(GlobalStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;

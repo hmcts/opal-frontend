@@ -56,7 +56,7 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
 
   protected readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
-  public finesMacStore = inject(FinesMacStore);
+  protected readonly finesMacStore = inject(FinesMacStore);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   private readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStore.userState();

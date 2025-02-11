@@ -45,7 +45,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
 
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 

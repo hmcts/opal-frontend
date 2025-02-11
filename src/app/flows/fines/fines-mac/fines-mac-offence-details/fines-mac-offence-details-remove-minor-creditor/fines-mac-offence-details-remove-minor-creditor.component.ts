@@ -23,9 +23,8 @@ export class FinesMacOffenceDetailsRemoveMinorCreditorComponent
   extends AbstractFormArrayRemovalComponent
   implements OnInit
 {
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
-
   public minorCreditor!: IFinesMacOffenceDetailsMinorCreditorForm;
 
   /**

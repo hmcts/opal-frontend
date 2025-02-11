@@ -26,7 +26,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacLanguagePreferencesForm>();
 
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 

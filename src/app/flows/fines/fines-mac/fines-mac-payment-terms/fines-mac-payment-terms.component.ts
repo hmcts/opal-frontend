@@ -12,7 +12,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacPaymentTermsComponent extends AbstractFormParentBaseComponent {
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   public defendantType = this.finesMacStore.getDefendantType();
 
   /**

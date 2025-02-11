@@ -88,8 +88,8 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
   private readonly changeDetector: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly dateService = inject(DateService);
-  public finesMacStore = inject(FinesMacStore);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 

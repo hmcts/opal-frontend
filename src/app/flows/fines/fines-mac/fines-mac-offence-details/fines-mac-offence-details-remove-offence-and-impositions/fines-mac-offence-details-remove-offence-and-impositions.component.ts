@@ -25,10 +25,9 @@ export class FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent
   implements OnInit
 {
   private readonly opalFinesService = inject(OpalFines);
-  public finesMacStore = inject(FinesMacStore);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
-
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly impositionRefData$: Observable<IOpalFinesResultsRefData> = this.opalFinesService
     .getResults(this.resultCodeArray)

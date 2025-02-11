@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacAccountCommentsNotesFormComponent } from './fines-mac-account-comments-notes-form.component';
 import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
 import { ActivatedRoute } from '@angular/router';

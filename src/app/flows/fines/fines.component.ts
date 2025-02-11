@@ -11,7 +11,7 @@ import { FinesMacStore } from './fines-mac/stores/fines-mac.store';
 })
 export class FinesComponent implements OnDestroy {
   private readonly globalStore = inject(GlobalStore);
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   public ngOnDestroy(): void {
     // Cleanup our state when the route unloads...

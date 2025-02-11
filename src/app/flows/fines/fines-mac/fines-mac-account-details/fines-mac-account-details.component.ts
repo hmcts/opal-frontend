@@ -43,7 +43,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public finesMacStore = inject(FinesMacStore);
+  protected readonly finesMacStore = inject(FinesMacStore);
 
   protected readonly fineMacRoutes = FINES_MAC_ROUTING_PATHS;
   public accountCreationStatus: IFinesMacAccountDetailsAccountStatus = FINES_MAC_ACCOUNT_DETAILS_ACCOUNT_STATUS;

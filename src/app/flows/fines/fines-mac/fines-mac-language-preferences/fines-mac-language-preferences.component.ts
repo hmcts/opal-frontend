@@ -14,8 +14,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacLanguagePreferencesComponent extends AbstractFormParentBaseComponent {
-  public finesMacStore = inject(FinesMacStore);
-
+  private readonly finesMacStore = inject(FinesMacStore);
   public readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
   /**

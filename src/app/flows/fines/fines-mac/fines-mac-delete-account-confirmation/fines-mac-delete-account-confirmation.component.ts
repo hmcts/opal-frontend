@@ -14,7 +14,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 export class FinesMacDeleteAccountConfirmationComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public finesMacStore = inject(FinesMacStore);
+  protected readonly finesMacStore = inject(FinesMacStore);
 
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
 

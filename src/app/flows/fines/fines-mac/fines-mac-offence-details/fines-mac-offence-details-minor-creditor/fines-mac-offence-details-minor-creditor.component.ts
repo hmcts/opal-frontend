@@ -16,8 +16,8 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
   extends AbstractFormParentBaseComponent
   implements OnInit, OnDestroy
 {
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   /**
    * Handles the submission of the minor creditor form.

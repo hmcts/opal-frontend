@@ -38,8 +38,8 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   extends AbstractFormArrayRemovalComponent
   implements OnInit
 {
-  public finesMacStore = inject(FinesMacStore);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);

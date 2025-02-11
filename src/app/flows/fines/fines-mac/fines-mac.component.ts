@@ -12,7 +12,7 @@ import { FinesMacStore } from './stores/fines-mac.store';
 })
 export class FinesMacComponent implements OnDestroy {
   private readonly globalStore = inject(GlobalStore);
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   /**
    * If the user navigates externally from the site or closes the tab

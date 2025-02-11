@@ -51,7 +51,7 @@ import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-deta
 export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFormBaseComponent implements OnInit {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacOffenceDetailsMinorCreditorForm>();
 
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   public readonly creditorTypesOptions = FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE;
   public readonly creditorTypes: IGovUkRadioOptions[] = Object.entries(this.creditorTypesOptions).map(
     ([key, value]) => ({

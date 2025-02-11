@@ -48,7 +48,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;

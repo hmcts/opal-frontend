@@ -29,8 +29,8 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
-  public finesMacStore = inject(FinesMacStore);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly dateService = inject(DateService);
   public defendantType = this.finesMacStore.getDefendantType();
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);

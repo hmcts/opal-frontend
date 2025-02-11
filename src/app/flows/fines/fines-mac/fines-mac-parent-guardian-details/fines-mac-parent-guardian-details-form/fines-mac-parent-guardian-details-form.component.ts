@@ -47,8 +47,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   implements OnInit, OnDestroy
 {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
-
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;

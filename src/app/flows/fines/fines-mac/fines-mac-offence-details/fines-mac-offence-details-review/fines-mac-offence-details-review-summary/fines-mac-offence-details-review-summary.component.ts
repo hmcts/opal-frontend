@@ -10,13 +10,13 @@ import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/go
 import { CommonModule } from '@angular/common';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fines-mac-offence-details-review-summary-offences-total/fines-mac-offence-details-review-summary-offences-total.component';
-import { MojBannerComponent } from '../../../../../../components/moj/moj-banner/moj-banner.component';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-mac-offence-details-review-summary-form.interface';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces/fines-mac-offence-details-review-summary-details-hidden.interface';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
@@ -24,9 +24,9 @@ import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-deta
     CommonModule,
     GovukButtonComponent,
     GovukCancelLinkComponent,
+    MojBannerComponent,
     FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent,
     FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent,
-    MojBannerComponent,
     FinesMacOffenceDetailsReviewOffenceComponent,
   ],
   templateUrl: './fines-mac-offence-details-review-summary.component.html',
@@ -41,8 +41,8 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public finesMacStore = inject(FinesMacStore);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
 
   public readonly finesMacStatus = FINES_MAC_STATUS;
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;

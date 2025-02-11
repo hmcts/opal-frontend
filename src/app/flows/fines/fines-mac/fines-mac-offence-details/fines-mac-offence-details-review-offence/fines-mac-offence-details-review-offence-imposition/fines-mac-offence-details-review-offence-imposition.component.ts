@@ -13,11 +13,11 @@ import { GovukTableBodyRowDataComponent } from '@components/govuk/govuk-table/go
 import { GovukTableBodyRowComponent } from '@components/govuk/govuk-table/govuk-table-body-row/govuk-table-body-row.component';
 import { GovukTableHeadingComponent } from '@components/govuk/govuk-table/govuk-table-heading/govuk-table-heading.component';
 import { GovukTableComponent } from '@components/govuk/govuk-table/govuk-table.component';
-import { GovukSummaryListComponent } from '../../../../../../components/govuk/govuk-summary-list/govuk-summary-list.component';
 import { CommonModule } from '@angular/common';
 import { GovukSummaryListRowComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list-row/govuk-summary-list-row.component';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
+import { GovukSummaryListComponent } from '@components/govuk/govuk-summary-list/govuk-summary-list.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -41,7 +41,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   @Input({ required: false }) public isReadOnly!: boolean;
 
   private readonly opalFinesService = inject(OpalFines);
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   public readonly utilsService = inject(UtilsService);
 
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];

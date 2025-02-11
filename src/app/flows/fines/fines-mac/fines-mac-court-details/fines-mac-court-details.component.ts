@@ -22,7 +22,7 @@ import { FinesMacStore } from '../stores/fines-mac.store';
 })
 export class FinesMacCourtDetailsComponent extends AbstractFormParentBaseComponent {
   private readonly opalFinesService = inject(OpalFines);
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   public localJusticeAreas!: IOpalFinesLocalJusticeAreaRefData;
   private readonly sendingCourtData$: Observable<IGovUkSelectOptions[]> = this.opalFinesService
     .getLocalJusticeAreas()

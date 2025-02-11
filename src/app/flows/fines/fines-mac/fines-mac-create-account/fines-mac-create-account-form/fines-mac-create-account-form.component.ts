@@ -56,7 +56,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   private readonly accountTypeSubject = new Subject<void>();
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;

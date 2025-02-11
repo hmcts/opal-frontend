@@ -24,7 +24,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_FORM } from '../fines-mac-language-prefe
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMacCreateAccountComponent extends AbstractFormParentBaseComponent implements OnInit {
-  public finesMacStore = inject(FinesMacStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   private readonly opalFinesService = inject(OpalFines);
   private businessUnits!: IOpalFinesBusinessUnit[];
   private readonly configurationItems = FINES_MAC_CREATE_ACCOUNT_CONFIGURATION_ITEMS;

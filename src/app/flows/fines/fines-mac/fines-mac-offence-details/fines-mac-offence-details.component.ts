@@ -13,8 +13,8 @@ import { FinesMacOffenceDetailsStore } from './stores/fines-mac-offence-details.
 })
 export class FinesMacOffenceDetailsComponent implements OnDestroy {
   private readonly globalStore = inject(GlobalStore);
-  public finesMacStore = inject(FinesMacStore);
-  public finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
 
   /**
    * Checks if the component can be deactivated.
