@@ -1,39 +1,51 @@
 import { mount } from 'cypress/angular';
-import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor-information/fines-mac-offence-details-minor-creditor-information.component';
+import { FinesMacOffenceDetailsRemoveMinorCreditorComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-remove-minor-creditor/fines-mac-offence-details-remove-minor-creditor.component';
 import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MINOR_CREDITOR_MOCK } from './mocks/minor_creditor_information_mocks';
 import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacOffenceDetailsService } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@services/date-service/date.service';
+import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
+import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { UtilsService } from '@services/utils/utils.service';
-import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
-import { DOM_ELEMENTS } from './constants/minor-creditor-information-elements';
+import { DOM_ELEMENTS } from './constants/remove_minor_creditor_elements';
 
 describe('FinesMacMinorCreditor', () => {
   let mockFinesService: FinesService;
-  const mockUtilsService = {
-    formatSortCode: (value: string) => {
-      const sortCode = value.toString();
-      return `${sortCode.slice(0, 2)}-${sortCode.slice(2, 4)}-${sortCode.slice(4, 6)}`;
-    },
-    upperCaseFirstLetter: (str: string) => str.charAt(0).toUpperCase() + str.slice(1),
-  };
-  const minorCreditorValue = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
+  let mockOffenceDetailsService: FinesMacOffenceDetailsService;
+  let formData: any;
+  let currentoffenceDetails = 0;
 
   beforeEach(() => {
     mockFinesService = new FinesService(new DateService());
-    mockFinesService.finesMacState = FINES_MINOR_CREDITOR_MOCK;
+
+    mockOffenceDetailsService = {
+      finesMacOffenceDetailsDraftState: FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
+    } as FinesMacOffenceDetailsService;
+
+    const childForms = [
+      {
+        ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
+      },
+    ];
+
+    mockOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[
+      currentoffenceDetails
+    ].childFormData = childForms;
+
+    formData = childForms;
+    mockOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
   });
 
-  const setupComponent = (formSubmit: any) => {
-    mount(FinesMacOffenceDetailsMinorCreditorInformationComponent, {
+  const setupComponent = () => {
+    mount(FinesMacOffenceDetailsRemoveMinorCreditorComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
-        { provide: UtilsService, useValue: mockUtilsService },
-
+        UtilsService,
+        { provide: FinesMacOffenceDetailsService, useValue: mockOffenceDetailsService },
+        { provide: FinesService, useValue: mockFinesService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -45,19 +57,16 @@ describe('FinesMacMinorCreditor', () => {
           },
         },
       ],
-      componentProperties: {
-        minorCreditor: minorCreditorValue,
-      },
+      componentProperties: {},
     });
   };
-  it('should load the component', () => {
-    setupComponent(null);
-
-    cy.get(DOM_ELEMENTS.app).should('exist');
+  it('should render the component', () => {
+    setupComponent();
   });
-
   it('should render all elements on the page', () => {
-    setupComponent(null);
+    setupComponent();
+    cy.get(DOM_ELEMENTS.app).should('exist');
+    cy.get(DOM_ELEMENTS.heading).should('exist');
     cy.get(DOM_ELEMENTS.name).should('exist');
     cy.get(DOM_ELEMENTS.address).should('exist');
     cy.get(DOM_ELEMENTS.paymentMethod).should('exist');
@@ -72,10 +81,15 @@ describe('FinesMacMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.sortCodeKey).should('exist');
     cy.get(DOM_ELEMENTS.accountNumberKey).should('exist');
     cy.get(DOM_ELEMENTS.paymentReferenceKey).should('exist');
+
+    cy.get(DOM_ELEMENTS.removeCreditorButton).should('exist');
+    cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
   it('should load all keys and elements with correct text', () => {
-    setupComponent(null);
+    setupComponent();
+
+    cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this minor creditor?');
 
     cy.get(DOM_ELEMENTS.addressKey).should('contain', 'Address');
     cy.get(DOM_ELEMENTS.paymentMethodKey).should('contain', 'Payment method');
@@ -83,9 +97,13 @@ describe('FinesMacMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.sortCodeKey).should('contain', 'Sort code');
     cy.get(DOM_ELEMENTS.accountNumberKey).should('contain', 'Account number');
     cy.get(DOM_ELEMENTS.paymentReferenceKey).should('contain', 'Payment reference');
+
+    cy.get(DOM_ELEMENTS.removeCreditorButton).should('contain', 'Yes - remove minor creditor');
   });
+
   it('should load all fields with the correct values', () => {
-    setupComponent(null);
+    setupComponent();
+
     cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
     cy.get(DOM_ELEMENTS.address).should('contain', '1 Testing Lane' + 'Test Town' + 'Testing' + 'TE12 3ST');
     cy.get(DOM_ELEMENTS.accountName).should('contain', 'John Doe');
