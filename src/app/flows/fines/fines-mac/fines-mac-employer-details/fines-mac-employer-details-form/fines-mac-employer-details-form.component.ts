@@ -14,11 +14,8 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 import { IFinesMacEmployerDetailsForm } from '../interfaces/fines-mac-employer-details-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-
 import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
 import { optionalEmailAddressValidator } from '@validators/optional-valid-email-address/optional-valid-email-address.validator';
 import { optionalPhoneNumberValidator } from '@validators/optional-valid-telephone/optional-valid-telephone.validator';
@@ -26,10 +23,10 @@ import { specialCharactersValidator } from '@validators/special-characters/speci
 import { FINES_MAC_EMPLOYER_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-employer-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-employer-details-form',
-
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -46,7 +43,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacEmployerDetailsForm>();
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
@@ -98,7 +95,7 @@ export class FinesMacEmployerDetailsFormComponent extends AbstractFormBaseCompon
    * and repopulates the form with the initial values.
    */
   private initialEmployerDetailsSetup(): void {
-    const { formData } = this.finesService.finesMacState.employerDetails;
+    const { formData } = this.finesMacStore.employerDetails();
     this.setupEmployerDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);

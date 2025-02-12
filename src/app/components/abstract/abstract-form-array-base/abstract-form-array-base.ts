@@ -305,8 +305,8 @@ export abstract class AbstractFormArrayBaseComponent extends AbstractFormBaseCom
   }
 
   public override ngOnDestroy(): void {
-    this['ngUnsubscribe'].next();
-    this['ngUnsubscribe'].complete();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
     super.ngOnDestroy();
   }
 }

@@ -5,7 +5,6 @@ import { DateService } from '@services/date-service/date.service';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary-date-of-sentence',
-
   imports: [GovukSummaryListComponent, GovukSummaryListRowComponent],
   templateUrl: './fines-mac-offence-details-review-summary-date-of-sentence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

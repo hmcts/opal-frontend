@@ -1,15 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FinesMacOffenceDetailsMinorCreditorFormComponent } from './fines-mac-offence-details-minor-creditor-form/fines-mac-offence-details-minor-creditor-form.component';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { IFinesMacOffenceDetailsMinorCreditorForm } from './interfaces/fines-mac-offence-details-minor-creditor-form.interface';
-import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor',
-
   imports: [FinesMacOffenceDetailsMinorCreditorFormComponent],
   templateUrl: './fines-mac-offence-details-minor-creditor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,8 +16,8 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
   extends AbstractFormParentBaseComponent
   implements OnInit, OnDestroy
 {
-  protected readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   /**
    * Handles the submission of the minor creditor form.
@@ -32,16 +30,13 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
    */
   public handleMinorCreditorFormSubmit(form: IFinesMacOffenceDetailsMinorCreditorForm): void {
     // Update the imposition position in the form data
-    const { removeImposition, removeMinorCreditor } =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
-    form.formData.fm_offence_details_imposition_position = removeMinorCreditor ?? removeImposition!.rowIndex;
-
-    // Update the status as form is mandatory
-    form.status = FINES_MAC_STATUS.PROVIDED;
+    const removeMinorCreditor = this.finesMacOffenceDetailsStore.removeMinorCreditor();
+    const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
+    form.formData.fm_offence_details_imposition_position =
+      removeMinorCreditor ?? this.finesMacOffenceDetailsStore.rowIndex();
 
     // If childFormData exists and has at least one item in
-    const { childFormData } =
-      this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[0];
+    const { childFormData } = offenceDetailsDraft[0];
 
     if (childFormData && childFormData.length > 0) {
       const minorCreditor = childFormData.find(
@@ -53,10 +48,11 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
         childFormData.push(form);
       }
     } else {
-      childFormData!.push(form);
+      offenceDetailsDraft[0].childFormData = [form];
     }
 
-    this.finesMacOffenceDetailsService.minorCreditorAdded = true;
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(offenceDetailsDraft);
+    this.finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
 
     this.routerNavigate(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }
@@ -67,15 +63,15 @@ export class FinesMacOffenceDetailsMinorCreditorComponent
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
 
   public ngOnInit(): void {
-    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
+    this.finesMacOffenceDetailsStore.setOffenceCodeMessage('');
   }
 
   public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = null;
+    this.finesMacOffenceDetailsStore.setRemoveMinorCreditor(null);
   }
 }
