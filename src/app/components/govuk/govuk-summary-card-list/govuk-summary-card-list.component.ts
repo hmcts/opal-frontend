@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 
 @Component({
   selector: 'app-govuk-summary-card-list',
-
   imports: [],
   templateUrl: './govuk-summary-card-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

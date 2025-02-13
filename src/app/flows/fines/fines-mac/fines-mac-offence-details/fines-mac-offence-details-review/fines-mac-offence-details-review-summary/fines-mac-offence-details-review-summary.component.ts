@@ -10,24 +10,23 @@ import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/go
 import { CommonModule } from '@angular/common';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent } from './fines-mac-offence-details-review-summary-offences-total/fines-mac-offence-details-review-summary-offences-total.component';
-import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
-import { MojBannerComponent } from '../../../../../../components/moj/moj-banner/moj-banner.component';
 import { IFinesMacOffenceDetailsReviewSummaryForm } from '../interfaces/fines-mac-offence-details-review-summary-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
 import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 import { IFinesMacOffenceDetailsReviewSummaryDetailsHidden } from '../interfaces/fines-mac-offence-details-review-summary-details-hidden.interface';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-summary',
-
   imports: [
     CommonModule,
     GovukButtonComponent,
     GovukCancelLinkComponent,
+    MojBannerComponent,
     FinesMacOffenceDetailsReviewSummaryDateOfSentenceComponent,
     FinesMacOffenceDetailsReviewSummaryOffencesTotalComponent,
-    MojBannerComponent,
     FinesMacOffenceDetailsReviewOffenceComponent,
   ],
   templateUrl: './fines-mac-offence-details-review-summary.component.html',
@@ -42,8 +41,8 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public readonly finesService = inject(FinesService);
-  public readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  private readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
 
   public readonly finesMacStatus = FINES_MAC_STATUS;
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -86,9 +85,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
    * @returns {boolean} Returns true if the defendant type is 'adultOrYouthOnly', otherwise returns false.
    */
   private isAdultOrYouthOnly(): boolean {
-    return (
-      this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
-    );
+    return this.finesMacStore.getDefendantType() === 'adultOrYouthOnly';
   }
 
   /**
@@ -96,7 +93,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
    * @param action - The action object containing the action name and offence ID.
    */
   public offenceAction(action: { actionName: string; offenceId: number }): void {
-    this.finesMacOffenceDetailsService.offenceIndex = action.offenceId;
+    this.finesMacOffenceDetailsStore.setOffenceIndex(action.offenceId);
     if (action.actionName === 'change') {
       this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
     } else if (action.actionName === 'remove') {
@@ -110,7 +107,7 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
    * Adds another offence.
    */
   public addAnotherOffence(): void {
-    this.finesMacOffenceDetailsService.offenceIndex = this.getMaxOffenceId() + 1;
+    this.finesMacOffenceDetailsStore.setOffenceIndex(this.getMaxOffenceId() + 1);
     this.handleRoute(FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence);
   }
 
@@ -132,26 +129,26 @@ export class FinesMacOffenceDetailsReviewSummaryComponent implements OnInit, OnD
 
   /**
    * Checks the sub-navigation button status based on the provided conditions.
-   * If the user is an adult or youth only, it checks if the finesMacState personalDetails status is provided.
+   * If the user is an adult or youth only, it checks if the finesMacStore personalDetails status is provided.
    * Otherwise, it returns true.
    *
    * @returns {boolean} The sub-navigation button status.
    */
   public checkSubNavigationButton(): boolean {
     if (this.isAdultOrYouthOnly()) {
-      return this.finesService.finesMacState.personalDetails.status === FINES_MAC_STATUS.PROVIDED;
+      return this.finesMacStore.personalDetailsStatus() === FINES_MAC_STATUS.PROVIDED;
     }
     return true;
   }
 
   public ngOnInit(): void {
-    if (this.offencesImpositions.length === 0 && !this.finesMacOffenceDetailsService.offenceRemoved) {
+    if (this.offencesImpositions.length === 0 && !this.finesMacOffenceDetailsStore.offenceRemoved()) {
       this.addAnotherOffence();
     }
     this.offenceDetailsHidden();
   }
 
   public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsService.offenceCodeMessage = '';
+    this.finesMacOffenceDetailsStore.setOffenceCodeMessage('');
   }
 }

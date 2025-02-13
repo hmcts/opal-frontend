@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-tag',
-
   imports: [],
   templateUrl: './govuk-tag.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
