@@ -155,4 +155,15 @@ describe('FinesDraftStore', () => {
     expect(store.fragment()).toEqual('');
     expect(store.amend()).toEqual(false);
   });
+
+  it('should set banner message', () => {
+    store.setBannerMessage('banner message');
+    expect(store.bannerMessage()).toEqual('banner message');
+  });
+
+  it('should reset banner message', () => {
+    store.setBannerMessage('banner message');
+    store.resetBannerMessage();
+    expect(store.bannerMessage()).toEqual('');
+  });
 });

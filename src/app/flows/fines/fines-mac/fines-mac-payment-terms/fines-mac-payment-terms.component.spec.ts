@@ -95,7 +95,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     component.handlePaymentTermsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
+    expect(finesMacStore.paymentTerms()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes], {
       relativeTo: component['activatedRoute'].parent,
     });

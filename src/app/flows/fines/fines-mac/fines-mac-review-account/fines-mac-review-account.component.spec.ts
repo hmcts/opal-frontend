@@ -40,10 +40,6 @@ describe('FinesMacReviewAccountComponent', () => {
   let finesDraftStore: FinesDraftStoreType;
   let mockDateService: jasmine.SpyObj<DateService>;
 
-  const mockFinesDraftAmend = signal<boolean>(false);
-  const mockFinesDraftBannerMessage = signal<string>('');
-  const mockFinesDraftFragment = signal<string>('');
-
   beforeEach(async () => {
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
@@ -151,13 +147,13 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should test setReviewAccountStatus when draft state is null', () => {
-    mockFinesService.finesDraftState = FINES_DRAFT_STATE;
+    finesDraftStore.setFinesDraftState(FINES_DRAFT_STATE);
     component['setReviewAccountStatus']();
-    expect(component.reviewAccountStatus).toBeUndefined();
+    expect(component.reviewAccountStatus).toEqual('');
   });
 
   it('should test setAccountDetailsStatus when draft state is unknown', () => {
-    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' };
+    finesDraftStore.setFinesDraftState({ ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' });
     component['setReviewAccountStatus']();
     expect(component.reviewAccountStatus).toEqual('');
   });
@@ -200,7 +196,6 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should handle submitPayload failure', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleRequestErrorSpy = spyOn<any>(component, 'handleRequestError');
-    mockFinesService.finesDraftFragment.set('');
     mockOpalFinesService.postDraftAddAccountPayload = jasmine
       .createSpy('postDraftAddAccountPayload')
       .and.returnValue(throwError(() => new Error('Something went wrong')));
@@ -221,20 +216,20 @@ describe('FinesMacReviewAccountComponent', () => {
       submitted_by_name: 'Test Submitted By Name',
       business_unit_name: 'Test Business; Unit Name',
     };
-    mockFinesService.finesDraftFragment.set('review');
+    finesDraftStore.setFragment('review');
 
     component['processPutResponse'](expectedResult);
 
-    expect(mockFinesService.finesDraftBannerMessage()).toEqual(
+    expect(finesDraftStore.bannerMessage()).toEqual(
       `You have submitted ${expectedResult.account_snapshot?.defendant_name}'s account for review`,
     );
-    expect(mockFinesService.finesMacState.stateChanges).toBeFalse();
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalse();
+    expect(finesMacStore.stateChanges()).toBeFalse();
+    expect(finesMacStore.unsavedChanges()).toBeFalse();
     expect(handleRouteSpy).toHaveBeenCalledWith(
       `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
       false,
       undefined,
-      'review',
+      finesDraftStore.fragment(),
     );
   });
 
@@ -249,8 +244,8 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should test preparePutPayload', () => {
     component['preparePutPayload']();
     expect(mockFinesMacPayloadService.buildReplaceAccountPayload).toHaveBeenCalledWith(
-      component['finesService'].finesMacState,
-      component['finesService'].finesDraftState,
+      finesMacStore.getFinesMacStore(),
+      finesDraftStore.getFinesDraftState(),
       component['userState'],
     );
   });
@@ -258,7 +253,7 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should test preparePostPayload', () => {
     component['preparePostPayload']();
     expect(mockFinesMacPayloadService.buildAddAccountPayload).toHaveBeenCalledWith(
-      component['finesService'].finesMacState,
+      finesMacStore.getFinesMacStore(),
       component['userState'],
     );
   });
@@ -288,7 +283,7 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should handle submitPayload success', () => {
-    mockFinesService.finesDraftAmend.set(false);
+    finesDraftStore.setAmend(false);
     const handleRouteSpy = spyOn(component, 'handleRoute');
 
     component['submitPayload']();
@@ -298,7 +293,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it('should call handleRoute with POST', () => {
     const handleRouteSpy = spyOn(component, 'handleRoute');
-    mockFinesService.finesDraftAmend.set(false);
+    finesDraftStore.setAmend(false);
 
     component['submitPayload']();
 
@@ -307,8 +302,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it('should call handleRoute with PUT', () => {
     const handleRouteSpy = spyOn(component, 'handleRoute');
-    mockFinesService.finesDraftAmend.set(true);
-    mockFinesService.finesDraftFragment.set('review');
+    finesDraftStore.setFragmentAndAmend('review', true);
 
     component['submitPayload']();
 
@@ -316,7 +310,7 @@ describe('FinesMacReviewAccountComponent', () => {
       `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
       false,
       undefined,
-      'review',
+      finesDraftStore.fragment(),
     );
   });
 
@@ -371,19 +365,7 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
       relativeTo: component['activatedRoute'].parent,
     });
-    expect(mockFinesService.finesMacState.deleteFromCheckAccount).toBeTrue();
-  });
-
-  it('should test setReviewAccountStatus when draft state is null', () => {
-    mockFinesService.finesDraftState = FINES_DRAFT_STATE;
-    component['setReviewAccountStatus']();
-    expect(component.reviewAccountStatus).toBeUndefined();
-  });
-
-  it('should test setAccountDetailsStatus when draft state is unknown', () => {
-    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' };
-    component['setReviewAccountStatus']();
-    expect(component.reviewAccountStatus).toEqual('');
+    expect(finesMacStore.deleteFromCheckAccount()).toBeTrue();
   });
 
   it('should test reviewAccountFetchedMappedPayload', () => {

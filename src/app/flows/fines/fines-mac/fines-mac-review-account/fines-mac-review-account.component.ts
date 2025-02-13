@@ -214,15 +214,14 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   private processPutResponse(response: IFinesMacAddAccountPayload): void {
     const accountName = response.account_snapshot?.defendant_name;
-    this.finesService.finesDraftBannerMessage.set(`You have submitted ${accountName}'s account for review`);
-    this.finesService.finesMacState.stateChanges = false;
-    this.finesService.finesMacState.unsavedChanges = false;
+    this.finesDraftStore.setBannerMessage(`You have submitted ${accountName}'s account for review`);
+    this.finesMacStore.resetStateChangesUnsavedChanges();
 
     this.handleRoute(
       `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
       false,
       undefined,
-      this.finesService.finesDraftFragment(),
+      this.finesDraftStore.fragment(),
     );
   }
 
@@ -250,8 +249,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   private preparePutPayload(): IFinesMacAddAccountPayload {
     return this.finesMacPayloadService.buildReplaceAccountPayload(
-      this.finesService.finesMacState,
-      this.finesService.finesDraftState,
+      this.finesMacStore.getFinesMacStore(),
+      this.finesDraftStore.getFinesDraftState(),
       this.userState,
     );
   }
@@ -266,7 +265,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @returns {IFinesMacAddAccountPayload} The payload for adding an account.
    */
   private preparePostPayload(): IFinesMacAddAccountPayload {
-    return this.finesMacPayloadService.buildAddAccountPayload(this.finesService.finesMacState, this.userState);
+    return this.finesMacPayloadService.buildAddAccountPayload(this.finesMacStore.getFinesMacStore(), this.userState);
   }
 
   /**
@@ -300,7 +299,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public submitPayload(): void {
-    if (this.finesService.finesDraftAmend()) {
+    if (this.finesDraftStore.amend()) {
       this.submitPutPayload();
     } else {
       this.submitPostPayload();

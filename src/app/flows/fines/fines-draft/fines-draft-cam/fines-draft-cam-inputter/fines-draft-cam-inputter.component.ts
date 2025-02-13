@@ -36,7 +36,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
-  private readonly finesDraftStore = inject(FinesDraftStore);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly businessUnitIds = this.globalStore
