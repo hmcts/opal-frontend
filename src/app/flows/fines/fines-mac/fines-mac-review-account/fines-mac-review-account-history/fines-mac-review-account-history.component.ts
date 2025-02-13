@@ -14,5 +14,6 @@ export class FinesMacReviewAccountHistoryComponent {
   @Input({ required: true }) public timelineData!: IFinesMacAccountTimelineData[];
   @Input({ required: true }) public defendantName!: string;
   @Input({ required: true }) public accountStatus!: string;
+  @Input({ required: false }) public isRejected!: boolean;
   protected readonly dateService = inject(DateService);
 }
