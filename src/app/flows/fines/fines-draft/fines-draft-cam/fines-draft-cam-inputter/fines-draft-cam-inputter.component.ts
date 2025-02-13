@@ -81,7 +81,8 @@ export class FinesDraftCamInputterComponent implements OnInit {
         dob: date_of_birth
           ? this.dateService.getFromFormatToFormat(date_of_birth, this.DATE_INPUT_FORMAT, this.DATE_OUTPUT_FORMAT)
           : '',
-        created: this.dateService.getDaysAgoString(created_date) ?? '',
+        created: created_date,
+        createdString: this.dateService.getDaysAgoString(created_date),
         accountType: FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
         businessUnit: business_unit_name,
       };
