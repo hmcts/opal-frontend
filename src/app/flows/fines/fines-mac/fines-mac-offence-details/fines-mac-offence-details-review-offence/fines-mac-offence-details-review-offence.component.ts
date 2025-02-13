@@ -7,7 +7,6 @@ import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-servi
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence',
-
   imports: [
     FinesMacOffenceDetailsReviewOffenceHeadingComponent,
     FinesMacOffenceDetailsReviewOffenceImpositionComponent,

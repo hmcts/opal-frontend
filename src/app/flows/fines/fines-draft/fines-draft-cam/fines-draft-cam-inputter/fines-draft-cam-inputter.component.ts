@@ -4,7 +4,6 @@ import { MojSubNavigationItemComponent } from '../../../../../components/moj/moj
 import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper/fines-draft-table-wrapper.component';
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
@@ -12,19 +11,19 @@ import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
+import { GlobalStore } from '@stores/global/global.store';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
-
   imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesDraftCamInputterComponent {
   private readonly opalFinesService = inject(OpalFines);
-  private readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
-  private readonly businessUnitIds = this.globalStateService
+  private readonly businessUnitIds = this.globalStore
     .userState()
     .business_unit_user.map((business_unit_user) => business_unit_user.business_unit_id);
 

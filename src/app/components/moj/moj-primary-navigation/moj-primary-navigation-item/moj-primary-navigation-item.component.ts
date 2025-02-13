@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-moj-primary-navigation-item, [app-moj-primary-navigation-item]',
-
   imports: [],
   templateUrl: './moj-primary-navigation-item.component.html',
   styleUrls: ['./moj-primary-navigation-item.component.scss'],

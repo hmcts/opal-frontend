@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, OnInit, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { Observable, forkJoin, map } from 'rxjs';
@@ -13,13 +12,13 @@ import { IFinesMacOffenceDetailsForm } from '../interfaces/fines-mac-offence-det
 import { FinesMacOffenceDetailsAddAnOffenceFormComponent } from './fines-mac-offence-details-add-an-offence-form/fines-mac-offence-details-add-an-offence-form.component';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
-import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { AbstractFormArrayParentBaseComponent } from '@components/abstract/abstract-form-array-parent-base/abstract-form-array-parent-base.component';
 import { DateService } from '@services/date-service/date.service';
+import { FinesMacStore } from '../../stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 
 @Component({
   selector: 'app-fines-mac-offence-details-add-an-offence',
-
   imports: [CommonModule, RouterModule, FinesMacOffenceDetailsAddAnOffenceFormComponent],
   templateUrl: './fines-mac-offence-details-add-an-offence.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,10 +29,10 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
 {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesService = inject(FinesService);
-  private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
+  private readonly finesMacStore = inject(FinesMacStore);
+  private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
   private readonly dateService = inject(DateService);
-  public defendantType = this.finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!;
+  public defendantType = this.finesMacStore.getDefendantType();
   private readonly resultCodeArray: string[] = Object.values(FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES);
   private readonly resultCodeData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
     .getResults(this.resultCodeArray)
@@ -43,7 +42,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
       }),
     );
   private readonly majorCreditorData$: Observable<IAlphagovAccessibleAutocompleteItem[]> = this.opalFinesService
-    .getMajorCreditors(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .getMajorCreditors(this.finesMacStore.getBusinessUnitId())
     .pipe(
       map((response: IOpalFinesMajorCreditorRefData) => {
         return this.createAutoCompleteItemsMajorCreditors(response);
@@ -100,32 +99,29 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   /**
-   * Updates the offence details in the finesMacState based on the provided form data.
+   * Updates the offence details in the finesMacStore based on the provided form data.
    * If an offence detail with the same fm_offence_details_id already exists, it will be updated.
-   * Otherwise, the new offence detail will be added to the finesMacState.
+   * Otherwise, the new offence detail will be added to the finesMacStore.
    *
    * @param form - The form data containing the offence details to be updated or added.
    */
   private updateOffenceDetailsIndex(form: IFinesMacOffenceDetailsForm): void {
-    // Update the impositions array with their respective index positions
-    form.formData.fm_offence_details_impositions.forEach((imposition, index) => {
-      imposition.fm_offence_details_imposition_id = index;
-    });
-
     form.formData.fm_offence_details_impositions = this.removeIndexFromFormArrayData(
       form.formData.fm_offence_details_impositions,
     );
 
+    // Update the impositions array with their respective index positions
     // Change the amount imposed and amount paid to numbers
-    form.formData.fm_offence_details_impositions.forEach((imposition) => {
+    form.formData.fm_offence_details_impositions.forEach((imposition, index) => {
+      imposition.fm_offence_details_imposition_id = index;
       imposition.fm_offence_details_amount_imposed = +imposition.fm_offence_details_amount_imposed!;
       imposition.fm_offence_details_amount_paid = imposition.fm_offence_details_amount_paid
         ? +imposition.fm_offence_details_amount_paid
         : 0;
     });
 
-    const { offenceDetails } = this.finesService.finesMacState;
-    const { offenceDetailsDraft } = this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState;
+    const offenceDetails = structuredClone(this.finesMacStore.offenceDetails());
+    const offenceDetailsDraft = structuredClone(this.finesMacOffenceDetailsStore.offenceDetailsDraft());
 
     if (offenceDetailsDraft.length === 1 && offenceDetailsDraft[0].childFormData) {
       form.childFormData = offenceDetailsDraft[0].childFormData;
@@ -136,10 +132,14 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     );
 
     if (index !== -1) {
-      offenceDetails[index] = { ...offenceDetails[index], formData: form.formData };
+      const offence = structuredClone(offenceDetails[index]);
+      offence.formData = form.formData;
+      offenceDetails[index] = offence;
     } else {
       offenceDetails.push(form);
     }
+
+    this.finesMacStore.setOffenceDetails(offenceDetails);
   }
 
   /**
@@ -148,10 +148,10 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * Otherwise, it sets the offenceIndex to the length of offenceDetails + 1.
    */
   private retrieveFormData(): void {
-    if (this.finesService.finesMacState.offenceDetails.length === 0) {
+    if (this.finesMacStore.offenceDetails().length === 0) {
       this.offenceIndex = 0;
     } else {
-      this.offenceIndex = this.finesMacOffenceDetailsService.offenceIndex;
+      this.offenceIndex = this.finesMacOffenceDetailsStore.offenceIndex();
     }
   }
 
@@ -167,9 +167,9 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
     this.showOffenceDetailsForm = false;
     this.changeDetectorRef.detectChanges();
     ++this.offenceIndex;
-    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
-    this.finesMacOffenceDetailsService.emptyOffences = false;
-    this.finesMacOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft = [];
+    this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);
+    this.finesMacOffenceDetailsStore.setEmptyOffences(false);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraft([]);
     this.showOffenceDetailsForm = true;
     this.changeDetectorRef.detectChanges();
   }
@@ -180,7 +180,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @param code - The offence code to be added.
    */
   private addOffenceCodeMessage(code: string): void {
-    this.finesMacOffenceDetailsService.offenceCodeMessage = `Offence ${code} added`;
+    this.finesMacOffenceDetailsStore.setOffenceCodeMessage(`Offence ${code} added`);
   }
 
   /**
@@ -189,7 +189,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @returns {Date | null} The collection order date if available, otherwise null.
    */
   private getCollectionOrderDate(): Date | null {
-    const { formData: paymentTerms } = this.finesService.finesMacState.paymentTerms;
+    const paymentTerms = this.finesMacStore.paymentTerms().formData;
     if (paymentTerms?.fm_payment_terms_collection_order_date) {
       return this.dateService.getDateFromFormat(paymentTerms.fm_payment_terms_collection_order_date, 'dd/MM/yyyy');
     }
@@ -206,16 +206,16 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    */
   private checkPaymentTermsCollectionOrder(): void {
     const collectionOrderDate = this.getCollectionOrderDate();
-    const earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
+    const earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
     const hasCollectionOrderEarliestDate = collectionOrderDate && earliestDateOfSentence;
     const isCollectionOrderLessThanEarliestDate = hasCollectionOrderEarliestDate
       ? collectionOrderDate < earliestDateOfSentence
       : false;
 
     if (hasCollectionOrderEarliestDate && isCollectionOrderLessThanEarliestDate) {
-      this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.INCOMPLETE;
+      this.finesMacStore.setPaymentTermsStatus(FINES_MAC_STATUS.INCOMPLETE);
     } else if (collectionOrderDate) {
-      this.finesService.finesMacState.paymentTerms.status = FINES_MAC_STATUS.PROVIDED;
+      this.finesMacStore.setPaymentTermsStatus(FINES_MAC_STATUS.PROVIDED);
     }
   }
 
@@ -225,21 +225,12 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @param form - The offence details form data.
    */
   public handleOffenceDetailsSubmit(form: IFinesMacOffenceDetailsForm): void {
-    // Update the status as form is mandatory
-    form.status = FINES_MAC_STATUS.PROVIDED;
     form.childFormData = [];
-
-    // Update the state with the form data
-    this.finesService.finesMacState = {
-      ...this.finesService.finesMacState,
-      unsavedChanges: false,
-      stateChanges: true,
-    };
 
     this.updateOffenceDetailsIndex(form);
     this.checkPaymentTermsCollectionOrder();
 
-    this.finesMacOffenceDetailsService.addedOffenceCode = form.formData.fm_offence_details_offence_cjs_code!;
+    this.finesMacOffenceDetailsStore.setAddedOffenceCode(form.formData.fm_offence_details_offence_cjs_code!);
     this.addOffenceCodeMessage(form.formData.fm_offence_details_offence_cjs_code!);
 
     if (form.nestedFlow) {
@@ -255,7 +246,7 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
    * @param unsavedChanges boolean value from child component
    */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.finesService.finesMacState.unsavedChanges = unsavedChanges;
+    this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
 
@@ -264,6 +255,6 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   }
 
   public ngOnDestroy(): void {
-    this.finesMacOffenceDetailsService.minorCreditorAdded = false;
+    this.finesMacOffenceDetailsStore.setMinorCreditorAdded(false);
   }
 }

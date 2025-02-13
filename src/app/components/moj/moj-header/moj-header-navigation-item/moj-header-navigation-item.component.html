@@ -1,13 +1,10 @@
-<!--PO-322
-  For accessibility we need to add a role to prevent any accessibility issues
--->
 <li class="moj-header__navigation-item" role="listitem">
   <a
     class="moj-header__navigation-link"
     (click)="handleClick($event)"
     (keyup.enter)="handleClick($event)"
-    role="link"
     tabindex="0"
+    href="#"
   >
     <ng-content select="[linkText]"></ng-content>
   </a>

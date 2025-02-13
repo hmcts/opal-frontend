@@ -1,30 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacPersonalDetailsComponent } from './fines-mac-personal-details.component';
 import { IFinesMacPersonalDetailsForm } from './interfaces/fines-mac-personal-details-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from './mocks/fines-mac-personal-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 describe('FinesMacPersonalDetailsComponent', () => {
   let component: FinesMacPersonalDetailsComponent;
   let fixture: ComponentFixture<FinesMacPersonalDetailsComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let formSubmit: IFinesMacPersonalDetailsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-
-    formSubmit = { ...FINES_MAC_PERSONAL_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPersonalDetailsComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -38,6 +34,9 @@ describe('FinesMacPersonalDetailsComponent', () => {
     component = fixture.componentInstance;
 
     component.defendantType = 'adultOrYouthOnly';
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -53,7 +52,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
     component.handlePersonalDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.personalDetails).toEqual(formSubmit);
+    expect(finesMacStore.personalDetails()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -66,7 +65,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
     component.handlePersonalDetailsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.personalDetails).toEqual(formSubmit);
+    expect(finesMacStore.personalDetails()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.contactDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -74,11 +73,11 @@ describe('FinesMacPersonalDetailsComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
+    expect(finesMacStore.unsavedChanges()).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
+    expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });
