@@ -19,15 +19,13 @@ import { optionalEmailAddressValidator } from '@validators/optional-valid-email-
 import { optionalPhoneNumberValidator } from '@validators/optional-valid-telephone/optional-valid-telephone.validator';
 import { IFinesMacContactDetailsFieldErrors } from '../interfaces/fines-mac-contact-details-field-errors.interface';
 import { IFinesMacContactDetailsForm } from '../interfaces/fines-mac-contact-details-form.interface';
-
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_CONTACT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-contact-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-contact-details-form',
-
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -43,7 +41,7 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacContactDetailsForm>();
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
@@ -82,7 +80,7 @@ export class FinesMacContactDetailsFormComponent extends AbstractFormBaseCompone
    * This method sets up the contact details form, initializes error messages, and populates the form with data.
    */
   private initialContactDetailsSetup(): void {
-    const { formData } = this.finesService.finesMacState.contactDetails;
+    const { formData } = this.finesMacStore.contactDetails();
     this.setupContactDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);

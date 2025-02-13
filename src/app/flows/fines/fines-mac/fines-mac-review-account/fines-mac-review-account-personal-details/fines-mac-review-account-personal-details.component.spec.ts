@@ -27,7 +27,7 @@ describe('FinesMacReviewAccountPersonalDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountPersonalDetailsComponent);
     component = fixture.componentInstance;
 
-    component.personalDetails = { ...FINES_MAC_PERSONAL_DETAILS_STATE_MOCK };
+    component.personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_STATE_MOCK);
 
     fixture.detectChanges();
   });

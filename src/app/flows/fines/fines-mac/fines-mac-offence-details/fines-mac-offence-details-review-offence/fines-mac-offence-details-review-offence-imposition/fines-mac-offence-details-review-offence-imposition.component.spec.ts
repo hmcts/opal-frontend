@@ -1,10 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsReviewOffenceImpositionComponent } from './fines-mac-offence-details-review-offence-imposition.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-pretty-name.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
@@ -14,14 +12,18 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../../fines-
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from '../../mocks/fines-mac-offence-details-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from '../../mocks/fines-mac-offence-details-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK } from './mocks/fines-mac-offence-details-review-offence-imposition-data.mock';
+import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
+import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
+import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } from './constants/fines-mac-offence-details-review-offence-imposition-default-values.constant';
 
 describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceImpositionComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewOffenceImpositionComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -30,17 +32,12 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
         .and.returnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
     };
 
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
-    ];
-
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
       'convertToMonetaryString',
       'formatAddress',
       'formatSortCode',
+      'checkFormValues',
+      'checkFormArrayValues',
     ]);
 
     mockUtilsService.formatAddress.and.returnValue(['Test Address']);
@@ -50,8 +47,11 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       imports: [FinesMacOffenceDetailsReviewOffenceImpositionComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
-        { provide: FinesService, useValue: mockFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
+        {
+          provide: DateService,
+          useValue: jasmine.createSpyObj(DateService, ['getDateFromFormat']),
+        },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -63,9 +63,17 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.offenceIndex = 0;
     component.isReadOnly = false;
+
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
+    finesMacState.offenceDetails[0].childFormData = [
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+    ];
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(finesMacState);
 
     fixture.detectChanges();
   });
@@ -73,12 +81,8 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   beforeEach(() => {
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component.offenceIndex = 0;
-    mockFinesService.finesMacState.offenceDetails = [{ ...FINES_MAC_OFFENCE_DETAILS_FORM_MOCK }];
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
-    ];
   });
 
   it('should create', () => {
@@ -122,16 +126,18 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
       },
     ];
 
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component['getImpositionData']();
 
     expect(component.impositionTableData).toEqual(expectedImpositionTableData);
   });
 
   it('should return minor creditor - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.offenceDetails[0].childFormData = [
-      { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK },
+    const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
+    finesMacState.offenceDetails[0].childFormData = [
+      structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
     ];
+    finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
     const {
       fm_offence_details_minor_creditor_title: title,
       fm_offence_details_minor_creditor_forenames: forenames,
@@ -145,19 +151,18 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.offenceDetails[0] = {
-      ...mockFinesService.finesMacState.offenceDetails[0],
-      childFormData: [
-        {
-          ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
-          formData: {
-            ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
-            fm_offence_details_minor_creditor_title: null,
-            fm_offence_details_minor_creditor_forenames: null,
-          },
+    const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
+    finesMacState.offenceDetails[0].childFormData = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
+          fm_offence_details_minor_creditor_title: null,
+          fm_offence_details_minor_creditor_forenames: null,
         },
-      ],
-    };
+      },
+    ];
+    finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
 
     const { fm_offence_details_minor_creditor_surname: surname } =
       FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData;
@@ -169,22 +174,21 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should return minor creditor no title or forenames - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.offenceDetails[0] = {
-      ...mockFinesService.finesMacState.offenceDetails[0],
-      childFormData: [
-        {
-          ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
-          formData: {
-            ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
-            fm_offence_details_minor_creditor_creditor_type: 'company',
-            fm_offence_details_minor_creditor_company_name: 'Test Ltd',
-            fm_offence_details_minor_creditor_title: null,
-            fm_offence_details_minor_creditor_forenames: null,
-            fm_offence_details_minor_creditor_surname: null,
-          },
+    const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
+    finesMacState.offenceDetails[0].childFormData = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
+          fm_offence_details_minor_creditor_creditor_type: 'company',
+          fm_offence_details_minor_creditor_company_name: 'Test Ltd',
+          fm_offence_details_minor_creditor_title: null,
+          fm_offence_details_minor_creditor_forenames: null,
+          fm_offence_details_minor_creditor_surname: null,
         },
-      ],
-    };
+      },
+    ];
+    finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
 
@@ -192,10 +196,9 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should return default minor creditor if minor creditor does not exist - Any resultCodeCreditor', () => {
-    mockFinesService.finesMacState.offenceDetails[0] = {
-      ...mockFinesService.finesMacState.offenceDetails[0],
-      childFormData: [],
-    };
+    const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
+    finesMacState.offenceDetails[0].childFormData = [];
+    finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
     const expectedCreditorText = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES;
 
     const actualCreditorText = component['getCreditorInformation'](null, null, 'Any', 0);
@@ -218,11 +221,11 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should sort impositions by allocation order and result title', () => {
-    component.impositions = [...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK];
+    component.impositions = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK)];
     const expected = [
-      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[2] },
-      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[0] },
-      { ...FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[1] },
+      FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[2],
+      FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[0],
+      FINES_MAC_OFFENCE_DETAILS_STATE_REVIEW_OFFENCE_IMPOSITION_DATA_MOCK[1],
     ];
 
     component['sortImpositionsByAllocationOrder']();
@@ -231,7 +234,7 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should invert showMinorCreditorData', () => {
-    component.impositions = [{ ...FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0] }];
+    component.impositions = [structuredClone(FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK[0])];
     component['getImpositionData']();
     const impositionId = component.impositionTableData[0].impositionId;
 
@@ -245,19 +248,22 @@ describe('FinesMacOffenceDetailsReviewOffenceImpositionComponent', () => {
   });
 
   it('should return null for address and payment method for minor creditor', () => {
-    mockFinesService.finesMacState.offenceDetails[0].childFormData![0] = {
-      ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0],
-      formData: {
-        ...mockFinesService.finesMacState.offenceDetails[0].childFormData![0].formData,
-        fm_offence_details_minor_creditor_pay_by_bacs: false,
-        fm_offence_details_minor_creditor_bank_sort_code: null,
-        fm_offence_details_minor_creditor_address_line_1: null,
-        fm_offence_details_minor_creditor_address_line_2: null,
-        fm_offence_details_minor_creditor_address_line_3: null,
-        fm_offence_details_minor_creditor_post_code: null,
+    const finesMacState = structuredClone(finesMacStore.getFinesMacStore());
+    finesMacState.offenceDetails[0].childFormData = [
+      {
+        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK),
+        formData: {
+          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData),
+          fm_offence_details_minor_creditor_pay_by_bacs: false,
+          fm_offence_details_minor_creditor_bank_sort_code: null,
+          fm_offence_details_minor_creditor_address_line_1: null,
+          fm_offence_details_minor_creditor_address_line_2: null,
+          fm_offence_details_minor_creditor_address_line_3: null,
+          fm_offence_details_minor_creditor_post_code: null,
+        },
       },
-    };
-
+    ];
+    finesMacStore.setOffenceDetails(finesMacState.offenceDetails);
     mockUtilsService.formatAddress.and.returnValue([]);
 
     const minorCreditorData = component['getMinorCreditorData'](0);
