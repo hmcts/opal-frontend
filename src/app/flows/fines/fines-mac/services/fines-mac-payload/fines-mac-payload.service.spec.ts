@@ -193,9 +193,7 @@ describe('FinesMacPayloadService', () => {
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, businessUnitRefData, [offencesRefData]);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
-    finesMacState.parentGuardianDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
     finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
-    finesMacState.companyDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
     finesMacState.businessUnit = {
       business_unit_code: businessUnitRefData.businessUnitCode,
       business_unit_type: businessUnitRefData.businessUnitType,

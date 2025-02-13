@@ -102,12 +102,14 @@ describe('FinesDraftCamInputterComponent', () => {
   it('should navigate to review account', () => {
     const draftAccountId = 1;
     const routerSpy = spyOn(component['router'], 'navigate');
+    component.activeTab = 'review';
     component['navigateToReviewAccount'](draftAccountId);
     expect(routerSpy).toHaveBeenCalledWith([
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
       draftAccountId,
     ]);
-    expect(mockFinesService.finesDraftAmend()).toBeFalse();
+    expect(finesDraftStore.fragment()).toEqual('review');
+    expect(finesDraftStore.amend()).toBeFalse();
   });
 
   it('should navigate to review account when rejected', () => {
@@ -119,7 +121,9 @@ describe('FinesDraftCamInputterComponent', () => {
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
       draftAccountId,
     ]);
-    expect(mockFinesService.finesDraftAmend()).toBeTrue();
+
+    expect(finesDraftStore.fragment()).toEqual('rejected');
+    expect(finesDraftStore.amend()).toBeTrue();
   });
 
   it('should handle defendant click', () => {

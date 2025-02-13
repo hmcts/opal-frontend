@@ -137,17 +137,6 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the state of the fines service with the provided draft account.
-   *
-   * @param draftAccount - The draft account data to update the fines service state.
-   * @private
-   */
-  private updateFinesServiceState(draftAccount: IFinesMacAddAccountPayload): void {
-    this.finesDraftStore.setFinesDraftState(draftAccount);
-    this.finesMacStore.setFinesMacStore(this.finesMacPayloadService.mapAccountPayload(draftAccount));
-  }
-
-  /**
    * Retrieves the draft account status from the fines service and updates the component's status property.
    * It searches for a matching status in the FINES_DRAFT_TAB_STATUSES array based on the account status.
    * If a matching status is found, the component's status property is set to the pretty name of the matching status.
@@ -160,7 +149,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     const accountStatus = this.finesDraftStore.getAccountStatus();
     const matchingStatus = FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus));
 
-    this.status = matchingStatus?.prettyName ?? '';
+    this.reviewAccountStatus = matchingStatus?.prettyName ?? '';
   }
 
   /**
@@ -181,8 +170,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     if (!fetchMap) return;
 
     // Get payload into Fines Mac State
-    this.finesService.finesMacState = fetchMap.finesMacState;
-    this.finesService.finesDraftState = fetchMap.finesMacDraft;
+    this.finesMacStore.setFinesMacStore(fetchMap.finesMacState);
+    this.finesDraftStore.setFinesDraftState(fetchMap.finesMacDraft);
 
     // Grab the status from the payload
     this.setReviewAccountStatus();

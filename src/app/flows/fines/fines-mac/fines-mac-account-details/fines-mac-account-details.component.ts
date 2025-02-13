@@ -29,6 +29,7 @@ import { MojTimelineItemComponent } from '../../../../components/moj/moj-timelin
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
+import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-mac-account-details',
@@ -54,6 +55,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   protected readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
 
@@ -93,7 +95,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   private setAccountDetailsStatus(): void {
-    const accountStatus = this.finesService.finesDraftState?.account_status;
+    const accountStatus = this.finesDraftStore.account_status();
     if (!accountStatus) return;
 
     this.accountDetailsStatus =
@@ -118,8 +120,8 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
     if (!accountDetailsFetchMap) return;
 
     // Get payload into Fines Mac State
-    this.finesService.finesMacState = accountDetailsFetchMap.finesMacState;
-    this.finesService.finesDraftState = accountDetailsFetchMap.finesMacDraft;
+    this.finesMacStore.setFinesMacStore(accountDetailsFetchMap.finesMacState);
+    this.finesDraftStore.setFinesDraftState(accountDetailsFetchMap.finesMacDraft);
 
     // Grab the status from the payload
     this.setAccountDetailsStatus();
@@ -231,12 +233,12 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * Page navigation set to false to trigger the canDeactivate guard
    */
   public navigateBack(): void {
-    if (this.finesService.finesDraftAmend()) {
+    if (this.finesDraftStore.amend()) {
       this.handleRoute(
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
         false,
         undefined,
-        this.finesService.finesDraftFragment(),
+        this.finesDraftStore.fragment(),
       );
     } else {
       this.pageNavigation = false;

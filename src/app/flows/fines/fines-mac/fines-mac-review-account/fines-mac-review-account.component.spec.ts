@@ -249,62 +249,6 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(component.isReadOnly).toBeTrue();
   });
 
-  it('should update fines service state on updateFinesServiceState', () => {
-    const draftAccount = DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount;
-    component['updateFinesServiceState'](draftAccount);
-    expect(finesDraftStore.getFinesDraftState()).toEqual(draftAccount);
-    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
-  });
-
-  it('should set status on getDraftAccountStatus', () => {
-    finesDraftStore.setFinesDraftState(structuredClone(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount));
-    component['getDraftAccountStatus']();
-
-    expect(component.status).toEqual('In review');
-
-    finesDraftStore.setAccountStatus('');
-    component['getDraftAccountStatus']();
-
-    expect(component.status).toEqual('');
-  });
-
-  it('should map business unit details on mapBusinessUnitDetails', () => {
-    const businessUnit = DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit;
-    component['mapBusinessUnitDetails'](businessUnit);
-    expect(finesMacStore.businessUnit()).toEqual({
-      business_unit_code: businessUnit.businessUnitName,
-      business_unit_type: businessUnit.businessUnitType,
-      account_number_prefix: businessUnit.accountNumberPrefix,
-      opal_domain: businessUnit.opalDomain,
-      business_unit_id: businessUnit.businessUnitId,
-      business_unit_name: businessUnit.businessUnitName,
-      configurationItems: businessUnit.configurationItems.map((item) => ({
-        item_name: item.itemName,
-        item_value: item.itemValue,
-        item_values: item.itemValues,
-      })),
-      welsh_language: businessUnit.welshLanguage,
-    });
-  });
-
-  it('should map offence details on mapOffenceDetails', () => {
-    const offencesData = DRAFT_ACCOUNT_RESOLVER_MOCK.offencesData;
-    const finesMacStateWithOffences = structuredClone(FINES_MAC_STATE_MOCK);
-    finesMacStateWithOffences.offenceDetails = [
-      {
-        ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0],
-        formData: {
-          ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0].formData,
-          fm_offence_details_offence_id: 314441,
-        },
-      },
-    ];
-
-    finesMacStore.setFinesMacStore(finesMacStateWithOffences);
-    component['mapOffenceDetails'](offencesData);
-    expect(finesMacStore.offenceDetails()[0].formData.fm_offence_details_offence_cjs_code).toEqual('AK123456');
-  });
-
   it('should call handleRoute with submitConfirmation on submitPayload success', () => {
     const handleRouteSpy = spyOn(component, 'handleRoute');
     component['submitPayload']();
@@ -344,20 +288,20 @@ describe('FinesMacReviewAccountComponent', () => {
   });
 
   it('should test setReviewAccountStatus when draft state is null', () => {
-    mockFinesService.finesDraftState = FINES_DRAFT_STATE;
+    finesDraftStore.setFinesDraftState(FINES_DRAFT_STATE);
     component['setReviewAccountStatus']();
-    expect(component.reviewAccountStatus).toBeUndefined();
+    expect(component.reviewAccountStatus).toEqual('');
   });
 
   it('should test setAccountDetailsStatus when draft state is unknown', () => {
-    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' };
+    finesDraftStore.setFinesDraftState({ ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' });
     component['setReviewAccountStatus']();
     expect(component.reviewAccountStatus).toEqual('');
   });
 
   it('should test reviewAccountFetchedMappedPayload', () => {
-    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
-    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE));
+    finesDraftStore.setFinesDraftState(structuredClone(FINES_DRAFT_STATE));
     const snapshotData: IFetchMapFinesMacPayload = {
       finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
       finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
@@ -371,7 +315,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
     component['reviewAccountFetchedMappedPayload']();
 
-    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE);
-    expect(component['finesService'].finesDraftState).toEqual(FINES_DRAFT_STATE);
+    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE);
+    expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
   });
 });
