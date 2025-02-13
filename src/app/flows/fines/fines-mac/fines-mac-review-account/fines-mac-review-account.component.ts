@@ -39,6 +39,7 @@ import { IDraftAccountResolver } from '../routing/resolvers/draft-account-resolv
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -71,6 +72,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   protected readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
   protected readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   protected readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStore.userState();
@@ -145,7 +147,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @private
    */
   private updateFinesServiceState(draftAccount: IFinesMacAddAccountPayload): void {
-    this.finesService.finesDraftState = draftAccount;
+    this.finesDraftStore.setFinesDraftState(draftAccount);
     this.finesMacStore.setFinesMacStore(this.finesMacPayloadService.mapAccountPayload(draftAccount));
   }
 
@@ -158,7 +160,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @private
    */
   private getDraftAccountStatus(): void {
-    const accountStatus = this.finesService.finesDraftState?.account_status ?? '';
+    const accountStatus = this.finesDraftStore.getAccountStatus();
     const matchingStatus = FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus));
 
     this.status = matchingStatus?.prettyName ?? '';
@@ -244,6 +246,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   public navigateBack(): void {
     if (this.isReadOnly) {
+      this.finesMacStore.setUnsavedChanges(false);
+      this.finesMacStore.setStateChanges(false);
       this.handleRoute(
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
         false,

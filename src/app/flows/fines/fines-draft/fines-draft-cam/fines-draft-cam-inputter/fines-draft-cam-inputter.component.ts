@@ -7,9 +7,7 @@ import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { Router } from '@angular/router';
-import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { MojSubNavigationItemComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { MojSubNavigationComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation.component';
@@ -17,6 +15,7 @@ import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { GlobalStore } from '@stores/global/global.store';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
@@ -28,7 +27,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
-  private readonly finesService = inject(FinesService);
+  private readonly finesDraftStore = inject(FinesDraftStore);
   private readonly router = inject(Router);
   private readonly businessUnitIds = this.globalStore
     .userState()
@@ -136,6 +135,6 @@ export class FinesDraftCamInputterComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.finesService.finesDraftState = FINES_DRAFT_STATE;
+    this.finesDraftStore.resetFineDraftState();
   }
 }

@@ -25,6 +25,8 @@ import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { DateService } from '@services/date-service/date.service';
 import { DRAFT_ACCOUNT_RESOLVER_MOCK } from '../routing/resolvers/draft-account-resolver/mocks/draft-account-resolver.mock';
+import { FinesDraftStoreType } from '../../fines-draft/stores/types/fines-draft.type';
+import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
@@ -34,9 +36,11 @@ describe('FinesMacReviewAccountComponent', () => {
   let globalStore: GlobalStoreType;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let finesMacStore: FinesMacStoreType;
+  let finesDraftStore: FinesDraftStoreType;
   let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
+    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
       'scrollToTop',
       'upperCaseFirstLetter',
@@ -66,7 +70,10 @@ describe('FinesMacReviewAccountComponent', () => {
         .and.returnValue(of(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK)),
     };
 
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['buildAddAccountPayload']);
+    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
+      'buildAddAccountPayload',
+      'mapAccountPayload',
+    ]);
     mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 
     await TestBed.configureTestingModule({
@@ -100,6 +107,9 @@ describe('FinesMacReviewAccountComponent', () => {
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
+    finesDraftStore = TestBed.inject(FinesDraftStore);
+    finesDraftStore.setFinesDraftState(FINES_DRAFT_STATE);
 
     fixture.detectChanges();
   });
@@ -258,19 +268,17 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should update fines service state on updateFinesServiceState', () => {
     const draftAccount = DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount;
     component['updateFinesServiceState'](draftAccount);
-    expect(component['finesService'].finesDraftState).toEqual(draftAccount);
-    expect(component['finesService'].finesMacState).toEqual(
-      component['finesMacPayloadService'].mapAccountPayload(draftAccount),
-    );
+    expect(finesDraftStore.getFinesDraftState()).toEqual(draftAccount);
+    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
   });
 
   it('should set status on getDraftAccountStatus', () => {
-    component['finesService'].finesDraftState = structuredClone(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount);
+    finesDraftStore.setFinesDraftState(structuredClone(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount));
     component['getDraftAccountStatus']();
 
     expect(component.status).toEqual('In review');
 
-    component['finesService'].finesDraftState.account_status = null;
+    finesDraftStore.setAccountStatus('');
     component['getDraftAccountStatus']();
 
     expect(component.status).toEqual('');
@@ -279,7 +287,7 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should map business unit details on mapBusinessUnitDetails', () => {
     const businessUnit = DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit;
     component['mapBusinessUnitDetails'](businessUnit);
-    expect(component['finesService'].finesMacState.businessUnit).toEqual({
+    expect(finesMacStore.businessUnit()).toEqual({
       business_unit_code: businessUnit.businessUnitName,
       business_unit_type: businessUnit.businessUnitType,
       account_number_prefix: businessUnit.accountNumberPrefix,
@@ -308,11 +316,9 @@ describe('FinesMacReviewAccountComponent', () => {
       },
     ];
 
-    component['finesService'].finesMacState = { ...finesMacStateWithOffences };
+    finesMacStore.setFinesMacStore(finesMacStateWithOffences);
     component['mapOffenceDetails'](offencesData);
-    expect(
-      component['finesService'].finesMacState.offenceDetails[0].formData.fm_offence_details_offence_cjs_code,
-    ).toEqual('AK123456');
+    expect(finesMacStore.offenceDetails()[0].formData.fm_offence_details_offence_cjs_code).toEqual('AK123456');
   });
 
   it('should call handleRoute with submitConfirmation on submitPayload success', () => {
