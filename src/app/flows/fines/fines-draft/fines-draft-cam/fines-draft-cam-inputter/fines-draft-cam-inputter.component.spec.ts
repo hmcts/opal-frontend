@@ -7,7 +7,6 @@ import { DateService } from '@services/date-service/date.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
@@ -15,18 +14,14 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { GlobalStore } from '@stores/global/global.store';
+import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 describe('FinesDraftCamInputterComponent', () => {
   let component: FinesDraftCamInputterComponent;
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
   let globalStore: GlobalStoreType;
-  const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>(
-    'FinesService',
-    ['finesMacState', 'finesDraftState', 'finesDraftFragment'],
-    {
-      finesDraftFragment: jasmine.createSpyObj('finesDraftFragment', ['set']),
-    },
-  );
+  let finesDraftStore: FinesDraftStoreType;
   const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
     jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
   const mockOpalFinesService: Partial<OpalFines> = {
@@ -44,7 +39,6 @@ describe('FinesDraftCamInputterComponent', () => {
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
-        { provide: FinesService, useValue: mockFinesService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
         {
           provide: ActivatedRoute,
@@ -57,6 +51,8 @@ describe('FinesDraftCamInputterComponent', () => {
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(SESSION_USER_STATE_MOCK);
+
+    finesDraftStore = TestBed.inject(FinesDraftStore);
 
     fixture = TestBed.createComponent(FinesDraftCamInputterComponent);
     component = fixture.componentInstance;
@@ -140,7 +136,7 @@ describe('FinesDraftCamInputterComponent', () => {
 
   it('should initialize with default state', () => {
     component.ngOnInit();
-    expect(mockFinesService.finesDraftState).toEqual(FINES_DRAFT_STATE);
+    expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
   });
 
   it('should set rejectedCount$ to the count as a string', () => {

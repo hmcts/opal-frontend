@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MojNotificationBadgeComponent } from '../../moj-notification-badge/moj-notification-badge.component';
+import { MojNotificationBadgeComponent } from '@components/moj/moj-notification-badge/moj-notification-badge.component';
 
 @Component({
   selector: 'app-moj-sub-navigation-item',

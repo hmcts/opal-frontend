@@ -12,7 +12,6 @@ import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   selector: 'app-govuk-summary-list-row, [app-govuk-summary-list-row]',
-
   imports: [],
   templateUrl: './govuk-summary-list-row.component.html',
   styleUrl: './govuk-summary-list-row.component.scss',

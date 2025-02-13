@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
 import {
@@ -28,6 +27,7 @@ import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
@@ -39,10 +39,10 @@ import { IDraftAccountResolver } from '../routing/resolvers/draft-account-resolv
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesOffencesNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-mac-review-account',
-
   imports: [
     CommonModule,
     GovukBackLinkComponent,
@@ -71,7 +71,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   protected readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesService = inject(FinesService);
+  protected readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   protected readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStore.userState();
@@ -89,7 +90,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public status!: string;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
-    .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .getCourts(this.finesMacStore.getBusinessUnitId())
     .pipe(
       tap((response: IOpalFinesCourtRefData) => {
         this.enforcementCourtsData = response.refData;
@@ -121,7 +122,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   private submitPayload(): void {
     const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
-      this.finesService.finesMacState,
+      this.finesMacStore.getFinesMacStore(),
       this.userState,
     );
     this.opalFinesService
@@ -146,8 +147,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @private
    */
   private updateFinesServiceState(draftAccount: IFinesMacAddAccountPayload): void {
-    this.finesService.finesDraftState = draftAccount;
-    this.finesService.finesMacState = this.finesMacPayloadService.mapAccountPayload(draftAccount);
+    this.finesDraftStore.setFinesDraftState(draftAccount);
+    this.finesMacStore.setFinesMacStore(this.finesMacPayloadService.mapAccountPayload(draftAccount));
   }
 
   /**
@@ -159,7 +160,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    * @private
    */
   private getDraftAccountStatus(): void {
-    const accountStatus = this.finesService.finesDraftState?.account_status ?? '';
+    const accountStatus = this.finesDraftStore.getAccountStatus();
     const matchingStatus = FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus));
 
     this.status = matchingStatus?.prettyName ?? '';
@@ -175,7 +176,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   private mapBusinessUnitDetails(businessUnit: IOpalFinesBusinessUnitNonSnakeCase): void {
     // Due to getBusinessUnitById being camelCase, we need to map the snake_case to camelCase
     // Refactor once endpoint fixed
-    this.finesService.finesMacState.businessUnit = {
+    this.finesMacStore.setBusinessUnit({
       business_unit_code: businessUnit.businessUnitName,
       business_unit_type: businessUnit.businessUnitType,
       account_number_prefix: businessUnit.accountNumberPrefix,
@@ -188,7 +189,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
         item_values: item.itemValues,
       })),
       welsh_language: businessUnit.welshLanguage,
-    };
+    });
   }
 
   /**
@@ -208,7 +209,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   private mapOffenceDetails(offencesData: IOpalFinesOffencesNonSnakeCase[]): void {
     // Due to getOffencesById being camelCase, we need to map the snake_case to camelCase
     // Refactor once endpoint fixed
-    this.finesService.finesMacState.offenceDetails.forEach((offence) => {
+    this.finesMacStore.offenceDetails().forEach((offence) => {
       offence.formData.fm_offence_details_offence_cjs_code = offencesData.find(
         (x) => x.offenceId === offence.formData.fm_offence_details_offence_id,
       )!.cjsCode;
@@ -229,7 +230,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       if (this.draftAccountFinesMacState) {
         const { draftAccount, businessUnit, offencesData } = this.draftAccountFinesMacState;
         this.updateFinesServiceState(draftAccount);
-        if (this.finesService.finesMacState) {
+        if (this.finesMacStore.getFinesMacStore()) {
           this.getDraftAccountStatus();
           this.mapBusinessUnitDetails(businessUnit);
           this.mapOffenceDetails(offencesData);
@@ -245,6 +246,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   public navigateBack(): void {
     if (this.isReadOnly) {
+      this.finesMacStore.setUnsavedChanges(false);
+      this.finesMacStore.setStateChanges(false);
       this.handleRoute(
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
         false,
@@ -279,7 +282,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       this.router.navigate([route], { fragment });
     } else {
       if (route === this.finesMacRoutes.children.deleteAccountConfirmation) {
-        this.finesService.finesMacState.deleteFromCheckAccount = true;
+        this.finesMacStore.setDeleteFromCheckAccount(true);
       }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }

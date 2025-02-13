@@ -4,7 +4,6 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 
 @Component({
   selector: 'app-access-denied',
-
   imports: [GovukButtonComponent],
   templateUrl: './access-denied.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

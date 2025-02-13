@@ -4,24 +4,16 @@
     <h1 class="govuk-heading-l">Check account details</h1>
   } @else {
     <h1 class="govuk-heading-l">
-      @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'company') {
-        {{ finesService.finesMacState.companyDetails.formData.fm_company_details_company_name }}
+      @if (finesMacStore.getDefendantType() === 'company') {
+        {{ finesMacStore.getCompanyDetailsName() }}
       } @else {
-        {{
-          finesService.finesMacState.personalDetails.formData.fm_personal_details_title +
-            ' ' +
-            finesService.finesMacState.personalDetails.formData.fm_personal_details_forenames +
-            ' ' +
-            utilsService.upperCaseAllLetters(
-              finesService.finesMacState.personalDetails.formData.fm_personal_details_surname!
-            )
-        }}
+        {{ finesMacStore.getPersonalDetailsName() }}
       }
     </h1>
     <app-govuk-tag tagClasses="govuk-tag" tagId="status">{{ status }}</app-govuk-tag>
     <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>
     <app-moj-timeline>
-      @for (timelineItem of finesService.finesDraftState.timeline_data; track timelineItem.status_date) {
+      @for (timelineItem of finesDraftStore.timeline_data(); track timelineItem.status_date) {
         <app-moj-timeline-item>
           <span title>{{ timelineItem.status }}</span>
           <span user>{{ timelineItem.username }}</span>
@@ -37,15 +29,15 @@
   }
 
   <app-fines-mac-review-account-account-details
-    [accountDetails]="finesService.finesMacState.accountDetails.formData"
-    [businessUnit]="finesService.finesMacState.businessUnit"
-    [languagePreferences]="finesService.finesMacState.languagePreferences.formData"
+    [accountDetails]="finesMacStore.accountDetails().formData"
+    [businessUnit]="finesMacStore.businessUnit()"
+    [languagePreferences]="finesMacStore.languagePreferences().formData"
   >
   </app-fines-mac-review-account-account-details>
 
   @if (groupLjaAndCourtData$ | async; as data) {
     <app-fines-mac-review-account-court-details
-      [courtDetails]="finesService.finesMacState.courtDetails.formData"
+      [courtDetails]="finesMacStore.courtDetails().formData"
       [enforcementCourtsData]="data.enforcementCourtsData.refData"
       [localJusticeAreasData]="data.localJusticeAreasData.refData"
       [isReadOnly]="isReadOnly"
@@ -53,59 +45,48 @@
     ></app-fines-mac-review-account-court-details>
   }
 
-  @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly') {
+  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'adultOrYouthOnly') {
     <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
-  } @else if (
-    finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'parentOrGuardianToPay'
-  ) {
+  } @else if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'parentOrGuardianToPay') {
     <ng-container *ngTemplateOutlet="parentGuardianDetails"></ng-container>
   } @else {
     <app-fines-mac-review-account-company-details
-      [companyDetails]="finesService.finesMacState.companyDetails.formData"
-      [isReadOnly]="isReadOnly"
+      [companyDetails]="finesMacStore.companyDetails().formData"
       (emitChangeCompanyDetails)="navigateBack()"
     >
     </app-fines-mac-review-account-company-details>
   }
 
   <app-fines-mac-review-account-contact-details
-    [contactDetails]="finesService.finesMacState.contactDetails.formData"
-    [isReadOnly]="isReadOnly"
+    [contactDetails]="finesMacStore.contactDetails().formData"
     (emitChangeContactDetails)="navigateBack()"
   ></app-fines-mac-review-account-contact-details>
 
-  @if (
-    finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'parentOrGuardianToPay'
-  ) {
+  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'parentOrGuardianToPay') {
     <ng-container *ngTemplateOutlet="personalDetails"></ng-container>
   }
 
-  @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type !== 'company') {
+  @if (finesMacStore.accountDetails().formData.fm_create_account_defendant_type !== 'company') {
     <app-fines-mac-review-account-employer-details
-      [employerDetails]="finesService.finesMacState.employerDetails.formData"
-      [isReadOnly]="isReadOnly"
+      [employerDetails]="finesMacStore.employerDetails().formData"
       (emitChangeEmployerDetails)="navigateBack()"
     ></app-fines-mac-review-account-employer-details>
   }
 
-  @if (finesService.finesMacState.businessUnit) {
-    <app-fines-mac-review-account-offence-details
-      (emitChangeOffenceDetails)="navigateBack()"
-      [isReadOnly]="isReadOnly"
-    ></app-fines-mac-review-account-offence-details>
-  }
+  <app-fines-mac-review-account-offence-details
+    (emitChangeOffenceDetails)="navigateBack()"
+    [isReadOnly]="isReadOnly"
+  ></app-fines-mac-review-account-offence-details>
 
   <app-fines-mac-review-account-payment-terms
-    [paymentTermsState]="finesService.finesMacState.paymentTerms.formData"
-    [businessUnit]="finesService.finesMacState.businessUnit"
-    [defendantType]="finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type!"
-    [isReadOnly]="isReadOnly"
+    [paymentTermsState]="finesMacStore.paymentTerms().formData"
+    [businessUnit]="finesMacStore.businessUnit()"
+    [defendantType]="finesMacStore.accountDetails().formData.fm_create_account_defendant_type!"
     (emitChangePaymentTerms)="navigateBack()"
   ></app-fines-mac-review-account-payment-terms>
 
   <app-fines-mac-review-account-account-comments-and-notes
-    [accountCommentsAndNotes]="finesService.finesMacState.accountCommentsNotes.formData"
-    [isReadOnly]="isReadOnly"
+    [accountCommentsAndNotes]="finesMacStore.accountCommentsNotes().formData"
     (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
   ></app-fines-mac-review-account-account-comments-and-notes>
 
@@ -133,17 +114,16 @@
 
 <ng-template #parentGuardianDetails>
   <app-fines-mac-review-account-parent-guardian-details
-    [parentGuardianDetails]="finesService.finesMacState.parentGuardianDetails.formData"
-    [isReadOnly]="isReadOnly"
+    [parentGuardianDetails]="finesMacStore.parentGuardianDetails().formData"
     (emitChangeParentGuardianDetails)="navigateBack()"
   ></app-fines-mac-review-account-parent-guardian-details>
 </ng-template>
 
 <ng-template #personalDetails>
   <app-fines-mac-review-account-personal-details
-    [personalDetails]="finesService.finesMacState.personalDetails.formData"
+    [personalDetails]="finesMacStore.personalDetails().formData"
     [showVehicleDetails]="
-      finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
+      finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
     "
     [isReadOnly]="isReadOnly"
     (emitChangePersonalDetails)="navigateBack()"

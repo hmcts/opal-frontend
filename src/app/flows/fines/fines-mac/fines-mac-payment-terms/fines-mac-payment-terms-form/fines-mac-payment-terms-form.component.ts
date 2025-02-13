@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
 import { IFinesMacPaymentTermsForm } from '../interfaces/fines-mac-payment-terms-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
 import { CommonModule } from '@angular/common';
@@ -48,12 +48,11 @@ import { IFinesMacPaymentTermsCollectionOrderOptionsControlValidation } from '..
 import { FINES_MAC_PAYMENT_TERMS_COLLECTION_ORDER_OPTIONS_CONTROL_VALIDATION } from '../constants/fines-mac-payment-terms-collection-order-options-control-validation';
 import { dateBeforeValidator } from '@validators/date-before/date-before.validator';
 import { GlobalStore } from 'src/app/stores/global/global.store';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../constants/fines-mac-payment-terms-permisson-values.constant';
 
 @Component({
   selector: 'app-fines-mac-payment-terms-form',
-
   imports: [
     CommonModule,
     FormsModule,
@@ -80,15 +79,15 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPaymentTermsForm>();
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
   private readonly globalStore = inject(GlobalStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] = this.globalStore.userState()?.business_unit_user || [];
+  private userStateRoles: ISessionUserStateRole[] = [];
 
-  private readonly earliestDateOfSentence = this.finesService.getEarliestDateOfSentence();
-  private readonly collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
+  private earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
+  private collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
 
   public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
@@ -132,11 +131,11 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * It checks if the user has permission access for the collection order based on the business unit ID and user roles.
    */
   private setupPermissions(): void {
-    const { business_unit_id: businessUnitId } = this.finesService.finesMacState.businessUnit;
+    this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     if (this.userStateRoles && this.userStateRoles.length > 0) {
       this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(
         this.permissionsMap.collectionOrder,
-        businessUnitId,
+        this.finesMacStore.getBusinessUnitId(),
         this.userStateRoles,
       );
     }
@@ -148,6 +147,24 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
   private setupPaymentTermsForm(): void {
     this.form = new FormGroup({
       fm_payment_terms_payment_terms: new FormControl<string | null>(null, [Validators.required]),
+      fm_payment_terms_collection_order_made: new FormControl<boolean | null>(null),
+      fm_payment_terms_collection_order_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_collection_order_made_today: new FormControl<boolean | null>(null),
+      fm_payment_terms_pay_by_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_lump_sum_amount: new FormControl<number | null>(null),
+      fm_payment_terms_instalment_amount: new FormControl<number | null>(null),
+      fm_payment_terms_instalment_period: new FormControl<boolean | null>(null),
+      fm_payment_terms_start_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_payment_card_request: new FormControl<boolean | null>(null),
+      fm_payment_terms_has_days_in_default: new FormControl<boolean | null>(null),
+      fm_payment_terms_suspended_committal_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_default_days_in_jail: new FormControl<number | null>(null),
+      fm_payment_terms_add_enforcement_action: new FormControl<boolean | null>(null),
+      fm_payment_terms_enforcement_action: new FormControl<boolean | null>(null),
+      fm_payment_terms_earliest_release_date: new FormControl<boolean | null>(null),
+      fm_payment_terms_prison_and_prison_number: new FormControl<boolean | null>(null),
+      fm_payment_terms_hold_enforcement_on_account: new FormControl<boolean | null>(null),
+      fm_payment_terms_reason_account_is_on_noenf: new FormControl<boolean | null>(null),
     });
   }
 
@@ -159,11 +176,15 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    * It also sets the `yesterday` and `today` properties with the appropriate date values.
    */
   private initialPaymentTermsSetup(): void {
-    const { formData } = this.finesService.finesMacState.paymentTerms;
+    const { formData } = this.finesMacStore.paymentTerms();
     this.setupPermissions();
     this.setupPaymentTermsForm();
     this.paymentTermsListener();
     this.determineAccess();
+    this.earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
+    if (this.earliestDateOfSentence) {
+      this.collectionOrderDateValidator = dateBeforeValidator(this.earliestDateOfSentence);
+    }
     if (this.accessCollectionOrder) {
       this.addCollectionOrderFormControls();
     }
@@ -307,6 +328,8 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
       this.addControls(controls.fieldsToAdd);
 
       const collectionOrderDateControl = this.form.get('fm_payment_terms_collection_order_date');
+      this.earliestDateOfSentence = this.finesMacStore.getEarliestDateOfSentence();
+
       if (selectedOption === true && this.earliestDateOfSentence) {
         collectionOrderDateControl?.addValidators(this.collectionOrderDateValidator);
         if (collectionOrderDateControl?.value === null) {
@@ -434,7 +457,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
     let formData;
     switch (this.defendantTypes[this.defendantType as keyof IFinesMacDefendantTypes]) {
       case this.defendantTypes.adultOrYouthOnly:
-        formData = this.finesService.finesMacState.personalDetails.formData;
+        formData = this.finesMacStore.personalDetails().formData;
         this.accessDefaultDates =
           !formData.fm_personal_details_dob || this.dateService.calculateAge(formData.fm_personal_details_dob) >= 18;
         this.accessCollectionOrder =
@@ -459,7 +482,7 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private addControls(controlsToAdd: IAbstractFormArrayControlValidation[]): void {
     controlsToAdd.forEach((control) => {
-      this.createControl(control.controlName, control.validators);
+      this.updateControl(control.controlName, control.validators);
       if (
         control.controlName === 'fm_payment_terms_start_date' ||
         control.controlName === 'fm_payment_terms_pay_by_date'
@@ -476,6 +499,10 @@ export class FinesMacPaymentTermsFormComponent extends AbstractFormBaseComponent
    */
   private removeControls(controlsToRemove: IAbstractFormArrayControlValidation[]): void {
     controlsToRemove.forEach((control) => {
+      const formControl = this.form.get(control.controlName);
+      if (formControl) {
+        formControl.reset();
+      }
       this.removeControl(control.controlName);
       if (
         control.controlName === 'fm_payment_terms_start_date' ||

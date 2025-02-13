@@ -16,12 +16,11 @@ import { GovukTextAreaComponent } from '@components/govuk/govuk-text-area/govuk-
 import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { CommonModule } from '@angular/common';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
-
   imports: [
     CommonModule,
     FormsModule,
@@ -37,7 +36,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountCommentsNotesForm>();
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
   public mandatorySectionsCompleted!: boolean;
@@ -60,15 +59,29 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
    * @returns {void}
    */
   private checkMandatorySections(): void {
-    this.mandatorySectionsCompleted = this.finesService.checkMandatorySections();
+    this.mandatorySectionsCompleted = false;
+    switch (this.finesMacStore.getDefendantType()) {
+      case 'adultOrYouthOnly':
+        this.mandatorySectionsCompleted = this.finesMacStore.adultOrYouthSectionsCompleted();
+        break;
+      case 'parentOrGuardianToPay':
+        this.mandatorySectionsCompleted = this.finesMacStore.parentGuardianSectionsCompleted();
+        break;
+      case 'company':
+        this.mandatorySectionsCompleted = this.finesMacStore.companySectionsCompleted();
+        break;
+      default:
+        this.mandatorySectionsCompleted = false;
+        break;
+    }
   }
 
   /**
-   * Performs the initial setup for the fines-mac-contact-details-form component.
+   * Performs the initial setup for the fines-mac-account-comments-notes-form component.
    * This method sets up the account comments notes form, and populates the form with data.
    */
   private initialAccountCommentsNotesSetup(): void {
-    const { formData } = this.finesService.finesMacState.accountCommentsNotes;
+    const { formData } = this.finesMacStore.accountCommentsNotes();
     this.setupAccountCommentsNotesForm();
     this.rePopulateForm(formData);
     this.checkMandatorySections();

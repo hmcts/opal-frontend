@@ -15,20 +15,17 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { IFinesMacCourtDetailsForm } from '../interfaces/fines-mac-court-details-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
-
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-court-details-form',
-
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -48,7 +45,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCourtDetailsForm>();
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
@@ -107,7 +104,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
    * and repopulates the form with the initial court details data.
    */
   private initialCourtDetailsSetup(): void {
-    const { formData } = this.finesService.finesMacState.courtDetails;
+    const { formData } = this.finesMacStore.courtDetails();
     this.setupCourtDetailsForm();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
