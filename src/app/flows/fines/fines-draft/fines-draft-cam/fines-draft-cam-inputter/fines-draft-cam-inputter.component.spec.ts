@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesDraftCamInputterComponent } from './fines-draft-cam-inputter.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of } from 'rxjs';
 import { DateService } from '@services/date-service/date.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { GlobalStore } from '@stores/global/global.store';
 
 describe('FinesDraftCamInputterComponent', () => {
   let component: FinesDraftCamInputterComponent;
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
-  let mockGlobalStateService: GlobalStateService;
+  let globalStore: GlobalStoreType;
   const mockOpalFinesService: Partial<OpalFines> = {
     getDraftAccounts: jasmine.createSpy('getDraftAccounts').and.returnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK)),
   };
@@ -37,8 +37,8 @@ describe('FinesDraftCamInputterComponent', () => {
       ],
     }).compileComponents();
 
-    mockGlobalStateService = TestBed.inject(GlobalStateService);
-    mockGlobalStateService.userState.set(SESSION_USER_STATE_MOCK);
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setUserState(SESSION_USER_STATE_MOCK);
 
     fixture = TestBed.createComponent(FinesDraftCamInputterComponent);
     component = fixture.componentInstance;
