@@ -6,13 +6,12 @@ import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-ra
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { IFinesMacLanguagePreferencesForm } from '../interfaces/fines-mac-language-preferences-form.interface';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants/fines-mac-language-preferences-options';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-language-preferences-form',
-
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -27,7 +26,7 @@ import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../constants/fines-mac-l
 export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacLanguagePreferencesForm>();
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
@@ -52,7 +51,7 @@ export class FinesMacLanguagePreferencesFormComponent extends AbstractFormBaseCo
    */
   private initialLanguagePreferencesSetup(): void {
     this.setupLanguagePreferencesForm();
-    this.rePopulateForm(this.finesService.finesMacState.languagePreferences.formData);
+    this.rePopulateForm(this.finesMacStore.languagePreferences().formData);
   }
 
   public override ngOnInit(): void {

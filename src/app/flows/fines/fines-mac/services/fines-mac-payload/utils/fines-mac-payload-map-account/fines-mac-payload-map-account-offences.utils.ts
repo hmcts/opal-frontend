@@ -223,7 +223,6 @@ const buildDefaultOffenceDetailsFormState = (): IFinesMacOffenceDetailsForm => {
   return structuredClone({
     formData: FINES_MAC_OFFENCE_DETAILS_STATE,
     nestedFlow: false,
-    status: null,
     childFormData: null,
   });
 };

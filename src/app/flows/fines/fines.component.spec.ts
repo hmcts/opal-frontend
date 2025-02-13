@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesComponent } from './fines.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../fines/fines-mac/mocks/fines-mac-state.mock';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FinesMacStoreType } from './fines-mac/stores/types/fines-mac-store.type';
+import { FinesMacStore } from './fines-mac/stores/fines-mac.store';
 
 describe('FinesComponent', () => {
   let component: FinesComponent;
   let fixture: ComponentFixture<FinesComponent>;
-  let mockFinesService: FinesService;
+  let finesMacStore: FinesMacStoreType;
   let globalStore: GlobalStoreType;
 
   beforeEach(async () => {
@@ -19,8 +20,8 @@ describe('FinesComponent', () => {
     fixture = TestBed.createComponent(FinesComponent);
     component = fixture.componentInstance;
 
-    mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
 
     globalStore = TestBed.inject(GlobalStore);
 
@@ -38,7 +39,7 @@ describe('FinesComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(mockFinesService.finesMacState).toEqual(FINES_MAC_STATE_MOCK);
+    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
     expect(globalStore.error()).toEqual({ error: false, message: '' });
   });
 });

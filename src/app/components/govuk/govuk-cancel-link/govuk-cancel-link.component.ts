@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 
 @Component({
   selector: 'app-govuk-cancel-link',
-
   imports: [],
   templateUrl: './govuk-cancel-link.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

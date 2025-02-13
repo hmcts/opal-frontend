@@ -20,7 +20,7 @@ export const FINES_MAC_STATE_MOCK: IFinesMacState = {
       ...FINES_MAC_ACCOUNT_DETAILS_STATE,
       fm_create_account_defendant_type: 'adultOrYouthOnly',
       fm_create_account_account_type: 'fine',
-      fm_create_account_business_unit_id: 61,
+      fm_create_account_business_unit_id: FINES_MAC_BUSINESS_UNIT_STATE.business_unit_id,
     },
   },
   employerDetails: FINES_MAC_EMPLOYER_DETAILS_FORM,

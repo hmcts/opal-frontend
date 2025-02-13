@@ -7,9 +7,7 @@ import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_ACCOUNT_TYPES } from '../../../fines-mac/constants/fines-mac-account-types';
 import { FINES_DRAFT_TABLE_WRAPPER_SORT_DEFAULT } from '../../fines-draft-table-wrapper/constants/fines-draft-table-wrapper-table-sort-default.constant';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { MojSubNavigationItemComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation-item/moj-sub-navigation-item.component';
 import { MojSubNavigationComponent } from '@components/moj/moj-sub-navigation/moj-sub-navigation.component';
@@ -17,6 +15,7 @@ import { FinesDraftTableWrapperComponent } from '../../fines-draft-table-wrapper
 import { IFinesDraftTableWrapperTableData } from '../../fines-draft-table-wrapper/interfaces/fines-draft-table-wrapper-table-data.interface';
 import { GlobalStore } from '@stores/global/global.store';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
@@ -35,9 +34,9 @@ import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.compon
 })
 export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
-  public globalStore = inject(GlobalStore);
+  private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
-  protected readonly finesService = inject(FinesService);
+  private readonly finesDraftStore = inject(FinesDraftStore);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly businessUnitIds = this.globalStore
@@ -119,7 +118,8 @@ export class FinesDraftCamInputterComponent implements OnInit {
         dob: date_of_birth
           ? this.dateService.getFromFormatToFormat(date_of_birth, this.DATE_INPUT_FORMAT, this.DATE_OUTPUT_FORMAT)
           : '',
-        created: this.dateService.getDaysAgoString(created_date) ?? '',
+        created: created_date,
+        createdString: this.dateService.getDaysAgoString(created_date),
         accountType: FINES_MAC_ACCOUNT_TYPES[account_type as keyof typeof FINES_MAC_ACCOUNT_TYPES],
         businessUnit: business_unit_name,
       };
@@ -133,9 +133,8 @@ export class FinesDraftCamInputterComponent implements OnInit {
    * @returns void
    */
   private navigateToReviewAccount(draftAccountId: number): void {
-    this.finesService.finesDraftFragment.set(this.activeTab);
-    this.finesService.finesDraftAmend.set(this.activeTab === 'rejected');
-    if (this.finesService.finesDraftAmend()) {
+    this.finesDraftStore.setFragmentAndAmend(this.activeTab, this.activeTab === 'rejected');
+    if (this.finesDraftStore.amend()) {
       this.router.navigate([
         `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
         draftAccountId,
@@ -187,14 +186,13 @@ export class FinesDraftCamInputterComponent implements OnInit {
    * @param route - The route to navigate to.
    */
   public handleRoute(route: string): void {
-    this.finesService.finesDraftFragment.set(this.activeTab);
+    this.finesDraftStore.setFragment(this.activeTab);
     this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 
   public ngOnInit(): void {
     this.getRejectedCount();
-    this.finesService.finesDraftState = FINES_DRAFT_STATE;
-    this.finesService.finesDraftFragment.set('');
-    this.finesService.finesDraftAmend.set(false);
+    this.finesDraftStore.resetFineDraftState();
+    this.finesDraftStore.resetFragmentAndAmend();
   }
 }

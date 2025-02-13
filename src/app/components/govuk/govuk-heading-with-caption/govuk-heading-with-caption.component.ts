@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-govuk-heading-with-caption',
-
   imports: [],
   templateUrl: './govuk-heading-with-caption.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
