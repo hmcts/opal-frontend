@@ -66,7 +66,7 @@
           <a class="govuk-link govuk-link--no-visited-state">{{ row.defendant }}</a>
         </td>
         <td app-moj-sortable-table-row-data id="dob">{{ row.dob && row.dob.length ? row.dob : '—' }}</td>
-        <td app-moj-sortable-table-row-data id="created">{{ row.created }}</td>
+        <td app-moj-sortable-table-row-data id="created">{{ row.createdString }}</td>
         <td app-moj-sortable-table-row-data id="accountType">{{ row.accountType }}</td>
         <td app-moj-sortable-table-row-data id="businessUnit">{{ row.businessUnit }}</td>
       </tr>
