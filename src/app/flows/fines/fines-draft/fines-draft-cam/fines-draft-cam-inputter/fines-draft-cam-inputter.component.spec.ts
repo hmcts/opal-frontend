@@ -165,7 +165,7 @@ describe('FinesDraftCamInputterComponent', () => {
     const route = 'some/route';
     component.activeTab = 'review';
     component.handleRoute(route);
-    expect(mockFinesService.finesDraftFragment.set).toHaveBeenCalledWith('review');
+    expect(finesDraftStore.fragment()).toEqual('review');
     expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 });

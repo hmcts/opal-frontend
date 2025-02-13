@@ -205,6 +205,7 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should navigate back on navigateBack', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
+    finesDraftStore.setFragment('review');
     component.isReadOnly = true;
     component.navigateBack();
 
@@ -213,7 +214,7 @@ describe('FinesMacReviewAccountComponent', () => {
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
       ],
       {
-        fragment: 'review',
+        fragment: finesDraftStore.fragment(),
       },
     );
   });
@@ -337,6 +338,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it('should navigate back to inputter on navigateBack when isReadOnly is true', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+    finesDraftStore.setFragment('review');
     component.isReadOnly = true;
     component.navigateBack();
     expect(routerSpy).toHaveBeenCalledWith(
@@ -344,7 +346,7 @@ describe('FinesMacReviewAccountComponent', () => {
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
       ],
       {
-        fragment: 'review',
+        fragment: finesDraftStore.fragment(),
       },
     );
   });

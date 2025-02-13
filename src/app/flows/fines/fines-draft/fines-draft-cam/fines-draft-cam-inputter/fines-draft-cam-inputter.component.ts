@@ -126,7 +126,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
    * @returns void
    */
   private navigateToReviewAccount(draftAccountId: number): void {
-    this.finesService.finesDraftFragment.set(this.activeTab);
+    this.finesDraftStore.setFragment(this.activeTab);
     this.router.navigate([
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
       draftAccountId,
@@ -172,13 +172,13 @@ export class FinesDraftCamInputterComponent implements OnInit {
    * @param route - The route to navigate to.
    */
   public handleRoute(route: string): void {
-    this.finesService.finesDraftFragment.set(this.activeTab);
+    this.finesDraftStore.setFragment(this.activeTab);
     this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
   }
 
   public ngOnInit(): void {
     this.getRejectedCount();
     this.finesDraftStore.resetFineDraftState();
-    this.finesService.finesDraftFragment.set('');
+    this.finesDraftStore.resetFragment();
   }
 }
