@@ -32,11 +32,9 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draf
 import { DateService } from '@services/date-service/date.service';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.component';
-import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
-import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
+import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-account-history/fines-mac-review-account-history.component';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -54,9 +52,7 @@ import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
     FinesMacReviewAccountOffenceDetailsComponent,
     FinesMacReviewAccountParentGuardianDetailsComponent,
     FinesMacReviewAccountCompanyDetailsComponent,
-    GovukTagComponent,
-    MojTimelineComponent,
-    MojTimelineItemComponent,
+    FinesMacReviewAccountHistoryComponent,
   ],
   templateUrl: './fines-mac-review-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
