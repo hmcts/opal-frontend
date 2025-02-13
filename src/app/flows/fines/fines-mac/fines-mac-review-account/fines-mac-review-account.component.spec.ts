@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountComponent } from './fines-mac-review-account.component';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -22,23 +21,29 @@ import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state
 import { UtilsService } from '@services/utils/utils.service';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
 import { DateService } from '@services/date-service/date.service';
 import { DRAFT_ACCOUNT_RESOLVER_MOCK } from '../routing/resolvers/draft-account-resolver/mocks/draft-account-resolver.mock';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
   let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
   let globalStore: GlobalStoreType;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let finesMacStore: FinesMacStoreType;
   let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'finesDraftState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.finesDraftState = { ...FINES_DRAFT_STATE };
+    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+      'scrollToTop',
+      'upperCaseFirstLetter',
+      'formatSortCode',
+      'formatAddress',
+      'convertToMonetaryString',
+    ]);
 
     mockOpalFinesService = {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
@@ -58,28 +63,15 @@ describe('FinesMacReviewAccountComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
       postDraftAddAccountPayload: jasmine
         .createSpy('postDraftAddAccountPayload')
-        .and.returnValue(of({ ...OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK })),
+        .and.returnValue(of(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK)),
     };
 
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
-      'buildAddAccountPayload',
-      'mapAccountPayload',
-    ]);
-    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT });
-
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
-      'scrollToTop',
-      'upperCaseFirstLetter',
-      'formatSortCode',
-      'formatAddress',
-      'convertToMonetaryString',
-    ]);
+    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['buildAddAccountPayload']);
+    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
         { provide: UtilsService, useValue: mockUtilsService },
@@ -105,6 +97,9 @@ describe('FinesMacReviewAccountComponent', () => {
       error: false,
       message: '',
     });
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -133,7 +128,7 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
       relativeTo: component['activatedRoute'].parent,
     });
-    expect(mockFinesService.finesMacState.deleteFromCheckAccount).toBeTrue();
+    expect(finesMacStore.deleteFromCheckAccount()).toBeTrue();
   });
 
   it('should navigate on handleRoute with relative to', () => {

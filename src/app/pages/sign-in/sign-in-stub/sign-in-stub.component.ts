@@ -6,7 +6,6 @@ import { ISignInStubForm } from '../interfaces';
 
 @Component({
   selector: 'app-sign-in-stub',
-
   imports: [FormsModule, ReactiveFormsModule, GovukTextInputComponent, GovukButtonComponent],
   templateUrl: './sign-in-stub.component.html',
 

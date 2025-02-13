@@ -20,6 +20,5 @@ export const FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE: IFinesMacOffenceDetailsFor
     ],
   },
   nestedFlow: false,
-  status: 'Provided',
   childFormData: [],
 };

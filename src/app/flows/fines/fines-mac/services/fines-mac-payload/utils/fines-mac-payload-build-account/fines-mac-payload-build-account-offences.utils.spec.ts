@@ -54,9 +54,9 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
     offencesMockState = [
       {
-        ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
+        ...structuredClone(FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE),
         formData: {
-          ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData,
+          ...structuredClone(FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData),
           fm_offence_details_id: 0,
           fm_offence_details_date_of_sentence: null,
           fm_offence_details_offence_cjs_code: null,
@@ -92,9 +92,9 @@ describe('finesMacPayloadBuildAccountOffences', () => {
 
     offencesMockState = [
       {
-        ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE,
+        ...structuredClone(FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE),
         formData: {
-          ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData,
+          ...structuredClone(FINES_MAC_PAYLOAD_OFFENCE_DETAILS_STATE.formData),
           fm_offence_details_id: 0,
           fm_offence_details_date_of_sentence: null,
           fm_offence_details_offence_cjs_code: null,
@@ -132,7 +132,6 @@ describe('finesMacPayloadBuildAccountOffences', () => {
               fm_offence_details_imposition_position: 0,
             },
             nestedFlow: false,
-            status: 'Provided',
           },
         ],
       },

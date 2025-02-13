@@ -20,14 +20,13 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fi
 
 @Component({
   selector: 'app-fines-draft-cam-inputter',
-
   imports: [CommonModule, MojSubNavigationComponent, MojSubNavigationItemComponent, FinesDraftTableWrapperComponent],
   templateUrl: './fines-draft-cam-inputter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesDraftCamInputterComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
-  public globalStore = inject(GlobalStore);
+  private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
   private readonly finesService = inject(FinesService);
   private readonly router = inject(Router);
