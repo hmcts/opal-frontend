@@ -1,16 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountDetailsComponent } from './fines-mac-account-details.component';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
-import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { ActivatedRoute } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_ACCOUNT_DETAILS_STATE } from './constants/fines-mac-account-details-state';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-preferences/interfaces/fines-mac-language-preferences-options.interface';
-import { FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK } from './mocks/fines-mac-account-details-state.mock';
-import { DateService } from '@services/date-service/date.service';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
+import { FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK } from '../fines-mac-language-preferences/mocks/fines-mac-language-preferences-state.mock';
+import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
+import { FINES_MAC_PERSONAL_DETAILS_FORM } from '../fines-mac-personal-details/constants/fines-mac-personal-details-form';
 import { UtilsService } from '@services/utils/utils.service';
+import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
+import { DateService } from '@services/date-service/date.service';
 import { signal } from '@angular/core';
 import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state.constant';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
@@ -21,44 +24,23 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../services/fines-mac-payload/moc
 describe('FinesMacAccountDetailsComponent', () => {
   let component: FinesMacAccountDetailsComponent;
   let fixture: ComponentFixture<FinesMacAccountDetailsComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
+  let finesMacStore: FinesMacStoreType;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
   let mockDateService: jasmine.SpyObj<DateService>;
   let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
 
   beforeEach(async () => {
-    const mockFinesDraftAmend = signal<boolean>(false);
-    mockFinesService = jasmine.createSpyObj(
-      'FinesService',
-      ['finesMacState', 'checkMandatorySections', 'finesDraftFragment', 'finesDraftAmend'],
-      {
-        finesDraftAmend: mockFinesDraftAmend,
-      },
-    );
-    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
-    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
-    mockFinesService.checkMandatorySections.and.returnValue(false);
-    mockFinesService.finesDraftFragment.and.returnValue('rejected');
-
-    mockDateService = jasmine.createSpyObj(DateService, [
-      'getFromFormatToFormat',
-      'calculateAge',
-      'getFromFormat',
-      'isValidDate',
-    ]);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
-      'upperCaseAllLetters',
+      'checkFormValues',
+      'checkFormArrayValues',
       'upperCaseFirstLetter',
-      'formatAddress',
-      'convertToMonetaryString',
+      'getFormStatus',
+      'getFormArrayStatus',
     ]);
-
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, ['mapAccountPayload']);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountDetailsComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: UtilsService, useValue: mockUtilsService },
         { provide: DateService, useValue: mockDateService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
@@ -68,11 +50,18 @@ describe('FinesMacAccountDetailsComponent', () => {
             parent: of('manual-account-creation'),
           },
         },
+        {
+          provide: UtilsService,
+          useValue: mockUtilsService,
+        },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacAccountDetailsComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE);
 
     fixture.detectChanges();
   });
@@ -132,10 +121,12 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to be empty string', () => {
-    mockFinesService.finesMacState.accountDetails.formData = {
-      ...FINES_MAC_ACCOUNT_DETAILS_STATE,
+    const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.accountDetails.formData = {
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: '',
     };
+    finesMacStore.setFinesMacStore(finesMacState);
     component.defendantType = '';
 
     component['setDefendantType']();
@@ -146,10 +137,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should set defendantType and accountType to values', () => {
-    mockFinesService.finesMacState.accountDetails.formData = {
-      ...FINES_MAC_ACCOUNT_DETAILS_STATE_MOCK,
+    const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.accountDetails.formData = {
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
       fm_create_account_defendant_type: 'adultOrYouthOnly',
+      fm_create_account_account_type: 'conditionalCaution',
     };
+    finesMacStore.setFinesMacStore(finesMacState);
 
     component['setDefendantType']();
     component['setAccountType']();
@@ -161,11 +155,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage correctly', () => {
     const documentLanguage = 'CY';
     const hearingLanguage = 'EN';
-    mockFinesService.finesMacState.languagePreferences.formData = {
-      ...mockFinesService.finesMacState.languagePreferences.formData,
+    const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.languagePreferences.formData = {
+      ...structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK),
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
+    finesMacStore.setFinesMacStore(finesMacState);
 
     component['setLanguage']();
 
@@ -180,12 +176,13 @@ describe('FinesMacAccountDetailsComponent', () => {
   it('should set documentLanguage and courtHearingLanguage to empty strings if the provided languages are not in the languages list', () => {
     const documentLanguage = 'german';
     const hearingLanguage = 'french';
-
-    mockFinesService.finesMacState.languagePreferences.formData = {
-      ...mockFinesService.finesMacState.languagePreferences.formData,
+    const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.languagePreferences.formData = {
+      ...structuredClone(FINES_MAC_LANGUAGE_PREFERENCES_STATE_MOCK),
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
     };
+    finesMacStore.setFinesMacStore(finesMacState);
 
     component['setLanguage']();
 
@@ -255,31 +252,79 @@ describe('FinesMacAccountDetailsComponent', () => {
   });
 
   it('should return true if personalDetails is true', () => {
-    mockFinesService.finesMacState.personalDetails.status = FINES_MAC_STATUS.PROVIDED;
+    const finesMacState = structuredClone(FINES_MAC_STATE);
+    finesMacState.accountDetails.formData = {
+      ...structuredClone(FINES_MAC_ACCOUNT_DETAILS_STATE),
+      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+      fm_create_account_account_type: 'fine',
+      fm_create_account_business_unit_id: 1,
+    };
+    finesMacState.personalDetails = structuredClone(FINES_MAC_PERSONAL_DETAILS_FORM_MOCK);
+    finesMacStore.setFinesMacStore(finesMacState);
+
+    mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.PROVIDED);
+
     const result = component['canAccessPaymentTerms']();
+
     expect(result).toBe(true);
   });
 
   it('should return true if defendantType is in paymentTermsBypassDefendantTypes', () => {
-    mockFinesService.finesMacState.personalDetails = {
-      ...FINES_MAC_STATE.personalDetails,
-      status: FINES_MAC_STATUS.NOT_PROVIDED,
-    };
+    finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
     component.defendantType = 'parentOrGuardianToPay';
     component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+
     const result = component['canAccessPaymentTerms']();
+
     expect(result).toBe(true);
   });
 
   it('should return false if personalDetails is false and defendantType is not in paymentTermsBypassDefendantTypes', () => {
-    mockFinesService.finesMacState.personalDetails = {
-      ...FINES_MAC_STATE.personalDetails,
-      status: FINES_MAC_STATUS.NOT_PROVIDED,
-    };
+    finesMacStore.setPersonalDetails(FINES_MAC_PERSONAL_DETAILS_FORM);
     component.defendantType = 'test';
     component.paymentTermsBypassDefendantTypes = ['parentOrGuardianToPay', 'company'];
+
     const result = component['canAccessPaymentTerms']();
+
     expect(result).toBe(false);
+  });
+
+  it('should test checkMandatorySections with the different defendant types', () => {
+    const adultOrYouthOnly = structuredClone(FINES_MAC_STATE);
+    adultOrYouthOnly.accountDetails.formData = {
+      ...adultOrYouthOnly.accountDetails.formData,
+      fm_create_account_defendant_type: 'adultOrYouthOnly',
+    };
+    finesMacStore.setFinesMacStore(adultOrYouthOnly);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const parentOrGuardianToPay = structuredClone(adultOrYouthOnly);
+    parentOrGuardianToPay.accountDetails.formData = {
+      ...parentOrGuardianToPay.accountDetails.formData,
+      fm_create_account_defendant_type: 'parentOrGuardianToPay',
+    };
+    finesMacStore.setFinesMacStore(parentOrGuardianToPay);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const company = structuredClone(parentOrGuardianToPay);
+    company.accountDetails.formData = {
+      ...company.accountDetails.formData,
+      fm_create_account_defendant_type: 'company',
+    };
+    finesMacStore.setFinesMacStore(company);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
+
+    const defaultCase = structuredClone(company);
+    defaultCase.accountDetails.formData = {
+      ...defaultCase.accountDetails.formData,
+      fm_create_account_defendant_type: 'defaultCase',
+    };
+    finesMacStore.setFinesMacStore(defaultCase);
+    component['checkMandatorySections']();
+    expect(component.mandatorySectionsCompleted).toBeFalse();
   });
 
   it('should test accountDetailsFetchedMappedPayload', () => {

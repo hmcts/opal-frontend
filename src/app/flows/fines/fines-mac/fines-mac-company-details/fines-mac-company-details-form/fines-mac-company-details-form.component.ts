@@ -9,7 +9,6 @@ import {
   inject,
 } from '@angular/core';
 import { AbstractFormAliasBaseComponent } from '@components/abstract/abstract-form-alias-base/abstract-form-alias-base';
-
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukCheckboxesComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes.component';
@@ -17,24 +16,20 @@ import { GovukCheckboxesConditionalComponent } from '@components/govuk/govuk-che
 import { GovukCheckboxesItemComponent } from '@components/govuk/govuk-checkboxes/govuk-checkboxes-item/govuk-checkboxes-item.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
 import { optionalMaxLengthValidator } from '@validators/optional-max-length/optional-max-length.validator';
-
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
-
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacCompanyDetailsFieldErrors } from '../interfaces/fines-mac-company-details-field-errors.interface';
 import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
 import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-company-details-field-errors';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-company-details-form',
-
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -53,7 +48,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
@@ -104,7 +99,7 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
    * initial error messages, nested route, form population, and alias checkbox listener.
    */
   private initialCompanyDetailsSetup(): void {
-    const { formData } = this.finesService.finesMacState.companyDetails;
+    const { formData } = this.finesMacStore.companyDetails();
     this.setupCompanyDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls(

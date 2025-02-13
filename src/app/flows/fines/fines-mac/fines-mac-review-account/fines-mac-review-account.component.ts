@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
 import {
@@ -28,6 +27,7 @@ import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { GlobalStore } from 'src/app/stores/global/global.store';
+import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
@@ -36,10 +36,10 @@ import { GovukTagComponent } from '@components/govuk/govuk-tag/govuk-tag.compone
 import { MojTimelineItemComponent } from '@components/moj/moj-timeline/moj-timeline-item/moj-timeline-item.component';
 import { MojTimelineComponent } from '@components/moj/moj-timeline/moj-timeline.component';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
+import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 
 @Component({
   selector: 'app-fines-mac-review-account',
-
   imports: [
     CommonModule,
     GovukBackLinkComponent,
@@ -68,7 +68,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   protected readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesService = inject(FinesService);
+  protected readonly finesMacStore = inject(FinesMacStore);
+  protected readonly finesDraftStore = inject(FinesDraftStore);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   protected readonly utilsService = inject(UtilsService);
   private readonly userState = this.globalStore.userState();
@@ -85,7 +86,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   public reviewAccountStatus!: string;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
-    .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .getCourts(this.finesMacStore.getBusinessUnitId())
     .pipe(
       tap((response: IOpalFinesCourtRefData) => {
         this.enforcementCourtsData = response.refData;
@@ -117,7 +118,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   private submitPayload(): void {
     const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
-      this.finesService.finesMacState,
+      this.finesMacStore.getFinesMacStore(),
       this.userState,
     );
     this.opalFinesService
@@ -136,17 +137,30 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Extracts and sets the review account status from the fines service state.
+   * Updates the state of the fines service with the provided draft account.
+   *
+   * @param draftAccount - The draft account data to update the fines service state.
+   * @private
+   */
+  private updateFinesServiceState(draftAccount: IFinesMacAddAccountPayload): void {
+    this.finesDraftStore.setFinesDraftState(draftAccount);
+    this.finesMacStore.setFinesMacStore(this.finesMacPayloadService.mapAccountPayload(draftAccount));
+  }
+
+  /**
+   * Retrieves the draft account status from the fines service and updates the component's status property.
+   * It searches for a matching status in the FINES_DRAFT_TAB_STATUSES array based on the account status.
+   * If a matching status is found, the component's status property is set to the pretty name of the matching status.
+   * If no matching status is found, the component's status property is set to an empty string.
    *
    * @private
    * @returns {void}
    */
   private setReviewAccountStatus(): void {
-    const accountStatus = this.finesService.finesDraftState?.account_status;
-    if (!accountStatus) return;
+    const accountStatus = this.finesDraftStore.getAccountStatus();
+    const matchingStatus = FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus));
 
-    this.reviewAccountStatus =
-      FINES_DRAFT_TAB_STATUSES.find((status) => status.statuses.includes(accountStatus))?.prettyName ?? '';
+    this.status = matchingStatus?.prettyName ?? '';
   }
 
   /**
@@ -182,11 +196,13 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
    */
   public navigateBack(): void {
     if (this.isReadOnly) {
+      this.finesMacStore.setUnsavedChanges(false);
+      this.finesMacStore.setStateChanges(false);
       this.handleRoute(
         `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
         false,
         undefined,
-        this.finesService.finesDraftFragment(),
+        this.finesDraftStore.fragment(),
       );
     } else {
       this.handleRoute(this.finesMacRoutes.children.accountDetails);
@@ -216,7 +232,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       this.router.navigate([route], { fragment });
     } else {
       if (route === this.finesMacRoutes.children.deleteAccountConfirmation) {
-        this.finesService.finesMacState.deleteFromCheckAccount = true;
+        this.finesMacStore.setDeleteFromCheckAccount(true);
       }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }

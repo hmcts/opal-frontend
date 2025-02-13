@@ -15,7 +15,7 @@ describe('FinesMacReviewAccountAccountCommentsAndNotesComponent', () => {
     fixture = TestBed.createComponent(FinesMacReviewAccountAccountCommentsAndNotesComponent);
     component = fixture.componentInstance;
 
-    component.accountCommentsAndNotes = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    component.accountCommentsAndNotes = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
 
     fixture.detectChanges();
   });

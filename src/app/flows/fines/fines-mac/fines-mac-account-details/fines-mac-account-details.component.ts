@@ -13,7 +13,6 @@ import { GovukTaskListComponent } from '@components/govuk/govuk-task-list/govuk-
 import { GovukTaskListItemComponent } from '@components/govuk/govuk-task-list/govuk-task-list-item/govuk-task-list-item.component';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, Event as NavigationEvent, NavigationStart } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { CanDeactivateTypes } from '@guards/types/can-deactivate.type';
 import { Subject, takeUntil } from 'rxjs';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
@@ -21,6 +20,7 @@ import { IFinesMacLanguagePreferencesOptions } from '../fines-mac-language-prefe
 import { FINES_MAC_STATUS } from '../constants/fines-mac-status';
 import { IFinesMacAccountTypes } from '../interfaces/fines-mac-account-types.interface';
 import { IFinesMacDefendantTypes } from '../interfaces/fines-mac-defendant-types.interface';
+import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
@@ -32,7 +32,6 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 
 @Component({
   selector: 'app-fines-mac-account-details',
-
   imports: [
     CommonModule,
     RouterModule,
@@ -54,7 +53,7 @@ import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-m
 export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  protected readonly finesService = inject(FinesService);
+  protected readonly finesMacStore = inject(FinesMacStore);
   protected readonly utilsService = inject(UtilsService);
   protected readonly dateService = inject(DateService);
 
@@ -132,30 +131,30 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   private setDefendantType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { fm_create_account_defendant_type: defendantType } = this.finesService.finesMacState.accountDetails.formData;
+    const { fm_create_account_defendant_type: defendantType } = this.finesMacStore.accountDetails().formData;
     this.defendantType = this.defendantTypes[defendantType as keyof IFinesMacDefendantTypes] || '';
   }
 
   /**
-   * Sets the account type based on the value in the `finesMacState.accountDetails` object.
+   * Sets the account type based on the value in the `finesMacStore.accountDetails` object.
    * If the `AccountType` property is defined, it maps the value to the corresponding account type
    * from the `accountTypes` array and assigns it to the `accountType` property.
    */
   private setAccountType(): void {
     // Moved to here as inline was adding extra spaces in HTML...
-    const { fm_create_account_account_type: accountType } = this.finesService.finesMacState.accountDetails.formData;
+    const { fm_create_account_account_type: accountType } = this.finesMacStore.accountDetails().formData;
     this.accountType = this.accountTypes[accountType as keyof IFinesMacAccountTypes] || '';
   }
 
   /**
    * Sets the document language and court hearing language based on the language preferences
-   * stored in the finesMacState.
+   * stored in the finesMacStore.
    */
   private setLanguage(): void {
     const {
       fm_language_preferences_document_language: documentLanguage,
       fm_language_preferences_hearing_language: hearingLanguage,
-    } = this.finesService.finesMacState.languagePreferences.formData;
+    } = this.finesMacStore.languagePreferences().formData;
     if (documentLanguage && hearingLanguage) {
       this.documentLanguage = this.languageOptions[documentLanguage as keyof IFinesMacLanguagePreferencesOptions] || '';
       this.courtHearingLanguage =
@@ -182,7 +181,21 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   private checkMandatorySections(): void {
-    this.mandatorySectionsCompleted = this.finesService.checkMandatorySections();
+    this.mandatorySectionsCompleted = false;
+    switch (this.finesMacStore.getDefendantType()) {
+      case 'adultOrYouthOnly':
+        this.mandatorySectionsCompleted = this.finesMacStore.adultOrYouthSectionsCompleted();
+        break;
+      case 'parentOrGuardianToPay':
+        this.mandatorySectionsCompleted = this.finesMacStore.parentGuardianSectionsCompleted();
+        break;
+      case 'company':
+        this.mandatorySectionsCompleted = this.finesMacStore.companySectionsCompleted();
+        break;
+      default:
+        this.mandatorySectionsCompleted = false;
+        break;
+    }
   }
 
   /**
@@ -208,7 +221,7 @@ export class FinesMacAccountDetailsComponent implements OnInit, OnDestroy {
    */
   protected canAccessPaymentTerms(): boolean {
     return (
-      this.finesService.finesMacState.personalDetails.status === FINES_MAC_STATUS.PROVIDED ||
+      this.finesMacStore.personalDetailsStatus() === FINES_MAC_STATUS.PROVIDED ||
       this.paymentTermsBypassDefendantTypes.includes(this.defendantType)
     );
   }

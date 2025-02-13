@@ -64,7 +64,7 @@ describe('FinesMacPayloadService', () => {
       return;
     }
 
-    finesMacState.offenceDetails = structuredClone([{ ...FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE }]);
+    finesMacState.offenceDetails = structuredClone([FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE]);
     spyOn(dateService, 'getDateNow').and.returnValue(DateTime.fromISO('2023-07-03T12:30:00Z'));
     const result = service.buildAddAccountPayload(finesMacState, sessionUserState);
 
@@ -102,10 +102,8 @@ describe('FinesMacPayloadService', () => {
 
     const result = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
     const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
-    finesMacState.parentGuardianDetails.formData = { ...FINES_MAC_STATE.parentGuardianDetails.formData };
-    finesMacState.parentGuardianDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
-    finesMacState.companyDetails.formData = { ...FINES_MAC_STATE.companyDetails.formData };
-    finesMacState.companyDetails.status = FINES_MAC_STATUS.NOT_PROVIDED;
+    finesMacState.parentGuardianDetails.formData = FINES_MAC_STATE.parentGuardianDetails.formData;
+    finesMacState.companyDetails.formData = FINES_MAC_STATE.companyDetails.formData;
 
     expect(result).toEqual(finesMacState);
   });
@@ -169,38 +167,6 @@ describe('FinesMacPayloadService', () => {
     expect(service['getFinesMacStateFormStatus'](finesMacState.accountDetails.formData)).toEqual(
       FINES_MAC_STATUS.NOT_PROVIDED,
     );
-  });
-
-  it('should set the statuses of the states', () => {
-    if (!service || !finesMacState) {
-      fail('Required mock states are not properly initialised');
-      return;
-    }
-
-    const result = service['setFinesMacStateStatuses'](finesMacState);
-
-    expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-    expect(result.parentGuardianDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-    expect(result.companyDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-    expect(result.courtDetails.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-    expect(result.accountCommentsNotes.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-    expect(result.offenceDetails[0].status).toEqual(FINES_MAC_STATUS.PROVIDED);
-    expect(result.paymentTerms.status).toEqual(FINES_MAC_STATUS.PROVIDED);
-  });
-
-  it('should set the statuses of the states to not provided', () => {
-    if (!service || !finesMacState) {
-      fail('Required mock states are not properly initialised');
-      return;
-    }
-    finesMacState.accountDetails.formData = {
-      fm_create_account_account_type: null,
-      fm_create_account_business_unit_id: null,
-      fm_create_account_defendant_type: null,
-    };
-
-    const result = service['setFinesMacStateStatuses'](finesMacState);
-    expect(result.accountDetails.status).toEqual(FINES_MAC_STATUS.NOT_PROVIDED);
   });
 
   it('should get the business unit user id', () => {

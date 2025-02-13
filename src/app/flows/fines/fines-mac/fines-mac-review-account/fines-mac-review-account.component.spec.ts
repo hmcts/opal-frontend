@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacReviewAccountComponent } from './fines-mac-review-account.component';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -22,25 +21,34 @@ import { FINES_DRAFT_STATE } from '../../fines-draft/constants/fines-draft-state
 import { UtilsService } from '@services/utils/utils.service';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
 import { DateService } from '@services/date-service/date.service';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { FINES_MAC_STATE } from '../constants/fines-mac-state';
+import { FinesDraftStoreType } from '../../fines-draft/stores/types/fines-draft.type';
+import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 
 describe('FinesMacReviewAccountComponent', () => {
   let component: FinesMacReviewAccountComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockOpalFinesService: Partial<OpalFines>;
   let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
   let globalStore: GlobalStoreType;
   let mockUtilsService: jasmine.SpyObj<UtilsService>;
+  let finesMacStore: FinesMacStoreType;
+  let finesDraftStore: FinesDraftStoreType;
   let mockDateService: jasmine.SpyObj<DateService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'finesDraftState', 'finesDraftFragment']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Submitted' };
-    mockFinesService.finesDraftFragment.and.returnValue('review');
+    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
+    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+      'scrollToTop',
+      'upperCaseFirstLetter',
+      'formatSortCode',
+      'formatAddress',
+      'convertToMonetaryString',
+    ]);
 
     mockOpalFinesService = {
       getCourts: jasmine.createSpy('getCourts').and.returnValue(of(OPAL_FINES_COURT_REF_DATA_MOCK)),
@@ -60,28 +68,18 @@ describe('FinesMacReviewAccountComponent', () => {
         .and.returnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
       postDraftAddAccountPayload: jasmine
         .createSpy('postDraftAddAccountPayload')
-        .and.returnValue(of({ ...OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK })),
+        .and.returnValue(of(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK)),
     };
 
     mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
       'buildAddAccountPayload',
       'mapAccountPayload',
     ]);
-    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT });
-
-    mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
-    mockUtilsService = jasmine.createSpyObj(UtilsService, [
-      'scrollToTop',
-      'upperCaseFirstLetter',
-      'formatSortCode',
-      'formatAddress',
-      'convertToMonetaryString',
-    ]);
+    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
         { provide: UtilsService, useValue: mockUtilsService },
@@ -107,6 +105,12 @@ describe('FinesMacReviewAccountComponent', () => {
       error: false,
       message: '',
     });
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
+    finesDraftStore = TestBed.inject(FinesDraftStore);
+    finesDraftStore.setFinesDraftState(FINES_DRAFT_STATE);
 
     fixture.detectChanges();
   });
@@ -135,7 +139,7 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([component['finesMacRoutes'].children.deleteAccountConfirmation], {
       relativeTo: component['activatedRoute'].parent,
     });
-    expect(mockFinesService.finesMacState.deleteFromCheckAccount).toBeTrue();
+    expect(finesMacStore.deleteFromCheckAccount()).toBeTrue();
   });
 
   it('should navigate on handleRoute with relative to', () => {
@@ -202,6 +206,7 @@ describe('FinesMacReviewAccountComponent', () => {
   it('should navigate back on navigateBack', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
+    finesDraftStore.setFragment('review');
     component.isReadOnly = true;
     component.navigateBack();
 
@@ -210,7 +215,7 @@ describe('FinesMacReviewAccountComponent', () => {
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
       ],
       {
-        fragment: 'review',
+        fragment: finesDraftStore.fragment(),
       },
     );
   });
@@ -242,29 +247,62 @@ describe('FinesMacReviewAccountComponent', () => {
     component['reviewAccountFetchedMappedPayload']();
 
     expect(component.isReadOnly).toBeTrue();
-    expect(component['finesService'].finesDraftState).toEqual(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
-    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE_MOCK);
-    expect(component.reviewAccountStatus).toEqual('In review');
   });
 
-  it('should test reviewAccountFetchedMappedPayload', () => {
-    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
-    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
-    const snapshotData: IFetchMapFinesMacPayload = {
-      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
-      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
-    };
-    component['activatedRoute'].snapshot = {
-      data: {
-        test: snapshotData,
+  it('should update fines service state on updateFinesServiceState', () => {
+    const draftAccount = DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount;
+    component['updateFinesServiceState'](draftAccount);
+    expect(finesDraftStore.getFinesDraftState()).toEqual(draftAccount);
+    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
+  });
+
+  it('should set status on getDraftAccountStatus', () => {
+    finesDraftStore.setFinesDraftState(structuredClone(DRAFT_ACCOUNT_RESOLVER_MOCK.draftAccount));
+    component['getDraftAccountStatus']();
+
+    expect(component.status).toEqual('In review');
+
+    finesDraftStore.setAccountStatus('');
+    component['getDraftAccountStatus']();
+
+    expect(component.status).toEqual('');
+  });
+
+  it('should map business unit details on mapBusinessUnitDetails', () => {
+    const businessUnit = DRAFT_ACCOUNT_RESOLVER_MOCK.businessUnit;
+    component['mapBusinessUnitDetails'](businessUnit);
+    expect(finesMacStore.businessUnit()).toEqual({
+      business_unit_code: businessUnit.businessUnitName,
+      business_unit_type: businessUnit.businessUnitType,
+      account_number_prefix: businessUnit.accountNumberPrefix,
+      opal_domain: businessUnit.opalDomain,
+      business_unit_id: businessUnit.businessUnitId,
+      business_unit_name: businessUnit.businessUnitName,
+      configurationItems: businessUnit.configurationItems.map((item) => ({
+        item_name: item.itemName,
+        item_value: item.itemValue,
+        item_values: item.itemValues,
+      })),
+      welsh_language: businessUnit.welshLanguage,
+    });
+  });
+
+  it('should map offence details on mapOffenceDetails', () => {
+    const offencesData = DRAFT_ACCOUNT_RESOLVER_MOCK.offencesData;
+    const finesMacStateWithOffences = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacStateWithOffences.offenceDetails = [
+      {
+        ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0],
+        formData: {
+          ...structuredClone(FINES_MAC_STATE_MOCK).offenceDetails[0].formData,
+          fm_offence_details_offence_id: 314441,
+        },
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
+    ];
 
-    component['reviewAccountFetchedMappedPayload']();
-
-    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE);
-    expect(component['finesService'].finesDraftState).toEqual(FINES_DRAFT_STATE);
+    finesMacStore.setFinesMacStore(finesMacStateWithOffences);
+    component['mapOffenceDetails'](offencesData);
+    expect(finesMacStore.offenceDetails()[0].formData.fm_offence_details_offence_cjs_code).toEqual('AK123456');
   });
 
   it('should call handleRoute with submitConfirmation on submitPayload success', () => {
@@ -283,6 +321,7 @@ describe('FinesMacReviewAccountComponent', () => {
 
   it('should navigate back to inputter on navigateBack when isReadOnly is true', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
+    finesDraftStore.setFragment('review');
     component.isReadOnly = true;
     component.navigateBack();
     expect(routerSpy).toHaveBeenCalledWith(
@@ -290,7 +329,7 @@ describe('FinesMacReviewAccountComponent', () => {
         `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
       ],
       {
-        fragment: 'review',
+        fragment: finesDraftStore.fragment(),
       },
     );
   });
@@ -314,5 +353,25 @@ describe('FinesMacReviewAccountComponent', () => {
     mockFinesService.finesDraftState = { ...structuredClone(FINES_DRAFT_STATE), account_status: 'Test' };
     component['setReviewAccountStatus']();
     expect(component.reviewAccountStatus).toEqual('');
+  });
+
+  it('should test reviewAccountFetchedMappedPayload', () => {
+    mockFinesService.finesMacState = structuredClone(FINES_MAC_STATE);
+    mockFinesService.finesDraftState = structuredClone(FINES_DRAFT_STATE);
+    const snapshotData: IFetchMapFinesMacPayload = {
+      finesMacState: structuredClone(FINES_MAC_STATE_MOCK),
+      finesMacDraft: structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
+    };
+    component['activatedRoute'].snapshot = {
+      data: {
+        test: snapshotData,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    component['reviewAccountFetchedMappedPayload']();
+
+    expect(component['finesService'].finesMacState).toEqual(FINES_MAC_STATE);
+    expect(component['finesService'].finesDraftState).toEqual(FINES_DRAFT_STATE);
   });
 });

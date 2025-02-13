@@ -2,24 +2,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesDraftCamViewAllRejectedComponent } from './fines-draft-cam-view-all-rejected.component';
 import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
+import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 describe('FinesDraftCamViewAllRejectedComponent', () => {
   let component: FinesDraftCamViewAllRejectedComponent;
   let fixture: ComponentFixture<FinesDraftCamViewAllRejectedComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let finesDraftStore: FinesDraftStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj('FinesService', ['finesDraftFragment']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
       imports: [FinesDraftCamViewAllRejectedComponent, GovukBackLinkComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
@@ -33,7 +32,8 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
     fixture = TestBed.createComponent(FinesDraftCamViewAllRejectedComponent);
     component = fixture.componentInstance;
 
-    mockFinesService.finesDraftFragment.and.returnValue('rejected');
+    finesDraftStore = TestBed.inject(FinesDraftStore);
+    finesDraftStore.setFragment('rejected');
 
     fixture.detectChanges();
   });
@@ -47,7 +47,7 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
 
     expect(mockRouter.navigate).toHaveBeenCalledWith([FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter], {
       relativeTo: component['activatedRoute'].parent,
-      fragment: 'rejected',
+      fragment: finesDraftStore.fragment(),
     });
   });
 });

@@ -31,11 +31,30 @@ export abstract class AbstractSortableTableComponent implements OnInit {
   }
 
   /**
-   * Initializes the sort state by using the existing sort state if available,
-   * or generating a new one based on the current table data.
+   * Initializes the sort state for the sortable table component.
+   *
+   * This method sets the initial sort state based on the existing sort state or creates a new one
+   * if none exists. It then updates the sort state signal with the initial sort state.
+   *
+   * If an existing sort state is found, it iterates over each entry and triggers the sort change
+   * for each key that has a sort type other than 'none'.
+   *
+   * @private
+   * @returns {void}
    */
   private initialiseSortState(): void {
-    this.sortStateSignal.set(this.abstractExistingSortState || this.createSortState(this.abstractTableDataSignal()));
+    const existingSortState = this.abstractExistingSortState;
+    const initialSortState = existingSortState || this.createSortState(this.abstractTableDataSignal());
+
+    this.sortStateSignal.set(initialSortState);
+
+    if (existingSortState) {
+      Object.entries(existingSortState).forEach(([key, sortType]) => {
+        if (sortType !== 'none') {
+          this.onSortChange({ key, sortType });
+        }
+      });
+    }
   }
 
   /**

@@ -64,4 +64,30 @@ export class UtilsService {
   public scrollToTop(): void {
     this.viewportScroller.scrollToPosition([0, 0]);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public checkFormValues(form: { [key: string]: any }): boolean {
+    return Object.values(form).some((value) => {
+      return Array.isArray(value) ? value.length > 0 : Boolean(value);
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public checkFormArrayValues(forms: { [key: string]: any }[]): boolean {
+    return forms.every((form) => this.checkFormValues(form));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public getFormStatus(form: { [key: string]: any }, providedMessage: string, notProvidedMessage: string): string {
+    return this.checkFormValues(form) ? providedMessage : notProvidedMessage;
+  }
+
+  public getArrayFormStatus(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    forms: { [key: string]: any }[],
+    providedMessage: string,
+    notProvidedMessage: string,
+  ): string {
+    return forms.every((form) => this.checkFormValues(form)) ? providedMessage : notProvidedMessage;
+  }
 }
