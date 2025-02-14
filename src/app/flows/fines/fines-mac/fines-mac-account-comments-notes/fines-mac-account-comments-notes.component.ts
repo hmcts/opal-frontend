@@ -41,7 +41,8 @@ export class FinesMacAccountCommentsNotesComponent extends AbstractFormParentBas
    *
    * @param unsavedChanges boolean value from child component
    */
-  public handleUnsavedChanges(unsavedChanges: boolean): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public handleUnsavedChanges(unsavedChanges: any): void {
     this.finesMacStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }

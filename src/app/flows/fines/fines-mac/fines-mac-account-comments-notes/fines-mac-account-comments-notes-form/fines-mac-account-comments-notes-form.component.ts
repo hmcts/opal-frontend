@@ -8,8 +8,7 @@ import {
   Output,
   inject,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukTextAreaComponent } from '@components/govuk/govuk-text-area/govuk-text-area.component';
@@ -18,6 +17,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { CommonModule } from '@angular/common';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { AbstractAccountCommentsAndNotesComponent } from '../../../components/abstract/abstract-account-comments-and-notes/abstract-account-comments-and-notes';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
@@ -32,7 +32,10 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
   templateUrl: './fines-mac-account-comments-notes-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
+export class FinesMacAccountCommentsNotesFormComponent
+  extends AbstractAccountCommentsAndNotesComponent
+  implements OnInit, OnDestroy
+{
   @Input() public defendantType!: string;
   @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountCommentsNotesForm>();
 
@@ -40,16 +43,6 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
   public mandatorySectionsCompleted!: boolean;
-
-  /**
-   * Sets up the account comments and notes form with the necessary form controls.
-   */
-  private setupAccountCommentsNotesForm(): void {
-    this.form = new FormGroup({
-      fm_account_comments_notes_comments: new FormControl<string | null>(null),
-      fm_account_comments_notes_notes: new FormControl<string | null>(null),
-    });
-  }
 
   /**
    * Checks if all mandatory sections are completed by calling the finesService.
@@ -82,7 +75,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
    */
   private initialAccountCommentsNotesSetup(): void {
     const { formData } = this.finesMacStore.accountCommentsNotes();
-    this.setupAccountCommentsNotesForm();
+    this.setupForm('fm');
     this.rePopulateForm(formData);
     this.checkMandatorySections();
   }
