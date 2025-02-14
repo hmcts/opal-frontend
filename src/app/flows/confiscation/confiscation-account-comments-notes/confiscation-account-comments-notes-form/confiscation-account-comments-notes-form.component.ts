@@ -34,7 +34,7 @@ export class ConfiscationAccountCommentsNotesFormComponent
   protected readonly routingPaths = PAGES_ROUTING_PATHS;
 
   /**
-   * Performs the initial setup for the fines-mac-account-comments-notes-form component.
+   * Performs the initial setup for the confiscation-account-comments-notes-form component.
    * This method sets up the account comments notes form, and populates the form with data.
    */
   private initialAccountCommentsNotesSetup(): void {

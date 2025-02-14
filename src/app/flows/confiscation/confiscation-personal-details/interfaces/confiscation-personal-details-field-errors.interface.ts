@@ -1,0 +1,26 @@
+import { IAbstractFormBaseFieldError } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-error.interface';
+import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
+
+export interface IConfiscationPersonalDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
+  conf_personal_details_title: IAbstractFormBaseFieldError;
+  conf_personal_details_forenames: IAbstractFormBaseFieldError;
+  conf_personal_details_surname: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_forenames_0: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_surname_0: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_forenames_1: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_surname_1: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_forenames_2: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_surname_2: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_forenames_3: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_surname_3: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_forenames_4: IAbstractFormBaseFieldError;
+  conf_personal_details_alias_surname_4: IAbstractFormBaseFieldError;
+  conf_personal_details_dob: IAbstractFormBaseFieldError;
+  conf_personal_details_national_insurance_number: IAbstractFormBaseFieldError;
+  conf_personal_details_address_line_1: IAbstractFormBaseFieldError;
+  conf_personal_details_address_line_2: IAbstractFormBaseFieldError;
+  conf_personal_details_address_line_3: IAbstractFormBaseFieldError;
+  conf_personal_details_post_code: IAbstractFormBaseFieldError;
+  conf_personal_details_vehicle_make: IAbstractFormBaseFieldError;
+  conf_personal_details_vehicle_registration_mark: IAbstractFormBaseFieldError;
+}

@@ -11,7 +11,7 @@ import { CONFISCATION_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from './mocks/confiscat
 import { CONFISCATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './mocks/confiscation-account-comments-notes-state.mock';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
-describe('FinesMacAccountCommentsNotesComponent', () => {
+describe('ConfiscationAccountCommentsNotesComponent', () => {
   let component: ConfiscationAccountCommentsNotesComponent;
   let fixture: ComponentFixture<ConfiscationAccountCommentsNotesComponent>;
   let formSubmit: IConfiscationAccountCommentsNotesForm;
