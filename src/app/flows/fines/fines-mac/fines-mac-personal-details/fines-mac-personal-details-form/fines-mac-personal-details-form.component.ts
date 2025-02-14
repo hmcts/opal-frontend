@@ -21,8 +21,6 @@ import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-persona
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { DateService } from '@services/date-service/date.service';
-import { takeUntil } from 'rxjs';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
@@ -61,19 +59,16 @@ export class FinesMacPersonalDetailsFormComponent
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
 
   private readonly finesMacStore = inject(FinesMacStore);
-  protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
 
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
   };
+  protected override vehicleDetailsFields = FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS;
 
   public readonly titleOptions: IGovUkSelectOptions[] = ABSTRACT_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
-
-  public age!: number;
-  public ageLabel!: string;
 
   /**
    * Sets up the alias configuration for the personal details form.
@@ -85,42 +80,13 @@ export class FinesMacPersonalDetailsFormComponent
   }
 
   /**
-   * Adds vehicle details controls to the form.
-   * Iterates over the FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS array and creates a control for each field.
-   */
-  private addVehicleDetailsControls(): void {
-    FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
-      this.createControl(control.controlName, control.validators);
-    });
-  }
-
-  /**
-   * Listens for changes in the date of birth control and updates the age and label accordingly.
-   */
-  private dateOfBirthListener(): void {
-    const dobControl = this.form.controls['fm_personal_details_dob'];
-
-    // Initial update if the date of birth is already populated
-    if (dobControl.value) {
-      this.updateAgeAndLabel(dobControl.value);
-    }
-
-    // Subscribe to changes in the date of birth control
-    dobControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((dateOfBirth) => {
-      this.updateAgeAndLabel(dateOfBirth);
-    });
-  }
-
-  /**
    * Updates the age and age label based on the provided date of birth.
    *
    * @param dateOfBirth - The date of birth in string format.
    */
-  private updateAgeAndLabel(dateOfBirth: string): void {
+  protected override updateAgeAndLabel(dateOfBirth: string): void {
+    super.updateAgeAndLabel(dateOfBirth);
     if (this.dateService.isValidDate(dateOfBirth)) {
-      this.age = this.dateService.calculateAge(dateOfBirth);
-      this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
-
       this.finesMacStore.resetPaymentTermsDaysInDefault();
     }
   }
@@ -135,6 +101,7 @@ export class FinesMacPersonalDetailsFormComponent
     const { formData } = this.finesMacStore.personalDetails();
     const key = this.defendantType as keyof IFinesMacDefendantTypes;
     this.setupPersonalDetailsForm('fm');
+    this.dateOfBirthControl = this.form.get('fm_personal_details_dob')!;
 
     this.setupAliasConfiguration();
     this.setupAliasFormControls(

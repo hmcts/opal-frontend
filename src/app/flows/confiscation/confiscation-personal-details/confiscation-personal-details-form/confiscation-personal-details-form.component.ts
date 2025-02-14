@@ -10,8 +10,6 @@ import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/g
 import { CONFISCATION_PERSONAL_DETAILS_FIELD_ERRORS } from '../constants/confiscation-personal-details-field-errors';
 import { CONFISCATION_PERSONAL_DETAILS_ALIAS } from '../constants/confiscation-personal-details-alias';
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
-import { DateService } from '@services/date-service/date.service';
-import { takeUntil } from 'rxjs';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
 import { CONFISCATION_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as CONF_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/confiscation-personal-details-vehicle-details-fields';
 import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date-picker.component';
@@ -49,18 +47,16 @@ export class ConfiscationPersonalDetailsFormComponent
   @Output() protected override formSubmit = new EventEmitter<IConfiscationPersonalDetailsForm>();
 
   private readonly confiscationStore = inject(ConfiscationStore);
-  protected readonly dateService = inject(DateService);
   protected readonly pagesRoutingPath = PAGES_ROUTING_PATHS;
 
   override fieldErrors: IConfiscationPersonalDetailsFieldErrors = {
     ...CONFISCATION_PERSONAL_DETAILS_FIELD_ERRORS,
   };
 
+  protected override vehicleDetailsFields = CONF_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS;
+
   public readonly titleOptions: IGovUkSelectOptions[] = ABSTRACT_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
-
-  public age!: number;
-  public ageLabel!: string;
 
   /**
    * Sets up the alias configuration for the personal details form.
@@ -72,45 +68,6 @@ export class ConfiscationPersonalDetailsFormComponent
   }
 
   /**
-   * Adds vehicle details controls to the form.
-   * Iterates over the CONF_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS array and creates a control for each field.
-   */
-  private addVehicleDetailsControls(): void {
-    CONF_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
-      this.createControl(control.controlName, control.validators);
-    });
-  }
-
-  /**
-   * Listens for changes in the date of birth control and updates the age and label accordingly.
-   */
-  private dateOfBirthListener(): void {
-    const dobControl = this.form.controls['conf_personal_details_dob'];
-
-    // Initial update if the date of birth is already populated
-    if (dobControl.value) {
-      this.updateAgeAndLabel(dobControl.value);
-    }
-
-    // Subscribe to changes in the date of birth control
-    dobControl.valueChanges.pipe(takeUntil(this['ngUnsubscribe'])).subscribe((dateOfBirth) => {
-      this.updateAgeAndLabel(dateOfBirth);
-    });
-  }
-
-  /**
-   * Updates the age and age label based on the provided date of birth.
-   *
-   * @param dateOfBirth - The date of birth in string format.
-   */
-  private updateAgeAndLabel(dateOfBirth: string): void {
-    if (this.dateService.isValidDate(dateOfBirth)) {
-      this.age = this.dateService.calculateAge(dateOfBirth);
-      this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
-    }
-  }
-
-  /**
    * Sets up the initial personal details for the confiscation-personal-details-form component.
    * This method initializes the personal details form, alias configuration, alias form controls,
    * adds vehicle details field errors if the defendant type is 'adultOrYouthOnly', sets initial
@@ -119,13 +76,14 @@ export class ConfiscationPersonalDetailsFormComponent
   private initialPersonalDetailsSetup(): void {
     const { formData } = this.confiscationStore.personalDetails();
     this.setupPersonalDetailsForm('conf');
+    this.dateOfBirthControl = this.form.get('conf_personal_details_dob')!;
 
     this.setupAliasConfiguration();
     this.setupAliasFormControls(
       [...Array(formData.conf_personal_details_aliases.length).keys()],
       'conf_personal_details_aliases',
     );
-    this.addVehicleDetailsControls();
+    this['addVehicleDetailsControls']();
     this.setInitialErrorMessages();
     this.rePopulateForm(formData);
     this.setUpAliasCheckboxListener('conf_personal_details_add_alias', 'conf_personal_details_aliases');
