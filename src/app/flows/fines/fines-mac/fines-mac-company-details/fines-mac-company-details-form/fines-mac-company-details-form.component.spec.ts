@@ -1,30 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { FINES_MAC_COMPANY_DETAILS_ALIAS } from '../constants/fines-mac-company-details-alias';
 import { FINES_MAC_COMPANY_DETAILS_FORM_MOCK } from '../mocks/fines-mac-company-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
+import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 
 describe('FinesMacCompanyDetailsFormComponent', () => {
   let component: FinesMacCompanyDetailsFormComponent;
   let fixture: ComponentFixture<FinesMacCompanyDetailsFormComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-
   let formSubmit: IFinesMacCompanyDetailsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_COMPANY_DETAILS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_COMPANY_DETAILS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacCompanyDetailsFormComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -38,6 +34,9 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     component = fixture.componentInstance;
 
     component.defendantType = 'adultOrYouthOnly';
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -123,11 +122,11 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(component['setupCompanyDetailsForm']).toHaveBeenCalled();
     expect(component['setupAliasConfiguration']).toHaveBeenCalled();
     expect(component['setupAliasFormControls']).toHaveBeenCalledWith(
-      [...Array(mockFinesService.finesMacState.companyDetails.formData['fm_company_details_aliases'].length).keys()],
+      [...Array(finesMacStore.companyDetails().formData['fm_company_details_aliases'].length).keys()],
       'fm_company_details_aliases',
     );
     expect(component['setInitialErrorMessages']).toHaveBeenCalled();
-    expect(component['rePopulateForm']).toHaveBeenCalledWith(mockFinesService.finesMacState.companyDetails.formData);
+    expect(component['rePopulateForm']).toHaveBeenCalledWith(finesMacStore.companyDetails().formData);
     expect(component['setUpAliasCheckboxListener']).toHaveBeenCalledWith(
       'fm_company_details_add_alias',
       'fm_company_details_aliases',

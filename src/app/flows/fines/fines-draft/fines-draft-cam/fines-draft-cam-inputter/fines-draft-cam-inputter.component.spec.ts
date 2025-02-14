@@ -7,7 +7,6 @@ import { DateService } from '@services/date-service/date.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_DRAFT_TAB_STATUSES } from '../../constants/fines-draft-tab-statuses.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../fines-mac/services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
 import { FinesMacPayloadService } from '../../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
 import { FINES_DRAFT_STATE } from '../../constants/fines-draft-state.constant';
@@ -15,24 +14,14 @@ import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-path
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { GlobalStore } from '@stores/global/global.store';
-import { signal } from '@angular/core';
+import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
+import { FinesDraftStore } from '../../stores/fines-draft.store';
 
 describe('FinesDraftCamInputterComponent', () => {
   let component: FinesDraftCamInputterComponent;
   let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
   let globalStore: GlobalStoreType;
-  const mockFinesDraftAmend = signal<boolean>(false);
-  const mockFinesDraftBannerMessage = signal<string>('');
-  const mockFinesService: jasmine.SpyObj<FinesService> = jasmine.createSpyObj<FinesService>(
-    'FinesService',
-    ['finesMacState', 'finesDraftState', 'finesDraftFragment', 'finesDraftAmend', 'finesDraftBannerMessage'],
-    {
-      finesDraftFragment: jasmine.createSpyObj('finesDraftFragment', ['set']),
-      finesDraftAmend: mockFinesDraftAmend,
-      finesDraftBannerMessage: mockFinesDraftBannerMessage,
-    },
-  );
-
+  let finesDraftStore: FinesDraftStoreType;
   const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
     jasmine.createSpyObj<FinesMacPayloadService>('FinesMacPayloadService', ['mapAccountPayload']);
   const mockOpalFinesService: Partial<OpalFines> = {
@@ -50,7 +39,6 @@ describe('FinesDraftCamInputterComponent', () => {
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
-        { provide: FinesService, useValue: mockFinesService },
         { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
         {
           provide: ActivatedRoute,
@@ -63,6 +51,8 @@ describe('FinesDraftCamInputterComponent', () => {
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(SESSION_USER_STATE_MOCK);
+
+    finesDraftStore = TestBed.inject(FinesDraftStore);
 
     fixture = TestBed.createComponent(FinesDraftCamInputterComponent);
     component = fixture.componentInstance;
@@ -112,12 +102,14 @@ describe('FinesDraftCamInputterComponent', () => {
   it('should navigate to review account', () => {
     const draftAccountId = 1;
     const routerSpy = spyOn(component['router'], 'navigate');
+    component.activeTab = 'review';
     component['navigateToReviewAccount'](draftAccountId);
     expect(routerSpy).toHaveBeenCalledWith([
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.reviewAccount}`,
       draftAccountId,
     ]);
-    expect(mockFinesService.finesDraftAmend()).toBeFalse();
+    expect(finesDraftStore.fragment()).toEqual('review');
+    expect(finesDraftStore.amend()).toBeFalse();
   });
 
   it('should navigate to review account when rejected', () => {
@@ -129,7 +121,9 @@ describe('FinesDraftCamInputterComponent', () => {
       `${FINES_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.root}/${FINES_MAC_ROUTING_PATHS.children.accountDetails}`,
       draftAccountId,
     ]);
-    expect(mockFinesService.finesDraftAmend()).toBeTrue();
+
+    expect(finesDraftStore.fragment()).toEqual('rejected');
+    expect(finesDraftStore.amend()).toBeTrue();
   });
 
   it('should handle defendant click', () => {
@@ -159,7 +153,7 @@ describe('FinesDraftCamInputterComponent', () => {
 
   it('should initialize with default state', () => {
     component.ngOnInit();
-    expect(mockFinesService.finesDraftState).toEqual(FINES_DRAFT_STATE);
+    expect(finesDraftStore.getFinesDraftState()).toEqual(FINES_DRAFT_STATE);
   });
 
   it('should set rejectedCount$ to the count as a string', () => {
@@ -188,7 +182,7 @@ describe('FinesDraftCamInputterComponent', () => {
     const route = 'some/route';
     component.activeTab = 'review';
     component.handleRoute(route);
-    expect(mockFinesService.finesDraftFragment.set).toHaveBeenCalledWith('review');
+    expect(finesDraftStore.fragment()).toEqual('review');
     expect(routerSpy).toHaveBeenCalledWith([route], { relativeTo: component['activatedRoute'].parent });
   });
 });
