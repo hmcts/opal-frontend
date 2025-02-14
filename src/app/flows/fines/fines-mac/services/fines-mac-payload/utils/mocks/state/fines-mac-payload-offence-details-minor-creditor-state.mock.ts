@@ -20,7 +20,6 @@ export const FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE: IFinesMacOf
     ],
   },
   nestedFlow: false,
-  status: 'Provided',
   childFormData: [
     {
       formData: {
@@ -41,7 +40,6 @@ export const FINES_MAC_PAYLOAD_OFFENCE_DETAILS_MINOR_CREDITOR_STATE: IFinesMacOf
         fm_offence_details_imposition_position: 0,
       },
       nestedFlow: false,
-      status: 'Provided',
     },
   ],
 };

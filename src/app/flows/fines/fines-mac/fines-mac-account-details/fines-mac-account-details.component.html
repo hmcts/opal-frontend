@@ -1,41 +1,16 @@
 <div class="govuk-grid-column-two-thirds">
   <app-govuk-back-link (clickEvent)="navigateBack()"></app-govuk-back-link>
-  @if (finesService.finesDraftAmend()) {
-    <h1 class="govuk-heading-l">
-      @if (finesService.finesMacState.accountDetails.formData.fm_create_account_defendant_type === 'company') {
-        {{ finesService.finesMacState.companyDetails.formData.fm_company_details_company_name }}
-      } @else {
-        {{
-          finesService.finesMacState.personalDetails.formData.fm_personal_details_title +
-            ' ' +
-            finesService.finesMacState.personalDetails.formData.fm_personal_details_forenames +
-            ' ' +
-            utilsService.upperCaseAllLetters(
-              finesService.finesMacState.personalDetails.formData.fm_personal_details_surname!
-            )
-        }}
-      }
-    </h1>
-    <app-govuk-tag tagClasses="govuk-tag govuk-tag--red" tagId="status">{{ accountDetailsStatus }}</app-govuk-tag>
-    <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>
-    <app-moj-timeline>
-      @for (
-        timelineItem of finesService.finesDraftState.timeline_data;
-        let index = $index;
-        track index + timelineItem.status + timelineItem.status_date
-      ) {
-        <app-moj-timeline-item>
-          <span title>{{ timelineItem.status }}</span>
-          <span user>{{ timelineItem.username }}</span>
-          <span date>{{
-            dateService.getFromFormatToFormat(timelineItem.status_date, 'yyyy-MM-dd', 'dd MMMM yyyy')
-          }}</span>
-          @if (timelineItem.reason_text) {
-            <span description>{{ timelineItem.reason_text }}</span>
-          }
-        </app-moj-timeline-item>
-      }
-    </app-moj-timeline>
+  @if (finesDraftStore.amend()) {
+    <app-fines-mac-review-account-history
+      [defendantName]="
+        finesMacStore.getDefendantType() === 'company'
+          ? finesMacStore.getCompanyDetailsName()
+          : finesMacStore.getPersonalDetailsName()
+      "
+      [accountStatus]="accountDetailsStatus"
+      [timelineData]="finesDraftStore.timeline_data()"
+      [isRejected]="true"
+    ></app-fines-mac-review-account-history>
   } @else {
     <h1 class="govuk-heading-l">Account details</h1>
   }
@@ -49,7 +24,7 @@
       <ng-container name>Business unit</ng-container>
       <ng-container value>
         <p class="govuk-body">
-          {{ finesService.finesMacState.businessUnit.business_unit_name }}
+          {{ finesMacStore.businessUnit().business_unit_name }}
         </p>
       </ng-container>
     </div>
@@ -75,7 +50,7 @@
         <p class="govuk-body">{{ defendantType }}</p>
       </ng-container>
     </div>
-    @if (finesService.finesMacState.businessUnit.welsh_language) {
+    @if (finesMacStore.businessUnit().welsh_language) {
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row"
@@ -158,7 +133,7 @@
     <h2 class="govuk-heading-m">Check and submit</h2>
     <p class="govuk-body">You cannot proceed until all required sections have been completed.</p>
   }
-  @if (!finesService.finesDraftAmend()) {
+  @if (!finesDraftStore.amend()) {
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
     <a
       class="govuk-link govuk-error-colour"
@@ -204,7 +179,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.contactDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.contactDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -229,7 +204,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.employerDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.employerDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -254,7 +229,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.companyDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.companyDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -279,7 +254,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.personalDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.personalDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -305,7 +280,7 @@
       </ng-container>
       <ng-container status>
         <ng-container
-          *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.courtDetails.status }"
+          *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.courtDetailsStatus() }"
         ></ng-container>
       </ng-container>
     </app-govuk-task-list-item>
@@ -331,7 +306,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.parentGuardianDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.parentGuardianDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -355,10 +330,7 @@
       </a>
     </ng-container>
     <ng-container status>
-      @let status =
-        finesService.finesMacState.offenceDetails.length === 0
-          ? 'Not provided'
-          : finesService.finesMacState.offenceDetails[0].status;
+      @let status = finesMacStore.offenceDetails().length === 0 ? 'Not provided' : finesMacStore.offenceDetailsStatus();
       <ng-container
         *ngTemplateOutlet="
           statusTag;
@@ -405,7 +377,7 @@
 <ng-template #paymentTermsStatus>
   @if (canAccessPaymentTerms()) {
     <ng-container
-      *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.paymentTerms.status }"
+      *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.paymentTermsStatus() }"
     ></ng-container>
   } @else {
     Cannot start yet
@@ -431,7 +403,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.accountCommentsNotes.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.accountCommentsNotesStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>

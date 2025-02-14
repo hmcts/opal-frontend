@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { GovukPanelComponent } from '../../../../components/govuk/govuk-panel/govuk-panel.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_STATE } from '../constants/fines-mac-state';
+import { FinesMacStore } from '../stores/fines-mac.store';
+import { GovukPanelComponent } from '@components/govuk/govuk-panel/govuk-panel.component';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
 import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-submit-confirmation',
-
   imports: [GovukPanelComponent],
   templateUrl: './fines-mac-submit-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,7 +16,7 @@ import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fi
 export class FinesMacSubmitConfirmationComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
 
   /**
    * Navigates to the create account page within the fines MAC flow.
@@ -44,7 +42,7 @@ export class FinesMacSubmitConfirmationComponent {
    * @returns {void}
    */
   public seeAllAccounts(): void {
-    this.finesService.finesMacState = { ...FINES_MAC_STATE };
+    this.finesMacStore.resetFinesMacStore();
 
     this.router.navigate(
       [

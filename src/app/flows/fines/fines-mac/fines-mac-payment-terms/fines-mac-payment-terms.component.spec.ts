@@ -1,30 +1,26 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacPaymentTermsComponent } from './fines-mac-payment-terms.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacPaymentTermsForm } from './interfaces/fines-mac-payment-terms-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM_MOCK } from './mocks/fines-mac-payment-terms-form.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 describe('FinesMacPaymentTermsComponent', () => {
   let component: FinesMacPaymentTermsComponent;
   let fixture: ComponentFixture<FinesMacPaymentTermsComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let formSubmit: IFinesMacPaymentTermsForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'getEarliestDateOfSentence']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_PAYMENT_TERMS_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacPaymentTermsComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -36,6 +32,10 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacPaymentTermsComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+
     fixture.detectChanges();
   });
 
@@ -50,7 +50,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     component.handlePaymentTermsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
+    expect(finesMacStore.paymentTerms()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -63,7 +63,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     component.handlePaymentTermsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
+    expect(finesMacStore.paymentTerms()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -79,7 +79,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     component.handlePaymentTermsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
+    expect(finesMacStore.paymentTerms()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -95,7 +95,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
     component.handlePaymentTermsSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.paymentTerms).toEqual(formSubmit);
+    expect(finesMacStore.paymentTerms()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountCommentsNotes], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -103,11 +103,11 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
+    expect(finesMacStore.unsavedChanges()).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
+    expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

@@ -1,6 +1,6 @@
 <div class="govuk-grid-column-full">
-  @if (finesService.finesDraftBannerMessage().length > 0) {
-    <app-moj-banner [text]="finesService.finesDraftBannerMessage()" type="success"></app-moj-banner>
+  @if (finesDraftStore.bannerMessage().length > 0) {
+    <app-moj-banner [text]="finesDraftStore.bannerMessage()" type="success"></app-moj-banner>
   }
   <h2 class="govuk-heading-l">Create accounts</h2>
   <app-moj-sub-navigation subNavId="inputter-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">

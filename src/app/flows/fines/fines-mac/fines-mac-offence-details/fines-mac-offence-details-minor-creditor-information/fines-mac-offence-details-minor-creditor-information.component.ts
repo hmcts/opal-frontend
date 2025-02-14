@@ -10,7 +10,6 @@ import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-information',
-
   imports: [
     CommonModule,
     GovukSummaryListComponent,
