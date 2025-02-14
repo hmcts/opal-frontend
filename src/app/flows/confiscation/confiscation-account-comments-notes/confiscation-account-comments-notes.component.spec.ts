@@ -3,25 +3,25 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
-import { FinesConfiscationStore } from '../stores/fines-confiscation.store';
-import { FinesConfAccountCommentsNotesComponent } from './fines-conf-account-comments-notes.component';
-import { IFinesConfAccountCommentsNotesForm } from './interfaces/fines-conf-account-comments-notes-form.interface';
-import { FinesConfiscationStoreType } from '../stores/types/fines-confiscation-store.type';
-import { FINES_CONF_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from './mocks/fines-conf-account-comments-notes-form.mock';
-import { FINES_CONF_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './mocks/fines-conf-account-comments-notes-state.mock';
+import { ConfiscationStore } from '../stores/confiscation.store';
+import { ConfiscationAccountCommentsNotesComponent } from './confiscation-account-comments-notes.component';
+import { IConfiscationAccountCommentsNotesForm } from './interfaces/confiscation-account-comments-notes-form.interface';
+import { ConfiscationStoreType } from '../stores/types/confiscation-store.type';
+import { CONFISCATION_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from './mocks/confiscation-account-comments-notes-form.mock';
+import { CONFISCATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './mocks/confiscation-account-comments-notes-state.mock';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
 describe('FinesMacAccountCommentsNotesComponent', () => {
-  let component: FinesConfAccountCommentsNotesComponent;
-  let fixture: ComponentFixture<FinesConfAccountCommentsNotesComponent>;
-  let formSubmit: IFinesConfAccountCommentsNotesForm;
-  let finesConfiscationStore: FinesConfiscationStoreType;
+  let component: ConfiscationAccountCommentsNotesComponent;
+  let fixture: ComponentFixture<ConfiscationAccountCommentsNotesComponent>;
+  let formSubmit: IConfiscationAccountCommentsNotesForm;
+  let confiscationStore: ConfiscationStoreType;
 
   beforeEach(async () => {
-    formSubmit = structuredClone(FINES_CONF_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
+    formSubmit = structuredClone(CONFISCATION_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
 
     await TestBed.configureTestingModule({
-      imports: [FinesConfAccountCommentsNotesComponent],
+      imports: [ConfiscationAccountCommentsNotesComponent],
       providers: [
         {
           provide: DateService,
@@ -40,10 +40,10 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesConfAccountCommentsNotesComponent);
+    fixture = TestBed.createComponent(ConfiscationAccountCommentsNotesComponent);
     component = fixture.componentInstance;
 
-    finesConfiscationStore = TestBed.inject(FinesConfiscationStore);
+    confiscationStore = TestBed.inject(ConfiscationStore);
 
     fixture.detectChanges();
   });
@@ -55,12 +55,12 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = structuredClone(FINES_CONF_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
+    formSubmit.formData = structuredClone(CONFISCATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = false;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
 
-    expect(finesConfiscationStore.accountCommentsNotes()).toEqual(formSubmit);
+    expect(confiscationStore.accountCommentsNotes()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([PAGES_ROUTING_PATHS.children.dashboard], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -69,12 +69,12 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = structuredClone(FINES_CONF_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
+    formSubmit.formData = structuredClone(CONFISCATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
 
-    expect(finesConfiscationStore.accountCommentsNotes()).toEqual(formSubmit);
+    expect(confiscationStore.accountCommentsNotes()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([PAGES_ROUTING_PATHS.children.dashboard], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -84,12 +84,12 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     const form = formSubmit;
-    form.formData = structuredClone(FINES_CONF_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
+    form.formData = structuredClone(CONFISCATION_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     form.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(form);
 
-    expect(finesConfiscationStore.accountCommentsNotes()).toEqual(form);
+    expect(confiscationStore.accountCommentsNotes()).toEqual(form);
     expect(routerSpy).toHaveBeenCalledWith([PAGES_ROUTING_PATHS.children.dashboard], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -97,11 +97,11 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(finesConfiscationStore.unsavedChanges()).toBeTruthy();
+    expect(confiscationStore.unsavedChanges()).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(finesConfiscationStore.unsavedChanges()).toBeFalsy();
+    expect(confiscationStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

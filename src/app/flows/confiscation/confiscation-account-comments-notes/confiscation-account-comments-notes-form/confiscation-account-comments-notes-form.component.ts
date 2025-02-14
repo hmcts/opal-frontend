@@ -3,14 +3,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukTextAreaComponent } from '@components/govuk/govuk-text-area/govuk-text-area.component';
-import { IFinesConfAccountCommentsNotesForm } from '../interfaces/fines-conf-account-comments-notes-form.interface';
+import { IConfiscationAccountCommentsNotesForm } from '../interfaces/confiscation-account-comments-notes-form.interface';
 import { CommonModule } from '@angular/common';
 import { AbstractAccountCommentsAndNotesComponent } from '../../../components/abstract/abstract-account-comments-and-notes/abstract-account-comments-and-notes';
-import { FinesConfiscationStore } from '../../stores/fines-confiscation.store';
+import { ConfiscationStore } from '../../stores/confiscation.store';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 
 @Component({
-  selector: 'app-fines-conf-account-comments-notes-form',
+  selector: 'app-confiscation-account-comments-notes-form',
   imports: [
     CommonModule,
     FormsModule,
@@ -19,16 +19,16 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
     GovukCancelLinkComponent,
     GovukTextAreaComponent,
   ],
-  templateUrl: './fines-conf-account-comments-notes-form.component.html',
+  templateUrl: './confiscation-account-comments-notes-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesConfAccountCommentsNotesFormComponent
+export class ConfiscationAccountCommentsNotesFormComponent
   extends AbstractAccountCommentsAndNotesComponent
   implements OnInit, OnDestroy
 {
-  @Output() protected override formSubmit = new EventEmitter<IFinesConfAccountCommentsNotesForm>();
+  @Output() protected override formSubmit = new EventEmitter<IConfiscationAccountCommentsNotesForm>();
 
-  private readonly finesConfiscationStore = inject(FinesConfiscationStore);
+  private readonly confiscationStore = inject(ConfiscationStore);
   public mandatorySectionsCompleted!: boolean;
 
   protected readonly routingPaths = PAGES_ROUTING_PATHS;
@@ -38,7 +38,7 @@ export class FinesConfAccountCommentsNotesFormComponent
    * This method sets up the account comments notes form, and populates the form with data.
    */
   private initialAccountCommentsNotesSetup(): void {
-    const { formData } = this.finesConfiscationStore.accountCommentsNotes();
+    const { formData } = this.confiscationStore.accountCommentsNotes();
     this.setupForm('conf');
     this.rePopulateForm(formData);
   }

@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_CONF_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from '../mocks/fines-conf-account-comments-notes-form.mock';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { of } from 'rxjs';
-import { FinesConfAccountCommentsNotesFormComponent } from './fines-conf-account-comments-notes-form.component';
-import { IFinesConfAccountCommentsNotesForm } from '../interfaces/fines-conf-account-comments-notes-form.interface';
+import { ConfiscationAccountCommentsNotesFormComponent } from './confiscation-account-comments-notes-form.component';
+import { IConfiscationAccountCommentsNotesForm } from '../interfaces/confiscation-account-comments-notes-form.interface';
+import { CONFISCATION_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from '../mocks/confiscation-account-comments-notes-form.mock';
 
-describe('FinesConfAccountCommentsNotesFormComponent', () => {
-  let component: FinesConfAccountCommentsNotesFormComponent;
-  let fixture: ComponentFixture<FinesConfAccountCommentsNotesFormComponent>;
-  let formSubmit: IFinesConfAccountCommentsNotesForm;
+describe('ConfiscationAccountCommentsNotesFormComponent', () => {
+  let component: ConfiscationAccountCommentsNotesFormComponent;
+  let fixture: ComponentFixture<ConfiscationAccountCommentsNotesFormComponent>;
+  let formSubmit: IConfiscationAccountCommentsNotesForm;
 
   beforeEach(async () => {
-    formSubmit = structuredClone(FINES_CONF_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
+    formSubmit = structuredClone(CONFISCATION_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
 
     await TestBed.configureTestingModule({
-      imports: [FinesConfAccountCommentsNotesFormComponent],
+      imports: [ConfiscationAccountCommentsNotesFormComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -35,7 +35,7 @@ describe('FinesConfAccountCommentsNotesFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesConfAccountCommentsNotesFormComponent);
+    fixture = TestBed.createComponent(ConfiscationAccountCommentsNotesFormComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();

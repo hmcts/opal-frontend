@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AbstractFormParentBaseComponent } from '@components/abstract/abstract-form-parent-base/abstract-form-parent-base.component';
-import { FinesConfAccountCommentsNotesFormComponent } from './fines-mac-account-comments-notes-form/fines-conf-account-comments-notes-form.component';
-import { FinesConfiscationStore } from '../stores/fines-confiscation.store';
+import { ConfiscationAccountCommentsNotesFormComponent } from './confiscation-account-comments-notes-form/confiscation-account-comments-notes-form.component';
+import { ConfiscationStore } from '../stores/confiscation.store';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
-import { IFinesConfAccountCommentsNotesForm } from './interfaces/fines-conf-account-comments-notes-form.interface';
+import { IConfiscationAccountCommentsNotesForm } from './interfaces/confiscation-account-comments-notes-form.interface';
 
 @Component({
-  selector: 'app-fines-conf-account-comments-notes',
-  imports: [FinesConfAccountCommentsNotesFormComponent],
-  templateUrl: './fines-conf-account-comments-notes.component.html',
+  selector: 'app-confiscation-account-comments-notes',
+  imports: [ConfiscationAccountCommentsNotesFormComponent],
+  templateUrl: './confiscation-account-comments-notes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesConfAccountCommentsNotesComponent extends AbstractFormParentBaseComponent {
-  private readonly finesConfiscationStore = inject(FinesConfiscationStore);
+export class ConfiscationAccountCommentsNotesComponent extends AbstractFormParentBaseComponent {
+  private readonly confiscationStore = inject(ConfiscationStore);
 
   /**
    * Handles the submission of the account comments and notes form.
@@ -20,8 +20,8 @@ export class FinesConfAccountCommentsNotesComponent extends AbstractFormParentBa
    * @param form - The form data for the account comments and notes.
    * @returns void
    */
-  public handleAccountCommentsNoteSubmit(form: IFinesConfAccountCommentsNotesForm): void {
-    this.finesConfiscationStore.setAccountCommentsNotes(form);
+  public handleAccountCommentsNoteSubmit(form: IConfiscationAccountCommentsNotesForm): void {
+    this.confiscationStore.setAccountCommentsNotes(form);
     this.routerNavigate(PAGES_ROUTING_PATHS.children.dashboard);
   }
 
@@ -32,7 +32,7 @@ export class FinesConfAccountCommentsNotesComponent extends AbstractFormParentBa
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public handleUnsavedChanges(unsavedChanges: any): void {
-    this.finesConfiscationStore.setUnsavedChanges(unsavedChanges);
+    this.confiscationStore.setUnsavedChanges(unsavedChanges);
     this.stateUnsavedChanges = unsavedChanges;
   }
 }

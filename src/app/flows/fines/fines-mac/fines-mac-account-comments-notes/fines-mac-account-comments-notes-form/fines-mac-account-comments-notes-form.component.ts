@@ -17,7 +17,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
 import { CommonModule } from '@angular/common';
 import { FinesMacStore } from '../../stores/fines-mac.store';
-import { AbstractAccountCommentsAndNotesComponent } from '../../../components/abstract/abstract-account-comments-and-notes/abstract-account-comments-and-notes';
+import { AbstractAccountCommentsAndNotesComponent } from '../../../../components/abstract/abstract-account-comments-and-notes/abstract-account-comments-and-notes';
 
 @Component({
   selector: 'app-fines-mac-account-comments-notes-form',
