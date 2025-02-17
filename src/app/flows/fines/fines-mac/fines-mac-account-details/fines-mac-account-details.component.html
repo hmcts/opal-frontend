@@ -11,7 +11,7 @@
       <ng-container name>Business unit</ng-container>
       <ng-container value>
         <p class="govuk-body">
-          {{ finesService.finesMacState.businessUnit.business_unit_name }}
+          {{ finesMacStore.businessUnit().business_unit_name }}
         </p>
       </ng-container>
     </div>
@@ -37,7 +37,7 @@
         <p class="govuk-body">{{ defendantType }}</p>
       </ng-container>
     </div>
-    @if (finesService.finesMacState.businessUnit.welsh_language) {
+    @if (finesMacStore.businessUnit().welsh_language) {
       <div
         app-govuk-summary-list-row
         class="govuk-summary-list__row"
@@ -164,7 +164,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.contactDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.contactDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -189,7 +189,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.employerDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.employerDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -214,7 +214,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.companyDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.companyDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -239,7 +239,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.personalDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.personalDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -265,7 +265,7 @@
       </ng-container>
       <ng-container status>
         <ng-container
-          *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.courtDetails.status }"
+          *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.courtDetailsStatus() }"
         ></ng-container>
       </ng-container>
     </app-govuk-task-list-item>
@@ -291,7 +291,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.parentGuardianDetails.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.parentGuardianDetailsStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>
@@ -315,10 +315,7 @@
       </a>
     </ng-container>
     <ng-container status>
-      @let status =
-        finesService.finesMacState.offenceDetails.length === 0
-          ? 'Not provided'
-          : finesService.finesMacState.offenceDetails[0].status;
+      @let status = finesMacStore.offenceDetails().length === 0 ? 'Not provided' : finesMacStore.offenceDetailsStatus();
       <ng-container
         *ngTemplateOutlet="
           statusTag;
@@ -365,7 +362,7 @@
 <ng-template #paymentTermsStatus>
   @if (canAccessPaymentTerms()) {
     <ng-container
-      *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.paymentTerms.status }"
+      *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.paymentTermsStatus() }"
     ></ng-container>
   } @else {
     Cannot start yet
@@ -391,7 +388,7 @@
     </ng-container>
     <ng-container status>
       <ng-container
-        *ngTemplateOutlet="statusTag; context: { $implicit: finesService.finesMacState.accountCommentsNotes.status }"
+        *ngTemplateOutlet="statusTag; context: { $implicit: finesMacStore.accountCommentsNotesStatus() }"
       ></ng-container>
     </ng-container>
   </app-govuk-task-list-item>

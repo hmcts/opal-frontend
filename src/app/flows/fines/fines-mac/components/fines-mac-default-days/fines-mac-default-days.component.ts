@@ -17,7 +17,6 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-fines-mac-default-days',
-
   imports: [GovukDetailsComponent, GovukTextInputComponent, MojTicketPanelComponent],
   templateUrl: './fines-mac-default-days.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

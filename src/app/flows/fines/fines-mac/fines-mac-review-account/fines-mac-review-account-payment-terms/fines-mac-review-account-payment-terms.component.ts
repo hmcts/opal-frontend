@@ -8,22 +8,21 @@ import { IFinesMacPaymentTermsOptions } from '../../fines-mac-payment-terms/inte
 import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-enforcement-action-options';
 import { IFinesMacPaymentTermsEnforcementActionsOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-enforcement-actions-options.interface';
-import { FinesMacReviewAccountDefaultValues } from '../enums/fines-mac-review-account-default-values.enum';
 import { FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-frequency-options';
 import { IFinesMacPaymentTermsFrequencyOptions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-frequency-options.interface';
 import { PermissionsService } from '@services/permissions-service/permissions.service';
 import { ISessionUserStateRole } from '@services/session-service/interfaces/session-user-state.interface';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
-import { FinesMacPaymentTermsPermissions } from '../../fines-mac-payment-terms/enums/fines-mac-payment-terms-permissions.enum';
 import { IFinesMacPaymentTermsPermissions } from '../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-permissions.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountChangeLinkComponent } from '../fines-mac-review-account-change-link/fines-mac-review-account-change-link.component';
 import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-account-not-provided/fines-mac-review-account-not-provided.component';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { FINES_MAC_PAYMENT_TERMS_PERMISSIONS } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-permisson-values.constant';
+import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-review-account-default-values.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
-
   imports: [
     CommonModule,
     GovukSummaryCardListComponent,
@@ -41,18 +40,17 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   @Input({ required: true }) public defendantType!: string;
   @Output() public emitChangePaymentTerms = new EventEmitter<void>();
 
-  private readonly globalStateService = inject(GlobalStateService);
+  private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
   private readonly hasPermissionAccess = inject(PermissionsService).hasPermissionAccess;
-  private readonly userStateRoles: ISessionUserStateRole[] =
-    this.globalStateService.userState()?.business_unit_user || [];
+  private userStateRoles: ISessionUserStateRole[] = [];
 
-  public readonly permissionsMap = FinesMacPaymentTermsPermissions;
+  public readonly permissionsMap = FINES_MAC_PAYMENT_TERMS_PERMISSIONS;
   public readonly permissions: IFinesMacPaymentTermsPermissions = {
-    [FinesMacPaymentTermsPermissions.collectionOrder]: false,
+    [FINES_MAC_PAYMENT_TERMS_PERMISSIONS.collectionOrder]: false,
   };
 
-  public readonly defaultValues = FinesMacReviewAccountDefaultValues;
+  public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;
   protected readonly paymentTermsOptions = FINES_MAC_PAYMENT_TERMS_OPTIONS;
   protected readonly enforcementActions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
   private readonly frequencyOptions = FINES_MAC_PAYMENT_TERMS_FREQUENCY_OPTIONS;
@@ -76,6 +74,7 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    * @private
    */
   private setupPermissions(): void {
+    this.userStateRoles = this.globalStore.userState()?.business_unit_user || [];
     const { business_unit_id: businessUnitId } = this.businessUnit;
     if (this.userStateRoles && this.userStateRoles.length > 0) {
       this.permissions[this.permissionsMap.collectionOrder] = this.hasPermissionAccess(

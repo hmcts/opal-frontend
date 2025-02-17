@@ -17,7 +17,7 @@
     }
     @if (errorDay || errorMonth || errorYear) {
       <p id="{{ this.fieldSetId }}-error-message" class="govuk-error-message">
-        <span class="govuk-visually-hidden">Error:</span> {{ errorDay || errorMonth || errorYear }}
+        <span class="govuk-visually-hidden">Error: </span> {{ errorDay || errorMonth || errorYear }}
       </p>
     }
     <div class="govuk-date-input" id="passport-issued">

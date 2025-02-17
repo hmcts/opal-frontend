@@ -1,42 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FinesMacOffenceDetailsReviewSummaryComponent } from './fines-mac-offence-details-review-summary.component';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from '../mocks/fines-mac-offence-details-review-summary-form.mock';
-import { FinesMacOffenceDetailsService } from '../../services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from '../../routing/constants/fines-mac-offence-details-routing-paths.constant';
 import { of } from 'rxjs';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
-import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_STATE_MOCK } from '../../../mocks/fines-mac-state.mock';
+import { FinesMacStoreType } from '../../../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../../../stores/fines-mac.store';
+import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_STATUS } from '../../../constants/fines-mac-status';
+import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
+import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsReviewSummaryComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
-  let mockFinesMacOffenceDetailsService: jasmine.SpyObj<FinesMacOffenceDetailsService>;
+  let finesMacStore: FinesMacStoreType;
+  let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let mockUtilsService: jasmine.SpyObj<UtilsService>;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState']);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-
-    mockFinesMacOffenceDetailsService = jasmine.createSpyObj(FinesMacOffenceDetailsService, [
-      'offenceCodeMessage',
-      'offenceIndex',
+    mockUtilsService = jasmine.createSpyObj(UtilsService, [
+      'checkFormValues',
+      'getFormStatus',
+      'upperCaseFirstLetter',
+      'convertToMonetaryString',
     ]);
-    mockFinesMacOffenceDetailsService.offenceCodeMessage = 'Offence AK123456 added';
 
     await TestBed.configureTestingModule({
       imports: [FinesMacOffenceDetailsReviewSummaryComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
-        { provide: FinesMacOffenceDetailsService, useValue: mockFinesMacOffenceDetailsService },
         provideRouter([]),
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -46,6 +45,10 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
             parent: of('offence-details'),
           },
         },
+        {
+          provide: UtilsService,
+          useValue: mockUtilsService,
+        },
       ],
     }).compileComponents();
 
@@ -54,7 +57,14 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
     component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
-    component.offencesImpositions = [...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK];
+    component.offencesImpositions = [...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK)];
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
+
+    finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
+    mockUtilsService.getFormStatus.and.returnValue(FINES_MAC_STATUS.PROVIDED);
 
     fixture.detectChanges();
   });
@@ -83,7 +93,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.offenceAction(action);
 
-    expect(mockFinesMacOffenceDetailsService.offenceIndex).toBe(action.offenceId);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(action.offenceId);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -95,7 +105,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.offenceAction(action);
 
-    expect(mockFinesMacOffenceDetailsService.offenceIndex).toBe(action.offenceId);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(action.offenceId);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -122,7 +132,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
 
     component.addAnotherOffence();
 
-    expect(mockFinesMacOffenceDetailsService.offenceIndex).toBe(expectedOffenceIndex);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(expectedOffenceIndex);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -148,20 +158,18 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
-    mockFinesService.finesMacState = {
-      ...FINES_MAC_STATE_MOCK,
-      accountDetails: {
-        ...FINES_MAC_STATE_MOCK.accountDetails,
-        formData: {
-          ...FINES_MAC_STATE_MOCK.accountDetails.formData,
-          fm_create_account_defendant_type: 'adultOrYouthOnly',
-        },
-      },
-      personalDetails: {
-        ...FINES_MAC_STATE_MOCK.personalDetails,
-        status: FINES_MAC_STATUS.PROVIDED,
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.accountDetails = {
+      ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
+      formData: {
+        ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
+        fm_create_account_defendant_type: 'adultOrYouthOnly',
       },
     };
+    finesMacState.personalDetails = {
+      ...structuredClone(FINES_MAC_STATE_MOCK.personalDetails),
+    };
+    finesMacStore.setFinesMacStore(finesMacState);
 
     const result = component.checkSubNavigationButton();
 
@@ -169,17 +177,16 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   });
 
   it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
-    mockFinesService.finesMacState = {
-      ...FINES_MAC_STATE_MOCK,
-      accountDetails: {
-        ...FINES_MAC_STATE_MOCK.accountDetails,
-        formData: {
-          ...FINES_MAC_STATE_MOCK.accountDetails.formData,
-          fm_create_account_defendant_type: 'parentOrGuardianToPay',
-        },
-        nestedFlow: false,
+    const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+    finesMacState.accountDetails = {
+      ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
+      formData: {
+        ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails.formData),
+        fm_create_account_defendant_type: 'parentOrGuardianToPay',
       },
+      nestedFlow: false,
     };
+    finesMacStore.setFinesMacStore(finesMacState);
 
     const result = component.checkSubNavigationButton();
 

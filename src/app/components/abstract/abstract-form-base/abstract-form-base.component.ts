@@ -1,7 +1,6 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { Subject, takeUntil } from 'rxjs';
 import { IAbstractFormBaseFieldError } from './interfaces/abstract-form-base-field-error.interface';
 import { IAbstractFormBaseFieldErrors } from './interfaces/abstract-form-base-field-errors.interface';
@@ -11,6 +10,7 @@ import { IAbstractFormBaseHighPriorityFormError } from './interfaces/abstract-fo
 import { IAbstractFormBaseForm } from './interfaces/abstract-form-base-form.interface';
 import { IAbstractFormControlErrorMessage } from '../interfaces/abstract-form-control-error-message.interface';
 import { IAbstractFormArrayControlValidation } from '../interfaces/abstract-form-array-control-validation.interface';
+import { UtilsService } from '@services/utils/utils.service';
 
 @Component({
   template: '',
@@ -20,16 +20,17 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() protected formSubmit = new EventEmitter<IAbstractFormBaseForm<any>>();
 
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  public readonly globalStateService = inject(GlobalStateService);
+  protected readonly utilsService = inject(UtilsService);
 
   public form!: FormGroup;
   public formControlErrorMessages!: IAbstractFormControlErrorMessage;
   public formErrorSummaryMessage!: IAbstractFormBaseFormErrorSummaryMessage[];
   protected fieldErrors!: IAbstractFormBaseFieldErrors;
   protected formSubmitted = false;
-  private readonly ngUnsubscribe = new Subject<void>();
+  protected readonly ngUnsubscribe = new Subject<void>();
   public formErrors!: IAbstractFormBaseFormError[];
 
   constructor() {}
@@ -308,6 +309,26 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Focuses on the error summary element and scrolls to the top of the page.
+   *
+   * This method first triggers change detection to ensure the view is up-to-date.
+   * It then selects the error summary element with the class 'govuk-error-summary'.
+   * If the error summary element is found, it sets focus on it without scrolling the page.
+   * Finally, it calls a utility service to scroll to the top of the page.
+   *
+   * @private
+   */
+  private focusAndScrollToErrorSummary(): void {
+    this.changeDetectorRef.detectChanges();
+
+    const errorSummary = document.querySelector('.govuk-error-summary') as HTMLElement;
+    if (errorSummary) {
+      errorSummary.focus({ preventScroll: true });
+      this.utilsService.scrollToTop();
+    }
+  }
+
+  /**
    * Setup listener for the form value changes and to emit hasUnsavedChanges
    */
   private setupListener(): void {
@@ -439,11 +460,30 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Updates the validators of an existing form control.
+   *
+   * @param controlName - The name of the control to update.
+   * @param validators - An array of validators to apply to the control.
+   */
+  protected updateControl(controlName: string, validators: ValidatorFn[]): void {
+    const control = this.form.get(controlName);
+    if (control) {
+      control.setValidators(validators);
+      control.updateValueAndValidity();
+    } else {
+      this.createControl(controlName, validators);
+    }
+  }
+
+  /**
    * Removes a control from the form.
    *
    * @param controlName - The name of the control to remove.
    */
   protected removeControl(controlName: string): void {
+    if (this.formControlErrorMessages[controlName]) {
+      this.removeControlErrors(controlName);
+    }
     this.form.removeControl(controlName);
   }
 
@@ -504,6 +544,8 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
       const nestedFlow = event.submitter ? event.submitter.className.includes('nested-flow') : false;
       this.unsavedChanges.emit(this.hasUnsavedChanges());
       this.formSubmit.emit({ formData: this.form.value, nestedFlow: nestedFlow });
+    } else {
+      this.focusAndScrollToErrorSummary();
     }
   }
 

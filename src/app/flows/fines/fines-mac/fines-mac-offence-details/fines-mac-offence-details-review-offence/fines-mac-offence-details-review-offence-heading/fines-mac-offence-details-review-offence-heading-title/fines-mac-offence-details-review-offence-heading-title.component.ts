@@ -7,7 +7,6 @@ import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/in
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-heading-title',
-
   imports: [
     CommonModule,
     GovukHeadingWithCaptionComponent,

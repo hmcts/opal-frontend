@@ -17,7 +17,7 @@
         cancelLinkText="No - cancel"
         (linkClickEvent)="
           handleRoute(
-            finesService.finesMacState.deleteFromCheckAccount
+            finesMacStore.deleteFromCheckAccount()
               ? finesMacRoutes.children.reviewAccount
               : finesMacRoutes.children.accountDetails
           )

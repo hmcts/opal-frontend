@@ -1,16 +1,16 @@
 import { Component, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { LaunchDarklyService } from '@services/launch-darkly/launch-darkly.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { SessionService } from '@services/session-service/session.service';
 import { DateService } from '@services/date-service/date.service';
 import { Observable, Subject, Subscription, from, map, of, takeUntil, takeWhile, tap, timer } from 'rxjs';
-import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { MojHeaderComponent } from '@components/moj/moj-header/moj-header.component';
 import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj-header-navigation-item/moj-header-navigation-item.component';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-footer.component';
+import { GlobalStore } from './stores/global/global.store';
+import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +27,7 @@ import { GovukFooterComponent } from '@components/govuk/govuk-footer/govuk-foote
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly launchDarklyService = inject(LaunchDarklyService);
-  public readonly globalStateService = inject(GlobalStateService);
+  public readonly globalStore = inject(GlobalStore);
   private readonly document = inject(DOCUMENT);
   public readonly sessionService = inject(SessionService);
   public dateService = inject(DateService);
@@ -56,11 +56,11 @@ export class AppComponent implements OnInit, OnDestroy {
    * Otherwise, it sets up the timer subscription based on the expiry time.
    */
   private initializeTimeoutInterval(): void {
-    if (!this.globalStateService.tokenExpiry) {
+    if (!this.globalStore.tokenExpiry()) {
       return;
     }
 
-    const { expiry, warningThresholdInMilliseconds } = this.globalStateService.tokenExpiry;
+    const { expiry, warningThresholdInMilliseconds } = this.globalStore.tokenExpiry();
     this.thresholdInMinutes = this.dateService.convertMillisecondsToMinutes(warningThresholdInMilliseconds ?? 0);
 
     if (!expiry) {
@@ -143,10 +143,10 @@ export class AppComponent implements OnInit, OnDestroy {
    * Handles the authentication dependent on whether the user is already authenticated
    */
   public handleAuthentication(): void {
-    if (!this.globalStateService.authenticated()) {
-      this.handleRedirect(SsoEndpoints.login);
+    if (!this.globalStore.authenticated()) {
+      this.handleRedirect(SSO_ENDPOINTS.login);
     } else {
-      this.handleRedirect(SsoEndpoints.logout);
+      this.handleRedirect(SSO_ENDPOINTS.logout);
     }
   }
 }

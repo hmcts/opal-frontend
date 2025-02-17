@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS } from './constants/fines-mac-offence-details-routing-paths.constant';
 import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard';
+import { TitleResolver } from '@resolvers/title/title.resolver';
+import { FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES } from './constants/fines-mac-offence-details-routing-titles.constant';
 
 export const routing: Routes = [
   {
@@ -14,6 +16,8 @@ export const routing: Routes = [
       import('../fines-mac-offence-details-review/fines-mac-offence-details-review.component').then(
         (c) => c.FinesMacOffenceDetailsReviewComponent,
       ),
+    data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.reviewOffences },
+    resolve: { title: TitleResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addOffence,
@@ -21,6 +25,8 @@ export const routing: Routes = [
       import('../fines-mac-offence-details-add-an-offence/fines-mac-offence-details-add-an-offence.component').then(
         (c) => c.FinesMacOffenceDetailsAddAnOffenceComponent,
       ),
+    data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.addOffence },
+    resolve: { title: TitleResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.searchOffences,
@@ -28,6 +34,8 @@ export const routing: Routes = [
       import('../fines-mac-offence-details-search-offences/fines-mac-offence-details-search-offences.component').then(
         (c) => c.FinesMacOffenceDetailsSearchOffencesComponent,
       ),
+    data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.searchOffences },
+    resolve: { title: TitleResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeImposition,
@@ -35,6 +43,8 @@ export const routing: Routes = [
       import(
         '../fines-mac-offence-details-remove-imposition/fines-mac-offence-details-remove-imposition.component'
       ).then((c) => c.FinesMacOffenceDetailsRemoveImpositionComponent),
+    data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeImposition },
+    resolve: { title: TitleResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.addMinorCreditor,
@@ -43,6 +53,8 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsMinorCreditorComponent,
       ),
     canDeactivate: [canDeactivateGuard],
+    data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.addMinorCreditor },
+    resolve: { title: TitleResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeMinorCreditor,
@@ -50,6 +62,9 @@ export const routing: Routes = [
       import(
         '../fines-mac-offence-details-remove-minor-creditor/fines-mac-offence-details-remove-minor-creditor.component'
       ).then((c) => c.FinesMacOffenceDetailsRemoveMinorCreditorComponent),
+
+    data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeMinorCreditor },
+    resolve: { title: TitleResolver },
   },
   {
     path: FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS.children.removeOffence,
@@ -57,5 +72,7 @@ export const routing: Routes = [
       import(
         '../fines-mac-offence-details-remove-offence-and-impositions/fines-mac-offence-details-remove-offence-and-impositions.component'
       ).then((c) => c.FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent),
+    data: { title: FINES_MAC_OFFENCE_DETAILS_ROUTING_TITLES.children.removeOffence },
+    resolve: { title: TitleResolver },
   },
 ];

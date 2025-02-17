@@ -2,12 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-delete-account-confirmation',
-
   imports: [GovukButtonComponent, GovukCancelLinkComponent],
   templateUrl: './fines-mac-delete-account-confirmation.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,7 +14,7 @@ import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-
 export class FinesMacDeleteAccountConfirmationComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  protected readonly finesService = inject(FinesService);
+  protected readonly finesMacStore = inject(FinesMacStore);
 
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
 
@@ -32,6 +31,6 @@ export class FinesMacDeleteAccountConfirmationComponent implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.finesService.finesMacState.deleteFromCheckAccount = false;
+    this.finesMacStore.setDeleteFromCheckAccount(false);
   }
 }
