@@ -32,7 +32,6 @@ function setupBrowserLaunch(on) {
 
 async function setupNodeEvents(on, config) {
   await addCucumberPreprocessorPlugin(on, config);
-
   on(
     'file:preprocessor',
     webpack({
@@ -109,9 +108,9 @@ export default defineConfig({
       bundler: 'webpack',
     },
     specPattern: 'cypress/component/**/*.cy.ts',
-    supportFile: false,
     setupNodeEvents(on, config) {
       setupBrowserLaunch(on);
+      require('@cypress/grep/src/plugin')(config);
       config.env['messagesOutput'] =
         `${process.env.TEST_STAGE}-output/prod/cucumber/${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
       return config;

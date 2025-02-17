@@ -88,6 +88,7 @@
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
     "webpack": "^5.93.0",
+    "xml2js": "^0.6.2",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -99,6 +100,7 @@
     "@angular-eslint/template-parser": "19.0.2",
     "@angular/cli": "^19.1.2",
     "@angular/compiler-cli": "^19.0.0",
+    "@cypress/grep": "^4.1.0",
     "@types/config": "^3.3.3",
     "@types/cookie-parser": "^1.4.6",
     "@types/express": "^5.0.0",
@@ -107,6 +109,7 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.0.0",
     "@types/session-file-store": "^1.2.5",
+    "@types/xml2js": "^0",
     "@typescript-eslint/eslint-plugin": "8.22.0",
     "@typescript-eslint/parser": "8.22.0",
     "axe-core": "^4.8.4",

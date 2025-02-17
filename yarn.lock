@@ -2545,6 +2545,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cypress/grep@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@cypress/grep@npm:4.1.0"
+  dependencies:
+    debug: "npm:^4.3.4"
+    find-test-names: "npm:^1.28.18"
+    globby: "npm:^11.0.4"
+  peerDependencies:
+    cypress: ">=10"
+  checksum: 10/15a40991fb3b1ab5738c171b1dcd42c9eb2bde1e2bcb0ec69a058aff624715b92ec3fc860f66ce811dca0d60c3ec6ff4eab86793aaf3f6bc855042c36c0c8d7b
+  languageName: node
+  linkType: hard
+
 "@cypress/request@npm:^3.0.6":
   version: 3.0.6
   resolution: "@cypress/request@npm:3.0.6"
@@ -4972,6 +4985,15 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/950d13b762fc7c092a0fc1450c41229a1d41abb93cb72251068885bd46fa4bbcf461c00df2e77de3f7a547371998b650a720ed90417562af0772b14a8a009dec
+  languageName: node
+  linkType: hard
+
+"@types/xml2js@npm:^0":
+  version: 0.4.14
+  resolution: "@types/xml2js@npm:0.4.14"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10/d76338b8d6ce8540c7af6a32aacf96c38f6de48254568f58f6e5ac2af3f88e6bd1490e5346d3bb336990f91267d23c5cc09e8bf7e80840a63c7855dbf174ecbb
   languageName: node
   linkType: hard
 
@@ -9159,6 +9181,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"find-test-names@npm:^1.28.18":
+  version: 1.29.4
+  resolution: "find-test-names@npm:1.29.4"
+  dependencies:
+    "@babel/parser": "npm:^7.24.7"
+    "@babel/plugin-syntax-jsx": "npm:^7.24.7"
+    acorn-walk: "npm:^8.2.0"
+    debug: "npm:^4.3.3"
+    globby: "npm:^11.0.4"
+    simple-bin-help: "npm:^1.8.0"
+  bin:
+    find-test-names: bin/find-test-names.js
+    print-tests: bin/print-tests.js
+    update-test-count: bin/update-test-count.js
+  checksum: 10/ea00cb96e93cec5af129aae455e7ad56e15becf6d0db9b05fac719906fb13ec105424b815308c12138a5a027e6c29ec67a6b5b7da3d7b172a64698faf26e5393
+  languageName: node
+  linkType: hard
+
 "find-up-simple@npm:^1.0.0":
   version: 1.0.0
   resolution: "find-up-simple@npm:1.0.0"
@@ -12828,6 +12868,7 @@ __metadata:
     "@angular/router": "npm:^19.0.0"
     "@angular/ssr": "npm:^19.1.2"
     "@badeball/cypress-cucumber-preprocessor": "npm:^22.0.0"
+    "@cypress/grep": "npm:^4.1.0"
     "@cypress/webpack-preprocessor": "npm:^6.0.2"
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
@@ -12842,6 +12883,7 @@ __metadata:
     "@types/luxon": "npm:^3.4.2"
     "@types/node": "npm:^22.0.0"
     "@types/session-file-store": "npm:^1.2.5"
+    "@types/xml2js": "npm:^0"
     "@typescript-eslint/eslint-plugin": "npm:8.22.0"
     "@typescript-eslint/parser": "npm:8.22.0"
     accessible-autocomplete: "npm:^3.0.0"
@@ -12887,6 +12929,7 @@ __metadata:
     tslib: "npm:^2.3.0"
     typescript: "npm:~5.7.0"
     webpack: "npm:^5.93.0"
+    xml2js: "npm:^0.6.2"
     zone.js: "npm:~0.15.0"
   languageName: unknown
   linkType: soft
@@ -14486,7 +14529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sax@npm:^1.2.4":
+"sax@npm:>=0.6.0, sax@npm:^1.2.4":
   version: 1.4.1
   resolution: "sax@npm:1.4.1"
   checksum: 10/b1c784b545019187b53a0c28edb4f6314951c971e2963a69739c6ce222bfbc767e54d320e689352daba79b7d5e06d22b5d7113b99336219d6e93718e2f99d335
@@ -16708,6 +16751,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"xml2js@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "xml2js@npm:0.6.2"
+  dependencies:
+    sax: "npm:>=0.6.0"
+    xmlbuilder: "npm:~11.0.0"
+  checksum: 10/df29de8eeedb762c367d87945c39bcf54db19a2c522607491c266ed6184b5a749e37ff29cfaed0ac149da9ba332ac3dcf8e5ff2bd0a206be3343eca95faa941d
+  languageName: node
+  linkType: hard
+
 "xml@npm:^1.0.1":
   version: 1.0.1
   resolution: "xml@npm:1.0.1"
@@ -16731,6 +16784,13 @@ __metadata:
   version: 15.1.1
   resolution: "xmlbuilder@npm:15.1.1"
   checksum: 10/e6f4bab2504afdd5f80491bda948894d2146756532521dbe7db33ae0931cd3000e3b4da19b3f5b3f51bedbd9ee06582144d28136d68bd1df96579ecf4d4404a2
+  languageName: node
+  linkType: hard
+
+"xmlbuilder@npm:~11.0.0":
+  version: 11.0.1
+  resolution: "xmlbuilder@npm:11.0.1"
+  checksum: 10/c8c3d208783718db5b285101a736cd8e6b69a5c265199a0739abaa93d1a1b7de5489fd16df4e776e18b2c98cb91f421a7349e99fd8c1ebeb44ecfed72a25091a
   languageName: node
   linkType: hard
 
