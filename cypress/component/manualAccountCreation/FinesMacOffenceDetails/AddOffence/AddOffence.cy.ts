@@ -14,7 +14,7 @@ import { DateService } from '@services/date-service/date.service';
 import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offence_details_elements';
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
 
-describe('FinesMacLanguagePreferenceComponent', () => {
+describe('FinesMacAddOffenceComponent', () => {
   let mockFinesService = new FinesService(new DateService());
   mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
   const date = new Date();
