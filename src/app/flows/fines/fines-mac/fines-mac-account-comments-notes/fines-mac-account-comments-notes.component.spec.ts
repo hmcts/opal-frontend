@@ -2,30 +2,37 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacAccountCommentsNotesComponent } from './fines-mac-account-comments-notes.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IFinesMacAccountCommentsNotesForm } from './interfaces/fines-mac-account-comments-notes-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK } from './mocks/fines-mac-account-comments-notes-form.mock';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK } from './mocks/fines-mac-account-comments-notes-state.mock';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE } from './constants/fines-mac-account-comments-notes-state';
+import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
+import { FinesMacStore } from '../stores/fines-mac.store';
+import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@services/utils/utils.service';
 
 describe('FinesMacAccountCommentsNotesComponent', () => {
   let component: FinesMacAccountCommentsNotesComponent;
   let fixture: ComponentFixture<FinesMacAccountCommentsNotesComponent>;
-  let mockFinesService: jasmine.SpyObj<FinesService>;
   let formSubmit: IFinesMacAccountCommentsNotesForm;
+  let finesMacStore: FinesMacStoreType;
 
   beforeEach(async () => {
-    mockFinesService = jasmine.createSpyObj(FinesService, ['finesMacState', 'checkMandatorySections']);
-
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    formSubmit = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK };
+    formSubmit = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacAccountCommentsNotesComponent],
       providers: [
-        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: DateService,
+          useValue: jasmine.createSpyObj(DateService, ['getDateFromFormat']),
+        },
+        {
+          provide: UtilsService,
+          useValue: jasmine.createSpyObj(UtilsService, ['checkFormValues', 'checkFormArrayValues']),
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -37,6 +44,9 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
 
     fixture = TestBed.createComponent(FinesMacAccountCommentsNotesComponent);
     component = fixture.componentInstance;
+
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     component.defendantType = 'adultOrYouthOnly';
 
@@ -50,12 +60,12 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   it('should handle form submission and navigate to account details', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = false;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.accountCommentsNotes).toEqual(formSubmit);
+    expect(finesMacStore.accountCommentsNotes()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.accountDetails], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -64,12 +74,12 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
   it('should handle form submission and navigate to next route', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
-    formSubmit.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK };
+    formSubmit.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE_MOCK);
     formSubmit.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(formSubmit);
 
-    expect(mockFinesService.finesMacState.accountCommentsNotes).toEqual(formSubmit);
+    expect(finesMacStore.accountCommentsNotes()).toEqual(formSubmit);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.reviewAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -79,12 +89,12 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
     const routerSpy = spyOn(component['router'], 'navigate');
 
     const form = formSubmit;
-    form.formData = { ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE };
+    form.formData = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_STATE);
     form.nestedFlow = true;
 
     component.handleAccountCommentsNoteSubmit(form);
 
-    expect(mockFinesService.finesMacState.accountCommentsNotes).toEqual(form);
+    expect(finesMacStore.accountCommentsNotes()).toEqual(form);
     expect(routerSpy).toHaveBeenCalledWith([FINES_MAC_ROUTING_PATHS.children.reviewAccount], {
       relativeTo: component['activatedRoute'].parent,
     });
@@ -92,11 +102,11 @@ describe('FinesMacAccountCommentsNotesComponent', () => {
 
   it('should test handleUnsavedChanges', () => {
     component.handleUnsavedChanges(true);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeTruthy();
+    expect(finesMacStore.unsavedChanges()).toBeTruthy();
     expect(component.stateUnsavedChanges).toBeTruthy();
 
     component.handleUnsavedChanges(false);
-    expect(mockFinesService.finesMacState.unsavedChanges).toBeFalsy();
+    expect(finesMacStore.unsavedChanges()).toBeFalsy();
     expect(component.stateUnsavedChanges).toBeFalsy();
   });
 });

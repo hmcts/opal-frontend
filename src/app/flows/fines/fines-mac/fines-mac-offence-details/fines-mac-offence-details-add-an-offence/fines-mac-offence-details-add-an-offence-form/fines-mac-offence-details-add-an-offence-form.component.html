@@ -1,8 +1,8 @@
-@if (finesMacOffenceDetailsService.minorCreditorAdded) {
+@if (finesMacOffenceDetailsStore.minorCreditorAdded()) {
   <app-moj-banner type="success" text="Minor creditor added"></app-moj-banner>
 }
-@if (finesMacOffenceDetailsService.offenceCodeMessage.length > 0) {
-  <app-moj-banner type="success" [text]="finesMacOffenceDetailsService.offenceCodeMessage"></app-moj-banner>
+@if (finesMacOffenceDetailsStore.offenceCodeMessage().length > 0) {
+  <app-moj-banner type="success" [text]="finesMacOffenceDetailsStore.offenceCodeMessage()"></app-moj-banner>
 }
 <h1 class="govuk-heading-l">Add an offence</h1>
 <app-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)"></app-govuk-error-summary>
@@ -265,6 +265,7 @@
 <ng-template #offenceCodeHint let-found="found" let-offenceTitle="offenceTitle">
   <app-moj-ticket-panel
     [sectionClasses]="found ? 'moj-ticket-panel__content--blue' : 'moj-ticket-panel__content--orange'"
+    [alert]="true"
   >
     @let offenceFound = found ? 'Offence found' : 'Offence not found';
     <strong>{{ offenceFound }}</strong>

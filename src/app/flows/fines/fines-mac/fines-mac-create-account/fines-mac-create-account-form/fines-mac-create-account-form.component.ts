@@ -18,26 +18,24 @@ import { GovukHeadingWithCaptionComponent } from '@components/govuk/govuk-headin
 import { GovukRadioComponent } from '@components/govuk/govuk-radio/govuk-radio.component';
 import { GovukRadiosConditionalComponent } from '@components/govuk/govuk-radio/govuk-radios-conditional/govuk-radios-conditional.component';
 import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
-
 import { AbstractFormBaseComponent } from '@components/abstract/abstract-form-base/abstract-form-base.component';
-import { RoutingPaths } from '@routing/enums/routing-paths';
 import { IFinesMacCreateAccountControlNames } from '../interfaces/fines-mac-create-account-control-names.interface';
 import { IFinesMacCreateAccountFieldErrors } from '../interfaces/fines-mac-create-account-field-errors.interface';
 import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES } from '../constants/fines-mac-create-account-account-types';
 import { FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPE_DEFENDANT_TYPES_STATE } from '../constants/fines-mac-create-account-account-type-defendant-types-state';
 import { FINES_MAC_CREATE_ACCOUNT_CONTROL_NAMES } from '../constants/fines-mac-create-account-control-names';
 import { FINES_MAC_CREATE_ACCOUNT_FIELD_ERRORS } from '../constants/fines-mac-create-account-field-errors';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { IAlphagovAccessibleAutocompleteItem } from '@components/alphagov/alphagov-accessible-autocomplete/interfaces/alphagov-accessible-autocomplete-item.interface';
 import { IGovUkRadioOptions } from '@components/govuk/govuk-radio/interfaces/govuk-radio-options.interface';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { AlphagovAccessibleAutocompleteComponent } from '@components/alphagov/alphagov-accessible-autocomplete/alphagov-accessible-autocomplete.component';
 import { IFinesMacAccountTypes } from '../../interfaces/fines-mac-account-types.interface';
 import { IFinesMacAccountDetailsForm } from '../../fines-mac-account-details/interfaces/fines-mac-account-details-form.interface';
+import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-create-account-form',
-
   imports: [
     CommonModule,
     FormsModule,
@@ -58,11 +56,11 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
   @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountDetailsForm>();
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
 
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
   private readonly accountTypeSubject = new Subject<void>();
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
-  protected readonly routingPath = RoutingPaths;
+  protected readonly routingPath = PAGES_ROUTING_PATHS;
 
   public readonly accountTypes: IGovUkRadioOptions[] = Object.entries(FINES_MAC_CREATE_ACCOUNT_ACCOUNT_TYPES).map(
     ([key, value]) => ({
@@ -148,7 +146,7 @@ export class FinesMacCreateAccountFormComponent extends AbstractFormBaseComponen
    * sets up the account type listener, and repopulates the form with account details.
    */
   private initialCreateAccountSetup(): void {
-    const { formData } = this.finesService.finesMacState.accountDetails;
+    const { formData } = this.finesMacStore.accountDetails();
     this.setupCreateAccountForm();
     this.setInitialErrorMessages();
     this.setupAccountTypeListener();

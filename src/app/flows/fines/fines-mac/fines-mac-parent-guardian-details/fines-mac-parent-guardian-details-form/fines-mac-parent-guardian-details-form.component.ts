@@ -4,16 +4,11 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { GovukErrorSummaryComponent } from '@components/govuk/govuk-error-summary/govuk-error-summary.component';
 import { GovukTextInputComponent } from '@components/govuk/govuk-text-input/govuk-text-input.component';
-
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
-
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
-
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths';
+import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routing-paths.constant';
 import { alphabeticalTextValidator } from '@validators/alphabetical-text/alphabetical-text.validator';
 import { dateOfBirthValidator } from '@validators/date-of-birth/date-of-birth.validator';
 import { nationalInsuranceNumberValidator } from '@validators/national-insurance-number/national-insurance-number.validator';
@@ -27,10 +22,10 @@ import { MojDatePickerComponent } from '@components/moj/moj-date-picker/moj-date
 import { MojTicketPanelComponent } from '@components/moj/moj-ticket-panel/moj-ticket-panel.component';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors';
 import { DateService } from '@services/date-service/date.service';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-parent-guardian-details-form',
-
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -52,8 +47,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   implements OnInit, OnDestroy
 {
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
-
-  protected readonly finesService = inject(FinesService);
+  private readonly finesMacStore = inject(FinesMacStore);
   protected readonly dateService = inject(DateService);
 
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -119,7 +113,7 @@ export class FinesMacParentGuardianDetailsFormComponent
    * with the existing parent guardian details.
    */
   private initialParentGuardianDetailsSetup(): void {
-    const { formData } = this.finesService.finesMacState.parentGuardianDetails;
+    const { formData } = this.finesMacStore.parentGuardianDetails();
     this.setupParentGuardianDetailsForm();
     this.setupAliasConfiguration();
     this.setupAliasFormControls(

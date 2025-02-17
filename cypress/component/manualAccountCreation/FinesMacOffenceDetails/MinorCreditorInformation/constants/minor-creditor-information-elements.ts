@@ -9,7 +9,6 @@ export const DOM_ELEMENTS = {
   accountNumber: 'dd[id = "minorCreditorAccountNumberMinorCreditorValue"]',
   paymentReference: 'dd[id = "minorCreditorPaymentReferenceMinorCreditorValue"]',
 
-  titleKey: 'dt[id = "minorCreditorTitleMinorCreditorKey"]',
   addressKey: 'dt[id = "minorCreditorAddressMinorCreditorKey"]',
   paymentMethodKey: 'dt[id = "minorCreditorPaymentMethodMinorCreditorKey"]',
   accountNameKey: 'dt[id = "minorCreditorAccountNameMinorCreditorKey"]',

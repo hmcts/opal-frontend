@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacOffenceDetailsMinorCreditorInformationComponent } from './fines-mac-offence-details-minor-creditor-information.component';
-import { FinesMacOffenceDetailsDefaultValues } from '../enums/fines-mac-offence-details-default-values.enum';
 import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from '../fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
+import { FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES } from '../constants/fines-mac-offence-details-default-values.constant';
 
 describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorInformationComponent;
@@ -21,7 +21,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsMinorCreditorInformationComponent);
     component = fixture.componentInstance;
 
-    component.minorCreditor = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
+    component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 
     fixture.detectChanges();
   });
@@ -31,7 +31,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
   });
 
   it('should set name to formatted individual name if creditor_type is individual', () => {
-    component.minorCreditor = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };
+    component.minorCreditor = structuredClone(FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK);
 
     // Call the method
     component['setName']();
@@ -122,7 +122,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     component['setAddress']();
 
     // Check that address is set to "Not Provided"
-    expect(component.address).toBe(FinesMacOffenceDetailsDefaultValues.defaultNotProvided);
+    expect(component.address).toBe(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided);
   });
 
   it('should set address with only post code provided', () => {
@@ -157,7 +157,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     component['setPaymentDetails']();
 
     // Check that paymentMethod is set to the default payment method
-    expect(component.paymentMethod).toBe(FinesMacOffenceDetailsDefaultValues.defaultPaymentMethod);
+    expect(component.paymentMethod).toBe(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultPaymentMethod);
 
     // Check that accountName, sortCode, accountNumber, and paymentReference are set correctly
     expect(component.accountName).toBe('John Doe');
@@ -181,7 +181,7 @@ describe('FinesMacOffenceDetailsMinorCreditorInformationComponent', () => {
     component['setPaymentDetails']();
 
     // Check that paymentMethod is set to "Not Provided"
-    expect(component.paymentMethod).toBe(FinesMacOffenceDetailsDefaultValues.defaultNotProvided);
+    expect(component.paymentMethod).toBe(FINES_MAC_OFFENCE_DETAILS_DEFAULT_VALUES.defaultNotProvided);
 
     // Check that accountName, sortCode, accountNumber, and paymentReference are empty strings
     expect(component.accountName).toBe('');

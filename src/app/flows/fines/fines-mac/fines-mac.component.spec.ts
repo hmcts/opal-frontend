@@ -1,14 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesMacComponent } from './fines-mac.component';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
-import { FinesService } from '@services/fines/fines-service/fines.service';
 import { FINES_MAC_STATE_MOCK } from './mocks/fines-mac-state.mock';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { FinesMacStoreType } from './stores/types/fines-mac-store.type';
+import { FinesMacStore } from './stores/fines-mac.store';
 
 describe('FinesMacComponent', () => {
   let component: FinesMacComponent;
   let fixture: ComponentFixture<FinesMacComponent>;
-  let mockFinesService: FinesService;
-  let mockGlobalStateService: GlobalStateService;
+  let finesMacStore: FinesMacStoreType;
+  let globalStore: GlobalStoreType;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -18,9 +20,9 @@ describe('FinesMacComponent', () => {
     fixture = TestBed.createComponent(FinesMacComponent);
     component = fixture.componentInstance;
 
-    mockFinesService = TestBed.inject(FinesService);
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-    mockGlobalStateService = TestBed.inject(GlobalStateService);
+    globalStore = TestBed.inject(GlobalStore);
+    finesMacStore = TestBed.inject(FinesMacStore);
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
 
     fixture.detectChanges();
   });
@@ -36,33 +38,32 @@ describe('FinesMacComponent', () => {
     fixture.detectChanges();
 
     expect(destroy).toHaveBeenCalled();
-    expect(mockFinesService.finesMacState).toEqual(FINES_MAC_STATE_MOCK);
-    expect(mockGlobalStateService.error()).toEqual({ error: false, message: '' });
+    expect(finesMacStore.getFinesMacStore()).toEqual(FINES_MAC_STATE_MOCK);
+    expect(globalStore.error()).toEqual({ error: false, message: '' });
   });
 
   it('should call handleBeforeUnload ', () => {
-    mockFinesService.finesMacState.stateChanges = true;
-    mockFinesService.finesMacState.unsavedChanges = false;
+    finesMacStore.setStateChanges(true);
+    finesMacStore.setUnsavedChanges(false);
     expect(component.handleBeforeUnload()).toBeFalsy();
 
-    mockFinesService.finesMacState.stateChanges = false;
-    mockFinesService.finesMacState.unsavedChanges = true;
+    finesMacStore.setStateChanges(false);
+    finesMacStore.setUnsavedChanges(true);
     expect(component.handleBeforeUnload()).toBeFalsy();
 
-    mockFinesService.finesMacState.stateChanges = false;
-    mockFinesService.finesMacState.unsavedChanges = false;
+    finesMacStore.setStateChanges(false);
+    finesMacStore.setUnsavedChanges(false);
     expect(component.handleBeforeUnload()).toBeTruthy();
   });
 
   it('should call canDeactivate ', () => {
-    // Empty state, should return true
-    mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
     expect(component.canDeactivate()).toBeTruthy();
 
-    mockFinesService.finesMacState.stateChanges = true;
+    finesMacStore.setStateChanges(true);
     expect(component.canDeactivate()).toBeFalsy();
 
-    mockFinesService.finesMacState.stateChanges = false;
+    finesMacStore.setStateChanges(false);
     expect(component.canDeactivate()).toBeTruthy();
   });
 });

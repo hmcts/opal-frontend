@@ -1,9 +1,7 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { SsoEndpoints } from '@routing/enums/sso-endpoints';
 import { DateService } from '@services/date-service/date.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SESSION_TOKEN_EXPIRY_MOCK } from '@services/session-service/mocks/session-token-expiry.mock';
@@ -15,6 +13,9 @@ import { MojHeaderNavigationItemComponent } from '@components/moj/moj-header/moj
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
 import { Observable, of } from 'rxjs';
 import { PLATFORM_ID } from '@angular/core';
+import { GlobalStore } from './stores/global/global.store';
+import { GlobalStoreType } from '@stores/global/types/global-store.type';
+import { SSO_ENDPOINTS } from '@routing/constants/sso-endpoints.constant';
 
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
 
@@ -24,7 +25,7 @@ describe('AppComponent - browser', () => {
       href: '',
     },
   };
-  let globalStateService: GlobalStateService;
+  let globalStore: GlobalStoreType;
   let dateService: jasmine.SpyObj<DateService>;
 
   beforeEach(() => {
@@ -53,12 +54,12 @@ describe('AppComponent - browser', () => {
       ],
     });
 
-    globalStateService = TestBed.inject(GlobalStateService);
     dateService = TestBed.inject(DateService) as jasmine.SpyObj<DateService>;
+    globalStore = TestBed.inject(GlobalStore);
   });
 
   beforeEach(() => {
-    mockTokenExpiry.expiry = '2023-07-03T12:30:00Z';
+    globalStore.setTokenExpiry(mockTokenExpiry);
   });
 
   it('should create the app', () => {
@@ -79,33 +80,33 @@ describe('AppComponent - browser', () => {
   });
 
   it('should test handle authentication when authenticated is false', () => {
-    globalStateService.authenticated.set(false);
+    globalStore.setAuthenticated(false);
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
-      mockDocumentLocation.location.href = SsoEndpoints.login;
+      mockDocumentLocation.location.href = SSO_ENDPOINTS.login;
     });
 
     component.handleAuthentication();
 
     expect(spy).toHaveBeenCalled();
-    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.login);
+    expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
   it('should test handle authentication when authenticated is true', () => {
-    globalStateService.authenticated.set(true);
+    globalStore.setAuthenticated(true);
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const spy = spyOn(component, 'handleRedirect').and.callFake(() => {
-      mockDocumentLocation.location.href = SsoEndpoints.logout;
+      mockDocumentLocation.location.href = SSO_ENDPOINTS.logout;
     });
 
     component.handleAuthentication();
 
     expect(spy).toHaveBeenCalled();
-    expect(mockDocumentLocation.location.href).toBe(SsoEndpoints.logout);
+    expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
 
   it('should unsubscribe from the timeout interval subscription', () => {
@@ -124,7 +125,7 @@ describe('AppComponent - browser', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().toISO();
-    globalStateService.tokenExpiry = { expiry: expiryTime, warningThresholdInMilliseconds: 300000 }; // 5 minutes
+    globalStore.setTokenExpiry({ expiry: expiryTime, warningThresholdInMilliseconds: 300000 }); // 5 minutes
     dateService.convertMillisecondsToMinutes.and.returnValue(5);
     dateService.calculateMinutesDifference.and.returnValue(0);
 
@@ -143,7 +144,7 @@ describe('AppComponent - browser', () => {
   it('should handle no expiry case correctly', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    globalStateService.tokenExpiry = { expiry: null, warningThresholdInMilliseconds: 300000 }; // 5 minutes
+    globalStore.setTokenExpiry({ expiry: null, warningThresholdInMilliseconds: 300000 }); // 5 minutes
     dateService.convertMillisecondsToMinutes.and.returnValue(5);
 
     component.ngOnInit();
@@ -159,7 +160,7 @@ describe('AppComponent - browser', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
     const expiryTime = DateTime.now().plus({ minutes: 10 }).toISO();
-    globalStateService.tokenExpiry = { expiry: expiryTime, warningThresholdInMilliseconds: null };
+    globalStore.setTokenExpiry({ expiry: expiryTime, warningThresholdInMilliseconds: null });
     dateService.convertMillisecondsToMinutes.and.returnValue(0);
 
     component.ngOnInit();

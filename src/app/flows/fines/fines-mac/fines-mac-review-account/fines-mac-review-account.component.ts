@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-button.component';
-import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FinesMacReviewAccountAccountDetailsComponent } from './fines-mac-review-account-account-details/fines-mac-review-account-account-details.component';
 import { FinesMacReviewAccountCourtDetailsComponent } from './fines-mac-review-account-court-details/fines-mac-review-account-court-details.component';
 import {
@@ -16,7 +15,6 @@ import { CommonModule } from '@angular/common';
 import { FinesMacReviewAccountPersonalDetailsComponent } from './fines-mac-review-account-personal-details/fines-mac-review-account-personal-details.component';
 import { FinesMacReviewAccountContactDetailsComponent } from './fines-mac-review-account-contact-details/fines-mac-review-account-contact-details.component';
 import { FinesMacReviewAccountEmployerDetailsComponent } from './fines-mac-review-account-employer-details/fines-mac-review-account-employer-details.component';
-
 import { FinesMacReviewAccountPaymentTermsComponent } from './fines-mac-review-account-payment-terms/fines-mac-review-account-payment-terms.component';
 import { FinesMacReviewAccountAccountCommentsAndNotesComponent } from './fines-mac-review-account-account-comments-and-notes/fines-mac-review-account-account-comments-and-notes.component';
 import { FinesMacReviewAccountOffenceDetailsComponent } from './fines-mac-review-account-offence-details/fines-mac-review-account-offence-details.component';
@@ -27,12 +25,12 @@ import {
 import { FinesMacReviewAccountParentGuardianDetailsComponent } from './fines-mac-review-account-parent-guardian-details/fines-mac-review-account-parent-guardian-details.component';
 import { FinesMacReviewAccountCompanyDetailsComponent } from './fines-mac-review-account-company-details/fines-mac-review-account-company-details.component';
 import { FinesMacPayloadService } from '../services/fines-mac-payload/fines-mac-payload.service';
-import { GlobalStateService } from '@services/global-state-service/global-state.service';
 import { UtilsService } from '@services/utils/utils.service';
+import { GlobalStore } from 'src/app/stores/global/global.store';
+import { FinesMacStore } from '../stores/fines-mac.store';
 
 @Component({
   selector: 'app-fines-mac-review-account',
-
   imports: [
     CommonModule,
     GovukBackLinkComponent,
@@ -56,12 +54,12 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  protected readonly globalStateService = inject(GlobalStateService);
+  protected readonly globalStore = inject(GlobalStore);
   private readonly opalFinesService = inject(OpalFines);
-  protected readonly finesService = inject(FinesService);
+  protected readonly finesMacStore = inject(FinesMacStore);
   private readonly finesMacPayloadService = inject(FinesMacPayloadService);
   private readonly utilsService = inject(UtilsService);
-  private readonly userState = this.globalStateService.userState();
+  private readonly userState = this.globalStore.userState();
 
   protected enforcementCourtsData!: IOpalFinesCourt[];
   protected localJusticeAreasData!: IOpalFinesLocalJusticeArea[];
@@ -69,7 +67,7 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
 
   private readonly enforcementCourtsData$: Observable<IOpalFinesCourtRefData> = this.opalFinesService
-    .getCourts(this.finesService.finesMacState.businessUnit.business_unit_id)
+    .getCourts(this.finesMacStore.getBusinessUnitId())
     .pipe(
       tap((response: IOpalFinesCourtRefData) => {
         this.enforcementCourtsData = response.refData;
@@ -101,7 +99,7 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
    */
   private submitPayload(): void {
     const finesMacAddAccountPayload = this.finesMacPayloadService.buildAddAccountPayload(
-      this.finesService.finesMacState,
+      this.finesMacStore.getFinesMacStore(),
       this.userState,
     );
     this.opalFinesService
@@ -148,7 +146,7 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
       this.router.navigate([route]);
     } else {
       if (route === this.finesMacRoutes.children.deleteAccountConfirmation) {
-        this.finesService.finesMacState.deleteFromCheckAccount = true;
+        this.finesMacStore.setDeleteFromCheckAccount(true);
       }
       this.router.navigate([route], { relativeTo: this.activatedRoute.parent });
     }
@@ -158,7 +156,7 @@ export class FinesMacReviewAccountComponent implements OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    this.globalStateService.error.set({
+    this.globalStore.setError({
       error: false,
       message: '',
     });

@@ -15,7 +15,6 @@ import { ISessionUserState } from '@services/session-service/interfaces/session-
 import { IFinesMacAddAccountPayload } from './interfaces/fines-mac-payload-add-account.interfaces';
 import { DateService } from '@services/date-service/date.service';
 import { IFinesMacAccountTimelineData } from './interfaces/fines-mac-payload-account-timeline-data.interface';
-import { FineMacPayloadAccountAccountStatuses } from './enums/fines-mac-payload-account-account-statuses.enum';
 import { finesMacPayloadBuildAccountOffences } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-offences.utils';
 import { FINES_MAC_STATE } from '../../constants/fines-mac-state';
 
@@ -29,6 +28,7 @@ import { FINES_MAC_STATUS } from '../../constants/fines-mac-status';
 import { finesMacPayloadBuildAccountBase } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-base.utils';
 import { finesMacPayloadBuildAccountTimelineData } from './utils/fines-mac-payload-build-account/fines-mac-payload-build-account-timeline-data.utils';
 import { finesMacPayloadMapAccountBase } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-base.utils';
+import { FINES_MAC_PAYLOAD_STATUSES } from './constants/fines-mac-payload-statuses.constant';
 
 @Injectable({
   providedIn: 'root',
@@ -141,9 +141,7 @@ export class FinesMacPayloadService {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
     const storedTimeLineData: IFinesMacAccountTimelineData[] = []; // Replace with stored timeline data when we have it...awaiting edit mode.
-    const accountStatus = addAccount
-      ? FineMacPayloadAccountAccountStatuses.submitted
-      : FineMacPayloadAccountAccountStatuses.resubmitted;
+    const accountStatus = addAccount ? FINES_MAC_PAYLOAD_STATUSES.submitted : FINES_MAC_PAYLOAD_STATUSES.resubmitted;
 
     const timeLineData = finesMacPayloadBuildAccountTimelineData(
       sessionUserState['name'],
@@ -245,55 +243,6 @@ export class FinesMacPayloadService {
   }
 
   /**
-   * Updates the status of various sections within the provided `mappedFinesMacState` object.
-   *
-   * @param mappedFinesMacState - The state object containing various sections of fines MAC data.
-   *
-   * This method iterates over the sections of the `mappedFinesMacState` object and updates their status
-   * by calling the `getFinesMacStateFormStatus` method with the respective form data. It handles the following sections:
-   * - accountCommentsNotes
-   * - accountDetails
-   * - companyDetails
-   * - contactDetails
-   * - courtDetails
-   * - employerDetails
-   * - parentGuardianDetails
-   * - paymentTerms
-   * - personalDetails
-   *
-   * Additionally, it processes nested `offenceDetails` forms and their child forms if they exist, updating their status as well.
-   *
-   * @returns The updated `mappedFinesMacState` object with updated statuses for each section.
-   */
-  private setFinesMacStateStatuses(mappedFinesMacState: IFinesMacState) {
-    const getFormStatus = <T extends object>(formData: T) => this.getFinesMacStateFormStatus(formData);
-
-    mappedFinesMacState.accountCommentsNotes.status = getFormStatus(mappedFinesMacState.accountCommentsNotes.formData);
-    mappedFinesMacState.accountDetails.status = getFormStatus(mappedFinesMacState.accountDetails.formData);
-    mappedFinesMacState.companyDetails.status = getFormStatus(mappedFinesMacState.companyDetails.formData);
-    mappedFinesMacState.contactDetails.status = getFormStatus(mappedFinesMacState.contactDetails.formData);
-    mappedFinesMacState.courtDetails.status = getFormStatus(mappedFinesMacState.courtDetails.formData);
-    mappedFinesMacState.employerDetails.status = getFormStatus(mappedFinesMacState.employerDetails.formData);
-    mappedFinesMacState.parentGuardianDetails.status = getFormStatus(
-      mappedFinesMacState.parentGuardianDetails.formData,
-    );
-    mappedFinesMacState.paymentTerms.status = getFormStatus(mappedFinesMacState.paymentTerms.formData);
-    mappedFinesMacState.personalDetails.status = getFormStatus(mappedFinesMacState.personalDetails.formData);
-
-    // Loop over the nested offence details forms, and the child forms if they exist
-    mappedFinesMacState.offenceDetails.forEach((offence) => {
-      offence.status = getFormStatus(offence.formData);
-      if (offence.childFormData) {
-        offence.childFormData.forEach((childOffence) => {
-          childOffence.status = getFormStatus(childOffence.formData);
-        });
-      }
-    });
-
-    return mappedFinesMacState;
-  }
-
-  /**
    * Maps the provided account payload to the fines MAC state.
    *
    * @param payload - The payload containing account information to be mapped.
@@ -314,7 +263,6 @@ export class FinesMacPayloadService {
     );
 
     finesMacState = finesMacPayloadMapAccountOffences(finesMacState, transformedPayload);
-    finesMacState = this.setFinesMacStateStatuses(finesMacState);
 
     return finesMacState;
   }

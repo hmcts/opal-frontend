@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular
 
 @Component({
   selector: 'app-govuk-panel',
-
   imports: [],
   templateUrl: './govuk-panel.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
