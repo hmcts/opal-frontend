@@ -549,6 +549,17 @@ export abstract class AbstractFormBaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Handles the input event to convert all letters in the input value to uppercase.
+   * This method is triggered by an input event and modifies the input value directly.
+   *
+   * @param event - The input event triggered by the user.
+   */
+  public handleUppercaseInputMask(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = this.utilsService.upperCaseAllLetters(input.value);
+  }
+
   public ngOnInit(): void {
     if (this.form) {
       this.setupListener();
