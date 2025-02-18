@@ -20,4 +20,14 @@ export const routing: Routes = [
     data: { title: FINES_DRAFT_CAM_ROUTING_TITLES.children.inputter },
     resolve: { title: TitleResolver },
   },
+  {
+    path: FINES_DRAFT_CAM_ROUTING_PATHS.children.viewAllRejected,
+    loadComponent: () =>
+      import('../fines-draft-cam-view-all-rejected/fines-draft-cam-view-all-rejected.component').then(
+        (c) => c.FinesDraftCamViewAllRejectedComponent,
+      ),
+    canActivate: [authGuard],
+    data: { title: FINES_DRAFT_CAM_ROUTING_TITLES.children.viewAllRejected },
+    resolve: { title: TitleResolver },
+  },
 ];
