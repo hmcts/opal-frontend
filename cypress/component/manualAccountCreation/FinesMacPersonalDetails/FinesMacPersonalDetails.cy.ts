@@ -75,7 +75,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('app-fines-mac-personal-details-form').should('exist');
   });
 
-  it('should load all elements on the screen correctly', () => {
+  it('should load all elements on the screen correctly', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Personal details');
@@ -105,7 +105,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.aliasAdd).should('exist');
   });
 
-  it('should load alias elements on the screen correctly', () => {
+  it('should load alias elements on the screen correctly', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
@@ -116,19 +116,19 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.aliasAddButton).should('exist');
   });
 
-  it('should load button for next page for adultOrYouthOnly Defendant', () => {
+  it('should load button for next page for adultOrYouthOnly Defendant', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add contact details');
   });
 
-  it('should load button for next page for AYPG Defendant', () => {
+  it('should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-369'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
   });
 
-  it('should call handlePersonalDetailsSubmit when formSubmit is emitted', () => {
+  it('should call handlePersonalDetailsSubmit when formSubmit is emitted', { tags: ['@PO-272', '@PO-360'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
     setupComponent(mockFormSubmit);
@@ -148,7 +148,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should display validation error when mandatory fields are missing', () => {
+  it('should display validation error when mandatory fields are missing', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.submitButton).click();
@@ -158,7 +158,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     }
   });
 
-  it('should display validation error when date of birth is in the future', () => {
+  it('should display validation error when date of birth is in the future', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/3000';
@@ -166,7 +166,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInFuture']);
   });
 
-  it('should display validation error when date of birth is invalid', () => {
+  it('should display validation error when date of birth is invalid', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/abc';
@@ -174,7 +174,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
   });
 
-  it('should not have any asterisks in address lines', () => {
+  it('should not have any asterisks in address lines', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'asja*';
@@ -187,8 +187,11 @@ describe('FinesMacPersonalDetailsComponent', () => {
     }
   });
 
-  it('should not have firstnames,last names and Address lines 1,2 & 3 having more than max characters', () => {
-    setupComponent(null);
+  it(
+    'should not have firstnames,last names and Address lines 1,2 & 3 having more than max characters',
+    { tags: ['@PO-272', '@PO-360'] },
+    () => {
+      setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_forenames =
       'John Smithy Michael John Smithy Michael long';
@@ -197,14 +200,15 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'a'.repeat(31);
     finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'a'.repeat(31);
 
-    cy.get(DOM_ELEMENTS.submitButton).click();
+      cy.get(DOM_ELEMENTS.submitButton).click();
 
-    for (const [key, value] of Object.entries(LENGTH_VALIDATION)) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-    }
-  });
+      for (const [key, value] of Object.entries(LENGTH_VALIDATION)) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+      }
+    },
+  );
 
-  it('should have working alias workflow and remove button', () => {
+  it('should have working alias workflow and remove button', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
@@ -229,7 +233,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(getAliasLastName(0)).should('have.value', '');
   });
 
-  it('should show error for missing alias', () => {
+  it('should show error for missing alias', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
@@ -237,7 +241,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
   });
 
-  it('should show error for missing alias last name', () => {
+  it('should show error for missing alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -249,7 +253,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasLastName);
   });
 
-  it('should show error for missing alias first name', () => {
+  it('should show error for missing alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -261,7 +265,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', ALIAS_PERSONAL_DETAILS.missingAliasFirstName);
   });
 
-  it('should show error for missing additional alias first name', () => {
+  it('should show error for missing additional alias first name', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -285,7 +289,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
   });
 
-  it('should show error for missing additional alias last name', () => {
+  it('should show error for missing additional alias last name', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_add_alias = true;
@@ -309,7 +313,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', `${ALIAS_PERSONAL_DETAILS.missingAliasLastName} 3`);
   });
 
-  it('should show error for future date of birth', () => {
+  it('should show error for future date of birth', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
@@ -321,7 +325,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Enter a valid date of birth in the past');
   });
 
-  it('should display age panel when entering a valid age', () => {
+  it('should display age panel when entering a valid age', { tags: ['@PO-272', '@PO-433'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/1990';
@@ -329,7 +333,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).click();
   });
 
-  it('should show error for invalid date format', () => {
+  it('should show error for invalid date format', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_dob = '01/01/,.';
@@ -337,7 +341,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
   });
 
-  it('should not accept national insurance number in the incorrect format', () => {
+  it('should not accept national insurance number in the incorrect format', { tags: ['@PO-272', '@PO-360'] }, () => {
     setupComponent(null);
 
     finesMacState.personalDetails.formData.fm_personal_details_title = 'Mrs';
@@ -351,7 +355,7 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['validNationalInsuranceNumber']);
   });
 
-  it('should show errors for invalid mandatory fields and allow corrections', () => {
+  it('should show errors for invalid mandatory fields and allow corrections', { tags: ['@PO-272', '@PO-360'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
     setupComponent(mockFormSubmit);
@@ -377,8 +381,11 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should render vehicle details for adultOrYouthOnly defendant type and validate max length of data', () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    'should render vehicle details for adultOrYouthOnly defendant type and validate max length of data',
+    { tags: ['@PO-272', '@PO-360'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
     // Verify the vehicle details section is rendered
     cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('contain', 'Registration number');
@@ -388,14 +395,15 @@ describe('FinesMacPersonalDetailsComponent', () => {
     finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
     finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(24);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    for (const [, value] of Object.entries(VEHICLE_DETAILS_ERRORS)) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-    }
-  });
+      for (const [, value] of Object.entries(VEHICLE_DETAILS_ERRORS)) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+      }
+    },
+  );
 
-  it('should not render vehicle details for AY-PG defendant type', () => {
+  it('should not render vehicle details for AY-PG defendant type', { tags: ['@PO-344', '@PO-369'] }, () => {
     setupComponent(null, 'parentOrGuardianToPay');
 
     // Verify the vehicle details section is not rendered
@@ -404,12 +412,12 @@ describe('FinesMacPersonalDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
     cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
   });
+  //Personal Details not available for company defendant type - will be removed
+  // it('should not render vehicle details for company defendant type', () => {
+  //   setupComponent(null, 'company');
 
-  it('should not render vehicle details for company defendant type', () => {
-    setupComponent(null, 'company');
-
-    // Verify the vehicle details section is not rendered
-    cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
-  });
+  //   // Verify the vehicle details section is not rendered
+  //   cy.get(DOM_ELEMENTS.vehicle_makeInput).should('not.exist');
+  //   cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('not.exist');
+  // });
 });

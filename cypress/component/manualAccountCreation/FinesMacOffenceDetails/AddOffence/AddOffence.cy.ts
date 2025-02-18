@@ -15,7 +15,7 @@ import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offenc
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
 import { UtilsService } from '@services/utils/utils.service';
 
-describe('FinesMacLanguagePreferenceComponent', () => {
+describe('FinesMacAddOffenceComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
   let offenceDetailsDraftState = structuredClone(ADD_OFFENCE_OFFENCE_MOCK);
   const date = new Date();
