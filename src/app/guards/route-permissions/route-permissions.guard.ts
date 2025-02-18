@@ -12,18 +12,18 @@ export const routePermissionsGuard: CanActivateFn = (route: ActivatedRouteSnapsh
 
   return sessionService.getUserState().pipe(
     map((resp) => {
-      const routePermissionId: number = route.data['routePermissionId'];
+      const routePermissionIds: number[] = route.data['routePermissionId'] ?? []; // Ensure it's an array
 
-      // Get the unique permission ids for the user
+      // Get the unique permission IDs for the user
       const uniquePermissionIds = permissionService.getUniquePermissions(resp);
 
-      // If we don't have a permission id for the route, or we don't have any unique permission ids, or the user doesn't have the required permission
-      // then redirect the user to the access denied page
-      if (!routePermissionId || uniquePermissionIds.length === 0 || !uniquePermissionIds.includes(routePermissionId)) {
-        return router.createUrlTree([`/${PAGES_ROUTING_PATHS.children.accessDenied}`]);
+      // If no permissions are required for the route, or the user has at least one matching permission, allow access
+      if (routePermissionIds.length === 0 || uniquePermissionIds.some((id) => routePermissionIds.includes(id))) {
+        return true;
       }
 
-      return true;
+      // Redirect the user to the access denied page if they lack all required permissions
+      return router.createUrlTree([`/${PAGES_ROUTING_PATHS.children.accessDenied}`]);
     }),
     catchError(() => {
       return of(false);

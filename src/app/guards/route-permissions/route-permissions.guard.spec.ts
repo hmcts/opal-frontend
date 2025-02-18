@@ -28,7 +28,7 @@ async function runRoutePermissionGuard(
   const dummyRoute = new ActivatedRouteSnapshot();
   dummyRoute.url = [new UrlSegment(urlPath, {})];
 
-  dummyRoute.data = { routePermissionId: guardParameters };
+  dummyRoute.data = { routePermissionId: [guardParameters] };
 
   const dummyState: RouterStateSnapshot = { url: urlPath, root: new ActivatedRouteSnapshot() };
   const result = TestBed.runInInjectionContext(() => guard(dummyRoute, dummyState));

@@ -1,15 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { FinesDraftCamViewAllRejectedComponent } from './fines-draft-cam-view-all-rejected.component';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
+import { FinesDraftViewAllRejectedComponent } from './fines-draft-view-all-rejected.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GovukBackLinkComponent } from '@components/govuk/govuk-back-link/govuk-back-link.component';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
+import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
-describe('FinesDraftCamViewAllRejectedComponent', () => {
-  let component: FinesDraftCamViewAllRejectedComponent;
-  let fixture: ComponentFixture<FinesDraftCamViewAllRejectedComponent>;
+describe('FinesDraftViewAllRejectedComponent', () => {
+  let component: FinesDraftViewAllRejectedComponent;
+  let fixture: ComponentFixture<FinesDraftViewAllRejectedComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
   let finesDraftStore: FinesDraftStoreType;
 
@@ -17,7 +16,7 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [FinesDraftCamViewAllRejectedComponent, GovukBackLinkComponent],
+      imports: [FinesDraftViewAllRejectedComponent, GovukBackLinkComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         {
@@ -29,7 +28,7 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesDraftCamViewAllRejectedComponent);
+    fixture = TestBed.createComponent(FinesDraftViewAllRejectedComponent);
     component = fixture.componentInstance;
 
     finesDraftStore = TestBed.inject(FinesDraftStore);
@@ -45,7 +44,7 @@ describe('FinesDraftCamViewAllRejectedComponent', () => {
   it('should navigate back on navigateBack', () => {
     component.navigateBack();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith([FINES_DRAFT_CAM_ROUTING_PATHS.children.inputter], {
+    expect(mockRouter.navigate).toHaveBeenCalledWith([FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS.children.tabs], {
       relativeTo: component['activatedRoute'].parent,
       fragment: finesDraftStore.fragment(),
     });

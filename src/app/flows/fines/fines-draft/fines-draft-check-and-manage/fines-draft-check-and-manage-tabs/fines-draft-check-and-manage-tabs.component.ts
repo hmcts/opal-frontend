@@ -17,11 +17,11 @@ import { GlobalStore } from '@stores/global/global.store';
 import { FINES_MAC_ROUTING_PATHS } from '../../../fines-mac/routing/constants/fines-mac-routing-paths.constant';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 import { OpalFinesDraftAccountStatuses } from '@services/fines/opal-fines-service/enums/opal-fines-draft-account-statuses.enum';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../routing/constants/fines-draft-cam-routing-paths.constant';
 import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.component';
+import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
 @Component({
-  selector: 'app-fines-draft-cam-inputter',
+  selector: 'app-fines-draft-check-and-manage-tabs',
   imports: [
     CommonModule,
     MojSubNavigationComponent,
@@ -29,10 +29,10 @@ import { MojBannerComponent } from '@components/moj/moj-banner/moj-banner.compon
     FinesDraftTableWrapperComponent,
     MojBannerComponent,
   ],
-  templateUrl: './fines-draft-cam-inputter.component.html',
+  templateUrl: './fines-draft-check-and-manage-tabs.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesDraftCamInputterComponent implements OnInit {
+export class FinesDraftCheckAndManageTabsComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
   private readonly globalStore = inject(GlobalStore);
   private readonly dateService = inject(DateService);
@@ -49,7 +49,7 @@ export class FinesDraftCamInputterComponent implements OnInit {
   private readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   private readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
-  protected readonly finesDraftCamRoutingPaths = FINES_DRAFT_CAM_ROUTING_PATHS;
+  protected readonly finesDraftCheckAndManageRoutingPaths = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
 
   public draftAccounts$!: Observable<IFinesDraftTableWrapperTableData[]>;
 

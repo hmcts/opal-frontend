@@ -226,7 +226,7 @@ describe('FinesMacReviewAccountComponent', () => {
     expect(finesMacStore.stateChanges()).toBeFalse();
     expect(finesMacStore.unsavedChanges()).toBeFalse();
     expect(handleRouteSpy).toHaveBeenCalledWith(
-      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}`,
       false,
       undefined,
       finesDraftStore.fragment(),
@@ -307,7 +307,7 @@ describe('FinesMacReviewAccountComponent', () => {
     component['submitPayload']();
 
     expect(handleRouteSpy).toHaveBeenCalledWith(
-      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+      `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}`,
       false,
       undefined,
       finesDraftStore.fragment(),
@@ -332,7 +332,7 @@ describe('FinesMacReviewAccountComponent', () => {
     component.navigateBack();
     expect(routerSpy).toHaveBeenCalledWith(
       [
-        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.inputter}`,
+        `${component['finesRoutes'].root}/${component['finesDraftRoutes'].root}/${component['finesDraftRoutes'].children.createAndManage}/${component['finesDraftCheckAndManageRoutes'].children.tabs}`,
       ],
       {
         fragment: finesDraftStore.fragment(),

@@ -27,9 +27,9 @@
             '/' +
             finesRoutingPaths.root +
             '/' +
-            finesRoutingPaths.children.draftCav.root +
+            finesRoutingPaths.children.draft.root +
             '/' +
-            finesRoutingPaths.children.draftCav.children['checker']
+            finesRoutingPaths.children.draft.children['checkAndValidate']
           "
           id="finesCavCheckerLink"
           >Check and Validate Draft Accounts</a
@@ -44,9 +44,11 @@
             '/' +
             finesRoutingPaths.root +
             '/' +
-            finesRoutingPaths.children.draftCam.root +
+            finesRoutingPaths.children.draft.root +
             '/' +
-            finesRoutingPaths.children.draftCam.children['inputter']
+            finesRoutingPaths.children.draft.children['createAndManage'] +
+            '/' +
+            finesDraftCheckAndManageRoutingPaths.children.tabs
           "
           fragment="review"
           id="finesCavInputterLink"
