@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DOM_ELEMENTS } from './constants/review_offence_elements';
-import { FinesMacOffenceDetailsService } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-review/mocks/fines-mac-offence-details-review-summary-form.mock';
 import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/review_offence_mock';
@@ -13,15 +13,8 @@ import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fi
 import { FINES_MAC_OFFENCE_DETAILS_STATE_IMPOSITIONS_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-state.mock';
 
 describe('ReviewOffenceComponent', () => {
-  const mockOffenceDetailsService = {} as FinesMacOffenceDetailsService;
-
-  mockOffenceDetailsService.finesMacOffenceDetailsDraftState = {
+  let finesMacOffenceDetailsDraftState = {
     ...FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-  };
-  mockOffenceDetailsService.removeIndexFromImpositionKeys = () => {
-    return {
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
-    };
   };
 
   const setupComponent = (impositionCounter: number = 0) => {
@@ -29,7 +22,14 @@ describe('ReviewOffenceComponent', () => {
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        { provide: FinesMacOffenceDetailsService, useValue: mockOffenceDetailsService },
+        {
+          provide: FinesMacOffenceDetailsStore,
+          useFactory: () => {
+            const store = new FinesMacOffenceDetailsStore();
+            store.setOffenceDetailsDraft(finesMacOffenceDetailsDraftState.offenceDetailsDraft);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {

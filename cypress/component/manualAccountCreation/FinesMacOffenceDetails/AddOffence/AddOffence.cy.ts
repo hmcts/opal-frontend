@@ -3,28 +3,22 @@ import { FinesMacOffenceDetailsAddAnOffenceComponent } from 'src/app/flows/fines
 import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { FinesMacOffenceDetailsService } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/services/fines-mac-offence-details-service/fines-mac-offence-details.service';
 import { ADD_OFFENCE_OFFENCE_MOCK } from './mocks/add-offence-draft-state-mock';
 import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@services/date-service/date.service';
 import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offence_details_elements';
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
+import { UtilsService } from '@services/utils/utils.service';
 
 describe('FinesMacLanguagePreferenceComponent', () => {
-  let mockFinesService = new FinesService(new DateService());
-  mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
+  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  let offenceDetailsDraftState = structuredClone(ADD_OFFENCE_OFFENCE_MOCK);
   const date = new Date();
-
-  const mockOffenceDetailsService = {
-    offenceIndex: 0,
-    addedOffenceCode: '',
-    finesMacOffenceDetailsDraftState: ADD_OFFENCE_OFFENCE_MOCK,
-    offenceCodeMessage: '',
-  } as FinesMacOffenceDetailsService;
 
   beforeEach(() => {
     cy.intercept('GET', '**/opal-fines-service/results**', {
@@ -57,7 +51,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
   afterEach(() => {
     cy.then(() => {
-      mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData = {
+      finesMacState.offenceDetails[currentoffenceDetails].formData = {
         fm_offence_details_id: 0,
         fm_offence_details_date_of_sentence: '',
         fm_offence_details_offence_cjs_code: null,
@@ -72,8 +66,26 @@ describe('FinesMacLanguagePreferenceComponent', () => {
       providers: [
         provideHttpClient(),
         OpalFines,
-        { provide: FinesMacOffenceDetailsService, useValue: mockOffenceDetailsService },
-        { provide: FinesService, useValue: mockFinesService },
+        DateService,
+        UtilsService,
+        {
+          provide: FinesMacOffenceDetailsStore,
+          useFactory: () => {
+            const store = new FinesMacOffenceDetailsStore();
+            store.setOffenceDetailsDraft(offenceDetailsDraftState.offenceDetailsDraft);
+            store.setRemoveMinorCreditor(0);
+
+            return store;
+          },
+        },
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -164,11 +176,9 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
     const imposition_1 = impostitionSelectors(0);
 
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence =
-      '01/01/2021';
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code =
-      'AK123456';
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
 
     cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
     cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
@@ -266,8 +276,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
   it('should show error message for invalid date format', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence =
-      '01.01.2021';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01.01.2021';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -276,8 +285,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
   it('should show error message for invalid date', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence =
-      '32/01/2021';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '32/01/2021';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -291,8 +299,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     futureDate.setFullYear(futureDate.getFullYear() + 1);
     const futureDateString = futureDate.toLocaleDateString('en-GB');
 
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence =
-      futureDateString;
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = futureDateString;
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -330,8 +337,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
   it('should show error message for invalid offence code', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code =
-      'INVALID';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'INVALID';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -343,8 +349,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
   it('should show ticket panel for valid offence code', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code =
-      'AK123456';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
 
     cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
     cy.get(DOM_ELEMENTS.successPanel).should('exist');
@@ -372,11 +377,9 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     const imposition_1 = impostitionSelectors(0);
     const imposition_2 = impostitionSelectors(1);
 
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence =
-      '01/01/2021';
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code =
-      'AK123456';
-    mockFinesService.finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
 
     cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
     cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });

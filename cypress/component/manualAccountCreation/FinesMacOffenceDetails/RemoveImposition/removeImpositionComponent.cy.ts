@@ -3,23 +3,18 @@ import { FinesMacOffenceDetailsRemoveImpositionComponent } from 'src/app/flows/f
 import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { FinesMacOffenceDetailsService } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { provideHttpClient } from '@angular/common/http';
-import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 import { DOM_ELEMENTS } from './constants/remove_imposition_elements';
 
 describe('FinesMacLanguagePreferenceComponent', () => {
-  let mockFinesService = new FinesService(new DateService());
-  mockFinesService.finesMacState = { ...FINES_MAC_STATE_MOCK };
-
-  const mockOffenceDetailsService = {
-    finesMacOffenceDetailsDraftState: FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-  } as FinesMacOffenceDetailsService;
+  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
+  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
 
   beforeEach(() => {
     cy.intercept('GET', '**/opal-fines-service/results**', {
@@ -38,8 +33,24 @@ describe('FinesMacLanguagePreferenceComponent', () => {
         provideHttpClient(),
         OpalFines,
         UtilsService,
-        { provide: FinesMacOffenceDetailsService, useValue: mockOffenceDetailsService },
-        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
+        {
+          provide: FinesMacOffenceDetailsStore,
+          useFactory: () => {
+            const store = new FinesMacOffenceDetailsStore();
+            store.setOffenceDetailsDraft(finesMacOffenceDetailsDraftState.offenceDetailsDraft);
+            store.setRowIndex(0);
+            store.setRemoveMinorCreditor(FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -99,7 +110,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
 
     cy.get(DOM_ELEMENTS.removeImpositionButton).click();
 
-    cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Not provided');
+    cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
     cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts and Tribunals Service (HMCTS)');
     cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£0.00');
     cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£0.00');

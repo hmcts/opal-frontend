@@ -2,8 +2,8 @@ import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsReviewComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-review/fines-mac-offence-details-review.component';
 import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FinesMacOffenceDetailsService } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@services/date-service/date.service';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
@@ -13,8 +13,6 @@ import { FINES_REVIEW_SUMMARY_OFFENCE_MOCK } from './mocks/review_summary_offenc
 import { DOM_ELEMENTS } from './constants/review_summary_elements';
 
 describe('ReviewSummaryComponent', () => {
-  let mockFinesService: FinesService;
-
   beforeEach(() => {
     cy.intercept('GET', '**/opal-fines-service/results**', {
       statusCode: 200,
@@ -41,11 +39,11 @@ describe('ReviewSummaryComponent', () => {
       },
     );
   });
-  mockFinesService = new FinesService(new DateService());
-  mockFinesService.finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
+
+  let finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
 
   afterEach(() => {
-    mockFinesService.finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
+    finesMacState = { ...FINES_REVIEW_SUMMARY_OFFENCE_MOCK };
   });
 
   const setupComponent = () => {
@@ -54,8 +52,17 @@ describe('ReviewSummaryComponent', () => {
         provideHttpClient(),
         OpalFines,
         DateService,
-        FinesMacOffenceDetailsService,
-        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
+        {
+          provide: FinesMacOffenceDetailsStore,
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -144,7 +151,7 @@ describe('ReviewSummaryComponent', () => {
   it('should have updated values for different set of impositions and reflect correct totals and balances', () => {
     setupComponent();
 
-    mockFinesService.finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
+    finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
       {
         fm_offence_details_imposition_id: 0,
         fm_offence_details_result_id: 'FCOMP',
@@ -157,7 +164,7 @@ describe('ReviewSummaryComponent', () => {
       },
     ];
 
-    mockFinesService.finesMacState.offenceDetails[1].formData.fm_offence_details_impositions = [
+    finesMacState.offenceDetails[1].formData.fm_offence_details_impositions = [
       {
         fm_offence_details_imposition_id: 1,
         fm_offence_details_result_id: 'FO',
@@ -201,7 +208,7 @@ describe('ReviewSummaryComponent', () => {
   it('should allow for multiple impositions for the same offence and reflect correct totals and balances', () => {
     setupComponent();
 
-    mockFinesService.finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
+    finesMacState.offenceDetails[0].formData.fm_offence_details_impositions = [
       {
         fm_offence_details_imposition_id: 0,
         fm_offence_details_result_id: 'FCOMP',
@@ -224,7 +231,7 @@ describe('ReviewSummaryComponent', () => {
       },
     ];
 
-    mockFinesService.finesMacState.offenceDetails[1].formData.fm_offence_details_impositions = [
+    finesMacState.offenceDetails[1].formData.fm_offence_details_impositions = [
       {
         fm_offence_details_imposition_id: 1,
         fm_offence_details_result_id: 'FO',

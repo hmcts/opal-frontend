@@ -2,8 +2,8 @@ import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsRemoveMinorCreditorComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-remove-minor-creditor/fines-mac-offence-details-remove-minor-creditor.component';
 import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FinesMacOffenceDetailsService } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-form.mock';
@@ -12,30 +12,21 @@ import { UtilsService } from '@services/utils/utils.service';
 import { DOM_ELEMENTS } from './constants/remove_minor_creditor_elements';
 
 describe('FinesMacMinorCreditor', () => {
-  let mockFinesService: FinesService;
-  let mockOffenceDetailsService: FinesMacOffenceDetailsService;
+  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
   let formData: any;
   let currentoffenceDetails = 0;
 
   beforeEach(() => {
-    mockFinesService = new FinesService(new DateService());
-
-    mockOffenceDetailsService = {
-      finesMacOffenceDetailsDraftState: FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-    } as FinesMacOffenceDetailsService;
-
     const childForms = [
       {
         ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK,
       },
     ];
 
-    mockOffenceDetailsService.finesMacOffenceDetailsDraftState.offenceDetailsDraft[
-      currentoffenceDetails
-    ].childFormData = childForms;
+    finesMacOffenceDetailsDraftState.offenceDetailsDraft[currentoffenceDetails].childFormData = childForms;
 
     formData = childForms;
-    mockOffenceDetailsService.finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
+    finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
   });
 
   const setupComponent = () => {
@@ -44,8 +35,19 @@ describe('FinesMacMinorCreditor', () => {
         provideHttpClient(),
         OpalFines,
         UtilsService,
-        { provide: FinesMacOffenceDetailsService, useValue: mockOffenceDetailsService },
-        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: FinesMacStore,
+        },
+        {
+          provide: FinesMacOffenceDetailsStore,
+          useFactory: () => {
+            const store = new FinesMacOffenceDetailsStore();
+            store.setOffenceDetailsDraft(finesMacOffenceDetailsDraftState.offenceDetailsDraft);
+            store.setRemoveMinorCreditor(0);
+            return store;
+          },
+        },
+
         {
           provide: ActivatedRoute,
           useValue: {

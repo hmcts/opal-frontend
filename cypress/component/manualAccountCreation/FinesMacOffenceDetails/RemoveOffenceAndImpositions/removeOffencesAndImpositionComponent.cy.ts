@@ -2,22 +2,22 @@ import { mount } from 'cypress/angular';
 import { FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-remove-offence-and-impositions/fines-mac-offence-details-remove-offence-and-impositions.component';
 import { OpalFines } from '../../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { FinesMacOffenceDetailsService } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/services/fines-mac-offence-details-service/fines-mac-offence-details.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
+import { FinesMacOffenceDetailsStore } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/stores/fines-mac-offence-details.store';
 import { provideHttpClient } from '@angular/common/http';
-import { DateService } from '@services/date-service/date.service';
 import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/mocks/fines-mac-offence-details-draft-state.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { OPAL_FINES_OFFENCES_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data.mock';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
-import { FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-review/mocks/fines-mac-offence-details-review-summary-form.mock';
 import { DOM_ELEMENTS } from './constants/remove_offences_and_imposition_elements';
+import { FINES_MAC_OFFENCE_DETAILS_FORM_MOCK } from './mocks/fines-mac-offence-details-form.mock';
+import { FINES_MAC_STATE_MOCK } from 'src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 
 describe('RemoveOffenceAndImpositionsComponent', () => {
-  let mockFinesService: FinesService;
-  let mockOffenceDetailsService: FinesMacOffenceDetailsService;
-  let formData: any;
-  let currentoffenceDetails = 0;
+  let finesMacState = FINES_MAC_STATE_MOCK;
+  finesMacState.offenceDetails = [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)];
+
+  let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
 
   beforeEach(() => {
     cy.intercept('GET', '**/opal-fines-service/results**', {
@@ -46,26 +46,28 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     );
   });
 
-  mockFinesService = new FinesService(new DateService());
-
-  mockOffenceDetailsService = {
-    finesMacOffenceDetailsDraftState: FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK,
-  } as FinesMacOffenceDetailsService;
-
-  mockOffenceDetailsService.removeIndexFromImpositionKeys = () => {
-    return {
-      ...FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK,
-    };
-  };
-  mockOffenceDetailsService.offenceIndex = 0;
-
   const setupComponent = () => {
     mount(FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
-        { provide: FinesMacOffenceDetailsService, useValue: mockOffenceDetailsService },
-        { provide: FinesService, useValue: mockFinesService },
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
+        {
+          provide: FinesMacOffenceDetailsStore,
+          useFactory: () => {
+            const store = new FinesMacOffenceDetailsStore();
+            store.setOffenceDetailsDraft(finesMacOffenceDetailsDraftState.offenceDetailsDraft);
+            return store;
+          },
+        },
+
         {
           provide: ActivatedRoute,
           useValue: {

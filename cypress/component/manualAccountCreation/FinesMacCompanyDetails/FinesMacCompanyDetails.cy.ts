@@ -2,7 +2,7 @@ import { mount } from 'cypress/angular';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FinesMacCompanyDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-company-details/fines-mac-company-details.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { DateService } from '@services/date-service/date.service';
 import { FINES_COMPANY_DETAILS_MOCK } from './mocks/fines-mac-company-details-mock';
 import {
@@ -14,16 +14,22 @@ import {
 import { DOM_ELEMENTS } from './constants/fines-mac-company-details-elements';
 
 describe('FinesMacCompanyDetailsComponent', () => {
-  let mockFinesService = new FinesService(new DateService());
-  mockFinesService.finesMacState = { ...FINES_COMPANY_DETAILS_MOCK };
+  let finesMacState = structuredClone(FINES_COMPANY_DETAILS_MOCK);
 
   const DOM_ELEMENTS_BASE: { [key: string]: string } = DOM_ELEMENTS;
 
   const setupComponent = (formSubmit: any, defendantTypeMock: string = '') => {
     mount(FinesMacCompanyDetailsComponent, {
       providers: [
-        { provide: OpalFines, useValue: mockFinesService },
-        { provide: FinesService, useValue: mockFinesService },
+        OpalFines,
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -51,7 +57,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
   afterEach(() => {
     cy.then(() => {
-      mockFinesService.finesMacState.companyDetails.formData = {
+      finesMacState.companyDetails.formData = {
         fm_company_details_company_name: '',
         fm_company_details_add_alias: null,
         fm_company_details_aliases: [],
@@ -117,9 +123,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_company_name = 'Company Name';
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street';
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_postcode = 'AB12 3CD';
+    finesMacState.companyDetails.formData.fm_company_details_company_name = 'Company Name';
+    finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street';
+    finesMacState.companyDetails.formData.fm_company_details_postcode = 'AB12 3CD';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -151,25 +157,25 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.additionalAlias).first().click();
     }
 
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_company_name = 'A'.repeat(51);
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_1 = 'A'.repeat(31);
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_2 = 'A'.repeat(31);
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_3 = 'A'.repeat(17);
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_postcode = 'A'.repeat(9);
+    finesMacState.companyDetails.formData.fm_company_details_company_name = 'A'.repeat(51);
+    finesMacState.companyDetails.formData.fm_company_details_address_line_1 = 'A'.repeat(31);
+    finesMacState.companyDetails.formData.fm_company_details_address_line_2 = 'A'.repeat(31);
+    finesMacState.companyDetails.formData.fm_company_details_address_line_3 = 'A'.repeat(17);
+    finesMacState.companyDetails.formData.fm_company_details_postcode = 'A'.repeat(9);
 
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+    finesMacState.companyDetails.formData.fm_company_details_aliases.push({
       fm_company_details_alias_company_name_0: 'A'.repeat(51),
     });
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+    finesMacState.companyDetails.formData.fm_company_details_aliases.push({
       fm_company_details_alias_company_name_1: 'A'.repeat(31),
     });
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+    finesMacState.companyDetails.formData.fm_company_details_aliases.push({
       fm_company_details_alias_company_name_2: 'A'.repeat(31),
     });
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+    finesMacState.companyDetails.formData.fm_company_details_aliases.push({
       fm_company_details_alias_company_name_3: 'A'.repeat(31),
     });
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+    finesMacState.companyDetails.formData.fm_company_details_aliases.push({
       fm_company_details_alias_company_name_4: 'A'.repeat(31),
     });
     cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -177,23 +183,23 @@ describe('FinesMacCompanyDetailsComponent', () => {
     for (const [, value] of Object.entries(MAX_LENGTH_VALIDATION)) {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
     }
-  });
+    });
 
-  it('should show errors when address line fields contain asterisks (*)', () => {
+    it('should show errors when address line fields contain asterisks (*)', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street*';
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_2 = '123 Fake Street*';
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_3 = '123 Fake Street*';
+    finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street*';
+    finesMacState.companyDetails.formData.fm_company_details_address_line_2 = '123 Fake Street*';
+    finesMacState.companyDetails.formData.fm_company_details_address_line_3 = '123 Fake Street*';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     for (const [, value] of Object.entries(SPECIAL_CHARACTERS_PATTERN_VALIDATION)) {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
     }
-  });
+    });
 
-  it('should validate type check to ensure name fields are only alphabetical letters A-Z', () => {
+    it('should validate type check to ensure name fields are only alphabetical letters A-Z', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.addAlias).first().click();
@@ -202,10 +208,10 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.additionalAlias).first().click();
     }
 
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_company_name = '123% Fake Street';
+    finesMacState.companyDetails.formData.fm_company_details_company_name = '123% Fake Street';
     for (let i = 0; i < 5; i++) {
-      mockFinesService.finesMacState.companyDetails.formData.fm_company_details_aliases.push({
-        [`fm_company_details_alias_company_name_${i}`]: '123% Fake Street',
+      finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+      [`fm_company_details_alias_company_name_${i}`]: '123% Fake Street',
       });
     }
 
@@ -214,15 +220,15 @@ describe('FinesMacCompanyDetailsComponent', () => {
     for (const [, value] of Object.entries(ALPHABETICAL_TEXT_PATTERN_VALIDATION)) {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
     }
-  });
+    });
 
-  it('should allow form to be submitted with valid data with aliases', () => {
+    it('should allow form to be submitted with valid data with aliases', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_company_name = 'Company Name';
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street';
-    mockFinesService.finesMacState.companyDetails.formData.fm_company_details_postcode = 'AB12 3CD';
+    finesMacState.companyDetails.formData.fm_company_details_company_name = 'Company Name';
+    finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street';
+    finesMacState.companyDetails.formData.fm_company_details_postcode = 'AB12 3CD';
 
     cy.get(DOM_ELEMENTS.addAlias).first().click();
     cy.get(DOM_ELEMENTS.aliasCompanyName1).type('Alias 1', { delay: 0 });
@@ -235,9 +241,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.get('@formSubmitSpy').should('be.called');
-  });
+    });
 
-  it('should allow workflow for alias fields to be removed', () => {
+    it('should allow workflow for alias fields to be removed', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.addAlias).first().click();
@@ -251,5 +257,5 @@ describe('FinesMacCompanyDetailsComponent', () => {
     }
 
     cy.get(DOM_ELEMENTS.addAlias).first().click();
+    });
   });
-});

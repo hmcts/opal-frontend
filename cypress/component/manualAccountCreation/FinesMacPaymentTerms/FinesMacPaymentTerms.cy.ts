@@ -9,35 +9,31 @@ import {
   ENFORCEMENT_ERRORS,
 } from './constants/fines_mac_payment_terms_errors';
 import { DOM_ELEMENTS } from './constants/fines_mac_payment_terms_elements';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { PermissionsService } from '@services/permissions-service/permissions.service';
 import { SESSION_USER_STATE_MOCK } from '@services/session-service/mocks/session-user-state.mock';
-import { DateService } from '@services/date-service/date.service';
 
 describe('FinesMacPaymentTermsComponent', () => {
-  let MockFinesService = new FinesService(new DateService());
+  let finesMacState = structuredClone(FINES_PAYMENT_TERMS_MOCK);
   const date = new Date();
 
-  MockFinesService.finesMacState = {
-    ...FINES_PAYMENT_TERMS_MOCK,
-  };
-
-  /**
-   * Function to set up the component with mocked services and data.
-   */
   const setupComponent = (formSubmit: any, defendantTypeMock: string | undefined = '') => {
-    // Mock the state with data from multiple forms
-
     const mockPermissionService = new PermissionsService();
 
     mockPermissionService.getUniquePermissions(SESSION_USER_STATE_MOCK);
 
-    // Mount the component with mocked services and data
     mount(FinesMacPaymentTermsComponent, {
       providers: [
-        { provide: OpalFines, useValue: MockFinesService },
-        { provide: FinesService, useValue: MockFinesService },
+        OpalFines,
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
         { provide: PermissionsService, useValue: mockPermissionService },
         {
           provide: ActivatedRoute,
@@ -59,7 +55,7 @@ describe('FinesMacPaymentTermsComponent', () => {
 
   afterEach(() => {
     cy.then(() => {
-      MockFinesService.finesMacState.paymentTerms.formData = {
+      finesMacState.paymentTerms.formData = {
         fm_payment_terms_payment_terms: '',
         fm_payment_terms_pay_by_date: '',
         fm_payment_terms_lump_sum_amount: null,
@@ -275,8 +271,8 @@ describe('FinesMacPaymentTermsComponent', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2022';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2022';
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.dateInPast);
 
@@ -287,8 +283,8 @@ describe('FinesMacPaymentTermsComponent', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2033';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01/01/2033';
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.dateInFuture);
 
@@ -298,9 +294,9 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle "Instalments only" with past dates', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
+    finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
   });
@@ -308,9 +304,9 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle "Instalments only" with future dates', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
+    finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
   });
@@ -318,10 +314,10 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle "Lump sum plus instalments" with past dates', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
+    finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
+    finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2022';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInPast);
   });
@@ -329,10 +325,10 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle "Lump sum plus instalments" with future dates', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
+    finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = 500;
+    finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = 1000;
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/01/2030';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.mojTicketPanel).should('contain', ERROR_MESSAGES.startDateInFuture);
   });
@@ -351,8 +347,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle  for pay in full', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01,01.2022';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '01,01.2022';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDateFormat);
   });
@@ -360,8 +356,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle valid date for Pay in full', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '32/01/2022';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'payInFull';
+    finesMacState.paymentTerms.formData.fm_payment_terms_pay_by_date = '32/01/2022';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
   });
@@ -381,8 +377,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle valid instalmentAmount error for installment', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
+    finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
   });
@@ -390,8 +386,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle valid InstalmentDateFormat error for installment', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/21/12212';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '01/21/12212';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
   });
@@ -399,8 +395,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should handle valid date error for installment', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'instalmentsOnly';
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
   });
@@ -419,8 +415,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for validLumpSumAmount', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = -1;
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
+    finesMacState.paymentTerms.formData.fm_payment_terms_lump_sum_amount = -1;
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validLumpSumAmount);
   });
@@ -428,8 +424,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for validLumpSuminstallmentAmount', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
+    finesMacState.paymentTerms.formData.fm_payment_terms_instalment_amount = -1;
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentAmount);
   });
@@ -437,8 +433,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for validLumpSumStartDateFormat', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/202555';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/202555';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validInstalmentDateFormat);
   });
@@ -446,8 +442,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for validLumpSumStartDate', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
+    finesMacState.paymentTerms.formData.fm_payment_terms_payment_terms = 'lumpSumPlusInstalments';
+    finesMacState.paymentTerms.formData.fm_payment_terms_start_date = '32/09/2025';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.validDate);
   });
@@ -455,8 +451,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for days in default enter valid data ', () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '32/09/2025';
+    finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
+    finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '32/09/2025';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage)
       .should('contain', ERROR_MESSAGES.validDate)
@@ -466,8 +462,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for days in default future date', () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '20/09/2200';
+    finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
+    finesMacState.paymentTerms.formData.fm_payment_terms_suspended_committal_date = '20/09/2200';
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.futureDate);
   });
@@ -475,8 +471,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for days in default future date', () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_default_days_in_jail = -1;
+    finesMacState.paymentTerms.formData.fm_payment_terms_has_days_in_default = true;
+    finesMacState.paymentTerms.formData.fm_payment_terms_default_days_in_jail = -1;
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.defaultDaysTypeCheck);
   });
@@ -484,8 +480,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for enforcement action (pris)', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'PRIS';
+    finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
+    finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'PRIS';
     cy.get(DOM_ELEMENTS.earliestReleaseDate).type('32/09/2025', { delay: 0 });
     cy.get(DOM_ELEMENTS.prisonAndPrisonNumber).type('@', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
@@ -506,8 +502,8 @@ describe('FinesMacPaymentTermsComponent', () => {
   it('should have validations in place for enforcement action (NOENF)', () => {
     setupComponent(null);
 
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
-    MockFinesService.finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
+    finesMacState.paymentTerms.formData.fm_payment_terms_add_enforcement_action = true;
+    finesMacState.paymentTerms.formData.fm_payment_terms_enforcement_action = 'NOENF';
     cy.get(DOM_ELEMENTS.reasonAccountIsOnNoenf).type('@', { delay: 0 });
     cy.get(DOM_ELEMENTS.submitButton).click({ multiple: true });
     cy.get(DOM_ELEMENTS.govukErrorMessage).should('contain', ERROR_MESSAGES.noenfTypeCheck);

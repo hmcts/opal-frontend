@@ -2,28 +2,36 @@ import { mount } from 'cypress/angular';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_COURTS_DETAILS_MOCK } from './mocks/fines-mac-court-details-mock';
-
 import { FinesMacCourtDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-court-details/fines-mac-court-details.component';
-import { FinesService } from '@services/fines/fines-service/fines.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '../../../../src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
 import { DOM_ELEMENTS } from './constants/fines_mac_court_details_elements';
 import { INVALID_ERRORS, MISSING_ERRORS } from './constants/fines_mac_court_details_errors';
 import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@services/date-service/date.service';
+import { UtilsService } from '@services/utils/utils.service';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
-  let mockFinesService = new FinesService(new DateService());
-  mockFinesService.finesMacState = { ...FINES_COURTS_DETAILS_MOCK };
+  let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
 
   const setupComponent = (formSubmit: any, defType?: string) => {
-    mockFinesService.finesMacState.businessUnit.business_unit_id = 73;
+    finesMacState.businessUnit.business_unit_id = 73;
 
     mount(FinesMacCourtDetailsComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
-        { provide: FinesService, useValue: mockFinesService },
+        DateService,
+        UtilsService,
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -54,7 +62,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
   //Clean up after each test
   afterEach(() => {
-    mockFinesService.finesMacState.courtDetails.formData = {
+    finesMacState.courtDetails.formData = {
       fm_court_details_originator_id: '',
       fm_court_details_originator_name: '',
       fm_court_details_prosecutor_case_reference: '',
@@ -141,7 +149,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   });
 
   it('should validate PRC field length', () => {
-    mockFinesService.finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
+    finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = 'a'.repeat(31);
 
     setupComponent(null);
 

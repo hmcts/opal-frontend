@@ -15,20 +15,23 @@ import {
   FORMAT_CHECK,
   CORRECTION_TEST_MESSAGES,
 } from './constants/fines_mac_parent_guardian_details_errors';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
-  let mockFinesService = {
-    finesMacState: { ...FINES_MAC_STATE_MOCK },
-  };
+  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
   const setupComponent = (formSubmit: any, mockDefendantType: string = '') => {
-    const mockFinesService = {
-      finesMacState: { ...FINES_MAC_STATE_MOCK },
-    };
-
     mount(FinesMacParentGuardianDetailsComponent, {
       providers: [
-        { provide: OpalFines, useValue: mockFinesService },
+        OpalFines,
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -49,7 +52,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
   afterEach(() => {
     cy.then(() => {
-      mockFinesService.finesMacState.parentGuardianDetails.formData = {
+      finesMacState.parentGuardianDetails.formData = {
         fm_parent_guardian_details_forenames: '',
         fm_parent_guardian_details_surname: '',
         fm_parent_guardian_details_add_alias: false,
@@ -144,7 +147,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should display validation error when date of birth is in the future', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/3000';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/3000';
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInFuture']);
   });
@@ -152,7 +155,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should display validation error when date of birth is invalid', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/abc';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/abc';
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
   });
@@ -160,9 +163,9 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should not have any asterisks in address lines', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'dsad*';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'asd*';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'asd*';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'dsad*';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'asd*';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'asd*';
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     for (let i = 1; i <= 3; i++) {
@@ -173,21 +176,15 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should not have firstnames,last names, vehicle registration mark and Address lines 1,2 & 3 having more than max characters', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames =
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames =
       'John Smithy Michael John Smithy Michael long';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname =
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname =
       'Astridge Lamsden Langley Treen long';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 =
-      'a'.repeat(31);
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 =
-      'a'.repeat(31);
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 =
-      'a'.repeat(31);
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_registration_mark =
-      'a'.repeat(31);
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = 'a'.repeat(
-      31,
-    );
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = 'a'.repeat(31);
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_2 = 'a'.repeat(31);
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_3 = 'a'.repeat(31);
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_registration_mark = 'a'.repeat(31);
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = 'a'.repeat(31);
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     for (const [key, value] of Object.entries(LENGTH_VALIDATION)) {
@@ -199,14 +196,14 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_forenames_0: 'John',
       fm_parent_guardian_details_alias_surname_0: 'Smith',
     });
 
     for (let i = 1; i <= 2; i++) {
       cy.get(DOM_ELEMENTS.aliasAddButton).click();
-      mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
         [`fm_parent_guardian_details_alias_forenames_${i}`]: 'John',
         [`fm_parent_guardian_details_alias_surname_${i}`]: 'Smith',
       });
@@ -231,7 +228,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_surname_0: 'Smith',
     });
     cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -242,7 +239,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_forenames_0: 'John',
     });
     cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -253,12 +250,12 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_forenames_0: 'John',
       fm_parent_guardian_details_alias_surname_0: 'Smith',
     });
     cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_surname_1: 'Smith',
     });
     cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -269,12 +266,12 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.aliasAdd).click();
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_forenames_0: 'John',
       fm_parent_guardian_details_alias_surname_0: 'Smith',
     });
     cy.get(DOM_ELEMENTS.aliasAddButton).click();
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_aliases.push({
       fm_parent_guardian_details_alias_forenames_0: 'John',
     });
     cy.get(DOM_ELEMENTS.submitButton).first().click();
@@ -284,11 +281,10 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should show error for future date of birth', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'John';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'smith';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/2500';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 =
-      '120 street';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'John';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'smith';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/2500';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = '120 street';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Enter a valid date of birth in the past');
@@ -297,7 +293,7 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should show error for invalid date format', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/12.';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/12.';
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['dateOfBirthInvalid']);
   });
@@ -305,13 +301,11 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
   it('should not accept national insurance number in the incorrect format', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'John';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'smith';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/1990';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 =
-      '120 street';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_national_insurance_number =
-      'AB1234565C';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = 'John';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = 'smith';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_dob = '01/01/1990';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = '120 street';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_national_insurance_number = 'AB1234565C';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK['validNationalInsuranceNumber']);
@@ -322,12 +316,11 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
 
     setupComponent(mockFormSubmit);
 
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames =
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames =
       'John Jacob Jingleheimer Schmidt Jingleheimer';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname =
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname =
       'smith Johnson Alexander Williams Brown Davis';
-    mockFinesService.finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 =
-      '120 street*';
+    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_address_line_1 = '120 street*';
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 

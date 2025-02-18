@@ -2,19 +2,26 @@ import { mount } from 'cypress/angular';
 import { FinesMacContactDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-contact-details/fines-mac-contact-details.component';
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { INVALID_DETAILS } from './constants/fines_mac_contact_details_errors';
 import { DOM_ELEMENTS } from './constants/fines_mac_contact_details_elements';
 
 describe('FinesMacContactDetailsComponent', () => {
-  let mockFinesService = {
-    finesMacState: { ...FINES_MAC_STATE_MOCK },
-  };
+  let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
 
   const setupComponent = (formSubmit: any, defendantType: string = '') => {
     mount(FinesMacContactDetailsComponent, {
       providers: [
-        { provide: OpalFines, useValue: mockFinesService },
+        OpalFines,
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -34,7 +41,7 @@ describe('FinesMacContactDetailsComponent', () => {
   };
   afterEach(() => {
     cy.then(() => {
-      mockFinesService.finesMacState.contactDetails.formData = {
+      finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: '',
         fm_contact_details_email_address_2: '',
         fm_contact_details_telephone_number_mobile: '',
@@ -94,7 +101,7 @@ describe('FinesMacContactDetailsComponent', () => {
   it('should show errors for invalid contact details', () => {
     setupComponent(null);
 
-    mockFinesService.finesMacState.contactDetails.formData = {
+    finesMacState.contactDetails.formData = {
       fm_contact_details_email_address_1: 'invalid-email',
       fm_contact_details_email_address_2: 'invalid-email',
       fm_contact_details_telephone_number_mobile: 'invalid-phone',
@@ -114,7 +121,7 @@ describe('FinesMacContactDetailsComponent', () => {
 
     setupComponent(mockFormSubmit);
 
-    mockFinesService.finesMacState.contactDetails.formData = {
+    finesMacState.contactDetails.formData = {
       fm_contact_details_email_address_1: 'name@example.com',
       fm_contact_details_email_address_2: 'secondary@example.com',
       fm_contact_details_telephone_number_mobile: '07700900982',

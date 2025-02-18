@@ -8,20 +8,24 @@ import {
   REQUIRED_FIELDS_VALIDATION,
 } from './constants/fines_mac_employer_details_error';
 import { DOM_ELEMENTS } from './constants/fines_mac_employer_details_elements';
-import { FinesService } from '@services/fines/fines-service/fines.service';
-import { DateService } from '@services/date-service/date.service';
+import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_EMPLOYER_DETAILS_MOCK } from './mocks/fines-employer-details-mock';
 
 describe('FinesMacEmployerDetailsComponent', () => {
-  let mockFinesService = new FinesService(new DateService());
-
-  mockFinesService.finesMacState = { ...FINES_EMPLOYER_DETAILS_MOCK };
+  let finesMacState = structuredClone(FINES_EMPLOYER_DETAILS_MOCK);
 
   const setupComponent = (formSubmit: any, defendantTypeMock: string = '') => {
     mount(FinesMacEmployerDetailsComponent, {
       providers: [
-        { provide: OpalFines, useValue: mockFinesService },
-        { provide: FinesService, useValue: mockFinesService },
+        OpalFines,
+        {
+          provide: FinesMacStore,
+          useFactory: () => {
+            const store = new FinesMacStore();
+            store.setFinesMacStore(finesMacState);
+            return store;
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -42,7 +46,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
 
   afterEach(() => {
     cy.then(() => {
-      mockFinesService.finesMacState.employerDetails.formData = {
+      finesMacState.employerDetails.formData = {
         fm_employer_details_employer_company_name: '',
         fm_employer_details_employer_reference: '',
         fm_employer_details_employer_email_address: '',
@@ -119,7 +123,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
-    mockFinesService.finesMacState.employerDetails.formData = {
+    finesMacState.employerDetails.formData = {
       fm_employer_details_employer_company_name: 'Test Employer',
       fm_employer_details_employer_reference: '1234567890',
       fm_employer_details_employer_email_address: 'test@test.com',
@@ -153,7 +157,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
       fm_employer_details_employer_post_code: 'invalid-postcode-format',
     };
 
-    mockFinesService.finesMacState.employerDetails.formData = incorrectData;
+    finesMacState.employerDetails.formData = incorrectData;
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -188,7 +192,7 @@ describe('FinesMacEmployerDetailsComponent', () => {
       fm_employer_details_employer_post_code: 'AB124BM#',
     };
 
-    mockFinesService.finesMacState.employerDetails.formData = incorrectData;
+    finesMacState.employerDetails.formData = incorrectData;
 
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
