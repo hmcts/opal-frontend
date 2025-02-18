@@ -24,6 +24,7 @@ import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-
 })
 export class FinesMacReviewAccountParentGuardianDetailsComponent implements OnInit {
   @Input({ required: true }) public parentGuardianDetails!: IFinesMacParentGuardianDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeParentGuardianDetails = new EventEmitter<void>();
 
   private readonly dateService = inject(DateService);

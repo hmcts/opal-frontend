@@ -1,9 +1,11 @@
 <app-govuk-summary-card-list cardTitle="Contact details" summaryCardListId="contact-details">
-  <ng-container actions>
-    <app-fines-mac-review-account-change-link
-      (emitChange)="changeContactDetails()"
-    ></app-fines-mac-review-account-change-link>
-  </ng-container>
+  @if (!isReadOnly) {
+    <ng-container actions>
+      <app-fines-mac-review-account-change-link
+        (emitChange)="changeContactDetails()"
+      ></app-fines-mac-review-account-change-link>
+    </ng-container>
+  }
   <ng-container content>
     <app-govuk-summary-list summaryListId="contactDetails">
       <div

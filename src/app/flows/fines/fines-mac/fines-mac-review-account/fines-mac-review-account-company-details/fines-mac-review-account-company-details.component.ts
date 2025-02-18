@@ -22,6 +22,7 @@ import { FinesMacReviewAccountNotProvidedComponent } from '../fines-mac-review-a
 })
 export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
   @Input({ required: true }) public companyDetails!: IFinesMacCompanyDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeCompanyDetails = new EventEmitter<void>();
 
   private readonly utilsService = inject(UtilsService);

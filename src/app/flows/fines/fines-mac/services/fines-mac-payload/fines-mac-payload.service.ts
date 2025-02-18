@@ -153,6 +153,10 @@ export class FinesMacPayloadService {
 
     // Build the add account payload
     const addAccountPayload: IFinesMacAddAccountPayload = {
+      draft_account_id: null,
+      created_at: null,
+      account_snapshot: null,
+      account_status_date: null,
       business_unit_id: accountDetailsState['fm_create_account_business_unit_id'],
       submitted_by: this.getBusinessUnitBusinessUserId(
         accountDetailsState['fm_create_account_business_unit_id'],
@@ -163,10 +167,6 @@ export class FinesMacPayloadService {
       account_type: accountDetailsState['fm_create_account_account_type'],
       account_status: accountStatus,
       timeline_data: timeLineData,
-      draft_account_id: null,
-      created_at: null,
-      account_snapshot: null,
-      account_status_date: null,
     };
 
     // Transform the payload, format the dates to the correct format

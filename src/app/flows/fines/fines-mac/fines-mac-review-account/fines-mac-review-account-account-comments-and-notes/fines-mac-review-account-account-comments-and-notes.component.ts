@@ -21,6 +21,7 @@ import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-
 })
 export class FinesMacReviewAccountAccountCommentsAndNotesComponent {
   @Input({ required: true }) public accountCommentsAndNotes!: IFinesMacAccountCommentsNotesState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeAccountCommentsAndNotesDetails = new EventEmitter<void>();
 
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;

@@ -1,38 +1,10 @@
-import { IFinesMacPayloadAccountDefendantComplete } from '../utils/interfaces/fines-mac-payload-account-defendant-complete.interface';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS } from './fines-mac-payload-account-defendant-debtor-details.constant';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN } from './fines-mac-payload-account-defendant-parent-guardian.constant';
+import { IFinesMacPayloadAccountDefendantComplete } from '../utils/interfaces/fines-mac-payload-account-defendant-complete.interface';
+import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT: IFinesMacPayloadAccountDefendantComplete = {
-  company_flag: null,
-  title: null,
-  surname: null,
-  forenames: null,
-  company_name: null,
-  dob: null,
-  address_line_1: null,
-  address_line_2: null,
-  address_line_3: null,
-  address_line_4: null,
-  address_line_5: null,
-  post_code: null,
-  telephone_number_home: null,
-  telephone_number_business: null,
-  telephone_number_mobile: null,
-  email_address_1: null,
-  email_address_2: null,
-  national_insurance_number: null,
-  driving_licence_number: null,
-  pnc_id: null,
-  nationality_1: null,
-  nationality_2: null,
-  ethnicity_self_defined: null,
-  ethnicity_observed: null,
-  cro_number: null,
-  occupation: null,
-  gender: null,
-  custody_status: null,
-  prison_number: null,
-  interpreter_lang: null,
+  ...structuredClone(FINES_DRAFT_STATE.account.defendant),
   debtor_detail: FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS,
   parent_guardian: FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN,
 };

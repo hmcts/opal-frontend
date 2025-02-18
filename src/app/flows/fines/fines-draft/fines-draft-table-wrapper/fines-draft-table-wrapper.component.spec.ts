@@ -43,4 +43,13 @@ describe('FinesDraftTableWrapperComponent', () => {
     component.isApprovedTab = true;
     expect(component.isApprovedTab).toBeTrue();
   });
+
+  it('should emit linkClicked event with the correct id when onDefendantClick is called', () => {
+    spyOn(component.linkClicked, 'emit');
+
+    const testId = 123;
+    component.onDefendantClick(testId);
+
+    expect(component.linkClicked.emit).toHaveBeenCalledWith(testId);
+  });
 });
