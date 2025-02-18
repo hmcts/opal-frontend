@@ -255,4 +255,15 @@ describe('FinesMacStore', () => {
     store.setPersonalDetails(personalDetails);
     expect(store.getPersonalDetailsName()).toEqual(expectedName);
   });
+
+  it('should reset state changes and unsaved changes', () => {
+    store.setStateChanges(true);
+    store.setUnsavedChanges(true);
+    expect(store.stateChanges()).toBe(true);
+    expect(store.unsavedChanges()).toBe(true);
+
+    store.resetStateChangesUnsavedChanges();
+    expect(store.stateChanges()).toBe(false);
+    expect(store.unsavedChanges()).toBe(false);
+  });
 });

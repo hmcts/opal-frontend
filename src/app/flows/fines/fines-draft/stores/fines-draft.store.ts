@@ -22,6 +22,7 @@ export const FinesDraftStore = signalStore(
     account_status_date: '' as string | null,
     fragment: '',
     amend: false,
+    bannerMessage: '',
   })),
   withHooks((store) => {
     return {
@@ -120,6 +121,12 @@ export const FinesDraftStore = signalStore(
     },
     resetFragmentAndAmend() {
       patchState(store, { fragment: '', amend: false });
+    },
+    setBannerMessage: (bannerMessage: string) => {
+      patchState(store, { bannerMessage });
+    },
+    resetBannerMessage: () => {
+      patchState(store, { bannerMessage: '' });
     },
   })),
 );
