@@ -14,7 +14,7 @@
           d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"
         ></path>
       </svg>
-      <span class="govuk-pagination__link-title">Previous</span></a
+      <span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page </span></span></a
     >
   </div>
   <ul class="govuk-pagination__list">
@@ -23,6 +23,7 @@
       class="govuk-pagination__item"
       [class.govuk-pagination__item--current]="page === currentPage"
       [class.govuk-pagination__item--ellipses]="page === ELIPSIS"
+      [attr.aria-current]="page === currentPage ? 'page' : null"
     >
       <ng-container *ngIf="page === ELIPSIS">&ctdot;</ng-container>
       <a
@@ -38,7 +39,7 @@
   </ul>
   <div *ngIf="currentPage < pages().length" class="govuk-pagination__next">
     <a class="govuk-link govuk-pagination__link" href="#" rel="next" (click)="onPageChanged($event, currentPage + 1)">
-      <span class="govuk-pagination__link-title">Next</span>
+      <span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page </span></span>
       <svg
         class="govuk-pagination__icon govuk-pagination__icon--next"
         xmlns="http://www.w3.org/2000/svg"
