@@ -855,4 +855,24 @@ describe('AbstractFormBaseComponent', () => {
     expect(formControl.value).toBeNull();
     expect(formControl.hasValidator(Validators.required)).toBeTruthy();
   });
+
+  it('should convert input value to uppercase when handleUppercaseInputMask is called', () => {
+    if (!component) {
+      fail('component returned null');
+      return;
+    }
+
+    const mockInputElement = document.createElement('input');
+    mockInputElement.value = 'lowercase text';
+
+    const event = new Event('input');
+    Object.defineProperty(event, 'target', { writable: false, value: mockInputElement });
+
+    spyOn(component['utilsService'], 'upperCaseAllLetters').and.callThrough();
+
+    component.handleUppercaseInputMask(event);
+
+    expect(component['utilsService'].upperCaseAllLetters).toHaveBeenCalledWith('lowercase text');
+    expect(mockInputElement.value).toBe('LOWERCASE TEXT');
+  });
 });
