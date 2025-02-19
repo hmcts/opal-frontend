@@ -1,4 +1,4 @@
-@ManualAccountCreation @PersonalDetails @PO-360 @PO-369 @PO-433
+@ManualAccountCreation @PersonalDetails @PO-360 @PO-369 @PO-433 @PO-502 @PO-505
 Feature: Manual account creation - Personal Details
   #This feature file contains tests for the Personal Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the PersonalDetailsComponent.cy.ts component tests
@@ -17,7 +17,7 @@ Feature: Manual account creation - Personal Details
     Then I click on the "Personal details" link
     And I see "Personal details" on the page header
 
-  Scenario: Entered data persists in the session [@PO-272, @PO-344, @PO-360, @PO-369]
+  Scenario: (AC.13) Entered data persists in the session [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I select "Mr" from the "Title" dropdown
     And I enter "FNAME" into the "First names" field
     And I enter "LNAME" into the "Last name" field
@@ -65,7 +65,7 @@ Feature: Manual account creation - Personal Details
     And I see "" in the "Make and model" field
     And I see "" in the "Registration number" field
 
-  Scenario: Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-360, @PO-369]
+  Scenario: (AC.14, AC.15) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
     When I select "Mr" from the "Title" dropdown
     And I enter "FNAME" into the "First names" field
     And I enter "LNAME" into the "Last name" field
