@@ -193,12 +193,12 @@ describe('FinesMacPersonalDetailsComponent', () => {
     () => {
       setupComponent(null);
 
-    finesMacState.personalDetails.formData.fm_personal_details_forenames =
-      'John Smithy Michael John Smithy Michael long';
-    finesMacState.personalDetails.formData.fm_personal_details_surname = 'Astridge Lamsden Langley Treen long';
-    finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'a'.repeat(31);
-    finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'a'.repeat(31);
-    finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'a'.repeat(31);
+      finesMacState.personalDetails.formData.fm_personal_details_forenames =
+        'John Smithy Michael John Smithy Michael long';
+      finesMacState.personalDetails.formData.fm_personal_details_surname = 'Astridge Lamsden Langley Treen long';
+      finesMacState.personalDetails.formData.fm_personal_details_address_line_1 = 'a'.repeat(31);
+      finesMacState.personalDetails.formData.fm_personal_details_address_line_2 = 'a'.repeat(31);
+      finesMacState.personalDetails.formData.fm_personal_details_address_line_3 = 'a'.repeat(31);
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -387,13 +387,13 @@ describe('FinesMacPersonalDetailsComponent', () => {
     () => {
       setupComponent(null, 'adultOrYouthOnly');
 
-    // Verify the vehicle details section is rendered
-    cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('contain', 'Registration number');
-    cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
-    cy.get(DOM_ELEMENTS.vehicle_makeInput).should('exist');
-    cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('exist');
-    finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
-    finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(24);
+      // Verify the vehicle details section is rendered
+      cy.get(DOM_ELEMENTS.vehicleRegistrationMarkLabel).should('contain', 'Registration number');
+      cy.get(DOM_ELEMENTS.vehicleMakeLabel).should('contain', 'Make and model');
+      cy.get(DOM_ELEMENTS.vehicle_makeInput).should('exist');
+      cy.get(DOM_ELEMENTS.vehicle_registration_markInput).should('exist');
+      finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = 'a'.repeat(51);
+      finesMacState.personalDetails.formData.fm_personal_details_vehicle_registration_mark = 'a'.repeat(24);
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 

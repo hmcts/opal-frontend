@@ -2,8 +2,8 @@ export const DOM_ELEMENTS = {
   pageHeading: 'h1.govuk-heading-l',
   errorSummary: 'app-govuk-error-summary',
   form: 'app-fines-mac-offence-details-minor-creditor-form',
-  legendS : 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
-  legendM : 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
+  legendS: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--s',
+  legendM: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   // Creditor Type Radios
   creditorTypeIndividual: 'input[id="individual"]',
   creditorTypeCompany: 'input[id="company"]',

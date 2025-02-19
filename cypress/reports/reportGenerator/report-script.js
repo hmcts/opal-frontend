@@ -1,7 +1,7 @@
 // Remove accordion code, keep sorting, add global filter
 
 // --- Sorting ---
-document.querySelectorAll('th').forEach(th => {
+document.querySelectorAll('th').forEach((th) => {
   th.addEventListener('click', () => {
     const table = th.closest('table');
     if (!table) return;
@@ -16,7 +16,7 @@ document.querySelectorAll('th').forEach(th => {
       newSort = 'asc';
     }
     // Clear siblings’ sort
-    Array.from(th.parentNode.children).forEach(sibling => {
+    Array.from(th.parentNode.children).forEach((sibling) => {
       sibling.dataset.sortOrder = '';
       sibling.classList.remove('sort-asc', 'sort-desc');
     });
@@ -50,7 +50,7 @@ function sortTable(table, colIndex, sortOrder) {
     }
   });
 
-  rows.forEach(r => tbody.appendChild(r));
+  rows.forEach((r) => tbody.appendChild(r));
 }
 
 // --- Global Filter ---
@@ -62,7 +62,7 @@ if (globalFilter) {
     if (!table) return;
 
     const rows = table.querySelectorAll('tbody tr');
-    rows.forEach(tr => {
+    rows.forEach((tr) => {
       const rowText = tr.innerText.toLowerCase();
       tr.style.display = rowText.includes(filterVal) ? '' : 'none';
     });
@@ -76,11 +76,12 @@ if (copyTableBtn) {
     if (!table) return;
 
     const tableHtml = table.outerHTML;
-    navigator.clipboard.writeText(tableHtml)
+    navigator.clipboard
+      .writeText(tableHtml)
       .then(() => {
         alert('Table HTML copied to clipboard!');
       })
-      .catch(err => {
+      .catch((err) => {
         alert('Failed to copy table: ' + err);
       });
   });
@@ -92,11 +93,12 @@ if (copyHtmlBtn) {
   copyHtmlBtn.addEventListener('click', () => {
     // Copy the entire page (including <html> and <head>):
     const fullPageHtml = document.documentElement.outerHTML;
-    navigator.clipboard.writeText(fullPageHtml)
+    navigator.clipboard
+      .writeText(fullPageHtml)
       .then(() => {
         alert('Full page HTML copied to clipboard!');
       })
-      .catch(err => {
+      .catch((err) => {
         alert('Failed to copy page HTML: ' + err);
       });
   });

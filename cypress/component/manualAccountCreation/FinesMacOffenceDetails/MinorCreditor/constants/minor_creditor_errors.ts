@@ -34,5 +34,3 @@ export const REQUIRED_FIELDS = {
   companyNameRequired: `Enter company name`,
   creditorTypeRequired: 'Select whether minor creditor is an individual or company',
 };
-
-

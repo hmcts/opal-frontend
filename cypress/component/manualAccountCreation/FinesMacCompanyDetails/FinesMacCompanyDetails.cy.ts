@@ -183,9 +183,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
     for (const [, value] of Object.entries(MAX_LENGTH_VALIDATION)) {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
     }
-    });
+  });
 
-    it('should show errors when address line fields contain asterisks (*)', () => {
+  it('should show errors when address line fields contain asterisks (*)', () => {
     setupComponent(null);
 
     finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street*';
@@ -197,9 +197,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
     for (const [, value] of Object.entries(SPECIAL_CHARACTERS_PATTERN_VALIDATION)) {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
     }
-    });
+  });
 
-    it('should validate type check to ensure name fields are only alphabetical letters A-Z', () => {
+  it('should validate type check to ensure name fields are only alphabetical letters A-Z', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.addAlias).first().click();
@@ -211,7 +211,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     finesMacState.companyDetails.formData.fm_company_details_company_name = '123% Fake Street';
     for (let i = 0; i < 5; i++) {
       finesMacState.companyDetails.formData.fm_company_details_aliases.push({
-      [`fm_company_details_alias_company_name_${i}`]: '123% Fake Street',
+        [`fm_company_details_alias_company_name_${i}`]: '123% Fake Street',
       });
     }
 
@@ -220,9 +220,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
     for (const [, value] of Object.entries(ALPHABETICAL_TEXT_PATTERN_VALIDATION)) {
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
     }
-    });
+  });
 
-    it('should allow form to be submitted with valid data with aliases', () => {
+  it('should allow form to be submitted with valid data with aliases', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
@@ -241,9 +241,9 @@ describe('FinesMacCompanyDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).first().click();
 
     cy.get('@formSubmitSpy').should('be.called');
-    });
+  });
 
-    it('should allow workflow for alias fields to be removed', () => {
+  it('should allow workflow for alias fields to be removed', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.addAlias).first().click();
@@ -257,5 +257,5 @@ describe('FinesMacCompanyDetailsComponent', () => {
     }
 
     cy.get(DOM_ELEMENTS.addAlias).first().click();
-    });
   });
+});

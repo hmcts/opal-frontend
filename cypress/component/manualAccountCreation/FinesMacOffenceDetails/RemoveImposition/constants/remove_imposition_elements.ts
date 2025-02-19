@@ -5,7 +5,7 @@ export const DOM_ELEMENTS = {
 
   impositionType: 'td[id ="imposition"]',
   creditor: 'td[id ="creditor"]',
-  amountImposed : 'td[id ="amountImposed"]',
+  amountImposed: 'td[id ="amountImposed"]',
   amountPaid: 'td[id ="amountPaid"]',
   balanceRemaining: 'td[id ="balanceRemaining"]',
 
