@@ -10,6 +10,7 @@ import {
 import { DOM_ELEMENTS } from './constants/fines_mac_employer_details_elements';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_EMPLOYER_DETAILS_MOCK } from './mocks/fines-employer-details-mock';
+import { each } from 'cypress/types/bluebird';
 
 describe('FinesMacEmployerDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_EMPLOYER_DETAILS_MOCK);
@@ -61,22 +62,22 @@ describe('FinesMacEmployerDetailsComponent', () => {
     });
   });
 
-  it('should render the component', () => {
-    setupComponent(null);
+  it('should render the component for AY', { tags: ['@PO-272', '@PO-280'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
 
     // Verify the component is rendered
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should not show the error summary on initial load', () => {
-    setupComponent(null);
+  it('should not show the error summary on initial load for AY', { tags: ['@PO-272', '@PO-280'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
 
     // Verify the error summary is not visible
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
   });
 
-  it('should load all elements correctly', () => {
-    setupComponent(null);
+  it('(AC.1) should be created as per the design artefact', { tags: ['@PO-272', '@PO-280'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Employer details');
     cy.get(DOM_ELEMENTS.companyNameLabel).should('contain', 'Employer name');
@@ -106,22 +107,179 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.addressLine5Input).should('exist');
     cy.get(DOM_ELEMENTS.postCodeInput).should('exist');
   });
+  it(
+    '(AC.1) should display error messages for incorrect format and character limit',
+    { tags: ['@PO-272', '@PO-280'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
 
-  it('should load button for next page for adultOrYouthOnly Defendant', () => {
+      const incorrectData = {
+        fm_employer_details_employer_company_name: 'A very long employer name that exceeds the character limit',
+        fm_employer_details_employer_reference: 'A very long employee reference that exceeds the character limit',
+        fm_employer_details_employer_email_address: 'a'.repeat(77),
+        fm_employer_details_employer_telephone_number: 'invalid-telephone-format',
+        fm_employer_details_employer_address_line_1: 'A very long address line 1 that exceeds the character limit',
+        fm_employer_details_employer_address_line_2: 'A very long address line 2 that exceeds the character limit',
+        fm_employer_details_employer_address_line_3: 'A very long address line 3 that exceeds the character limit',
+        fm_employer_details_employer_address_line_4: 'A very long address line 4 that exceeds the character limit',
+        fm_employer_details_employer_address_line_5: 'A very long address line 5 that exceeds the character limit',
+        fm_employer_details_employer_post_code: 'invalid-postcode-format',
+      };
+
+      finesMacState.employerDetails.formData = incorrectData;
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+      }
+    },
+  );
+
+  it(
+    '(AC.1) should display error messages for incorrect format and special characters',
+    { tags: ['@PO-272', '@PO-280'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+
+      const incorrectData = {
+        fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
+        fm_employer_details_employer_reference: 'XNJ#5567',
+        fm_employer_details_employer_email_address: 'test-test-com',
+        fm_employer_details_employer_telephone_number: '0123 456 789#',
+        fm_employer_details_employer_address_line_1: '12* test road',
+        fm_employer_details_employer_address_line_2: 'Avenue_test*',
+        fm_employer_details_employer_address_line_3: 'Avenue_test*',
+        fm_employer_details_employer_address_line_4: 'Avenue_test*',
+        fm_employer_details_employer_address_line_5: 'Avenue_test*',
+        fm_employer_details_employer_post_code: 'AB124BM#',
+      };
+
+      finesMacState.employerDetails.formData = incorrectData;
+
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+
+      for (const [, value] of Object.entries(FORMAT_VALIDATION)) {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+      }
+    },
+  );
+
+  it('(AC.1) should allow spaces in the telephone number fields', { tags: ['@PO-272', '@PO-280'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
+    finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0123 456 7890';
+
+    cy.get(DOM_ELEMENTS.telephoneNumberInput).should('have.value', '0123 456 7890');
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', FORMAT_VALIDATION.employer_phone_pattern);
+  });
+
+  it('(AC.1) should not allow asterisks in the address line fields', { tags: ['@PO-272', '@PO-280'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
+    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_1 = 'addr1*';
+    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'addr2*';
+    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'addr3*';
+    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'addr4*';
+    finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'addr5*';
+    cy.get(DOM_ELEMENTS.addressLine1Input).should('have.value', 'addr1*');
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address1_special_chars);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address2_special_chars);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address3_special_chars);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address4_special_chars);
+    cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_address5_special_chars);
+  });
+  it('(AC.2) should error when mandatory fields contain no values', { tags: ['@PO-272', '@PO-280'] }, () => {
     setupComponent(null, 'adultOrYouthOnly');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+
+    Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+    });
+    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Employer details');
+  });
+  it(
+    '(AC.3) should error when mandatory fields are empty and optional fields are not',
+    { tags: ['@PO-272', '@PO-280'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+      finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = 'test@test.com';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '01234567890';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_2 = 'Address Line 2';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_3 = 'Address Line 3';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_4 = 'Address Line 4';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_address_line_5 = 'Address Line 5';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_post_code = '12345';
+
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+
+      Object.values(REQUIRED_FIELDS_VALIDATION).forEach((value) => {
+        cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
+      });
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Employer details');
+    },
+  );
+  it('(AC.4) should error when email address fails validation', { tags: ['@PO-272', '@PO-280'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
+    const incorrectEmails: string[] = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
+    incorrectEmails.forEach((email: string) => {
+      cy.get(DOM_ELEMENTS.emailAddressInput).clear().type(email, { delay: 0 });
+      cy.log('Email: ', email);
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_email_pattern);
+    });
   });
 
-  it('should load button for next page for AYPG Defendant', () => {
-    setupComponent(null, 'parentOrGuardianToPay');
-
-    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
+  it('(AC.5) should error when employee telephone number fails validation', { tags: ['@PO-272', '@PO-280'] }, () => {
+    setupComponent(null, 'adultOrYouthOnly');
+    const incorrectTelephoneNumbers: string[] = ['notNums', '0123456789', '012345678911'];
+    incorrectTelephoneNumbers.forEach((telephone: string) => {
+      cy.get(DOM_ELEMENTS.telephoneNumberInput).clear().type(telephone, { delay: 0 });
+      cy.log('Telephone: ', telephone);
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_phone_pattern);
+    });
   });
 
-  it('should allow for form submission with valid data', () => {
+  it('(AC.6) should allow for form submission with corrected data', { tags: ['@PO-272', '@PO-280'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit);
+    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+    finesMacState.employerDetails.formData = {
+      fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
+      fm_employer_details_employer_reference: 'XNJ#5567',
+      fm_employer_details_employer_email_address: 'test-test-com',
+      fm_employer_details_employer_telephone_number: '0123 456 789#',
+      fm_employer_details_employer_address_line_1: '12* test road',
+      fm_employer_details_employer_address_line_2: 'Avenue_test*',
+      fm_employer_details_employer_address_line_3: 'Avenue_test*',
+      fm_employer_details_employer_address_line_4: 'Avenue_test*',
+      fm_employer_details_employer_address_line_5: 'Avenue_test*',
+      fm_employer_details_employer_post_code: 'AB124BM#',
+    };
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('exist');
+
+    cy.get(DOM_ELEMENTS.companyNameInput).clear().type('Test Employer', { delay: 0 });
+    cy.get(DOM_ELEMENTS.referenceInput).clear().type('1234567890', { delay: 0 });
+    cy.get(DOM_ELEMENTS.emailAddressInput).clear().type('test@test.com', { delay: 0 });
+    cy.get(DOM_ELEMENTS.telephoneNumberInput).clear().type('07700900982', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('Address Line 1', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine2Input).clear().type('Address Line 2', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('Address Line 3', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine4Input).clear().type('Address Line 4', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine5Input).clear().type('Address Line 5', { delay: 0 });
+    cy.get(DOM_ELEMENTS.postCodeInput).clear().type('TE12 3ST', { delay: 0 });
+
+    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+  });
+
+  it('(AC.7) should allow for form submission with valid data', { tags: ['@PO-272', '@PO-280'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
 
     finesMacState.employerDetails.formData = {
       fm_employer_details_employer_company_name: 'Test Employer',
@@ -141,63 +299,15 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should display error messages for incorrect format and character limit', () => {
-    setupComponent(null);
+  it('should load button for next page for adultOrYouthOnly Defendant', () => {
+    setupComponent(null, 'adultOrYouthOnly');
 
-    const incorrectData = {
-      fm_employer_details_employer_company_name: 'A very long employer name that exceeds the character limit',
-      fm_employer_details_employer_reference: 'A very long employee reference that exceeds the character limit',
-      fm_employer_details_employer_email_address: 'a'.repeat(77),
-      fm_employer_details_employer_telephone_number: 'invalid-telephone-format',
-      fm_employer_details_employer_address_line_1: 'A very long address line 1 that exceeds the character limit',
-      fm_employer_details_employer_address_line_2: 'A very long address line 2 that exceeds the character limit',
-      fm_employer_details_employer_address_line_3: 'A very long address line 3 that exceeds the character limit',
-      fm_employer_details_employer_address_line_4: 'A very long address line 4 that exceeds the character limit',
-      fm_employer_details_employer_address_line_5: 'A very long address line 5 that exceeds the character limit',
-      fm_employer_details_employer_post_code: 'invalid-postcode-format',
-    };
-
-    finesMacState.employerDetails.formData = incorrectData;
-
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-
-    for (const [, value] of Object.entries(LENGTH_VALIDATION)) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-    }
+    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
   });
 
-  it('should display error messages for required fields', () => {
-    setupComponent(null);
+  it('should load button for next page for AYPG Defendant', () => {
+    setupComponent(null, 'parentOrGuardianToPay');
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-
-    for (const [, value] of Object.entries(REQUIRED_FIELDS_VALIDATION)) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-    }
-  });
-
-  it('should display error messages for incorrect format and special characters', () => {
-    setupComponent(null);
-
-    const incorrectData = {
-      fm_employer_details_employer_company_name: 'John Maddy & co., Limited company',
-      fm_employer_details_employer_reference: 'XNJ#5567',
-      fm_employer_details_employer_email_address: 'test-test-com',
-      fm_employer_details_employer_telephone_number: '0123 456 789#',
-      fm_employer_details_employer_address_line_1: '12* test road',
-      fm_employer_details_employer_address_line_2: 'Avenue_test*',
-      fm_employer_details_employer_address_line_3: 'Avenue_test*',
-      fm_employer_details_employer_address_line_4: 'Avenue_test*',
-      fm_employer_details_employer_address_line_5: 'Avenue_test*',
-      fm_employer_details_employer_post_code: 'AB124BM#',
-    };
-
-    finesMacState.employerDetails.formData = incorrectData;
-
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-
-    for (const [, value] of Object.entries(FORMAT_VALIDATION)) {
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', value);
-    }
+    cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
   });
 });
