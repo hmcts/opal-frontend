@@ -3,7 +3,7 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacDeleteAccountConfirmationComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-delete-account-confirmation/fines-mac-delete-account-confirmation.component';
-describe('FinesMacAccountNotesAndCommentsComponent', () => {
+describe('FinesMacDeleteAccountConfirmation', () => {
   let mockFinesService = {
     finesMacState: { ...FINES_MAC_STATE_MOCK },
   };

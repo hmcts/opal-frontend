@@ -12,7 +12,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { UtilsService } from '@services/utils/utils.service';
 import { DOM_ELEMENTS } from './constants/remove_imposition_elements';
 
-describe('FinesMacLanguagePreferenceComponent', () => {
+describe('FinesRemoveImpositionComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
   let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
 

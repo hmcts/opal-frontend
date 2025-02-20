@@ -10,7 +10,6 @@ import {
 import { DOM_ELEMENTS } from './constants/fines_mac_employer_details_elements';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_EMPLOYER_DETAILS_MOCK } from './mocks/fines-employer-details-mock';
-import { each } from 'cypress/types/bluebird';
 
 describe('FinesMacEmployerDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_EMPLOYER_DETAILS_MOCK);
