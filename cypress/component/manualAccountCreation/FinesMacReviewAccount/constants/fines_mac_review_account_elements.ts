@@ -83,7 +83,10 @@ export const DOM_ELEMENTS = {
   PGvehicleMakeOrModel: 'div[id = "parentGuardianDetailsVehicleMakeOrModel"]',
   PGregistrationNumber: 'div[id = "parentGuardianDetailsRegistrationNumber"]',
 
-
+  //Company Details
+  companyName: 'div[id = "companyDetailsCompanyName"]',
+  companyAliases: 'div[id = "companyDetailsAliases"]',
+  companyAddress: 'div[id = "companyDetailsAddress"]',
 
   changeLink: 'a.govuk-link.govuk-link--no-visited-state',
   submitButton: 'button[id = "submitAccountButton"]',
