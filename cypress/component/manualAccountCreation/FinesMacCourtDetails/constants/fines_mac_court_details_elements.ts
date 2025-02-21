@@ -24,6 +24,7 @@ export const DOM_ELEMENTS = {
 
   //Buttons
   returnToACDetails: 'button[type="submit"]:contains("Return to account details")',
+  addPersonalDetails: 'button[type="submit"]:contains("Add personal details")',
 
   //Error Summary
   errorSummary: '.govuk-error-summary',
