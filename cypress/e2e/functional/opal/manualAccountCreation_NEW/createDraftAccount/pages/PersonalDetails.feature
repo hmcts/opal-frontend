@@ -119,3 +119,6 @@ Feature: Manual account creation - Personal Details
 
     When I click on the "Personal details" link
     And I see "FNAME" in the "First names" field
+
+  Scenario: Personal Details - Axe Core
+    Then I check accessibility

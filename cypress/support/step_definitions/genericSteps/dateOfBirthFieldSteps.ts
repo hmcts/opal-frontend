@@ -1,5 +1,5 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
-import { calculateDOB } from 'cypress/support/utils/dateUtils';
+import { calculateDOB } from '../../utils/dateUtils';
 
 Then('I see {string} in the Date of birth field', (dob: string) => {
   cy.get('app-moj-date-picker[labeltext="Date of birth"]').find('input').should('have.value', dob);

@@ -299,15 +299,19 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should load button for next page for adultOrYouthOnly Defendant', () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it('(AC.1) should load button for next page for AY Defendant', { tags: ['@PO-272', '@PO-434'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
+    cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should load button for next page for AYPG Defendant', () => {
-    setupComponent(null, 'parentOrGuardianToPay');
+  it('(AC.1) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-435'] }, () => {
+    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+    setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
+    cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 });
