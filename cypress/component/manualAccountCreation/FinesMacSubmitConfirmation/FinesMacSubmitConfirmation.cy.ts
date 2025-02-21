@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { FinesMacSubmitConfirmationComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-submit-confirmation/fines-mac-submit-confirmation.component';
 
-describe('FinesMacAccountNotesAndCommentsComponent', () => {
+describe('FinesMacSubmitConfirmation', () => {
   let mockFinesService = {
     finesMacState: { ...FINES_MAC_STATE_MOCK },
   };

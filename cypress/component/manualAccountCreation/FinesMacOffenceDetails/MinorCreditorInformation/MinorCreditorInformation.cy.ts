@@ -9,7 +9,7 @@ import { UtilsService } from '@services/utils/utils.service';
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/fines-mac-offence-details-minor-creditor/mocks/fines-mac-offence-details-minor-creditor-state.mock';
 import { DOM_ELEMENTS } from './constants/minor-creditor-information-elements';
 
-describe('FinesMacMinorCreditor', () => {
+describe('FinesMacMinorCreditorInformation', () => {
   let finesMacState = structuredClone(FINES_MINOR_CREDITOR_MOCK);
 
   const minorCreditorValue = { ...FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_STATE_MOCK };

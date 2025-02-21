@@ -12,7 +12,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { DateService } from '@services/date-service/date.service';
 import { UtilsService } from '@services/utils/utils.service';
 
-describe('FinesMacParentGuardianDetailsComponent', () => {
+describe('FinesMacCourtDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COURTS_DETAILS_MOCK);
 
   const setupComponent = (formSubmit: any, defType?: string) => {
