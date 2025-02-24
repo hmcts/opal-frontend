@@ -470,8 +470,6 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param rowIndex - The index of the row.
    */
   public goToMinorCreditor(rowIndex: number): void {
-    //const formArray = this.form.controls['fm_offence_details_impositions'] as FormArray;
-
     this.finesMacOffenceDetailsStore.setRowIndex(rowIndex);
 
     this.updateOffenceDetailsDraft(this.form.value);

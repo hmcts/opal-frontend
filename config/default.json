@@ -29,7 +29,8 @@
     "ttlInSeconds": 1200,
     "maxAge": null,
     "secure": false,
-    "sameSite": "strict"
+    "sameSite": "none",
+    "domain": ".hmcts.net"
   },
   "csrf": {
     "cookieName": "XSRF-TOKEN",
