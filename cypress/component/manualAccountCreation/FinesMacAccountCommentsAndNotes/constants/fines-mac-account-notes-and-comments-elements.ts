@@ -10,7 +10,8 @@ export const DOM_ELEMENTS = {
   noteCharHint: 'div[id = "fm_account_comments_notes_notes-hint"]',
   noteInput: 'textarea[id="fm_account_comments_notes_notes"]',
 
-  submitButton: 'button[type="submit"]',
+  submitButton: 'button[type="submit"]:contains("Return to account details")',
+  reviewAndSubmitButton: 'button[type="submit"]:contains("Review and submit account details")',
   cancelLink: 'a.govuk-link.button-link',
   app: 'app-fines-mac-account-comments-notes-form',
 };
