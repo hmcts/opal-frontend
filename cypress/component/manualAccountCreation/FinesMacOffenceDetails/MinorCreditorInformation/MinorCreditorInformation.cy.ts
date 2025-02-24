@@ -45,13 +45,13 @@ describe('FinesMacMinorCreditorInformation', () => {
       },
     });
   };
-  it('should load the component', () => {
+  it('(AC.1) should load the component', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should render all elements on the page', () => {
+  it('(AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent(null);
     cy.get(DOM_ELEMENTS.name).should('exist');
     cy.get(DOM_ELEMENTS.address).should('exist');
@@ -69,7 +69,7 @@ describe('FinesMacMinorCreditorInformation', () => {
     cy.get(DOM_ELEMENTS.paymentReferenceKey).should('exist');
   });
 
-  it('should load all keys and elements with correct text', () => {
+  it('(AC.2) should load all keys and elements with correct text', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.addressKey).should('contain', 'Address');
@@ -79,7 +79,7 @@ describe('FinesMacMinorCreditorInformation', () => {
     cy.get(DOM_ELEMENTS.accountNumberKey).should('contain', 'Account number');
     cy.get(DOM_ELEMENTS.paymentReferenceKey).should('contain', 'Payment reference');
   });
-  it('should load all fields with the correct values', () => {
+  it('(AC.2)should load all fields with the correct values', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent(null);
     cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
     cy.get(DOM_ELEMENTS.address).should('contain', '1 Testing Lane' + 'Test Town' + 'Testing' + 'TE12 3ST');
