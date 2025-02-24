@@ -69,7 +69,6 @@ Feature: Manual account creation - Account Comments and Notes
     And I see "" in the "Comments" field
     And I see "" in the "Notes" field
 
-  @only
   Scenario: (AC.8) grey navigation button routes to correct page [@PO-272, @PO-469, @PO-499, @PO-500]
     Then I see "Account comments and notes" on the page header
 
