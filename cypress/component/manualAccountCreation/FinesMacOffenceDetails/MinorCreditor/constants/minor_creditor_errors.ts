@@ -33,4 +33,5 @@ export const REQUIRED_FIELDS = {
   bankAccountNameRequired: 'Enter name on the account',
   companyNameRequired: `Enter company name`,
   creditorTypeRequired: 'Select whether minor creditor is an individual or company',
+  individualLastNameRequired: "Enter minor creditor's last name",
 };

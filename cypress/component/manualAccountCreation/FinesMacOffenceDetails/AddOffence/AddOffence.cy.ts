@@ -105,7 +105,7 @@ describe('FinesMacAddOffenceComponent', () => {
     });
   };
 
-  it('should render the component', () => {
+  it('(AC.1)should render the component', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
