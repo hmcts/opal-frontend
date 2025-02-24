@@ -11,6 +11,7 @@ import { httpErrorInterceptor } from '@interceptors/http-error/http-error.interc
 import { AppInitializerService } from '@services/app-initializer-service/app-initializer.service';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
+import { AppInsightsService } from '@services/app-insights/app-insights.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,6 +31,7 @@ export const appConfig: ApplicationConfig = {
         cookieName: 'XSRF-TOKEN',
       }),
     ),
+    AppInsightsService,
     provideAppInitializer(() => {
       const appInitializerService = inject(AppInitializerService);
       return appInitializerService.initializeApp();
