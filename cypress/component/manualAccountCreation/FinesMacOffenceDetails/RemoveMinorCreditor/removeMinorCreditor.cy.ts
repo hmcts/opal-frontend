@@ -13,6 +13,7 @@ import { DOM_ELEMENTS } from './constants/remove_minor_creditor_elements';
 describe('FinesMacRemoveMinorCreditor', () => {
   let finesMacOffenceDetailsDraftState = FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK;
   let currentoffenceDetails = 0;
+  let formData: any;
 
   beforeEach(() => {
     const childForms = [
@@ -24,6 +25,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     finesMacOffenceDetailsDraftState.offenceDetailsDraft[currentoffenceDetails].childFormData = childForms;
 
     finesMacOffenceDetailsDraftState.removeMinorCreditor = 0;
+    formData = childForms;
   });
 
   const setupComponent = () => {
@@ -59,10 +61,10 @@ describe('FinesMacRemoveMinorCreditor', () => {
       componentProperties: {},
     });
   };
-  it('should render the component', () => {
+  it('(AC.1) should render the component', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent();
   });
-  it('should render all elements on the page', () => {
+  it('AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.app).should('exist');
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -85,7 +87,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it('should load all keys and elements with correct text', () => {
+  it(' AC.2) should load all keys and elements with correct text', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this minor creditor?');
@@ -100,7 +102,7 @@ describe('FinesMacRemoveMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.removeCreditorButton).should('contain', 'Yes - remove minor creditor');
   });
 
-  it('should load all fields with the correct values', () => {
+  it('AC.2) should load all fields with the correct values', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
@@ -110,4 +112,34 @@ describe('FinesMacRemoveMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');
     cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
   });
+
+  it(
+    'AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty',
+    { tags: ['@PO-670', '@PO-671', '@PO-414'] },
+    () => {
+      setupComponent();
+
+      formData[0].formData = {
+        fm_offence_details_imposition_position: 0,
+        fm_offence_details_minor_creditor_creditor_type: 'individual',
+        fm_offence_details_minor_creditor_title: 'Mr',
+        fm_offence_details_minor_creditor_forenames: 'John',
+        fm_offence_details_minor_creditor_surname: 'Doe',
+        fm_offence_details_minor_creditor_company_name: null,
+        fm_offence_details_minor_creditor_address_line_1: null,
+        fm_offence_details_minor_creditor_address_line_2: null,
+        fm_offence_details_minor_creditor_address_line_3: null,
+        fm_offence_details_minor_creditor_post_code: null,
+        fm_offence_details_minor_creditor_pay_by_bacs: false,
+        fm_offence_details_minor_creditor_bank_account_name: null,
+        fm_offence_details_minor_creditor_bank_sort_code: null,
+        fm_offence_details_minor_creditor_bank_account_number: null,
+        fm_offence_details_minor_creditor_bank_account_ref: null,
+      };
+
+      cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
+      cy.get(DOM_ELEMENTS.address).should('contain', 'Not provided');
+      cy.get(DOM_ELEMENTS.paymentMethod).should('contain', 'Not provided');
+    },
+  );
 });
