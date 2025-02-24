@@ -45,6 +45,7 @@ export const impostitionSelectors = (number: number) => ({
   amountImposedInput: `input[id = "fm_offence_details_amount_imposed_${number}"]`,
   amountPaidInput: `input[id = "fm_offence_details_amount_paid_${number}"]`,
   resultCodeLabel: `label[for = "fm_offence_details_result_id_${number}-autocomplete"]`,
+  resultCodeAutoCompleteValues: `ul[id = "fm_offence_details_result_id_${number}-autocomplete__listbox"]`,
   amountImposedLabel: `label[for = "fm_offence_details_amount_imposed_${number}"]`,
   amountPaidLabel: `label[for = "fm_offence_details_amount_paid_${number}"]`,
   majorCreditor: `input[id = "major_${number}"]`,

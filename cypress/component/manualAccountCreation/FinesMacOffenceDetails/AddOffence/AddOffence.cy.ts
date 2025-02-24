@@ -14,6 +14,7 @@ import { DateService } from '@services/date-service/date.service';
 import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offence_details_elements';
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
 import { UtilsService } from '@services/utils/utils.service';
+import { impositionResultCodelist } from './constants/fines_mac_offence_details_results_codes';
 
 describe('FinesMacAddOffenceComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -110,170 +111,223 @@ describe('FinesMacAddOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should render all the elements on the page and not render imposition remove link', () => {
-    setupComponent(null);
+  it(
+    '(AC.1,AC.2,AC.3,AC.3a,AC.3ai,AC.3b,AC.4) should render all the elements on the page as per design artifact and not render imposition remove link',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impostitionSelectors(0);
 
-    cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Add an offence');
-    cy.get(DOM_ELEMENTS.legend).should('contain', 'Offence details');
+      cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Add an offence');
+      cy.get(DOM_ELEMENTS.legend).should('contain', 'Offence details');
 
-    cy.get(DOM_ELEMENTS.dateOfSentenceInput).should('exist');
-    cy.get(DOM_ELEMENTS.offenceCodeInput).should('exist');
-    cy.get(imposition_1.resultCodeInput).should('exist');
-    cy.get(imposition_1.amountImposedInput).should('exist');
-    cy.get(imposition_1.amountPaidInput).should('exist');
+      cy.get(DOM_ELEMENTS.dateOfSentenceInput).should('exist');
+      cy.get(DOM_ELEMENTS.offenceCodeInput).should('exist');
+      cy.get(imposition_1.resultCodeInput).should('exist');
+      cy.get(imposition_1.amountImposedInput).should('exist');
+      cy.get(imposition_1.amountPaidInput).should('exist');
 
-    cy.get(DOM_ELEMENTS.addImpositionButton).should('exist');
-    cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.addImpositionButton).should('exist');
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
 
-    cy.get(DOM_ELEMENTS.dateOfSentenceLabel).should('contain', 'Date of sentence');
-    cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
-    cy.get(DOM_ELEMENTS.offenceCodeLabel).should('contain', 'Offence code');
-    cy.get(DOM_ELEMENTS.offenceCodeHint).should(
-      'contain',
-      "For example, HY35014. If you don't know the offence code, you can",
-    );
-    cy.get(DOM_ELEMENTS.offenceLink).should('contain', ' search the offence list');
-    cy.get(imposition_1.resultCodeLabel).should('contain', 'Result code');
-    cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
-    cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');
+      cy.get(DOM_ELEMENTS.dateOfSentenceLabel).should('contain', 'Date of sentence');
+      cy.get(DOM_ELEMENTS.dateHint).should('contain', 'For example, 31/01/2023');
+      cy.get(DOM_ELEMENTS.offenceCodeLabel).should('contain', 'Offence code');
+      cy.get(DOM_ELEMENTS.offenceCodeHint).should(
+        'contain',
+        "For example, HY35014. If you don't know the offence code, you can",
+      );
+      cy.get(DOM_ELEMENTS.offenceLink).should('contain', ' search the offence list');
+      cy.get(imposition_1.resultCodeLabel).should('contain', 'Result code');
+      cy.get(imposition_1.amountImposedLabel).should('contain', 'Amount imposed');
+      cy.get(imposition_1.amountPaidLabel).should('contain', 'Amount paid');
 
-    cy.get(DOM_ELEMENTS.removeImpositionLink).eq(2).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.removeImpositionLink).eq(2).should('not.exist');
+    },
+  );
 
-  it('should render the component correctly for adultOrYouthOnly', () => {
-    setupComponent(null, 'adultOrYouthOnly');
+  it(
+    'should render Add another offence button correctly for all defendant types',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly');
+      cy.get('button[type="submit"]').should('contain', 'Add another offence');
 
-    cy.get('button[type="submit"]').should('contain', 'Add another offence');
-  });
-  it('should render the component correctly for parentOrGuardianToPay', () => {
-    setupComponent(null, 'parentOrGuardianToPay');
+      setupComponent(null, 'parentOrGuardianToPay');
+      cy.get('button[type="submit"]').should('contain', 'Add another offence');
 
-    cy.get('button[type="submit"]').should('contain', 'Add another offence');
-  });
-  it('should render the component correctly for company', () => {
-    setupComponent(null, 'company');
+      setupComponent(null, 'company');
 
-    cy.get('button[type="submit"]').should('contain', 'Add another offence');
-  });
+      cy.get('button[type="submit"]').should('contain', 'Add another offence');
+    },
+  );
 
-  it('should show error messages when the form is submitted with empty fields', () => {
-    setupComponent(null);
+  it(
+    '(AC.7b,AC.7d,AC.7h,AC.7i) should show error messages when the form is submitted with empty fields',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary)
-      .should('contain', OFFENCE_ERROR_MESSAGES.requiredSentenceDate)
-      .should('contain', OFFENCE_ERROR_MESSAGES.requiredOffenceCode)
-      .should('contain', IMPOSITION_ERROR_MESSAGES.requiredImpositionCode)
-      .should('contain', IMPOSITION_ERROR_MESSAGES.requiredAmountImposed);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary)
+        .should('contain', OFFENCE_ERROR_MESSAGES.requiredSentenceDate)
+        .should('contain', OFFENCE_ERROR_MESSAGES.requiredOffenceCode)
+        .should('contain', IMPOSITION_ERROR_MESSAGES.requiredImpositionCode)
+        .should('contain', IMPOSITION_ERROR_MESSAGES.requiredAmountImposed);
+    },
+  );
 
-  it('should allow form to be submitted with required fields filled in', () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-    setupComponent(mockFormSubmit);
+  it(
+    '(AC.8)should allow form to be submitted with required fields filled in',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      setupComponent(mockFormSubmit);
 
-    const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impostitionSelectors(0);
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
 
-    cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    },
+  );
 
-  it('should show minor creditor and major creditor fields for certain imposition codes', () => {
-    setupComponent(null);
+  it(
+    '(AC.4b,AC.4bi,AC,4c) should show minor,major creditor fields for (FCOMP,FCOST) Only',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impostitionSelectors(0);
 
-    cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      impositionResultCodelist.forEach((resultCode) => {
+        if (resultCode === 'Compensation (FCOMP)' || resultCode === 'Costs (FCOST)') {
+          cy.get(imposition_1.resultCodeInput).type(`${resultCode}`, { delay: 0 });
+          cy.get(imposition_1.resultCodeLabel).click();
+          cy.get(imposition_1.majorCreditor).should('exist');
+          cy.get(imposition_1.minorCreditor).should('exist');
+          cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
+          cy.get(imposition_1.minorCreditorLabel).should('contain', 'Minor creditor');
+        } else {
+          cy.get(imposition_1.resultCodeInput).type(`${resultCode}`, { delay: 0 });
+          cy.get(imposition_1.resultCodeLabel).click();
 
-    cy.get(imposition_1.majorCreditor).should('exist');
-    cy.get(imposition_1.minorCreditor).should('exist');
-    cy.get(imposition_1.majorCreditorLabel).should('contain', 'Major creditor');
-    cy.get(imposition_1.minorCreditorLabel).should('contain', 'Minor creditor');
-  });
+          cy.get(imposition_1.majorCreditor).should('not.exist');
+          cy.get(imposition_1.minorCreditor).should('not.exist');
+          cy.get(imposition_1.majorCreditorLabel).should('not.exist');
+          cy.get(imposition_1.minorCreditorLabel).should('not.exist');
+        }
+      });
+    },
+  );
 
-  it('should not allow form to be submitted without selecting minor creditor or major creditor field', () => {
-    setupComponent(null);
+  it(
+    'should not allow form to be submitted without selecting minor creditor or major creditor field',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impostitionSelectors(0);
 
-    cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredCreditor);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredCreditor);
+    },
+  );
 
-  it('should load correct fields for major creditor selection and expect error if field is not filled in', () => {
-    setupComponent(null);
+  it(
+    ' (AC.5a) should not show remove imposition link for only 1 imposition',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impostitionSelectors(0);
+      cy.get(DOM_ELEMENTS.removeImpositionLink).should('not.exist');
+    },
+  );
 
-    cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+  it(
+    '(AC.4bii) should load correct fields for major creditor selection and expect error if field is not filled in',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(imposition_1.majorCreditor).click();
-    cy.get(imposition_1.majorCreditorCode).should('exist');
-    cy.get(imposition_1.majorCreditorCodeLabel).should('contain', 'Search using name or code');
+      const imposition_1 = impostitionSelectors(0);
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMajorCreditor);
-  });
+      cy.get(imposition_1.majorCreditor).click();
+      cy.get(imposition_1.majorCreditorCode).should('exist');
+      cy.get(imposition_1.majorCreditorCodeLabel).should('contain', 'Search using name or code');
 
-  it('should load correct fields for minor creditor selection and expect error if field is not filled in', () => {
-    setupComponent(null);
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    const imposition_1 = impostitionSelectors(0);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredMajorCreditor);
+    },
+  );
 
-    cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+  it(
+    '(AC.4bii) should load correct fields for minor creditor selection and expect error if field is not filled in',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(imposition_1.minorCreditor).click();
+      const imposition_1 = impostitionSelectors(0);
 
-    //E-2-E test for minor creditor flow to be tested
-    cy.get(DOM_ELEMENTS.minorCreditorLink).should('exist');
-  });
+      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
 
-  it('should check impositions flow for multiple impositions', () => {
-    setupComponent(null);
+      cy.get(imposition_1.minorCreditor).click();
+      cy.get(imposition_1.majorCreditor).should('not.be.selected');
 
-    const imposition_1 = impostitionSelectors(0);
-    const imposition_2 = impostitionSelectors(1);
+      //E-2-E test for minor creditor flow to be tested
+      cy.get(DOM_ELEMENTS.minorCreditorLink).should('exist');
+    },
+  );
 
-    cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+  it(
+    '(AC.5) should check impositions flow for multiple impositions and remove imposition link',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.addImpositionButton).click();
+      const imposition_1 = impostitionSelectors(0);
+      const imposition_2 = impostitionSelectors(1);
 
-    cy.get(imposition_2.resultCodeInput).should('exist');
-    cy.get(imposition_2.amountImposedInput).should('exist');
-    cy.get(imposition_2.amountPaidInput).should('exist');
+      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
 
-    cy.get(imposition_2.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_2.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_2.amountPaidInput).type('50', { delay: 0 });
+      cy.get(DOM_ELEMENTS.addImpositionButton).click();
 
-    //E-2-E test for removing imposition for proper flows to be tested
-    cy.get(DOM_ELEMENTS.removeImpositionLink).should('exist');
-  });
+      cy.get(imposition_2.resultCodeInput).should('exist');
+      cy.get(imposition_2.amountImposedInput).should('exist');
+      cy.get(imposition_2.amountPaidInput).should('exist');
 
-  it('should show error message for invalid date format', () => {
+      cy.get(imposition_2.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
+      cy.get(imposition_2.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_2.amountPaidInput).type('50', { delay: 0 });
+
+      //E-2-E test for removing imposition for proper flows to be tested
+      cy.get(DOM_ELEMENTS.removeImpositionLink).should('exist');
+    },
+  );
+
+  it('(AC.7E) should show error message for invalid date format', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
     setupComponent(null);
 
     finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01.01.2021';
@@ -282,7 +336,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDateFormat);
   });
-  it('should show error message for invalid date', () => {
+  it('(AC.7F) should show error message for invalid date', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
     setupComponent(null);
 
     finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '32/01/2021';
@@ -292,7 +346,7 @@ describe('FinesMacAddOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDate);
   });
 
-  it('should show error message for future date', () => {
+  it('(AC.7g) should show error message for future date', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
     setupComponent(null);
 
     const futureDate = new Date();
@@ -306,21 +360,25 @@ describe('FinesMacAddOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidFutureDate);
   });
 
-  it('should show error message for invalid amount value', () => {
-    setupComponent(null);
+  it(
+    '(AC.7j) should show error message for invalid amount imposed',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impostitionSelectors(0);
 
-    cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('invalid', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('invalid', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmountValue);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmountValue);
+    },
+  );
 
-  it('should show error message for invalid amount', () => {
+  it('(AC.7k) should show error message for invalid  amount paid', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
     setupComponent(null);
 
     const imposition_1 = impostitionSelectors(0);
@@ -334,19 +392,23 @@ describe('FinesMacAddOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmount);
   });
 
-  it('should show error message for invalid offence code', () => {
-    setupComponent(null);
+  it(
+    '(AC.3bii) should show invalid ticket panel for invalid offence code',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'INVALID';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'INVALID';
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidOffenceCode);
-    cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
-    cy.get(DOM_ELEMENTS.invalidPanel).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidOffenceCode);
+      cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
+      cy.get(DOM_ELEMENTS.invalidPanel).should('exist');
+    },
+  );
 
-  it('should show ticket panel for valid offence code', () => {
+  it('(AC.3bi) should show ticket panel for valid offence code', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
     setupComponent(null);
 
     finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
@@ -355,44 +417,52 @@ describe('FinesMacAddOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.successPanel).should('exist');
   });
 
-  it('should allow dateOfSentence to be entered via date picker and have all elements loaded', () => {
-    setupComponent(null);
+  it(
+    '(AC.2) should allow dateOfSentence to be entered via date picker and have all elements loaded',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
-    cy.get(DOM_ELEMENTS.datePickerButton).click();
-    cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
-    cy.get(DOM_ELEMENTS.datePickerDateOfSentenceElement).should('exist');
-    cy.get(DOM_ELEMENTS.testDate).click();
-    cy.get(DOM_ELEMENTS.dateOfSentenceInput).should(
-      'have.value',
-      `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
-    );
-  });
+      cy.get(DOM_ELEMENTS.datePickerButton).should('exist');
+      cy.get(DOM_ELEMENTS.datePickerButton).click();
+      cy.get(DOM_ELEMENTS.datePickerDialogHead).should('exist');
+      cy.get(DOM_ELEMENTS.datePickerDateOfSentenceElement).should('exist');
+      cy.get(DOM_ELEMENTS.testDate).click();
+      cy.get(DOM_ELEMENTS.dateOfSentenceInput).should(
+        'have.value',
+        `${date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}`,
+      );
+    },
+  );
 
-  it('should allow form submission with multiple impositions', () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+  it(
+    '(AC.6, AC.8) should allow form submission with multiple impositions',
+    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
-    setupComponent(mockFormSubmit);
+      setupComponent(mockFormSubmit);
 
-    const imposition_1 = impostitionSelectors(0);
-    const imposition_2 = impostitionSelectors(1);
+      const imposition_1 = impostitionSelectors(0);
+      const imposition_2 = impostitionSelectors(1);
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
 
-    cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.addImpositionButton).click();
+      cy.get(DOM_ELEMENTS.addImpositionButton).click();
 
-    cy.get(imposition_2.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
-    cy.get(imposition_2.amountImposedInput).type('100', { delay: 0 });
-    cy.get(imposition_2.amountPaidInput).type('50', { delay: 0 });
+      cy.get(imposition_2.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
+      cy.get(imposition_2.amountImposedInput).type('100', { delay: 0 });
+      cy.get(imposition_2.amountPaidInput).type('50', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    },
+  );
 });
