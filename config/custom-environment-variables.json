@@ -35,6 +35,12 @@
         "__name": "FEATURES_LAUNCH_DARKLY_STREAM",
         "__format": "json"
       }
+    },
+    "app-insights": {
+      "enabled": {
+        "__name": "FEATURES_APP_INSIGHTS_ENABLED",
+        "__format": "json"
+      }
     }
   },
   "session": {
