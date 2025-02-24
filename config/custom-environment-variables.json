@@ -45,7 +45,8 @@
   },
   "session": {
     "secure": { "__name": "SESSION_SECURE_ENABLED", "__format": "json" },
-    "sameSite": "SESSION_SAME_SITE"
+    "sameSite": "SESSION_SAME_SITE",
+    "domain": "SESSION_DOMAIN"
   },
   "csrf": {
     "secure": { "__name": "CSRF_SECURE_ENABLED", "__format": "json" },
