@@ -82,11 +82,11 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
       componentProperties: {},
     });
   };
-  it('should render component', () => {
+  it('(AC.1) should render component', { tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
-  it('should load all elements on the page', () => {
+  it('(AC.1) should load all elements on the page', () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -106,7 +106,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it('should have appropriate text for each element', () => {
+  it('(AC.2, AC.3) should have appropriate text for each element', { tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should(
@@ -136,3 +136,5 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('contain', 'No - cancel');
   });
 });
+
+//E-2-E TESTS:Acess to remove offence screen flow (AC.2) ,Cancel link functionality(AC.5), Remove offence and impositions button functionality(AC.4), Check no offences exists and appropriate text is displayed back at summary screen(AC.6)

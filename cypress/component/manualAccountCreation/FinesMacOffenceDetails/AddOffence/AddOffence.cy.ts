@@ -294,7 +294,6 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(imposition_1.minorCreditor).click();
       cy.get(imposition_1.majorCreditor).should('not.be.selected');
 
-      //E-2-E test for minor creditor flow to be tested
       cy.get(DOM_ELEMENTS.minorCreditorLink).should('exist');
     },
   );
@@ -322,7 +321,6 @@ describe('FinesMacAddOffenceComponent', () => {
       cy.get(imposition_2.amountImposedInput).type('100', { delay: 0 });
       cy.get(imposition_2.amountPaidInput).type('50', { delay: 0 });
 
-      //E-2-E test for removing imposition for proper flows to be tested
       cy.get(DOM_ELEMENTS.removeImpositionLink).should('exist');
     },
   );
@@ -466,3 +464,4 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 });
+//E-2-E Tests Required: Access to add offence screen from summary page (AC.1), Check Search offence list link works (AC.3Aii), Check Cancel button works (AC.9,AC.10), Check review offence flow(AC.8)

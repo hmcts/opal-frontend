@@ -89,3 +89,4 @@ describe('FinesMacMinorCreditorInformation', () => {
     cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
   });
 });
+//E-2-E Tests Not required for this component as it is being tested in the Remove Minor Creditor screen.

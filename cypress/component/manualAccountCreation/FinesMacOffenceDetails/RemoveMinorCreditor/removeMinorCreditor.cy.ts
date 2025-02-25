@@ -143,3 +143,4 @@ describe('FinesMacRemoveMinorCreditor', () => {
     },
   );
 });
+//E-2-E Tests required: Access to remove minor creditor screen flow (AC.2) Remove minor creditor functionality (AC.4) via button, Cancel link functionality (AC.3)
