@@ -62,7 +62,7 @@ describe('ReviewOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should load all elements on the screen correctly', () => {
+  it('should load all elements on the screen correctly', { tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
@@ -78,7 +78,7 @@ describe('ReviewOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
   });
 
-  it('should have correct values in the elements', () => {
+  it('should have correct values in the elements',{ tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
@@ -99,7 +99,7 @@ describe('ReviewOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
   });
 
-  it('should update value according to imposition type', () => {
+  it('should update value according to imposition type', { tags: ['@PO-416', '@PO-682', '@PO-680'] },() => {
     setupComponent(1);
 
     cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
@@ -120,3 +120,4 @@ describe('ReviewOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£0.0');
   });
 });
+//No E-2-E Test required as this component is used and tested within the remove offences and imposition component
