@@ -66,13 +66,13 @@ describe('FinesRemoveImpositionComponent', () => {
     });
   };
 
-  it('should render the component correctly', () => {
+  it('(AC.1)should render the component correctly', () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should render all elements correctly', () => {
+  it('(AC.1)(AC.2)should render all elements correctly', { tags: ['@PO-418', '@PO-672', '@PO-673'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -88,32 +88,40 @@ describe('FinesRemoveImpositionComponent', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it('should have correct field labels and names in the elements when loading data', () => {
-    setupComponent();
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this imposition?');
+  it(
+    '(AC.2)should have correct field labels and names in the elements when loading data',
+    { tags: ['@PO-418', '@PO-672', '@PO-673'] },
+    () => {
+      setupComponent();
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this imposition?');
 
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-    cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge (FCC)');
-    cy.get(DOM_ELEMENTS.creditor).should('contain', 'Aldi Stores Ltd (ALDI)');
-    cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
-    cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
-  });
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge (FCC)');
+      cy.get(DOM_ELEMENTS.creditor).should('contain', 'Aldi Stores Ltd (ALDI)');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
+      cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
+    },
+  );
 
-  it('should set values to defaults or null after pressing the remove imposition button', () => {
-    setupComponent();
+  it(
+    '(AC.4)should set values to defaults or null after pressing the remove imposition button',
+    { tags: ['@PO-418', '@PO-672', '@PO-673'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.removeImpositionButton).click();
+      cy.get(DOM_ELEMENTS.removeImpositionButton).click();
 
-    cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
-    cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts and Tribunals Service (HMCTS)');
-    cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£0.00');
-    cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£0.00');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£0.00');
-  });
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Fine (FO)');
+      cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts and Tribunals Service (HMCTS)');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£0.00');
+      cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£0.00');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£0.00');
+    },
+  );
 });
