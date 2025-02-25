@@ -27,3 +27,13 @@ export function formatDateString(dateString: string): string {
   const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
   return date.toLocaleDateString('en-GB', options);
 }
+export function calculateDOB(yearsAgo: number): string {
+  const today = new Date();
+  const dob = new Date(today.getFullYear() - yearsAgo, today.getMonth(), today.getDate());
+
+  const day = String(dob.getDate()).padStart(2, '0');
+  const month = String(dob.getMonth() + 1).padStart(2, '0');
+  const year = dob.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
