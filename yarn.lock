@@ -7069,7 +7069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:12.0.0, commander@npm:~12.0.0":
+"commander@npm:12.0.0":
   version: 12.0.0
   resolution: "commander@npm:12.0.0"
   checksum: 10/62062e2ffe6abd5aa42a551e62fd5eb9b2620f6ac4299382b2aa9fb02f95cda0242d7e84acb890479bd6491edb805f7f91aecb5b4f5c70dc57df49ed7f02ef14
@@ -7090,7 +7090,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^12.0.0, commander@npm:^12.1.0":
+"commander@npm:^12.0.0, commander@npm:^12.1.0, commander@npm:~12.1.0":
   version: 12.1.0
   resolution: "commander@npm:12.1.0"
   checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
@@ -11206,16 +11206,16 @@ __metadata:
   linkType: hard
 
 "junit-report-merger@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "junit-report-merger@npm:7.0.0"
+  version: 7.0.1
+  resolution: "junit-report-merger@npm:7.0.1"
   dependencies:
-    commander: "npm:~12.0.0"
+    commander: "npm:~12.1.0"
     fast-glob: "npm:~3.3.0"
     xmlbuilder2: "npm:3.1.1"
   bin:
     jrm: cli.js
     junit-report-merger: cli.js
-  checksum: 10/a9b0063761a072e8708fabc66949eb67086a035c729789d3db170faf0153f7abb5675e15bb4e8beda3c3e1a740355dab4938d76020d26db5f2c6bb331e085b25
+  checksum: 10/b33e7c5a45b6a41dfb8725ce86573aefbbf530394965b6fe67aa8b2e4d7744ce9a640c53a989c36c60cea06e4f6a5011525534f55db1bb3fbfaf84ff8cf440cf
   languageName: node
   linkType: hard
 
