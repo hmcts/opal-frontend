@@ -93,7 +93,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should set up the personal details form', () => {
-    component['setupPersonalDetailsForm']();
+    component['setupPersonalDetailsForm']('fm');
     expect(component.form).toBeTruthy();
     expect(component.form.get('fm_personal_details_title')).toBeTruthy();
     expect(component.form.get('fm_personal_details_forenames')).toBeTruthy();
