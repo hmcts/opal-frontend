@@ -3984,14 +3984,13 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^3.0.0":
-  version: 3.3.1
-  resolution: "@ministryofjustice/frontend@npm:3.3.1"
-  dependencies:
-    govuk-frontend: "npm:^5.0.0"
-    moment: "npm:^2.27.0"
+  version: 3.7.0
+  resolution: "@ministryofjustice/frontend@npm:3.7.0"
   peerDependencies:
-    jquery: ^3.6.0
-  checksum: 10/ab278d257fcac450dfe083d7fc04cfdaacd0317a7ad8a79c43c852f56daae6d0bed3b32fe7a5d0a3f8cbe8c066373f4388fc0746d3a5f80ce70cfb1bd9da69d9
+    govuk-frontend: 5.x
+    jquery: 3.x
+    moment: 2.x
+  checksum: 10/88e7b1e355244dfd0cede82cd8e15b6579664bd7fd681c9f26d3fa76ac7a77910c1f6972131ddd448c97460ff6d68862bceef27deebc781eea176af418479753
   languageName: node
   linkType: hard
 
@@ -12633,7 +12632,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.27.0, moment@npm:^2.29.4":
+"moment@npm:^2.29.4":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
   checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
