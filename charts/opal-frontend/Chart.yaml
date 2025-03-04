@@ -3,13 +3,13 @@ appVersion: '1.0'
 description: A Helm chart for opal-frontend
 name: opal-frontend
 home: https://github.com/hmcts/opal-frontend/
-version: 0.0.180
+version: 0.0.181
 maintainers:
   - name: HMCTS Opal team
 dependencies:
   - name: nodejs
-    version: 3.1.1
-    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
+    version: 3.2.0
+    repository: 'oci://hmctspublic.azurecr.io/helm'
   - name: redis
     version: 20.10.1
     repository: 'oci://registry-1.docker.io/bitnamicharts'
