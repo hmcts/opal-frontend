@@ -92,4 +92,12 @@ Feature: Manual account creation - Court Details
   Scenario: Court Details - Axe Core
     Then I check accessibility
 
+  Scenario: (AC.6) Grey navigation links routes correctly [@PO-272, @PO-389]
+    When I enter "Avon" into the "Sending area or Local Justice Area (LJA)" search box
+    And I enter "1234" into the "Prosecutor Case Reference (PCR)" field
+    And I enter "bridport" into the "Enforcement court" search box
+
+    When I click the "Add personal details" button
+
+    Then I see "Personal details" on the page header
 

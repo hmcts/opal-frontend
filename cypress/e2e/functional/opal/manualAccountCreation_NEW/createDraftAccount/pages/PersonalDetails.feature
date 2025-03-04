@@ -1,4 +1,4 @@
-@ManualAccountCreation @PersonalDetails @PO-360 @PO-369 @PO-433 @PO-502 @PO-505
+@ManualAccountCreation @PersonalDetails @PO-272 @PO-360 @PO-369 @PO-433 @PO-502 @PO-505
 Feature: Manual account creation - Personal Details
   #This feature file contains tests for the Personal Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the PersonalDetailsComponent.cy.ts component tests
@@ -122,3 +122,13 @@ Feature: Manual account creation - Personal Details
 
   Scenario: Personal Details - Axe Core
     Then I check accessibility
+
+  Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-433]
+    Then I select "Mr" from the "Title" dropdown
+    And I enter "FNAME" into the "First names" field
+    And I enter "LNAME" into the "Last name" field
+    And I enter "Addr Line 1" into the "Address line 1" field
+
+    When I click the "Add contact details" button
+
+    Then I see "Defendant contact details" on the page header
