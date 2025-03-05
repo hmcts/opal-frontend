@@ -62,7 +62,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
-    { tags: ['@PO-366', '@PO-272', '@PO-468','PO-524'] },
+    { tags: ['@PO-366', '@PO-272', '@PO-468', 'PO-524'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
@@ -94,7 +94,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.4,AC.5,AC.6)should load all elements on the screen correctly for AYPG',
-    { tags: ['@PO-367', '@PO-344', '@PO-468','@PO-524'] },
+    { tags: ['@PO-367', '@PO-344', '@PO-468', '@PO-524'] },
     () => {
       setupComponent(null);
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';

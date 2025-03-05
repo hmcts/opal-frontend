@@ -21,6 +21,6 @@ export const DOM_ELEMENTS = {
   offenceDetails: 'app-govuk-task-list-item[taskListItemId="offenceDetailsItem"]',
   paymentTerms: 'app-govuk-task-list-item[taskListItemId="paymentTermsItem"]',
   accountCommentsAndNotesItem: 'app-govuk-task-list-item[taskListItemId="accountCommentsAndNotesItem"]',
-  CheckDetails : 'h2.govuk-heading-m',
-  CheckDetailsText : 'p.govuk-body',
+  CheckDetails: 'h2.govuk-heading-m',
+  CheckDetailsText: 'p.govuk-body',
 };
