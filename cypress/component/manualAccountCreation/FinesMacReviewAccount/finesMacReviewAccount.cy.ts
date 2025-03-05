@@ -119,144 +119,158 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should render court details and offence details for all defendant types', () => {
-    cy.wait('@getOffenceByCjsCode');
-    cy.wait('@getCourts');
-    setupComponent();
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = null;
+  it(
+    '(AC.1a)should render court details and offence details for all defendant types',
+    { tags: ['@PO-560', '@PO-662', '@PO-663', '@PO-545'] },
+    () => {
+      cy.wait('@getOffenceByCjsCode');
+      cy.wait('@getCourts');
+      setupComponent();
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = null;
 
-    cy.get(DOM_ELEMENTS.originatorName).should('exist');
-    cy.get(DOM_ELEMENTS.prosecutorCaseReference).should('exist');
-    cy.get(DOM_ELEMENTS.enforcementCourt).should('exist');
+      cy.get(DOM_ELEMENTS.originatorName).should('exist');
+      cy.get(DOM_ELEMENTS.prosecutorCaseReference).should('exist');
+      cy.get(DOM_ELEMENTS.enforcementCourt).should('exist');
 
-    cy.get(DOM_ELEMENTS.headingLarge).should('exist');
-    cy.get(DOM_ELEMENTS.headingMedium).should('exist');
-    cy.get(DOM_ELEMENTS.dateOfSentence).should('exist');
-    cy.get(DOM_ELEMENTS.offencecode).should('exist');
+      cy.get(DOM_ELEMENTS.headingLarge).should('exist');
+      cy.get(DOM_ELEMENTS.headingMedium).should('exist');
+      cy.get(DOM_ELEMENTS.dateOfSentence).should('exist');
+      cy.get(DOM_ELEMENTS.offencecode).should('exist');
 
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
 
-    cy.get(DOM_ELEMENTS.impositionType).should('exist');
-    cy.get(DOM_ELEMENTS.creditor).should('exist');
-    cy.get(DOM_ELEMENTS.amountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.amountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.impositionType).should('exist');
+      cy.get(DOM_ELEMENTS.creditor).should('exist');
+      cy.get(DOM_ELEMENTS.amountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.amountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
 
-    cy.get(DOM_ELEMENTS.totalHeading).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.totalHeading).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
 
-    cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance).should('exist');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance).should('exist');
 
-    cy.get(DOM_ELEMENTS.originatorName)
-      .should('contain', 'Sending area or Local Justice Area (LJA)')
-      .should('contain', 'Asylum & Immigration Tribunal (9985)');
-    cy.get(DOM_ELEMENTS.prosecutorCaseReference)
-      .should('contain', 'Prosecutor Case Reference (PCR)')
-      .should('contain', 'O1AT204003');
-    cy.get(DOM_ELEMENTS.enforcementCourt)
-      .should('contain', 'Enforcement court')
-      .should('contain', 'Historic Debt Database (101)');
+      cy.get(DOM_ELEMENTS.originatorName)
+        .should('contain', 'Sending area or Local Justice Area (LJA)')
+        .should('contain', 'Asylum & Immigration Tribunal (9985)');
+      cy.get(DOM_ELEMENTS.prosecutorCaseReference)
+        .should('contain', 'Prosecutor Case Reference (PCR)')
+        .should('contain', 'O1AT204003');
+      cy.get(DOM_ELEMENTS.enforcementCourt)
+        .should('contain', 'Enforcement court')
+        .should('contain', 'Historic Debt Database (101)');
 
-    cy.get(DOM_ELEMENTS.dateOfSentence).should('contain', 'Date of sentence').should('contain', '01 October 2022');
-    cy.get(DOM_ELEMENTS.offencecode).should('contain', 'AK123456').should('contain', 'ak test');
+      cy.get(DOM_ELEMENTS.dateOfSentence).should('contain', 'Date of sentence').should('contain', '01 October 2022');
+      cy.get(DOM_ELEMENTS.offencecode).should('contain', 'AK123456').should('contain', 'ak test');
 
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-    cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
-    cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-    cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
-    cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
+      cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
+      cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
 
-    cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£200.00');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
+      cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£200.00');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
 
-    cy.get(DOM_ELEMENTS.headingMedium).should('contain', 'Totals');
-    cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£200.00').should('contain', 'Amount imposed');
-    cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('contain', '£50.00').should('contain', 'Amount paid');
-    cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance).should('contain', '£150.00').should('contain', 'Balance remaining');
+      cy.get(DOM_ELEMENTS.headingMedium).should('contain', 'Totals');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('contain', '£200.00').should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('contain', '£50.00').should('contain', 'Amount paid');
+      cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance)
+        .should('contain', '£150.00')
+        .should('contain', 'Balance remaining');
 
-    cy.get(DOM_ELEMENTS.paymentTerms).should('contain', 'Payment terms').should('contain', 'Pay in full');
-    cy.get(DOM_ELEMENTS.payByDate).should('contain', 'Pay by date').should('contain', '01 January 2022');
-    cy.get(DOM_ELEMENTS.requestPaymentCard).should('contain', 'Request payment card').should('contain', 'Yes');
-    cy.get(DOM_ELEMENTS.hasDaysInDefault).should('contain', 'There are days in default').should('contain', 'No');
-    cy.get(DOM_ELEMENTS.enforcementActions).should('contain', 'Enforcement action').should('contain', 'No');
-  });
+      cy.get(DOM_ELEMENTS.paymentTerms).should('contain', 'Payment terms').should('contain', 'Pay in full');
+      cy.get(DOM_ELEMENTS.payByDate).should('contain', 'Pay by date').should('contain', '01 January 2022');
+      cy.get(DOM_ELEMENTS.requestPaymentCard).should('contain', 'Request payment card').should('contain', 'Yes');
+      cy.get(DOM_ELEMENTS.hasDaysInDefault).should('contain', 'There are days in default').should('contain', 'No');
+      cy.get(DOM_ELEMENTS.enforcementActions).should('contain', 'Enforcement action').should('contain', 'No');
+    },
+  );
 
-  it('should render all elements on the screen for AY check account', () => {
-    setupComponent();
+  it(
+    '(AC.1a,AC.2,AC.5)should render all elements on the screen for AY check account',
+    { tags: ['@PO-560', '@PO-272'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.heading).should('exist');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.heading).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
 
-    // Account details
-    cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
-    cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
-    cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
+      // Account details
+      cy.get(DOM_ELEMENTS.businessUnitData).should('exist');
+      cy.get(DOM_ELEMENTS.accountTypeData).should('exist');
+      cy.get(DOM_ELEMENTS.defendantTypeData).should('exist');
 
-    // Personal details
-    cy.get(DOM_ELEMENTS.summaryTitle).should('exist');
-    cy.get(DOM_ELEMENTS.title).should('exist');
-    cy.get(DOM_ELEMENTS.forenames).should('exist');
-    cy.get(DOM_ELEMENTS.surname).should('exist');
-    cy.get(DOM_ELEMENTS.aliases).should('exist');
-    cy.get(DOM_ELEMENTS.dob).should('exist');
-    cy.get(DOM_ELEMENTS.nationalInsuranceNumber).should('exist');
-    cy.get(DOM_ELEMENTS.address).should('exist');
-    cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('exist');
-    cy.get(DOM_ELEMENTS.registrationNumber).should('exist');
+      // Personal details
+      cy.get(DOM_ELEMENTS.summaryTitle).should('exist');
+      cy.get(DOM_ELEMENTS.title).should('exist');
+      cy.get(DOM_ELEMENTS.forenames).should('exist');
+      cy.get(DOM_ELEMENTS.surname).should('exist');
+      cy.get(DOM_ELEMENTS.aliases).should('exist');
+      cy.get(DOM_ELEMENTS.dob).should('exist');
+      cy.get(DOM_ELEMENTS.nationalInsuranceNumber).should('exist');
+      cy.get(DOM_ELEMENTS.address).should('exist');
+      cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('exist');
+      cy.get(DOM_ELEMENTS.registrationNumber).should('exist');
 
-    // Contact details
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('exist');
+      // Contact details
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber).should('exist');
 
-    // Employer details
-    cy.get(DOM_ELEMENTS.employerName).should('exist');
-    cy.get(DOM_ELEMENTS.employeeReference).should('exist');
-    cy.get(DOM_ELEMENTS.employerEmailAddress).should('exist');
-    cy.get(DOM_ELEMENTS.employerTelephoneNumber).should('exist');
-    cy.get(DOM_ELEMENTS.employerAddress).should('exist');
+      // Employer details
+      cy.get(DOM_ELEMENTS.employerName).should('exist');
+      cy.get(DOM_ELEMENTS.employeeReference).should('exist');
+      cy.get(DOM_ELEMENTS.employerEmailAddress).should('exist');
+      cy.get(DOM_ELEMENTS.employerTelephoneNumber).should('exist');
+      cy.get(DOM_ELEMENTS.employerAddress).should('exist');
 
-    // Payment terms
-    cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-    cy.get(DOM_ELEMENTS.payByDate).should('exist');
-    cy.get(DOM_ELEMENTS.requestPaymentCard).should('exist');
-    cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
-    cy.get(DOM_ELEMENTS.enforcementActions).should('exist');
+      // Payment terms
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.payByDate).should('exist');
+      cy.get(DOM_ELEMENTS.requestPaymentCard).should('exist');
+      cy.get(DOM_ELEMENTS.hasDaysInDefault).should('exist');
+      cy.get(DOM_ELEMENTS.enforcementActions).should('exist');
 
-    // Account comments and notes
-    cy.get(DOM_ELEMENTS.comments).should('exist');
-    cy.get(DOM_ELEMENTS.accountNotes).should('exist');
+      // Account comments and notes
+      cy.get(DOM_ELEMENTS.comments).should('exist');
+      cy.get(DOM_ELEMENTS.accountNotes).should('exist');
 
-    cy.get(DOM_ELEMENTS.submitButton).should('exist');
-    cy.get(DOM_ELEMENTS.deleteLink).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.deleteLink).should('exist');
+    },
+  );
 
-  it('should check each summary list has change button next to them for AY', () => {
-    setupComponent();
+  it(
+    '(AC.4a) should check each summary list has change button next to them for AY',
+    { tags: ['@PO-560', '@PO-272'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Personal details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Employer details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-  });
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Personal details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Employer details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
+    },
+  );
 
-  it('should have all correct text on all elements for AY', () => {
+  it('(AC.1,AC.2) should have all correct text on all elements for AY', { tags: ['@PO-560', '@PO-272'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('contain', 'Check account details');
@@ -319,56 +333,62 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
   });
 
-  it('should show dashed line if Data is empty for non required details', () => {
-    setupComponent();
+  it(
+    '(AC.3) should show dashed line if Data is empty for non required details',
+    { tags: ['@PO-560', '@PO-272'] },
+    () => {
+      setupComponent();
 
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: '',
-      fm_contact_details_email_address_2: '',
-      fm_contact_details_telephone_number_business: '',
-      fm_contact_details_telephone_number_home: '',
-      fm_contact_details_telephone_number_mobile: '',
-    };
-    finesMacState.employerDetails.formData = {
-      fm_employer_details_employer_address_line_1: '',
-      fm_employer_details_employer_address_line_2: '',
-      fm_employer_details_employer_address_line_3: '',
-      fm_employer_details_employer_address_line_4: '',
-      fm_employer_details_employer_address_line_5: '',
-      fm_employer_details_employer_company_name: '',
-      fm_employer_details_employer_email_address: '',
-      fm_employer_details_employer_post_code: '',
-      fm_employer_details_employer_reference: '',
-      fm_employer_details_employer_telephone_number: '',
-    };
-    finesMacState.accountCommentsNotes.formData = {
-      fm_account_comments_notes_comments: '',
-      fm_account_comments_notes_notes: '',
-    };
+      finesMacState.contactDetails.formData = {
+        fm_contact_details_email_address_1: '',
+        fm_contact_details_email_address_2: '',
+        fm_contact_details_telephone_number_business: '',
+        fm_contact_details_telephone_number_home: '',
+        fm_contact_details_telephone_number_mobile: '',
+      };
+      finesMacState.employerDetails.formData = {
+        fm_employer_details_employer_address_line_1: '',
+        fm_employer_details_employer_address_line_2: '',
+        fm_employer_details_employer_address_line_3: '',
+        fm_employer_details_employer_address_line_4: '',
+        fm_employer_details_employer_address_line_5: '',
+        fm_employer_details_employer_company_name: '',
+        fm_employer_details_employer_email_address: '',
+        fm_employer_details_employer_post_code: '',
+        fm_employer_details_employer_reference: '',
+        fm_employer_details_employer_telephone_number: '',
+      };
+      finesMacState.accountCommentsNotes.formData = {
+        fm_account_comments_notes_comments: '',
+        fm_account_comments_notes_notes: '',
+      };
 
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
 
-    cy.get(DOM_ELEMENTS.employerName).should('contain', 'Employer name').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employeeReference).should('contain', 'Employee reference').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employerEmailAddress).should('contain', 'Employer email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employerTelephoneNumber).should('contain', 'Employer telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employerAddress)
-      .should('contain', 'Employer address')
-      .should('contain', '—')
-      .should('contain', '—')
-      .should('contain', '—')
-      .should('contain', '—')
-      .should('contain', '—');
+      cy.get(DOM_ELEMENTS.employerName).should('contain', 'Employer name').should('contain', '—');
+      cy.get(DOM_ELEMENTS.employeeReference).should('contain', 'Employee reference').should('contain', '—');
+      cy.get(DOM_ELEMENTS.employerEmailAddress).should('contain', 'Employer email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.employerTelephoneNumber)
+        .should('contain', 'Employer telephone number')
+        .should('contain', '—');
+      cy.get(DOM_ELEMENTS.employerAddress)
+        .should('contain', 'Employer address')
+        .should('contain', '—')
+        .should('contain', '—')
+        .should('contain', '—')
+        .should('contain', '—')
+        .should('contain', '—');
 
-    cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
-    cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-  });
+      cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
+      cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
+    },
+  );
 
-  it('should show dash lines for non required fields in the details', () => {
+  it('(AC.3) should show dash lines for non required fields in the details', { tags: ['@PO-560', '@PO-272'] }, () => {
     setupComponent();
 
     finesMacState.personalDetails.formData.fm_personal_details_vehicle_make = '';
@@ -376,7 +396,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.vehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
   });
 
-  it('should render all elements on the screen for AYPG ', () => {
+  it('(AC.1,AC.2,AC.5)should render all elements on the screen for AYPG ', { tags: ['@PO-662', '@PO-344'] }, () => {
     setupComponent();
 
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
@@ -437,7 +457,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.PGregistrationNumber).should('exist');
   });
 
-  it('should load all data into elements for AYPG', () => {
+  it('(AC.3) should load all data into elements for AYPG', { tags: ['@PO-662', '@PO-344'] }, () => {
     setupComponent();
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
@@ -521,77 +541,92 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Submit for review');
     cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
   });
-  it('should check each summary list has change button next to them for AYPG', () => {
-    setupComponent();
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Defendant details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Employer details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Parent or guardian details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-  });
-  it('should show dashed line if Data is empty for non required details AYPG', () => {
-    setupComponent();
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+  it(
+    '(AC.4a)should check each summary list has change button next to them for AYPG',
+    { tags: ['@PO-662', '@PO-344'] },
+    () => {
+      setupComponent();
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: '',
-      fm_contact_details_email_address_2: '',
-      fm_contact_details_telephone_number_business: '',
-      fm_contact_details_telephone_number_home: '',
-      fm_contact_details_telephone_number_mobile: '',
-    };
-    finesMacState.employerDetails.formData = {
-      fm_employer_details_employer_address_line_1: '',
-      fm_employer_details_employer_address_line_2: '',
-      fm_employer_details_employer_address_line_3: '',
-      fm_employer_details_employer_address_line_4: '',
-      fm_employer_details_employer_address_line_5: '',
-      fm_employer_details_employer_company_name: '',
-      fm_employer_details_employer_email_address: '',
-      fm_employer_details_employer_post_code: '',
-      fm_employer_details_employer_reference: '',
-      fm_employer_details_employer_telephone_number: '',
-    };
-    finesMacState.accountCommentsNotes.formData = {
-      fm_account_comments_notes_comments: '',
-      fm_account_comments_notes_notes: '',
-    };
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Defendant details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Employer details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Parent or guardian details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
+    },
+  );
+  it(
+    '(AC.3)should show dashed line if Data is empty for non required details AYPG',
+    { tags: ['@PO-662', '@PO-344'] },
+    () => {
+      setupComponent();
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
+      finesMacState.contactDetails.formData = {
+        fm_contact_details_email_address_1: '',
+        fm_contact_details_email_address_2: '',
+        fm_contact_details_telephone_number_business: '',
+        fm_contact_details_telephone_number_home: '',
+        fm_contact_details_telephone_number_mobile: '',
+      };
+      finesMacState.employerDetails.formData = {
+        fm_employer_details_employer_address_line_1: '',
+        fm_employer_details_employer_address_line_2: '',
+        fm_employer_details_employer_address_line_3: '',
+        fm_employer_details_employer_address_line_4: '',
+        fm_employer_details_employer_address_line_5: '',
+        fm_employer_details_employer_company_name: '',
+        fm_employer_details_employer_email_address: '',
+        fm_employer_details_employer_post_code: '',
+        fm_employer_details_employer_reference: '',
+        fm_employer_details_employer_telephone_number: '',
+      };
+      finesMacState.accountCommentsNotes.formData = {
+        fm_account_comments_notes_comments: '',
+        fm_account_comments_notes_notes: '',
+      };
 
-    cy.get(DOM_ELEMENTS.employerName).should('contain', 'Employer name').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employeeReference).should('contain', 'Employee reference').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employerEmailAddress).should('contain', 'Employer email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employerTelephoneNumber).should('contain', 'Employer telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.employerAddress)
-      .should('contain', 'Employer address')
-      .should('contain', '—')
-      .should('contain', '—')
-      .should('contain', '—')
-      .should('contain', '—')
-      .should('contain', '—');
-    cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
-    cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-  });
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
 
-  it('should show dash lines for non required fields in the details AYPG', () => {
-    setupComponent();
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      cy.get(DOM_ELEMENTS.employerName).should('contain', 'Employer name').should('contain', '—');
+      cy.get(DOM_ELEMENTS.employeeReference).should('contain', 'Employee reference').should('contain', '—');
+      cy.get(DOM_ELEMENTS.employerEmailAddress).should('contain', 'Employer email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.employerTelephoneNumber)
+        .should('contain', 'Employer telephone number')
+        .should('contain', '—');
+      cy.get(DOM_ELEMENTS.employerAddress)
+        .should('contain', 'Employer address')
+        .should('contain', '—')
+        .should('contain', '—')
+        .should('contain', '—')
+        .should('contain', '—')
+        .should('contain', '—');
+      cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
+      cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
+    },
+  );
 
-    finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = '';
+  it(
+    '(AC.3) should show dash lines for non required fields in the details AYPG',
+    { tags: ['@PO-662', '@PO-344'] },
+    () => {
+      setupComponent();
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
-    cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
-  });
+      finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_vehicle_make = '';
 
-  it('should render all elements for company defendant type', () => {
+      cy.get(DOM_ELEMENTS.PGvehicleMakeOrModel).should('contain', 'Vehicle make and model').should('contain', '—');
+    },
+  );
+
+  it('(AC.1,AC.2,AC.5)should render all elements for company defendant type', { tags: ['@PO-663', '@PO-345'] }, () => {
     setupComponent();
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -628,7 +663,7 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.deleteLink).should('exist');
   });
 
-  it('should load all data into elements for company', () => {
+  it('(AC.1,AC.2)should load all data into elements for company', { tags: ['@PO-663', '@PO-345'] }, () => {
     setupComponent();
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
@@ -671,39 +706,47 @@ describe('FinesMacReviewAccountComponent', () => {
     cy.get(DOM_ELEMENTS.deleteLink).should('contain', 'Delete account');
   });
 
-  it('should check each summary list has change button next to them for Company', () => {
-    setupComponent();
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+  it(
+    '(AC.4a)should check each summary list has change button next to them for Company',
+    { tags: ['@PO-663', '@PO-345'] },
+    () => {
+      setupComponent();
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Company details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
-    cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
-  });
-  it('should show dashed line if Data is empty for non required details Company', () => {
-    setupComponent();
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Company details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Contact details').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Offences and impositions').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Payment terms').should('contain', 'Change');
+      cy.get(DOM_ELEMENTS.summaryTitle).should('contain', 'Account comments and notes').should('contain', 'Change');
+    },
+  );
+  it(
+    '(AC.3) should show dashed line if Data is empty for non required details Company',
+    { tags: ['@PO-663', '@PO-345'] },
+    () => {
+      setupComponent();
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: '',
-      fm_contact_details_email_address_2: '',
-      fm_contact_details_telephone_number_business: '',
-      fm_contact_details_telephone_number_home: '',
-      fm_contact_details_telephone_number_mobile: '',
-    };
-    finesMacState.accountCommentsNotes.formData = {
-      fm_account_comments_notes_comments: '',
-      fm_account_comments_notes_notes: '',
-    };
+      finesMacState.contactDetails.formData = {
+        fm_contact_details_email_address_1: '',
+        fm_contact_details_email_address_2: '',
+        fm_contact_details_telephone_number_business: '',
+        fm_contact_details_telephone_number_home: '',
+        fm_contact_details_telephone_number_mobile: '',
+      };
+      finesMacState.accountCommentsNotes.formData = {
+        fm_account_comments_notes_comments: '',
+        fm_account_comments_notes_notes: '',
+      };
 
-    cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
-    cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
-    cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.primaryEmailAddress).should('contain', 'Primary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.secondaryEmailAddress).should('contain', 'Secondary email address').should('contain', '—');
+      cy.get(DOM_ELEMENTS.mobileTelephoneNumber).should('contain', 'Mobile telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.homeTelephoneNumber).should('contain', 'Home telephone number').should('contain', '—');
+      cy.get(DOM_ELEMENTS.workTelephoneNumber).should('contain', 'Work telephone number').should('contain', '—');
 
-    cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
-    cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
-  });
+      cy.get(DOM_ELEMENTS.comments).should('contain', 'Comment').should('contain', '—');
+      cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
+    },
+  );
 });

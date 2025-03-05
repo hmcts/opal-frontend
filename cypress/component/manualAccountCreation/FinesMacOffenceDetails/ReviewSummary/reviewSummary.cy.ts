@@ -83,7 +83,7 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.1,AC.3)should load all elements on the screen',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560'] },
     () => {
       setupComponent();
 
@@ -112,7 +112,7 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.4,AC.5,AC.6) should display the correct data in the elements',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560'] },
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.headingLarge).should('contain', 'Offences and impositions');
@@ -160,7 +160,7 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     'should have updated values for different set of impositions and reflect correct totals and balances',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560'] },
     () => {
       setupComponent();
 
@@ -223,7 +223,7 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.9)should allow for multiple impositions for the same offence and reflect correct totals and balances',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560'] },
     () => {
       setupComponent();
 
@@ -317,8 +317,8 @@ describe('ReviewSummaryComponent', () => {
   );
 
   it(
-    '(AC.7a)should be able to hide and show impositions',
-    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
+    '(AC.7a,AC.4b,AC.4c)should be able to hide and show impositions',
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545', '@PO-662', '@PO-663', '@PO-560'] },
     () => {
       setupComponent();
 
