@@ -24,7 +24,7 @@ export const ERROR_MESSAGES = {
     'Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
   noenfTypeCheck:
     'Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
-  noenfReason : 'Enter a reason',
+  noenfReason: 'Enter a reason',
   collectionError: 'Select whether there was a collection order',
   collectionDateError: 'Enter date collection order made',
   collectionDatePast: 'Date cannot be before the date of sentence',
