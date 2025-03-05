@@ -4,6 +4,7 @@ import { canDeactivateGuard } from '@guards/can-deactivate/can-deactivate.guard'
 import { routePermissionsGuard } from '@guards/route-permissions/route-permissions.guard';
 import { userStateResolver } from '@resolvers/user-state/user-state.resolver';
 import { routing as macRouting } from '../fines-mac/routing/fines-mac.routes';
+import { routing as draftCavRouting } from '../fines-draft/fines-draft-cav/routing/fines-draft-cav.routes';
 import { routing as draftCamRouting } from '../fines-draft/fines-draft-cam/routing/fines-draft-cam.routes';
 import { IFinesRoutingPermissions } from '@routing/fines/interfaces/fines-routing-permissions.interface';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
@@ -12,6 +13,8 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
 
 const macRootPath = FINES_ROUTING_PATHS.children.mac.root;
 const macRootPermissionId = FINES_ROUTING_PERMISSIONS[macRootPath as keyof IFinesRoutingPermissions];
+const draftCavRootPath = FINES_ROUTING_PATHS.children.draftCav.root;
+const draftCavPermissionId = FINES_ROUTING_PERMISSIONS[draftCavRootPath as keyof IFinesRoutingPermissions];
 const draftCamRootPath = FINES_ROUTING_PATHS.children.draftCam.root;
 const draftCamPermissionId = FINES_ROUTING_PERMISSIONS[draftCamRootPath as keyof IFinesRoutingPermissions];
 
@@ -40,6 +43,14 @@ export const finesRouting: Routes = [
         children: draftCamRouting,
         canActivate: [authGuard, routePermissionsGuard],
         data: { routePermissionId: draftCamPermissionId },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.draftCav.root,
+        loadComponent: () =>
+          import('../fines-draft/fines-draft-cav/fines-draft-cav.component').then((c) => c.FinesDraftCavComponent),
+        children: draftCavRouting,
+        canActivate: [authGuard, routePermissionsGuard],
+        data: { routePermissionId: draftCavPermissionId },
       },
     ],
     resolve: { userState: userStateResolver },
