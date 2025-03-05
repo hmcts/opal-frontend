@@ -72,7 +72,7 @@ describe('FinesRemoveImpositionComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('(AC.1)(AC.2)should render all elements correctly', { tags: ['@PO-418', '@PO-672', '@PO-673'] }, () => {
+  it('(AC.1)(AC.2)should render all elements correctly', { tags: ['@PO-418', '@PO-672', '@PO-673', '@PO-545'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -90,7 +90,7 @@ describe('FinesRemoveImpositionComponent', () => {
 
   it(
     '(AC.2)should have correct field labels and names in the elements when loading data',
-    { tags: ['@PO-418', '@PO-672', '@PO-673'] },
+    { tags: ['@PO-418', '@PO-672', '@PO-673', '@PO-545'] },
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this imposition?');
@@ -111,7 +111,7 @@ describe('FinesRemoveImpositionComponent', () => {
 
   it(
     '(AC.4)should set values to defaults or null after pressing the remove imposition button',
-    { tags: ['@PO-418', '@PO-672', '@PO-673'] },
+    { tags: ['@PO-418', '@PO-672', '@PO-673', '@PO-545'] },
     () => {
       setupComponent();
 

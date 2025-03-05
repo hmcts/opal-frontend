@@ -61,10 +61,10 @@ describe('FinesMacRemoveMinorCreditor', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1) should render the component', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
+  it('(AC.1) should render the component', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] }, () => {
     setupComponent();
   });
-  it('AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
+  it('AC.1) should render all elements on the page', { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] }, () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.app).should('exist');
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -87,35 +87,43 @@ describe('FinesMacRemoveMinorCreditor', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it(' AC.2) should load all keys and elements with correct text', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
-    setupComponent();
+  it(
+    ' AC.2) should load all keys and elements with correct text',
+    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this minor creditor?');
+      cy.get(DOM_ELEMENTS.heading).should('contain', 'Are you sure you want to remove this minor creditor?');
 
-    cy.get(DOM_ELEMENTS.addressKey).should('contain', 'Address');
-    cy.get(DOM_ELEMENTS.paymentMethodKey).should('contain', 'Payment method');
-    cy.get(DOM_ELEMENTS.accountNameKey).should('contain', 'Account name');
-    cy.get(DOM_ELEMENTS.sortCodeKey).should('contain', 'Sort code');
-    cy.get(DOM_ELEMENTS.accountNumberKey).should('contain', 'Account number');
-    cy.get(DOM_ELEMENTS.paymentReferenceKey).should('contain', 'Payment reference');
+      cy.get(DOM_ELEMENTS.addressKey).should('contain', 'Address');
+      cy.get(DOM_ELEMENTS.paymentMethodKey).should('contain', 'Payment method');
+      cy.get(DOM_ELEMENTS.accountNameKey).should('contain', 'Account name');
+      cy.get(DOM_ELEMENTS.sortCodeKey).should('contain', 'Sort code');
+      cy.get(DOM_ELEMENTS.accountNumberKey).should('contain', 'Account number');
+      cy.get(DOM_ELEMENTS.paymentReferenceKey).should('contain', 'Payment reference');
 
-    cy.get(DOM_ELEMENTS.removeCreditorButton).should('contain', 'Yes - remove minor creditor');
-  });
+      cy.get(DOM_ELEMENTS.removeCreditorButton).should('contain', 'Yes - remove minor creditor');
+    },
+  );
 
-  it('AC.2) should load all fields with the correct values', { tags: ['@PO-670', '@PO-671', '@PO-414'] }, () => {
-    setupComponent();
+  it(
+    'AC.2) should load all fields with the correct values',
+    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
-    cy.get(DOM_ELEMENTS.address).should('contain', '1 Testing Lane' + 'Test Town' + 'Testing' + 'TE12 3ST');
-    cy.get(DOM_ELEMENTS.accountName).should('contain', 'John Doe');
-    cy.get(DOM_ELEMENTS.sortCode).should('contain', '12-34-56');
-    cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');
-    cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
-  });
+      cy.get(DOM_ELEMENTS.name).should('contain', 'John Doe');
+      cy.get(DOM_ELEMENTS.address).should('contain', '1 Testing Lane' + 'Test Town' + 'Testing' + 'TE12 3ST');
+      cy.get(DOM_ELEMENTS.accountName).should('contain', 'John Doe');
+      cy.get(DOM_ELEMENTS.sortCode).should('contain', '12-34-56');
+      cy.get(DOM_ELEMENTS.accountNumber).should('contain', '12345678');
+      cy.get(DOM_ELEMENTS.paymentReference).should('contain', 'Testing');
+    },
+  );
 
   it(
     'AC.2(bii,biv,bv)) should set non required fields as "not / none provided" if values are empty',
-    { tags: ['@PO-670', '@PO-671', '@PO-414'] },
+    { tags: ['@PO-670', '@PO-671', '@PO-414', '@PO-545'] },
     () => {
       setupComponent();
 

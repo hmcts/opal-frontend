@@ -86,7 +86,7 @@ describe('FinesMacMinorCreditor', () => {
     });
   };
 
-  it('(AC.1 , AC.2) should render the form', { tags: ['@PO-412', '@PO-668', '@PO-669'] }, () => {
+  it('(AC.1 , AC.2) should render the form', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.form).should('exist');
@@ -94,7 +94,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.2, AC.2a, AC.3, AC.4, AC.6) should render all elements on the page corectly',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -144,7 +144,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.2) should display length validation errors with individual type',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
@@ -173,7 +173,7 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 
-  it('(AC.2) should display format validation errors', { tags: ['@PO-412', '@PO-668', '@PO-669'] }, () => {
+  it('(AC.2) should display format validation errors', { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] }, () => {
     setupComponent(null);
 
     formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
@@ -202,7 +202,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '( AC.9, AC.7 ) should display required field validation errors',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
       cy.get(DOM_ELEMENTS.submitButton).click();
@@ -216,7 +216,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.2) should have Length check in place for company creditor types',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -230,7 +230,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.2) should have Format check in place for company creditor types',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -243,7 +243,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.4ai , AC.8bii) should have Required check in place for company creditor types',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -255,7 +255,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.3)should have format check in place for individual creditor types',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -271,7 +271,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     ' (AC.8bi) Should check for required fields for individual creditor types',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -283,7 +283,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.10) Should check when user reclicks on BACS payment details it clears the fields',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -309,7 +309,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     ' (AC.11) should allow form submission with valid data for individual creditor',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       setupComponent(mockFormSubmit);
@@ -335,7 +335,7 @@ describe('FinesMacMinorCreditor', () => {
 
   it(
     '(AC.11) should allow form submission with valid data for company creditor',
-    { tags: ['@PO-412', '@PO-668', '@PO-669'] },
+    { tags: ['@PO-412', '@PO-668', '@PO-669', '@PO-545'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       setupComponent(mockFormSubmit);

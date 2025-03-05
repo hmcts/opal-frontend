@@ -82,7 +82,7 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1) should render component', { tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
+  it('(AC.1) should render component', { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] }, () => {
     setupComponent();
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
@@ -106,35 +106,39 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it('(AC.2, AC.3) should have appropriate text for each element', { tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
-    setupComponent();
+  it(
+    '(AC.2, AC.3) should have appropriate text for each element',
+    { tags: ['@PO-416', '@PO-682', '@PO-680', '@PO-545'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.heading).should(
-      'contain',
-      'Are you sure you want to remove this offence and all its impositions?',
-    );
-    cy.get(DOM_ELEMENTS.caption).should('contain', 'AK123456');
-    cy.get(DOM_ELEMENTS.captionText).should('contain', 'ak test');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
+      cy.get(DOM_ELEMENTS.heading).should(
+        'contain',
+        'Are you sure you want to remove this offence and all its impositions?',
+      );
+      cy.get(DOM_ELEMENTS.caption).should('contain', 'AK123456');
+      cy.get(DOM_ELEMENTS.captionText).should('contain', 'ak test');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Creditor');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount imposed');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Amount paid');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Balance remaining');
 
-    cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
-    cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
-    cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
-    cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
+      cy.get(DOM_ELEMENTS.impositionType).should('contain', 'Criminal Courts Charge');
+      cy.get(DOM_ELEMENTS.creditor).should('contain', 'HM Courts & Tribunals Service (HMCTS)');
+      cy.get(DOM_ELEMENTS.amountImposed).should('contain', '£200.00');
+      cy.get(DOM_ELEMENTS.amountPaid).should('contain', '£50.00');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('contain', '£150.00');
 
-    cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£200.00');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
+      cy.get(DOM_ELEMENTS.totalHeading).should('contain', 'Totals');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('contain', '£200.00');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('contain', '£50.00');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
 
-    cy.get(DOM_ELEMENTS.removeImpositionButton).should('contain', 'Yes - remove offence and all impositions');
-    cy.get(DOM_ELEMENTS.cancelLink).should('contain', 'No - cancel');
-  });
+      cy.get(DOM_ELEMENTS.removeImpositionButton).should('contain', 'Yes - remove offence and all impositions');
+      cy.get(DOM_ELEMENTS.cancelLink).should('contain', 'No - cancel');
+    },
+  );
 });
 
 //E-2-E TESTS:Acess to remove offence screen flow (AC.2) ,Cancel link functionality(AC.5), Remove offence and impositions button functionality(AC.4), Check no offences exists and appropriate text is displayed back at summary screen(AC.6)

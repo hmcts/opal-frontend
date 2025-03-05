@@ -21,13 +21,13 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
       componentProperties: {},
     });
   };
-  it('should render component', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
+  it('should render component', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should load all elements on the screen correctly', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
+  it('should load all elements on the screen correctly', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('exist');
@@ -35,7 +35,7 @@ describe('FinesMacOffenceDetailsSearchOffencesComponent', () => {
     cy.get(DOM_ELEMENTS.searchButton).should('exist');
   });
 
-  it('should have correct values for each elements', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
+  it('should have correct values for each elements', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.heading).should('have.text', 'Search offences');

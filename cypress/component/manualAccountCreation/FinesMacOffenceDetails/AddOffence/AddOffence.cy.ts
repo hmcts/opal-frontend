@@ -105,7 +105,7 @@ describe('FinesMacAddOffenceComponent', () => {
     });
   };
 
-  it('(AC.1)should render the component', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
+  it('(AC.1)should render the component', { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
@@ -113,7 +113,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.1,AC.2,AC.3,AC.3a,AC.3ai,AC.3b,AC.4) should render all the elements on the page as per design artifact and not render imposition remove link',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -149,7 +149,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     'should render Add another offence button correctly for all defendant types',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-272', '@PO-344', '@PO-345'] },
     () => {
       setupComponent(null, 'adultOrYouthOnly');
       cy.get('button[type="submit"]').should('contain', 'Add another offence');
@@ -165,7 +165,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.7b,AC.7d,AC.7h,AC.7i) should show error messages when the form is submitted with empty fields',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -181,7 +181,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.8)should allow form to be submitted with required fields filled in',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       setupComponent(mockFormSubmit);
@@ -203,7 +203,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.4b,AC.4bi,AC,4c) should show minor,major creditor fields for (FCOMP,FCOST) Only',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -232,7 +232,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     'should not allow form to be submitted without selecting minor creditor or major creditor field',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -249,7 +249,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     ' (AC.5a) should not show remove imposition link for only 1 imposition',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -259,7 +259,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.4bii) should load correct fields for major creditor selection and expect error if field is not filled in',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -281,7 +281,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.4bii) should load correct fields for minor creditor selection and expect error if field is not filled in',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -300,7 +300,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.5) should check impositions flow for multiple impositions and remove imposition link',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -325,42 +325,55 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('(AC.7E) should show error message for invalid date format', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.7E) should show error message for invalid date format',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
+    () => {
+      setupComponent(null);
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01.01.2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01.01.2021';
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDateFormat);
-  });
-  it('(AC.7F) should show error message for invalid date', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
-    setupComponent(null);
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDateFormat);
+    },
+  );
+  it(
+    '(AC.7F) should show error message for invalid date',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
+    () => {
+      setupComponent(null);
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '32/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '32/01/2021';
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDate);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidDate);
+    },
+  );
 
-  it('(AC.7g) should show error message for future date', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.7g) should show error message for future date',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
+    () => {
+      setupComponent(null);
 
-    const futureDate = new Date();
-    futureDate.setFullYear(futureDate.getFullYear() + 1);
-    const futureDateString = futureDate.toLocaleDateString('en-GB');
+      const futureDate = new Date();
+      futureDate.setFullYear(futureDate.getFullYear() + 1);
+      const futureDateString = futureDate.toLocaleDateString('en-GB');
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = futureDateString;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence =
+        futureDateString;
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidFutureDate);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', OFFENCE_ERROR_MESSAGES.invalidFutureDate);
+    },
+  );
 
   it(
     '(AC.7j) should show error message for invalid amount imposed',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -376,23 +389,27 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('(AC.7k) should show error message for invalid  amount paid', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.7k) should show error message for invalid  amount paid',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
+    () => {
+      setupComponent(null);
 
-    const imposition_1 = impostitionSelectors(0);
+      const imposition_1 = impostitionSelectors(0);
 
-    cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-    cy.get(imposition_1.amountImposedInput).type('123456789012345678901.12', { delay: 0 });
-    cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
+      cy.get(imposition_1.amountImposedInput).type('123456789012345678901.12', { delay: 0 });
+      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
 
-    cy.get(DOM_ELEMENTS.submitButton).first().click();
+      cy.get(DOM_ELEMENTS.submitButton).first().click();
 
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmount);
-  });
+      cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.invalidAmount);
+    },
+  );
 
   it(
     '(AC.3bii) should show invalid ticket panel for invalid offence code',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -406,18 +423,22 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 
-  it('(AC.3bi) should show ticket panel for valid offence code', { tags: ['@PO-411', '@PO-681', '@PO-684'] }, () => {
-    setupComponent(null);
+  it(
+    '(AC.3bi) should show ticket panel for valid offence code',
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
+    () => {
+      setupComponent(null);
 
-    finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
 
-    cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
-    cy.get(DOM_ELEMENTS.successPanel).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.ticketPanel).first().should('exist');
+      cy.get(DOM_ELEMENTS.successPanel).should('exist');
+    },
+  );
 
   it(
     '(AC.2) should allow dateOfSentence to be entered via date picker and have all elements loaded',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
 
@@ -435,7 +456,7 @@ describe('FinesMacAddOffenceComponent', () => {
 
   it(
     '(AC.6, AC.8) should allow form submission with multiple impositions',
-    { tags: ['@PO-411', '@PO-681', '@PO-684'] },
+    { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 

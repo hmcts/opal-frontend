@@ -77,38 +77,42 @@ describe('ReviewSummaryComponent', () => {
       componentProperties: {},
     });
   };
-  it('(AC.1)should render component', { tags: ['@PO-417', '@PO-676', '@PO-679'] }, () => {
+  it('(AC.1)should render component', { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] }, () => {
     setupComponent();
-  });
-
-  it('(AC.1,AC.3)should load all elements on the screen', { tags: ['@PO-417', '@PO-676', '@PO-679'] }, () => {
-    setupComponent();
-
-    cy.get(DOM_ELEMENTS.headingLarge).should('exist');
-    cy.get(DOM_ELEMENTS.headingMedium).should('exist');
-    cy.get(DOM_ELEMENTS.dateOfSentence).should('exist');
-    cy.get(DOM_ELEMENTS.offencecode).should('exist');
-    cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
-    cy.get(DOM_ELEMENTS.impositionType).should('exist');
-    cy.get(DOM_ELEMENTS.creditor).should('exist');
-    cy.get(DOM_ELEMENTS.amountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.amountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
-    cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance).should('exist');
-    cy.get(DOM_ELEMENTS.totalHeading).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
-    cy.get(DOM_ELEMENTS.addOffenceButton).should('exist');
-    cy.get(DOM_ELEMENTS.returnToCreateAccountButton).should('exist');
-    cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
   it(
+    '(AC.1,AC.3)should load all elements on the screen',
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
+    () => {
+      setupComponent();
+
+      cy.get(DOM_ELEMENTS.headingLarge).should('exist');
+      cy.get(DOM_ELEMENTS.headingMedium).should('exist');
+      cy.get(DOM_ELEMENTS.dateOfSentence).should('exist');
+      cy.get(DOM_ELEMENTS.offencecode).should('exist');
+      cy.get(DOM_ELEMENTS.tableHeadings).should('exist');
+      cy.get(DOM_ELEMENTS.impositionType).should('exist');
+      cy.get(DOM_ELEMENTS.creditor).should('exist');
+      cy.get(DOM_ELEMENTS.amountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.amountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.GrandtotalAmountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.GrandtotalRemainingBalance).should('exist');
+      cy.get(DOM_ELEMENTS.totalHeading).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('exist');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('exist');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
+      cy.get(DOM_ELEMENTS.addOffenceButton).should('exist');
+      cy.get(DOM_ELEMENTS.returnToCreateAccountButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
+
+  it(
     '(AC.4,AC.5,AC.6) should display the correct data in the elements',
-    { tags: ['@PO-417', '@PO-676', '@PO-679'] },
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
     () => {
       setupComponent();
       cy.get(DOM_ELEMENTS.headingLarge).should('contain', 'Offences and impositions');
@@ -156,7 +160,7 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     'should have updated values for different set of impositions and reflect correct totals and balances',
-    { tags: ['@PO-417', '@PO-676', '@PO-679'] },
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
     () => {
       setupComponent();
 
@@ -219,7 +223,7 @@ describe('ReviewSummaryComponent', () => {
 
   it(
     '(AC.9)should allow for multiple impositions for the same offence and reflect correct totals and balances',
-    { tags: ['@PO-417', '@PO-676', '@PO-679'] },
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
     () => {
       setupComponent();
 
@@ -312,24 +316,28 @@ describe('ReviewSummaryComponent', () => {
     },
   );
 
-  it('(AC.7a)should be able to hide and show impositions', { tags: ['@PO-417', '@PO-676', '@PO-679'] }, () => {
-    setupComponent();
+  it(
+    '(AC.7a)should be able to hide and show impositions',
+    { tags: ['@PO-417', '@PO-676', '@PO-679', '@PO-545'] },
+    () => {
+      setupComponent();
 
-    cy.get(DOM_ELEMENTS.hideLink).should('contain', 'Hide');
-    cy.get(DOM_ELEMENTS.hideLink).first().click();
+      cy.get(DOM_ELEMENTS.hideLink).should('contain', 'Hide');
+      cy.get(DOM_ELEMENTS.hideLink).first().click();
 
-    cy.get(DOM_ELEMENTS.hideLink).click();
+      cy.get(DOM_ELEMENTS.hideLink).click();
 
-    cy.get(DOM_ELEMENTS.impositionType).should('not.exist');
-    cy.get(DOM_ELEMENTS.creditor).should('not.exist');
-    cy.get(DOM_ELEMENTS.amountImposed).should('not.exist');
-    cy.get(DOM_ELEMENTS.amountPaid).should('not.exist');
-    cy.get(DOM_ELEMENTS.balanceRemaining).should('not.exist');
+      cy.get(DOM_ELEMENTS.impositionType).should('not.exist');
+      cy.get(DOM_ELEMENTS.creditor).should('not.exist');
+      cy.get(DOM_ELEMENTS.amountImposed).should('not.exist');
+      cy.get(DOM_ELEMENTS.amountPaid).should('not.exist');
+      cy.get(DOM_ELEMENTS.balanceRemaining).should('not.exist');
 
-    cy.get(DOM_ELEMENTS.totalHeading).should('not.exist');
-    cy.get(DOM_ELEMENTS.totalAmountImposed).should('not.exist');
-    cy.get(DOM_ELEMENTS.totalAmountPaid).should('not.exist');
-    cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('not.exist');
-  });
+      cy.get(DOM_ELEMENTS.totalHeading).should('not.exist');
+      cy.get(DOM_ELEMENTS.totalAmountImposed).should('not.exist');
+      cy.get(DOM_ELEMENTS.totalAmountPaid).should('not.exist');
+      cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('not.exist');
+    },
+  );
 });
 //E-2-E Testing required : Flow to reach the review summary page(AC.2),Test the remove,hide and change links on each offence (AC.7),Check add another offence button flow(AC.8),Check return to account button flow(AC.10),Check flows for different defendant type after offences and imposition is filled in the account summary provided/not provided list (AC.11) , Check success message AC.12
