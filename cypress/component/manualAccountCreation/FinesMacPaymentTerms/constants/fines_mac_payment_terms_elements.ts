@@ -19,6 +19,7 @@ export const DOM_ELEMENTS = {
   hasDaysInDefaultLabel: 'label[for="fm_payment_terms_has_days_in_default"]',
   suspendedCommittalDateLabel: 'label[for="fm_payment_terms_suspended_committal_date"]',
   defaultDaysInJailLabel: 'label[for="fm_payment_terms_default_days_in_jail"]',
+  daysInDafaultCalculator: 'span.govuk-details__summary-text',
   addEnforcementActionLabel: 'label[for="fm_payment_terms_add_enforcement_action"]',
   prisLabel: 'label[for="PRIS"]',
   earliestReleaseDateLabel: 'label[for="fm_payment_terms_earliest_release_date"]',
@@ -35,6 +36,14 @@ export const DOM_ELEMENTS = {
   // Collection order
   collectionOrderMadeTrue: 'input[id="fm_payment_terms_collection_order_made_true"]',
   collectionOrderDate: 'input[id="fm_payment_terms_collection_order_date"]',
+  collectionOrderDateLabel: 'label[for="fm_payment_terms_collection_order_date"]',
+  collectionOrderHint: 'div.govuk-hint',
+  collectionYes: 'input[id="fm_payment_terms_collection_order_made_true"]',
+  collectionNo: 'input[id="fm_payment_terms_collection_order_made_false"]',
+  collectionYesLabel: 'label[for="fm_payment_terms_collection_order_made_true"]',
+  collectionNoLabel: 'label[for="fm_payment_terms_collection_order_made_false"]',
+  makeCollection: 'input[id = "fm_payment_terms_collection_order_made_today"]',
+  makeCollectionLabel: 'label[for="fm_payment_terms_collection_order_made_today"]',
 
   //Date picker
   datePickerButton: 'button.moj-datepicker__toggle.moj-js-datepicker-toggle',
@@ -80,4 +89,20 @@ export const DOM_ELEMENTS = {
   prisonAndPrisonNumber: 'textarea[id="fm_payment_terms_prison_and_prison_number"]',
   noenf: 'input[id="NOENF"]',
   reasonAccountIsOnNoenf: 'textarea[id="fm_payment_terms_reason_account_is_on_noenf"]',
+
+  //calculate days in default
+  panel: 'app-moj-ticket-panel',
+  years: 'input[id="years"]',
+  months: 'input[id="months"]',
+  days: 'input[id="days"]',
+  weeks: 'input[id="weeks"]',
+  calculatedDays: 'div.govuk-grid-column-one-half',
+  caculateLink: 'span.govuk-details__summary-text',
+  caculateHeading: 'h1.govuk-fieldset__heading',
+
+  //
+  yearsLabel: 'label[for="years"]',
+  monthsLabel: 'label[for="months"]',
+  daysLabel: 'label[for="days"]',
+  weeksLabel: 'label[for="weeks"]',
 };

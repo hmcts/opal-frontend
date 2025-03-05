@@ -14,6 +14,7 @@ export const ERROR_MESSAGES = {
   validInstalmentDateFormat: 'Start date must be in the format DD/MM/YYYY',
   lumpSum: 'Enter lump sum',
   validLumpSumAmount: 'Enter valid lump sum amount',
+  daysInDefaultLength: 'Days in default needs to be less than 5 digits',
   defaultDays: 'Enter days in default',
   defaultDaysTypeCheck: 'Enter number of days in default',
   futureDate: 'Date must not be in the future',
@@ -23,6 +24,13 @@ export const ERROR_MESSAGES = {
     'Prison and prison number must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
   noenfTypeCheck:
     'Reason must only include letters a to z, numbers 0-9 and special characters such as hyphens, spaces and apostrophes',
+  noenfReason : 'Enter a reason',
+  collectionError: 'Select whether there was a collection order',
+  collectionDateError: 'Enter date collection order made',
+  collectionDatePast: 'Date cannot be before the date of sentence',
+  collectionDateFormat: 'Date must be in the format DD/MM/YYYY',
+  collectionDateFuture: 'Date cannot be in the future',
+  enforcementActionReason: 'Select reason for enforcement action',
 };
 
 export const INSTALLMENT_ERRORS = {
