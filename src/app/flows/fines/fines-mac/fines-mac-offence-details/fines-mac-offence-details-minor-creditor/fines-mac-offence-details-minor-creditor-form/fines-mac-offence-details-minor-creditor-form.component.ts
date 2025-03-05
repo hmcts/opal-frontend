@@ -6,7 +6,6 @@ import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_CREDITOR_TYPE } from '../const
 import { GovukRadioComponent } from '@components/govuk/govuk-radio/govuk-radio.component';
 import { GovukRadiosItemComponent } from '@components/govuk/govuk-radio/govuk-radios-item/govuk-radios-item.component';
 import { IGovUkSelectOptions } from '@components/govuk/govuk-select/interfaces/govuk-select-options.interface';
-import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../constants/fines-mac-title-dropdown-options.constant';
 import { takeUntil } from 'rxjs';
 import { IAbstractFormBaseFieldErrors } from '@components/abstract/abstract-form-base/interfaces/abstract-form-base-field-errors.interface';
 import { CommonModule } from '@angular/common';
@@ -26,6 +25,7 @@ import { GovukButtonComponent } from '@components/govuk/govuk-button/govuk-butto
 import { GovukCancelLinkComponent } from '@components/govuk/govuk-cancel-link/govuk-cancel-link.component';
 import { specialCharactersValidator } from '@validators/special-characters/special-characters.validator';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { ABSTRACT_TITLE_DROPDOWN_OPTIONS } from 'src/app/flows/components/abstract/constants/abstract-title-dropdown-options.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-minor-creditor-form',
@@ -59,7 +59,7 @@ export class FinesMacOffenceDetailsMinorCreditorFormComponent extends AbstractFo
       value,
     }),
   );
-  public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
+  public readonly titleOptions: IGovUkSelectOptions[] = ABSTRACT_TITLE_DROPDOWN_OPTIONS;
   protected readonly fineMacOffenceDetailsRoutingPaths = FINES_MAC_OFFENCE_DETAILS_ROUTING_PATHS;
 
   override fieldErrors: IAbstractFormBaseFieldErrors = {
