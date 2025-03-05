@@ -3787,109 +3787,109 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-analytics-js@npm:3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-analytics-js@npm:3.3.5"
+"@microsoft/applicationinsights-analytics-js@npm:3.3.6":
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-analytics-js@npm:3.3.6"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.5"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.5"
+    "@microsoft/applicationinsights-common": "npm:3.3.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/eb05d1e20d9cb1ef9ca38a36e69612dcb1865f7ed3cb66c567aa429af620966b6583c437a88bd145586bfbebd81ef1c1757da0e07a6f8fef2808974d70434d3b
+  checksum: 10/eb8f5a6429f10feb3ddcaaef8499ae86adf0de9b354d9b08c66cb607099c870397d2a48e8b3b6dc0f6a84f6074ad2f3c40e6282323f6862a887c246193ef6747
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-cfgsync-js@npm:3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-cfgsync-js@npm:3.3.5"
+"@microsoft/applicationinsights-cfgsync-js@npm:3.3.6":
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-cfgsync-js@npm:3.3.6"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.5"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.5"
+    "@microsoft/applicationinsights-common": "npm:3.3.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/df1520920d258f12d2fb5aac7a24af8543b243c8ef1d033046f97dbd3b4589e9d16093905ca16fe8aca86edaefda0d0e8843781f91ecc9e3b71281da63dbcb11
+  checksum: 10/6c018fdc13164542de6f21dbd19d7ca8d72683fed0ac56592d90c285b4a2f8bff44f2227d38dd9e30a1dd7fc1a7fe61482b543270e6ba4bfde107a15af4f87dd
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-channel-js@npm:3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-channel-js@npm:3.3.5"
+"@microsoft/applicationinsights-channel-js@npm:3.3.6":
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-channel-js@npm:3.3.6"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.5"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.5"
+    "@microsoft/applicationinsights-common": "npm:3.3.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/d31dbfd6234fe91d3cdf595aa557b5a7fd4fabbd976d509c5270dfff6d0862c034d660a8dfc34c0007a77f0a07599ceaf050dc3f28a9e9d44776f84316ba0b30
+  checksum: 10/e3d5c74cb8e6ca9f2ab661fc1ce15e5daf4996368bf41c17500bfde4cc80ec4d938ac6ba3a2d621f36f181c36963b930ed9bc0fa9d05834e96957be417cc101e
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-common@npm:3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-common@npm:3.3.5"
+"@microsoft/applicationinsights-common@npm:3.3.6":
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-common@npm:3.3.6"
   dependencies:
-    "@microsoft/applicationinsights-core-js": "npm:3.3.5"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/25ce461f927b534a173f1af1c30ce4b1b3b3ce6553c187ce3558148d62639491431d9d7e3b2fd3157be2bc6d1964c12405988b46b5063ee822d4408f46b94713
+  checksum: 10/d8460d30047657b964d2e6179c7cd531434872a31d27a6af127fe2e6d6154ae412d835f0bad40825a095ac0dec99811bf814854d23f6c0a17e87425fc047132c
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-core-js@npm:3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-core-js@npm:3.3.5"
+"@microsoft/applicationinsights-core-js@npm:3.3.6":
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-core-js@npm:3.3.6"
   dependencies:
-    "@microsoft/applicationinsights-shims": "npm:3.0.1"
-    "@microsoft/dynamicproto-js": "npm:^2.0.3"
-    "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
-  peerDependencies:
-    tslib: ">= 1.0.0"
-  checksum: 10/dcfee846ef2ca4f9c5ba28d2fbc41d35f5916d17faad63f21241ed5c64172ff3e5daa4d550b8c001a5efaefc05373dd64f0d94425220673124fe513c5725a9b9
-  languageName: node
-  linkType: hard
-
-"@microsoft/applicationinsights-dependencies-js@npm:3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-dependencies-js@npm:3.3.5"
-  dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.5"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.5"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/d76b625eeff92c6aca80bf1a078bacfdbcb59a8ca8de828023b95f8d3415f0639dd69b07e23c4ee6f594a76381ede186d76b58b96018b7f13e569940688af3de
+  checksum: 10/8c30d0627ca67c51de8fd0dc6b98b3df1c30c92b7f8cc76cac8ca78330fc6fb37c0c0abdecda593701dcf97cff5c986324fb8617d0cd84efabee244a9224ad6e
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-properties-js@npm:3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-properties-js@npm:3.3.5"
+"@microsoft/applicationinsights-dependencies-js@npm:3.3.6":
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-dependencies-js@npm:3.3.6"
   dependencies:
-    "@microsoft/applicationinsights-common": "npm:3.3.5"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.5"
+    "@microsoft/applicationinsights-common": "npm:3.3.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
+    "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/e4c0de86c1c3678479387c8cc086d6a62cc64ed13376dec32cf25ef21a95252fd78e4f8d8e73b6d0084580083043becb44ac7b1ca787435afc633f06fd4fac57
+  checksum: 10/a758d0dad1c4ccdf7a6a9034b8a0f846a531deae42140c87c0c8d6f0df059164361d69dc75f6e2e65892e7384f4ee24222c7ae7814b481f47d9a034948103579
+  languageName: node
+  linkType: hard
+
+"@microsoft/applicationinsights-properties-js@npm:3.3.6":
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-properties-js@npm:3.3.6"
+  dependencies:
+    "@microsoft/applicationinsights-common": "npm:3.3.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-shims": "npm:3.0.1"
+    "@microsoft/dynamicproto-js": "npm:^2.0.3"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
+  peerDependencies:
+    tslib: ">= 1.0.0"
+  checksum: 10/a7dbf0487918159f273186d8aa93d64d5561f7c6cd9181bf08d729777136d7737071f453ba148659f12787c523f6b142669d28a4ab7ca6a3de0eafc78c203107
   languageName: node
   linkType: hard
 
@@ -3910,23 +3910,23 @@ __metadata:
   linkType: hard
 
 "@microsoft/applicationinsights-web@npm:^3.3.5":
-  version: 3.3.5
-  resolution: "@microsoft/applicationinsights-web@npm:3.3.5"
+  version: 3.3.6
+  resolution: "@microsoft/applicationinsights-web@npm:3.3.6"
   dependencies:
-    "@microsoft/applicationinsights-analytics-js": "npm:3.3.5"
-    "@microsoft/applicationinsights-cfgsync-js": "npm:3.3.5"
-    "@microsoft/applicationinsights-channel-js": "npm:3.3.5"
-    "@microsoft/applicationinsights-common": "npm:3.3.5"
-    "@microsoft/applicationinsights-core-js": "npm:3.3.5"
-    "@microsoft/applicationinsights-dependencies-js": "npm:3.3.5"
-    "@microsoft/applicationinsights-properties-js": "npm:3.3.5"
+    "@microsoft/applicationinsights-analytics-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-cfgsync-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-channel-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-common": "npm:3.3.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-dependencies-js": "npm:3.3.6"
+    "@microsoft/applicationinsights-properties-js": "npm:3.3.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.4 < 2.x"
-    "@nevware21/ts-utils": "npm:>= 0.11.6 < 2.x"
+    "@nevware21/ts-utils": "npm:>= 0.11.8 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/7b77d541a9a281d85bb524c48d4b3e08610ad6bd5446ef5977c4d8a86fb3fbe5f159e7add177db013ed4cabcdb182e2c331d629704b952c39b66a320e0bc7a84
+  checksum: 10/92f754bbe8a285064f93549d27e2051774407ab0c03cf32f37a481c4e8e84f664fc6624b81ad20e0c6805a5360822dfcf7b39f665dcedfad052bfad73ed60dda
   languageName: node
   linkType: hard
 
@@ -4174,6 +4174,13 @@ __metadata:
   version: 0.11.6
   resolution: "@nevware21/ts-utils@npm:0.11.6"
   checksum: 10/1424dc1b970788e35c2e69b2df7ec23dfbb91793d56c1cfb87df5b7e9cdd323040495fc500dc43329921770419ef7e24cdae5e09d683286e17da4d98007601e3
+  languageName: node
+  linkType: hard
+
+"@nevware21/ts-utils@npm:>= 0.11.8 < 2.x":
+  version: 0.11.8
+  resolution: "@nevware21/ts-utils@npm:0.11.8"
+  checksum: 10/b1a28c399f7a411f1b199bb0dd004c60d04827b222d79169783cbddf116fb5ad244eb54cba7a3c4142cc0eb663c7eff4c3c833f2bb0dd6487b93246795e3065d
   languageName: node
   linkType: hard
 
