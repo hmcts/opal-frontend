@@ -60,103 +60,185 @@ describe('FinesMacAccountDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.dataPage).should('exist');
   });
 
-  it('should load all elements on the screen correctly', () => {
-    setupComponent(null);
+  it(
+    '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly for Adult or Youth Only',
+    { tags: ['@PO-366', '@PO-272', '@PO-468','PO-524'] },
+    () => {
+      setupComponent(null);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
-    // Verify all elements are rendered
-    cy.get(DOM_ELEMENTS.dataPage).should('exist');
-    cy.get(DOM_ELEMENTS.backLink).should('exist');
-    cy.get(DOM_ELEMENTS.pageTitle).should('exist');
-    cy.get(DOM_ELEMENTS.businessUnit).should('exist');
-    cy.get(DOM_ELEMENTS.accountType).should('exist');
-    cy.get(DOM_ELEMENTS.defendantType).should('exist');
-    cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-    cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
-    cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
-    cy.get(DOM_ELEMENTS.deleteAccountLink).should('exist');
-    cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
-    cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-    cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
-  });
+      // Verify all elements are rendered
+      cy.get(DOM_ELEMENTS.dataPage).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
+      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
+      cy.get(DOM_ELEMENTS.accountType).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
+      cy.get(DOM_ELEMENTS.deleteAccountLink).should('exist');
+      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+      cy.get(DOM_ELEMENTS.defendantDetails).should('exist');
+      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
+      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
+      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
 
-  it('should show elements on the screen correctly for Adult or Youth Only', () => {
-    setupComponent(null);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+      //verify correct text is displayed
+      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth only');
-    cy.get(DOM_ELEMENTS.defendantDetails).should('exist');
-    cy.get(DOM_ELEMENTS.personalDetails).should('exist');
-    cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-    cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-    cy.get(DOM_ELEMENTS.employerDetails).should('exist');
-    cy.get(DOM_ELEMENTS.contactDetails).should('exist');
-  });
+  it(
+    '(AC.1,AC.2,AC.3,AC.4,AC.5,AC.6)should load all elements on the screen correctly for AYPG',
+    { tags: ['@PO-367', '@PO-344', '@PO-468','@PO-524'] },
+    () => {
+      setupComponent(null);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
-  it('should show elements on the screen correctly for AYPG', () => {
-    setupComponent(null);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      cy.get(DOM_ELEMENTS.dataPage).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
+      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
+      cy.get(DOM_ELEMENTS.accountType).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
+      cy.get(DOM_ELEMENTS.deleteAccountLink).should('exist');
+      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+      cy.get(DOM_ELEMENTS.parentOrGuardianDetails).should('exist');
+      cy.get(DOM_ELEMENTS.personalDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.employerDetails).should('exist');
+      cy.get(DOM_ELEMENTS.contactDetails).should('exist');
 
-    cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
-    cy.get(DOM_ELEMENTS.parentOrGuardianDetails).should('exist');
-    cy.get(DOM_ELEMENTS.personalDetails).should('exist');
-    cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-    cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-    cy.get(DOM_ELEMENTS.employerDetails).should('exist');
-    cy.get(DOM_ELEMENTS.contactDetails).should('exist');
-  });
+      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Adult or youth with parent or guardian to pay');
+    },
+  );
 
-  it('should show elements on the screen correctly for Company', () => {
-    setupComponent(null);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+  it(
+    '(AC.1,AC.2,AC.3,AC.4,AC.5)should load all elements on the screen correctly',
+    { tags: ['@PO-362', '@PO-345', '@PO-468', '@PO-524'] },
+    () => {
+      setupComponent(null);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-    cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
-    cy.get(DOM_ELEMENTS.companyDetails).should('exist');
-    cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
-    cy.get(DOM_ELEMENTS.courtDetails).should('exist');
-  });
+      // Verify all elements are rendered
+      cy.get(DOM_ELEMENTS.dataPage).should('exist');
+      cy.get(DOM_ELEMENTS.backLink).should('exist');
+      cy.get(DOM_ELEMENTS.pageTitle).should('exist');
+      cy.get(DOM_ELEMENTS.businessUnit).should('exist');
+      cy.get(DOM_ELEMENTS.accountType).should('exist');
+      cy.get(DOM_ELEMENTS.defendantType).should('exist');
+      cy.get(DOM_ELEMENTS.courtDetails).should('exist');
+      cy.get(DOM_ELEMENTS.offenceAndImpositionDetails).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotes).should('exist');
+      cy.get(DOM_ELEMENTS.deleteAccountLink).should('exist');
+      cy.get(DOM_ELEMENTS.offenceDetails).should('exist');
+      cy.get(DOM_ELEMENTS.paymentTerms).should('exist');
+      cy.get(DOM_ELEMENTS.accountCommentsAndNotesItem).should('exist');
 
-  it('should show option to continue if all required forms have been provided for Adult Or Youth Only', () => {
-    setupComponent(null, 'adultOrYouthOnly', FINES_AYG_CHECK_ACCOUNT_MOCK);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+      cy.get(DOM_ELEMENTS.accountType).should('contain', 'Fine');
+      cy.get(DOM_ELEMENTS.defendantType).should('contain', 'Company');
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-  });
+  it(
+    '(AC.1)should show option to continue if all required forms have been provided for Adult Or Youth Only',
+    { tags: ['@PO-549', '@PO-272'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly', FINES_AYG_CHECK_ACCOUNT_MOCK);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
-  it('should not show option to continue if required forms have not been provided for Adult Or Youth Only', () => {
-    setupComponent(null);
+      cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
+    },
+  );
 
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
+  it(
+    '(AC.2)should not show option to continue if required forms have not been provided for Adult Or Youth Only and should show message',
+    { tags: ['@PO-549', '@PO-272'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
-  });
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
-  it('should show option to continue if all required forms have been provided for AYPG', () => {
-    setupComponent(null, 'parentOrGuardianToPay', FINES_AYPG_CHECK_ACCOUNT_MOCK);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+      cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
+      cy.get(DOM_ELEMENTS.CheckDetailsText).should(
+        'contain',
+        'You cannot proceed until all required sections have been completed.',
+      );
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-  });
+  it(
+    'should show option to continue if all required forms have been provided for AYPG',
+    { tags: ['@PO-653', '@PO-344'] },
+    () => {
+      setupComponent(null, 'parentOrGuardianToPay', FINES_AYPG_CHECK_ACCOUNT_MOCK);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
-  it('should not show option to continue if required forms have not been provided for AYPG', () => {
-    setupComponent(null);
+      cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
+    },
+  );
 
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
+  it(
+    'should not show option to continue if required forms have not been provided for AYPG',
+    { tags: ['@PO-653', '@PO-344'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
-  });
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
-  it('should show option to continue if all required forms have been provided for Company', () => {
-    setupComponent(null, 'company', FINES_COMP_CHECK_ACCOUNT_MOCK);
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+      cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
+      cy.get(DOM_ELEMENTS.CheckDetailsText).should(
+        'contain',
+        'You cannot proceed until all required sections have been completed.',
+      );
+    },
+  );
 
-    cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-  });
+  it(
+    'should show option to continue if all required forms have been provided for Company',
+    { tags: ['@PO-654', '@PO-345'] },
+    () => {
+      setupComponent(null, 'company', FINES_COMP_CHECK_ACCOUNT_MOCK);
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
-  it('should not show option to continue if required forms have not been provided for Company', () => {
-    setupComponent(null);
+      cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
+    },
+  );
 
-    finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+  it(
+    'should not show option to continue if required forms have not been provided for Company',
+    { tags: ['@PO-654', '@PO-345'] },
+    () => {
+      setupComponent(null);
 
-    cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
-  });
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
+
+      cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
+      cy.get(DOM_ELEMENTS.CheckDetailsText).should(
+        'contain',
+        'You cannot proceed until all required sections have been completed.',
+      );
+    },
+  );
 });
