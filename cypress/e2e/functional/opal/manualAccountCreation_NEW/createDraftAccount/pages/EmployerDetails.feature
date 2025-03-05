@@ -112,3 +112,13 @@ Feature: Manual account creation - Employer Details
 
   Scenario: Employer Details - Axe Core
     Then I check accessibility
+
+
+  Scenario: (AC.1) Grey navigation links routes correctly [@PO-272, @PO-434]
+    And I enter "Test Corp" into the "Employer name" field
+    And I enter "AB123456C" into the "Employee reference" field
+    And I enter "Addr1" into the "Address line 1" field
+
+    When I click the "Add offence details" button
+
+    Then I see "Add an offence" on the page header

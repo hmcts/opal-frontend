@@ -15,7 +15,9 @@ export const DOM_ELEMENTS = {
   homeTelephoneInput: 'input[id="fm_contact_details_telephone_number_home"]',
   workTelephoneInput: 'input[id="fm_contact_details_telephone_number_business"]',
 
-  submitButton: 'button[type="submit"]',
+  returnToAccountDetailsButton: 'button:contains("Return to account details")',
+  addEmployerDetailsButton: 'button:contains("Add employer details")',
+  addOffenceDetailsButton: 'button:contains("Add offence details")',
   errorSummary: '.govuk-error-summary',
   errorSummaryTitle: '.govuk-error-summary__title',
   cancelLink: 'a.govuk-link.button-link',

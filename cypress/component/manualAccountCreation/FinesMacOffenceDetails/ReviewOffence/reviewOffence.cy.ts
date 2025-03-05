@@ -78,7 +78,7 @@ describe('ReviewOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('exist');
   });
 
-  it('should have correct values in the elements',{ tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
+  it('should have correct values in the elements', { tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
     setupComponent();
 
     cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');
@@ -99,7 +99,7 @@ describe('ReviewOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£150.00');
   });
 
-  it('should update value according to imposition type', { tags: ['@PO-416', '@PO-682', '@PO-680'] },() => {
+  it('should update value according to imposition type', { tags: ['@PO-416', '@PO-682', '@PO-680'] }, () => {
     setupComponent(1);
 
     cy.get(DOM_ELEMENTS.tableHeadings).should('contain', 'Imposition');

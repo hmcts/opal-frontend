@@ -1,4 +1,6 @@
-export const FORMAT_CHECK: { [key: string]: string } = {
+export const FORMAT_CHECK = {
+  invalidFirstNames: "The parent or guardian's first name(s) must only contain alphabetical text",
+  invalidLastNames: "The parent or guardian's last name must only contain alphabetical text",
   dateOfBirthInFuture: 'Enter a valid date of birth in the past',
   dateOfBirthInvalid: 'Enter date of birth in the format DD/MM/YYYY',
   addressLine1ContainsSpecialCharacters: 'The address line 1 must not contain special characters',
@@ -24,6 +26,7 @@ export const LENGTH_VALIDATION = {
   addressLine1TooLong: 'The address line 1 must be 25 characters or fewer',
   addressLine2TooLong: 'The address line 2 must be 25 characters or fewer',
   addressLine3TooLong: 'The address line 3 must be 13 characters or fewer',
+  postcodeTooLong: 'The postcode must be 8 characters or fewer',
   vehicleRegistrationTooLong: 'The registration number must be 11 characters or fewer',
   vehicleMakeTooLong: 'The make of car must be 30 characters or fewer',
 };

@@ -33,7 +33,8 @@ export const DOM_ELEMENTS = {
   aliasAddButton: 'button[id="addAlias"]',
   aliasRemoveButton: '.govuk-link--no-visited-state',
   aliasContainer: 'div[id="fm_parent_guardian_details_alias_container"]',
-  submitButton: 'button[type="submit"]',
+  returnToAccountDetailsButton: 'button:contains("Return to account details")',
+  addContactDetailsButton: 'button:contains("Add contact details")',
   errorSummary: '.govuk-error-summary',
   errorSummaryTitle: '.govuk-error-summary__title',
 };
