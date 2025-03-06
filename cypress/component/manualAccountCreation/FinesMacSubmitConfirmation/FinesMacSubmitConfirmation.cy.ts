@@ -37,7 +37,7 @@ describe('FinesMacSubmitConfirmation', () => {
     });
   };
 
-  it('should render the component and have all elements ', () => {
+  it('(AC.1,AC.2)should render the component and have all elements ', { tags: '@PO-660' }, () => {
     setupComponent();
 
     cy.get('app-govuk-panel').should('contain', "You've submitted this account for review");
