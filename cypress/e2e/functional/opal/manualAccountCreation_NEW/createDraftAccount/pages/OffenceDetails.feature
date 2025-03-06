@@ -1,5 +1,7 @@
+@ManualAccountCreation @OffenceDetails @PO-272 @PO-344 @PO-345 @PO-545 @PO-412 @PO-668 @PO-669 @PO-413 @PO-817 @PO-818 @PO-414 @PO-670 @PO-671 @PO-686 @PO-696 @PO-411 @PO-681 @PO-684 @PO-815 @PO-417 @PO-676 @PO-679 @PO-416 @PO-682 @PO-680
 Feature: Manual account creation - Offence Details
-  # Placeholder for refactored e2e tests
+  #This feature file contains tests for the Offence details pages of the Manual Account Creation journey that cannot be exercised in the component tests #
+  #Validation tests are contained in the Offence screens component tests
 
   Background:
     Given I am on the Opal Frontend and I sign in as "opal-test@HMCTS.NET"

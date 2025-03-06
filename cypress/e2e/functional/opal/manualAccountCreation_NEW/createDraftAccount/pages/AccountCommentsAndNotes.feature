@@ -1,4 +1,4 @@
-@ManualAccountCreation @AccountCommentsAndNotes @PO-272 @PO-469 @PO-499 @PO-500
+@ManualAccountCreation @AccountCommentsAndNotes @PO-272 @PO-344 @PO-345 @PO-469 @PO-499 @PO-500
 Feature: Manual account creation - Account Comments and Notes
   #This feature file contains tests for the Account Comments and Notes page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the AccountCommentsAndNotesComponent.cy.ts component tests
@@ -17,7 +17,7 @@ Feature: Manual account creation - Account Comments and Notes
     Then I click on the "Account comments and notes" link
     And I see "Account comments and notes" on the page header
 
-  Scenario: (AC.4, AC.5) Entered data persists in the session [@PO-272, @PO-469, @PO-499, @PO-500]
+  Scenario: (AC.4, AC.5) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Then I see "Account comments and notes" on the page header
 
     When I click the "Return to account details" button
@@ -48,7 +48,7 @@ Feature: Manual account creation - Account Comments and Notes
     And I see "" in the "Comments" field
     And I see "" in the "Notes" field
 
-  Scenario: (AC.6, AC.7) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-469, @PO-499, @PO-500]
+  Scenario: (AC.6, AC.7) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-469, @PO-499, @PO-500]
     Then I see "Account comments and notes" on the page header
 
     When I click on the "Account comments and notes" link

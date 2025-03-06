@@ -1,3 +1,4 @@
+@ManualAccountCreation @ContactDetails @PO-272 @PO-344 @PO-345 @PO-419 @PO-371 @PO-370 @PO-358
 Feature: Manual account creation - Contact Details
   #This feature file contains tests for the Contact Details page of the Manual Account Creation journey that cannot be exercised in the component tests #
   #Validation tests are contained in the ContactDetailsComponent.cy.ts component tests
@@ -16,7 +17,7 @@ Feature: Manual account creation - Contact Details
     Then I click on the "Contact details" link
     And I see "Defendant contact details" on the page header
 
-  Scenario: (AC.9) Entered data persists in the session [@PO-272, @PO-419]
+  Scenario: (AC.9) Entered data persists in the session [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]
     When I enter "P@EMAIL.COM" into the "Primary email address" field
     And I enter "S@EMAIL.COM" into the "Secondary email address" field
     And I enter "07123 456 789" into the "Mobile telephone number" field
@@ -49,13 +50,13 @@ Feature: Manual account creation - Contact Details
     And I see "" in the "Home telephone number" field
     And I see "" in the "Work telephone number" field
 
-  Scenario: (AC.9) Grey navigation links routes correctly [@PO-272, @PO-419]
+  Scenario: (AC.9) Grey navigation links routes correctly [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]
     When I enter "P@EMAIL.COM" into the "Primary email address" field
     And I click the "Add employer details" button
 
     Then I see "Employer details" on the page header
 
-  Scenario: (AC.10, AC.11) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-419]
+  Scenario: (AC.10, AC.11) Unsaved data is cleared when cancel is clicked [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]
     When I enter "P@EMAIL.COM" into the "Primary email address" field
     And I enter "07123 456 789" into the "Mobile telephone number" field
 
