@@ -103,7 +103,7 @@ Feature: Manual account creation - Offence Details
 
     When I click the "Return to account details" button
     And I see the status of "Offence details" is "Provided"
-
+  #Failing due to PO-1395
   @skip
   Scenario: The User can add an offence with a minor creditors and change the creditor details / add / remove a creditor [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-414, @PO-668, @PO-669, @PO-670, @PO-671, @PO-686, @PO-696]
     When I enter "TP11003" into the "Offence code" field
@@ -378,6 +378,7 @@ Feature: Manual account creation - Offence Details
       | Compensation | CNAME3                      | £200.00        | £100.00     | £100.00           |
       | Totals       |                             | £400.00        | £200.00     | £200.00           |
 
+  #Failing due to PO-1395
   @skip
   Scenario: The User can add an offence with multiple impositions and add / change / remove an imposition [@PO-272, @PO-344, @PO-345, @PO-545, @PO-411, @PO-681, @PO-684]
     When I enter "TP11003" into the "Offence code" field
@@ -542,6 +543,7 @@ Feature: Manual account creation - Offence Details
       | Vehicle Excise | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
       | Totals         |                                       | £1300.00       | £284.00     | £1016.00          |
 
+  #Failing due to PO-1395
   @skip
   Scenario: (AC.2, AC.7, AC.8) The User can add multiple offences and add / change / remove offences [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680]
 
