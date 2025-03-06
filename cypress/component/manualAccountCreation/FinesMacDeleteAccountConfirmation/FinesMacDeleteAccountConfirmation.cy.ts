@@ -36,7 +36,7 @@ describe('FinesMacDeleteAccountConfirmation', () => {
     });
   };
 
-  it('should render the component and have all elements ', () => {
+  it('(AC.2)should render the component and have all elements ', { tags: ['@PO-518'] }, () => {
     setupComponent();
 
     cy.get('h1').should('contain', 'Are you sure you want to delete this account?');
