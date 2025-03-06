@@ -47,7 +47,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('should load all elements on the screen correctly', () => {
+  it('(AC.1,AC.2)should load all elements on the screen correctly', { tags: ['@PO-464'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.pageTitle).should('contain', 'Language preferences');
@@ -71,7 +71,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     cy.get(DOM_ELEMENTS.cancelLink).should('exist');
   });
 
-  it('should allow form to be submitted with no input', () => {
+  it('(AC.3)should allow form to be submitted with no input', { tags: ['@PO-464'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
     setupComponent(mockFormSubmit);
@@ -81,7 +81,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should allow selections on language preferences', () => {
+  it('(AC.3)should allow selections on language preferences', { tags: ['@PO-464'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
     setupComponent(mockFormSubmit);
@@ -94,7 +94,7 @@ describe('FinesMacLanguagePreferenceComponent', () => {
     cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
-  it('should allow selections on language preferences Opposite options', () => {
+  it('(AC.3)should allow selections on language preferences Opposite options', { tags: ['@PO-464'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
     setupComponent(mockFormSubmit);

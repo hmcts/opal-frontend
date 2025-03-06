@@ -49,13 +49,13 @@ describe('FinesMacCreateAccountComponent', () => {
     });
   });
 
-  it('should render the component', { tags: '@PO-523' }, () => {
+  it('should render the component', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.app).should('exist');
   });
 
-  it('(AC.1)should render all elements on the page correctly and have correct text', { tags: '@PO-523' }, () => {
+  it('(AC.1)should render all elements on the page correctly and have correct text', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.createAccountCaption).should('exist');
@@ -88,7 +88,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.1,AC.2)should render all elements for fine account type correctly and have correct text',
-    { tags: '@PO-523' },
+    { tags: ['@PO-523'] },
     () => {
       setupComponent(null);
 
@@ -115,7 +115,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.1,AC.2) should render all elements for fixed penalty account type correctly and have correct text',
-    { tags: '@PO-523' },
+    { tags: ['@PO-523'] },
     () => {
       setupComponent(null);
 
@@ -129,7 +129,7 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it('(AC.4a)it should have validation if empty business unit but valid account type', { tags: '@PO-523' }, () => {
+  it('(AC.4a)it should have validation if empty business unit but valid account type', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.fineInput).click();
@@ -139,7 +139,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4b)should have validation in place if empty account type but valid business unit',
-    { tags: '@PO-523' },
+    { tags: ['@PO-523']},
     () => {
       setupComponent(null);
 
@@ -150,7 +150,7 @@ describe('FinesMacCreateAccountComponent', () => {
     },
   );
 
-  it('(AC.4d)should have validation if both business unit and account type are empty', { tags: '@PO-523' }, () => {
+  it('(AC.4d)should have validation if both business unit and account type are empty', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.continueButton).click();
@@ -158,7 +158,7 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.accountType);
   });
 
-  it('(AC.2b)should check only 1 account type can be selected', { tags: '@PO-523' }, () => {
+  it('(AC.2b)should check only 1 account type can be selected', { tags: ['@PO-523'] }, () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.fineInput).click();
@@ -167,7 +167,7 @@ describe('FinesMacCreateAccountComponent', () => {
     cy.get(DOM_ELEMENTS.fixedPenaltyInput).should('be.checked');
   });
 
-  it('(AC5)should pass validation if both business unit and account type are filled in', { tags: '@PO-523' }, () => {
+  it('(AC5)should pass validation if both business unit and account type are filled in', { tags: ['@PO-523'] }, () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
@@ -182,7 +182,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4c)should check through each account type to ensure that error is given when a defendant type is not selected except conditional caution',
-    { tags: '@PO-523' },
+    { tags: ['@PO-523'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
