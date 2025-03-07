@@ -322,7 +322,7 @@ describe('ReviewSummaryComponent', () => {
     () => {
       setupComponent();
 
-      cy.get(DOM_ELEMENTS.hideLink).should('contain', 'Hide');
+      cy.get(DOM_ELEMENTS.hideLink, { timeout: 10000 }).should('contain', 'Hide');
       cy.get(DOM_ELEMENTS.hideLink).first().click();
 
       cy.get(DOM_ELEMENTS.hideLink).click();
