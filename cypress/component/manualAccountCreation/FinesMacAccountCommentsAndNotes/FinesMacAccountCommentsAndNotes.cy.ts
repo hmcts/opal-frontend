@@ -1,18 +1,16 @@
 import { mount } from 'cypress/angular';
 import { FinesMacAccountCommentsNotesComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-account-comments-notes/fines-mac-account-comments-notes.component';
-import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
 import { DOM_ELEMENTS } from './constants/fines-mac-account-notes-and-comments-elements';
-import { IFinesMacCourtDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-court-details/interfaces/fines-mac-court-details-form.interface';
-import { IFinesMacPersonalDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-personal-details/interfaces/fines-mac-personal-details-form.interface';
-import { IFinesMacOffenceDetailsState } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/interfaces/fines-mac-offence-details-state.interface';
-import { IFinesMacOffenceDetailsForm } from 'src/app/flows/fines/fines-mac/fines-mac-offence-details/interfaces/fines-mac-offence-details-form.interface';
-import { IFinesMacPaymentTermsForm } from 'src/app/flows/fines/fines-mac/fines-mac-payment-terms/interfaces/fines-mac-payment-terms-form.interface';
 import { IFinesMacState } from 'src/app/flows/fines/fines-mac/interfaces/fines-mac-state.interface';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import { FINES_COMMENT_AND_NOTES_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_mandatory_completed_mock';
-import { FINES_COMMENT_AND_NOTES_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_mandatory_missing_mock';
+import { FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_AY_mandatory_completed_mock';
+import { FINES_COMMENT_AND_NOTES_AY_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_AY_mandatory_missing_mock';
+import { FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_PG_mandatory_completed_mock';
+import { FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK } from './mocks/fines_mac_account_comments_and_notes_COMP_mandatory_completed_mock';
+import { FINES_COMMENT_AND_NOTES_COMP_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_COMP_mandatory_missing_mock';
+import { FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK } from './mocks/fines_mac_account_comments_and_notes_PG_mandatory_missing_mock';
 
 describe('FinesMacAccountCommentsAndNotesComponent', () => {
   const setupComponent = (formSubmit: any, defendantTypeMock: string = '', finesMacStateMock: IFinesMacState) => {
@@ -137,10 +135,10 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
   });
 
   it(
-    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated',
+    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Adult or youth only',
     { tags: ['@PO-272', '@PO-469'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_MANDATORY_COMPLETED_MOCK);
+      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK);
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');
@@ -151,10 +149,66 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     },
   );
   it(
-    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing',
+    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Parent or guardian',
+    { tags: ['@PO-344', '@PO-499'] },
+    () => {
+      setupComponent(null, 'parentOrGuardianToPay', FINES_COMMENT_AND_NOTES_PG_MANDATORY_COMPLETED_MOCK);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
+  it(
+    '(AC.8) should display the grey navigation button only when mandatory sections of the MAC process are populated - Company',
+    { tags: ['@PO-345', '@PO-500'] },
+    () => {
+      setupComponent(null, 'company', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
+  it(
+    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Adult or youth only',
     { tags: ['@PO-272', '@PO-469'] },
     () => {
-      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_MANDATORY_MISSING_MOCK);
+      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_AY_MANDATORY_MISSING_MOCK);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
+  it(
+    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Parent or guardian',
+    { tags: ['@PO-272', '@PO-469'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_PG_MANDATORY_MISSING_MOCK);
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+
+      cy.get(DOM_ELEMENTS.submitButton).should('exist');
+      cy.get(DOM_ELEMENTS.reviewAndSubmitButton).should('not.exist');
+      cy.get(DOM_ELEMENTS.cancelLink).should('exist');
+    },
+  );
+  it(
+    '(AC.8) should not display the grey navigation button when mandatory sections of the MAC process are missing - Company',
+    { tags: ['@PO-272', '@PO-469'] },
+    () => {
+      setupComponent(null, 'adultOrYouthOnly', FINES_COMMENT_AND_NOTES_COMP_MANDATORY_MISSING_MOCK);
 
       cy.get(DOM_ELEMENTS.submitButton).should('exist');
       cy.get(DOM_ELEMENTS.cancelLink).should('exist');

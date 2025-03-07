@@ -15,7 +15,7 @@ import { IFinesMacState } from '../../../../../src/app/flows/fines/fines-mac/int
 import { FINES_MAC_PERSONAL_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/constants/fines-mac-personal-details-state';
 import { FINES_MAC_OFFENCE_DETAILS_STATE } from '../../../../../src/app/flows/fines/fines-mac/fines-mac-offence-details/constants/fines-mac-offence-details-state.constant';
 
-export const FINES_COMMENT_AND_NOTES_MANDATORY_COMPLETED_MOCK: IFinesMacState = {
+export const FINES_COMMENT_AND_NOTES_AY_MANDATORY_COMPLETED_MOCK: IFinesMacState = {
   accountDetails: {
     ...FINES_MAC_ACCOUNT_DETAILS_FORM,
     formData: {
