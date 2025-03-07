@@ -139,7 +139,7 @@ describe('FinesMacCreateAccountComponent', () => {
 
   it(
     '(AC.4b)should have validation in place if empty account type but valid business unit',
-    { tags: ['@PO-523']},
+    { tags: ['@PO-523'] },
     () => {
       setupComponent(null);
 
