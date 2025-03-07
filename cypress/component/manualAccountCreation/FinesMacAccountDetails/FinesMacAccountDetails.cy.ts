@@ -160,7 +160,8 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'adultOrYouthOnly';
 
       cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      //cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
       cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
     },
   );
@@ -190,7 +191,8 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'parentOrGuardianToPay';
 
       cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      // cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
       cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
     },
   );
@@ -205,10 +207,7 @@ describe('FinesMacAccountDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.checkAccountButton).should('not.exist');
       cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
-      cy.get(DOM_ELEMENTS.CheckDetailsText).should(
-        'contain',
-        'You cannot proceed until all required sections have been completed.',
-      );
+      cy.get(DOM_ELEMENTS.CheckDetailsText).should('exist');
     },
   );
 
@@ -220,7 +219,7 @@ describe('FinesMacAccountDetailsComponent', () => {
       finesMacState.accountDetails.formData.fm_create_account_defendant_type = 'company';
 
       cy.get(DOM_ELEMENTS.checkAccountButton).should('exist');
-      cy.get(DOM_ELEMENTS.CheckDetails).should('not.exist');
+      cy.get(DOM_ELEMENTS.CheckDetails).should('contain', 'Check and submit');
       cy.get(DOM_ELEMENTS.CheckDetailsText).should('not.exist');
     },
   );

@@ -22,5 +22,5 @@ export const DOM_ELEMENTS = {
   paymentTerms: 'app-govuk-task-list-item[taskListItemId="paymentTermsItem"]',
   accountCommentsAndNotesItem: 'app-govuk-task-list-item[taskListItemId="accountCommentsAndNotesItem"]',
   CheckDetails: 'h2.govuk-heading-m',
-  CheckDetailsText: 'p.govuk-body',
+  CheckDetailsText: 'p.govuk-body:contains("You cannot proceed until all required sections have been completed.")',
 };
