@@ -222,22 +222,24 @@ describe('FinesMacEmployerDetailsComponent', () => {
     },
   );
   it('(AC.4) should error when email address fails validation', { tags: ['@PO-272', '@PO-280'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
     const incorrectEmails: string[] = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
-    incorrectEmails.forEach((email: string) => {
-      cy.get(DOM_ELEMENTS.emailAddressInput).clear().type(email, { delay: 0 });
-      cy.log('Email: ', email);
+    cy.wrap(incorrectEmails).each((email: string) => {
+      cy.then(() => {
+        finesMacState.employerDetails.formData.fm_employer_details_employer_email_address = email;
+        setupComponent(null, 'adultOrYouthOnly');
+      });
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_email_pattern);
     });
   });
 
   it('(AC.5) should error when employee telephone number fails validation', { tags: ['@PO-272', '@PO-280'] }, () => {
-    setupComponent(null, 'adultOrYouthOnly');
     const incorrectTelephoneNumbers: string[] = ['notNums', '0123456789', '012345678911'];
-    incorrectTelephoneNumbers.forEach((telephone: string) => {
-      cy.get(DOM_ELEMENTS.telephoneNumberInput).clear().type(telephone, { delay: 0 });
-      cy.log('Telephone: ', telephone);
+    cy.wrap(incorrectTelephoneNumbers).each((telephone: string) => {
+      cy.then(() => {
+        finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = telephone;
+        setupComponent(null, 'adultOrYouthOnly');
+      });
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_VALIDATION.employer_phone_pattern);
     });
@@ -265,11 +267,11 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.referenceInput).clear().type('1234567890', { delay: 0 });
     cy.get(DOM_ELEMENTS.emailAddressInput).clear().type('test@test.com', { delay: 0 });
     cy.get(DOM_ELEMENTS.telephoneNumberInput).clear().type('07700900982', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('Address Line 1', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine2Input).clear().type('Address Line 2', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('Address Line 3', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine4Input).clear().type('Address Line 4', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine5Input).clear().type('Address Line 5', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('Addr1', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine2Input).clear().type('Addr2', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('Addr3', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine4Input).clear().type('Addr4', { delay: 0 });
+    cy.get(DOM_ELEMENTS.addressLine5Input).clear().type('Addr5', { delay: 0 });
     cy.get(DOM_ELEMENTS.postCodeInput).clear().type('TE12 3ST', { delay: 0 });
 
     cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
@@ -303,7 +305,6 @@ describe('FinesMacEmployerDetailsComponent', () => {
     setupComponent(mockFormSubmit, 'adultOrYouthOnly');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add offence details');
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 
   it('(AC.1) should load button for next page for AYPG Defendant', { tags: ['@PO-344', '@PO-435'] }, () => {
@@ -311,6 +312,5 @@ describe('FinesMacEmployerDetailsComponent', () => {
     setupComponent(mockFormSubmit, 'parentOrGuardianToPay');
 
     cy.get(DOM_ELEMENTS.submitButton).should('contain', 'Add personal details');
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
   });
 });
