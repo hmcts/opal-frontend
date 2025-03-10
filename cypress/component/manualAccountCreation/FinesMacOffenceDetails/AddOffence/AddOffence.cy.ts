@@ -15,6 +15,7 @@ import { DOM_ELEMENTS, impostitionSelectors } from './constants/fines_mac_offenc
 import { IMPOSITION_ERROR_MESSAGES, OFFENCE_ERROR_MESSAGES } from './constants/fines_mac_offence_details_errors';
 import { UtilsService } from '@services/utils/utils.service';
 import { impositionResultCodelist } from './constants/fines_mac_offence_details_results_codes';
+import { IMPOSITION_MOCK_1, IMPOSITION_MOCK_2, IMPOSITION_MOCK_3 } from './mocks/add-offence-imposition-mock';
 
 describe('FinesMacAddOffenceComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -186,15 +187,13 @@ describe('FinesMacAddOffenceComponent', () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
       setupComponent(mockFormSubmit);
 
-      const imposition_1 = impostitionSelectors(0);
+      let Imposition = structuredClone(IMPOSITION_MOCK_3);
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
-
-      cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
@@ -235,14 +234,19 @@ describe('FinesMacAddOffenceComponent', () => {
     { tags: ['@PO-411', '@PO-681', '@PO-684', '@PO-545'] },
     () => {
       setupComponent(null);
+      const SELECTOR = impostitionSelectors(0);
 
-      const imposition_1 = impostitionSelectors(0);
+      let Imposition_1 = structuredClone(IMPOSITION_MOCK_1);
 
-      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition_1);
+
+      cy.get(SELECTOR.resultCodeInput).click();
+      cy.get(SELECTOR.resultCodeAutoComplete).find('li').first().click();
       cy.get(DOM_ELEMENTS.submitButton).first().click();
-
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', IMPOSITION_ERROR_MESSAGES.requiredCreditor);
     },
   );
@@ -263,15 +267,20 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const imposition_1 = impostitionSelectors(0);
+      const SELECTOR = impostitionSelectors(0);
 
-      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      let Imposition_1 = structuredClone(IMPOSITION_MOCK_1);
+      Imposition_1[0].fm_offence_details_major_creditor_id = null;
+      Imposition_1[0].fm_offence_details_creditor = 'major';
 
-      cy.get(imposition_1.majorCreditor).click();
-      cy.get(imposition_1.majorCreditorCode).should('exist');
-      cy.get(imposition_1.majorCreditorCodeLabel).should('contain', 'Search using name or code');
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition_1);
+
+      cy.get(SELECTOR.majorCreditorCode).should('exist');
+      cy.get(SELECTOR.majorCreditorCodeLabel).should('contain', 'Search using name or code');
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -285,14 +294,19 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const imposition_1 = impostitionSelectors(0);
+      const SELECTOR = impostitionSelectors(0);
 
-      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      let Imposition_1 = structuredClone(IMPOSITION_MOCK_1);
+      Imposition_1[0].fm_offence_details_major_creditor_id = null;
+      Imposition_1[0].fm_offence_details_creditor = 'minor';
 
-      cy.get(imposition_1.minorCreditor).click();
-      cy.get(imposition_1.majorCreditor).should('not.be.selected');
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition_1);
+
+      cy.get(SELECTOR.majorCreditor).should('not.be.selected');
 
       cy.get(DOM_ELEMENTS.minorCreditorLink).should('exist');
     },
@@ -304,22 +318,19 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const imposition_1 = impostitionSelectors(0);
-      const imposition_2 = impostitionSelectors(1);
+      const SELECTOR = impostitionSelectors(0);
 
-      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      let Imposition = structuredClone(IMPOSITION_MOCK_2);
 
-      cy.get(DOM_ELEMENTS.addImpositionButton).click();
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
 
-      cy.get(imposition_2.resultCodeInput).should('exist');
-      cy.get(imposition_2.amountImposedInput).should('exist');
-      cy.get(imposition_2.amountPaidInput).should('exist');
-
-      cy.get(imposition_2.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-      cy.get(imposition_2.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_2.amountPaidInput).type('50', { delay: 0 });
+      cy.get(SELECTOR.resultCodeInput).should('exist');
+      cy.get(SELECTOR.amountImposedInput).should('exist');
+      cy.get(SELECTOR.amountPaidInput).should('exist');
 
       cy.get(DOM_ELEMENTS.removeImpositionLink).should('exist');
     },
@@ -377,11 +388,18 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const imposition_1 = impostitionSelectors(0);
+      const SELECTOR = impostitionSelectors(0);
 
-      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('invalid', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      let Imposition = structuredClone(IMPOSITION_MOCK_1);
+      Imposition[0].fm_offence_details_amount_imposed = null;
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
+
+      cy.get(SELECTOR.amountImposedInput).type('invalid', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -395,11 +413,18 @@ describe('FinesMacAddOffenceComponent', () => {
     () => {
       setupComponent(null);
 
-      const imposition_1 = impostitionSelectors(0);
+      const SELECTOR = impostitionSelectors(0);
 
-      cy.get(imposition_1.resultCodeInput).type('Compensation (FCOMP)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('123456789012345678901.12', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
+      let Imposition = structuredClone(IMPOSITION_MOCK_1);
+      Imposition[0].fm_offence_details_amount_paid = null;
+
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
+
+      cy.get(SELECTOR.amountImposedInput).type('123456789012345678901.12', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -462,22 +487,33 @@ describe('FinesMacAddOffenceComponent', () => {
 
       setupComponent(mockFormSubmit);
 
-      const imposition_1 = impostitionSelectors(0);
-      const imposition_2 = impostitionSelectors(1);
+      let Imposition = structuredClone(IMPOSITION_MOCK_2);
+      Imposition[0] = {
+        fm_offence_details_imposition_id: 0,
+        fm_offence_details_result_id: 'FVS',
+        fm_offence_details_amount_imposed: 100,
+        fm_offence_details_amount_paid: 50,
+        fm_offence_details_balance_remaining: 50,
+        fm_offence_details_needs_creditor: false,
+        fm_offence_details_creditor: '',
+        fm_offence_details_major_creditor_id: 3856,
+      };
+      Imposition[1] = {
+        fm_offence_details_imposition_id: 0,
+        fm_offence_details_result_id: 'FVS',
+        fm_offence_details_amount_imposed: 100,
+        fm_offence_details_amount_paid: 50,
+        fm_offence_details_balance_remaining: 50,
+        fm_offence_details_needs_creditor: false,
+        fm_offence_details_creditor: '',
+        fm_offence_details_major_creditor_id: 3856,
+      };
 
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_date_of_sentence = '01/01/2021';
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_cjs_code = 'AK123456';
       finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_offence_id = 52;
-
-      cy.get(imposition_1.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
-      cy.get(imposition_1.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_1.amountPaidInput).type('50', { delay: 0 });
-
-      cy.get(DOM_ELEMENTS.addImpositionButton).click();
-
-      cy.get(imposition_2.resultCodeInput).type('Victim Surcharge (FVS)', { delay: 0 });
-      cy.get(imposition_2.amountImposedInput).type('100', { delay: 0 });
-      cy.get(imposition_2.amountPaidInput).type('50', { delay: 0 });
+      finesMacState.offenceDetails[currentoffenceDetails].formData.fm_offence_details_impositions =
+        structuredClone(Imposition);
 
       cy.get(DOM_ELEMENTS.submitButton).first().click();
 
@@ -485,4 +521,3 @@ describe('FinesMacAddOffenceComponent', () => {
     },
   );
 });
-//E-2-E Tests Required: Access to add offence screen from summary page (AC.1), Check Search offence list link works (AC.3Aii), Check Cancel button works (AC.9,AC.10), Check review offence flow(AC.8)

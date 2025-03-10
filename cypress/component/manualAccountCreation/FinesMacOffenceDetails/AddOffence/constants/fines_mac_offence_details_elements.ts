@@ -41,6 +41,7 @@ export const DOM_ELEMENTS = {
 };
 
 export const impostitionSelectors = (number: number) => ({
+  resultCodeAutoComplete: `ul[id = "fm_offence_details_result_id_${number}-autocomplete__listbox"]`,
   resultCodeInput: `input[id = "fm_offence_details_result_id_${number}-autocomplete"]`,
   amountImposedInput: `input[id = "fm_offence_details_amount_imposed_${number}"]`,
   amountPaidInput: `input[id = "fm_offence_details_amount_paid_${number}"]`,
