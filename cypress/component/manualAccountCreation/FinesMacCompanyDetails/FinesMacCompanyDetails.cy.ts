@@ -70,7 +70,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   });
 
   it(
-    '(AC.8) should error when submitted without mandatory fields but has included optional input - Return to account details',
+    '(AC.8) should error when submitted without mandatory fields but has included optional input - Return to account details + Add contact details',
     { tags: ['@PO-345', '@PO-365'] },
     () => {
       setupComponent(null, 'company');
@@ -80,16 +80,6 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredName);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAddressLine1);
-    },
-  );
-
-  it(
-    '(AC.8) should error when submitted without mandatory fields but has included optional input - Add contact details',
-    { tags: ['@PO-345', '@PO-365'] },
-    () => {
-      setupComponent(null, 'company');
-
-      cy.get(DOM_ELEMENTS.addressLine2Input).type('Addr2', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredName);
@@ -362,7 +352,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   });
 
   it(
-    '(AC.9) should errors when form is submitted with empty aliases fields - Return to account details',
+    '(AC.9) should errors when form is submitted with empty aliases fields - Return to account details + Add contact details',
     { tags: ['@PO-345', '@PO-365'] },
     () => {
       setupComponent(null, 'company');
@@ -371,16 +361,6 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
-    },
-  );
-
-  it(
-    '(AC.9) should errors when form is submitted with empty aliases fields - Add contact details',
-    { tags: ['@PO-345', '@PO-365'] },
-    () => {
-      setupComponent(null, 'company');
-
-      cy.get(DOM_ELEMENTS.addAlias).check();
 
       cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
@@ -388,7 +368,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
 
   it(
-    '(AC.10) should error when submitted with many empty aliases fields - Return to account details',
+    '(AC.10) should error when submitted with many empty aliases fields - Return to account details + Add contact details',
     { tags: ['@PO-345', '@PO-365'] },
     () => {
       setupComponent(null, 'company');
@@ -415,30 +395,6 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('not.contain', REQUIRED_VALIDATION.requiredAlias3);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias4);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias5);
-    },
-  );
-
-  it(
-    '(AC.10) should error when submitted with many empty aliases fields - Add contact details',
-    { tags: ['@PO-345', '@PO-365'] },
-    () => {
-      setupComponent(null, 'company');
-
-      cy.get(DOM_ELEMENTS.addAlias).check();
-
-      cy.get(DOM_ELEMENTS.additionalAlias).first().click();
-      cy.get(DOM_ELEMENTS.additionalAlias).first().click();
-      cy.get(DOM_ELEMENTS.additionalAlias).first().click();
-      cy.get(DOM_ELEMENTS.additionalAlias).first().click();
-
-      cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias2);
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias3);
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias4);
-      cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias5);
-
-      cy.get(DOM_ELEMENTS.aliasCompanyName3Input).type('Alias 3', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredAlias1);
@@ -535,7 +491,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     },
   );
   it(
-    '(AC.11) should allow form to be submitted when validation errors are corrected - Return to account details',
+    '(AC.11) should allow form to be submitted when validation errors are corrected - Return to account details + Add contact details',
     { tags: ['@PO-345', '@PO-365'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
@@ -551,22 +507,6 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
       cy.get('@formSubmitSpy').should('have.been.called');
-    },
-  );
-
-  it(
-    '(AC.11) should allow form to be submitted when validation errors are corrected - Add contact details',
-    { tags: ['@PO-345', '@PO-365'] },
-    () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit, 'company');
-
-      cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-      cy.get('@formSubmitSpy').should('not.have.been.called');
-
-      cy.get(DOM_ELEMENTS.companyNameInput).type('CNAME', { delay: 0 });
-      cy.get(DOM_ELEMENTS.addressLine1Input).type('addr1', { delay: 0 });
 
       cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
@@ -575,7 +515,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
   );
 
   it(
-    '(AC.12) should allow form to be submitted with valid data with aliases - Return to account details',
+    '(AC.12) should allow form to be submitted with valid data with aliases - Return to account details + Add contact details',
     { tags: ['@PO-345', '@PO-365'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
@@ -597,27 +537,6 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
 
       cy.get('@formSubmitSpy').should('be.called');
-    },
-  );
-
-  it(
-    '(AC.12) should allow form to be submitted with valid data with aliases - Add contact details',
-    { tags: ['@PO-345', '@PO-365'] },
-    () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-      setupComponent(mockFormSubmit, 'company');
-
-      finesMacState.companyDetails.formData.fm_company_details_company_name = 'Company Name';
-      finesMacState.companyDetails.formData.fm_company_details_address_line_1 = '123 Fake Street';
-      finesMacState.companyDetails.formData.fm_company_details_postcode = 'AB12 3CD';
-      finesMacState.companyDetails.formData.fm_company_details_add_alias = true;
-      finesMacState.companyDetails.formData.fm_company_details_aliases = [
-        { fm_company_details_alias_company_name_0: 'Alias 1' },
-        { fm_company_details_alias_company_name_1: 'Alias 2' },
-        { fm_company_details_alias_company_name_2: 'Alias 3' },
-        { fm_company_details_alias_company_name_3: 'Alias 4' },
-        { fm_company_details_alias_company_name_4: 'Alias 5' },
-      ];
 
       cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
