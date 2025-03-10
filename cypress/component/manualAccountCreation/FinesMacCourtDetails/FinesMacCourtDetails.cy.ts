@@ -246,18 +246,14 @@ describe('FinesMacCourtDetailsComponent', () => {
   });
 
   it('(AC.7) should validate PCR field allowed characters', { tags: ['@PO-272', '@PO-389'] }, () => {
-    setupComponent(null);
-
     const invalidInputs = ['1234!', '1@', 'test@', 'test1234@', 'abc#', '123$', 'abc%', '123^', 'abc&', '123*'];
-
-    invalidInputs.forEach((input) => {
-      cy.get(DOM_ELEMENTS.pcrInput).clear().type(input, { delay: 0 });
-
-      //Submit with invalid input
-      cy.get(DOM_ELEMENTS.returnToACDetails).click();
-
-      //Verify error message
-      cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', INVALID_ERRORS.invalidPCR);
+    cy.wrap(invalidInputs).each((input: string) => {
+      cy.then(() => {
+        setupComponent(null);
+        finesMacState.courtDetails.formData.fm_court_details_prosecutor_case_reference = input;
+        cy.get(DOM_ELEMENTS.returnToACDetails).click();
+        cy.get(DOM_ELEMENTS.pcrErrorMessage).should('contain', INVALID_ERRORS.invalidPCR);
+      });
     });
   });
 
