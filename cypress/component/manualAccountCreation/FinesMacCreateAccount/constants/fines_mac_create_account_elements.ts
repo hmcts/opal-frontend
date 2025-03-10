@@ -7,7 +7,7 @@ export const DOM_ELEMENTS = {
   businessUnitHint: 'div[id = "fm_create_account_business_unit_id-hint"]',
   businessUnitInput: 'input[id = "fm_create_account_business_unit_id-autocomplete"]',
   businessUnitLabel: 'label[for = "fm_create_account_business_unit_id-autocomplete"]',
-
+  businessUnitAutoComplete: 'ul[id = "fm_create_account_business_unit_id-autocomplete__listbox"]',
   //account type
   accountTypeHeading: 'legend.govuk-fieldset__legend.govuk-fieldset__legend--m',
   fineInput: 'input[id = "fine"]',

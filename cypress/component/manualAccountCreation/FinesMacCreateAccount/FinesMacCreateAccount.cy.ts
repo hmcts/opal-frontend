@@ -143,8 +143,9 @@ describe('FinesMacCreateAccountComponent', () => {
     () => {
       setupComponent(null);
 
-      cy.get(DOM_ELEMENTS.businessUnitInput).type('London Central & South East');
-      cy.get(DOM_ELEMENTS.continueButton).click().click();
+      cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
+      cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
+      cy.get(DOM_ELEMENTS.continueButton).click();
 
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.accountType);
     },
@@ -154,8 +155,9 @@ describe('FinesMacCreateAccountComponent', () => {
     setupComponent(null);
 
     cy.get(DOM_ELEMENTS.continueButton).click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.businessUnit);
-    cy.get(DOM_ELEMENTS.errorSummary).should('contain', ERROR_MESSAGES.accountType);
+    cy.get(DOM_ELEMENTS.errorSummary)
+      .should('contain', ERROR_MESSAGES.businessUnit)
+      .should('contain', ERROR_MESSAGES.accountType);
   });
 
   it('(AC.2b)should check only 1 account type can be selected', { tags: ['@PO-523'] }, () => {
@@ -171,8 +173,9 @@ describe('FinesMacCreateAccountComponent', () => {
     const mockFormSubmit = cy.spy().as('formSubmitSpy');
     setupComponent(mockFormSubmit);
 
-    cy.get(DOM_ELEMENTS.businessUnitInput).type('London Central & South East');
-    cy.get(DOM_ELEMENTS.fineInput).click().click();
+    cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
+    cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
+    cy.get(DOM_ELEMENTS.fineInput).click();
     cy.get(DOM_ELEMENTS.adultOrYouthInput).click();
     cy.get(DOM_ELEMENTS.continueButton).click();
     cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
@@ -188,9 +191,9 @@ describe('FinesMacCreateAccountComponent', () => {
 
       setupComponent(mockFormSubmit);
 
-      cy.get(DOM_ELEMENTS.businessUnitInput).type('London Central & South East');
-
-      cy.get(DOM_ELEMENTS.fineInput).click().click();
+      cy.get(DOM_ELEMENTS.businessUnitInput).type('Lo');
+      cy.get(DOM_ELEMENTS.businessUnitAutoComplete).find('li').first().click();
+      cy.get(DOM_ELEMENTS.fineInput).click();
       cy.get(DOM_ELEMENTS.continueButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', 'Select a defendant type');
 

@@ -11,7 +11,6 @@ import {
   ALPHABETICAL_TEXT_PATTERN_VALIDATION,
 } from './constants/fines-mac-company-details-errors';
 import { DOM_ELEMENTS } from './constants/fines-mac-company-details-elements';
-import { set } from 'cypress/types/lodash';
 
 describe('FinesMacCompanyDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COMPANY_DETAILS_MOCK);
