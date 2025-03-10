@@ -263,19 +263,25 @@ describe('FinesMacEmployerDetailsComponent', () => {
     cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
     cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-    cy.get(DOM_ELEMENTS.companyNameInput).clear().type('Test Employer', { delay: 0 });
-    cy.get(DOM_ELEMENTS.referenceInput).clear().type('1234567890', { delay: 0 });
-    cy.get(DOM_ELEMENTS.emailAddressInput).clear().type('test@test.com', { delay: 0 });
-    cy.get(DOM_ELEMENTS.telephoneNumberInput).clear().type('07700900982', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine1Input).clear().type('Addr1', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine2Input).clear().type('Addr2', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine3Input).clear().type('Addr3', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine4Input).clear().type('Addr4', { delay: 0 });
-    cy.get(DOM_ELEMENTS.addressLine5Input).clear().type('Addr5', { delay: 0 });
-    cy.get(DOM_ELEMENTS.postCodeInput).clear().type('TE12 3ST', { delay: 0 });
+    cy.then(() => {
+      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+      finesMacState.employerDetails.formData = {
+        fm_employer_details_employer_company_name: 'Test Employer',
+        fm_employer_details_employer_reference: '1234567890',
+        fm_employer_details_employer_email_address: 'test@test.com',
+        fm_employer_details_employer_telephone_number: '07700900982',
+        fm_employer_details_employer_address_line_1: 'Addr1',
+        fm_employer_details_employer_address_line_2: 'Addr2',
+        fm_employer_details_employer_address_line_3: 'Addr3',
+        fm_employer_details_employer_address_line_4: 'Addr4',
+        fm_employer_details_employer_address_line_5: 'Addr5',
+        fm_employer_details_employer_post_code: 'TE12 3ST',
+      };
 
-    cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
-    cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+    });
   });
 
   it('(AC.7) should allow for form submission with valid data', { tags: ['@PO-272', '@PO-280'] }, () => {
