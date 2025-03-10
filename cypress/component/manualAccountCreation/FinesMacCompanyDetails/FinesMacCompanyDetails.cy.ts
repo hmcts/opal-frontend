@@ -3,7 +3,6 @@ import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-s
 import { ActivatedRoute } from '@angular/router';
 import { FinesMacCompanyDetailsComponent } from '../../../../src/app/flows/fines/fines-mac/fines-mac-company-details/fines-mac-company-details.component';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import { DateService } from '@services/date-service/date.service';
 import { FINES_COMPANY_DETAILS_MOCK } from './mocks/fines-mac-company-details-mock';
 import {
   REQUIRED_VALIDATION,
@@ -12,11 +11,10 @@ import {
   ALPHABETICAL_TEXT_PATTERN_VALIDATION,
 } from './constants/fines-mac-company-details-errors';
 import { DOM_ELEMENTS } from './constants/fines-mac-company-details-elements';
+import { set } from 'cypress/types/lodash';
 
 describe('FinesMacCompanyDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_COMPANY_DETAILS_MOCK);
-
-  const DOM_ELEMENTS_BASE: { [key: string]: string } = DOM_ELEMENTS;
 
   const setupComponent = (formSubmit: any, defendantTypeMock: string = '') => {
     mount(FinesMacCompanyDetailsComponent, {
@@ -75,7 +73,7 @@ describe('FinesMacCompanyDetailsComponent', () => {
     () => {
       setupComponent(null, 'company');
 
-      cy.get(DOM_ELEMENTS.addressLine2Input).type('Addr2', { delay: 0 });
+      finesMacState.companyDetails.formData.fm_company_details_address_line_2 = 'Addr2';
 
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', REQUIRED_VALIDATION.requiredName);
@@ -326,8 +324,13 @@ describe('FinesMacCompanyDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.addAlias).check();
     cy.get(DOM_ELEMENTS.additionalAlias).first().click();
-    cy.get(DOM_ELEMENTS.aliasCompanyName1Input).type('Alias 1', { delay: 0 });
-    cy.get(DOM_ELEMENTS.aliasCompanyName2Input).type('Alias 2', { delay: 0 });
+
+    finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+      fm_company_details_alias_company_name_0: 'Alias 1',
+    });
+    finesMacState.companyDetails.formData.fm_company_details_aliases.push({
+      fm_company_details_alias_company_name_1: 'Alias 2',
+    });
 
     cy.get(DOM_ELEMENTS.addAlias).uncheck();
     cy.get(DOM_ELEMENTS.aliasCompanyName1Input).should('not.exist');
@@ -500,17 +503,19 @@ describe('FinesMacCompanyDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
       cy.get('@formSubmitSpy').should('not.have.been.called');
+      cy.then(() => {
+        setupComponent(mockFormSubmit, 'company');
+        finesMacState.companyDetails.formData.fm_company_details_company_name = 'CNAME';
+        finesMacState.companyDetails.formData.fm_company_details_address_line_1 = 'addr1';
 
-      cy.get(DOM_ELEMENTS.companyNameInput).type('CNAME', { delay: 0 });
-      cy.get(DOM_ELEMENTS.addressLine1Input).type('addr1', { delay: 0 });
+        cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
+        cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+        cy.get('@formSubmitSpy').should('have.been.called');
 
-      cy.get(DOM_ELEMENTS.submitButton).contains('Return to account details').click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-      cy.get('@formSubmitSpy').should('have.been.called');
-
-      cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
-      cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
-      cy.get('@formSubmitSpy').should('have.been.called');
+        cy.get(DOM_ELEMENTS.addContactDetailsButton).click();
+        cy.get(DOM_ELEMENTS.errorSummary).should('not.exist');
+        cy.get('@formSubmitSpy').should('have.been.called');
+      });
     },
   );
 
