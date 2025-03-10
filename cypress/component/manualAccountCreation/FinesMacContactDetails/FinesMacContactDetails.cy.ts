@@ -121,44 +121,35 @@ describe('FinesMacContactDetailsComponent', () => {
 
     cy.get(DOM_ELEMENTS.addOffenceDetailsButton).should('contain', 'Add offence details');
   });
-  it('(AC.4) should accept valid email addresses - Return to account details', { tags: ['@PO-272', '@PO-419'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
-
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: 'name@example.com',
-      fm_contact_details_email_address_2: 'secondary@example.com',
-      fm_contact_details_telephone_number_mobile: '',
-      fm_contact_details_telephone_number_home: '',
-      fm_contact_details_telephone_number_business: '',
-    };
-
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
-
-  it('(AC.4) should accept valid email addresses - Add employer details', { tags: ['@PO-272', '@PO-419'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
-
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: 'name@example.com',
-      fm_contact_details_email_address_2: 'secondary@example.com',
-      fm_contact_details_telephone_number_mobile: '',
-      fm_contact_details_telephone_number_home: '',
-      fm_contact_details_telephone_number_business: '',
-    };
-
-    cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
 
   it(
-    '(AC.5) should accept valid telephone numbers - Return to account details',
+    '(AC.4) should accept valid email addresses - Return to account details + Add employer details',
+    { tags: ['@PO-272', '@PO-419'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+
+      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+
+      finesMacState.contactDetails.formData = {
+        fm_contact_details_email_address_1: 'name@example.com',
+        fm_contact_details_email_address_2: 'secondary@example.com',
+        fm_contact_details_telephone_number_mobile: '',
+        fm_contact_details_telephone_number_home: '',
+        fm_contact_details_telephone_number_business: '',
+      };
+
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+
+      cy.get('@formSubmitSpy').should('have.been.called');
+
+      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+
+      cy.get('@formSubmitSpy').should('have.been.called');
+    },
+  );
+
+  it(
+    '(AC.5) should accept valid telephone numbers - Return to account details + Add employer details',
     { tags: ['@PO-272', '@PO-419'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
@@ -176,221 +167,136 @@ describe('FinesMacContactDetailsComponent', () => {
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
 
       cy.get('@formSubmitSpy').should('have.been.calledOnce');
-    },
-  );
 
-  it('(AC.5) should accept valid telephone numbers - Add employer details', { tags: ['@PO-272', '@PO-419'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
+      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
 
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
-
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: '',
-      fm_contact_details_email_address_2: '',
-      fm_contact_details_telephone_number_mobile: '07123456789',
-      fm_contact_details_telephone_number_home: '01234 567890',
-      fm_contact_details_telephone_number_business: '01234 567890',
-    };
-
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
-
-  it('(AC.6) should accept valid contact details - Return to account details', { tags: ['@PO-272', '@PO-419'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
-
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: 'primary@email.com',
-      fm_contact_details_email_address_2: 'secondary@email.com',
-      fm_contact_details_telephone_number_mobile: '07123456789',
-      fm_contact_details_telephone_number_home: '01234 567890',
-      fm_contact_details_telephone_number_business: '01234 567890',
-    };
-
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
-
-  it('(AC.6) should accept valid contact details - Add employer details', { tags: ['@PO-272', '@PO-419'] }, () => {
-    const mockFormSubmit = cy.spy().as('formSubmitSpy');
-
-    setupComponent(mockFormSubmit, 'adultOrYouthOnly');
-
-    finesMacState.contactDetails.formData = {
-      fm_contact_details_email_address_1: 'primary@email.com',
-      fm_contact_details_email_address_2: 'secondary@email.com',
-      fm_contact_details_telephone_number_mobile: '07123456789',
-      fm_contact_details_telephone_number_home: '01234 567890',
-      fm_contact_details_telephone_number_business: '01234 567890',
-    };
-
-    cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-
-    cy.get('@formSubmitSpy').should('have.been.calledOnce');
-  });
-
-  it(
-    '(AC.7) should error when primary email address validation is not met - Return to account details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
-      invalidEmails.forEach((email: string) => {
-        cy.get(DOM_ELEMENTS.primaryEmailInput).clear().type(email, { delay: 0 });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
-      });
+      cy.get('@formSubmitSpy').should('have.been.called');
     },
   );
 
   it(
-    '(AC.7) should error when primary email address validation is not met - Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
-      invalidEmails.forEach((email: string) => {
-        cy.get(DOM_ELEMENTS.primaryEmailInput).clear().type(email, { delay: 0 });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
-      });
-    },
-  );
-
-  it(
-    '(AC.7) should error when secondary email address validation is not met - Return to account details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
-      invalidEmails.forEach((email: string) => {
-        cy.get(DOM_ELEMENTS.secondaryEmailInput).clear().type(email, { delay: 0 });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
-      });
-    },
-  );
-
-  it(
-    '(AC.7) should error when secondary email address validation is not met - Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
-      invalidEmails.forEach((email: string) => {
-        cy.get(DOM_ELEMENTS.secondaryEmailInput).clear().type(email, { delay: 0 });
-        cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
-      });
-    },
-  );
-
-  it(
-    '(AC.8) should error when home telephone number validation is not met - Return to account details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
-      invalidPhoneNumbers.forEach((phone: string) => {
-        cy.get(DOM_ELEMENTS.homeTelephoneInput).clear().type(phone, { delay: 0 });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
-      });
-    },
-  );
-
-  it(
-    '(AC.8) should error when home telephone number validation is not met - Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
-      invalidPhoneNumbers.forEach((phone: string) => {
-        cy.get(DOM_ELEMENTS.homeTelephoneInput).clear().type(phone, { delay: 0 });
-        cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
-      });
-    },
-  );
-
-  it(
-    '(AC.8) should error when business telephone number validation is not met - Return to account details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
-      invalidPhoneNumbers.forEach((phone: string) => {
-        cy.get(DOM_ELEMENTS.workTelephoneInput).clear().type(phone, { delay: 0 });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
-      });
-    },
-  );
-
-  it(
-    '(AC.8) should error when business telephone number validation is not met - Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
-      invalidPhoneNumbers.forEach((phone: string) => {
-        cy.get(DOM_ELEMENTS.workTelephoneInput).clear().type(phone, { delay: 0 });
-        cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
-      });
-    },
-  );
-
-  it(
-    '(AC.8) should error when mobile telephone number validation is not met - Return to account details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
-      invalidPhoneNumbers.forEach((phone: string) => {
-        cy.get(DOM_ELEMENTS.workTelephoneInput).clear().type(phone, { delay: 0 });
-        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
-      });
-    },
-  );
-
-  it(
-    '(AC.8) should error when mobile telephone number validation is not met - Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      setupComponent(null, 'adultOrYouthOnly');
-
-      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
-      invalidPhoneNumbers.forEach((phone: string) => {
-        cy.get(DOM_ELEMENTS.mobileTelephoneInput).clear().type(phone, { delay: 0 });
-        cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
-        cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
-      });
-    },
-  );
-
-  it(
-    '(AC.9) should allow submission when validation errors are corrected - Return to account details',
+    '(AC.6) should accept valid contact details - Return to account details + Add employer details',
     { tags: ['@PO-272', '@PO-419'] },
     () => {
       const mockFormSubmit = cy.spy().as('formSubmitSpy');
 
       setupComponent(mockFormSubmit, 'adultOrYouthOnly');
 
+      finesMacState.contactDetails.formData = {
+        fm_contact_details_email_address_1: 'primary@email.com',
+        fm_contact_details_email_address_2: 'secondary@email.com',
+        fm_contact_details_telephone_number_mobile: '07123456789',
+        fm_contact_details_telephone_number_home: '01234 567890',
+        fm_contact_details_telephone_number_business: '01234 567890',
+      };
+
+      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+
+      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+
+      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+
+      cy.get('@formSubmitSpy').should('have.been.called');
+    },
+  );
+
+  it(
+    '(AC.7) should error when primary email address validation is not met - Return to account details + Add employer details',
+    { tags: ['@PO-272', '@PO-419'] },
+    () => {
+      const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
+      cy.wrap(invalidEmails).each((email: string) => {
+        cy.then(() => {
+          finesMacState.contactDetails.formData.fm_contact_details_email_address_1 = email;
+          setupComponent(null, 'adultOrYouthOnly');
+          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
+          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidPrimaryEmail);
+        });
+      });
+    },
+  );
+
+  it(
+    '(AC.7) should error when secondary email address validation is not met - Return to account details + Add employer details',
+    { tags: ['@PO-272', '@PO-419'] },
+    () => {
+      const invalidEmails = ['test-test-com', 'test@test', 'test.com', 'test@.com', 'test@com'];
+      cy.wrap(invalidEmails).each((email: string) => {
+        cy.then(() => {
+          finesMacState.contactDetails.formData.fm_contact_details_email_address_2 = email;
+          setupComponent(null, 'adultOrYouthOnly');
+          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
+          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidSecondaryEmail);
+        });
+      });
+    },
+  );
+
+  it(
+    '(AC.8) should error when home telephone number validation is not met - Return to account details + Add employer details',
+    { tags: ['@PO-272', '@PO-419'] },
+    () => {
+      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
+      cy.wrap(invalidPhoneNumbers).each((number: string) => {
+        cy.then(() => {
+          finesMacState.contactDetails.formData.fm_contact_details_telephone_number_home = number;
+          setupComponent(null, 'adultOrYouthOnly');
+          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
+          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidHomeTelephone);
+        });
+      });
+    },
+  );
+
+  it(
+    '(AC.8) should error when business telephone number validation is not met - Return to account details + Add employer details',
+    { tags: ['@PO-272', '@PO-419'] },
+    () => {
+      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
+      cy.wrap(invalidPhoneNumbers).each((number: string) => {
+        cy.then(() => {
+          finesMacState.contactDetails.formData.fm_contact_details_telephone_number_business = number;
+          setupComponent(null, 'adultOrYouthOnly');
+          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
+          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidWorkTelephone);
+        });
+      });
+    },
+  );
+
+  it(
+    '(AC.8) should error when mobile telephone number validation is not met - Return to account details + Add employer details',
+    { tags: ['@PO-272', '@PO-419'] },
+    () => {
+      const invalidPhoneNumbers = ['123456789', '123456789012', '1234567890a'];
+      cy.wrap(invalidPhoneNumbers).each((number: string) => {
+        cy.then(() => {
+          finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile = number;
+          setupComponent(null, 'adultOrYouthOnly');
+          cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
+          cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+          cy.get(DOM_ELEMENTS.errorSummary).should('contain', INVALID_DETAILS.invalidMobileTelephone);
+        });
+      });
+    },
+  );
+
+  it(
+    '(AC.9) should allow submission when validation errors are corrected - Return to account details + Add employer details',
+    { tags: ['@PO-272', '@PO-419'] },
+    () => {
+      const mockFormSubmit = cy.spy().as('formSubmitSpy');
+
+      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
       finesMacState.contactDetails.formData = {
         fm_contact_details_email_address_1: 'bad-data',
         fm_contact_details_email_address_2: 'bad-data',
@@ -400,44 +306,23 @@ describe('FinesMacContactDetailsComponent', () => {
       };
       cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
-
-      cy.get(DOM_ELEMENTS.primaryEmailInput).clear().type('p@email.com');
-      cy.get(DOM_ELEMENTS.secondaryEmailInput).clear().type('s@email.com');
-      cy.get(DOM_ELEMENTS.mobileTelephoneInput).clear().type('07123456789');
-      cy.get(DOM_ELEMENTS.homeTelephoneInput).clear().type('01234 567890');
-      cy.get(DOM_ELEMENTS.workTelephoneInput).clear().type('01234 567890');
-
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
-    },
-  );
-
-  it(
-    '(AC.9) should allow submission when validation errors are corrected - Add employer details',
-    { tags: ['@PO-272', '@PO-419'] },
-    () => {
-      const mockFormSubmit = cy.spy().as('formSubmitSpy');
-
-      setupComponent(mockFormSubmit, 'adultOrYouthOnly');
-
-      finesMacState.contactDetails.formData = {
-        fm_contact_details_email_address_1: 'bad-data',
-        fm_contact_details_email_address_2: 'bad-data',
-        fm_contact_details_telephone_number_mobile: 'bad-data',
-        fm_contact_details_telephone_number_home: 'bad-data',
-        fm_contact_details_telephone_number_business: 'bad-data',
-      };
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+      cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('exist');
 
-      cy.get(DOM_ELEMENTS.primaryEmailInput).clear().type('p@email.com');
-      cy.get(DOM_ELEMENTS.secondaryEmailInput).clear().type('s@email.com');
-      cy.get(DOM_ELEMENTS.mobileTelephoneInput).clear().type('07123456789');
-      cy.get(DOM_ELEMENTS.homeTelephoneInput).clear().type('01234 567890');
-      cy.get(DOM_ELEMENTS.workTelephoneInput).clear().type('01234 567890');
-
-      cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
-      cy.get('@formSubmitSpy').should('have.been.calledOnce');
+      cy.then(() => {
+        setupComponent(mockFormSubmit, 'adultOrYouthOnly');
+        finesMacState.contactDetails.formData = {
+          fm_contact_details_email_address_1: 'p@email.com',
+          fm_contact_details_email_address_2: 's@email.com',
+          fm_contact_details_telephone_number_mobile: '07123456789',
+          fm_contact_details_telephone_number_home: '01234 567890',
+          fm_contact_details_telephone_number_business: '01234 567890',
+        };
+        cy.get(DOM_ELEMENTS.returnToAccountDetailsButton).click();
+        cy.get('@formSubmitSpy').should('have.been.called');
+        cy.get(DOM_ELEMENTS.addEmployerDetailsButton).click();
+        cy.get('@formSubmitSpy').should('have.been.called');
+      });
     },
   );
 });
