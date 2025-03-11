@@ -105,9 +105,8 @@ Feature: Manual account creation - Offence Details
 
     When I click the "Return to account details" button
     And I see the status of "Offence details" is "Provided"
-  #Failing due to PO-1395
-  @skip
-  Scenario: The User can add an offence with a minor creditors and change the creditor details / add / remove a creditor [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-414, @PO-668, @PO-669, @PO-670, @PO-671, @PO-686, @PO-696]
+
+  Scenario: The User can add an offence with a minor creditors and change the creditor details / add / remove a creditor [@PO-272, @PO-344, @PO-345, @PO-545, @PO-412, @PO-414, @PO-668, @PO-669, @PO-670, @PO-671, @PO-686, @PO-696, @PO-1395]
     When I enter "TP11003" into the "Offence code" field
     And I enter a date 9 weeks into the past into the "Date of sentence" date field
 
@@ -340,7 +339,7 @@ Feature: Manual account creation - Offence Details
     And I enter "Compensation (FCOMP)" into the "Result code" field for imposition 3
     And I enter "200" into the "Amount imposed" field for imposition 3
     And I enter "100" into the "Amount paid" field for imposition 3
-    And I select the "Minor creditor" radio button
+    And I select the "Minor creditor" radio button for imposition 3
     When I click on the "Add minor creditor details" link for imposition 3
     Then I see "Minor creditor details" on the page header
 
@@ -380,9 +379,7 @@ Feature: Manual account creation - Offence Details
       | Compensation | CNAME3                      | £200.00        | £100.00     | £100.00           |
       | Totals       |                             | £400.00        | £200.00     | £200.00           |
 
-  #Failing due to PO-1395
-  @skip
-  Scenario: The User can add an offence with multiple impositions and add / change / remove an imposition [@PO-272, @PO-344, @PO-345, @PO-545, @PO-411, @PO-681, @PO-684]
+  Scenario: The User can add an offence with multiple impositions and add / change / remove an imposition [@PO-272, @PO-344, @PO-345, @PO-545, @PO-411, @PO-681, @PO-684, @PO-1395]
     When I enter "TP11003" into the "Offence code" field
     And I enter a date 9 weeks into the past into the "Date of sentence" date field
 
@@ -545,9 +542,7 @@ Feature: Manual account creation - Offence Details
       | Vehicle Excise | HM Courts & Tribunals Service (HMCTS) | £100.00        | £50.00      | £50.00            |
       | Totals         |                                       | £1300.00       | £284.00     | £1016.00          |
 
-  #Failing due to PO-1395
-  @skip
-  Scenario: (AC.2, AC.7, AC.8) The User can add multiple offences and add / change / remove offences [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680]
+  Scenario: (AC.2, AC.7, AC.8) The User can add multiple offences and add / change / remove offences [@PO-272, @PO-344, @PO-345, @PO-545, @PO-815, PO-417, @PO-676, @PO-679, @PO-416, @PO-682, @PO-680, @PO-1395]
 
     #Offence 1
     When I enter "TP11003" into the "Offence code" field
