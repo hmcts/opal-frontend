@@ -26,6 +26,7 @@ describe('FinesDraftStore', () => {
     expect(store.created_at()).toEqual('');
     expect(store.account_snapshot()).toEqual({} as IFinesMacPayloadAccountSnapshot);
     expect(store.account_status_date()).toEqual('');
+    expect(store.fragment()).toEqual('');
   });
 
   it('should set business_unit_id', () => {
@@ -118,5 +119,16 @@ describe('FinesDraftStore', () => {
   it('should return blank for account_status if null', () => {
     store.resetFineDraftState();
     expect(store.getAccountStatus()).toEqual('');
+  });
+
+  it('should set fragment', () => {
+    store.setFragment('fragment');
+    expect(store.fragment()).toEqual('fragment');
+  });
+
+  it('should reset fragment', () => {
+    store.setFragment('fragment');
+    store.resetFragment();
+    expect(store.fragment()).toEqual('');
   });
 });

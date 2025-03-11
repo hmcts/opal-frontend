@@ -20,6 +20,7 @@ export const FinesDraftStore = signalStore(
     created_at: '' as string | null,
     account_snapshot: {} as IFinesMacPayloadAccountSnapshot | null,
     account_status_date: '' as string | null,
+    fragment: '',
   })),
   withHooks((store) => {
     return {
@@ -68,7 +69,19 @@ export const FinesDraftStore = signalStore(
       patchState(store, { account_status_date });
     },
     setFinesDraftState: (finesDraftState: IFinesMacAddAccountPayload) => {
-      patchState(store, finesDraftState);
+      patchState(store, {
+        draft_account_id: finesDraftState.draft_account_id,
+        created_at: finesDraftState.created_at,
+        account_snapshot: finesDraftState.account_snapshot,
+        account_status_date: finesDraftState.account_status_date,
+        business_unit_id: finesDraftState.business_unit_id,
+        submitted_by: finesDraftState.submitted_by,
+        submitted_by_name: finesDraftState.submitted_by_name,
+        account: finesDraftState.account,
+        account_type: finesDraftState.account_type,
+        account_status: finesDraftState.account_status,
+        timeline_data: finesDraftState.timeline_data,
+      });
     },
     getFinesDraftState: () => {
       const finesDraftStore: IFinesMacAddAccountPayload = {
@@ -88,6 +101,12 @@ export const FinesDraftStore = signalStore(
     },
     resetFineDraftState: () => {
       patchState(store, FINES_DRAFT_STATE);
+    },
+    setFragment: (fragment: string) => {
+      patchState(store, { fragment });
+    },
+    resetFragment: () => {
+      patchState(store, { fragment: '' });
     },
   })),
 );

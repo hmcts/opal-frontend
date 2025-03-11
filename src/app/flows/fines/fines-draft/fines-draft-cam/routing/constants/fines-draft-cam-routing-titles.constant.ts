@@ -4,5 +4,6 @@ export const FINES_DRAFT_CAM_ROUTING_TITLES: IFinesDraftCamRoutingPaths = {
   root: 'Create and manage',
   children: {
     inputter: 'Create accounts',
+    viewAllRejected: 'View all rejected',
   },
 };
