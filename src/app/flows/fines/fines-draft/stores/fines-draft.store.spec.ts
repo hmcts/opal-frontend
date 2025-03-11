@@ -131,4 +131,28 @@ describe('FinesDraftStore', () => {
     store.resetFragment();
     expect(store.fragment()).toEqual('');
   });
+
+  it('should set amend', () => {
+    store.setAmend(true);
+    expect(store.amend()).toEqual(true);
+  });
+
+  it('should reset amend', () => {
+    store.setAmend(true);
+    store.resetAmend();
+    expect(store.amend()).toEqual(false);
+  });
+
+  it('should set fragment and amend', () => {
+    store.setFragmentAndAmend('fragment', true);
+    expect(store.fragment()).toEqual('fragment');
+    expect(store.amend()).toEqual(true);
+  });
+
+  it('should reset fragment and amend', () => {
+    store.setFragmentAndAmend('fragment', true);
+    store.resetFragmentAndAmend();
+    expect(store.fragment()).toEqual('');
+    expect(store.amend()).toEqual(false);
+  });
 });

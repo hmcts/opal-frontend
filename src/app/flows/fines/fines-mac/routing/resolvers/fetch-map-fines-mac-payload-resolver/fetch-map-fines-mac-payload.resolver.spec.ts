@@ -1,21 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 import { ResolveFn } from '@angular/router';
-import { draftAccountResolver } from './draft-account.resolver';
 import { OpalFines } from '../../../../services/opal-fines-service/opal-fines.service';
 import { Observable, of, throwError } from 'rxjs';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-non-snake-case.mock';
 import { OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offence-data-non-snake-case.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT } from '../../../services/fines-mac-payload/mocks/fines-mac-payload-add-account.mock';
-import { IDraftAccountResolver } from './interfaces/draft-account-resolver.interface';
+import { fetchMapFinesMacPayloadResolver } from './fetch-map-fines-mac-payload.resolver';
+import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-payload.interface';
+import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from '../../../services/fines-mac-payload/mocks/fines-mac-payload-fines-mac-state.mock';
+import { FinesMacPayloadService } from '../../../services/fines-mac-payload/fines-mac-payload.service';
 import { GlobalStoreType } from '@stores/global/types/global-store.type';
 import { GlobalStore } from '@stores/global/global.store';
 
-describe('draftAccountResolver', () => {
-  const executeResolver: ResolveFn<IDraftAccountResolver> = (...resolverParameters) =>
-    TestBed.runInInjectionContext(() => draftAccountResolver(...resolverParameters));
+describe('fetchMapFinesMacPayloadResolver', () => {
+  const executeResolver: ResolveFn<IFetchMapFinesMacPayload> = (...resolverParameters) =>
+    TestBed.runInInjectionContext(() => fetchMapFinesMacPayloadResolver(...resolverParameters));
 
   let mockOpalFinesService: jasmine.SpyObj<OpalFines>;
+  let mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService>;
   let globalStore: GlobalStoreType;
 
   const DRAFT_ACCOUNT_ID = 1;
@@ -27,9 +30,13 @@ describe('draftAccountResolver', () => {
       'getBusinessUnitById',
       'getOffenceById',
     ]);
+    mockFinesMacPayloadService = jasmine.createSpyObj('FinesMacPayloadService', ['mapAccountPayload']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: OpalFines, useValue: mockOpalFinesService }],
+      providers: [
+        { provide: OpalFines, useValue: mockOpalFinesService },
+        { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
+      ],
     });
 
     globalStore = TestBed.inject(GlobalStore);
@@ -44,6 +51,7 @@ describe('draftAccountResolver', () => {
     mockOpalFinesService.getOffenceById.and.returnValue(
       of(structuredClone(OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK)),
     );
+    mockFinesMacPayloadService.mapAccountPayload.and.returnValue(structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
@@ -52,9 +60,8 @@ describe('draftAccountResolver', () => {
     const result = await executeResolver(route, mockRouterStateSnapshot);
 
     expect(result).toEqual({
-      draftAccount: FINES_MAC_PAYLOAD_ADD_ACCOUNT,
-      businessUnit: OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK,
-      offencesData: [OPAL_FINES_OFFENCE_DATA_NON_SNAKE_CASE_MOCK],
+      finesMacState: FINES_MAC_PAYLOAD_FINES_MAC_STATE,
+      finesMacDraft: FINES_MAC_PAYLOAD_ADD_ACCOUNT,
     });
 
     // Verify calls were made with the correct arguments
@@ -73,6 +80,11 @@ describe('draftAccountResolver', () => {
       of(structuredClone(OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK)),
     );
 
+    const mapPayloadResult = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+    mapPayloadResult.offenceDetails = [];
+
+    mockFinesMacPayloadService.mapAccountPayload.and.returnValue(mapPayloadResult);
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const route: any = { paramMap: { get: () => DRAFT_ACCOUNT_ID.toString() } };
     const mockRouterStateSnapshot = jasmine.createSpyObj('RouterStateSnapshot', ['toString']);
@@ -80,9 +92,8 @@ describe('draftAccountResolver', () => {
     const result = await executeResolver(route, mockRouterStateSnapshot);
 
     expect(result).toEqual({
-      draftAccount: draftAccountWithEmptyOffences,
-      businessUnit: OPAL_FINES_BUSINESS_UNIT_NON_SNAKE_CASE_MOCK,
-      offencesData: [],
+      finesMacState: mapPayloadResult,
+      finesMacDraft: draftAccountWithEmptyOffences,
     });
 
     // Verify calls were made with the correct arguments
