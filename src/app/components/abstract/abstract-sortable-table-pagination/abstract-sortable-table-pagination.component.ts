@@ -1,53 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { AbstractSortableTableComponent } from '../abstract-sortable-table/abstract-sortable-table.component';
 
 @Component({
   template: '',
 })
-export abstract class AbstractSortableTablePaginationComponent
-  extends AbstractSortableTableComponent
-  implements OnInit
-{
+export abstract class AbstractSortableTablePaginationComponent extends AbstractSortableTableComponent {
+  // Signal for the current page. Used to calculate the start and end indices for pagination.
+  public currentPageSignal = signal(1);
+
+  // Signal for the number of items per page. Determines how many items are displayed on each page.
+  public itemsPerPageSignal = signal(10);
+
+  // Signal for the start index (1-based). Automatically updates when `currentPageSignal` or `itemsPerPageSignal` changes.
+  public startIndexComputed = computed(() => {
+    const currentPage = this.currentPageSignal();
+    return (currentPage - 1) * this.itemsPerPageSignal() + 1;
+  });
+
+  // Signal for the end index (1-based). Automatically recalculates when `startIndexComputed` or `abstractTableDataSignal` changes.
+  public endIndexComputed = computed(() => {
+    const startIndex = this.startIndexComputed();
+    return Math.min(startIndex + this.itemsPerPageSignal() - 1, this.abstractTableDataSignal().length);
+  });
+
+  // Computed signal for paginated table data. Reactively slices `abstractTableDataSignal` based on `startIndexComputed` and `endIndexComputed`.
+  public paginatedTableDataComputed = computed(() => {
+    const data = this.abstractTableDataSignal(); // Full table data
+
+    return data.slice(this.startIndexComputed() - 1, this.endIndexComputed()); // Return paginated data subset
+  });
+
   /**
-   * Updates the paginated data for the table based on the current page and items per page.
+   * Handles sorting changes and resets the page to the first page.
    *
-   * This method calculates the start and end indices for the current page and slices the
-   * `abstractTableData` array to get the data for the current page. If `abstractTableData`
-   * is not available, it sets `abstractPaginatedData` to null.
+   * @param event - The sorting event containing:
+   *   - `key`: The column key to sort by.
+   *   - `sortType`: The sorting order, either 'ascending' or 'descending'.
    *
-   * @returns {void}
+   * Resets `currentPageSignal` to 1 and triggers re-sorting of `abstractTableDataSignal`.
    */
-  public updatePaginatedData(): void {
-    const startIndex = (this.abstractCurrentPage - 1) * this.abstractItemsPerPage;
-    const endIndex = startIndex + this.abstractItemsPerPage;
-    if (this.abstractTableData) {
-      this.abstractPaginatedData = this.abstractTableData.slice(startIndex, endIndex);
-    } else {
-      this.abstractPaginatedData = null;
-    }
+  public override onSortChange(event: { key: string; sortType: 'ascending' | 'descending' }): void {
+    super.onSortChange(event); // Update the sort state and sort the data
+    this.currentPageSignal.set(1); // Reset the page to the first page
   }
 
   /**
    * Handles the event when the page is changed.
-   * Updates the current page number and refreshes the paginated data.
    *
-   * @param newPage - The new page number to set.
+   * @param newPage - The new page number to set. If the provided page number is out of range,
+   * it will be clamped between 1 and the total number of pages.
    */
   public onPageChange(newPage: number): void {
-    this.abstractCurrentPage = newPage;
-    this.updatePaginatedData();
-  }
-
-  /**
-   * Lifecycle hook that is called after data-bound properties of a directive are initialized.
-   * This method is used to perform any necessary initialization for the component.
-   *
-   * In this implementation, it calls `updatePaginatedData` to ensure that the paginated data
-   * is updated when the component is initialized.
-   *
-   * @override
-   */
-  public override ngOnInit(): void {
-    this.updatePaginatedData();
+    const totalPages = Math.ceil(this.abstractTableDataSignal().length / this.itemsPerPageSignal());
+    this.currentPageSignal.set(Math.max(1, Math.min(newPage, totalPages)));
   }
 }
