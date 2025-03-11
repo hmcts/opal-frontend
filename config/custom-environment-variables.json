@@ -35,11 +35,18 @@
         "__name": "FEATURES_LAUNCH_DARKLY_STREAM",
         "__format": "json"
       }
+    },
+    "app-insights": {
+      "enabled": {
+        "__name": "FEATURES_APP_INSIGHTS_ENABLED",
+        "__format": "json"
+      }
     }
   },
   "session": {
     "secure": { "__name": "SESSION_SECURE_ENABLED", "__format": "json" },
-    "sameSite": "SESSION_SAME_SITE"
+    "sameSite": "SESSION_SAME_SITE",
+    "domain": "SESSION_DOMAIN"
   },
   "csrf": {
     "secure": { "__name": "CSRF_SECURE_ENABLED", "__format": "json" },
