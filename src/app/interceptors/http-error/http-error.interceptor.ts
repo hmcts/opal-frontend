@@ -1,10 +1,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { AppInsightsService } from '@services/app-insights/app-insights.service';
 import { catchError, tap, throwError } from 'rxjs';
 import { GlobalStore } from 'src/app/stores/global/global.store';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const globalStore = inject(GlobalStore);
+  const appInsightsService = inject(AppInsightsService);
 
   return next(req).pipe(
     tap(() => {
@@ -22,6 +24,8 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         error: true,
         message: errorMessage,
       });
+
+      appInsightsService.logException(error);
 
       return throwError(() => error);
     }),
