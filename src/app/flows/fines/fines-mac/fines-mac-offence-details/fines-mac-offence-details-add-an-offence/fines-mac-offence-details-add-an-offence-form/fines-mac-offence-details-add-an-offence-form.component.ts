@@ -470,6 +470,7 @@ export class FinesMacOffenceDetailsAddAnOffenceFormComponent
    * @param rowIndex - The index of the row.
    */
   public goToMinorCreditor(rowIndex: number): void {
+    this.finesMacOffenceDetailsStore.setRemoveMinorCreditor(null);
     this.finesMacOffenceDetailsStore.setRowIndex(rowIndex);
 
     this.updateOffenceDetailsDraft(this.form.value);
