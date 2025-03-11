@@ -33,7 +33,7 @@ When('I am on the Opal Frontend and I sign in as {string}', (email: string) => {
         cy.log(href);
 
         // Handle localhost or PR environment
-        if (href.includes('pr-') || href.includes('localhost') || href.includes('staging')) {
+        if (href.includes('pr-') || href.includes('localhost')) {
           cy.wait(50);
           cy.get('input[type="text"]').type(emailSSO, { delay: 0 });
           cy.get('#submitForm').click();
@@ -105,7 +105,7 @@ Then('I see {string} in the page body header', (bodyHeader) => {
 });
 Then('I see {string} on the sign in page', (bodyHeader) => {
   cy.location('href').then((href: string) => {
-    if (href.includes('pr-') || href.includes('localhost') || href.includes('staging')) {
+    if (href.includes('pr-') || href.includes('localhost')) {
       cy.get('.govuk-fieldset__heading').should('contain', bodyHeader);
     } else {
       cy.get('.govuk-heading-m').should('contain', bodyHeader);
@@ -116,7 +116,7 @@ Then('I see {string} on the sign in page', (bodyHeader) => {
 When('I click the Sign out link', () => {
   cy.get('.moj-header__navigation-item > .moj-header__navigation-link').contains('Sign out').click();
   cy.location('href').then((href: string) => {
-    if (href.includes('pr-') || href.includes('localhost') || href.includes('staging')) {
+    if (href.includes('pr-') || href.includes('localhost')) {
       cy.log('no SSO signing out');
     } else {
       cy.origin('https://login.microsoftonline.com', () => {
