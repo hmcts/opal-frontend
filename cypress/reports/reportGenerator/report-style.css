@@ -1,0 +1,120 @@
+/* Make the page look a bit friendlier */
+body {
+  font-family: 'Open Sans', sans-serif;
+  /* Enable tabular numerals (if supported by the font) for better numeric alignment */
+  font-feature-settings: 'tnum';
+  margin: 20px;
+  background-color: #f7f9fb; /* soft background */
+  color: #333;              /* darker text color */
+}
+
+/* Summaries in the header */
+.summary {
+  margin-bottom: 20px;
+  text-align: center;       /* center the summary for a cleaner look */
+}
+.summary h1 {
+  margin-bottom: 10px;
+}
+
+/* Main table container */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  border-radius: 5px;        /* slightly rounded corners */
+  overflow: hidden;          /* ensures border-radius on thead if you want */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* subtle shadow */
+  margin-top: 10px;
+  background-color: #fff;    /* white table on soft gray background */
+}
+
+/* Headings */
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+th {
+  cursor: pointer;
+  background-color: #f0f0f0; /* light gray for the header row */
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  white-space: nowrap;       /* keep headings on one line */
+}
+
+/* Sorting arrows */
+th.sort-asc::after {
+  content: "▲";
+  margin-left: 6px;
+  color: #666;
+  font-size: 0.8em;
+}
+th.sort-desc::after {
+  content: "▼";
+  margin-left: 6px;
+  color: #666;
+  font-size: 0.8em;
+}
+
+/* Suite row styling */
+.suite-row {
+  background-color: #dcdcdc; /* medium gray to separate suite rows */
+  font-weight: bold;
+}
+
+/* Indent test case names */
+.testcase-name {
+  padding-left: 2em;
+}
+
+/* Pass or Fail color highlights */
+.Pass {
+  background-color: #d5f5d5; /* a light green tint */
+}
+.Fail {
+  background-color: #ffd6d6; /* a light red tint */
+}
+.Pass:hover{
+  background-color: #a3f7a3; /* a slightly darker green tint */
+}
+.Fail:hover{
+  background-color: #ffaaaa; /* a slightly darker red tint */
+}
+.suite-row:hover {
+  background-color: #b4b4b4; /* slightly darker gray on hover */
+}
+
+/* Status column: no wrapping of "Pass: X / Fail: Y" text */
+.status-cell {
+  white-space: nowrap;
+}
+/* Styles for the copy buttons */
+.copy-btn {
+  display: inline-block;
+  background-color: #007BFF;   /* primary blue color */
+  color: #fff;
+  padding: 8px 14px;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.copy-btn:hover {
+  background-color: #0056b3;   /* darker blue on hover */
+}
+
+.copy-btn:active {
+  background-color: #004080;   /* even darker on click */
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+.copy-btn:focus {
+  outline: 2px solid #80bdff;
+  outline-offset: 2px;
+}

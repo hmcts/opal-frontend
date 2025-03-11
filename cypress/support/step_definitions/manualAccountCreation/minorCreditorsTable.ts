@@ -44,7 +44,6 @@ Then('I do not see the Minor creditor details for impostion {int}', (index: numb
     .find('app-moj-ticket-panel')
     .eq(index - 1)
     .find('app-fines-mac-offence-details-minor-creditor-information')
-    .find('app-govuk-summary-list[summarylistid="minorCreditor"]')
     .should('not.exist');
 });
 
