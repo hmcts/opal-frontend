@@ -24,8 +24,10 @@ nodejs:
     FEATURES_LAUNCH_DARKLY_ENABLED: true
     FEATURES_LAUNCH_DARKLY_STREAM: false
     FEATURES_SSO_ENABLED: true
-    SESSION_SAME_SITE: 'strict'
+    SESSION_SAME_SITE: 'none'
+    SESSION_DOMAIN: '.hmcts.net'
     CSRF_SAME_SITE: 'strict'
+    FEATURES_APP_INSIGHTS_ENABLED: true
 redis:
   enabled: false
 
