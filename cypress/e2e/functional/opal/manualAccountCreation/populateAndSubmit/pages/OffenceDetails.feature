@@ -374,10 +374,10 @@ Feature: Manual account creation - Offence Details
 
     When the table with offence code "TP11003" should contain the following data:
       | Imposition   | Creditor                    | Amount imposed | Amount paid | Balance remaining |
-      | Compensation | FNAME2 LNAME2               | £200.00        | £100.00     | £100.00           |
+      | Compensation | Mr FNAME2_EDIT LNAME2_EDIT  | £200.00        | £100.00     | £100.00           |
       | Compensation | Transport for London (TFL2) | £200.00        | £100.00     | £100.00           |
       | Compensation | CNAME3                      | £200.00        | £100.00     | £100.00           |
-      | Totals       |                             | £400.00        | £200.00     | £200.00           |
+      | Totals       |                             | £600.00        | £300.00     | £300.00           |
 
   Scenario: The User can add an offence with multiple impositions and add / change / remove an imposition [@PO-272, @PO-344, @PO-345, @PO-545, @PO-411, @PO-681, @PO-684, @PO-1395]
     When I enter "TP11003" into the "Offence code" field
