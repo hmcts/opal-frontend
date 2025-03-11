@@ -16,6 +16,10 @@ import {
   CORRECTION_TEST_MESSAGES,
 } from './constants/fines_mac_parent_guardian_details_errors';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
+import {
+  permittedSpecialCharacters,
+  nonPermittedSpecialCharacters,
+} from './constants/fines_mac_parent_guardian_details_character_check';
 
 describe('FinesMacParentGuardianDetailsComponent', () => {
   let finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
@@ -126,29 +130,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.1) should permit a selection of special characters on first name field',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
-      const permittedSpecialCharacters = ['-', '*', '(', ')', '_', ',', '.', "'"];
-      const nonPermittedSpecialCharacters = [
-        '@',
-        '#',
-        '$',
-        '%',
-        '^',
-        '&',
-        '+',
-        '!',
-        '~',
-        '`',
-        '{',
-        '[',
-        '|',
-        '/',
-        '?',
-        '<',
-        ':',
-        ';',
-        '"',
-      ];
-
       cy.wrap(permittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
           finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_forenames = character;
@@ -180,29 +161,6 @@ describe('FinesMacParentGuardianDetailsComponent', () => {
     '(AC.1) should permit a selection of special characters on last name field',
     { tags: ['@PO-344', '@PO-569'] },
     () => {
-      const permittedSpecialCharacters = ['-', '*', '(', ')', '_', ',', '.', "'"];
-      const nonPermittedSpecialCharacters = [
-        '@',
-        '#',
-        '$',
-        '%',
-        '^',
-        '&',
-        '+',
-        '!',
-        '~',
-        '`',
-        '{',
-        '[',
-        '|',
-        '/',
-        '?',
-        '<',
-        ':',
-        ';',
-        '"',
-      ];
-
       cy.wrap(permittedSpecialCharacters).each((character: string) => {
         cy.then(() => {
           finesMacState.parentGuardianDetails.formData.fm_parent_guardian_details_surname = character;

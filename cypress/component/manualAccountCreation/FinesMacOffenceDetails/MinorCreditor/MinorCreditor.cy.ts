@@ -357,5 +357,3 @@ describe('FinesMacMinorCreditor', () => {
     },
   );
 });
-
-//E-2-E Tests Required : Test Flow to Minor Creditor Screen through add offence page link (AC.1). Check Remove button works and Change button works (AC.11), Check Cancel button flow works (No AC) , Check Save button flow and it saves on add offence screen (AC.11) and check panel appears.

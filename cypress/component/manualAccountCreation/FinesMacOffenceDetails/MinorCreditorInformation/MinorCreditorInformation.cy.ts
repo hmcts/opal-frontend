@@ -97,4 +97,3 @@ describe('FinesMacMinorCreditorInformation', () => {
     },
   );
 });
-//E-2-E Tests Not required for this component as it is being tested in the Remove Minor Creditor screen.

@@ -140,5 +140,3 @@ describe('RemoveOffenceAndImpositionsComponent', () => {
     },
   );
 });
-
-//E-2-E TESTS:Acess to remove offence screen flow (AC.2) ,Cancel link functionality(AC.5), Remove offence and impositions button functionality(AC.4), Check no offences exists and appropriate text is displayed back at summary screen(AC.6)

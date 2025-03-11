@@ -340,4 +340,3 @@ describe('ReviewSummaryComponent', () => {
     },
   );
 });
-//E-2-E Testing required : Flow to reach the review summary page(AC.2),Test the remove,hide and change links on each offence (AC.7),Check add another offence button flow(AC.8),Check return to account button flow(AC.10),Check flows for different defendant type after offences and imposition is filled in the account summary provided/not provided list (AC.11) , Check success message AC.12

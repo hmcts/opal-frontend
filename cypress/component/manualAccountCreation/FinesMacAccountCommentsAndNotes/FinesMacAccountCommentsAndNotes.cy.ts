@@ -42,15 +42,6 @@ describe('FinesMacAccountCommentsAndNotesComponent', () => {
     });
   };
 
-  afterEach(() => {
-    cy.then(() => {
-      // mockFinesService.finesMacState.accountCommentsNotes.formData = {
-      //   fm_account_comments_notes_comments: '',
-      //   fm_account_comments_notes_notes: '',
-      // };
-    });
-  });
-
   it('should render the component', () => {
     setupComponent(null, 'adultOrYouthOnly', FINES_MAC_STATE_MOCK);
 

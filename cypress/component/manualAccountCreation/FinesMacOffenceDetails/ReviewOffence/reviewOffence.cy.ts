@@ -120,4 +120,3 @@ describe('ReviewOffenceComponent', () => {
     cy.get(DOM_ELEMENTS.totalBalanceRemaining).should('contain', '£0.0');
   });
 });
-//No E-2-E Test required as this component is used and tested within the remove offences and imposition component

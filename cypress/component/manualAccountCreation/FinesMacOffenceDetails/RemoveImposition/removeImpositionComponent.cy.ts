@@ -125,4 +125,3 @@ describe('FinesRemoveImpositionComponent', () => {
     },
   );
 });
-//E-2-E Tests Required : Check Flow to access imposition removal screen (AC.2), Check Cancel link works and flows (AC.3) , Check Remove imposition button and flow works (AC.4)
