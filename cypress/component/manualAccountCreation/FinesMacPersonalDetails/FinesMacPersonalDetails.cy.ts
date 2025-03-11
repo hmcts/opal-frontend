@@ -3,7 +3,6 @@ import { FinesMacPersonalDetailsComponent } from '../../../../src/app/flows/fine
 import { OpalFines } from '../../../../src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { ActivatedRoute } from '@angular/router';
 import { FINES_MAC_STATE_MOCK } from '../../../../src/app/flows/fines/fines-mac/mocks/fines-mac-state.mock';
-import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../../../../src/app/flows/fines/fines-mac/fines-mac-personal-details/mocks/fines-mac-personal-details-form.mock';
 import {
   FORMAT_CHECK,
   MAIN_PERSONAL_DETAILS,
@@ -14,7 +13,6 @@ import {
 } from './constants/fines_mac_personal_details_errors';
 import { DOM_ELEMENTS, getAliasFirstName, getAliasLastName } from './constants/fines_mac_personal_details_elements';
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
-import { get } from 'cypress/types/lodash';
 import { calculateDOB } from 'cypress/support/utils/dateUtils';
 
 describe('FinesMacPersonalDetailsComponent', () => {
