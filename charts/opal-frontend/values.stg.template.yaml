@@ -8,7 +8,8 @@ nodejs:
     OPAL_FINES_SERVICE_API_URL: http://${SERVICE_NAME}-opal-fines-service
     FEATURES_LAUNCH_DARKLY_ENABLED: false
     FEATURES_SSO_ENABLED: true
-    SESSION_SAME_SITE: 'lax'
+    SESSION_SAME_SITE: 'none'
+    SESSION_DOMAIN: '.hmcts.net'
     CSRF_SAME_SITE: 'lax'
 opal-fines-service:
   enabled: true
@@ -38,6 +39,7 @@ opal-fines-service:
       OPAL_FINES_DB_PORT: 5432
       RUN_DB_MIGRATION_ON_STARTUP: true
       OPAL_FRONTEND_URL: https://${SERVICE_FQDN}
+      FEATURES_APP_INSIGHTS_ENABLED: false
 postgresql:
   enabled: true
   image:
