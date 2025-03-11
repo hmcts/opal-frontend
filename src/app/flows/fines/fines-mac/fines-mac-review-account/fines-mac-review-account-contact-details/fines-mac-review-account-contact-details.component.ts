@@ -21,6 +21,7 @@ import { FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES } from '../constants/fines-mac-
 })
 export class FinesMacReviewAccountContactDetailsComponent {
   @Input({ required: true }) public contactDetails!: IFinesMacContactDetailsState;
+  @Input({ required: false }) public isReadOnly = false;
   @Output() public emitChangeContactDetails = new EventEmitter<void>();
 
   public readonly defaultValues = FINES_MAC_REVIEW_ACCOUNT_DEFAULT_VALUES;

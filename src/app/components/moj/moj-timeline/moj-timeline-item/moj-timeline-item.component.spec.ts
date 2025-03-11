@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MojTimelineItemComponent } from './moj-timeline-item.component';
 import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
-
 @Component({
   template: `<app-moj-timeline-item>
     <ng-content title>Test</ng-content>
@@ -23,7 +21,6 @@ describe('MojTimelineItemComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TestHostComponent],
     }).compileComponents();
-
     fixture = TestBed.createComponent(TestHostComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

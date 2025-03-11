@@ -1,6 +1,32 @@
 <div class="govuk-grid-column-full">
   <app-govuk-back-link (clickEvent)="navigateBack()"></app-govuk-back-link>
-  <h1 class="govuk-heading-l">Check account details</h1>
+  @if (!isReadOnly) {
+    <h1 class="govuk-heading-l">Check account details</h1>
+  } @else {
+    <h1 class="govuk-heading-l">
+      @if (finesMacStore.getDefendantType() === 'company') {
+        {{ finesMacStore.getCompanyDetailsName() }}
+      } @else {
+        {{ finesMacStore.getPersonalDetailsName() }}
+      }
+    </h1>
+    <app-govuk-tag tagClasses="govuk-tag" tagId="status">{{ status }}</app-govuk-tag>
+    <h3 class="govuk-heading-m govuk-!-margin-top-4">Review history</h3>
+    <app-moj-timeline>
+      @for (timelineItem of finesDraftStore.timeline_data(); track timelineItem.status_date) {
+        <app-moj-timeline-item>
+          <span title>{{ timelineItem.status }}</span>
+          <span user>{{ timelineItem.username }}</span>
+          <span date>{{
+            dateService.getFromFormatToFormat(timelineItem.status_date, 'yyyy-MM-dd', 'dd MMMM yyyy')
+          }}</span>
+          @if (timelineItem.reason_text) {
+            <span description>{{ timelineItem.reason_text }}</span>
+          }
+        </app-moj-timeline-item>
+      }
+    </app-moj-timeline>
+  }
 
   <app-fines-mac-review-account-account-details
     [accountDetails]="finesMacStore.accountDetails().formData"
@@ -14,6 +40,7 @@
       [courtDetails]="finesMacStore.courtDetails().formData"
       [enforcementCourtsData]="data.enforcementCourtsData.refData"
       [localJusticeAreasData]="data.localJusticeAreasData.refData"
+      [isReadOnly]="isReadOnly"
       (emitChangeCourtDetails)="navigateBack()"
     ></app-fines-mac-review-account-court-details>
   }
@@ -48,6 +75,7 @@
 
   <app-fines-mac-review-account-offence-details
     (emitChangeOffenceDetails)="navigateBack()"
+    [isReadOnly]="isReadOnly"
   ></app-fines-mac-review-account-offence-details>
 
   <app-fines-mac-review-account-payment-terms
@@ -62,24 +90,26 @@
     (emitChangeAccountCommentsAndNotesDetails)="navigateBack()"
   ></app-fines-mac-review-account-account-comments-and-notes>
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <app-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
-        >Submit for review</app-govuk-button
-      >
+  @if (!isReadOnly) {
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <app-govuk-button buttonId="submitAccountButton" (buttonClickEvent)="submitForReview()"
+          >Submit for review</app-govuk-button
+        >
+      </div>
     </div>
-  </div>
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <a
-        class="govuk-link govuk-error-colour"
-        (click)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
-        (keyup.enter)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
-        tabindex="0"
-        >Delete account</a
-      >
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <a
+          class="govuk-link govuk-error-colour"
+          (click)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+          (keyup.enter)="handleRoute(finesMacRoutes.children.deleteAccountConfirmation, false, $event)"
+          tabindex="0"
+          >Delete account</a
+        >
+      </div>
     </div>
-  </div>
+  }
 </div>
 
 <ng-template #parentGuardianDetails>
@@ -95,6 +125,7 @@
     [showVehicleDetails]="
       finesMacStore.accountDetails().formData.fm_create_account_defendant_type === 'adultOrYouthOnly'
     "
+    [isReadOnly]="isReadOnly"
     (emitChangePersonalDetails)="navigateBack()"
   ></app-fines-mac-review-account-personal-details>
 </ng-template>
