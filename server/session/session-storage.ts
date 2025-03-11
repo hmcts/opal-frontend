@@ -26,6 +26,7 @@ export default class SessionStorage {
           maxAge: config.get('session.maxAge'),
           sameSite: config.get('session.sameSite'),
           secure: config.get('session.secure'),
+          domain: config.get('session.domain'),
         },
         rolling: true,
         store: this.getStore(app),
