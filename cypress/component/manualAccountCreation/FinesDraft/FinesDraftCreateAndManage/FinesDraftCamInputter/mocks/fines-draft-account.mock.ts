@@ -9,7 +9,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       submitted_by: 'user1',
       business_unit_id: 77,
       account_snapshot: {
-        account_type: 'TYPE_A',
+        account_type: 'fine',
         created_date: '2023-01-01',
         submitted_by: 'user1',
         defendant_name: 'John Doe',
@@ -17,7 +17,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
         business_unit_name: 'Business Unit A',
         date_of_birth: '1990-05-15',
       },
-      account_type: 'TYPE_A',
+      account_type: 'fine',
       account_status: 'ACTIVE',
     },
     {
@@ -26,7 +26,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
       submitted_by: 'user2',
       business_unit_id: 17,
       account_snapshot: {
-        account_type: 'TYPE_B',
+        account_type: 'fixedPenalty',
         created_date: '2023-01-02',
         submitted_by: 'user2',
         defendant_name: 'Jane Smith',
@@ -34,7 +34,7 @@ export const OPAL_FINES_DRAFT_ACCOUNTS_MOCK: IOpalFinesDraftAccountsResponse = {
         business_unit_name: 'Business Unit B',
         date_of_birth: null,
       },
-      account_type: 'TYPE_B',
+      account_type: 'fixedPenalty',
       account_status: 'PENDING',
     },
   ],
