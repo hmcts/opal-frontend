@@ -56,7 +56,9 @@
     "opal": {
       "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",
       "redis-connection-string": "REDIS_CONNECTION_STRING",
-      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID"
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
+      "opal-frontend-session-secret": "FRONTEND_SESSION_SECRET",
+      "opal-frontend-cookie-secret": "FRONTEND_COOKIE_SECRET"
     }
   }
 }
