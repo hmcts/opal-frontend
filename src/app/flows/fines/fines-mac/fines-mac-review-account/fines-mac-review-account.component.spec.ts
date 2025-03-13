@@ -74,12 +74,6 @@ describe('FinesMacReviewAccountComponent', () => {
         .and.returnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
     };
 
-    mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
-      'buildAddAccountPayload',
-      'mapAccountPayload',
-    ]);
-    mockFinesMacPayloadService.buildAddAccountPayload.and.returnValue({ ...FINES_MAC_PAYLOAD_ADD_ACCOUNT });
-
     mockDateService = jasmine.createSpyObj(DateService, ['getFromFormatToFormat', 'calculateAge']);
     mockUtilsService = jasmine.createSpyObj(UtilsService, [
       'scrollToTop',
@@ -92,6 +86,7 @@ describe('FinesMacReviewAccountComponent', () => {
     mockFinesMacPayloadService = jasmine.createSpyObj(FinesMacPayloadService, [
       'buildAddAccountPayload',
       'buildReplaceAccountPayload',
+      'mapAccountPayload',
     ]);
     mockFinesMacPayloadService.buildReplaceAccountPayload.and.returnValue(
       structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT),
