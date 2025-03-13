@@ -15,6 +15,8 @@ import { NAVIGATION_LINKS, TABLE_HEADINGS } from './constants/fines_draft_cam_in
 
 describe('FinesDraftCamInputterComponent', () => {
   let mockData: any = OPAL_FINES_DRAFT_ACCOUNTS_MOCK;
+  const dateService = new DateService();
+
   const setupComponent = () => {
     mount(FinesDraftCamInputterComponent, {
       providers: [
@@ -90,13 +92,23 @@ describe('FinesDraftCamInputterComponent', () => {
         }
         cy.get(DOM_ELEMENTS.defendant).should('exist').and('contain', 'John Doe');
         cy.get(DOM_ELEMENTS.dob).should('exist').and('contain', '15 May 1990');
-        cy.get(DOM_ELEMENTS.created).should('exist').and('contain', '800 days ago');
+        cy.get(DOM_ELEMENTS.created)
+          .should('exist')
+          .and(
+            'contain',
+            `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[0].account_snapshot.created_date)}`,
+          );
         cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fine');
         cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit A');
 
         cy.get(DOM_ELEMENTS.defendant).should('exist').and('contain', 'Jane Smith');
         cy.get(DOM_ELEMENTS.dob).should('exist').and('contain', '—');
-        cy.get(DOM_ELEMENTS.created).should('exist').and('contain', '800 days ago');
+        cy.get(DOM_ELEMENTS.created)
+          .should('exist')
+          .and(
+            'contain',
+            `${dateService.getDaysAgoString(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.summaries[1].account_snapshot.created_date)}`,
+          );
         cy.get(DOM_ELEMENTS.accountType).should('exist').and('contain', 'Fixed Penalty');
         cy.get(DOM_ELEMENTS.businessUnit).should('exist').and('contain', 'Business Unit B');
       });
