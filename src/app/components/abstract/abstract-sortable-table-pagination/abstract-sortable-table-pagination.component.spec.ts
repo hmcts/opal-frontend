@@ -26,7 +26,7 @@ describe('AbstractSortableTablePaginationComponent', () => {
         {
           provide: ChangeDetectorRef,
           useValue: {
-            detectChanges: jasmine.createSpy('detectChanges'), // Mock detectChanges
+            detectChanges: jasmine.createSpy('detectChanges'),
           },
         },
       ],
