@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FinesDraftCamInputterComponent } from './fines-draft-cam-inputter.component';
+import { FinesDraftCheckAndManageTabsComponent } from './fines-draft-check-and-manage-tabs.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-draft-accounts.mock';
 import { of } from 'rxjs';
@@ -17,9 +17,9 @@ import { GlobalStore } from '@stores/global/global.store';
 import { FinesDraftStoreType } from '../../stores/types/fines-draft.type';
 import { FinesDraftStore } from '../../stores/fines-draft.store';
 
-describe('FinesDraftCamInputterComponent', () => {
-  let component: FinesDraftCamInputterComponent;
-  let fixture: ComponentFixture<FinesDraftCamInputterComponent>;
+describe('FinesDraftCheckAndManageTabsComponent', () => {
+  let component: FinesDraftCheckAndManageTabsComponent;
+  let fixture: ComponentFixture<FinesDraftCheckAndManageTabsComponent>;
   let globalStore: GlobalStoreType;
   let finesDraftStore: FinesDraftStoreType;
   const mockFinesMacPayloadService: jasmine.SpyObj<FinesMacPayloadService> =
@@ -35,7 +35,7 @@ describe('FinesDraftCamInputterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesDraftCamInputterComponent],
+      imports: [FinesDraftCheckAndManageTabsComponent],
       providers: [
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
@@ -54,7 +54,7 @@ describe('FinesDraftCamInputterComponent', () => {
 
     finesDraftStore = TestBed.inject(FinesDraftStore);
 
-    fixture = TestBed.createComponent(FinesDraftCamInputterComponent);
+    fixture = TestBed.createComponent(FinesDraftCheckAndManageTabsComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();

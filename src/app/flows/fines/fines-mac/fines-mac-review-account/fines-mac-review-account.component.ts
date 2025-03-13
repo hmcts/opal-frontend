@@ -30,12 +30,13 @@ import { GlobalStore } from 'src/app/stores/global/global.store';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_DRAFT_TAB_STATUSES } from '../../fines-draft/constants/fines-draft-tab-statuses.constant';
 import { DateService } from '@services/date-service/date.service';
-import { FINES_DRAFT_CAM_ROUTING_PATHS } from '../../fines-draft/fines-draft-cam/routing/constants/fines-draft-cam-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { IFetchMapFinesMacPayload } from '../routing/resolvers/fetch-map-fines-mac-payload-resolver/interfaces/fetch-map-fines-mac-payload.interface';
 import { FinesDraftStore } from '../../fines-draft/stores/fines-draft.store';
 import { FinesMacReviewAccountHistoryComponent } from './fines-mac-review-account-history/fines-mac-review-account-history.component';
 import { IFinesMacAddAccountPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { FINES_DRAFT_ROUTING_PATHS } from '../../fines-draft/routing/constants/fines-draft-routing-paths.constant';
+import { FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-manage/routing/constants/fines-draft-check-and-manage-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account',
@@ -77,7 +78,8 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
 
   protected readonly finesRoutes = FINES_ROUTING_PATHS;
   protected readonly finesMacRoutes = FINES_MAC_ROUTING_PATHS;
-  protected readonly finesDraftRoutes = FINES_DRAFT_CAM_ROUTING_PATHS;
+  protected readonly finesDraftRoutes = FINES_DRAFT_ROUTING_PATHS;
+  protected readonly finesDraftCheckAndManageRoutes = FINES_DRAFT_CHECK_AND_MANAGE_ROUTING_PATHS;
 
   public isReadOnly!: boolean;
   public reviewAccountStatus!: string;
@@ -218,7 +220,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
     this.finesMacStore.resetStateChangesUnsavedChanges();
 
     this.handleRoute(
-      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+      `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}`,
       false,
       undefined,
       this.finesDraftStore.fragment(),
@@ -315,7 +317,7 @@ export class FinesMacReviewAccountComponent implements OnInit, OnDestroy {
       this.finesMacStore.setUnsavedChanges(false);
       this.finesMacStore.setStateChanges(false);
       this.handleRoute(
-        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.inputter}`,
+        `${this.finesRoutes.root}/${this.finesDraftRoutes.root}/${this.finesDraftRoutes.children.createAndManage}/${this.finesDraftCheckAndManageRoutes.children.tabs}`,
         false,
         undefined,
         this.finesDraftStore.fragment(),
