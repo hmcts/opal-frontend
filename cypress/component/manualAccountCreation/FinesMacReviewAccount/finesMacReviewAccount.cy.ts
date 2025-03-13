@@ -1,6 +1,6 @@
 import { mount } from 'cypress/angular';
 import { FinesMacReviewAccountComponent } from 'src/app/flows/fines/fines-mac/fines-mac-review-account/fines-mac-review-account.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { OPAL_FINES_RESULTS_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-results-ref-data.mock';
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
@@ -17,23 +17,32 @@ import { SESSION_USER_STATE_MOCK } from 'src/app/services/session-service/mocks/
 import { FinesMacStore } from 'src/app/flows/fines/fines-mac/stores/fines-mac.store';
 import { FINES_AYG_CHECK_ACCOUNT_MOCK } from 'cypress/component/manualAccountCreation/FinesMacReviewAccount/mocks/fines_mac_review_account_mocks';
 import { DOM_ELEMENTS } from './constants/fines_mac_review_account_elements';
+import { FinesDraftStore } from 'src/app/flows/fines/fines-draft/stores/fines-draft.store';
+import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fines-draft-state.constant';
 
 describe('FinesMacReviewAccountComponent', () => {
   let finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
+  let finesDraftState = structuredClone(FINES_DRAFT_STATE);
+  let finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
 
   let store: any;
-  const setupComponent = () => {
+  const setupComponent = (finesDraftStateMock: any = finesDraftState, activatedRouteMock: any = null) => {
     mount(FinesMacReviewAccountComponent, {
       providers: [
         provideHttpClient(),
         OpalFines,
         UtilsService,
+        FinesMacPayloadService,
+        Router,
 
         {
           provide: FinesMacPayloadService,
           useValue: {
             buildAddAccountPayload: () => {
-              return FINES_MAC_PAYLOAD_ADD_ACCOUNT;
+              return finesAccountPayload;
+            },
+            buildReplaceAccountPayload: () => {
+              return finesAccountPayload;
             },
           },
         },
@@ -58,11 +67,27 @@ describe('FinesMacReviewAccountComponent', () => {
           },
         },
         {
+          provide: FinesDraftStore,
+          useFactory: () => {
+            let store = new FinesDraftStore();
+            store.setFinesDraftState(finesDraftStateMock);
+            return store;
+          },
+        },
+        {
           provide: ActivatedRoute,
           useValue: {
-            parent: {
-              snapshot: {
-                url: [{ path: 'manual-account-creation' }],
+            snapshot: {
+              data: {
+                reviewAccountFetchMap: {
+                  FinesMacStore: finesMacState,
+                  finesMacDraft: activatedRouteMock,
+                },
+              },
+              parent: {
+                snapshot: {
+                  url: [{ path: 'manual-account-creation' }],
+                },
               },
             },
           },
@@ -88,6 +113,14 @@ describe('FinesMacReviewAccountComponent', () => {
       statusCode: 200,
       body: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
     }).as('getMajorCreditors');
+    cy.intercept('POST', '**/opal-fines-service/draft-accounts**', {
+      statusCode: 200,
+      body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
+    });
+    cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', {
+      statusCode: 200,
+      body: OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK,
+    });
     cy.intercept(
       {
         method: 'GET',
@@ -110,6 +143,8 @@ describe('FinesMacReviewAccountComponent', () => {
     }).as('getDraftAccounts');
     cy.then(() => {
       finesMacState = structuredClone(FINES_AYG_CHECK_ACCOUNT_MOCK);
+      finesDraftState = structuredClone(FINES_DRAFT_STATE);
+      finesAccountPayload = FINES_MAC_PAYLOAD_ADD_ACCOUNT;
     });
   });
 
@@ -749,4 +784,21 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.get(DOM_ELEMENTS.accountNotes).should('contain', 'Account note').should('contain', '—');
     },
   );
+  it('should show in review for accounts in review', { tags: ['@PO-664', '@PO-346'] }, () => {
+    setupComponent(finesAccountPayload, finesAccountPayload);
+
+    cy.get(DOM_ELEMENTS.heading).contains('Mr John DOE').should('exist');
+    cy.get(DOM_ELEMENTS.reviewComponent).should('exist');
+    cy.get(DOM_ELEMENTS.status).contains('In review').should('exist');
+    cy.get(DOM_ELEMENTS.reviewHistory).contains('Review history').should('exist');
+    cy.get(DOM_ELEMENTS.timeLine).should('exist');
+    cy.get(DOM_ELEMENTS.timeLineTitle).contains('Submitted').should('exist');
+    cy.get(DOM_ELEMENTS.timelineAuthor).contains('by Timmy Test').should('exist');
+    cy.get(DOM_ELEMENTS.timelineDate).contains('03 July 2023').should('exist');
+  });
+  it('should not load review component if account is not in review and should load normal Check account details heading', () => {
+    setupComponent();
+    cy.get(DOM_ELEMENTS.reviewComponent).should('not.exist');
+    cy.get(DOM_ELEMENTS.heading).contains('Check account details').should('exist');
+  });
 });

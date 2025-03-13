@@ -293,5 +293,8 @@ export const FinesMacStore = signalStore(
     resetFinesMacStore: () => {
       patchState(store, FINES_MAC_STATE);
     },
+    resetStateChangesUnsavedChanges: () => {
+      patchState(store, { stateChanges: false, unsavedChanges: false });
+    },
   })),
 );

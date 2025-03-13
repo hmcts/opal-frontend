@@ -284,4 +284,17 @@ export class OpalFines {
   public getOffenceById(offenceId: number): Observable<IOpalFinesOffencesNonSnakeCase> {
     return this.http.get<IOpalFinesOffencesNonSnakeCase>(`${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`);
   }
+
+  /**
+   * Sends a PUT request to update the draft account payload.
+   *
+   * @param body - The payload containing the account information to be added.
+   * @returns An Observable of the updated account payload.
+   */
+  public putDraftAddAccountPayload(body: IFinesMacAddAccountPayload): Observable<IFinesMacAddAccountPayload> {
+    return this.http.put<IFinesMacAddAccountPayload>(
+      `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
+      body,
+    );
+  }
 }
